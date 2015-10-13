@@ -286,7 +286,7 @@
       <internal>false</internal>
       <archivable>true</archivable>
       <label>Application Productrice du document</label>
-      <description>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</description>
+      <description>Code de l'application qui a produit le fichier</description>
    </metaDataReference>
    <metaDataReference>
       <shortCode>atr</shortCode>
@@ -302,7 +302,7 @@
       <internal>false</internal>
       <archivable>true</archivable>
       <label>Application traitant le document</label>
-      <description>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</description>
+      <description>Code de l'application qui a versé le document en GED</description>
    </metaDataReference>
    <metaDataReference>
       <shortCode>cop</shortCode>
@@ -1598,7 +1598,7 @@
       <internal>false</internal>
       <archivable>true</archivable>
       <label>Site comptable</label>
-      <description>Donnée sicomor correspondante au site local ou  au site régional</description>
+      <description>Donnée sicomor correspondante au site local ou au site régional</description>
    </metaDataReference>
    <metaDataReference>
       <shortCode>dte</shortCode>
@@ -1777,6 +1777,22 @@
       <description>Métadonnée permettant la récupération de la liste des notes d’un document ou l’ajout d’une nouvelle entrée à cette dernière.</description>
    </metaDataReference>
    <metaDataReference>
+      <shortCode>ame</shortCode>
+      <longCode>ApplicationMetier</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Application Métier</label>
+      <description>Application portant le besoin documentaire (Ancien index ApplicationSource)</description>
+   </metaDataReference>
+   <metaDataReference>
       <shortCode>nns</shortCode>
       <longCode>NniSalarie</longCode>
       <type>String</type>
@@ -1794,15 +1810,15 @@
    </metaDataReference>
    <metaDataReference>
       <shortCode>cct</shortCode>
-      <longCode>CourielCotisant</longCode>
+      <longCode>CourrielCotisant</longCode>
       <type>String</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
-      <length>15</length>
+      <length>-1</length>
       <pattern></pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
-      <searchable>false</searchable>
+      <searchable>true</searchable>
       <internal>false</internal>
       <archivable>true</archivable>
       <label>Couriel cotisant</label>
@@ -1825,25 +1841,9 @@
       <description>Code agent au sens GDP</description>
    </metaDataReference>
    <metaDataReference>
-      <shortCode>ame</shortCode>
-      <longCode>ApplicationMetier</longCode>
-      <type>String</type>
-      <requiredForArchival>false</requiredForArchival>
-      <requiredForStorage>false</requiredForStorage>
-      <length>-1</length>
-      <pattern></pattern>
-      <consultable>true</consultable>
-      <defaultConsultable>false</defaultConsultable>
-      <searchable>true</searchable>
-      <internal>false</internal>
-      <archivable>true</archivable>
-      <label>Application Métier</label>
-      <description>Application ayant basculée le document en GED</description>
-   </metaDataReference>
-   <metaDataReference>
       <shortCode>SM_UUID</shortCode>
       <longCode>IdGed</longCode>
-      <type>String</type>
+      <type>UUID</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
       <length>-1</length>
@@ -1855,5 +1855,213 @@
       <archivable>true</archivable>
       <label>Identifiant Ged</label>
       <description>Identifiant de stockage dans DFCE (UUID)</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>dhe</shortCode>
+      <longCode>DateEtHeureEnvoi</longCode>
+      <type>Datetime</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Date et Heure de l'envoi du document</label>
+      <description>Date et Heure de l'envoi au cotisant du document</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>nsa</shortCode>
+      <longCode>NomSalarie</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Nom patronymique du salarié</label>
+      <description>Nom patronymique du salarié</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>rdu</shortCode>
+      <longCode>ReferenceDossierDUE</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Référence dossier de l'application DUE FAX</label>
+      <description>Référence dossier de l'application DUE FAX. Métadonnée reservée à cette application, ne doit pas être utilisée par d'autres applications.</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>ngr</shortCode>
+      <longCode>NumeroGroupe</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Numéro de groupe</label>
+      <description>Correspond aux groupes de travail V2</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>def</shortCode>
+      <longCode>DateEffet</longCode>
+      <type>Date</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>10</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Date d'effet</label>
+      <description>Date d'effet V2</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>djc</shortCode>
+      <longCode>DateJourneeComptable</longCode>
+      <type>Date</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>10</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Date de journée comptable</label>
+      <description>Date de la journée comptable V2</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>nch</shortCode>
+      <longCode>NumeroCheque</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>7</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Numéro de chèque</label>
+      <description>Numéro de chèque bancaire</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>cbq</shortCode>
+      <longCode>CodeBanque</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>5</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Code banque</label>
+      <description>Code de la banque</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>coa</shortCode>
+      <longCode>CodeAgence</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>5</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Code agence</label>
+      <description>Code de l'agence bancaire</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>ncb</shortCode>
+      <longCode>NumeroCompteBancaire</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>12</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Numéro de compte bancaire</label>
+      <description>Numéro de compte bancaire</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>mch</shortCode>
+      <longCode>MontantCheque</longCode>
+      <type>Long</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Montant du chèque</label>
+      <description>Montant du chèque (en centimes d'euro)</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>pli</shortCode>
+      <longCode>NumeroPli</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Numéro de pli</label>
+      <description>Un pli est une liasse de documents (un chèque ou plusieurs chèques avec ses déclaratifs)</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>ram</shortCode>
+      <longCode>ReferenceDossierAM</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>true</archivable>
+      <label>Référence dossier de l'application AM Etudiant</label>
+      <description>Référence dossier de l'application AM Etudiant. Métadonnée reservée à cette application, ne doit pas être utilisée par d'autres applications.</description>
    </metaDataReference>
 </referentiel>

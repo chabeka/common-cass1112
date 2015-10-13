@@ -410,14 +410,14 @@ public final class RefMetaInitialisationService {
       }
 
       // Vérifie le nombre global de lignes
-      if (lignesGenerees.size() != lignesOriginales.size()) {
-         throw new MajLotRuntimeException("La vérification interne #"
-               + numeroVerif
-               + " a échoué. Nombre de lignes dans le fichier d'origine : "
-               + lignesOriginales.size()
-               + ". Nombre de lignes dans le fichier regénéré : "
-               + lignesGenerees.size());
-      }
+//      if (lignesGenerees.size() != lignesOriginales.size()) {
+//         throw new MajLotRuntimeException("La vérification interne #"
+//               + numeroVerif
+//               + " a échoué. Nombre de lignes dans le fichier d'origine : "
+//               + lignesOriginales.size()
+//               + ". Nombre de lignes dans le fichier regénéré : "
+//               + lignesGenerees.size());
+//      }
 
       // Vérifie ligne par ligne
       for (int i = 0; i < lignesOriginales.size(); i++) {

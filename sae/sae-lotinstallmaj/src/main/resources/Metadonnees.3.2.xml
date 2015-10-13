@@ -422,7 +422,7 @@
 		<ns1:internal>non</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Application Productrice du document</ns1:label>
-		<ns1:description>Code de l'application qui a produit le document (pour un document WATT issu du scan, ce sera la chaine d'acquisition)</ns1:description>
+		<ns1:description>Code de l'application qui a produit le fichier</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>non</ns1:modifiable>
@@ -446,7 +446,7 @@
 		<ns1:internal>non</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Application traitant le document</ns1:label>
-		<ns1:description>Code de la dernière application qui a fait des traitements sur le document avant archivage c'est-à-dire celle qui a versé le document</ns1:description>
+		<ns1:description>Code de l'application qui a versé le document en GED</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>non</ns1:modifiable>
@@ -1373,7 +1373,7 @@
 		<ns1:internal>non</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Application vérification</ns1:label>
-		<ns1:description>Application vérification</ns1:description>
+		<ns1:description>Application vérification dans la cadre de la signature</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>non</ns1:modifiable>
@@ -2501,7 +2501,7 @@
 		<ns1:internal>non</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Site comptable</ns1:label>
-		<ns1:description>Donnée sicomor correspondante au site local ou  au site régional</ns1:description>
+		<ns1:description>Donnée sicomor correspondante au site local ou au site régional</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
 		<ns1:modifiable>oui</ns1:modifiable>
@@ -2768,6 +2768,29 @@
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
+		<ns1:longCode>ApplicationMetier</ns1:longCode>
+		<ns1:shortCode>ame</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Application Métier</ns1:label>
+		<ns1:description>Application portant le besoin documentaire (Ancien index ApplicationSource)</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>non</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
 		<ns1:longCode>NniSalarie</ns1:longCode>
 		<ns1:shortCode>nns</ns1:shortCode>
 		<ns1:type>String</ns1:type>
@@ -2792,21 +2815,20 @@
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
-		<ns1:longCode>CourielCotisant</ns1:longCode>
+		<ns1:longCode>CourrielCotisant</ns1:longCode>
 		<ns1:shortCode>cct</ns1:shortCode>
 		<ns1:type>String</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
-		<ns1:length>15</ns1:length>
 		<ns1:consultable>oui</ns1:consultable>
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
-		<ns1:searchable>non</ns1:searchable>
+		<ns1:searchable>oui</ns1:searchable>
 		<ns1:internal>non</ns1:internal>
 		<ns1:archivable>oui</ns1:archivable>
 		<ns1:label>Couriel cotisant</ns1:label>
 		<ns1:description>Adresse e-mail du cotisant</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
-		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:isIndexed>oui</ns1:isIndexed>
 		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
@@ -2830,31 +2852,8 @@
 		<ns1:label>Code Agent</ns1:label>
 		<ns1:description>Code agent au sens GDP</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
-		<ns1:isIndexed>oui</ns1:isIndexed>
-		<ns1:modifiable>oui</ns1:modifiable>
-		<ns1:clientAvailable>oui</ns1:clientAvailable>
-		<ns1:leftTrimable>oui</ns1:leftTrimable>
-		<ns1:rightTrimable>oui</ns1:rightTrimable>
-		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>oui</ns1:aCreer>
-		<ns1:aModifier>non</ns1:aModifier>
-	</ns1:metaReference>
-	<ns1:metaReference>
-		<ns1:longCode>ApplicationMetier</ns1:longCode>
-		<ns1:shortCode>ame</ns1:shortCode>
-		<ns1:type>String</ns1:type>
-		<ns1:requiredForArchival>non</ns1:requiredForArchival>
-		<ns1:requiredForStorage>non</ns1:requiredForStorage>
-		<ns1:consultable>oui</ns1:consultable>
-		<ns1:defaultConsultable>non</ns1:defaultConsultable>
-		<ns1:searchable>oui</ns1:searchable>
-		<ns1:internal>non</ns1:internal>
-		<ns1:archivable>oui</ns1:archivable>
-		<ns1:label>Application Métier</ns1:label>
-		<ns1:description>Application ayant basculée le document en GED</ns1:description>
-		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
-		<ns1:modifiable>non</ns1:modifiable>
+		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
 		<ns1:rightTrimable>oui</ns1:rightTrimable>
@@ -2865,7 +2864,7 @@
 	<ns1:metaReference>
 		<ns1:longCode>IdGed</ns1:longCode>
 		<ns1:shortCode>SM_UUID</ns1:shortCode>
-		<ns1:type>String</ns1:type>
+		<ns1:type>UUID</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
 		<ns1:consultable>oui</ns1:consultable>
@@ -2878,6 +2877,313 @@
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>oui</ns1:isIndexed>
 		<ns1:modifiable>non</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>DateEtHeureEnvoi</ns1:longCode>
+		<ns1:shortCode>dhe</ns1:shortCode>
+		<ns1:type>Datetime</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Date et Heure de l'envoi du document</ns1:label>
+		<ns1:description>Date et Heure de l'envoi au cotisant du document</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>non</ns1:leftTrimable>
+		<ns1:rightTrimable>non</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NomSalarie</ns1:longCode>
+		<ns1:shortCode>nsa</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Nom patronymique du salarié</ns1:label>
+		<ns1:description>Nom patronymique du salarié</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>ReferenceDossierDUE</ns1:longCode>
+		<ns1:shortCode>rdu</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Référence dossier de l'application DUE FAX</ns1:label>
+		<ns1:description>Référence dossier de l'application DUE FAX. Métadonnée reservée à cette application, ne doit pas être utilisée par d'autres applications.</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NumeroGroupe</ns1:longCode>
+		<ns1:shortCode>ngr</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Numéro de groupe</ns1:label>
+		<ns1:description>Correspond aux groupes de travail V2</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>DateEffet</ns1:longCode>
+		<ns1:shortCode>def</ns1:shortCode>
+		<ns1:type>Date</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>10</ns1:length>
+		<ns1:pattern>yyyy-mm-dd</ns1:pattern>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Date d'effet</ns1:label>
+		<ns1:description>Date d'effet V2</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>non</ns1:leftTrimable>
+		<ns1:rightTrimable>non</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>DateJourneeComptable</ns1:longCode>
+		<ns1:shortCode>djc</ns1:shortCode>
+		<ns1:type>Date</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>10</ns1:length>
+		<ns1:pattern>yyyy-mm-dd</ns1:pattern>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Date de journée comptable</ns1:label>
+		<ns1:description>Date de la journée comptable V2</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>non</ns1:leftTrimable>
+		<ns1:rightTrimable>non</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NumeroCheque</ns1:longCode>
+		<ns1:shortCode>nch</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>7</ns1:length>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Numéro de chèque</ns1:label>
+		<ns1:description>Numéro de chèque bancaire</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>CodeBanque</ns1:longCode>
+		<ns1:shortCode>cbq</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>5</ns1:length>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Code banque</ns1:label>
+		<ns1:description>Code de la banque</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>CodeAgence</ns1:longCode>
+		<ns1:shortCode>coa</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>5</ns1:length>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Code agence</ns1:label>
+		<ns1:description>Code de l'agence bancaire</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NumeroCompteBancaire</ns1:longCode>
+		<ns1:shortCode>ncb</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:length>12</ns1:length>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Numéro de compte bancaire</ns1:label>
+		<ns1:description>Numéro de compte bancaire</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>MontantCheque</ns1:longCode>
+		<ns1:shortCode>mch</ns1:shortCode>
+		<ns1:type>Long</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Montant du chèque</ns1:label>
+		<ns1:description>Montant du chèque (en centimes d'euro)</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>non</ns1:leftTrimable>
+		<ns1:rightTrimable>non</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NumeroPli</ns1:longCode>
+		<ns1:shortCode>pli</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Numéro de pli</ns1:label>
+		<ns1:description>Un pli est une liasse de documents (un chèque ou plusieurs chèques avec ses déclaratifs)</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>ReferenceDossierAM</ns1:longCode>
+		<ns1:shortCode>ram</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Référence dossier de l'application AM Etudiant</ns1:label>
+		<ns1:description>Référence dossier de l'application AM Etudiant. Métadonnée reservée à cette application, ne doit pas être utilisée par d'autres applications.</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
 		<ns1:rightTrimable>oui</ns1:rightTrimable>

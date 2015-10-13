@@ -933,6 +933,16 @@
             <enableDictionary>false</enableDictionary>
          </category>
          <category>
+            <descriptif>ApplicationMetier</descriptif>
+            <name>ame</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
             <descriptif>NniSalarie</descriptif>
             <name>nns</name>
             <dataType>String</dataType>
@@ -943,10 +953,10 @@
             <enableDictionary>false</enableDictionary>
          </category>
          <category>
-            <descriptif>CourielCotisant</descriptif>
+            <descriptif>CourrielCotisant</descriptif>
             <name>cct</name>
             <dataType>String</dataType>
-            <index>false</index>
+            <index>true</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
             <single>false</single>
@@ -956,6 +966,26 @@
             <descriptif>CodeAgent</descriptif>
             <name>cag</name>
             <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>DateEtHeureEnvoi</descriptif>
+            <name>dhe</name>
+            <dataType>Datetime</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>NomSalarie</descriptif>
+            <name>nsa</name>
+            <dataType>String</dataType>
             <index>true</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
@@ -963,10 +993,110 @@
             <enableDictionary>false</enableDictionary>
          </category>
          <category>
-            <descriptif>ApplicationMetier</descriptif>
-            <name>ame</name>
+            <descriptif>ReferenceDossierDUE</descriptif>
+            <name>rdu</name>
+            <dataType>String</dataType>
+            <index>true</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>NumeroGroupe</descriptif>
+            <name>ngr</name>
             <dataType>String</dataType>
             <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>DateEffet</descriptif>
+            <name>def</name>
+            <dataType>Date</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>DateJourneeComptable</descriptif>
+            <name>djc</name>
+            <dataType>Date</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>NumeroCheque</descriptif>
+            <name>nch</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>CodeBanque</descriptif>
+            <name>cbq</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>CodeAgence</descriptif>
+            <name>coa</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>NumeroCompteBancaire</descriptif>
+            <name>ncb</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>MontantCheque</descriptif>
+            <name>mch</name>
+            <dataType>Long</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>NumeroPli</descriptif>
+            <name>pli</name>
+            <dataType>String</dataType>
+            <index>false</index>
+            <minimumValues>0</minimumValues>
+            <maximumValues>1</maximumValues>
+            <single>false</single>
+            <enableDictionary>false</enableDictionary>
+         </category>
+         <category>
+            <descriptif>ReferenceDossierAM</descriptif>
+            <name>ram</name>
+            <dataType>String</dataType>
+            <index>true</index>
             <minimumValues>0</minimumValues>
             <maximumValues>1</maximumValues>
             <single>false</single>
