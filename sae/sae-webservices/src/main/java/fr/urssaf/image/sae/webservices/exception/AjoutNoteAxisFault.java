@@ -29,7 +29,7 @@ public class AjoutNoteAxisFault extends AxisFault {
     */
    public AjoutNoteAxisFault(Throwable cause) {
 
-      super("Une erreur s'est produite lors de l'ajout d'une note",
+      super("Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
             SoapFaultCodeFactory.createSoapFaultCode("urn:sae:faultcodes",
                   "ErreurInterneAjoutNote", "sae"), cause);
 
