@@ -809,6 +809,39 @@ public class InsertionDonnees {
             .get(), StringSerializer.get(), updater);
       cfTmpl.update(updater);
       LOG.info("Format ajouté : fmt/353");
+   }
+   
+   /**
+    * Ajout des données dans le référentiel des formats en V3 : <li>x-fmt/111</li>
+    */
+   public void addReferentielFormatV3() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+      
+      String nouveauFormat = "x-fmt/111";
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater(nouveauFormat);
+      addColumn("idFormat", nouveauFormat, StringSerializer.get(), StringSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier TXT (par exemple cold)", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "txt", StringSerializer.get(), StringSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "text/plain", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", nouveauFormat);
 
    }
    

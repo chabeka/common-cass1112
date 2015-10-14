@@ -722,6 +722,8 @@ public class SAECassandraUpdater {
       
       // Ajout d'un convertisseur au format fmt/354 (splitter de pdf)
       donnees.modifyReferentielFormatFmt354();
+      // Ajout du format x-fmt/111 (cold)
+      donnees.addReferentielFormatV3();
 
       // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_14);
