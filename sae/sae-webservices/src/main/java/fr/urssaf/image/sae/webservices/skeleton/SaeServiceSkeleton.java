@@ -750,6 +750,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
@@ -791,6 +793,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
