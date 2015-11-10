@@ -6,14 +6,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.AjoutNoteFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsAjoutNoteFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
  * 2500-Note-TestLibre
  */
 @Controller
-@RequestMapping(value = "test2500")
-public class Test2500Controller extends AbstractTestWsController<TestWsAjoutNoteFormulaire> {
+@RequestMapping(value = "test2551")
+public class Test2551Controller extends AbstractTestWsController<TestWsAjoutNoteFormulaire> {
 
    
    /**
@@ -21,7 +22,7 @@ public class Test2500Controller extends AbstractTestWsController<TestWsAjoutNote
     */
    @Override
    protected final String getNumeroTest() {
-      return "2500";
+      return "2551";
    }
    
    
@@ -34,8 +35,8 @@ public class Test2500Controller extends AbstractTestWsController<TestWsAjoutNote
       TestWsAjoutNoteFormulaire formulaire = new TestWsAjoutNoteFormulaire();
       AjoutNoteFormulaire formAjoutNote = formulaire.getAjoutNote();
       formAjoutNote.getResultats().setStatus(TestStatusEnum.SansStatus);
-      
-      formAjoutNote.setNote("Ma note");
+      formAjoutNote.setIdArchivage("00000000-0000-0000-0000-000000000000");
+      formAjoutNote.setNote("Ma note ");
       return formulaire;
       
    }
@@ -47,11 +48,16 @@ public class Test2500Controller extends AbstractTestWsController<TestWsAjoutNote
    @Override
    protected final void doPost(TestWsAjoutNoteFormulaire formulaire) {
       
-      //-- Appel au ws
       String urlServiceWeb = formulaire.getUrlServiceWeb();
       AjoutNoteFormulaire ajoutNoteForm = formulaire.getAjoutNote();
-      getAjoutNoteTestService().appelWsOpAjoutNoteTestLibre(urlServiceWeb, null, ajoutNoteForm);
+      //String idSoapFault = "sae_ArchiveNonTrouvee";
+      String idSoapFault = "sae_AjoutNoteArchiveNonTrouvee";      
+      String[] soapMsgArgs = new String[] {ajoutNoteForm.getIdArchivage()};
       
+    //-- Appel au ws
+      getAjoutNoteTestService().appelWsOpAjoutNoteTestSoapFault(
+            urlServiceWeb, ajoutNoteForm, ViStyle.VI_OK, null, idSoapFault, soapMsgArgs);
    }
+   
  
 }

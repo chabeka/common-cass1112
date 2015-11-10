@@ -486,7 +486,6 @@ public class CaptureMasseTestService {
    public final void testResultatsTdmReponseKOAttendue(
          CaptureMasseResultatFormulaire formulaire, int notIntegratedDocuments,
          NonIntegratedDocumentType documentType, int index) {
-
       processReponseKoAttendue(formulaire, notIntegratedDocuments,
             documentType, index);
    }
@@ -832,7 +831,7 @@ public class CaptureMasseTestService {
          CaptureMasseResultatFormulaire formulaire,
          NonIntegratedDocumentType documentType,
          List<NonIntegratedDocumentType> nonIntegratedDocument, int index) {
-
+      
       if (documentType == null
             || documentType.getObjetNumerique() == null
             || StringUtils.isBlank(documentType.getObjetNumerique()
@@ -848,7 +847,7 @@ public class CaptureMasseTestService {
 
          HashMap<String, String> mapErreurs = new HashMap<String, String>();
          for (ErreurType erreurType : documentType.getErreurs().getErreur()) {
-            mapErreurs.put(erreurType.getCode(), erreurType.getLibelle());
+            mapErreurs.put(erreurType.getCode(), erreurType.getLibelle());         
          }
 
          NonIntegratedDocumentType found = nonIntegratedDocument.get(index);
@@ -863,14 +862,15 @@ public class CaptureMasseTestService {
             int i = 0;
             String label;
             List<ErreurType> listErreurs = found.getErreurs().getErreur();
+            formulaire.getResultats().getLog().appendLogLn("");
             while (!hasError && i < listErreurs.size()) {
                label = mapErreurs.get(listErreurs.get(i).getCode());
                if (label == null
                      || !label
                            .equalsIgnoreCase(listErreurs.get(i).getLibelle())) {
                   hasError = true;
+                  
                }
-
                i++;
             }
 
@@ -889,6 +889,7 @@ public class CaptureMasseTestService {
                   formulaire.getResultats().getLog().appendLogLn(
                         "code : " + erreurType.getCode() + "  /  libellé : "
                               + erreurType.getLibelle());
+
                }
 
                formulaire.getResultats().getLog().appendLogLn(
@@ -898,18 +899,18 @@ public class CaptureMasseTestService {
                   formulaire.getResultats().getLog().appendLogLn(
                         "code : " + erreurType.getCode() + "  /  libellé : "
                               + erreurType.getLibelle());
+
                }
 
                formulaire.getResultats().setStatus(TestStatusEnum.Echec);
             } else {
                formulaire.getResultats().getLog().appendLogLn(
-                     "Toutes les erreurs attendues ont été trouvées");
+                     "Toutes les erreurs attendues ont été trouvées : A VERIFIER ");
                formulaire.getResultats().setStatus(TestStatusEnum.Succes);
-            }
+           }
+
          }
-
       }
-
    }
    
    /**
@@ -1048,7 +1049,7 @@ public class CaptureMasseTestService {
       int j = 0;
       NonIntegratedDocumentType currentNid;
       List<ErreurType> listErrors;
-      ErreurType currentError;
+      ErreurType currentError = null;
 
       while (!errorFound && i < nonIntegratedDocument.size()) {
 
@@ -1080,10 +1081,12 @@ public class CaptureMasseTestService {
 
       ResultatTestLog log = formulaire.getResultats().getLog();
       if (!errorFound) {
-         log
-               .appendLogLn("Aucun des enregistrements ne contient l'erreur souhaitée :");
+         log.appendLogLn("- Aucun des enregistrements ne contient l'erreur souhaitée :");         
          log.appendLogLn("code : " + erreurType.getCode());
          log.appendLogLn("libellé : " + erreurType.getLibelle());
+         log.appendLogLn("- Erreur trouvée dans le fichier resultats.xml : ");
+         log.appendLogLn("code : " + currentError.getCode());
+         log.appendLogLn("libellé : " + currentError.getLibelle());
          formulaire.getResultats().setStatus(TestStatusEnum.Echec);
       } else {
          log

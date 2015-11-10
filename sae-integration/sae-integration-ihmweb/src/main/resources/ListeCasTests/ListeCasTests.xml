@@ -1052,10 +1052,140 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2505-Note-Transfert-Plusieurs-Notes-OK"</luceneExemple>
          </CasTest>
-         
+         <CasTest>
+            <id>2550</id>
+            <code>2550-Note-Ajout-Cassandra-KO</code>
+            <description>
+               Test d'ajout de notes à un document avec les serveurs cassandra arrêtés après le stockage du document
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2550-Note-Ajout-Cassandra-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2551</id>
+            <code>2551-Note-Ajout-Note-Doc-Inexistant-KO</code>
+            <description>
+               Test d'ajout de notes à un document inexistant
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2551-Note-Ajout-Note-Doc-Inexistant-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2552</id>
+            <code>2552-Note-Ajout-Traitement-Masse-KO</code>
+            <description>
+               Test d'ajout de notes à des documents lors d'un traitement de masse
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2552-Note-Ajout-Traitement-Masse-KO"</luceneExemple>
+         </CasTest>
+
       </CasTests>
    </Categorie>
    
+   <!-- ======================================================== -->
+   <!-- Archivage et consultation UUID -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+      <Nom>UUID</Nom>
+      <Id>16</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>2600a</id>
+            <code>2600-IdGed-ArchivageUnitaire-OK-TestLibre</code>
+            <description>
+               Test libre d'archivage unitaire avec IdGed 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>IdGed:"f8325fc9-b12a-44ed-8072-8344d2478978"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2600b</id>
+            <code>2600-IdGed-ArchivageUnitaire-OK-TestLibre-PJ-URL</code>
+            <description>
+               Test libre d'archivage unitaire avec IdGed avec Pièce jointe 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>IdGed:"f8325fc9-b12a-44ed-8072-8344d2478979"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2600c</id>
+            <code>2600-IdGed-ArchivageUnitaire-OK-TestLibre-PJ-sans-MTOM</code>
+            <description>
+               Test libre d'archivage unitaire avec IdGed avec Pièce jointe sans MTOM
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>IdGed:"f8325fc9-b12a-44ed-8072-8344d2478980"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2600d</id>
+            <code>2600-IdGed-ArchivageUnitaire-OK-TestLibre-PJ-avec-MTOM</code>
+            <description>
+               Test libre d'archivage unitaire avec IdGed avec Pièce jointe avec MTOM
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>IdGed:"f8325fc9-b12a-44ed-8072-8344d2478981"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2601</id>
+            <code>2601-IdGed-Recherche-OK-IdGed</code>
+            <description>
+               Test de recherche à partir de l'IdGed
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>IdGed:"f8325fc9-b12a-44ed-8072-8344d2461234"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2602</id>
+            <code>2602-IdGed-Transfert-OK-IdGed</code>
+            <description>
+               Test le transfert d'un document avec un IdGed
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2602-IdGed-Transfert-OK-IdGed"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2650</id>
+            <code>2650-IdGed-ArchivageUnitaire-KO-IdGed-Existant</code>
+            <description>
+               Test l'archivage unitaire avec un IdGed déjà existant en GNS
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2650-IdGed-ArchivageUnitaire-KO-IdGed-Existant"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2651</id>
+            <code>2651-IdGed-ArchivageUnitaire-KO-IdGed-MauvaisFormat</code>
+            <description>
+               Test l'archivage unitaire avec un IdGed au mauvais format
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2651-IdGed-ArchivageUnitaire-KO-IdGed-MauvaisFormat"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2652</id>
+            <code>2652-IdGed-ArchivageMasse-KO-IdGed</code>
+            <description>
+               Test l'archivage de masse avec un IdGed présent
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2652-IdGed-ArchivageMasse-KO-IdGed"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2653</id>
+            <code>2653-IdGed-Transfert-KO-IdGed-Existant</code>
+            <description>
+               Test le transfert avec un IdGed présent dans la GNS
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2653-IdGed-Transfert-KO-IdGed-Existant"</luceneExemple>
+         </CasTest>
+
+      </CasTests>
+   </Categorie>
+      
       
    <!-- ======================================================== -->
    <!-- Recherche -->

@@ -225,11 +225,12 @@ public final class TestsMetadonneesService {
       sBuffer.append("Erreur sur la métadonnée ");
       sBuffer.append(code);
       sBuffer.append(" : on attendait la valeur \"");
-      if (valeurAttendue.length() > 50) {
-         sBuffer.append(valeurAttendue.substring(0, 50) + "...");
-      } else {
-         sBuffer.append(valeurAttendue);
-      }
+//      if (valeurAttendue.length() > 50) {
+//         sBuffer.append(valeurAttendue.substring(0, 50) + "...");
+//      } else {
+//               sBuffer.append(valeurAttendue);
+//      }
+      sBuffer.append(valeurAttendue);
       sBuffer.append('\"');
 
       // Recherche la métadonnée dans la liste
@@ -249,11 +250,12 @@ public final class TestsMetadonneesService {
             resultatTest.setStatus(TestStatusEnum.Echec);
 
             sBuffer.append(" alors que la valeur obtenue est \"");
-            if (meta.getValeur().length() > 50) {
-               sBuffer.append(meta.getValeur().substring(0, 50) + "...");
-            } else {
-               sBuffer.append(meta.getValeur());
-            }
+//            if (meta.getValeur().length() > 50) {
+//               sBuffer.append(meta.getValeur().substring(0, 50) + "...");
+//            } else {
+//               sBuffer.append(meta.getValeur());
+//            }
+            sBuffer.append(meta.getValeur());
             sBuffer.append("\".");
 
             messageErreur = sBuffer.toString();

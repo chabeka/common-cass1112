@@ -39,6 +39,7 @@ public final class SoapFaultUtils {
       // Vérifie le message de la Soap Fault
       attendu = String.format(faultAttendue.getMessage(),argsMsgSoapFault);
       obtenu = faultObtenue.getReason();
+            
       if (!attendu.equals(obtenu)) {
          return String.format(
                "Le message de la SoapFault (\"%s\") n'est pas celui attendu (\"%s\")", 
@@ -73,10 +74,10 @@ public final class SoapFaultUtils {
       obtenu = faultObtenue.getFaultCode().getLocalPart();
       if (!attendu.equals(obtenu)) {
          return String.format(
-               "Le partie locale de la SoapFault (\"%s\") n'est pas celui attendu (\"%s\")", 
+               "La partie locale de la SoapFault (\"%s\") n'est pas celle attendue (\"%s\")", 
                obtenu,
                attendu);
-      }
+    }
       
       // Si on arrive jusque là, c'est que la SoapFault est bien celle attendu
       return null;

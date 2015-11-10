@@ -24,7 +24,7 @@
 			<sae:vi
 		      objetFormulaire="${formulaire.viFormulaire}"
 		      pathFormulaire="viFormulaire" />
-							
+			
 			<sae:captureUnitaire numeroEtape="1"
 				objetFormulaire="${formulaire.captureUnitaire}"
 				pathFormulaire="captureUnitaire" readonly="false" />

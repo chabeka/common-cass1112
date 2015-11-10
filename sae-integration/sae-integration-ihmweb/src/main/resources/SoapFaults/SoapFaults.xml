@@ -415,7 +415,6 @@
       <message>Les Pagms présents dans le VI sont incompatibles : plusieurs domaines différents trouvés.</message>
    </SoapFault>
       
-      
    <SoapFault>
       <id>sae_ErreurInterneAjoutNote</id>
       <namespace>urn:sae:faultcodes</namespace>
@@ -423,5 +422,21 @@
       <localPart>ErreurInterneAjoutNote</localPart>
       <message>Une erreur s'est produite lors de l'ajout d'une note</message>
    </SoapFault>
-            
+   
+   <SoapFault>
+      <id>sae_AjoutNoteArchiveNonTrouvee</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>AjoutNoteArchiveNonTrouvee</localPart>
+      <message>Il n'existe aucun document pour l'identifiant d'archivage '%s'</message>      
+   </SoapFault>
+
+   <SoapFault>
+      <id>sae_CaptureErreurIdGedExistant</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>CaptureErreurIdGedExistant</localPart>
+      <message>L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.</message>      
+   </SoapFault>
+               
 </SoapFaults>

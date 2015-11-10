@@ -10,14 +10,17 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.AjoutNoteFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.AjoutNote;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceLogUtils;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectFactory;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceStubUtils;
+import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 
 /**
  * Service de test de l'opération "consultation" du service web SaeService
@@ -29,6 +32,9 @@ public class AjoutNoteTestService {
 
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
+   
+   @Autowired
+   private ReferentielSoapFaultService refSoapFault;
 
    private boolean appelWsOpAjoutNote(String urlServiceWeb,
          ViStyle viStyle, ViFormulaire viParams,
@@ -115,4 +121,23 @@ public class AjoutNoteTestService {
       formulaire.getResultats().getLog().appendLog("Note ajoutée");
       
    }
+   
+   
+   public final void appelWsOpAjoutNoteTestSoapFault(String urlServiceWeb,
+         AjoutNoteFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener wsListener = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpAjoutNote(urlServiceWeb, viStyle, viParams, formulaire, wsListener);
+
+   }
+
+   
+
 }

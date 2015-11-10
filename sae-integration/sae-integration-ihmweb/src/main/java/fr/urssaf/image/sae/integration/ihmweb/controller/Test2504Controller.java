@@ -124,17 +124,23 @@ public class Test2504Controller extends
       } 
       else if ("2".equals(etape)) {
          transfert(formulaire.getUrlServiceWeb(), formulaire.getTransfert(), formulaire.getViFormulaire());
+         // Paramètres du VI
+         ViFormulaire viForm = formulaire.getViFormulaire();
+         viForm.setIssuer("CS_DEV_TOUTES_ACTIONS");
+         viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
+         viForm.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
          PagmList pagmList = new PagmList();
-         pagmList.add("INT_PAGM_CS_TRANSFERT_RECHERCHE");
-         formulaire.getViFormulaire().setPagms(pagmList);
+         viForm.setPagms(pagmList);
+         pagmList.add("PAGM_TOUTES_ACTIONS");
+
       } 
       else if ("3".equals(etape)) {
          rechercheGNT(formulaire.getUrlServiceWeb(), formulaire.getRecherche());
-         formulaire.setUrlServiceWeb(getTestConfig().getUrlSaeServiceGns());
+         formulaire.setUrlServiceWeb(getTestConfig().getUrlSaeServiceGns());        
       }
       else if ("4".equals(etape)) {
          rechercheGNS(formulaire.getUrlServiceWeb(), formulaire
-               .getRechercheGns());
+               .getRechercheGns());        
       }
    }
    

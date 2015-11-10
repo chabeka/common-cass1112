@@ -762,7 +762,7 @@
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
-        <consultable>true</consultable>
+        <consultable>false</consultable>
         <critereRecherche>true</critereRecherche>
         <client>false</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
@@ -770,12 +770,24 @@
     </Metadonnee>
     <Metadonnee>
         <codeLong>Note</codeLong>
-        <codeCourt>note</codeCourt>
+        <codeCourt>not</codeCourt>
         <archivablePossible>true</archivablePossible>
         <archivableObligatoire>false</archivableObligatoire>
         <consulteeParDefaut>false</consulteeParDefaut>
         <consultable>true</consultable>
         <critereRecherche>false</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>String</typeDfce>
+    </Metadonnee>
+    <Metadonnee>
+        <codeLong>IdGed</codeLong>
+        <codeCourt>SM_UUID</codeCourt>
+        <archivablePossible>true</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>true</critereRecherche>
         <client>true</client>
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>String</typeDfce>
