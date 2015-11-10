@@ -412,6 +412,12 @@ public final class BeanMapper {
             .technicalMetadataFinder(metadata.getShortCode());
 
       if (technical.getShortCode().equals(
+            StorageTechnicalMetadatas.IDGED.getShortCode())) {
+
+         metadataFound = new StorageMetadata(metadata.getShortCode(), document
+               .getUuid());
+
+      }else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(), document
