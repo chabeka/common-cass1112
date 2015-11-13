@@ -536,6 +536,7 @@ public class InsertionDonnees {
    /**
     * On remplace l'action unitaire ajoutNote par ajout_note afin d'être
     * homogène
+    * !!! L'AJOUT a été oublié, fait dans la méthode addActionUnitaireNote2
     */
    public void modifyActionUnitaireAjoutNote() {
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
@@ -544,6 +545,18 @@ public class InsertionDonnees {
       deleteActionUnitaire("ajoutNote", cfTmpl);
    }
 
+   /**
+    * Ajout de l'action unitaire ajout_note car oublé dans modifyActionUnitaireAjoutNote
+    */
+   public void addActionUnitaireNote2() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("ajout_note", "Ajout de notes",
+            cfTmpl);
+   }
+
+   
    /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
