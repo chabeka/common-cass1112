@@ -332,8 +332,7 @@ public final class BeanMapper {
                StorageTechnicalMetadatas.IDGED.getShortCode())) {
             // -- On définit l'uuid du document si fournit dans la liste des
             // métadonnées
-            document.setUuid(UUID.fromString((String) storageMetadata
-                  .getValue()));
+            document.setUuid((UUID) storageMetadata.getValue());
 
          } else if (technical.getShortCode().equals(
                StorageTechnicalMetadatas.TITRE.getShortCode())) {

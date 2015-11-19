@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import fr.urssaf.image.sae.bo.model.SAEMetadataType;
 import fr.urssaf.image.sae.mapping.constants.Constants;
@@ -188,6 +189,7 @@ public final class Utils {
             target = datetimeToString((Date) metadataValue);
          }
          break;
+      case UUID:
       case INTEGER:
       case BOOLEAN:
       case STRING:
@@ -248,6 +250,9 @@ public final class Utils {
          break;
       case LONG:
          value = Long.valueOf(untypedValue);
+         break;
+      case UUID:
+         value = UUID.fromString(untypedValue);
          break;
       default:
          value = untypedValue;

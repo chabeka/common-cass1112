@@ -446,7 +446,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       if(doc != null){
          for (StorageMetadata meta : doc.getMetadatas()) {
             if(meta.getShortCode().equals(StorageTechnicalMetadatas.IDGED.getShortCode())){
-               uuid = UUID.fromString(meta.getValue().toString());
+               uuid = (UUID) meta.getValue();
                break;
             }
          }
