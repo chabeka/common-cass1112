@@ -915,7 +915,7 @@
 		<ns1:type>String</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
-		<ns1:length>20</ns1:length>
+		<ns1:length>36</ns1:length>
 		<ns1:consultable>oui</ns1:consultable>
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
 		<ns1:searchable>oui</ns1:searchable>
@@ -939,7 +939,7 @@
 		<ns1:type>String</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
-		<ns1:length>20</ns1:length>
+		<ns1:length>36</ns1:length>
 		<ns1:consultable>oui</ns1:consultable>
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
 		<ns1:searchable>oui</ns1:searchable>

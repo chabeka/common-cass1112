@@ -614,7 +614,7 @@
       <type>String</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
-      <length>20</length>
+      <length>36</length>
       <pattern></pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
@@ -630,7 +630,7 @@
       <type>String</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
-      <length>20</length>
+      <length>36</length>
       <pattern></pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
