@@ -5210,7 +5210,7 @@
             </column>
             <column>
                <name>transf</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>       
          </row>
          <row>
@@ -5221,7 +5221,7 @@
             </column>
             <column>
                <name>type</name>
-               <value>String</value>
+               <value>UUID</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -5285,11 +5285,11 @@
             </column>
             <column>
                <name>leftTrim</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>rightTrim</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>transf</name>
