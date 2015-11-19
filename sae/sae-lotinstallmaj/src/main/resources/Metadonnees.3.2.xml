@@ -2763,7 +2763,7 @@
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>non</ns1:leftTrimable>
 		<ns1:rightTrimable>non</ns1:rightTrimable>
-		<ns1:transferable>oui</ns1:transferable>
+		<ns1:transferable>non</ns1:transferable>
 		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
@@ -2878,8 +2878,8 @@
 		<ns1:isIndexed>oui</ns1:isIndexed>
 		<ns1:modifiable>non</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
-		<ns1:leftTrimable>oui</ns1:leftTrimable>
-		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:leftTrimable>non</ns1:leftTrimable>
+		<ns1:rightTrimable>non</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
 		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
