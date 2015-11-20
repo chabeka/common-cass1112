@@ -734,6 +734,8 @@ public class SAECassandraUpdater {
    /**
     * Version 15 : <li>Suite Remplacement de l'action
     * unitaire ajoutNote par ajout_note car oubli de la création suite à suppresion</li>
+    * <li>Suppression trim gauche et droite pour l'IdGed</li>
+    * <li>Passage de la Note en non transférable car le transfert de la note ne passe pas par les métadonnées</li>
     */
    public void updateToVersion15() {
 
@@ -747,6 +749,9 @@ public class SAECassandraUpdater {
 
       // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
+      
+      // -- Modif des métadonnées des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
       // Ajout de l'action unitaire ajout_note
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
