@@ -284,5 +284,10 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 // 11) Lot 151200SAE
 // ------------------------------------------
 
-Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scribe / Ajout action unitaire recherche_iterateur / Ajout du convertisseur pour le format fmt/354)
+11-1) Lot 151200SAE
+Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scribe et DUE / Ajout action unitaire recherche_iterateur / Ajout du convertisseur pour le format fmt/354)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151200
+
+11-2) Lot 151201SAE
+Met la base Cassandra du SAE en version 15 (Création de l'action unitaire ajout_note suite bug lot 151200, méta Note passée en non transférable, Plus de trim gauche et droite sur méta IdGed, Taille max de IdTraitementMasse et IdTraitementMasseInterne à 36, Taille max NumeroPiece � 12)
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151201

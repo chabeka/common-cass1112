@@ -1206,7 +1206,7 @@
       <type>String</type>
       <requiredForArchival>false</requiredForArchival>
       <requiredForStorage>false</requiredForStorage>
-      <length>6</length>
+      <length>12</length>
       <pattern></pattern>
       <consultable>true</consultable>
       <defaultConsultable>false</defaultConsultable>
