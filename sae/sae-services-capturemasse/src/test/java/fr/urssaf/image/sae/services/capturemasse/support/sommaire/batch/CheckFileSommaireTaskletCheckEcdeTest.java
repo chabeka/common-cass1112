@@ -181,7 +181,7 @@ public class CheckFileSommaireTaskletCheckEcdeTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      FileUtils.copyFile(resultats, new File("c:/resultats.xml"));
+      //FileUtils.copyFile(resultats, new File("c:/resultats.xml"));
 
       Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
             .exists());
