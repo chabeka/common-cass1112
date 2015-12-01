@@ -441,17 +441,21 @@ public class TraitementServiceImpl implements TraitementService {
                   continue;
                }
                
+               boolean skipDoc = false;
                //-- Fichier à insérer en base
                File docFile = new File(basePath + document.getUuid());
                if(!docFile.exists()){
                   LOGGER.error("Erreur: fichier introuvable {}", basePath + document.getUuid());
-                  return;
+                  // bug DFCe : certains docs de production GNT sont encore indexés alors qu'il n'existe plus.
+                  skipDoc = true;
                }
                
-               //-- Enregistrement en base (pile multi-thread)
-               ImportDocsRunnable importDocRun;
-               importDocRun = new ImportDocsRunnable(getDfceService(), mapper, docFile);
-               poolThread.execute(importDocRun);
+               if (!skipDoc) {
+                  //-- Enregistrement en base (pile multi-thread)
+                  ImportDocsRunnable importDocRun;
+                  importDocRun = new ImportDocsRunnable(getDfceService(), mapper, docFile);
+                  poolThread.execute(importDocRun);
+               }
             }
          }
          
