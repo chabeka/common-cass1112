@@ -212,9 +212,9 @@ public class RefMetaInitialisationServiceTest {
       
       List<String[]> indexes = refMetaService.chargerFichierIdxComposites(true);  
       
-      //-- Test version 2.0 du fichiers des indexes composites
-      message = "Le nombre d'indexes attendu (fichier v2.0) est incorrect";
-      Assert.assertEquals(message, 17, indexes.size());
+      //-- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes attendu (fichier v3.3) est incorrect";
+      Assert.assertEquals(message, 20, indexes.size());
    }
    
    @Test
@@ -223,9 +223,9 @@ public class RefMetaInitialisationServiceTest {
       
       List<String[]> indexes = refMetaService.chargerFichierIdxComposites(false);  
       
-      //-- Test version 1.0 du fichiers des indexes composites
-      message = "Le nombre d'indexes attendu (fichier v2.0) est incorrect";
-      Assert.assertEquals(message, 2, indexes.size());
+      //-- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes attendu (fichier v3.3) est incorrect";
+      Assert.assertEquals(message, 4, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {
