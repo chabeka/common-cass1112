@@ -42,6 +42,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_13 = 13;
    private static final int VERSION_14 = 14;
    private static final int VERSION_15 = 15;
+   private static final int VERSION_16 = 16;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -759,5 +760,32 @@ public class SAECassandraUpdater {
       
       // On positionne la version à 15
       saeDao.setDatabaseVersion(VERSION_15);
+   }
+   
+   /**
+    * Version 16 : <li>Ajout de l'action unitaire ajout_doc_attache</li>
+    */
+   public void updateToVersion16() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_16) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 16");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Ajout des métadonnées
+      //refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // Ajout de l'action unitaire ajout_doc_attache
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+      donnees.addActionUnitaireAjoutDocAttache();
+      
+      // On positionne la version à 16
+      saeDao.setDatabaseVersion(VERSION_16);
    }
 }

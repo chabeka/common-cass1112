@@ -56,6 +56,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_150601 = "CASSANDRA_DFCE_150601";
    public static final String CASSANDRA_DFCE_151200 = "CASSANDRA_DFCE_151200";
    public static final String CASSANDRA_DFCE_151201 = "CASSANDRA_DFCE_151201";
+   public static final String CASSANDRA_DFCE_160300 = "CASSANDRA_DFCE_160300";
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -191,10 +192,10 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra150601();
          // -- Creation des index composite dans DFCE
          addIndexesCompositeToDfce("DFCE_150601");
-      
+
       } else if (DFCE_151000.equalsIgnoreCase(nomOperation)) {
          updateDFCE151000();
-      
+
       } else if (CASSANDRA_151000.equalsIgnoreCase(nomOperation)) {
          updateCassandra151000();
          updateMetaDfce("META_151000");
@@ -205,12 +206,16 @@ public final class MajLotServiceImpl implements MajLotService {
 
       } else if (CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation)) {
          updateCassandraDroitsGed();
-         
+
       } else if (CASSANDRA_DFCE_151200.equalsIgnoreCase(nomOperation)) {
          updateCassandra151200();
          updateMetaDfce("META_151200");
       } else if (CASSANDRA_DFCE_151201.equalsIgnoreCase(nomOperation)) {
-         updateCassandra151201();     
+         updateCassandra151201();
+         // Pas de modif côté DFCE donc pas d'appel updateMetaDfce
+      } else if (CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160300();
+         addIndexesCompositeToDfce("DFCE_160300");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
 
@@ -247,8 +252,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateCodeActivite() {
 
       // Log
-      LOG
-            .info("Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
+      LOG.info("Début de l'opération : Modification de la structure de la base DFCE pour rendre la métadonnée CodeActivite non obligatoire");
 
       // Connection à DFCE
       connectDfce();
@@ -270,15 +274,13 @@ public final class MajLotServiceImpl implements MajLotService {
          baseService.updateBase(base);
 
          // Log
-         LOG
-               .info("Mise à jour effectuée avec succès : le CodeActivite n'est plus obligatoire");
+         LOG.info("Mise à jour effectuée avec succès : le CodeActivite n'est plus obligatoire");
 
       } else {
 
          // Le code activité n'est pas obligatoire (maj déjà effectuée, ou
          // nouvelle base)
-         LOG
-               .info("Rien à faire : la métadonnée CodeActivite est déjà en non obligatoire ");
+         LOG.info("Rien à faire : la métadonnée CodeActivite est déjà en non obligatoire ");
 
       }
 
@@ -290,8 +292,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateDureeConservation() {
 
       // Log
-      LOG
-            .info("Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
+      LOG.info("Début de l'opération : Modification de la durée de conservation du type de document 3.1.3.1.1 (1643 -> 1825)");
 
       // Connection à DFCE
       connectDfce();
@@ -308,8 +309,7 @@ public final class MajLotServiceImpl implements MajLotService {
       if (dureeConservation == DUREE_1825) {
 
          // La durée de conservation est déjà bonne
-         LOG
-               .info("Rien à faire : la durée de conservation de 3.1.3.1.1 est déjà bonne (1825)");
+         LOG.info("Rien à faire : la durée de conservation de 3.1.3.1.1 est déjà bonne (1825)");
 
       } else {
 
@@ -359,8 +359,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 4
     */
    private void updateCassandra130400() {
-      LOG
-            .info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
       updater.updateToVersion4();
       LOG.info("Fin de l'opération : Lot 130400 - Mise à jour du keyspace SAE");
    }
@@ -371,8 +370,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandra130700() {
 
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       updater.updateToVersion5();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
 
@@ -384,8 +382,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateCassandra131100() {
 
-      LOG
-            .info("Début de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
       updater.updateToVersion6();
       LOG.info("Fin de l'opération : Lot 131100 - Mise à jour du keyspace SAE");
 
@@ -396,8 +393,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 7
     */
    private void updateCassandra140700() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 140700 - Référentiel des formats");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 140700 - Référentiel des formats");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion7();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -408,8 +404,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 8
     */
    private void updateCassandra150100() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 141200");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 141200");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion8();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -420,8 +415,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 9
     */
    private void updateCassandra150400() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150400");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150400");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion9();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -432,8 +426,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 10
     */
    private void updateCassandra150600() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150600");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150600");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion10();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -444,8 +437,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 11
     */
    private void updateCassandra150601() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150601");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 150601");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion11();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -456,8 +448,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 12
     */
    private void updateCassandra151000() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151000");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151000");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion12();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
@@ -468,44 +459,50 @@ public final class MajLotServiceImpl implements MajLotService {
     * version 13
     */
    private void updateCassandra151001() {
-      LOG
-            .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151001");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151001");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion13();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
    /**
     * Pour lot 151200 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 14
     */
    private void updateCassandra151200() {
-      LOG
-      .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151200");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151200");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion14();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
-   
+
    /**
     * Pour lot 151201 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 15
     */
    private void updateCassandra151201() {
-      LOG
-      .info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151201");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 151201");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion15();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
+
+   /**
+    * Pour lot 151200 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 14
+    */
+   private void updateCassandra160300() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160300");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion16();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }   
    
    /**
     * Ajout des droits GED
     */
    private void updateCassandraDroitsGed() {
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
       gedUpdater.updateAuthorizationAccess();
       LOG.info("Fin de l'opération : Lot 130700 - Mise à jour du keyspace SAE");
    }
@@ -590,8 +587,7 @@ public final class MajLotServiceImpl implements MajLotService {
    private void updateMetaDfce(String operation) {
 
       // -- Récupération de la liste des métadonnées
-      LOG
-            .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       RefMetaInitialisationService service = updater.getRefMetaInitService();
       List<MetadataReference> metadonnees = service.getListMetas();
 
@@ -611,14 +607,12 @@ public final class MajLotServiceImpl implements MajLotService {
 
    private void addIndexesCompositeToDfce(String operation) {
       // -- Récupération de la liste des métadonnées
-      LOG
-            .debug("Lecture du fichier XML contenant les index composites à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les index composites à ajouter - Début");
       RefMetaInitialisationService service = updater.getRefMetaInitService();
 
-      LOG
-            .info(
-                  "Début de l'opération : Création des nouveaux index composites ({})",
-                  operation);
+      LOG.info(
+            "Début de l'opération : Création des nouveaux index composites ({})",
+            operation);
 
       // -- Crétion des indexes composites
       createIndexesCompositeIfNotExist(service.getIndexesComposites());
@@ -649,8 +643,7 @@ public final class MajLotServiceImpl implements MajLotService {
             "Début de l'opération : Création des nouvelles métadonnées ({})",
             nomOperation);
 
-      LOG
-            .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
 
       XStream xStream = new XStream();
       xStream.processAnnotations(DataBaseModel.class);
@@ -663,8 +656,7 @@ public final class MajLotServiceImpl implements MajLotService {
          DataBaseModel model = DataBaseModel.class
                .cast(xStream.fromXML(reader));
 
-         LOG
-               .debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
+         LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Fin");
 
          // -- MAJ des métadonnées dans DFCE
          List<SaeCategory> categories;
@@ -735,8 +727,8 @@ public final class MajLotServiceImpl implements MajLotService {
                baseCategory.setSingle(category.isSingle());
                base.addBaseCategory(baseCategory);
 
-               LOG.info("La métadonnée {} ser ajoutee.", category
-                     .getDescriptif());
+               LOG.info("La métadonnée {} ser ajoutee.",
+                     category.getDescriptif());
             } else {
 
                // -- Mise à jour de la catégory
@@ -829,8 +821,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateDFCE130700() {
 
-      LOG
-            .info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
+      LOG.info("Début de l'opération : Lot 130700 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion110();
@@ -845,8 +836,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateDFCE150400() {
 
-      LOG
-            .info("Début de l'opération : Lot 150400 - Mise à jour du schéma DFCE");
+      LOG.info("Début de l'opération : Lot 150400 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion129_P2();
@@ -860,13 +850,11 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateDFCE150400_P5() {
 
-      LOG
-            .info("Début de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
+      LOG.info("Début de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion129_P5();
-      LOG
-            .info("Fin de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
+      LOG.info("Fin de l'opération : Lot 150400_P5 - Mise à jour du schéma DFCE");
    }
 
    /**
@@ -878,13 +866,11 @@ public final class MajLotServiceImpl implements MajLotService {
    private void disableCompositeIndex() {
 
       RefMetaInitialisationService service = updater.getRefMetaInitService();
-      LOG
-            .info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+      LOG.info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
       DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
       dfceUpdater.disableCompositeIndex(service
             .getIndexesCompositesASupprimer());
-      LOG
-            .info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+      LOG.info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
    }
 
    /**
@@ -893,8 +879,7 @@ public final class MajLotServiceImpl implements MajLotService {
     */
    private void updateDFCE151000() {
 
-      LOG
-            .info("Début de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
+      LOG.info("Début de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
       DFCECassandraUpdater dfceUpdater = new DFCECassandraUpdater(
             cassandraConfig);
       dfceUpdater.updateToVersion170();
@@ -919,6 +904,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion12();
       updater.updateToVersion13();
       updater.updateToVersion14();
+      updater.updateToVersion15();
    }
 
 }

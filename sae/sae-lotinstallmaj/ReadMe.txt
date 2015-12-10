@@ -289,5 +289,25 @@ Met la base Cassandra du SAE en version 14 (Ajout de nouvelles métadonnées scr
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151200
 
 11-2) Lot 151201SAE
-Met la base Cassandra du SAE en version 15 (Création de l'action unitaire ajout_note suite bug lot 151200, méta Note passée en non transférable, Plus de trim gauche et droite sur méta IdGed, Taille max de IdTraitementMasse et IdTraitementMasseInterne à 36, Taille max NumeroPiece � 12)
+Met la base Cassandra du SAE en version 15 (Création de l'action unitaire ajout_note suite bug lot 151200, méta Note passée en non transférable, Plus de trim gauche et droite sur méta IdGed, Taille max de IdTraitementMasse et IdTraitementMasseInterne à 36, Taille max NumeroPiece � 12)
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_151201
+
+// ------------------------------------------
+// 12) Lot 160300SAE
+// ------------------------------------------
+
+Lot 160300SAE
+Met la base Cassandra du SAE en version 16 :
+
+- Ajout des index composite :
+DomaineCotisant-CodeOrganismeProprietaire-DateJourneeComptable
+DomaineCotisant-CodeAgent-DateCreation
+DomaineCotisant-ApplicationProductrice-ApplicationTraitement-ApplicationMetier-DateArchivage
+DomaineCotisant-ApplicationProductrice-ApplicationTraitement-ApplicationMetier-CodeRND-DateArchivage
+=>Pour info, ces index composite ont été créés manuellement sur la prod en avance de phase.
+
+- Ajout de l'action unitaire ajout_doc_attache
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160300
+
+

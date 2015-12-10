@@ -532,6 +532,17 @@ public class InsertionDonnees {
       addActionUnitaire("recherche_iterateur", "Recherche par iterateur",
             cfTmpl);
    }
+   
+   /**
+    * Ajout de l'action unitaire ajout_doc_attache
+    */
+   public void addActionUnitaireAjoutDocAttache() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("ajout_doc_attache", "Ajout de document attache",
+            cfTmpl);
+   }
 
    /**
     * On remplace l'action unitaire ajoutNote par ajout_note afin d'être

@@ -103,7 +103,7 @@
 	<ns1:indexReference>
 		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-DateJourneeComptable</ns1:nom>
 		<ns1:composition>cot:cop:djc</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 	</ns1:indexReference>
 	<ns1:indexReference>
 		<ns1:nom>DomaineCotisant-CodeAgent-DateCreation</ns1:nom>
