@@ -4,13 +4,13 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>15.12.0.3</version>
+      <version>15.12.10.1-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-lotinstallmaj</artifactId>
    <packaging>jar</packaging>
-   <version>15.12.0.3</version>
+   <version>15.12.10.1-SNAPSHOT</version>
 
    <name>sae-lotinstallmaj</name>
 
@@ -196,12 +196,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>15.12.0.3</version>
+         <version>15.12.10.1-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>15.12.0.3</version>
+         <version>15.12.10.1-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->
