@@ -67,7 +67,7 @@ public class PdfSplitterImpl implements Convertisseur {
          throw new ConversionRuntimeException(
                "Une erreur inattendu s'est produite", e);
       } catch (FormatConversionException e) {
-         LOGGER.debug("Une erreur de conversion s'est produite : {}", e
+         LOGGER.error("Une erreur de conversion s'est produite : {}", e
                .getMessage());
       } catch (FormatConversionParametrageException e) {
          throw new ConversionParametrageException(
@@ -96,7 +96,7 @@ public class PdfSplitterImpl implements Convertisseur {
          resultat = formatConversionService.splitPdf(fichier,
                numeroPage, nombrePages);
       } catch (FormatConversionException e) {
-         LOGGER.debug("Une erreur de conversion s'est produite : {}", e
+         LOGGER.error("Une erreur de conversion s'est produite : {}", e
                .getMessage());
       } catch (FormatConversionParametrageException e) {
          throw new ConversionParametrageException(

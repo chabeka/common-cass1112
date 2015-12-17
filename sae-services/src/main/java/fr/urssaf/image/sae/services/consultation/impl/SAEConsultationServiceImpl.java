@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
+import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
 import fr.urssaf.image.sae.format.conversion.service.ConversionService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -342,6 +343,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
          } catch (ConversionParametrageException ex) {
             throw new SAEConsultationAffichableParametrageException(ex
                   .getMessage(), ex);
+         } catch (ConversionRuntimeException ex) {
+            throw new SAEConsultationServiceException(ex);
          }
       } catch (ConnectionServiceEx e) {
 
