@@ -195,9 +195,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                throw new TransfertException(erreur, erreurSupprGNT);
             }
 
-            // -- Fermeture des connections DFCE
-            storageServiceProvider.closeConnexion();
-            storageTransfertService.closeConnexion();
+            // -- Fermeture de la connexion a cassandra
             traceServiceSupport.disconnect();
 
             LOG.debug("{} - Fin de transfert du document {}", new Object[] {
