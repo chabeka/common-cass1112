@@ -30,6 +30,8 @@ public class OperationPileTravauxServiceImpl implements
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(OperationPileTravauxServiceImpl.class);
+   
+   private static final int MAX_ALL_JOBS = 20000;
 
    /**
     * Service permettant de réaliser des objets sur les jobs
@@ -60,7 +62,7 @@ public class OperationPileTravauxServiceImpl implements
                "La date maximum de suppression des jobs doit être renseignée");
       }
 
-      List<JobRequest> listeJobRequest = jobLectureService.getAllJobs(keyspace);
+      List<JobRequest> listeJobRequest = jobLectureService.getAllJobs(keyspace, MAX_ALL_JOBS);
 
       int nbJobSupprimes = 0;
       for (JobRequest jobRequest : listeJobRequest) {
