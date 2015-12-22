@@ -155,7 +155,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                // -- Modification des métadonnées du document pour le transfert
                updateMetaDocumentForTransfert(document);
 
-               // -- Archivage du document
+               // -- Archivage du document en GNS
                try {
                   documentGNS = storageTransfertService
                         .insertBinaryStorageDocument(document);
@@ -165,16 +165,22 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                         .getDocumentsNotes(document.getUuid());
                   // -- Ajout des notes sur le document archivés en GNS
                   for (StorageDocumentNote note : listeNotes) {
-                     storageTransfertService.addDocumentNote(documentGNS
-                           .getUuid(), note.getContenu(), note.getAuteur(),
-                           note.getDateCreation(), note.getUuid());
+                     storageTransfertService.addDocumentNote(
+                           documentGNS.getUuid(), note.getContenu(),
+                           note.getAuteur(), note.getDateCreation(),
+                           note.getUuid());
                   }
 
                } catch (InsertionServiceEx ex) {
                   throw new TransfertException(erreur, ex);
                } catch (DocumentNoteServiceEx e) {
                   throw new TransfertException(erreur, e);
-               }
+            } else {
+               // -- Le document existe sur la GNS et sur la GNT
+               String uuid = idArchive.toString();
+               String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
+               throw new ArchiveAlreadyTransferedException(StringUtils.replace(
+                     message, "{0}", uuid));
             }
 
             // -- Suppression du document transféré de la GNT
@@ -259,22 +265,25 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
       // -- Ajout métadonnée "DateArchivageGNT"
       Object dateArchivage = StorageMetadataUtils.valueObjectMetadataFinder(
-            document.getMetadatas(), StorageTechnicalMetadatas.DATE_ARCHIVE
-                  .getShortCode());
+            document.getMetadatas(),
+            StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
       StorageMetadata dateArchivageGNT = new StorageMetadata(
             StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(),
             dateArchivage);
       document.getMetadatas().add(dateArchivageGNT);
-      
-     
+
       // -- Suppression des métadonnées vides (impératif api dfce)
       // Supprime aussi la métadonnée DateArchivage qui est non transférable
       List<StorageMetadata> metadata = document.getMetadatas();
       for (int i = 0; i < metadata.size(); i++) {
          if (metadata.get(i).getValue() == null
                || metadata.get(i).getValue().equals("")
-               || metadata.get(i).getShortCode().equals(
-                     StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
+               || metadata
+                     .get(i)
+                     .getShortCode()
+                     .equals(
+                           StorageTechnicalMetadatas.DATE_ARCHIVE
+                                 .getShortCode())) {
             metadata.remove(i);
             i--;
          }
