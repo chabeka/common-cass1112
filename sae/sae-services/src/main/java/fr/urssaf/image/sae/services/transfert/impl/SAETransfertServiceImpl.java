@@ -175,6 +175,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                   throw new TransfertException(erreur, ex);
                } catch (DocumentNoteServiceEx e) {
                   throw new TransfertException(erreur, e);
+		}
             } else {
                // -- Le document existe sur la GNS et sur la GNT
                String uuid = idArchive.toString();
