@@ -47,6 +47,22 @@ public class SaeServiceCallbackHandler{
 
         
            /**
+            * auto generated Axis2 call back method for ajoutNote method
+            * override this method for handling normal response from ajoutNote operation
+            */
+           public void receiveResultajoutNote(
+                    sae.client.demo.webservice.modele.SaeServiceStub.AjoutNoteResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from ajoutNote operation
+           */
+            public void receiveErrorajoutNote(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for archivageMasseAvecHash method
             * override this method for handling normal response from archivageMasseAvecHash operation
             */
@@ -76,6 +92,38 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from archivageUnitairePJ operation
            */
             public void receiveErrorarchivageUnitairePJ(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for rechercheParIterateur method
+            * override this method for handling normal response from rechercheParIterateur operation
+            */
+           public void receiveResultrechercheParIterateur(
+                    sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from rechercheParIterateur operation
+           */
+            public void receiveErrorrechercheParIterateur(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for rechercheNbRes method
+            * override this method for handling normal response from rechercheNbRes operation
+            */
+           public void receiveResultrechercheNbRes(
+                    sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from rechercheNbRes operation
+           */
+            public void receiveErrorrechercheNbRes(java.lang.Exception e) {
             }
                 
            /**
@@ -124,6 +172,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from ping operation
            */
             public void receiveErrorping(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for consultationAffichable method
+            * override this method for handling normal response from consultationAffichable operation
+            */
+           public void receiveResultconsultationAffichable(
+                    sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from consultationAffichable operation
+           */
+            public void receiveErrorconsultationAffichable(java.lang.Exception e) {
             }
                 
            /**
@@ -236,6 +300,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from modification operation
            */
             public void receiveErrormodification(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for transfert method
+            * override this method for handling normal response from transfert operation
+            */
+           public void receiveResulttransfert(
+                    sae.client.demo.webservice.modele.SaeServiceStub.TransfertResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from transfert operation
+           */
+            public void receiveErrortransfert(java.lang.Exception e) {
             }
                 
 

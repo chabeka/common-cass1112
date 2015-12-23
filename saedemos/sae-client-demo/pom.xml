@@ -26,7 +26,7 @@
       <maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
       
       <!-- Version de la librarie sae-client-vi -->
-      <sae-client-vi.version>1.0.3</sae-client-vi.version>
+      <sae-client-vi.version>1.0.4</sae-client-vi.version>
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>

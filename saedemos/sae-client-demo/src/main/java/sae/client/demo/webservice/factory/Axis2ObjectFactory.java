@@ -23,6 +23,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJReque
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJRequestTypeChoice_type0;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitaireRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Consultation;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichable;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOM;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOMRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationRequestType;
@@ -37,10 +39,15 @@ import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeValeurType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Modification;
 import sae.client.demo.webservice.modele.SaeServiceStub.ModificationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Recherche;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbRes;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Transfert;
+import sae.client.demo.webservice.modele.SaeServiceStub.TransfertRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.UuidType;
 
 /**
@@ -110,6 +117,21 @@ public final class Axis2ObjectFactory {
          String idArchive) {
 
       return contruitParamsEntreeConsultationMTOM(idArchive, null);
+
+   }
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @return le paramètre d'entrée de l'opération "consultationAffichable"
+    */
+   public static ConsultationAffichable contruitParamsEntreeConsultationAffichable(
+         String idArchive) {
+
+      return contruitParamsEntreeConsultationAffichable(idArchive, null);
 
    }
 
@@ -212,6 +234,53 @@ public final class Axis2ObjectFactory {
       return consultation;
 
    }
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant unique du document que l'on veut consulter
+    * @param codesMetasSouhaites
+    *           la liste des métadonnées que l'on souhaite en retour du service
+    *           web
+    * @return le paramètre d'entrée de l'opération "consultationAffichable"
+    */
+   public static ConsultationAffichable contruitParamsEntreeConsultationAffichable(
+         String idArchive, List<String> codesMetasSouhaites) {
+
+      ConsultationAffichable consultation = new ConsultationAffichable();
+
+      ConsultationAffichableRequestType consultationRequest = new ConsultationAffichableRequestType();
+
+      consultation.setConsultationAffichable(consultationRequest);
+
+      // L'identifiant unique de l'archive
+      consultationRequest.setIdArchive(buildUuid(idArchive));
+
+      // Les codes des métadonnées souhaitées
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+               .size()];
+
+         MetadonneeCodeType metadonneeCode;
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
+            metadonneeCode = new MetadonneeCodeType();
+            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
+            arrMetadonneeCode[i] = metadonneeCode;
+         }
+
+         ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+         consultationRequest.setMetadonnees(listeMetadonneeCode);
+         listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
+
+      }
+
+      // Renvoie du paramètre d'entrée de l'opération consultation
+      return consultation;
+
+   }
 
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
@@ -237,6 +306,58 @@ public final class Axis2ObjectFactory {
       // Requête de recherche
       RequeteRechercheType requeteRechercheObj = new RequeteRechercheType();
       requeteRechercheObj.setRequeteRechercheType(requeteRecherche);
+      rechercheRequest.setRequete(requeteRechercheObj);
+
+      // Codes des métadonnées souhaitées dans les résultats de recherche
+      ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+      rechercheRequest.setMetadonnees(listeMetadonneeCode);
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+               .size()];
+
+         MetadonneeCodeType metadonneeCode;
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
+            metadonneeCode = new MetadonneeCodeType();
+            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
+            arrMetadonneeCode[i] = metadonneeCode;
+         }
+
+         listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
+
+      } else {
+         listeMetadonneeCode.setMetadonneeCode(null);
+      }
+
+      // Renvoie du paramètre d'entrée de l'opération recherche
+      return recherche;
+
+   }
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param requeteRechercheNbRes
+    *           la requête de recherche
+    * @param codesMetasSouhaites
+    *           les codes de métadonnées souhaitées dans les résultats de
+    *           recherche.
+    * 
+    * @return le paramètre d'entrée pour l'opération "rechercheNbRes"
+    */
+   public static RechercheNbRes contruitParamsEntreeRechercheNbRes(
+         String requeteRecherche, List<String> codesMetasSouhaites) {
+
+      RechercheNbRes recherche = new RechercheNbRes();
+
+      RechercheNbResRequestType rechercheRequest = new RechercheNbResRequestType();
+
+      recherche.setRechercheNbRes(rechercheRequest);
+
+      // Requête de recherche
+      RequeteRechercheNbResType requeteRechercheObj = new RequeteRechercheNbResType();
+      requeteRechercheObj.setRequeteRechercheNbResType(requeteRecherche);
       rechercheRequest.setRequete(requeteRechercheObj);
 
       // Codes des métadonnées souhaitées dans les résultats de recherche
@@ -492,6 +613,30 @@ public final class Axis2ObjectFactory {
 
       // Renvoie du paramètre d'entrée de l'opération suppression
       return suppression;
+
+   }
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idArchive
+    *           l'identifiant du document à transférer
+    * @return le paramètre d'entrée de l'opération "transfert"
+    */
+   public static Transfert contruitParamsEntreeTransfert(String idArchive) {
+
+      Transfert transfert = new Transfert();
+
+      TransfertRequestType transfertRequest = new TransfertRequestType();
+
+      transfert.setTransfert(transfertRequest);
+
+      // L'identifiant unique de l'archive
+      transfertRequest.setUuid(buildUuid(idArchive));
+
+      // Renvoie du paramètre d'entrée de l'opération transfert
+      return transfert;
 
    }
 

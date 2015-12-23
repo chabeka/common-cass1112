@@ -40,6 +40,11 @@ public final class StubFactory {
     * d'Identification
     */
    private static final String VI_ID_CONTRAT_SERVICE = "CS_DEV_TOUTES_ACTIONS";
+   
+   /**
+    * Login de l'utilisateur qui lance l'action.
+    */
+   private static final String VI_LOGIN = "CER69XXXXX";
 
    /**
     * PAGM à utiliser dans le Vecteur d'Identification
@@ -102,7 +107,7 @@ public final class StubFactory {
 
       // Instancie l'objet de génération du VI
       VIHandler handler = new VIHandler(keystore, VI_PAGMS,
-            VI_ID_CONTRAT_SERVICE);
+            VI_ID_CONTRAT_SERVICE, VI_LOGIN);
 
       // Ajout d'un Handler lors de la phase "MessageOut" pour insérer le VI
       AxisConfiguration axisConfig = configContext.getAxisConfiguration();

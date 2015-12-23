@@ -22,15 +22,15 @@ import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOM;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOMResponse;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOMResponseType;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichable;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableResponse;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableResponseType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 
-public class ConsultationMTOMTest {
+public class ConsultationAffichableTest {
 
    /**
-    * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
+    * Exemple de consommation de l'opération consultationAffichable du service web SaeService<br>
     * <br>
     * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
     * dans le test corresponde à une archive en base)
@@ -38,7 +38,7 @@ public class ConsultationMTOMTest {
     * @throws RemoteException 
     */
    @Test
-   public void consultationMTOM_success() throws RemoteException {
+   public void consultationAffichable_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
       String idArchive = "27a26994-cf69-4375-878f-7c0475c9627e";
@@ -46,12 +46,12 @@ public class ConsultationMTOMTest {
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(idArchive);
       
       // Appel du service web de consultation
-      ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
+      ConsultationAffichableResponse reponse = saeService.consultationAffichable(paramsEntree);
       
       // Affichage du résultat de la consultation
       afficheResultatConsultation(reponse);
@@ -59,11 +59,11 @@ public class ConsultationMTOMTest {
    }
    
    
-   private void afficheResultatConsultation(ConsultationMTOMResponse reponse) {
+   private void afficheResultatConsultation(ConsultationAffichableResponse reponse) {
 
       
-      ConsultationMTOMResponseType consultationResponse = reponse
-            .getConsultationMTOMResponse();
+      ConsultationAffichableResponseType consultationResponse = reponse
+            .getConsultationAffichableResponse();
 
       // Les métadonnées
 
@@ -108,10 +108,14 @@ public class ConsultationMTOMTest {
          outputStream = new FileOutputStream(file);
       } catch (FileNotFoundException e) {
          throw new DemoRuntimeException(e);
+      } catch (Exception e) {
+         throw new DemoRuntimeException(e);
       }
       try {
          contenu.writeTo(outputStream);
       } catch (IOException e) {
+         throw new DemoRuntimeException(e);
+      } catch (Exception e) {
          throw new DemoRuntimeException(e);
       }
 
@@ -123,7 +127,7 @@ public class ConsultationMTOMTest {
    
    
    /**
-    * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
+    * Exemple de consommation de l'opération consultationAffichable du service web SaeService<br>
     * <br>
     * Cas avec erreur : On demande un identifiant unique d'archivage qui n'existe pas dans le SAE<br>
     * <br>
@@ -134,7 +138,7 @@ public class ConsultationMTOMTest {
     * </ul>
     */
    @Test
-   public void consultationMTOM_failure() {
+   public void consultationAffichable_failure() {
       
       // Identifiant unique d'archivage inexistant
       String idArchive = "00000000-0000-0000-0000-000000000000";
@@ -142,16 +146,16 @@ public class ConsultationMTOMTest {
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(idArchive);
       
-      // Appel de l'opération consultationMTOM
+      // Appel de l'opération consultationAffichable
       try {
          
-         // Appel de l'opération consultationMTOM
+         // Appel de l'opération consultationAffichable
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
-         saeService.consultationMTOM(paramsEntree);
+         saeService.consultationAffichable(paramsEntree);
          
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
@@ -189,7 +193,7 @@ public class ConsultationMTOMTest {
     * @throws RemoteException 
     */
    @Test
-   public void consultationMTOM_avecMeta_success() throws RemoteException {
+   public void consultationAffichable_avecMeta_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
       String idArchive = "27a26994-cf69-4375-878f-7c0475c9627e";
@@ -204,18 +208,16 @@ public class ConsultationMTOMTest {
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(
             idArchive,codesMetasSouhaites);
       
       // Appel du service web de consultation
-      ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
+      ConsultationAffichableResponse reponse = saeService.consultationAffichable(paramsEntree);
       
       // Affichage du résultat de la consultation
       afficheResultatConsultation(reponse);
       
    }
-   
-
 }
