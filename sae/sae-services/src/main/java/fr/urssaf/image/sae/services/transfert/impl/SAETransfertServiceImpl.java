@@ -32,7 +32,9 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
@@ -171,11 +173,24 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                            note.getUuid());
                   }
 
+                  // -- Récupération du document attaché
+                  StorageDocumentAttachment docAttache = storageDocumentService
+                        .getDocumentAttachment(document.getUuid());
+                  // -- Ajout du document attaché sur le document archivés en
+                  // GNS
+                  storageTransfertService.addDocumentAttachment(
+                        documentGNS.getUuid(), docAttache.getName(),
+                        docAttache.getExtension(), docAttache.getHash(),
+                        docAttache.getContenu());
+
                } catch (InsertionServiceEx ex) {
                   throw new TransfertException(erreur, ex);
                } catch (DocumentNoteServiceEx e) {
                   throw new TransfertException(erreur, e);
-		}
+               } catch (StorageDocAttachmentServiceEx e) {
+                  // TODO Auto-generated catch block
+                  e.printStackTrace();
+               }
             } else {
                // -- Le document existe sur la GNS et sur la GNT
                String uuid = idArchive.toString();
@@ -202,7 +217,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                throw new TransfertException(erreur, erreurSupprGNT);
             }
 
-            // -- Fermeture de la connexion a cassandra
+            // -- Fermeture des connections DFCE
+            storageServiceProvider.closeConnexion();
+            storageTransfertService.closeConnexion();
             traceServiceSupport.disconnect();
 
             LOG.debug("{} - Fin de transfert du document {}", new Object[] {

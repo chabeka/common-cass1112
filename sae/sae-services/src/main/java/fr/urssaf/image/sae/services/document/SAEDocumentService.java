@@ -8,8 +8,9 @@ import fr.urssaf.image.sae.services.consultation.SAEConsultationService;
  * {@link SAESearchService Recherche}</li><br>
  * <li>
  * {@link SAEConsultationService Consultation}</li> <li>
- * {@link SAENoteService gestion des notes}</li>
+ * {@link SAENoteService gestion des notes}</li> <li>
+ * {@link SAEDocumentAttachmentService gestion des documents attachés}</li>
  */
 public interface SAEDocumentService extends SAESearchService,
-      SAEConsultationService, SAENoteService {
+      SAEConsultationService, SAENoteService, SAEDocumentAttachmentService {
 }

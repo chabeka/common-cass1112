@@ -1,0 +1,18 @@
+#Les paramÃ¨tres de connection Ã  la machine 
+#db.hostName=cer69-saeint3.cer69.recouv
+#db.hostName=cer69-ds4int.cer69.recouv
+db.hostName=cer69imageint9.cer69.recouv
+db.hostPort=8080
+db.contextRoot=/dfce-webapp/toolkit/
+db.secure=false
+db.timeout=180000
+#Les paramÃ©tres de l'utilisateur de connection.
+db.login=_ADMIN
+db.password=DOCUBASE
+#Les paramÃ©tres de la base.
+#db.baseName=SAE-TEST
+db.baseName=SAE-INT
+db.checkHash=true
+db.digestAlgo=SHA-1
+
+

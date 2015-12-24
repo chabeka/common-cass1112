@@ -705,7 +705,7 @@ public class SAESearchServiceImplDatasTest {
 
       assertEquals(
             "Contenu de la note invalide",
-            "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"UTILISATEUR TEST\"}]",
             splitContenu[0] + splitContenu[1].substring(9));
 
       serviceSuppression.suppression(uuid);
@@ -851,7 +851,7 @@ public class SAESearchServiceImplDatasTest {
 
       assertEquals(
             "Contenu de la note invalide",
-            "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"UTILISATEUR TEST\"}]",
             splitContenu[0] + splitContenu[1].substring(9));
 
       serviceSuppression.suppression(uuid);
