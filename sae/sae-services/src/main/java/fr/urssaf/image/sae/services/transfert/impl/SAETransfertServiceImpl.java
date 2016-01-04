@@ -202,9 +202,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                throw new TransfertException(erreur, erreurSupprGNT);
             }
 
-            // -- Fermeture de la connexion a cassandra
-            traceServiceSupport.disconnect();
-
             LOG.debug("{} - Fin de transfert du document {}", new Object[] {
                   trcPrefix, idArchive.toString() });
          }
