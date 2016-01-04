@@ -20,8 +20,8 @@ import net.docubase.toolkit.model.document.Criterion;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.model.reference.ContentRepository;
-import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.model.reference.ContentRepository.State;
+import net.docubase.toolkit.model.reference.FileReference;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
@@ -130,7 +130,7 @@ public final class BeanMapper {
     *           : La liste des métadonnées souhaitées.
     * @return La liste des {@link StorageMetadata} à partir de la liste des
     *         {@link Criterion}.
-    * @throws JsonProcessingException 
+    * @throws JsonProcessingException
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private static List<StorageMetadata> storageMetaDatasFromCriterions(
@@ -413,82 +413,83 @@ public final class BeanMapper {
       if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.IDGED.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getUuid());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getUuid());
 
-      }else if (technical.getShortCode().equals(
+      } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getCreationDate());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getCreationDate());
 
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DATE_MODIFICATION.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getModificationDate());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getModificationDate());
 
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getArchivageDate());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getArchivageDate());
 
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getLifeCycleReferenceDate());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getLifeCycleReferenceDate());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DUREE_CONSERVATION.getShortCode())) {
          // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
          // Coté Ged Nationale, nous n'en aurons qu'une seule
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               serviceDFCE.getStorageAdministrationService().getLifeCycleRule(
-                     document.getType()).getSteps().get(0).getLength());
+               serviceDFCE.getStorageAdministrationService()
+                     .getLifeCycleRule(document.getType()).getSteps().get(0)
+                     .getLength());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getTitle());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getTitle());
 
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TYPE.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getType());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getType());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TYPE_HASH.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getDigestAlgorithm());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getDigestAlgorithm());
 
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.HASH.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getDigest());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getDigest());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.VERSION_NUMBER.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getVersion());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getVersion());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.START_PAGE.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getStartPage());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getStartPage());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.END_PAGE.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getEndPage());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getEndPage());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TAILLE_FICHIER.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getSize());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.getSize());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.NOM_FICHIER.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(), document
                .getFilename().concat(".").concat(document.getExtension()));
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode())) {
-         metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .isVirtual());
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               document.isVirtual());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.GEL.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
@@ -571,9 +572,9 @@ public final class BeanMapper {
     * @return L'objet StorageDocumentNote correspondant à l'objet Note
     */
    public static StorageDocumentNote dfceNoteToStorageDocumentNote(Note note) {
-      StorageDocumentNote storageDocNote = new StorageDocumentNote(note
-            .getUuid(), note.getDocUUID(), note.getContent(), note
-            .getCreationDate(), note.getAuthor());
+      StorageDocumentNote storageDocNote = new StorageDocumentNote(
+            note.getUuid(), note.getDocUUID(), note.getContent(),
+            note.getCreationDate(), note.getAlias());
 
       return storageDocNote;
    }

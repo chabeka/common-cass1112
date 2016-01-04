@@ -298,9 +298,9 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login)
+   public final void addDocumentNote(UUID docUuid, String contenu, String login)
          throws DocumentNoteServiceEx {
-      documentNoteService.setDeletionServiceParameter(getDfceService());
+      documentNoteService.setDocumentNoteServiceParameter(getDfceService());
       documentNoteService.addDocumentNote(docUuid, contenu, login, null, null);
 
    }
@@ -309,8 +309,8 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
-      documentNoteService.setDeletionServiceParameter(getDfceService());
+   public final List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
+      documentNoteService.setDocumentNoteServiceParameter(getDfceService());
       return documentNoteService.getDocumentNotes(docUuid);
    }
 

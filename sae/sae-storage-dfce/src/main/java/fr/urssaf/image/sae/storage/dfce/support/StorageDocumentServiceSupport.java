@@ -20,6 +20,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.docubase.dfce.commons.document.StoreOptions;
@@ -44,6 +45,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * 
@@ -171,8 +173,8 @@ public class StorageDocumentServiceSupport {
          // Récupère le hash et le type de hash des métadonnées
          // Ces 2 informations sont obligatoires à l'archivage
          String hashMeta = StringUtils.trim(StorageMetadataUtils
-               .valueMetadataFinder(metadatas, StorageTechnicalMetadatas.HASH
-                     .getShortCode()));
+               .valueMetadataFinder(metadatas,
+                     StorageTechnicalMetadatas.HASH.getShortCode()));
          String typeHashMeta = StorageMetadataUtils.valueMetadataFinder(
                metadatas, StorageTechnicalMetadatas.TYPE_HASH.getShortCode());
 
@@ -208,7 +210,7 @@ public class StorageDocumentServiceSupport {
          }
 
          inputStream = documentContent.getInputStream();
-         
+
          // recherche d'une note eventuelle
          String note = "";
          for (StorageMetadata metadata : metadatas) {
@@ -236,15 +238,15 @@ public class StorageDocumentServiceSupport {
 
       } catch (TagControlException tagCtrlEx) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), tagCtrlEx.getMessage(),
-               tagCtrlEx);
+         throw new InsertionServiceEx(
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               tagCtrlEx.getMessage(), tagCtrlEx);
 
       } catch (Exception except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
-               except);
+         throw new InsertionServiceEx(
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               except.getMessage(), except);
       } finally {
          close(inputStream, file[0]);
       }
@@ -272,8 +274,8 @@ public class StorageDocumentServiceSupport {
    private Document insertStorageDocument(ServiceProvider dfceService,
          Document document, String digest, InputStream inputStream,
          String hashPourTrace, String typeHashPourTrace,
-         TracesDfceSupport tracesSupport, String note) throws TagControlException,
-         FrozenDocumentException {
+         TracesDfceSupport tracesSupport, String note)
+         throws TagControlException, FrozenDocumentException {
 
       Document doc;
 
@@ -293,7 +295,18 @@ public class StorageDocumentServiceSupport {
 
       // Ajout de la note au document
       if (StringUtils.isNotEmpty(note)) {
-         dfceService.getNoteService().addNote(doc.getUuid(), note);
+         // Récupération du login fourni dans l'appel du service
+         String login = "";
+         if (SecurityContextHolder.getContext().getAuthentication() != null) {
+            VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+                  .getContext().getAuthentication().getPrincipal();
+            login = extrait.getIdUtilisateur();
+         }
+         Note noteDfce = new Note();
+         noteDfce.setAlias(login);
+         noteDfce.setContent(note);
+         noteDfce.setDocUUID(doc.getUuid());
+         dfceService.getNoteService().storeNote(noteDfce);
       }
       return doc;
    }
@@ -356,17 +369,17 @@ public class StorageDocumentServiceSupport {
          return storageDoc;
 
       } catch (StorageException srcSerEx) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
-               srcSerEx);
+         throw new SearchingServiceEx(
+               StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
+               srcSerEx.getMessage(), srcSerEx);
       } catch (IOException ioExcept) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), ioExcept.getMessage(),
-               ioExcept);
+         throw new SearchingServiceEx(
+               StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
+               ioExcept.getMessage(), ioExcept);
       } catch (Exception except) {
-         throw new SearchingServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
-               except);
+         throw new SearchingServiceEx(
+               StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
+               except.getMessage(), except);
       }
    }
 
@@ -404,12 +417,11 @@ public class StorageDocumentServiceSupport {
          log.debug("{} - Sortie", prefixeTrc);
 
       } catch (FrozenDocumentException frozenExcept) {
-         log
-               .debug(
-                     "{} - Une exception a été levée lors de la suppression du document : {}",
-                     prefixeTrc, frozenExcept.getMessage());
-         throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR),
+         log.debug(
+               "{} - Une exception a été levée lors de la suppression du document : {}",
+               prefixeTrc, frozenExcept.getMessage());
+         throw new DeletionServiceEx(
+               StorageMessageHandler.getMessage(Constants.DEL_CODE_ERROR),
                frozenExcept.getMessage(), frozenExcept);
       }
    }
@@ -507,10 +519,9 @@ public class StorageDocumentServiceSupport {
          log.debug("{} - Login : {}", prefixeTrc, login);
          log.debug("{} - Date création : {}", prefixeTrc, dateCreation);
          log.debug("{} - UUID note : {}", prefixeTrc, noteUuid);
-         
+
          Note note = new Note();
-         // Ne fonctionne pas, DFCE reposissionne _ADMIN
-         note.setAuthor(login);
+         note.setAlias(login);
          note.setContent(contenu);
          note.setDocUUID(docUuid);
          note.setCreationDate(dateCreation);
@@ -524,20 +535,18 @@ public class StorageDocumentServiceSupport {
          log.debug("{} - Sortie", prefixeTrc);
 
       } catch (FrozenDocumentException frozenExcept) {
-         log
-               .debug(
-                     "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
-                     prefixeTrc, frozenExcept.getMessage());
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
+               prefixeTrc, frozenExcept.getMessage());
          throw new DocumentNoteServiceEx(
                "Erreur lors de l'ajout d'une note à un document", frozenExcept);
       } catch (TagControlException e) {
-         log
-               .debug(
-                     "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
-                     prefixeTrc, e.getMessage());
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'une note à un document : {}",
+               prefixeTrc, e.getMessage());
          throw new DocumentNoteServiceEx(
-               "Erreur lors de l'ajout d'une note à un document", e
-                     .getMessage(), e);
+               "Erreur lors de l'ajout d'une note à un document",
+               e.getMessage(), e);
       }
 
    }
@@ -567,9 +576,6 @@ public class StorageDocumentServiceSupport {
          listeStorageDocNotes.add(BeanMapper
                .dfceNoteToStorageDocumentNote(note));
       }
-
-      // -- Trace l'événement "Suppression d'un document de DFCE"
-      // tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
 
       log.debug("{} - Sortie", prefixeTrc);
       return listeStorageDocNotes;

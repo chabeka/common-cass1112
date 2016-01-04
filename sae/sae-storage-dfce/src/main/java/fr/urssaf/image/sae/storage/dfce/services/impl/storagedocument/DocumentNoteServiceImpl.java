@@ -68,7 +68,7 @@ public class DocumentNoteServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
-   public final <T> void setDeletionServiceParameter(final T parameter) {
+   public final <T> void setDocumentNoteServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
    }
 

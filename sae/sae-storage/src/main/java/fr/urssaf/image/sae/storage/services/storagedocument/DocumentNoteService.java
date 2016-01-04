@@ -19,7 +19,7 @@ public interface DocumentNoteService {
     * @param parameter
     *           : Le paramètre du service {@link DeletionService}
     */
-   <T> void setDeletionServiceParameter(T parameter);
+   <T> void setDocumentNoteServiceParameter(T parameter);
 
    /**
     * Ajoute une note sur un document
