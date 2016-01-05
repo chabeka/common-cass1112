@@ -281,7 +281,7 @@ public class SAENoteServiceImplTest {
 
          assertEquals(
                "Contenu de la note invalide",
-               "[{\"contenu\":\"Contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+               "[{\"contenu\":\"Contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"login\"}]",
                splitContenu[0] + splitContenu[1].substring(9));
 
       } else {
@@ -517,8 +517,8 @@ public class SAENoteServiceImplTest {
          assertEquals(
                "Contenu de la note invalide",
                "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\""
-                     + "\",\"auteur\":\"_ADMIN\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
-                     + "\",\"auteur\":\"_ADMIN\"}]", splitContenu[0]
+                     + "\",\"auteur\":\"login\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
+                     + "\",\"auteur\":\"login\"}]", splitContenu[0]
                      + splitContenu[1].substring(9)
                      + splitContenu[2].substring(9));
       } else {

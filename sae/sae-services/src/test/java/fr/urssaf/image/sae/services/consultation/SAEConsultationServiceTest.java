@@ -575,7 +575,7 @@ public class SAEConsultationServiceTest {
 
       assertEquals(
             "Contenu de la note invalide",
-            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":null}]",
             splitContenu[0] + splitContenu[1].substring(9));
      
    }
@@ -607,7 +607,7 @@ public class SAEConsultationServiceTest {
 
       assertEquals(
             "Contenu de la note invalide",
-            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":\"_ADMIN\"}]",
+            "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":null}]",
             splitContenu[0] + splitContenu[1].substring(9));
      
    }
