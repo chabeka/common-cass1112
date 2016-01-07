@@ -24,6 +24,8 @@ public class RechercheParIterateurFormulaire extends GenericForm {
    
    private MetadonneeValeurList equalFilter = new MetadonneeValeurList();
    
+   private MetadonneeValeurList notEqualFilter = new MetadonneeValeurList();
+   
    private MetadonneeRangeValeurList rangeFilter = new MetadonneeRangeValeurList();
    
    private int nbDocParPage;
@@ -144,6 +146,23 @@ public class RechercheParIterateurFormulaire extends GenericForm {
    public void setEqualFilter(MetadonneeValeurList equalFilter) {
       this.equalFilter = equalFilter;
    }
+   
+   /**
+    * @return the notEqualFilter
+    */
+   public MetadonneeValeurList getNotEqualFilter() {
+      return notEqualFilter;
+   }
+   
+   /**
+    * @param equalFilter the notEqualFilter to set
+    */
+   public void setNotEqualFilter(MetadonneeValeurList notEqualFilter) {
+      this.notEqualFilter = notEqualFilter;
+   }
+
+
+   
 
 
    /**
@@ -192,5 +211,7 @@ public class RechercheParIterateurFormulaire extends GenericForm {
    public void setIdPage(IdentifiantPage idPage) {
       this.idPage = idPage;
    }
+
+
 
 }

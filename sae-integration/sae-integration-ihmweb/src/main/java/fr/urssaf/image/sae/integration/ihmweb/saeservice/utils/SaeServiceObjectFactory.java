@@ -618,6 +618,8 @@ public final class SaeServiceObjectFactory {
     *           la métadonnée variable de la requête principale
     * @param equalFilter
     *           les filtres de type equal
+    * @param notEqualFilter
+    *           les filtres de type notEqual          
     * @param rangeFilter
     *           les filtres de type range
     * @param nbDocParPage
@@ -630,7 +632,7 @@ public final class SaeServiceObjectFactory {
     */
    public static RechercheParIterateur buildRechercheParIterateurRequest(
          MetadonneeValeurList metaFixes, MetadonneeRangeValeur metaVariable,
-         MetadonneeValeurList equalFilter,
+         MetadonneeValeurList equalFilter, MetadonneeValeurList notEqualFilter,
          MetadonneeRangeValeurList rangeFilter, int nbDocParPage,
          IdentifiantPage idPage, CodeMetadonneeList codeMetadonnees) {
 
@@ -646,7 +648,7 @@ public final class SaeServiceObjectFactory {
       rechercheReqType.setRequetePrincipale(reqPrincipaleType);
 
       // Les filtres
-      FiltreType filtreType = buildFiltres(equalFilter, rangeFilter);
+      FiltreType filtreType = buildFiltres(equalFilter, notEqualFilter, rangeFilter);
       rechercheReqType.setFiltres(filtreType);
 
       // Le nombre de documents par pages
@@ -720,12 +722,14 @@ public final class SaeServiceObjectFactory {
     * 
     * @param equalFilter
     *           Filtres de type equal
+    * @param notEqualFilter
+    *           Filtres de type notEqual          
     * @param rangeFilter
     *           Filtres de type range
     * @return l'objet de type FiltreType
     */
    private static FiltreType buildFiltres(MetadonneeValeurList equalFilter,
-         MetadonneeRangeValeurList rangeFilter) {
+         MetadonneeValeurList notEqualFilter, MetadonneeRangeValeurList rangeFilter) {
       FiltreType filtreType = new FiltreType();
       ListeMetadonneeType listeMeta = new ListeMetadonneeType();
       for (MetadonneeValeur metaValeur : equalFilter) {
@@ -740,6 +744,19 @@ public final class SaeServiceObjectFactory {
       }
       filtreType.setEqualFilter(listeMeta);
 
+      ListeMetadonneeType listeMetaNE = new ListeMetadonneeType();
+      for (MetadonneeValeur metaValeurNE : notEqualFilter) {
+         MetadonneeType metaTypeNE = new MetadonneeType();
+         MetadonneeCodeType metaCodeTypeNE = new MetadonneeCodeType();
+         metaCodeTypeNE.setMetadonneeCodeType(metaValeurNE.getCode());
+         metaTypeNE.setCode(metaCodeTypeNE);
+         MetadonneeValeurType metaValTypeNE = new MetadonneeValeurType();
+         metaValTypeNE.setMetadonneeValeurType(metaValeurNE.getValeur());
+         metaTypeNE.setValeur(metaValTypeNE);
+         listeMetaNE.addMetadonnee(metaTypeNE);
+      }
+      filtreType.setNotEqualFilter(listeMetaNE);
+      
       ListeRangeMetadonneeType listeRangeMeta = new ListeRangeMetadonneeType();
       for (MetadonneeRangeValeur metaValeur : rangeFilter) {
          RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();

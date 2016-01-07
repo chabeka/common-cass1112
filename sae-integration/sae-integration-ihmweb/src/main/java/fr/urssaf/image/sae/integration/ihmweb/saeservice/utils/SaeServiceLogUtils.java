@@ -568,6 +568,9 @@ public final class SaeServiceLogUtils {
 
       log.appendLogLn("Filtre de type equal : "
             + formulaire.getEqualFilter().toString());
+      log.appendLogLn("Filtre de type not equal : "
+            + formulaire.getNotEqualFilter().toString());
+
       log.appendLogLn("Filtre de type range : "
             + formulaire.getRangeFilter().toString());
       log.appendLogLn("Nb docs par page : " + formulaire.getNbDocParPage());

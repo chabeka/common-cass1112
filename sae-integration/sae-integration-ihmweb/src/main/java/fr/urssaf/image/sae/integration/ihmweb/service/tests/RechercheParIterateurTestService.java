@@ -86,6 +86,7 @@ public class RechercheParIterateurTestService {
          RechercheParIterateur paramsService = SaeServiceObjectFactory
                .buildRechercheParIterateurRequest(formulaire.getMetaFixes(),
                      formulaire.getMetaVariable(), formulaire.getEqualFilter(),
+                     formulaire.getNotEqualFilter(),
                      formulaire.getRangeFilter(), formulaire.getNbDocParPage(),
                      formulaire.getIdPage(), formulaire.getCodeMetadonnees());
 

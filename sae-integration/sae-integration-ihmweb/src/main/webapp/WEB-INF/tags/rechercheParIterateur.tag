@@ -51,6 +51,12 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de recherche par it
 			</div>
 		</div>  
 
+  		<div class="form-group">
+			<label class="col-sm-3 control-label">FILTRE TYPE NOT EQUAL (codeMetaN DIF valMetaN)</label>
+			<div class="col-sm-9">
+				<form:textarea path="${pathFormulaire}.notEqualFilter" class="form-control" cssStyle="height:132px;margin-top:10px;" readonly="${readonly}" />
+			</div>
+		</div>  
 
 		<div class="form-group">
 			<label class="col-sm-3 control-label">FILTRE TYPE RANGE (codeMetaN=valMetaNMin&amp;valMetaNMax)</label>

@@ -15,7 +15,7 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web d'ajout de note
 	<div class="col-md-6">
         <div class="form-group">
            <label>ID ARCHIVAGE</label>
-           <form:input class="form-control" path="${pathFormulaire}.idArchivage" cssStyle="width:100%;" readonly="${readonly}" />
+           <form:input cssClass="form-control" path="${pathFormulaire}.idArchivage" cssStyle="width:100%;" readonly="${readonly}" />
         </div>
         <div class="form-group">
            <label>CONTENU DE LA NOTE</label>

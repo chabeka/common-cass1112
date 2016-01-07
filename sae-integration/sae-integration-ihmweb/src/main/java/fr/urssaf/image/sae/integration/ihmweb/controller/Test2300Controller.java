@@ -6,12 +6,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TestWsRechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
-import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
-import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 
 
 /**
@@ -42,21 +40,40 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
        
       MetadonneeValeurList metaFixes = new MetadonneeValeurList();
       MetadonneeValeur metaVal = new MetadonneeValeur();
-      metaVal.setCode("Siret");
-      metaVal.setValeur("123*");
+      metaVal.setCode("Denomination");
+      metaVal.setValeur("Test 2300-Recherche-Iterateur-OK-Test-Libre");
       metaFixes.add(metaVal);
       formRecherche.setMetaFixes(metaFixes);
       
       MetadonneeRangeValeur metaVariable = new MetadonneeRangeValeur();
-      metaVariable.setCode("DateCreation");
-      metaVariable.setValeurMin("20150101");
-      metaVariable.setValeurMax("20150131");
+      metaVariable.setCode("DateArchivage");
+      metaVariable.setValeurMin("20160105");
+      metaVariable.setValeurMax("20160106");
       formRecherche.setMetaVariable(metaVariable);
       
-      formRecherche.setNbDocParPage(100);
+      MetadonneeValeurList metaEqualFilter = new MetadonneeValeurList();
+      MetadonneeValeur equalFilter = new MetadonneeValeur();
+      equalFilter.setCode("DocumentArchivable");
+      equalFilter.setValeur("true");
+      metaEqualFilter.add(equalFilter);
+      formRecherche.setEqualFilter(metaEqualFilter);
       
-      CodeMetadonneeList codesMeta = ReferentielMetadonneesService.getMetadonneesExemplePourRecherche();
+      MetadonneeValeurList metaNotEqualFilter = new MetadonneeValeurList();
+      MetadonneeValeur notEqualFilter = new MetadonneeValeur();
+      notEqualFilter.setCode("DocumentArchivable");
+      notEqualFilter.setValeur("");
+      metaNotEqualFilter.add(notEqualFilter);
+      formRecherche.setNotEqualFilter(metaNotEqualFilter);
+            
+      formRecherche.setNbDocParPage(50);
+      
+      CodeMetadonneeList codesMeta = new CodeMetadonneeList();
+      codesMeta.add("Denomination");
+      codesMeta.add("DateArchivage");
+      codesMeta.add("DocumentArchivable");
+      codesMeta.add("NumeroRecours");
       formRecherche.setCodeMetadonnees(codesMeta);
+      
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       return formulaire;

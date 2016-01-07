@@ -17572,6 +17572,17 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                         
                                     protected ListeMetadonneeType localEqualFilter ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localEqualFilterTracker = false ;
+
+                           public boolean isEqualFilterSpecified(){
+                               return localEqualFilterTracker;
+                           }
+
+                           
 
                            /**
                            * Auto generated getter method
@@ -17588,8 +17599,51 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                * @param param EqualFilter
                                */
                                public void setEqualFilter(ListeMetadonneeType param){
-                            
+                            localEqualFilterTracker = param != null;
+                                   
                                             this.localEqualFilter=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NotEqualFilter
+                        */
+
+                        
+                                    protected ListeMetadonneeType localNotEqualFilter ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNotEqualFilterTracker = false ;
+
+                           public boolean isNotEqualFilterSpecified(){
+                               return localNotEqualFilterTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return ListeMetadonneeType
+                           */
+                           public  ListeMetadonneeType getNotEqualFilter(){
+                               return localNotEqualFilter;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NotEqualFilter
+                               */
+                               public void setNotEqualFilter(ListeMetadonneeType param){
+                            localNotEqualFilterTracker = param != null;
+                                   
+                                            this.localNotEqualFilter=param;
                                     
 
                                }
@@ -17602,6 +17656,17 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                         
                                     protected ListeRangeMetadonneeType localRangeFilter ;
                                 
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localRangeFilterTracker = false ;
+
+                           public boolean isRangeFilterSpecified(){
+                               return localRangeFilterTracker;
+                           }
+
+                           
 
                            /**
                            * Auto generated getter method
@@ -17618,8 +17683,51 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                * @param param RangeFilter
                                */
                                public void setRangeFilter(ListeRangeMetadonneeType param){
-                            
+                            localRangeFilterTracker = param != null;
+                                   
                                             this.localRangeFilter=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for NotInRangeFilter
+                        */
+
+                        
+                                    protected ListeRangeMetadonneeType localNotInRangeFilter ;
+                                
+                           /*  This tracker boolean wil be used to detect whether the user called the set method
+                          *   for this attribute. It will be used to determine whether to include this field
+                           *   in the serialized XML
+                           */
+                           protected boolean localNotInRangeFilterTracker = false ;
+
+                           public boolean isNotInRangeFilterSpecified(){
+                               return localNotInRangeFilterTracker;
+                           }
+
+                           
+
+                           /**
+                           * Auto generated getter method
+                           * @return ListeRangeMetadonneeType
+                           */
+                           public  ListeRangeMetadonneeType getNotInRangeFilter(){
+                               return localNotInRangeFilter;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param NotInRangeFilter
+                               */
+                               public void setNotInRangeFilter(ListeRangeMetadonneeType param){
+                            localNotInRangeFilterTracker = param != null;
+                                   
+                                            this.localNotInRangeFilter=param;
                                     
 
                                }
@@ -17683,19 +17791,31 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
 
                
                    }
-               
+                if (localEqualFilterTracker){
                                             if (localEqualFilter==null){
                                                  throw new org.apache.axis2.databinding.ADBException("equalFilter cannot be null!!");
                                             }
                                            localEqualFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","equalFilter"),
                                                xmlWriter);
-                                        
+                                        } if (localNotEqualFilterTracker){
+                                            if (localNotEqualFilter==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("notEqualFilter cannot be null!!");
+                                            }
+                                           localNotEqualFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notEqualFilter"),
+                                               xmlWriter);
+                                        } if (localRangeFilterTracker){
                                             if (localRangeFilter==null){
                                                  throw new org.apache.axis2.databinding.ADBException("rangeFilter cannot be null!!");
                                             }
                                            localRangeFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","rangeFilter"),
                                                xmlWriter);
-                                        
+                                        } if (localNotInRangeFilterTracker){
+                                            if (localNotInRangeFilter==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("notInRangeFilter cannot be null!!");
+                                            }
+                                           localNotInRangeFilter.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notInRangeFilter"),
+                                               xmlWriter);
+                                        }
                     xmlWriter.writeEndElement();
                
 
@@ -17880,7 +18000,7 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                
+                 if (localEqualFilterTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "equalFilter"));
                             
@@ -17889,7 +18009,16 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                          throw new org.apache.axis2.databinding.ADBException("equalFilter cannot be null!!");
                                     }
                                     elementList.add(localEqualFilter);
-                                
+                                } if (localNotEqualFilterTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "notEqualFilter"));
+                            
+                            
+                                    if (localNotEqualFilter==null){
+                                         throw new org.apache.axis2.databinding.ADBException("notEqualFilter cannot be null!!");
+                                    }
+                                    elementList.add(localNotEqualFilter);
+                                } if (localRangeFilterTracker){
                             elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "rangeFilter"));
                             
@@ -17898,7 +18027,16 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                          throw new org.apache.axis2.databinding.ADBException("rangeFilter cannot be null!!");
                                     }
                                     elementList.add(localRangeFilter);
-                                
+                                } if (localNotInRangeFilterTracker){
+                            elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "notInRangeFilter"));
+                            
+                            
+                                    if (localNotInRangeFilter==null){
+                                         throw new org.apache.axis2.databinding.ADBException("notInRangeFilter cannot be null!!");
+                                    }
+                                    elementList.add(localNotInRangeFilter);
+                                }
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -17985,11 +18123,25 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
-                                }
-                            
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notEqualFilter").equals(reader.getName())){
+                                
+                                                object.setNotEqualFilter(ListeMetadonneeType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                
                                     
                                     while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
                                 
@@ -18001,11 +18153,25 @@ public class SaeServiceStub extends org.apache.axis2.client.Stub
                                     
                               }  // End of if for expected property start element
                                 
-                                else{
-                                    // A start element we are not expecting indicates an invalid parameter was passed
-                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
-                                }
-                              
+                                    else {
+                                        
+                                    }
+                                
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","notInRangeFilter").equals(reader.getName())){
+                                
+                                                object.setNotInRangeFilter(ListeRangeMetadonneeType.Factory.parse(reader));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                    else {
+                                        
+                                    }
+                                  
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             
