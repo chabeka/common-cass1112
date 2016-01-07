@@ -747,6 +747,32 @@ public class InsertionDonnees {
 
    }
 
+   
+   /**
+    * Référentiel des événements en V8 Ajout des évenements : <li>
+    * WS_GET_DOC_FORMAT_ORIGINE|KO</li>
+    */
+   public void addReferentielEvenementV8() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // -- WS_GET_DOC_FORMAT_ORIGINE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_GET_DOC_FORMAT_ORIGINE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+   
    /**
     * Ajout des données dans le référentiel des formats : <li>fmt/354</li> <li>
     * crtl/1</li>

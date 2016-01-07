@@ -215,7 +215,7 @@ public final class MajLotServiceImpl implements MajLotService {
          // Pas de modif côté DFCE donc pas d'appel updateMetaDfce
       } else if (CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation)) {
          updateCassandra160300();
-         addIndexesCompositeToDfce("DFCE_160300");
+         addIndexesCompositeToDfce("META_160300");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
 

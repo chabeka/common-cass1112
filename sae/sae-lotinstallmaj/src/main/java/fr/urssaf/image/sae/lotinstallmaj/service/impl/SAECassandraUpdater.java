@@ -471,8 +471,7 @@ public class SAECassandraUpdater {
          return;
       }
 
-      LOG
-            .info("Mise à jour du keyspace SAE en version 7 pour référentiel des formats");
+      LOG.info("Mise à jour du keyspace SAE en version 7 pour référentiel des formats");
 
       // Si le KeySpace SAE n'existe pas, on quitte
       // En effet, il aurait du être créé lors de l'install du lot SAE-140400
@@ -721,7 +720,7 @@ public class SAECassandraUpdater {
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addActionUnitaireRechercheParIterateur();
       donnees.modifyActionUnitaireAjoutNote();
-      
+
       // Ajout d'un convertisseur au format fmt/354 (splitter de pdf)
       donnees.modifyReferentielFormatFmt354();
       // Ajout du format x-fmt/111 (cold)
@@ -730,13 +729,13 @@ public class SAECassandraUpdater {
       // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_14);
    }
-   
-   
+
    /**
-    * Version 15 : <li>Suite Remplacement de l'action
-    * unitaire ajoutNote par ajout_note car oubli de la création suite à suppresion</li>
-    * <li>Suppression trim gauche et droite pour l'IdGed</li>
-    * <li>Passage de la Note en non transférable car le transfert de la note ne passe pas par les métadonnées</li>
+    * Version 15 : <li>Suite Remplacement de l'action unitaire ajoutNote par
+    * ajout_note car oubli de la création suite à suppresion</li> <li>
+    * Suppression trim gauche et droite pour l'IdGed</li> <li>Passage de la Note
+    * en non transférable car le transfert de la note ne passe pas par les
+    * métadonnées</li>
     */
    public void updateToVersion15() {
 
@@ -750,18 +749,18 @@ public class SAECassandraUpdater {
 
       // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
-      
+
       // -- Modif des métadonnées des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
       // Ajout de l'action unitaire ajout_note
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addActionUnitaireNote2();
-      
+
       // On positionne la version à 15
       saeDao.setDatabaseVersion(VERSION_15);
    }
-   
+
    /**
     * Version 16 : <li>Ajout de l'action unitaire ajout_doc_attache</li>
     */
@@ -778,13 +777,14 @@ public class SAECassandraUpdater {
       // -- On se connecte au keyspace
       saeDao.connectToKeySpace();
 
-      // -- Ajout des métadonnées
-      //refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // -- Enrichissement du référentiel des événements
+      donnees.addReferentielEvenementV8();
 
       // Ajout de l'action unitaire ajout_doc_attache
-      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
       donnees.addActionUnitaireAjoutDocAttache();
-      
+
       // On positionne la version à 16
       saeDao.setDatabaseVersion(VERSION_16);
    }

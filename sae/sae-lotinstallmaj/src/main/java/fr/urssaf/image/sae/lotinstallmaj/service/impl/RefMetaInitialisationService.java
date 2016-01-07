@@ -120,8 +120,7 @@ public final class RefMetaInitialisationService {
    }
 
    /**
-    * Initialisation du référentiel des métadonnées en version 1.8 (sans les
-    * nouvelles métadonnées).
+    * Initialisation du référentiel des métadonnées en version 3.3 
     * 
     * @param keyspace
     *           le Keyspace Cassandra
@@ -175,7 +174,7 @@ public final class RefMetaInitialisationService {
    
    protected List<MetadataReference> chargeFichierMeta() throws JAXBException, SAXException, IOException {
       
-      String cheminRessourceXml = "Metadonnees.3.2.xml";
+      String cheminRessourceXml = "Metadonnees.3.3.xml";
       String xsdResPath = "/xsd/metadata/Metadonnees.xsd";
       
       ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
