@@ -1,3 +1,0 @@
-1ère ligne du fichier
-2ème ligne du fichier
-dernière ligne du fichier
