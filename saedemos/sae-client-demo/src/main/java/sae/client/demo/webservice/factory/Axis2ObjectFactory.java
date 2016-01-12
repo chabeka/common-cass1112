@@ -13,6 +13,8 @@ import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 
 import sae.client.demo.exception.DemoRuntimeException;
+import sae.client.demo.webservice.modele.SaeServiceStub.AjoutNote;
+import sae.client.demo.webservice.modele.SaeServiceStub.AjoutNoteRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasse;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
@@ -31,17 +33,25 @@ import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.DataFileType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlType;
+import sae.client.demo.webservice.modele.SaeServiceStub.FiltreType;
+import sae.client.demo.webservice.modele.SaeServiceStub.IdentifiantPageType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeType;
+import sae.client.demo.webservice.modele.SaeServiceStub.ListeRangeMetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeValeurType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Modification;
 import sae.client.demo.webservice.modele.SaeServiceStub.ModificationRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.NoteTxtType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RangeMetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Recherche;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbRes;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateur;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RequetePrincipaleType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
@@ -119,7 +129,7 @@ public final class Axis2ObjectFactory {
       return contruitParamsEntreeConsultationMTOM(idArchive, null);
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -234,7 +244,7 @@ public final class Axis2ObjectFactory {
       return consultation;
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -333,7 +343,7 @@ public final class Axis2ObjectFactory {
       return recherche;
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -383,6 +393,161 @@ public final class Axis2ObjectFactory {
 
       // Renvoie du paramètre d'entrée de l'opération recherche
       return recherche;
+
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param listeMetasFixes
+    *           La liste des métadonnées fixes
+    * @param codeMetaVariable
+    *           Le code de la méta variable
+    * @param valeurMinMetaVar
+    *           La valeur min de la méta variable
+    * @param valeurMaxMetaVar
+    *           La valeur max de la méta variable
+    * @param equalFilter
+    *           La liste des filtres de type égalité
+    * @param notEqualFilter
+    *           La liste des filtres de type non égalité
+    * @param rangeFilter
+    *           La liste des filtres de type range
+    * @param notInRangeFilter
+    *           La liste des filtres de type not in range
+    * @param nombreDocParPage
+    *           Le nombre de document par page
+    * @param codesMetasSouhaites
+    *           La liste des métadonnées souhaitées en retour
+    * @param valeurIdentifiantPage
+    *           La valeur de l'identifiant de la page
+    * @param idArchive
+    *           L'identifiant de l'archive
+    * @return
+    */
+   public static RechercheParIterateur contruitParamsEntreeRechercheParIterateur(
+         Map<String, String> listeMetasFixes, String codeMetaVariable,
+         String valeurMinMetaVar, String valeurMaxMetaVar,
+         Map<String, String> equalFilter, Map<String, String> notEqualFilter,
+         Map<String, String[]> rangeFilter,
+         Map<String, String[]> notInRangeFilter, String nombreDocParPage,
+         List<String> codesMetasSouhaites, String valeurIdentifiantPage,
+         String idArchive) {
+
+      RechercheParIterateur rechercheParIterateur = new RechercheParIterateur();
+
+      RechercheParIterateurRequestType rechercheParIterateurRequest = new RechercheParIterateurRequestType();
+
+      rechercheParIterateur
+            .setRechercheParIterateur(rechercheParIterateurRequest);
+
+      // Requête principale
+      RechercheParIterateurRequestType requeteParIterateurObj = new RechercheParIterateurRequestType();
+      RequetePrincipaleType requetePrincipaleType = new RequetePrincipaleType();
+
+      // - Liste des métadonnées fixes (facultatif)
+      ListeMetadonneeType listeMetadonneeFixes = new ListeMetadonneeType();
+      if ((listeMetasFixes != null) && (!listeMetasFixes.isEmpty())) {
+         listeMetadonneeFixes = buildListeMeta(listeMetasFixes);
+      } else {
+         listeMetadonneeFixes.setMetadonnee(null);
+      }
+      requetePrincipaleType.setFixedMetadatas(listeMetadonneeFixes);
+
+      // - Métadonnée variable (obligatoire)
+      RangeMetadonneeType rangeMetadonnee = new RangeMetadonneeType();
+      MetadonneeCodeType metaCode = new MetadonneeCodeType();
+      metaCode.setMetadonneeCodeType(codeMetaVariable);
+      rangeMetadonnee.setCode(metaCode);
+
+      MetadonneeValeurType metaValeurMin = new MetadonneeValeurType();
+      metaValeurMin.setMetadonneeValeurType(valeurMinMetaVar);
+      rangeMetadonnee.setValeurMin(metaValeurMin);
+
+      MetadonneeValeurType metaValeurMax = new MetadonneeValeurType();
+      metaValeurMax.setMetadonneeValeurType(valeurMaxMetaVar);
+      rangeMetadonnee.setValeurMax(metaValeurMax);
+
+      requetePrincipaleType.setVaryingMetadata(rangeMetadonnee);
+
+      requeteParIterateurObj.setRequetePrincipale(requetePrincipaleType);
+
+      // Filtre (facultatif)
+      FiltreType filtreType = new FiltreType();
+      if ((equalFilter != null) && (!equalFilter.isEmpty())) {
+         ListeMetadonneeType listeMetaEqual = buildListeMeta(equalFilter);
+         filtreType.setEqualFilter(listeMetaEqual);
+      } else {
+         filtreType.setEqualFilter(new ListeMetadonneeType());
+      }
+
+      FiltreType filtreNotEqualType = new FiltreType();
+      if ((notEqualFilter != null) && (!notEqualFilter.isEmpty())) {
+         ListeMetadonneeType listeMetaNotEqual = buildListeMeta(notEqualFilter);
+         filtreType.setNotEqualFilter(listeMetaNotEqual);
+      } else {
+         filtreType.setNotEqualFilter(new ListeMetadonneeType());
+      }
+
+      if ((rangeFilter != null) && (!rangeFilter.isEmpty())) {
+         ListeRangeMetadonneeType listeRangeMeta = buildListeRangeMeta(rangeFilter);
+         filtreType.setRangeFilter(listeRangeMeta);
+      } else {
+         filtreType.setRangeFilter(new ListeRangeMetadonneeType());
+      }
+
+      if ((notInRangeFilter != null) && (!notInRangeFilter.isEmpty())) {
+         ListeRangeMetadonneeType listeNotInRangeMeta = buildListeRangeMeta(rangeFilter);
+         filtreType.setNotInRangeFilter(listeNotInRangeMeta);
+      } else {
+         filtreType.setNotInRangeFilter(new ListeRangeMetadonneeType());
+      }
+
+      requeteParIterateurObj.setFiltres(filtreType);
+
+      // Identifiant de la page
+      if (idArchive != null && !idArchive.isEmpty()
+            && valeurIdentifiantPage != null
+            && !valeurIdentifiantPage.isEmpty()) {
+         IdentifiantPageType identifiantPage = new IdentifiantPageType();
+         UuidType uuidType = new UuidType();
+         uuidType.setUuidType(idArchive);
+         identifiantPage.setIdArchive(uuidType);
+         MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         metaValType.setMetadonneeValeurType(valeurIdentifiantPage);
+         identifiantPage.setValeur(metaValType);
+         requeteParIterateurObj.setIdentifiantPage(identifiantPage);
+      }
+
+      // Codes des métadonnées souhaitées dans les résultats de recherche
+      ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+
+      requeteParIterateurObj.setMetadonnees(listeMetadonneeCode);
+      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+
+         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+               .size()];
+
+         MetadonneeCodeType metadonneeCode;
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
+            metadonneeCode = new MetadonneeCodeType();
+            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
+            arrMetadonneeCode[i] = metadonneeCode;
+         }
+
+         listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
+
+      } else {
+         listeMetadonneeCode.setMetadonneeCode(null);
+      }
+
+      requeteParIterateurObj.setNbDocumentsParPage(Integer
+            .parseInt(nombreDocParPage));
+
+      rechercheParIterateur.setRechercheParIterateur(requeteParIterateurObj);
+      // Renvoie du paramètre d'entrée de l'opération recherche
+      return rechercheParIterateur;
 
    }
 
@@ -467,6 +632,46 @@ public final class Axis2ObjectFactory {
 
    }
 
+   private static ListeRangeMetadonneeType buildListeRangeMeta(
+         Map<String, String[]> metadonnees) {
+
+      ListeRangeMetadonneeType listeMetadonnee = new ListeRangeMetadonneeType();
+
+      RangeMetadonneeType metadonnee;
+      MetadonneeCodeType metaCode;
+      MetadonneeValeurType metaValeurMin;
+      MetadonneeValeurType metaValeurMax;
+      String code;
+      String valeurMin;
+      String valeurMax;
+      for (Map.Entry<String, String[]> entry : metadonnees.entrySet()) {
+
+         code = entry.getKey();
+         valeurMin = entry.getValue()[0];
+         valeurMax = entry.getValue()[1];
+
+         metadonnee = new RangeMetadonneeType();
+
+         metaCode = new MetadonneeCodeType();
+         metaCode.setMetadonneeCodeType(code);
+         metadonnee.setCode(metaCode);
+
+         metaValeurMin = new MetadonneeValeurType();
+         metaValeurMin.setMetadonneeValeurType(valeurMin);
+         metadonnee.setValeurMin(metaValeurMin);
+
+         metaValeurMax = new MetadonneeValeurType();
+         metaValeurMax.setMetadonneeValeurType(valeurMax);
+         metadonnee.setValeurMax(metaValeurMax);
+
+         listeMetadonnee.addRangeMetadonnee(metadonnee);
+
+      }
+
+      return listeMetadonnee;
+
+   }
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -515,8 +720,7 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "archivageUnitairePJ"
     */
    public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecContenu(
-         String nomFichier, InputStream contenu,
-         Map<String, String> metadonnees) {
+         String nomFichier, InputStream contenu, Map<String, String> metadonnees) {
 
       ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
 
@@ -615,7 +819,7 @@ public final class Axis2ObjectFactory {
       return suppression;
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -666,8 +870,27 @@ public final class Axis2ObjectFactory {
       ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       modificationRequest.setMetadonnees(listeMetadonnee);
 
-      // Renvoie du paramètre d'entrée de l'opération archivageUnitaire
+      // Renvoie du paramètre d'entrée de l'opération modification
       return modification;
+
+   }
+
+   public static AjoutNote contruitParamsEntreeAjoutNote(String idArchive,
+         String contenuNote) {
+      AjoutNote ajoutNote = new AjoutNote();
+      AjoutNoteRequestType ajoutNoteRequest = new AjoutNoteRequestType();
+      ajoutNote.setAjoutNote(ajoutNoteRequest);
+
+      // Identifiant de l'archive
+      ajoutNoteRequest.setUuid(buildUuid(idArchive));
+
+      // Contenu de la note à ajouter au document
+      NoteTxtType paramNote = new NoteTxtType();
+      paramNote.setNoteTxtType(contenuNote);
+      ajoutNoteRequest.setNote(paramNote);
+
+      // Renvoie du paramètre d'entrée de l'opération ajoutNote
+      return ajoutNote;
 
    }
 
