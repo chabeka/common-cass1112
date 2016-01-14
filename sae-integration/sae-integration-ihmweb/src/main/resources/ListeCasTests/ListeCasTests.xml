@@ -1518,6 +1518,22 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>2301</id>
+            <code>2301-Recherche-Par-Iterateur-Test-Simple</code>
+            <description>
+               Test simple de la recherche par itérateur 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>         
+         <CasTest>
+            <id>2351</id>
+            <code>2351-Recherche-Iterateur-KO-MetadonneeRechercheInexistante</code>
+            <description>
+               Envoie d’une SoapFault suite à l’envoie d’une métadonnée inconnue lors d'une recherche
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
       </CasTests>
    </Categorie>
    

@@ -3,6 +3,7 @@
    
    <!-- Poste de developpeur sous Windows -->
    
+   <!-- -->
  
    
    <Environment
@@ -25,7 +26,7 @@
    
    <!-- Serveur linux -->
    
-   <!--  
+   <!-- 
     
    <Environment
       name="SAE_Fichier_Configuration"
@@ -41,7 +42,7 @@
       name="IHM_TEST_CONFIG"
       type="java.lang.String"
       value="/appl/sae_integration/ihmtests-config.properties" />
-    -->  
-   <!-- -->
+      
+   -->
       
 </Context>

@@ -260,11 +260,11 @@ public class ReferentielMetadonneesService {
       
       // Création de l'objet résultat
       List<MetadonneeDefinition> result = new ArrayList<MetadonneeDefinition>();
-      
+     
       // Recherche chaque code dans le référentiel des métadonnées
       MetadonneeDefinition metaDef;
       for (String codeLong: codesLongs) {
-         
+
          // Recherche la métadonnée à partir de son code long dans le référentiel des métadonnées
          metaDef = findMeta(codeLong);
          if (metaDef==null) {

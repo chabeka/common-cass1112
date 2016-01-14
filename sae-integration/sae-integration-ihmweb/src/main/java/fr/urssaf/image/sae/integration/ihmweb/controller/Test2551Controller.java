@@ -50,8 +50,8 @@ public class Test2551Controller extends AbstractTestWsController<TestWsAjoutNote
       
       String urlServiceWeb = formulaire.getUrlServiceWeb();
       AjoutNoteFormulaire ajoutNoteForm = formulaire.getAjoutNote();
-      //String idSoapFault = "sae_ArchiveNonTrouvee";
-      String idSoapFault = "sae_AjoutNoteArchiveNonTrouvee";      
+      String idSoapFault = "sae_ArchiveNonTrouvee";
+      //String idSoapFault = "sae_AjoutNoteArchiveNonTrouvee"; // Abandon du redmine 6970      
       String[] soapMsgArgs = new String[] {ajoutNoteForm.getIdArchivage()};
       
     //-- Appel au ws

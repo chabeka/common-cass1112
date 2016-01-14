@@ -9,7 +9,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -18,11 +17,10 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbRes;
-import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateur;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
@@ -35,8 +33,11 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMe
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.TestUtils;
+
 
 /**
  * Service de test de l'opération "recherche par itérateur" du service web
@@ -53,13 +54,13 @@ public class RechercheParIterateurTestService {
    private TestsMetadonneesService testMetaService;
 
    @Autowired
-   private ReferentielMetadonneesService referentielMetadonneesService;
+  private ReferentielMetadonneesService referentielMetadonneesService;
 
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private RechercheParIterateurResponse appelWsOpRechercheParIterateur(
-         String urlServiceWeb, ViStyle viStyle, ViFormulaire viParams,
+   private RechercheParIterateurResponse appelWsOpRechercheParIterateur(String urlServiceWeb,
+         ViStyle viStyle, ViFormulaire viParams,
          RechercheParIterateurFormulaire formulaire, WsTestListener wsListener,
          TypeComparaison triDesResultatsDansAffichageLog) {
 
@@ -74,7 +75,7 @@ public class RechercheParIterateurTestService {
 
       // Ajout d'un log de résultat
       SaeServiceLogUtils.logAppelRechercheParIterateur(log, formulaire);
-
+      
       // Récupération du stub du service web
       SaeServiceStub service = saeServiceStubUtils.getServiceStub(
             urlServiceWeb, viStyle, viParams);
@@ -103,11 +104,9 @@ public class RechercheParIterateurTestService {
          log
                .appendLogLn("Détails de la réponse obtenue de l'opération \"recherche par itérateur\" :");
          SaeServiceLogUtils.logResultatRechercheParIterateur(log, response
-               .getRechercheParIterateurResponse(),
-               triDesResultatsDansAffichageLog);
+               .getRechercheParIterateurResponse(), triDesResultatsDansAffichageLog);
 
       } catch (AxisFault fault) {
-
          // Appel du listener
          wsListener.onSoapFault(resultatTest, fault, service
                ._getServiceClient().getServiceContext()
@@ -130,6 +129,7 @@ public class RechercheParIterateurTestService {
 
    }
 
+   
    /**
     * Test libre de l'appel à l'opération "recherche par itérateur" du service
     * web SaeService.<br>
@@ -169,6 +169,44 @@ public class RechercheParIterateurTestService {
             formulaire, testLibre, null);
    }
 
+   /**
+    * Test d'appel à l'opération "recherche par itérateur" du service web SaeService.<br>
+    * <br>
+    * On s'attend à obtenir une SoapFault.
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viStyle
+    *           le type de VI à générer
+    * @param idSoapFaultAttendu
+    *           l'identifiant de la SoapFault attendu dans le référentiel des
+    *           SoapFault
+    * @param argsMsgSoapFault
+    *           les arguments pour le String.format du message de la SoapFault
+    *           attendue
+    */
+     
+   public final void appelWsOpRechercheParIterateurSoapFault(String urlServiceWeb,
+         RechercheParIterateurFormulaire formulaire, ViStyle viStyle,
+         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une certaine SoapFault
+      SoapFault faultAttendue = refSoapFault.findSoapFault(idSoapFaultAttendu);
+      WsTestListener listener = new WsTestListenerImplSoapFault(faultAttendue,
+            argsMsgSoapFault);
+
+      // Appel de la méthode "générique" de test
+      appelWsOpRechercheParIterateur(urlServiceWeb, viStyle, null, formulaire, listener,
+            null);
+      
+      
+      
+
+   }
+      
    /**
     * Test d'appel à l'opération "recherche par itérateur" du service web
     * SaeService.<br>
@@ -263,6 +301,7 @@ public class RechercheParIterateurTestService {
    // return response;
    // }
 
+   /**
    private void wsVerifieRetour(ResultatTest resultatTest,
          RechercheNbResResponse response, Integer nbResultatsAttendus,
          Boolean flagResultatsTronquesAttendu,
@@ -346,7 +385,9 @@ public class RechercheParIterateurTestService {
          }
       }
    }
-
+*/
+ 
+/**
    private void wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
          CodeMetadonneeList codesMetaAttendues,
          ResultatRechercheType[] resultats) {
@@ -402,7 +443,9 @@ public class RechercheParIterateurTestService {
          }
       }
    }
+*/   
 
+/**   
    private void wsVerifieRetourMetaParDefaut(ResultatTest resultatTest,
          ResultatRechercheType[] resultats) {
 
@@ -426,7 +469,8 @@ public class RechercheParIterateurTestService {
          }
       }
    }
-
+*/
+   
    /**
     * Test d'appel à l'opération "recherche avec nb de résultats" du service web
     * SaeService.<br>
@@ -556,4 +600,206 @@ public class RechercheParIterateurTestService {
       }
    }
 
+   private void wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
+         CodeMetadonneeList codesMetaAttendues,
+         ResultatRechercheType[] resultats) {
+
+      ResultatTestLog log = resultatTest.getLog();
+      // Vérifie que les codes de métadonnées demandées sont bien consultables
+      // C'est une sorte de "sur-vérification"
+      log.appendLogNewLine();
+      testMetaService.areMetadonneesConsultables(codesMetaAttendues,
+            resultatTest);
+      // Vérifie que les métadonnées obtenues sont bien celles demandées
+
+      // D'abord, pour les besoins du service utilisé plus tard, on construit la
+      // liste des MetadonneeDefinition correspondant aux codes longs attendus
+      List<MetadonneeDefinition> metadonneesDefinitions = referentielMetadonneesService
+            .construitListeMetadonnee(codesMetaAttendues);
+      
+      // Puis on boucle sur les résultats de la recherche, afin de contrôler
+      // chaque résultat
+      String messageErreur1;
+      String messageErreur2;
+      String messageErreurAll;
+      
+      for (int i = 0; i < resultats.length; i++) {
+
+         // 1) Vérifie que les métadonnnées retournées font bien partie de la
+         // liste demandées
+       
+         messageErreur1 = testMetaService
+               .verifieMetasUniquementDansListeAutorisee(resultats[i]
+                     .getMetadonnees(), metadonneesDefinitions);
+
+         // 2) Vérifie que toutes les métadonnées demandées font bien partie de
+         // la liste
+         // des métadonnées renvoyées
+
+         messageErreur2 = testMetaService.verifieMetasToutesPresentes(
+               resultats[i].getMetadonnees(), metadonneesDefinitions);
+
+         // Bilan des erreurs
+         messageErreurAll = TestUtils.concatMessagesErreurs(messageErreur1,
+               messageErreur2);
+         if (StringUtils.isNotBlank(messageErreurAll)) {
+
+            resultatTest.setStatus(TestStatusEnum.Echec);
+
+            log.appendLogNewLine();
+            log.appendLogLn("Erreur sur les métadonnées du résultat #"
+                  + (i + 1));
+            log.appendLogLn(messageErreurAll);
+
+         }
+
+      }
+
+   }
+
+   
+ private void wsVerifieRetourMetaParDefaut(ResultatTest resultatTest,
+         ResultatRechercheType[] resultats) {
+
+      ResultatTestLog log = resultatTest.getLog();
+
+      String messageErreur;
+      for (int i = 0; i < resultats.length; i++) {
+
+         messageErreur = testMetaService
+               .verifieMetadonneesConsulteeParDefaut(resultats[i]
+                     .getMetadonnees());
+
+         if (StringUtils.isNotBlank(messageErreur)) {
+
+            resultatTest.setStatus(TestStatusEnum.Echec);
+
+            log.appendLogNewLine();
+            log.appendLogLn("Erreur sur les métadonnées du résultat #"
+                  + (i + 1));
+            log.appendLogLn(messageErreur);
+
+         }
+
+      }
+
+   }
+ 
+ private void wsVerifieRetour(ResultatTest resultatTest,
+       RechercheParIterateurResponse response, Integer nbResultatsAttendus,
+       CodeMetadonneeList codesMetaAttendues) {
+
+    // Initialise
+    ResultatTestLog log = resultatTest.getLog();
+
+    if ((response != null) && (response.getRechercheParIterateurResponse() != null)) {
+       // Récupère le retour de la recherche
+       ResultatRechercheType[] resultats = null;
+       if (response.getRechercheParIterateurResponse().getResultats() != null) {
+          resultats = response.getRechercheParIterateurResponse().getResultats()
+                .getResultat();
+       }
+       // Calcul le nombre de résultats
+       int nbResultatsObtenus;
+       if (resultats == null) {
+          nbResultatsObtenus = 0;
+       } else {
+          nbResultatsObtenus = resultats.length;
+       }
+       
+       // Vérifie le nombre de résultats attendus, si demandé
+       if ((nbResultatsAttendus != null)
+             && (nbResultatsObtenus != nbResultatsAttendus.intValue())) {
+          resultatTest.setStatus(TestStatusEnum.Echec);
+
+          log.appendLogNewLine();
+          log.appendLog("Erreur : on s'attendait à obtenir ");
+          log.appendLog(Integer.toString(nbResultatsAttendus));
+          log
+                .appendLog(" résultat(s) de recherche, alors que l'on en a obtenu ");
+          log.appendLog(Integer.toString(nbResultatsObtenus));
+          log.appendLogLn(".");
+
+       }
+       // Vérifie les métadonnées
+       // Soit :
+       // - on vérifie que l'on a obtenu, par défaut, les métadonnées dites
+       // "consultées par défaut"
+       // - ou on vérifie que l'on a obtenu les métadonnées demandées
+       if (resultats != null) {
+          if (CollectionUtils.isNotEmpty(codesMetaAttendues)) {
+             wsVerifieRetourMetaDemandees(resultatTest, codesMetaAttendues,
+                   resultats);
+          } else {
+             wsVerifieRetourMetaParDefaut(resultatTest, resultats);
+          }
+       } else if ((nbResultatsAttendus == null || nbResultatsAttendus == 0) && resultats == null) {
+          log.appendLogLn("Aucun résultat attendu, aucun résultat retourné");
+          resultatTest.setStatus(TestStatusEnum.Succes);
+       }
+    }
+ }
+
+   /**
+    * Test d'appel à l'opération "recherche par iterateur" du service web SaeService.<br>
+    * On s'attend à récupérer une réponse correcte
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param flagResultatsTronquesAttendu
+    *           le flag attendu, ou null si pas de verif
+    * @param triDesResultatsDansAffichageLog
+    *           à effectuer sur la recherche
+    * @param viParams
+    *           les paramètres du VI
+    * @return la réponse de l'opération "recherche par iterateur", ou null si une exception
+    *         s'est produite
+    */
+   public final RechercheParIterateurResponse appelWsOpRechercheParIterateurReponseCorrecteAttendue(
+         String urlServiceWeb, RechercheParIterateurFormulaire formulaire,
+         Integer nbResultatsAttendus,
+         TypeComparaison triDesResultatsDansAffichageLog, ViFormulaire viParams) {
+
+      // Création de l'objet qui implémente l'interface WsTestListener
+      // et qui s'attend à recevoir une réponse
+      WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
+
+      // Appel de la méthode "générique" de test
+      RechercheParIterateurResponse response = appelWsOpRechercheParIterateur(urlServiceWeb,
+            ViStyle.VI_OK, viParams, formulaire, testAvecReponse,
+            triDesResultatsDansAffichageLog);
+     
+      // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
+      // étapes préalables)
+      ResultatTest resultatTest = formulaire.getResultats();
+      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+
+         // Vérifie que l'on ait reçu une réponse
+         if (response == null) {
+
+            // Echec bizarre
+            resultatTest.setStatus(TestStatusEnum.Echec);
+            ResultatTestLog log = resultatTest.getLog();
+            log
+                  .appendLogLn("On s'attendait à une réponse sans erreur du service web, hors on a obtenu une réponse null");
+
+         } else {
+
+            // Vérification de la réponse par rapport aux paramètres envoyés au
+            // service web
+            wsVerifieRetour(resultatTest, response, nbResultatsAttendus,
+                  formulaire.getCodeMetadonnees());
+
+         }
+
+      }
+
+      // Renvoie la réponse du service web
+      return response;
+
+   }   
+      
+ 
 }

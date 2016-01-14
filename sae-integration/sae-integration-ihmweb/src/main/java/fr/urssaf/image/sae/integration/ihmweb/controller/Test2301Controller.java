@@ -1,5 +1,9 @@
 package fr.urssaf.image.sae.integration.ihmweb.controller;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -9,22 +13,32 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
 
 
 /**
  * 2300-Recherche-Par-Iterateur
  */
 @Controller
-@RequestMapping(value = "test2300")
-public class Test2300Controller extends AbstractTestWsController<TestWsRechercheParIterateurFormulaire> {
+@RequestMapping(value = "test2301")
+public class Test2301Controller extends AbstractTestWsController<TestWsRechercheParIterateurFormulaire> {
    
+   /**
+    * 
+    */
+   private static final int WAITED_COUNT = 139;
+
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "2300";
+      return "2301";
    }
    
    /**
@@ -41,7 +55,7 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
       MetadonneeValeurList metaFixes = new MetadonneeValeurList();
       MetadonneeValeur metaVal = new MetadonneeValeur();
       metaVal.setCode("Denomination");
-      metaVal.setValeur("Test 2300-Recherche-Iterateur-OK-Test-Libre");
+      metaVal.setValeur("Test 2301-Recherche-Iterateur-OK-Test-Simple");
       metaFixes.add(metaVal);
       formRecherche.setMetaFixes(metaFixes);
       
@@ -65,13 +79,14 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
       metaNotEqualFilter.add(notEqualFilter);
       formRecherche.setNotEqualFilter(metaNotEqualFilter);
             
-      formRecherche.setNbDocParPage(50);
+      formRecherche.setNbDocParPage(150);
       
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
       codesMeta.add("Denomination");
       codesMeta.add("DateArchivage");
       codesMeta.add("DocumentArchivable");
       codesMeta.add("NumeroRecours");
+      codesMeta.add("DateCreation");
       formRecherche.setCodeMetadonnees(codesMeta);
       
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
@@ -88,6 +103,41 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
    }
    
    private void recherche(String urlWebService, RechercheParIterateurFormulaire formulaire) {
-      getRechercheParIterateurTestService().appelWsOpRechercheParIterateurTestLibre(urlWebService, formulaire);
-   }
+
+      // Initialise
+      ResultatTest resultatTest = formulaire.getResultats();
+
+      // Résultats attendus
+      int nbResultatsAttendus = WAITED_COUNT;
+
+      // Appel de la méthode de test
+      RechercheParIterateurResponse response = getRechercheParIterateurTestService()
+            .appelWsOpRechercheParIterateurReponseCorrecteAttendue(urlWebService,
+                  formulaire, nbResultatsAttendus, TypeComparaison.NumeroRecours, null);
+
+      // Vérifications en profondeur
+      if ((response != null)
+            && (!TestStatusEnum.Echec.equals(resultatTest.getStatus()))) {
+
+         // Tri les résultats par ordre croissant de NumeroRecours
+         List<ResultatRechercheType> resultatsTries = Arrays.asList(response
+               .getRechercheParIterateurResponse().getResultats().getResultat());
+         Collections.sort(resultatsTries, new ResultatRechercheComparator(
+               TypeComparaison.NumeroRecours));
+
+         // Pas de vérification pour chaque résultat
+//         for (int i = 0; i < RETURN_COUNT; i++) {
+//
+//            getRechercheTestService().verifieResultatRecherche(
+//                  resultatsTries.get(i), Integer.toString(i + 1), resultatTest,
+//                  getValeursAttendues(i + 1));
+//
+//         }
+
+         // Passe le test en succès si aucune erreur détectée
+         if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+            resultatTest.setStatus(TestStatusEnum.Succes);
+         }
+      }
+  }
 }

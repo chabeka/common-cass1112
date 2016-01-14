@@ -142,6 +142,14 @@
       <localPart>RechercheMetadonneesInconnues</localPart>
       <message>La ou les métadonnées suivantes, utilisées dans la requête de recherche, n'existent pas dans le référentiel des métadonnées : %s</message>
    </SoapFault>
+
+   <SoapFault>
+      <id>sae_RechercheMetadonneesDoublons</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>RechercheMetadonneesDoublons</localPart>      
+      <message>La ou les métadonnées suivantes, utilisées dans le filtre de la requête de recherche par itérateur, sont en doublon : %s</message>
+   </SoapFault>
    
    <SoapFault>
       <id>sae_ConsultationMetadonneesInconnues</id>

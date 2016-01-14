@@ -77,5 +77,13 @@ public class ResultatTest {
       this.getLiens().clear();
    }
    
+   @Override
+   public String toString() {
+      StringBuilder sb = new StringBuilder();
+      sb.append("Statut : ");
+      sb.append(status);
+      return sb.toString();
+   }
+   
    
 }

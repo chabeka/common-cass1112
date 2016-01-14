@@ -297,6 +297,7 @@ public class ViService {
       assertion = StringUtils.replace(assertion, "[NotBefore]", notBefore);
       assertion = StringUtils.replace(assertion, "[PAGM]", pagmsAplat);
       assertion = StringUtils.replace(assertion, "[MethodAuthn2]", methodAuthn2);
+      assertion = StringUtils.replace(assertion, "[Login]", "Christine");
       
       return assertion;
       

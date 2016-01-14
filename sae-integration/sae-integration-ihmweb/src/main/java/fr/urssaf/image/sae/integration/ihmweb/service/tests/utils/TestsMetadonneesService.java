@@ -288,7 +288,6 @@ public final class TestsMetadonneesService {
 
          MetadonneeDefinition metadonnee;
          for (String code : codes) {
-
             metadonnee = refMetasService.findMeta(code);
             if (metadonnee == null) {
                throw new IntegrationRuntimeException(
