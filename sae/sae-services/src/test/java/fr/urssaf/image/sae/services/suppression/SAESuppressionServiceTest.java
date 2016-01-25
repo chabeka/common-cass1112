@@ -191,7 +191,7 @@ public class SAESuppressionServiceTest {
                      "le message d'erreur doit être correct",
                      StringUtils
                            .replace(
-                                 "Il n'existe aucun document pour l'identifiant d'archivage {0}",
+                                 "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
                                  "{0}", uuid.toString()), exception
                            .getMessage());
 
