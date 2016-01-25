@@ -1,8 +1,9 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import javax.activation.DataHandler;
 
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
@@ -10,9 +11,11 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -292,4 +295,35 @@ public interface StorageDocumentService {
     * @return La liste des notes rattachées au document
     */
    List<StorageDocumentNote> getDocumentsNotes(UUID docUuid);
+
+   /**
+    * Ajout d'un document attaché à un document
+    * 
+    * @param docUuid
+    *           le document parent
+    * @param docName
+    *           le nom du document attaché
+    * @param extension
+    *           l'extension du document attaché
+    * @param contenu
+    *           le contenu du document attaché
+    * @throws StorageDocAttachmentServiceEx
+    *            Erreur lors de l'ajout d'un document attaché
+    */
+   void addDocumentAttachment(UUID docUuid, String docName, String extension,
+         DataHandler contenu) throws StorageDocAttachmentServiceEx;
+
+   /**
+    * Récupération du document attaché
+    * 
+    * @param docUuid
+    *           document concerné
+    * @return le document attaché
+    * @throws StorageDocAttachmentServiceEx
+    *            Erreur lors de la récupération du document attaché
+    */
+   StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+         throws StorageDocAttachmentServiceEx;
+
+
 }

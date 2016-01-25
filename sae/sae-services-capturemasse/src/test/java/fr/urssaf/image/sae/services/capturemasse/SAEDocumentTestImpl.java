@@ -3,8 +3,11 @@
  */
 package fr.urssaf.image.sae.services.capturemasse;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
+
+import javax.activation.DataHandler;
 
 import org.apache.commons.lang.ArrayUtils;
 
@@ -16,8 +19,12 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.SAEDocumentAttachmentEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
@@ -25,6 +32,7 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
@@ -262,5 +270,47 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    public final void setSearchMaxResult(Object[] searchMaxResult) {
       this.searchMaxResult = searchMaxResult;
    }
+
+   @Override
+   public void addDocumentAttachmentBinaire(UUID docUuid, String docName,
+         String extension, DataHandler contenu)
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         EmptyDocumentEx, EmptyFileNameEx {
+      // TODO Auto-generated method stub
+      
+   }
+
+   @Override
+   public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         EmptyDocumentEx, EmptyFileNameEx {
+      // TODO Auto-generated method stub
+      
+   }
+
+   @Override
+   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+         throws SAEDocumentAttachmentEx {
+      // TODO Auto-generated method stub
+      return null;
+   }
+
+   @Override
+   public void addDocumentAttachmentBinaireRollbackParent(UUID docUuid,
+         String docName, String extension, DataHandler contenu)
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
+         EmptyFileNameEx {
+      // TODO Auto-generated method stub
+      
+   }
+
+   @Override
+   public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
+         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+      // TODO Auto-generated method stub
+      
+   }
+
 
 }

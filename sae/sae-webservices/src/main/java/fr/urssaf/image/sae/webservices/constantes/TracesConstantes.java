@@ -65,7 +65,7 @@ public final class TracesConstantes {
    public static final String CODE_EVT_WS_MODIFICATION_KO = "WS_MODIFICATION|KO";
    
    /**
-    * Le code de l'événement échec de suppression de document
+    * Le code de l'événement échec de récupération de métadonnées
     */
    public static final String CODE_EVT_WS_RECUPERATION_METAS_KO = "WS_RECUPERATION_METAS|KO";
    
@@ -73,4 +73,9 @@ public final class TracesConstantes {
     * Le code de l'événement échec d'ajout de note
     */
    public static final String CODE_EVT_WS_AJOUT_NOTE_KO = "WS_AJOUT_NOTE|KO";
+   
+   /**
+    * Le code de l'événement échec de récupération d'un document attaché
+    */
+   public static final String CODE_EVT_WS_GET_DOC_FORMAT_ORIGINE = "WS_GET_DOC_FORMAT_ORIGINE|KO";
 }

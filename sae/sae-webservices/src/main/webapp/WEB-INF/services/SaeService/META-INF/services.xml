@@ -1,23 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- This file was auto-generated from WSDL -->
-<!--
-      by the Apache Axis2 version: 1.5.4 Built on : Dec 19, 2010
-      (08:18:42 CET) Le fichier est ensuite mis à jour MANUELLEMENT pour
-      l'ajout de nouvelles opérations
-   -->
-<serviceGroup>
-    <!--
-    <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext">
-        <description>This web service initializes Spring.</description>
-        <parameter name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext
-      </parameter>
-        <parameter name="ServiceTCCL">composite</parameter>
-        <parameter name="load-on-startup">true</parameter>
-        <operation name="springInit">
-            <messageReceiver class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/>
-        </operation>
-    </service>
-    -->
+<?xml version="1.0" encoding="UTF-8"?><!-- This file was auto-generated from 
+   WSDL --><!-- by the Apache Axis2 version: 1.5.4 
+   Built on : Dec 19, 2010 (08:18:42 CET) Le fichier est ensuite mis à jour 
+   MANUELLEMENT pour l'ajout de nouvelles opérations --><serviceGroup>
+    <!-- <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext"> 
+      <description>This web service initializes Spring.</description> <parameter 
+      name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext 
+      </parameter> <parameter name="ServiceTCCL">composite</parameter> <parameter 
+      name="load-on-startup">true</parameter> <operation name="springInit"> <messageReceiver 
+      class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/> </operation> 
+      </service> -->
     <service name="SaeService">
         <messageReceivers>
             <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="fr.urssaf.image.sae.webservices.skeleton.SaeServiceMessageReceiverInOut"/>
@@ -41,6 +32,17 @@
         <operation name="archivageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
             <actionMapping>archivageUnitaire</actionMapping>
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageUnitaireResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="stockageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>stockageUnitaire</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/stockageUnitaireResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="getDocFormatOrigine" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <parameter name="enableMTOM">true</parameter>
+            <actionMapping>getDocFormatOrigine</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/getDocFormatOrigineResponse
          </outputActionMapping>
         </operation>
         <operation name="archivageMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
@@ -108,6 +110,11 @@
         <operation name="rechercheParIterateur" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
             <actionMapping>rechercheParIterateur</actionMapping>
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheParIterateurResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="ajoutNote" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>ajoutNote</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/ajoutNoteResponse
          </outputActionMapping>
         </operation>
     </service>

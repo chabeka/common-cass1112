@@ -18,6 +18,8 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.GetDocFormatOrigine;
+import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
@@ -32,6 +34,8 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
+import fr.cirtil.www.saeservice.StockageUnitaire;
+import fr.cirtil.www.saeservice.StockageUnitaireResponse;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
@@ -250,4 +254,28 @@ public interface SaeServiceSkeletonInterface {
     * @throws AxisFault
     */
    AjoutNoteResponse ajoutNoteSecure(AjoutNote request) throws AxisFault;
+
+   /**
+    * Endpoint du stockage unitaire
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la capture
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   StockageUnitaireResponse stockageUnitaireSecure(StockageUnitaire request)
+         throws AxisFault;
+
+   /**
+    * Endpoint de la récupération du document attaché
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la récupération du document
+    *           attaché
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   GetDocFormatOrigineResponse getDocFormatOrigineSecure(
+         GetDocFormatOrigine request) throws AxisFault;
+
 }

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
@@ -20,7 +22,9 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
@@ -112,8 +116,8 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login, Date dateCreation, UUID noteUuid)
-         throws DocumentNoteServiceEx {
+   public void addDocumentNote(UUID docUuid, String contenu, String login,
+         Date dateCreation, UUID noteUuid) throws DocumentNoteServiceEx {
 
       ServiceProvider dfceService = dfceServiceManager.getDFCEService();
 
@@ -121,7 +125,6 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
             login, dateCreation, noteUuid, LOGGER);
 
    }
-   
 
    /**
     * {@inheritDoc}
@@ -151,6 +154,25 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
       dfceServiceManager.closeConnection();
    }
 
+   @Override
+   public void addDocumentAttachment(UUID docUuid, String docName,
+         String extension, DataHandler contenu)
+         throws StorageDocAttachmentServiceEx {
 
+      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
+      storageServiceSupport.addDocumentAttachment(dfceService, cnxParams,
+            docUuid, docName, extension, contenu, LOGGER);
+
+   }
+
+   @Override
+   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+         throws StorageDocAttachmentServiceEx {
+      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
+      return storageServiceSupport.getDocumentAttachment(dfceService,
+            cnxParams, docUuid, LOGGER);
+   }
 
 }

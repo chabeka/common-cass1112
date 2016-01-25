@@ -32,7 +32,9 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
@@ -143,7 +145,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                      message, "{0}", uuid));
             }
          } else {
-
+            // -- Le document existe en GNT
             // -- On recherche le document sur la GNS
             StorageDocument documentGNS = storageTransfertService
                   .searchStorageDocumentByUUIDCriteria(uuidCriteria);
@@ -165,17 +167,52 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                         .getDocumentsNotes(document.getUuid());
                   // -- Ajout des notes sur le document archivés en GNS
                   for (StorageDocumentNote note : listeNotes) {
-                     storageTransfertService.addDocumentNote(
-                           documentGNS.getUuid(), note.getContenu(),
-                           note.getAuteur(), note.getDateCreation(),
-                           note.getUuid());
+                     try {
+                        storageTransfertService.addDocumentNote(
+                              documentGNS.getUuid(), note.getContenu(),
+                              note.getAuteur(), note.getDateCreation(),
+                              note.getUuid());
+                     } catch (DocumentNoteServiceEx e) {
+                        // Les notes n'ont pas pu être transférées, on annule le
+                        // transfert (suppression du document en GNS)
+                        try {
+                           storageTransfertService
+                                 .deleteStorageDocument(idArchive);
+                        } catch (DeletionServiceEx erreurSupprGNS) {
+                           throw new TransfertException(erreurSupprGNS);
+                        }
+                        throw new TransfertException(erreur, e);
+                     }
+                  }
+
+                  // -- Récupération du document attaché éventuel
+                  StorageDocumentAttachment docAttache;
+                  try {
+                     docAttache = storageDocumentService
+                           .getDocumentAttachment(document.getUuid());
+                     // -- Ajout du document attaché sur le document archivés en
+                     // GNS
+                     if (docAttache != null) {
+                        storageTransfertService.addDocumentAttachment(
+                              documentGNS.getUuid(), docAttache.getName(),
+                              docAttache.getExtension(), docAttache.getHash(),
+                              docAttache.getContenu());
+                     }
+                  } catch (StorageDocAttachmentServiceEx e) {
+                     // Le document attaché n'a pas pu être transféré, on annule
+                     // le transfert (suppression du document en GNS)
+                     try {
+                        storageTransfertService
+                              .deleteStorageDocument(idArchive);
+                     } catch (DeletionServiceEx erreurSupprGNS) {
+                        throw new TransfertException(erreurSupprGNS);
+                     }
+                     throw new TransfertException(erreur, e);
                   }
 
                } catch (InsertionServiceEx ex) {
                   throw new TransfertException(erreur, ex);
-               } catch (DocumentNoteServiceEx e) {
-                  throw new TransfertException(erreur, e);
-		}
+               }
             } else {
                // -- Le document existe sur la GNS et sur la GNT
                String uuid = idArchive.toString();

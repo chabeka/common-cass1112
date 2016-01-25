@@ -67,10 +67,9 @@ public class TracesWsSupport {
          }
 
       } catch (Throwable ex) {
-         LOG
-               .error(
-                     "Une erreur est survenue lors de la traçabilité de l'échec d'une opération WS",
-                     ex);
+         LOG.error(
+               "Une erreur est survenue lors de la traçabilité de l'échec d'une opération WS",
+               ex);
       }
 
    }
@@ -82,7 +81,8 @@ public class TracesWsSupport {
       if ("PingSecure".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_PINGSECURE_KO;
       } else if ("archivageUnitaire".equals(nomOperation)
-            || "archivageUnitairePJ".equals(nomOperation)) {
+            || "archivageUnitairePJ".equals(nomOperation)
+            || "stockageUnitaire".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_ARCHIVAGE_UNITAIRE_KO;
       } else if ("archivageMasse".equals(nomOperation)
             || "archivageMasseAvecHash".equals(nomOperation)) {
@@ -107,8 +107,10 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_RECUPERATION_METAS_KO;
       } else if ("ajoutNote".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_AJOUT_NOTE_KO;
+      } else if ("getDocFormatOrigine".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_GET_DOC_FORMAT_ORIGINE;
       }
-      
+
       return result;
    }
 
@@ -191,10 +193,9 @@ public class TracesWsSupport {
                "ChargementCertACRacine", fichiers);
 
       } catch (Throwable ex) {
-         LOG
-               .error(
-                     "Une erreur est survenue lors de la traçabilité du chargement des certificats d'AC racine",
-                     ex);
+         LOG.error(
+               "Une erreur est survenue lors de la traçabilité du chargement des certificats d'AC racine",
+               ex);
       }
 
    }
@@ -214,10 +215,9 @@ public class TracesWsSupport {
                "ChargementCRL", fichiers);
 
       } catch (Throwable ex) {
-         LOG
-               .error(
-                     "Une erreur est survenue lors de la traçabilité du chargement des CRL",
-                     ex);
+         LOG.error(
+               "Une erreur est survenue lors de la traçabilité du chargement des CRL",
+               ex);
       }
 
    }
@@ -237,10 +237,9 @@ public class TracesWsSupport {
                "ChargementCRL", fichiers);
 
       } catch (Throwable ex) {
-         LOG
-               .error(
-                     "Une erreur est survenue lors de la traçabilité du chargement des CRL",
-                     ex);
+         LOG.error(
+               "Une erreur est survenue lors de la traçabilité du chargement des CRL",
+               ex);
       }
 
    }

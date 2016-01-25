@@ -39,6 +39,8 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.GetDocFormatOrigine;
+import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
@@ -53,6 +55,8 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
+import fr.cirtil.www.saeservice.StockageUnitaire;
+import fr.cirtil.www.saeservice.StockageUnitaireResponse;
 import fr.cirtil.www.saeservice.Suppression;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
@@ -63,6 +67,7 @@ import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
+import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
@@ -71,6 +76,7 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFau
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
+import fr.urssaf.image.sae.webservices.service.WSDocumentAttacheService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
@@ -124,6 +130,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSNoteService noteService;
+   
+   @Autowired
+   private WSDocumentAttacheService documentAttacheService;
 
    @Autowired
    private DfceInfoService dfceInfoService;
@@ -839,10 +848,96 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault(
+         throw new AjoutNoteAxisFault(
                "Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
                "ErreurInterneAjoutNote", ex);
       }
 
+   }
+
+   @Override
+   public StockageUnitaireResponse stockageUnitaireSecure(
+         StockageUnitaire request) throws AxisFault {
+      try {
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération stockageUnitaireSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            StockageUnitaireResponse response = capture.stockageUnitaire(request);
+            
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+
+      } catch (CaptureAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
+      }
+   }
+
+   @Override
+   public GetDocFormatOrigineResponse getDocFormatOrigineSecure(
+         GetDocFormatOrigine request) throws AxisFault {
+      try {
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération getDocFormatOrigineSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            GetDocFormatOrigineResponse response = documentAttacheService.getDocFormatOrigine(request);
+            
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+
+      } catch (GetDocFormatOrigineAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CaptureAxisFault(
+               "ErreurInterneGetDocFormatOrigine",
+               "Une erreur interne à l'application est survenue lors de la récupération du document au format d'origine.",
+               ex);
+      }
    }
 }

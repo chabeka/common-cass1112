@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 import java.util.List;
 import java.util.UUID;
 
+import javax.activation.DataHandler;
+
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,11 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -30,6 +34,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCr
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.PaginatedLuceneCriteria;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
+import fr.urssaf.image.sae.storage.services.storagedocument.DocumentAttachmentService;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
@@ -70,6 +75,9 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    @Autowired
    @Qualifier("documentNoteService")
    private DocumentNoteService documentNoteService;
+   @Autowired
+   @Qualifier("documentAttachmentService")
+   private DocumentAttachmentService documentAttachmentService;
 
    /**
     * @return les services de suppression
@@ -312,6 +320,31 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    public final List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
       documentNoteService.setDocumentNoteServiceParameter(getDfceService());
       return documentNoteService.getDocumentNotes(docUuid);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void addDocumentAttachment(UUID docUuid, String docName,
+         String extension, DataHandler contenu)
+         throws StorageDocAttachmentServiceEx {
+      documentAttachmentService
+            .setDocumentAttachmentServiceParameter(getDfceService());
+      documentAttachmentService.addDocumentAttachment(docUuid, docName,
+            extension, contenu);
+   }
+
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+         throws StorageDocAttachmentServiceEx {
+      documentAttachmentService
+            .setDocumentAttachmentServiceParameter(getDfceService());
+      return documentAttachmentService.getDocumentAttachments(docUuid);
    }
 
 }

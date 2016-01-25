@@ -9,6 +9,8 @@ import fr.cirtil.www.saeservice.ArchivageUnitairePJResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJResponseType;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponseType;
+import fr.cirtil.www.saeservice.StockageUnitaireResponse;
+import fr.cirtil.www.saeservice.StockageUnitaireResponseType;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 
 /**
@@ -137,5 +139,59 @@ public final class ObjectArchivageUnitaireFactory {
       return response;
    }
    
+   
+   /**
+    * instanciation de {@link ArchivageUnitairePJResponse}.<br>
+    * Implementation de {@link ArchivageUnitairePJResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="archivageUnitairePJResponseType">
+    *    ...     
+    *    &lt;xsd:sequence>
+    *       &lt;xsd:element name="idArchive" type="sae:uuidType">
+    *       ...      
+    *       &lt;/xsd:element>
+    *    &lt;/xsd:sequence>
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @param idArchive
+    *           valeur de <code>uuidType</code>
+    * @return instance de {@link ArchivageUnitaireResponse}
+    */
+   public static StockageUnitaireResponse createStockageUnitaireResponse(
+         UUID idArchive) {
+      
+      String prefixeTrc = "createStockageUnitaireResponse()";
+      LOG.debug("{} - Début", prefixeTrc);
+      
+      StockageUnitaireResponse response = createStockageUnitaireResponse();
+            
+            StockageUnitaireResponseType responseType = response.getStockageUnitaireResponse();
+            
+      responseType.setIdGed(ObjectTypeFactory.createUuidType(idArchive));
+      if (response == null) {
+         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
+      } else {
+         LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, response.getStockageUnitaireResponse().getIdGed());
+      }
+      LOG.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
+      return response;
+   }
+   
+   /**
+    * instanciation de {@link StockageUnitaireResponse} vide.<br>
+    * 
+    * @return instance de {@link StockageUnitaireResponse}
+    */
+   private static StockageUnitaireResponse createStockageUnitaireResponse() {
+
+      StockageUnitaireResponse response = new StockageUnitaireResponse();
+      StockageUnitaireResponseType responseType = new StockageUnitaireResponseType();
+      response.setStockageUnitaireResponse(responseType);
+
+      return response;
+   }
 
 }

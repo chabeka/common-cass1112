@@ -7,11 +7,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
 
 import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Attachment;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.service.ServiceProvider;
@@ -25,9 +27,11 @@ import org.springframework.stereotype.Component;
 
 import com.docubase.dfce.commons.document.StoreOptions;
 import com.docubase.dfce.exception.FrozenDocumentException;
+import com.docubase.dfce.exception.NoSuchAttachmentException;
 import com.docubase.dfce.exception.TagControlException;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.exception.DocumentTypeException;
@@ -39,8 +43,10 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
@@ -579,6 +585,152 @@ public class StorageDocumentServiceSupport {
 
       log.debug("{} - Sortie", prefixeTrc);
       return listeStorageDocNotes;
+
+   }
+
+   /**
+    * Permet de rajouter un « document attaché » à un document
+    * 
+    * @param dfceService
+    *           Fournisseur de Services DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param docUuid
+    *           identifiant du document auquel on souhaite ajouter une pièce
+    *           jointe
+    * @param docName
+    *           le nom de la pièce jointe
+    * @param extension
+    *           l’extension de la pièce jointe
+    * @param hash
+    *           Empreinte de contrôle du fichier joint
+    * @param contenu
+    *           Contenu du doc à attacher
+    * @param log
+    *           Logger
+    * @throws StorageDocAttachmentServiceEx
+    *            Une erreur s’est produite lors de l’ajout d’un document attaché
+    *            au document
+    */
+   public void addDocumentAttachment(ServiceProvider dfceService,
+         DFCEConnection cnxParams, UUID docUuid, String docName,
+         String extension, DataHandler contenu, Logger log)
+         throws StorageDocAttachmentServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "addDocumentAttachment()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         // Calcul du hash
+         String digestAlgo = cnxParams.getDigestAlgo();
+         String hash = checkHash(contenu, digestAlgo, docName);
+
+         InputStream docStream = contenu.getInputStream();
+         dfceService.getStoreService().addAttachment(docUuid, docName,
+               extension, false, hash, docStream);
+      } catch (FrozenDocumentException e) {
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'un document attaché : {}",
+               prefixeTrc, e.getMessage());
+         throw new StorageDocAttachmentServiceEx(
+               "Erreur lors de l'ajout d'un document attaché", e.getMessage(),
+               e);
+      } catch (TagControlException e) {
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'un document attaché : {}",
+               prefixeTrc, e.getMessage());
+         throw new StorageDocAttachmentServiceEx(
+               "Erreur lors de l'ajout d'un document attaché", e.getMessage(),
+               e);
+      } catch (IOException e) {
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'un document attaché : {}",
+               prefixeTrc, e.getMessage());
+         throw new StorageDocAttachmentServiceEx(
+               "Erreur lors de l'ajout d'un document attaché", e.getMessage(),
+               e);
+      } catch (NoSuchAlgorithmException e) {
+         log.debug(
+               "{} - Une exception a été levée lors de l'ajout d'un document attaché : {}",
+               prefixeTrc, e.getMessage());
+         throw new StorageDocAttachmentServiceEx(
+               "Erreur lors de l'ajout d'un document attaché", e.getMessage(),
+               e);
+      }
+
+      log.debug("{} - Sortie", prefixeTrc);
+
+   }
+
+   /**
+    * Méthode de récupération d’un document attaché (binaire)
+    * 
+    * @param dfceService
+    *           Fournisseur de Services DFCE
+    * @param docUuid
+    *           UUID du document concerné
+    * @param log
+    *           Logger
+    * @return la liste des documents attachés
+    * @throws StorageDocAttachmentServiceEx
+    */
+   public StorageDocumentAttachment getDocumentAttachment(
+         ServiceProvider dfceService, DFCEConnection cnxParams, UUID docUuid,
+         Logger log) throws StorageDocAttachmentServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "getDocumentAttachment()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         Base base = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
+               cnxParams);
+         Document docDfce = dfceService.getSearchService().getDocumentByUUID(
+               base, docUuid);
+
+         if (docDfce != null) {
+            Set<Attachment> listeAttachement = docDfce.getAttachments();
+
+            StorageDocumentAttachment storageDocAtt = null;
+            // Si le document possède un document attaché
+            if (listeAttachement.size() > 0) {
+               Attachment attachment = new Attachment();
+               for (Attachment att : listeAttachement) {
+                  attachment = att;
+                  break;
+               }
+
+               InputStream inputStream = dfceService.getStoreService()
+                     .getAttachmentFile(docDfce, attachment);
+
+               InputStreamSource source = new InputStreamSource(inputStream);
+               DataHandler contenu = new DataHandler(source);
+
+               storageDocAtt = new StorageDocumentAttachment(docUuid,
+                     attachment.getFilename(), attachment.getExtension(),
+                     attachment.getDigest(), contenu);
+
+               log.debug("{} - Sortie", prefixeTrc);
+            }
+            return storageDocAtt;
+         } else {
+            log.debug(
+                  "{} - Une exception a été levée lors de la récupération du document au format d'origine : le document parent {} n'existe pas",
+                  prefixeTrc, docUuid);
+            String message = "Erreur lors de la récupération du document au format d'origine : le document parent "
+                  + docUuid + " n'existe pas";
+            throw new StorageDocAttachmentServiceEx(message);
+         }
+
+      } catch (NoSuchAttachmentException e) {
+         log.debug(
+               "{} - Une exception a été levée lors de la récupération d'un document attaché : {}",
+               prefixeTrc, e.getMessage());
+         throw new StorageDocAttachmentServiceEx(
+               "Erreur lors de la récupération du document au format d'origine",
+               e.getMessage(), e);
+      }
 
    }
 }
