@@ -43,6 +43,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_14 = 14;
    private static final int VERSION_15 = 15;
    private static final int VERSION_16 = 16;
+   private static final int VERSION_17 = 17;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -787,5 +788,28 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 16
       saeDao.setDatabaseVersion(VERSION_16);
+   }
+   
+   /**
+    * Version 17 : <li>Création des métadonnées pour WATT</li>
+    */
+   public void updateToVersion17() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_17) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version 17");
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+          // On positionne la version à 14
+      saeDao.setDatabaseVersion(VERSION_17);
    }
 }

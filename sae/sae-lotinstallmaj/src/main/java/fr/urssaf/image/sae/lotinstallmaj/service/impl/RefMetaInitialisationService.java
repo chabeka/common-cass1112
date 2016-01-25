@@ -380,7 +380,7 @@ public final class RefMetaInitialisationService {
 
    protected void verification1(List<MetadataReference> metadonnees) {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionRefMeta(metadonnees);
-      compareDeuxListeLignes("1", "refmeta/MetadataReferential_Lot151200_ameliore.xml", lignesGenerees);
+      compareDeuxListeLignes("1", "refmeta/MetadataReferential_Lot160400_ameliore.xml", lignesGenerees);
    }
 
    @SuppressWarnings("unchecked")
@@ -516,7 +516,7 @@ public final class RefMetaInitialisationService {
 
    protected void verification2(List<MetadataReference> metadonnees) {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
-      compareDeuxListeLignes("2", "refmeta/saeBase_Lot151200_ameliore.xml", lignesGenerees);
+      compareDeuxListeLignes("2", "refmeta/saeBase_Lot160400_ameliore.xml", lignesGenerees);
    }
 
    private void persisteMetadonnees(Keyspace keyspace, List<MetadataReference> metadonnees) {

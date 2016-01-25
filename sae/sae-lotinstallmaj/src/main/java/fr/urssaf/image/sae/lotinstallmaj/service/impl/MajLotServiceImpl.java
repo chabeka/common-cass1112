@@ -57,6 +57,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_151200 = "CASSANDRA_DFCE_151200";
    public static final String CASSANDRA_DFCE_151201 = "CASSANDRA_DFCE_151201";
    public static final String CASSANDRA_DFCE_160300 = "CASSANDRA_DFCE_160300";
+   public static final String CASSANDRA_DFCE_160400 = "CASSANDRA_DFCE_160400";
+   
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -216,6 +218,9 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation)) {
          updateCassandra160300();
          addIndexesCompositeToDfce("META_160300");
+      }  else if (CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160400();
+         updateMetaDfce("META_160400");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
 
@@ -488,13 +493,24 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Pour lot 151200 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
-    * version 14
+    * Pour lot 160300 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 16
     */
    private void updateCassandra160300() {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160300");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion16();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   } 
+   
+   /**
+    * Pour lot 160400 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 17
+    */
+   private void updateCassandra160400() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160400");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion17();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }   
    
