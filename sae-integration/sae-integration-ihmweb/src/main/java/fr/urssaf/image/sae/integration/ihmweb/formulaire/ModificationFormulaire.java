@@ -17,7 +17,7 @@ public class ModificationFormulaire extends GenericForm {
    private ResultatTest resultats = new ResultatTest();
 
    private UUID idDocument;
-
+   
    private MetadonneeValeurList metadonnees = new MetadonneeValeurList();
 
    /**
@@ -86,5 +86,4 @@ public class ModificationFormulaire extends GenericForm {
    public void setIdDocument(UUID idDocument) {
       this.idDocument = idDocument;
    }
-
 }

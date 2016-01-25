@@ -384,6 +384,22 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>168a</id>
+            <code>168-CaptureUnitaire-KO-CodeRND-Inconnu-DFCE-sans-MTOM</code>
+            <description>
+               On vérifie qu'une SoapFault spécifique est renvoyée lorsque l'application cliente envoie un code RND inconnu de DFCE sans le mode MTOM
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>168b</id>
+            <code>168-CaptureUnitaire-KO-CodeRND-Inconnu-DFCE-avec-MTOM</code>
+            <description>
+               On vérifie qu'une SoapFault spécifique est renvoyée lorsque l'application cliente envoie un code RND inconnu de DFCE avec le mode MTOM
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
 
       </CasTests>
 
@@ -1534,6 +1550,47 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>2352</id>
+            <code>2352-Recherche-Iterateur-KO-MauvaiseRequeteLucene</code>
+            <description>
+               Envoie d’une SoapFault suite à l’envoie d’une mauvaise requête lucène
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>2353</id>
+            <code>2353-Recherche-Iterateur-KO-MetadonneeConsultInexistante</code>
+            <description>
+               Envoie d’une SoapFault quand métadonnée inconnue en résultat est demandée
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>2354</id>
+            <code>2354-Recherche-Iterateur-KO-MetadonneeConsultNonAutorisee</code>
+            <description>
+               Envoie d’une SoapFault quand métadonnée interdite en résultat est demandée
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>2355</id>
+            <code>2355-Recherche-Iterateur-KO-MetadonneeRechercheNonAutorisee</code>
+            <description>
+               Envoie d’une SoapFault quand métadonnée n'est pas recherchable
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>2356</id>
+            <code>2356-Recherche-Iterateur-KO-MemeMeta2filtres</code>
+            <description>
+               Envoie d’une SoapFault quand les filtres de recherche travaillent sur la même métadonnée
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         
       </CasTests>
    </Categorie>
    
@@ -1770,12 +1827,31 @@
 
          <CasTest>
             <id>2099</id>
-            <code>2099-Consultation affichable-TestLibre</code>
+            <code>2000-Consultation affichable-TestLibre</code>
             <description>
                Test libre de la consultation affichable => pas de résultat attendu 
             </description>
             <implemente>true</implemente>
          </CasTest>
+         <CasTest>
+            <id>2001</id>
+            <code>2001-ConsultationAffichable-OK-avec-mtom</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne avec les valeurs par défaut. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2001-ConsultationAffichable-OK-defaut"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2004</id>
+            <code>2004-ConsultationAffichable-OK-10-pages</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en ne précisant que le nombre de pages que l’on souhaite consulter. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2004-consultationAffichable-OK-10-pages"</luceneExemple>
+         </CasTest>
+         
       </CasTests>
    </Categorie>
    
@@ -2321,6 +2397,123 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1755-Ged-Technique-KO-Modification-Valeur-Format-Non-Autorise"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1756</id>
+            <code>1756-Ged-Technique-KO-Ajout-Valeur-Meta-Vide-DFCE-KO</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible d’ajouter une valeur à une métadonnée vide pour un document donné quand DFCE est arrêté.                 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1756-Ged-Technique-KO-Ajout-Valeur-Meta-Vide-DFCE-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1757</id>
+            <code>1757-Ged-Technique-KO-Modification-Valeur-Meta-DFCE-KO</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de modifier une valeur à une métadonnée pour un document donné quand DFCE est arrêté.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1757-Ged-Technique-KO-Modification-Valeur-Meta-DFCE-KO"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>1758</id>
+            <code>1758-Ged-Technique-KO-Suppression-Valeur-Meta-DFCE-KO</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de supprimer une valeur à une métadonnée pour un document donné quand DFCE est arrêté.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1758-Ged-Technique-KO-Suppression-Valeur-Meta-DFCE-KO"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1759</id>
+            <code>1759-Ged-Technique-KO-AMS-Meme-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire : un ajout, une modification et une suppression d’une valeur sur la même métadonnée pour un document donné.  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1759-Ged-Technique-KO-AMS-Meme-Meta"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1760</id>
+            <code>1760-Ged-Technique-KO-AM-Meme-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire : un ajout et une modification d’une valeur sur la même métadonnée pour un document donné.  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1760-Ged-Technique-KO-AM-Meme-Meta"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1761</id>
+            <code>1761-Ged-Technique-KO-AS-Meme-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire : un ajout et une suppression d’une valeur sur la même métadonnée pour un document donné.  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1761-Ged-Technique-KO-AS-Meme-Meta"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1762</id>
+            <code>1762-Ged-Technique-KO-MS-Meme-Meta</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire : une modification et une suppression d’une valeur sur la même métadonnée pour un document donné.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1762-Ged-Technique-KO-MS-Meme-Meta"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1763</id>
+            <code>1763-Ged-Technique-KO-Modification-Meta-Inexistante</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire une modification sur une métadonnée inexistante.  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1763-Ged-Technique-KO-Modification-Meta-Inexistante"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1764</id>
+            <code>1764-Ged-Technique-KO-Modification-Meta-Doc-Inexistant</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de faire une modification sur une métadonnée inexistante.  
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1764-Ged-Technique-KO-Modification-Meta-Doc-Inexistant"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1765</id>
+            <code>1765-Ged-Technique-KO-Suppression-Meta-Inexistante</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de supprimer une métadonnée qui n’existe pas. Dans notre exemple nous prendrons le Titi.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1765-Ged-Technique-KO-Suppression-Meta-Inexistante"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1766</id>
+            <code>1766-Ged-Technique-KO-Ajout-Meta-Doc-Inexistant</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible d’ajouter une métadonnée sur un document inexistant.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1766-Ged-Technique-KO-Ajout-Meta-Doc-Inexistant"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1767</id>
+            <code>1767-Ged-Technique-KO-Suppression-Meta-Doc-Inexistant</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de supprimer une métadonnée sur un document inexistant.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1767-Ged-Technique-KO-Suppression-Meta-Doc-Inexistant"</luceneExemple>
+         </CasTest>
+        <CasTest>
+            <id>1768</id>
+            <code>1768-Ged-Technique-KO-Modification-Valeur-CodeRND-Inconnu</code>
+            <description>
+               Le but de ce test est de vérifier qu’il n’est pas possible de modifier la valeur de la métadonnée CodeRND d’un document archivé par une valeur inconnue de l’ADRN.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1768-Ged-Technique-KO-Modification-Valeur-CodeRND-Inconnu"</luceneExemple>
          </CasTest>
 
 

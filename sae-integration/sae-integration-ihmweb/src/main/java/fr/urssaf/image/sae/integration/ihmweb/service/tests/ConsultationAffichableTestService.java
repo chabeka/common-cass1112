@@ -291,7 +291,7 @@ public class ConsultationAffichableTestService {
 
       // Vérification du contenu (SHA-1) si fourni en paramètre + contenu base
       // 64
-      if (sha1attendu != null) {
+      if (sha1attendu != null) {         
          boolean testKoTemp = wsVerifSha1(response.getContenu(), sha1attendu,
                log);
          if (testKoTemp) {
@@ -519,12 +519,11 @@ public class ConsultationAffichableTestService {
 
       // Calcul du SHA-1
       String sha1obtenu = null;
-      try {
+      try {        
          sha1obtenu = ChecksumUtils.sha1(contenu.getInputStream());
-      } catch (IOException e) {
+      } catch (IOException e) {        
          throw new IntegrationRuntimeException(e);
       }
-
       // Comparaison des SHA-1
       if (!StringUtils.equalsIgnoreCase(sha1obtenu, sha1attendu)) {
          testKo = true;

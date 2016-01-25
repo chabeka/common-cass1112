@@ -39,6 +39,7 @@ public class Test212Controller extends
    }
 
    private String getDebutUrlEcde(int index) {
+    
       if (index == 0) {
          return getEcdeService()
                .construitUrlEcde(
@@ -55,6 +56,8 @@ public class Test212Controller extends
                      "SAE_INTEGRATION/20110822/CaptureMasse-212-CaptureMasse-Pile-OK-ECDE-local/",
                      index);
       }
+      
+      //return("");
    }
 
    /**
@@ -76,9 +79,9 @@ public class Test212Controller extends
       // initialisation de l'url non local pour l'appel de la capture de masse
       CaptureMasseFormulaire formCaptureNonLocal = formulaire
             .getCaptureMasseDeclenchementNonLocal();
-      formCaptureNonLocal.setUrlSommaire(getDebutUrlEcde(1) + "sommaire.xml");
+      
+      formCaptureNonLocal.setUrlSommaire(getDebutUrlEcde(1) + "sommaire.xml");      
       formCaptureNonLocal.getResultats().setStatus(TestStatusEnum.SansStatus);
-
       CaptureMasseResultatFormulaire formResultat = formulaire
             .getCaptureMasseResultat();
       formResultat.setUrlSommaire(getDebutUrlEcde(0) + "resultat.xml");
@@ -137,10 +140,26 @@ public class Test212Controller extends
       } else if ("3".equals(etape)) {
 
          etape3captureMasseLocalResultats(formulaire);
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
+
 
       } else if ("4".equals(etape)) {
 
          etape4captureMasseNonLocalResultats(formulaire);
+         // initialise l'identifiant de traitement de masse en lisant le fichier
+         // debut_traitement.flag
+         String idTdm = getCaptureMasseTestService().readIdTdmInDebutTrait(
+               formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+         ComptagesTdmFormulaire formComptage = formulaire
+               .getComptagesFormulaire();
+         formComptage.setIdTdm(idTdm);
+
 
       } else if ("5".equals(etape)) {
 

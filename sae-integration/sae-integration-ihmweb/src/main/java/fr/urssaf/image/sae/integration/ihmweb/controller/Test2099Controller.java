@@ -10,7 +10,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.service.SaeServiceTestS
 
 
 /**
- * 400-ConsultationAffichable-TestLibre
+ * 2000-ConsultationAffichable-TestLibre
  */
 @Controller
 @RequestMapping(value = "test2099")

@@ -148,7 +148,7 @@ public class Test1132Controller extends
 
          captureUnitaire(formulaire.getUrlServiceWeb(), formulaire
                .getCaptureUnitaire(), formulaire.getViFormulaire());
-
+         
       } else if ("2".equals(etape)) {
 
          captureMasseEtape1AppelWs(formulaire.getUrlServiceWeb(), formulaire);

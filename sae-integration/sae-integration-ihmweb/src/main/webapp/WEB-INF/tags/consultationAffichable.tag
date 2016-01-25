@@ -23,13 +23,13 @@ Etape <c:out value="${numeroEtape}"/> : Appel du service web de consultation
                </td>
             </tr>
             <tr style="vertical-align:top;">
-               <td>Code des m�tadonn�es souhait�es :</td>
+               <td>Code des metadonnees souhaitees :</td>
                <td>
                   <form:textarea path="${pathFormulaire}.codeMetadonnees" cssStyle="width:100%;height:150pt;" readonly="${readonly}" />
                </td>
             </tr>
             <tr>
-               <td>Num�ro de page :</td>
+               <td>Numero de page :</td>
                <td>
                   <form:input path="${pathFormulaire}.numeroPage" cssStyle="width:100%;" readonly="${readonly}" />
                </td>

@@ -246,7 +246,69 @@ public class Test101Commons {
       String numeroResultatRecherche = "1";
 
       MetadonneeValeurList valeursAttendues = new MetadonneeValeurList();
+      valeursAttendues.add("ApplicationProductrice", "ADELAIDE");
+      valeursAttendues.add("ApplicationTraitement", StringUtils.EMPTY);
+      valeursAttendues.add("CodeActivite", "3");
+      valeursAttendues.add("CodeCategorieV2", StringUtils.EMPTY);
+      valeursAttendues.add("CodeFonction", "2");
+      valeursAttendues.add("CodeOrganismeGestionnaire", "CER69");
+      valeursAttendues.add("CodeOrganismeProprietaire", "AC750");
+      valeursAttendues.add("CodePartenaire", StringUtils.EMPTY);
+      valeursAttendues.add("CodeProduitV2", StringUtils.EMPTY);
+      valeursAttendues.add("CodeRND", "2.3.1.1.12");
+      valeursAttendues.add("CodeSousCategorieV2", StringUtils.EMPTY);
+      valeursAttendues.add("CodeTraitementV2", StringUtils.EMPTY);
+      valeursAttendues.add("ContratDeService", SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
+      //valeursAttendues.add("DateArchivage",); // <= à vérifier "à la main"
+      valeursAttendues.add("DateArchivageGNT", StringUtils.EMPTY);
+      valeursAttendues.add("DateCourrierV2", StringUtils.EMPTY);
+      valeursAttendues.add("DateCreation", "2011-09-01");
+      //valeursAttendues.add("DateDebutConservation",); // <= à vérifier à la main
+      //valeursAttendues.add("DateFinConservation",); // <= à vérifier à la main
+      valeursAttendues.add("DateReception", StringUtils.EMPTY);
+      valeursAttendues.add("DateSignature", StringUtils.EMPTY);
+      valeursAttendues.add("Denomination", denomination);
+      valeursAttendues.add("DocumentArchivable", StringUtils.EMPTY);
+      valeursAttendues.add("DomaineComptable", StringUtils.EMPTY);
+      valeursAttendues.add("DomaineCotisant", "true");
+      valeursAttendues.add("DomaineRH", StringUtils.EMPTY);
+      valeursAttendues.add("DomaineTechnique", StringUtils.EMPTY);
+      valeursAttendues.add("DureeConservation", "1095");
+      valeursAttendues.add("FormatFichier", "fmt/354");
+      valeursAttendues.add("Gel", "false");
+      valeursAttendues.add("Hash", "a2f93f1f121ebba0faef2c0596f2f126eacae77b");
+      //IdGed
+      valeursAttendues.add("IdTraitementMasse", StringUtils.EMPTY);
+      valeursAttendues.add("IdTraitementMasseInterne", StringUtils.EMPTY);
+      valeursAttendues.add("JetonDePreuve", StringUtils.EMPTY);
+      valeursAttendues.add("NbPages", "2");
+      valeursAttendues.add("NniEmployeur", StringUtils.EMPTY);
+      valeursAttendues.add("NomFichier", "doc1.PDF");
+      // Note=[]
+      valeursAttendues.add("Note","[]"); // <= à vérifier à la main      
+      valeursAttendues.add("NumeroCompteExterne", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroCompteInterne", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroIdArchivage", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroIntControle", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroPersonne", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroRecours", StringUtils.EMPTY);
+      valeursAttendues.add("NumeroStructure", StringUtils.EMPTY);
+      valeursAttendues.add("Periode", StringUtils.EMPTY);
+      valeursAttendues.add("PseudoSiret", StringUtils.EMPTY);
+      valeursAttendues.add("RIBA", StringUtils.EMPTY);
+      valeursAttendues.add("RUM", StringUtils.EMPTY);
+      valeursAttendues.add("ReferenceDocumentaire", StringUtils.EMPTY);
+      valeursAttendues.add("Siren", StringUtils.EMPTY);
+      valeursAttendues.add("Siret", StringUtils.EMPTY);
+      valeursAttendues.add("SiteAcquisition", StringUtils.EMPTY);
+      valeursAttendues.add("TailleFichier", "56587");
+      valeursAttendues.add("Titre", "Attestation de vigilance");
+      valeursAttendues.add("TracabilitePostArchivage", StringUtils.EMPTY);
+      valeursAttendues.add("TracabilitePreArchivage", StringUtils.EMPTY);
+      valeursAttendues.add("TypeHash", "SHA-1");
+      valeursAttendues.add("VersionRND", testCommons.getTestConfig().getVersionRND());
 
+/*      
       valeursAttendues.add("Titre", "Attestation de vigilance");
       valeursAttendues.add("Periode", StringUtils.EMPTY);
       valeursAttendues.add("Siren", StringUtils.EMPTY);
@@ -294,7 +356,7 @@ public class Test101Commons {
       valeursAttendues.add("JetonDePreuve", StringUtils.EMPTY);
       valeursAttendues.add("RUM", StringUtils.EMPTY);
       // valeursAttendues.add("DateArchivage",); // <= à vérifier "à la main"
-
+*/
       testCommons.getRechercheTestService().verifieResultatRecherche(
             resultatRecherche, numeroResultatRecherche, resultatTest,
             valeursAttendues);

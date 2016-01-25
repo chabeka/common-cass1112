@@ -100,7 +100,7 @@ public class Test102Commons {
       metadonnees.add("CodeOrganismeGestionnaire", "CER69");
       metadonnees.add("CodeOrganismeProprietaire", "AC750");
       metadonnees.add("CodeRND", "2.3.1.1.12");
-      metadonnees.add("DateCreation", "2011-09-23");
+      metadonnees.add("DateCreation", "2010-09-23");
       metadonnees.add("DateDebutConservation", "2011-09-01");
       metadonnees.add("Denomination", getDenomination(numeroTest));
       metadonnees.add("FormatFichier", "fmt/354");

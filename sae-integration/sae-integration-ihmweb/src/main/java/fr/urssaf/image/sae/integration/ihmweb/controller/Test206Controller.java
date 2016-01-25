@@ -276,7 +276,7 @@ public class Test206Controller extends
       valeursAttendues.add("RUM", "24534Y8465435413Y012312356690123");
       valeursAttendues.add("Siren", "0123456789");
       valeursAttendues.add("Siret", "12345678912345");
-      valeursAttendues.add("SiteAcquisition", "CER44");
+      valeursAttendues.add("SiteAcquisition", "010");
       valeursAttendues.add("TailleFichier", "56587");
       valeursAttendues.add("Titre", "Attestation de vigilance");
       valeursAttendues.add("TracabilitePreArchivage",

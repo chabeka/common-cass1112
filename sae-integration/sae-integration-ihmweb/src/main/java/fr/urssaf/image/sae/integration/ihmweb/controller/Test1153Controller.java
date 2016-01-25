@@ -57,7 +57,7 @@ public class Test1153Controller extends
     * {@inheritDoc}
     */
    @Override
-   protected final TestFormulaireDrCmRe getFormulairePourGet() {
+        protected final TestFormulaireDrCmRe getFormulairePourGet() {
 
       TestFormulaireDrCmRe formulaire = new TestFormulaireDrCmRe();
       RechercheFormulaire formRecherche = formulaire.getRechercheFormulaire();
@@ -97,6 +97,8 @@ public class Test1153Controller extends
       PagmList pagmList = new PagmList();
       viForm.setPagms(pagmList);
       pagmList.add("INT_PAGM_ATT_VIGI_ARCH_MASSE");
+      
+      
 
       return formulaire;
 

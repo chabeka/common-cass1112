@@ -10,21 +10,22 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeRangeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 
 /**
- * 2300-Recherche-Par-Iterateur
+ * 2351-Recherche-Iterateur-KO-MetadonneeRechercheInexistante
  */
 @Controller
-@RequestMapping(value = "test2300")
-public class Test2300Controller extends AbstractTestWsController<TestWsRechercheParIterateurFormulaire> {
-   
+@RequestMapping(value = "test2355")
+public class Test2355Controller extends AbstractTestWsController<TestWsRechercheParIterateurFormulaire> {
+  
    /**
     * {@inheritDoc}
     */
    @Override
    protected final String getNumeroTest() {
-      return "2300";
+      return "2355";
    }
    
    /**
@@ -40,8 +41,9 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
        
       MetadonneeValeurList metaFixes = new MetadonneeValeurList();
       MetadonneeValeur metaVal = new MetadonneeValeur();
-      metaVal.setCode("Denomination");
-      metaVal.setValeur("Test 2300-Recherche-Iterateur-OK-Test-Libre");
+      metaVal.setCode("VersionRND");
+      metaVal.setValeur("11.1");
+     
       metaFixes.add(metaVal);
       formRecherche.setMetaFixes(metaFixes);
       
@@ -57,15 +59,7 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
       equalFilter.setValeur("true");
       metaEqualFilter.add(equalFilter);
       formRecherche.setEqualFilter(metaEqualFilter);
-      
-      /*
-      MetadonneeValeurList metaNotEqualFilter = new MetadonneeValeurList();
-      MetadonneeValeur notEqualFilter = new MetadonneeValeur();
-      notEqualFilter.setCode("NumeroRecours");
-      notEqualFilter.setValeur("5");
-      metaNotEqualFilter.add(notEqualFilter);
-      formRecherche.setNotEqualFilter(metaNotEqualFilter);
-        */    
+                 
       formRecherche.setNbDocParPage(50);
       
       CodeMetadonneeList codesMeta = new CodeMetadonneeList();
@@ -73,8 +67,10 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
       codesMeta.add("DateArchivage");
       codesMeta.add("DocumentArchivable");
       codesMeta.add("NumeroRecours");
+      
       formRecherche.setCodeMetadonnees(codesMeta);
       
+      //Pour initialiser le flag à côté du résultat cf NonLance
       formRecherche.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       return formulaire;
@@ -88,7 +84,13 @@ public class Test2300Controller extends AbstractTestWsController<TestWsRecherche
       recherche(form.getUrlServiceWeb(),form.getRecherche());
    }
    
-   private void recherche(String urlWebService, RechercheParIterateurFormulaire formulaire) {
-      getRechercheParIterateurTestService().appelWsOpRechercheParIterateurTestLibre(urlWebService, formulaire);
+   private void recherche(String urlServiceWeb, RechercheParIterateurFormulaire formulaire) {
+      
+      // Appel de la méthode de test
+      getRechercheParIterateurTestService().appelWsOpRechercheParIterateurSoapFault(
+            urlServiceWeb, formulaire, ViStyle.VI_OK,
+            "sae_RechercheMetadonneesInterdite",
+            new Object[] {"VersionRND"}
+            );
    }
 }
