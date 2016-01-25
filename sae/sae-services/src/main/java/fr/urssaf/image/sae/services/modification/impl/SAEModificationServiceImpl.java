@@ -112,7 +112,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
             if (document == null) {
                String message = StringUtils
                      .replace(
-                           "Il n'existe aucun document pour l'identifiant d'archivage {0}",
+                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
                            "{0}", idArchive.toString());
                throw new ArchiveInexistanteEx(message);
             }
