@@ -195,7 +195,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                      if (docAttache != null) {
                         storageTransfertService.addDocumentAttachment(
                               documentGNS.getUuid(), docAttache.getName(),
-                              docAttache.getExtension(), docAttache.getHash(),
+                              docAttache.getExtension(),
                               docAttache.getContenu());
                      }
                   } catch (StorageDocAttachmentServiceEx e) {
