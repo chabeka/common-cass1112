@@ -4,12 +4,9 @@ import fr.cirtil.www.saeservice.ArchivageUnitaire;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJ;
 import fr.cirtil.www.saeservice.ArchivageUnitairePJResponse;
 import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
-import fr.cirtil.www.saeservice.GetDocFormatOrigine;
-import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.StockageUnitaire;
 import fr.cirtil.www.saeservice.StockageUnitaireResponse;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
-import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
 
 /**
  * Service web de capture du SAE
