@@ -896,6 +896,43 @@ public class InsertionDonnees {
    }
    
    /**
+    * Ajout des données dans le référentiel des formats en V4 : <li>pdf</li>
+    */
+   public void addReferentielFormatV4() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+      
+      String nouveauFormat = "pdf";
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater(nouveauFormat);
+      addColumn("idFormat", nouveauFormat, StringSerializer.get(), StringSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Tous fichiers PDF sans précision de version", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "pdf", StringSerializer.get(), StringSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/pdf", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("convertisseur", "pdfSplitterImpl", StringSerializer
+            .get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", nouveauFormat);
+
+   }
+   
+   /**
     * Modification des données dans le référentiel des formats : Ajout d'un convertisseur pour le format <li>fmt/354</li>
     */
    public void modifyReferentielFormatFmt354() {

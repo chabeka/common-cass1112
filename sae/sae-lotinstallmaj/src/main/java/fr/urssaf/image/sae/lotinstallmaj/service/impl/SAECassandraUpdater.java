@@ -809,7 +809,13 @@ public class SAECassandraUpdater {
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
-          // On positionne la version à 14
+      // Insertion des données initiales
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout du format pdf (pour DEA)
+      donnees.addReferentielFormatV4();
+      
+      // On positionne la version à 14
       saeDao.setDatabaseVersion(VERSION_17);
    }
 }
