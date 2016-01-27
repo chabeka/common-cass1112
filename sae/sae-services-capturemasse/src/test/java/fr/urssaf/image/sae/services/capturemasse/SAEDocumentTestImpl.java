@@ -273,19 +273,17 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
 
    @Override
    public void addDocumentAttachmentBinaire(UUID docUuid, String docName,
-         String extension, DataHandler contenu)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
-         EmptyDocumentEx, EmptyFileNameEx {
+         String extension, DataHandler contenu) throws SAEDocumentAttachmentEx,
+         ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
    public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
-         EmptyDocumentEx, EmptyFileNameEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
@@ -301,16 +299,15 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
          EmptyFileNameEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
    public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx {
       // TODO Auto-generated method stub
-      
-   }
 
+   }
 
 }

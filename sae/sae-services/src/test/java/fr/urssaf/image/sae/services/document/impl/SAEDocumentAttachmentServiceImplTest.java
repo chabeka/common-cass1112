@@ -377,15 +377,15 @@ public class SAEDocumentAttachmentServiceImplTest {
     * Test qu'une exception est bien levée si le document auquel on souhaite
     * rattacher un document n'existe pas
     * 
-    * @throws EmptyFileNameEx
-    * @throws EmptyDocumentEx
     * @throws SAEDocumentAttachmentEx
     * @throws CaptureBadEcdeUrlEx
+    * @throws CaptureEcdeUrlFileNotFoundEx 
+    * @throws EmptyDocumentEx 
     */
    @Test
    public void ajoutDocAttacheTestDocUuidInexistant()
-         throws SAEDocumentAttachmentEx, EmptyDocumentEx, EmptyFileNameEx,
-         CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, 
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       UUID uuid = UUID.randomUUID();
       try {
@@ -404,16 +404,15 @@ public class SAEDocumentAttachmentServiceImplTest {
    /**
     * Test qu'une exception est bien levée si l'UUID est null
     * 
-    * @throws EmptyFileNameEx
-    * @throws EmptyDocumentEx
     * @throws SAEDocumentAttachmentEx
     * @throws ArchiveInexistanteEx
     * @throws CaptureBadEcdeUrlEx
+    * @throws CaptureEcdeUrlFileNotFoundEx 
     */
    @Test
    public void ajoutDocAttacheUrlDocUuidNullTest()
          throws SAEDocumentAttachmentEx, EmptyDocumentEx, EmptyFileNameEx,
-         ArchiveInexistanteEx, CaptureBadEcdeUrlEx {
+         ArchiveInexistanteEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");

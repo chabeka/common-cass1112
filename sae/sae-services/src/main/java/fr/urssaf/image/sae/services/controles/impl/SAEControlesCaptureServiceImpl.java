@@ -238,6 +238,41 @@ public class SAEControlesCaptureServiceImpl implements
       LOGGER.debug(LOG_FIN, prefixeTrc);
       // Fin des traces debug - sortie méthode
    }
+   
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void checkDocumentAttache(File docAttache)
+         throws EmptyDocumentEx {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "checkDocumentAttache()";
+      LOGGER.debug(LOG_DEBUT, prefixeTrc);
+      // Fin des traces debug - entrée méthode
+     
+      LOGGER
+            .debug(
+                  LOG_DEBUT_VERIF
+                        + "La taille du document attaché fournie par l'application cliente est supérieure à 0 octet",
+                  prefixeTrc);
+      if (docAttache.exists() && (docAttache.length() == 0)) {
+
+         LOGGER.debug("{} - {}", prefixeTrc, ResourceMessagesUtils.loadMessage(
+               "capture.fichier.vide", docAttache.getName()));
+         throw new EmptyDocumentEx(ResourceMessagesUtils.loadMessage(
+               "capture.fichier.vide", docAttache.getName()));
+
+      }
+      LOGGER
+            .debug(
+                  LOG_FIN_VERIF
+                        + "La taille du document attcahé fournie par l'application cliente est supérieure à 0 octet",
+                  prefixeTrc);
+      // Traces debug - sortie méthode
+      LOGGER.debug(LOG_FIN, prefixeTrc);
+      // Fin des traces debug - sortie méthode
+   }
 
    /**
     * {@inheritDoc}

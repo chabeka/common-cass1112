@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.services.controles;
 
+import java.io.File;
 import java.util.List;
 
 import javax.activation.DataHandler;
@@ -236,5 +237,16 @@ public interface SAEControlesCaptureService {
    ControleFormatSucces checkFormat(String contexte, SAEDocument saeDocument,
          List<FormatControlProfil> listControlProfil)
          throws UnknownFormatException, ValidationExceptionInvalidFile;
+
+   /**
+    * Permet de vérifier que le document attaché fourni par l'application
+    * cliente n'est pas vide
+    * 
+    * @param docAttache
+    *           le document attaché
+    * @throws EmptyDocumentEx
+    *            {@link EmptyDocumentEx}
+    */
+   void checkDocumentAttache(File docAttache) throws EmptyDocumentEx;
 
 }

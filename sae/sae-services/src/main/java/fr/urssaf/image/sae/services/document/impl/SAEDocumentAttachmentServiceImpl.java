@@ -222,8 +222,8 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
    @Override
    public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "addDocumentAttachmentUrl()";
@@ -239,6 +239,7 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
          // chargement du document de l'ECDE
          File ecdeFile = loadEcdeFile(ecdeURL);
+         controlesService.checkDocumentAttache(ecdeFile);
 
          String docName = FilenameUtils.getBaseName(ecdeFile.getName());
          String extension = FilenameUtils.getExtension(ecdeFile.getName());
@@ -268,8 +269,6 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
       } catch (MappingFromReferentialException e) {
          throw new SAEDocumentAttachmentEx(e);
       } catch (StorageDocAttachmentServiceEx e) {
-         throw new SAEDocumentAttachmentEx(e);
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
          throw new SAEDocumentAttachmentEx(e);
       }
 
@@ -504,8 +503,8 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
    @Override
    public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "addDocumentAttachmentUrlRollbackParent()";
@@ -521,6 +520,7 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
          // chargement du document de l'ECDE
          File ecdeFile = loadEcdeFile(ecdeURL);
+         controlesService.checkDocumentAttache(ecdeFile);
 
          String docName = FilenameUtils.getBaseName(ecdeFile.getName());
          String extension = FilenameUtils.getExtension(ecdeFile.getName());
@@ -560,7 +560,35 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
       } catch (StorageDocAttachmentServiceEx e) {
          rollBackDocumentParent(docUuid, e);
       } catch (CaptureEcdeUrlFileNotFoundEx e) {
-         rollBackDocumentParent(docUuid, e);
+         try {
+            storageService.deleteStorageDocument(docUuid);
+            throw e;
+         } catch (DeletionServiceEx e1) {
+
+            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+                  + docUuid + ") n'a pas été effectué";
+            throw new SAEDocumentAttachmentEx(message, e);
+         }
+      } catch (CaptureBadEcdeUrlEx e) {
+         try {
+            storageService.deleteStorageDocument(docUuid);
+            throw e;
+         } catch (DeletionServiceEx e1) {
+
+            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+                  + docUuid + ") n'a pas été effectué";
+            throw new SAEDocumentAttachmentEx(message, e);
+         }
+      } catch (EmptyDocumentEx e) {
+         try {
+            storageService.deleteStorageDocument(docUuid);
+            throw e;
+         } catch (DeletionServiceEx e1) {
+
+            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+                  + docUuid + ") n'a pas été effectué";
+            throw new SAEDocumentAttachmentEx(message, e);
+         }
       }
 
    }

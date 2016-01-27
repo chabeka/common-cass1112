@@ -523,7 +523,8 @@ public class WSCaptureServiceImpl implements WSCaptureService {
             String docName = FilenameUtils.getBaseName(nomFichier);
             String extension = FilenameUtils.getExtension(nomFichier);
 
-            ajouterDocAttacherBinaireRollbackParent(uuid, docName, extension, dataHandler);
+            ajouterDocAttacherBinaireRollbackParent(uuid, docName, extension,
+                  dataHandler);
 
          } else {
 
@@ -561,11 +562,13 @@ public class WSCaptureServiceImpl implements WSCaptureService {
       return response;
    }
 
-   private void ajouterDocAttacherBinaireRollbackParent(UUID docUuid, String name,
-         String extension, DataHandler contenu) throws CaptureAxisFault {
+   private void ajouterDocAttacherBinaireRollbackParent(UUID docUuid,
+         String name, String extension, DataHandler contenu)
+         throws CaptureAxisFault {
 
       try {
-         documentService.addDocumentAttachmentBinaireRollbackParent(docUuid, name, extension, contenu);
+         documentService.addDocumentAttachmentBinaireRollbackParent(docUuid,
+               name, extension, contenu);
       } catch (SAEDocumentAttachmentEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
@@ -585,22 +588,22 @@ public class WSCaptureServiceImpl implements WSCaptureService {
          throws CaptureAxisFault {
 
       try {
-         documentService.addDocumentAttachmentUrlRollbackParent(docUuid, ecdeURL);
+         documentService.addDocumentAttachmentUrlRollbackParent(docUuid,
+               ecdeURL);
       } catch (SAEDocumentAttachmentEx e) {
          throw new CaptureAxisFault("ErreurInterneCapture",
                wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
                      null), e);
       } catch (ArchiveInexistanteEx e) {
          throw new CaptureAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
-      } catch (EmptyDocumentEx e) {
-         throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
-      } catch (EmptyFileNameEx e) {
-         throw new CaptureAxisFault("NomFichierVide",
-               wsMessageRessourcesUtils.recupererMessage("ws.capture.error",
-                     null), e);
       } catch (CaptureBadEcdeUrlEx e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
                e);
+      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
+      } catch (EmptyDocumentEx e) {
+         throw new CaptureAxisFault("CaptureFichierVide", e.getMessage(), e);
       }
 
    }

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentAttachmentEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
@@ -72,9 +73,10 @@ public interface SAEDocumentAttachmentService {
     *            Le nom du fichier est vide
     */
    @PreAuthorize("hasRole('ajout_doc_attache')")
-   void addDocumentAttachmentBinaireRollbackParent(UUID docUuid, String docName,
-         String extension, DataHandler contenu) throws SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx;
+   void addDocumentAttachmentBinaireRollbackParent(UUID docUuid,
+         String docName, String extension, DataHandler contenu)
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
+         EmptyFileNameEx;
 
    /**
     * Permet de rajouter un document attaché (par URL) à un document
@@ -89,17 +91,16 @@ public interface SAEDocumentAttachmentService {
     * @throws ArchiveInexistanteEx
     *            L'archive sur laquelle on souhaite ajouter un document attaché
     *            n'existe pas
-    * @throws EmptyDocumentEx
-    *            Le contenu du document attaché est vide
-    * @throws EmptyFileNameEx
-    *            Le nom du fichier est vide
     * @throws CaptureBadEcdeUrlEx
     *            L'URL du document est incorrecte
+    * @throws CaptureEcdeUrlFileNotFoundEx
+    * @throws EmptyDocumentEx
+    *            Le fichier est vide
     */
    @PreAuthorize("hasRole('ajout_doc_attache')")
    void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx;
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx;
 
    /**
     * Méthode de récupération du document attaché
@@ -116,7 +117,6 @@ public interface SAEDocumentAttachmentService {
    StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx;
 
-   
    /**
     * Permet de rajouter un document attaché (par URL) à un document. Si il y a
     * une erreur lors de l'ajout du document, le document parent sera supprimé
@@ -133,16 +133,16 @@ public interface SAEDocumentAttachmentService {
     * @throws ArchiveInexistanteEx
     *            L'archive sur laquelle on souhaite ajouter un document attaché
     *            n'existe pas
-    * @throws EmptyDocumentEx
-    *            Le contenu du document attaché est vide
-    * @throws EmptyFileNameEx
-    *            Le nom du fichier est vide
+    * @throws CaptureEcdeUrlFileNotFoundEx
+    *            Le fichier n'existe pas
     * @throws CaptureBadEcdeUrlEx
     *            L'URL du document est incorrecte
+    * @throws EmptyDocumentEx
+    *            Le document attaché est vide
     */
    @PreAuthorize("hasRole('ajout_doc_attache')")
    void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx;
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx;
 
 }

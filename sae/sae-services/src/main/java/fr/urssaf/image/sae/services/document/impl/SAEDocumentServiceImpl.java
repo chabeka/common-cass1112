@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.services.exception.SAEDocumentAttachmentEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -187,8 +188,8 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     */
    @Override
    public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
       saeDocumentAttachmentService.addDocumentAttachmentUrl(docUuid, ecdeURL);
    }
 
@@ -216,8 +217,8 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
 
    @Override
    public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx, CaptureBadEcdeUrlEx {
+         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
+         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       saeDocumentAttachmentService.addDocumentAttachmentUrlRollbackParent(
             docUuid, ecdeURL);
