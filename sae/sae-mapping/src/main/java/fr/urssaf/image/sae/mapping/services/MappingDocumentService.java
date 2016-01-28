@@ -6,11 +6,13 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
@@ -201,6 +203,25 @@ public interface MappingDocumentService {
     */
    SAEVirtualDocument untypedVirtualDocumentToSaeVirtualDocument(
          final UntypedVirtualDocument document) throws InvalidSAETypeException,
+         MappingFromReferentialException;
+   
+   
+   /**
+    * Service de conversion d’un objet de type {@link StorageDocumentAttachment}
+    * 
+    * }vers un objet de type{@link UntypedDocumentAttachment}.
+    * 
+    * @param storage
+    *           : un document de type {@link StorageDocumentAttachment}.
+    * @return un objet de type {@link UntypedDocumentAttachment}
+    * @throws InvalidSAETypeException
+    *            Exception levée lorsque la conversion ne se passe pas bien.
+    * @throws MappingFromReferentialException
+    *            Exception levée lorsque la récupération de la métadata du
+    *            référentiel n'abouti pas
+    */
+   UntypedDocumentAttachment storageDocumentAttachmentToUntypedDocumentAttachment(
+         final StorageDocumentAttachment storage) throws InvalidSAETypeException,
          MappingFromReferentialException;
 
 }

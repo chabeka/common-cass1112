@@ -14,6 +14,7 @@ import org.apache.commons.lang.ArrayUtils;
 import fr.urssaf.image.sae.bo.model.AbstractMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
@@ -32,7 +33,6 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
@@ -287,7 +287,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
    }
 
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws SAEDocumentAttachmentEx {
       // TODO Auto-generated method stub
       return null;

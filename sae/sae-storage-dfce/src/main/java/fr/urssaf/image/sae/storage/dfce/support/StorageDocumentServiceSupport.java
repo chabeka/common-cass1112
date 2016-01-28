@@ -709,7 +709,8 @@ public class StorageDocumentServiceSupport {
 
                storageDocAtt = new StorageDocumentAttachment(docUuid,
                      attachment.getFilename(), attachment.getExtension(),
-                     attachment.getDigest(), contenu);
+                     attachment.getDigest(), attachment.getArchivageDate(),
+                     contenu);
 
                log.debug("{} - Sortie", prefixeTrc);
             }

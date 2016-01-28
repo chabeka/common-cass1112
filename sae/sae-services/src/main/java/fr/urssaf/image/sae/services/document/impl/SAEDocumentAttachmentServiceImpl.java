@@ -22,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -338,7 +339,7 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
    }
 
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       // Traces debug - entrée méthode
       String prefixeTrc = "getDocumentAttachment()";
@@ -391,7 +392,13 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
             LOG.debug("{} - Sortie", prefixeTrc);
             // Fin des traces debug - sortie méthode
 
-            return documentAttache;
+            if (documentAttache != null) {
+               UntypedDocumentAttachment uDocumentAttache = this.mappingService
+                     .storageDocumentAttachmentToUntypedDocumentAttachment(documentAttache);
+               return uDocumentAttache;
+            } else {
+               return null;
+            }
 
          } else {
             String message = StringUtils

@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.model.storagedocument;
 
+import java.util.Date;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -28,7 +29,12 @@ public class StorageDocumentAttachment {
     * Empreinte de contrôle de la pièce jointe
     */
    private String hash;
-
+   
+   /**
+    * Date d'archivage
+    */
+   private Date dateArchivage;
+   
    /**
     * Contenu de la pièce jointe
     */
@@ -49,12 +55,13 @@ public class StorageDocumentAttachment {
     *           Contenu de la pièce jointe
     */
    public StorageDocumentAttachment(UUID docUuid, String name,
-         String extension, String hash, DataHandler contenu) {
+         String extension, String hash, Date dateArchivage, DataHandler contenu) {
       this.docUuid = docUuid;
       this.name = name;
       this.extension = extension;
       this.hash = hash;
       this.contenu = contenu;
+      this.dateArchivage = dateArchivage;
    }
 
    /**
@@ -130,6 +137,20 @@ public class StorageDocumentAttachment {
     */
    public void setContenu(DataHandler contenu) {
       this.contenu = contenu;
+   }
+
+   /**
+    * @return the dateArchivage
+    */
+   public Date getDateArchivage() {
+      return dateArchivage;
+   }
+
+   /**
+    * @param dateArchivage the dateArchivage to set
+    */
+   public void setDateArchivage(Date dateArchivage) {
+      this.dateArchivage = dateArchivage;
    }
 
 }

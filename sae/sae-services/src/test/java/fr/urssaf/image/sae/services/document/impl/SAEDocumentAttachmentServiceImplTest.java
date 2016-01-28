@@ -38,6 +38,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -263,19 +264,21 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       docAttService.addDocumentAttachmentUrl(uuid, urlEcdeDocument);
 
-      StorageDocumentAttachment storagedocAtt = docAttService
+      UntypedDocumentAttachment storagedocAtt = docAttService
             .getDocumentAttachment(uuid);
 
       if (storagedocAtt != null) {
          assertEquals("UUID du document incorrect", uuid,
                storagedocAtt.getDocUuid());
-         assertEquals("L'extension est invalide", "pdf",
-               storagedocAtt.getExtension());
-         assertEquals("Le nom est invalide", "attestation_consultation",
-               storagedocAtt.getName());
-         assertEquals("Le hash est invalide", StringUtils.upperCase(hash),
-               StringUtils.upperCase(storagedocAtt.getHash()));
-
+         
+         List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
+         for (UntypedMetadata untypedMetadata : metadonnees) {
+            if (untypedMetadata.getLongCode().equals("NomFichier")) {
+               assertEquals("Le nom de fichier est invalide", "attestation_consultation.pdf",
+                     untypedMetadata.getValue());
+            }
+         }
+         
       } else {
          fail("Un document attaché devrait être trouvé");
       }
@@ -349,18 +352,19 @@ public class SAEDocumentAttachmentServiceImplTest {
       docAttService.addDocumentAttachmentBinaire(uuid,
             "attestation_consultation", "pdf", contenu);
 
-      StorageDocumentAttachment storagedocAtt = docAttService
+      UntypedDocumentAttachment storagedocAtt = docAttService
             .getDocumentAttachment(uuid);
 
       if (storagedocAtt != null) {
          assertEquals("UUID du document incorrect", uuid,
                storagedocAtt.getDocUuid());
-         assertEquals("L'extension est invalide", "pdf",
-               storagedocAtt.getExtension());
-         assertEquals("Le nom est invalide", "attestation_consultation",
-               storagedocAtt.getName());
-         assertEquals("Le hash est invalide", StringUtils.upperCase(hash),
-               StringUtils.upperCase(storagedocAtt.getHash()));
+         List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
+         for (UntypedMetadata untypedMetadata : metadonnees) {
+            if (untypedMetadata.getLongCode().equals("NomFichier")) {
+               assertEquals("Le nom de fichier est invalide", "attestation_consultation.pdf",
+                     untypedMetadata.getValue());
+            }
+         }
 
       } else {
          fail("Un document attaché devrait être trouvé");
@@ -944,7 +948,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
 
-      StorageDocumentAttachment doc = docAttService.getDocumentAttachment(uuid);
+      UntypedDocumentAttachment doc = docAttService.getDocumentAttachment(uuid);
       assertEquals("Le document attaché doit être null", null, doc);
    }
 

@@ -7,13 +7,13 @@ import javax.activation.DataHandler;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentAttachmentEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 
 /**
  * Interface du service de gestion des pièces attachées d’un document
@@ -114,7 +114,7 @@ public interface SAEDocumentAttachmentService {
     * @throws ArchiveInexistanteEx
     */
    @PreAuthorize("hasRole('consultation')")
-   StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx;
 
    /**

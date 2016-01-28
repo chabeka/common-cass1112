@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.bo.model.AbstractMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
 import fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl;
@@ -40,9 +41,7 @@ import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownFiltresMetadataEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
-import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
@@ -199,7 +198,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws ArchiveInexistanteEx
     */
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       return saeDocumentAttachmentService.getDocumentAttachment(docUuid);
 

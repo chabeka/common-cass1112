@@ -30,7 +30,7 @@ public class SAEDocumentAttachmentServiceValidation {
          + SAEDOCUMENTATTACHMENTCLASS
          + "addDocumentAttachmentUrl(*,*))"
          + "&& args(docUuid, ecdeURL)";
-   private static final String PARAM_GET = "execution(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment "
+   private static final String PARAM_GET = "execution(fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment "
          + SAEDOCUMENTATTACHMENTCLASS
          + "getDocumentAttachment(*))"
          + "&& args(docUuid)";

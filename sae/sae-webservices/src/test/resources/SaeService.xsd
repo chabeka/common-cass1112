@@ -680,7 +680,6 @@
    </xsd:complexType>
    <xsd:complexType name="getDocFormatOrigineResponseType">
       <xsd:sequence>
-
          <xsd:annotation>
             <xsd:documentation>
                Valeur de retour de l'opération
@@ -688,7 +687,15 @@
             </xsd:documentation>
          </xsd:annotation>
          <xsd:element name="contenu" type="xsd:base64Binary" />
-
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées associées au document
+                  au format d'origine,
+                  sous forme d'une liste de paire
+                  clé/valeur
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
       </xsd:sequence>
    </xsd:complexType>
    <xsd:complexType name="modificationRequestType">

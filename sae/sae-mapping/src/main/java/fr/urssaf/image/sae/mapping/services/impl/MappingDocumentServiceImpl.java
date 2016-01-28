@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.mapping.services.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.FilenameUtils;
@@ -13,6 +14,7 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.bo.SAEVirtualDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedVirtualDocument;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
@@ -23,6 +25,7 @@ import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 
@@ -41,7 +44,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings( { "PMD.AvoidInstantiatingObjectsInLoops",
+   @SuppressWarnings({ "PMD.AvoidInstantiatingObjectsInLoops",
          "PMD.DataflowAnomalyAnalysis" })
    public StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException {
@@ -161,8 +164,8 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       } else {
          name = FilenameUtils.getBaseName(storage.getFilePath());
       }
-      UntypedDocument untypedDocument = new UntypedDocument(storage
-            .getContent(), storage.getFilePath(), name, metadatas);
+      UntypedDocument untypedDocument = new UntypedDocument(
+            storage.getContent(), storage.getFilePath(), name, metadatas);
       untypedDocument.setUuid(storage.getUuid());
       return untypedDocument;
    }
@@ -182,9 +185,9 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
       String filePath = document.getReference().getFilePath();
       String fileName = FilenameUtils.getBaseName(filePath);
-      fileName = fileName.concat("_").concat(
-            String.valueOf(document.getStartPage())).concat("_").concat(
-            String.valueOf(document.getEndPage()));
+      fileName = fileName.concat("_")
+            .concat(String.valueOf(document.getStartPage())).concat("_")
+            .concat(String.valueOf(document.getEndPage()));
       storageDocument.setFileName(fileName);
 
       for (SAEMetadata metadata : Utils.nullSafeIterable(document
@@ -316,4 +319,50 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
    }
 
+   @Override
+   public UntypedDocumentAttachment storageDocumentAttachmentToUntypedDocumentAttachment(
+         StorageDocumentAttachment storage) throws InvalidSAETypeException,
+         MappingFromReferentialException {
+
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+
+      storage.getContenu();
+
+      try {
+         /**
+          * Afin de retourner une liste de métadonnées lors de la consultation
+          * d'un document attaché, on construit une liste de métadonnées à
+          * partir des attributs du document attaché
+          */
+         // Date d'archivage
+         Date dateArchivage = storage.getDateArchivage();
+         MetadataReference reference;
+
+         reference = referenceDAO.getByShortCode("SM_ARCHIVAGE_DATE");
+         metadatas.add(new UntypedMetadata(reference.getLongCode(), Utils
+               .convertToString(dateArchivage, reference)));
+
+         // Nom du fichier
+         String nom = storage.getName();
+         String extension = storage.getExtension();
+         reference = referenceDAO.getByShortCode("nfi");
+         metadatas.add(new UntypedMetadata(reference.getLongCode(), nom.concat(
+               ".").concat(extension)));
+
+         // Hash
+         String hash = storage.getHash();
+         reference = referenceDAO.getByShortCode("SM_DIGEST");
+         metadatas.add(new UntypedMetadata(reference.getLongCode(), Utils
+               .convertToString(hash, reference)));
+
+         UntypedDocumentAttachment untypedDocument = new UntypedDocumentAttachment(
+               storage.getDocUuid(), storage.getContenu(), metadatas);
+
+         return untypedDocument;
+      } catch (ReferentialException e) {
+         throw new MappingFromReferentialException(e);
+      } catch (ParseException e) {
+         throw new InvalidSAETypeException(e);
+      }
+   }
 }
