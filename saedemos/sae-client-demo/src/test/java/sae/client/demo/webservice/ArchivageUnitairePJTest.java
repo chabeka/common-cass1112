@@ -43,10 +43,10 @@ public class ArchivageUnitairePJTest {
       //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf
       //
       // L'URL ECDE correspondant à ce fichier "doc1.PDF" est :
-      //  => ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf
+      //  => ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf
       
       // URL ECDE du fichier à archiver
-      String urlEcdeFichier = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
+      String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
       
       // Métadonnées associées au document à archiver
       HashMap<String,String> metadonnees = new HashMap<String,String>();
@@ -176,7 +176,7 @@ public class ArchivageUnitairePJTest {
     * Le SAE renvoie la SoapFault suivante :<br>
     * <ul>
     *    <li>Code : sae:CaptureUrlEcdeFichierIntrouvable</li>
-    *    <li>Message : Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf)</li>
+    *    <li>Message : Le fichier pointé par l'URL ECDE est introuvable (ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf)</li>
     * </ul>
     */
    @Test
@@ -184,7 +184,7 @@ public class ArchivageUnitairePJTest {
       
       // URL ECDE du fichier à archiver
       // L'URL pointe sur un fichier qui n'existe pas
-      String urlEcdeFichier = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf";
+      String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf";
       
       // Métadonnées associées au document à archiver
       HashMap<String,String> metadonnees = new HashMap<String,String>();
@@ -229,7 +229,7 @@ public class ArchivageUnitairePJTest {
                "urn:sae:faultcodes",
                "sae",
                "CaptureUrlEcdeFichierIntrouvable",
-               "Le fichier pointé par l'URL ECDE est introuvable (ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf)");
+               "Le fichier pointé par l'URL ECDE est introuvable (ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf)");
          
       } catch (RemoteException exception) {
          

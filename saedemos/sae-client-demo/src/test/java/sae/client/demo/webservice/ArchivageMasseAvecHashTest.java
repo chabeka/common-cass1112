@@ -42,12 +42,12 @@ public class ArchivageMasseAvecHashTest {
       //  - Le hash SHA-1 du sommaire.xml a été calculé 
       // 
       // L'URL ECDE correspondant au sommaire.xml est :
-      //  => ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml
+      //  => ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml
       // Le hash SHA-1 du sommaire.xml est :
       //  => bbf4df5e743c1dace7f50034c4f3863d9a9f0d43
       
       // URL ECDE du fichier sommaire.xml
-      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
       
       // Hash SHA-1 du fichier sommaire.xml
       String typeHash = "SHA-1";
@@ -90,7 +90,7 @@ public class ArchivageMasseAvecHashTest {
    public void archivageMasse_failure() {
       
       // URL ECDE du fichier sommaire.xml
-      String urlEcdeSommaire = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
+      String urlEcdeSommaire = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement002_ArchivageMasse/sommaire.xml";
       
       // Hash SHA-1 du fichier sommaire.xml.
       // Le hash est faux

@@ -39,10 +39,10 @@ public class ArchivageUnitaireTest {
       //     [RacineEcdeDuMontageNfsCoteClient]/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.PDF
       //
       // L'URL ECDE correspondant à ce fichier "doc1.PDF" est :
-      //  => ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf
+      //  => ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf
       
       // URL ECDE du fichier à archiver
-      String urlEcdeFichier = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
+      String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
       
       // Métadonnées associées au document à archiver
       HashMap<String,String> metadonnees = new HashMap<String,String>();
@@ -95,7 +95,7 @@ public class ArchivageUnitaireTest {
    public void archivageUnitaire_failure() {
       
       // URL ECDE du fichier à archiver
-      String urlEcdeFichier = "ecde://cer69-saeint3.cer69.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
+      String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
       
       // Métadonnées associées au document à archiver
       HashMap<String,String> metadonnees = new HashMap<String,String>();

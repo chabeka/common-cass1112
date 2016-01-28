@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -34,6 +35,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.DataFileType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlType;
 import sae.client.demo.webservice.modele.SaeServiceStub.FiltreType;
+import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigine;
+import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigineRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.IdentifiantPageType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeType;
@@ -54,6 +57,10 @@ import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequetePrincipaleType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
+import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaire;
+import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type0;
+import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type1;
 import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Transfert;
@@ -892,6 +899,135 @@ public final class Axis2ObjectFactory {
       // Renvoie du paramètre d'entrée de l'opération ajoutNote
       return ajoutNote;
 
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeFichier
+    *           l'URL ECDE du fichier à archiver
+    * @param urlEcdeFichierFormatOrigine
+    *           L'URL ECDE du fichier au format d'originie à rattacher
+    * @param metadonnees
+    *           les métadonnées à associer au fichier
+    * @return le paramètre d'entrée de l'opération "stockageUnitaire"
+    */
+   public static StockageUnitaire contruitParamsEntreeStockageUnitaireAvecUrlEcde(
+         String urlEcdeFichier, String urlEcdeFichierFormatOrigine,
+         Map<String, String> metadonnees) {
+
+      StockageUnitaire stockageUnitaire = new StockageUnitaire();
+      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+      stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
+
+      // URL ECDE du document parent
+      EcdeUrlType ecdeUrlFichier = buildEcdeUrl(urlEcdeFichier);
+      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      stockageUnitaireRequest
+            .setStockageUnitaireRequestTypeChoice_type0(choice0);
+      choice0.setUrlEcdeDoc(ecdeUrlFichier);
+
+      // Métadonnées
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
+
+      // URL ECDE du document au format d'origine
+      EcdeUrlType ecdeUrlFichierFormatOrigine = buildEcdeUrl(urlEcdeFichierFormatOrigine);
+      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      stockageUnitaireRequest
+            .setStockageUnitaireRequestTypeChoice_type1(choice1);
+      choice1.setUrlEcdeDocOrigine(ecdeUrlFichierFormatOrigine);
+
+      return stockageUnitaire;
+
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param nomFichier
+    *           le nom du fichier à archiver
+    * @param contenu
+    *           le flux pointant vers le fichier à archiver
+    * @param nomFichier
+    *           le nom du fichier au format d'origine à rattacher
+    * @param contenu
+    *           le flux pointant vers le fichier au format d'origine à rattacher
+    * @param metadonnees
+    *           les métadonnées à associer au fichier
+    * @return le paramètre d'entrée de l'opération "stockageUnitaire"
+    */
+   public static StockageUnitaire contruitParamsEntreeStockageUnitaireavecContenu(
+         String nomFichier, InputStream contenu,
+         String nomFichierFormatOrigine, InputStream contenuFormatOrigine,
+         Map<String, String> metadonnees) {
+
+      StockageUnitaire stockageUnitaire = new StockageUnitaire();
+      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+      stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
+
+      // Nom et contenu du fichier
+      DataFileType dataFile = new DataFileType();
+      dataFile.setFileName(nomFichier);
+      byte[] contenuBytes;
+      try {
+         contenuBytes = IOUtils.getStreamAsByteArray(contenu);
+      } catch (IOException e) {
+         throw new DemoRuntimeException(e);
+      }
+      ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
+      DataHandler dataHandler = new DataHandler(byteArray);
+      dataFile.setFile(dataHandler);
+      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type0(choice0);
+      choice0.setDataFileDoc(dataFile);
+      
+      // Nom et contenu du fichier au format d'origine
+      DataFileType dataFileFormatOrigine = new DataFileType();
+      dataFileFormatOrigine.setFileName(nomFichierFormatOrigine);
+      byte[] contenuBytesFormatOrigine;
+      try {
+         contenuBytesFormatOrigine = IOUtils.getStreamAsByteArray(contenuFormatOrigine);
+      } catch (IOException e) {
+         throw new DemoRuntimeException(e);
+      }
+      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(contenuBytesFormatOrigine);
+      DataHandler dataHandlerFormatOrigine = new DataHandler(byteArrayFormatOrigine);
+      dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
+      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type1(choice1);
+      choice1.setDataFileAttached(dataFileFormatOrigine);
+
+      // Métadonnées
+      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
+
+      // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
+      return stockageUnitaire;
+
+   }
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * @param uuidDocParent L'UUID du document dont on cherche le document au format d'origine
+    * @return le paramètre d'entrée de l'opération "getDocFormatOrigine"
+    */
+   public static GetDocFormatOrigine contruitParamsEntreeGetDocFormatOrigine(UUID uuidDocParent) {
+      
+      GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
+      GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
+      getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
+
+      // UUID du document parent
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuidDocParent.toString());
+      getDocFormatOrigineRequest.setIdDoc(uuidType);
+      
+      return getDocFormatOrigine;
+      
    }
 
 }
