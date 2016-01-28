@@ -20,6 +20,8 @@ public enum StorageTechnicalMetadatas {
 	      SystemFieldName.SM_LIFE_CYCLE_REFERENCE_DATE.toString()),
 	// Gel du document
 	GEL("Gel", "gel"),
+	// DocFormatOrigine
+   DOC_FORMAT_ORIGINE("DocFormatOrigine", "dfo"),
 	// TracabilitePostArchivage
 	TRACABILITE_POST_ARCHIVAGE("TracabilitePostArchivage", "toa"),
 	// Le hash
@@ -55,6 +57,7 @@ public enum StorageTechnicalMetadatas {
 	NOTE("Note","not"),
 	// Identifiant unique du document
    IDGED("IdGed", SystemFieldName.SM_UUID.toString());
+	
 	// Le code court de la métadonnée.
 	private String shortCode;
 

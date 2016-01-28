@@ -3605,4 +3605,27 @@
 		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
+    <ns1:metaReference>
+      <ns1:longCode>DocFormatOrigine</ns1:longCode>
+      <ns1:shortCode>dfo</ns1:shortCode>
+      <ns1:type>Boolean</ns1:type>
+      <ns1:requiredForArchival>non</ns1:requiredForArchival>
+      <ns1:requiredForStorage>non</ns1:requiredForStorage>
+      <ns1:consultable>oui</ns1:consultable>
+      <ns1:defaultConsultable>non</ns1:defaultConsultable>
+      <ns1:searchable>non</ns1:searchable>
+      <ns1:internal>oui</ns1:internal>
+      <ns1:archivable>non</ns1:archivable>
+      <ns1:label>Existence document au format d'origine</ns1:label>
+      <ns1:description>Permet de déterminer si le document possède un document attaché au format d'origine</ns1:description>
+      <ns1:hasDictionary>non</ns1:hasDictionary>
+      <ns1:isIndexed>non</ns1:isIndexed>
+      <ns1:modifiable>non</ns1:modifiable>
+      <ns1:clientAvailable>oui</ns1:clientAvailable>
+      <ns1:leftTrimable>non</ns1:leftTrimable>
+      <ns1:rightTrimable>non</ns1:rightTrimable>
+      <ns1:transferable>non</ns1:transferable>
+      <ns1:aCreer>oui</ns1:aCreer>
+      <ns1:aModifier>non</ns1:aModifier>
+   </ns1:metaReference>
 </ns1:referentiel>

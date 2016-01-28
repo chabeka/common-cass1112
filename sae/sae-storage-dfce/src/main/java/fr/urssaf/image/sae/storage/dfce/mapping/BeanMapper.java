@@ -494,6 +494,14 @@ public final class BeanMapper {
             StorageTechnicalMetadatas.GEL.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
                serviceDFCE.getStoreService().isFrozen(document));
+      } else if (technical.getShortCode().equals(
+            StorageTechnicalMetadatas.DOC_FORMAT_ORIGINE.getShortCode())) {
+         if (document.getAttachments().size() > 0) {
+            metadataFound = new StorageMetadata(metadata.getShortCode(), true);
+         } else {
+            metadataFound = new StorageMetadata(metadata.getShortCode(), false);
+         }
+
       } else {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(), "");

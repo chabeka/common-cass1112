@@ -2192,4 +2192,20 @@
       <label>Numéro de l'affaire WATT</label>
       <description>Numéro de l'affaire WATT</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>dfo</shortCode>
+      <longCode>DocFormatOrigine</longCode>
+      <type>Boolean</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>-1</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>false</searchable>
+      <internal>true</internal>
+      <archivable>false</archivable>
+      <label>Existence document au format d'origine</label>
+      <description>Permet de déterminer si le document possède un document attaché au format d'origine</description>
+   </metaDataReference>
 </referentiel>
