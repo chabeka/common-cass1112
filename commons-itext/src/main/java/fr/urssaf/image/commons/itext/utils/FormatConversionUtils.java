@@ -41,11 +41,11 @@ public final class FormatConversionUtils {
       } else if (numeroPage != null && numeroPage.intValue() <= 0) {
          // cas du numero de page negatif ou null
          throw new FormatConversionParametrageException(
-               "Le numéro de page doit être compris entre la 1ere et la dernière page du document.");
+               "Le numéro de page doit être compris entre la 1ère et la dernière page du document.");
       } else if (numeroPage != null && numeroPage.intValue() > nbPagesTotal) {
          // cas du numero de page superieur au nombres de pages
          throw new FormatConversionParametrageException(
-               "Le numéro de page doit être compris entre la 1ere et la dernière page du document.");
+               "Le numéro de page doit être compris entre la 1ère et la dernière page du document.");
       } else if (nombrePages != null && nombrePages.intValue() == 0) {
          // cas du nombre de pages a zero
          throw new FormatConversionParametrageException(
