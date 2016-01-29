@@ -114,7 +114,7 @@ public class IgcServiceTest {
 
    private IgcService createIgcService() {
 
-      IgcService igcService = new IgcService(igcConfigs, tracesWsSupport);
+      IgcService igcService = new IgcService(igcConfigs, tracesWsSupport, false);
       igcService.chargementCertificatsACRacine();
 
       return igcService;

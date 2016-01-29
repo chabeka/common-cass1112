@@ -204,7 +204,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     *           un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired
-   public MetadataReferenceDAOImpl(@Value("${sae.metadata.cache}") int cacheDuration) {
+   public MetadataReferenceDAOImpl(@Value("${sae.metadata.cache}") int cacheDuration,
+         @Value("${sae.metadata.initCacheOnStartup}") boolean initCacheOnStartup,
+         final SaeMetadataSupport metadataSupport) {
       metadataReference = CacheBuilder.newBuilder().refreshAfterWrite(
             cacheDuration, TimeUnit.MINUTES).build(
             new CacheLoader<MetaType, Map<String, MetadataReference>>() {
@@ -226,9 +228,16 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
                }
 
             });
+      
+      this.metadataSupport = metadataSupport;
 
+      if (initCacheOnStartup) {
+         // afin d'eviter de recoder ce qui est dans le load du cacheloader
+         // on va juste recuperer le seul element en cache (MetaType.ALL_METADATAS)
+         metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      }
    }
-
+   
    /**
     * {@inheritDoc}
     */

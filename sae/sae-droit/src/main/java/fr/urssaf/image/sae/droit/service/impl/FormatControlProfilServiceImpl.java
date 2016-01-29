@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -55,11 +55,17 @@ public class FormatControlProfilServiceImpl implements
     * 
     *           sae.format.control.profil.cache à définir dans un fichier tel
     *           sae-config.properties dans src/test/resources/config
+    * @param initCacheOnStartup
+    *           flag indiquant si initialise le cache au demarrage du serveur d'application
+    *           
+    *           sae.format.control.profil.initCacheOnStartup à définir dans un fichier tel
+    *           sae-config.properties dans src/test/resources/config
     */
    @Autowired
    public FormatControlProfilServiceImpl(FormatControlProfilSupport formatSup,
          JobClockSupport clockSupport,
-         @Value("${sae.format.control.profil.cache}") int value) {
+         @Value("${sae.format.control.profil.cache}") int value,
+         @Value("${sae.format.control.profil.initCacheOnStartup}") boolean initCacheOnStartup) {
 
       this.formatControlSupport = formatSup;
       this.clockSupport = clockSupport;
@@ -74,6 +80,18 @@ public class FormatControlProfilServiceImpl implements
                   return formatControlSupport.find(identifiant);
                }
             });
+      
+      if (initCacheOnStartup) {
+         populateCache();
+      }
+   }
+   
+   private void populateCache() {
+      // initialisation du cache des profils de controle de format
+      List<FormatControlProfil> allFcp = formatControlSupport.findAll();
+      for (FormatControlProfil fcp : allFcp) {
+         formatsControlProfil.put(fcp.getFormatCode(), fcp);
+      }
    }
 
    /**

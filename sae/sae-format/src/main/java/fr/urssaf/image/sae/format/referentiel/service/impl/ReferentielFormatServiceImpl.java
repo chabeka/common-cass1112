@@ -60,11 +60,17 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
     * 
     *           sae.referentiel.format.cache à définir dans un fichier tel
     *           sae-config.properties dans src/test/resources/config
+    * @param initCacheOnStartup
+    *           flag indiquant si initialise le cache au demarrage du serveur d'application
+    *           
+    *           sae.referentiel.format.initCacheOnStartup à définir dans un fichier tel
+    *           sae-config.properties dans src/test/resources/config
     */
    @Autowired
    public ReferentielFormatServiceImpl(ReferentielFormatSupport refFormSupport,
          JobClockSupport clockSupport,
-         @Value("${sae.referentiel.format.cache}") int value) {
+         @Value("${sae.referentiel.format.cache}") int value,
+         @Value("${sae.referentiel.format.initCacheOnStartup}") boolean initCacheOnStartup) {
 
       this.refFormatSupport = refFormSupport;
       this.clockSupport = clockSupport;
@@ -78,6 +84,18 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
             return refFormatSupport.find(identifiant);
          }
       });
+      
+      if (initCacheOnStartup) {
+         populateCache();
+      }
+   }
+   
+   private void populateCache() {
+      // initialisation du cache du referentiel des formats
+      List<FormatFichier> allFormat = refFormatSupport.findAll();
+      for (FormatFichier format : allFormat) {
+         formats.put(format.getIdFormat(), format);
+      }
    }
 
    /**

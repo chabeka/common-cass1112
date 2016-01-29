@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.format.validation.service.impl;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
@@ -65,6 +66,8 @@ public final class ValidationServiceImpl implements ValidationService {
     *           le service de référentiel des formats
     * @param cacheDuration
     *           la durée de cache pour les formats
+    * @param initCacheOnStartup
+    *           flag indiquant si initialise le cache au demarrage du serveur d'application
     * @param applicationContext
     *           Le contexte Spring
     */
@@ -72,6 +75,7 @@ public final class ValidationServiceImpl implements ValidationService {
    public ValidationServiceImpl(
          ReferentielFormatService referentielFormatService,
          @Value("${sae.referentiel.format.cache}") int cacheDuration,
+         @Value("${sae.referentiel.format.initCacheOnStartup}") boolean initCacheOnStartup,
          ApplicationContext applicationContext) {
 
       this.referentielFormatService = referentielFormatService;
@@ -91,6 +95,24 @@ public final class ValidationServiceImpl implements ValidationService {
                   identifiant, Validator.class);
          }
       });
+      
+      if (initCacheOnStartup) {
+         populateCache();
+      }
+   }
+   
+   private void populateCache() {
+      // initialisation du cache des identificateurs
+      List<FormatFichier> allFormat = referentielFormatService.getAllFormat();
+      for (FormatFichier format : allFormat) {
+         if (StringUtils.isNotEmpty(format.getValidator())) {
+            Validator validateur = ValidationServiceImpl.this.applicationContext.getBean(
+                  format.getValidator(), Validator.class);
+            if (validateur != null) {
+               validators.put(format.getValidator(), validateur);
+            }
+         }
+      }
    }
 
    /**

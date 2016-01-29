@@ -21,8 +21,8 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.cache.LoadingCache;
 import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -110,6 +110,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
    private final JobClockSupport clockSupport;
 
    private final Keyspace keyspace;
+   
+   private static final int MAX_CONTRATS_SERVICES = 200;
 
    /**
     * Constructeur
@@ -159,7 +161,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                }
 
             });
-
+      
       pagmsCache = CacheBuilder.newBuilder().expireAfterWrite(
             cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
             new CacheLoader<String, List<Pagm>>() {
@@ -245,6 +247,70 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       this.curatorClient = curatorClient;
       this.clockSupport = clockSupport;
       this.keyspace = keyspace;
+      
+      if (cacheConfig.isInitCacheOnStartupDroits()) {
+         // initialisation de tous les caches
+         populateAllCache(actionSupport, prmdSupport, formControlProfilSupport);
+      }
+   }
+   
+   private void populateAllCache(final ActionUnitaireSupport actionSupport,
+         final PrmdSupport prmdSupport,
+         final FormatControlProfilSupport formControlProfilSupport) {
+      
+      // initialisation du cache des contrats de services
+      List<ServiceContract> allCs = contratSupport
+            .findAll(MAX_CONTRATS_SERVICES);
+      for (ServiceContract cs : allCs) {
+         contratsCache.put(cs.getCodeClient(), cs);
+         
+         // force la recuperation du cache des pagms
+         List<Pagm> pagms = pagmSupport.find(cs.getCodeClient());
+         if (pagms != null) {
+            pagmsCache.put(cs.getCodeClient(), pagms);
+            for (Pagm pagm : pagms) {
+               
+               // initialisation du cache des pagmas, pagmp et pagmf
+               Pagma pagma = pagmaSupport.find(pagm.getPagma());
+               if (pagma != null) {
+                  pagmasCache.put(pagm.getPagma(), pagma);
+               }
+               Pagmp pagmp = pagmpSupport.find(pagm.getPagmp());
+               if (pagmp != null) {
+                  pagmpsCache.put(pagm.getPagmp(), pagmp);
+               }
+               Pagmf pagmf = null;
+               if (StringUtils.isNotEmpty(pagm.getPagmf())) {
+                  pagmf = pagmfSupport.find(pagm.getPagmf());
+                  if (pagmf != null) {
+                     pagmfsCache.put(pagm.getPagmf(), pagmf);
+                  }
+               }
+               
+               // initialisation du cache des actions
+               for (String action : pagma.getActionUnitaires()) {
+                  ActionUnitaire actionUnitaire = actionSupport.find(action);
+                  if (actionUnitaire != null) {
+                     actionsCache.put(action, actionUnitaire);
+                  } 
+               }
+               
+               // initialisation du cache des perimetres de donnees
+               Prmd prmd = prmdSupport.find(pagmp.getPrmd());
+               if (prmd != null) {
+                  prmdsCache.put(pagmp.getPrmd(), prmd);
+               } 
+               
+               if (pagmf != null) {
+                  // initialisation du cache des profil de controle de format
+                  FormatControlProfil fcp = formControlProfilSupport.find(pagmf.getCodeFormatControlProfil());
+                  if (fcp != null) {
+                     formatControlProfilsCache.put(pagmf.getCodeFormatControlProfil(), fcp);
+                  }
+               }
+            }
+         }
+      }
    }
 
    @Override

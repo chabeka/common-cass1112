@@ -22,6 +22,7 @@ import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -89,12 +90,21 @@ public class IgcService {
     *           le bean de support de la traçabilité
     */
    @Autowired
-   public IgcService(IgcConfigs igcConfigs, TracesWsSupport tracesWsSupport) {
+   public IgcService(IgcConfigs igcConfigs, TracesWsSupport tracesWsSupport,
+         @Value("${sae.certifs.loadOnStartup}") boolean loadOnStartup) {
 
       this.igcConfigs = igcConfigs;
       this.certsAcRacine = new HashMap<X509Certificate, String>();
       this.tracesWsSupport = tracesWsSupport;
 
+      if (loadOnStartup) {
+         // initialisation des certifs et crls
+         try {
+            getInstanceCertifsAndCrl();
+         } catch (LoadCertifsAndCrlException e) {
+            LOG.error(e.getMessage());
+         }
+      }
    }
 
    /**

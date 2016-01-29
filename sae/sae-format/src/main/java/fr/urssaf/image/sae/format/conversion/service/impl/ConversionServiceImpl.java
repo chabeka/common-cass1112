@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.format.conversion.service.impl;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.IOUtils;
@@ -67,6 +68,8 @@ public class ConversionServiceImpl implements ConversionService {
     *           le service de référentiel des formats
     * @param cacheDuration
     *           la durée de cache pour les formats
+    * @param initCacheOnStartup
+    *           flag indiquant si initialise le cache au demarrage du serveur d'application
     * @param applicationContext
     *           Le contexte Spring
     * 
@@ -75,6 +78,7 @@ public class ConversionServiceImpl implements ConversionService {
    public ConversionServiceImpl(
          ReferentielFormatService referentielFormatService,
          @Value("${sae.referentiel.format.cache}") int cacheDuration,
+         @Value("${sae.referentiel.format.initCacheOnStartup}") boolean initCacheOnStartup,
          ApplicationContext applicationContext) {
 
       this.referentielFormatService = referentielFormatService;
@@ -96,6 +100,23 @@ public class ConversionServiceImpl implements ConversionService {
                }
             });
 
+      if (initCacheOnStartup) {
+         populateCache();
+      }
+   }
+   
+   private void populateCache() {
+      // initialisation du cache des convertisseurs
+      List<FormatFichier> allFormat = referentielFormatService.getAllFormat();
+      for (FormatFichier format : allFormat) {
+         if (StringUtils.isNotEmpty(format.getConvertisseur())) {
+            Convertisseur convertisseur = ConversionServiceImpl.this.applicationContext.getBean(
+                  format.getConvertisseur(), Convertisseur.class);
+            if (convertisseur != null) {
+               convertisseurs.put(format.getConvertisseur(), convertisseur);
+            }
+         }
+      }
    }
 
    /**

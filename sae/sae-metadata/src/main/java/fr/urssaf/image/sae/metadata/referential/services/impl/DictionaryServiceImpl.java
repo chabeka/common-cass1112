@@ -54,11 +54,14 @@ public class DictionaryServiceImpl implements DictionaryService {
     *           {@link CuratorFramework}
     * @param value
     *           durée du cache
+    * @param initCacheOnStartup
+    *           flag indiquant si initialise le cache au demarrage du serveur d'application
     */
    @Autowired
    public DictionaryServiceImpl(DictionarySupport dictSupport,
          JobClockSupport jobClockSupport, CuratorFramework curatorFramework,
-         @Value("${sae.metadata.cache}") int value) {
+         @Value("${sae.metadata.cache}") int value,
+         @Value("${sae.metadata.initCacheOnStartup}") boolean initCacheOnStartup) {
       this.dictionarySupport = dictSupport;
       this.clockSupport = jobClockSupport;
       this.curator = curatorFramework;
@@ -72,6 +75,18 @@ public class DictionaryServiceImpl implements DictionaryService {
          }
 
       });
+      
+      if (initCacheOnStartup) {
+         populateCache();
+      }
+   }
+   
+   private void populateCache() {
+      // initialisation du cache des dictionnaires
+      List<Dictionary> allDictionnaries = dictionarySupport.findAll();
+      for (Dictionary dictionnaire : allDictionnaries) {
+         dictionaries.put(dictionnaire.getId(), dictionnaire);
+      }
    }
 
    /**

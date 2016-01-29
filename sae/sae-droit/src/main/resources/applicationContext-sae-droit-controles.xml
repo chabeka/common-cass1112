@@ -15,5 +15,6 @@
 
    <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig">
       <property name="droitsCacheDuration" value="${sae.droits.cache}" />
+      <property name="initCacheOnStartupDroits" value="${sae.droits.initCacheOnStartup}" />
    </bean>
 </beans>
