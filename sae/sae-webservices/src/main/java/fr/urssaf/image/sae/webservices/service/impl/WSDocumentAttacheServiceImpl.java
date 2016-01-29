@@ -82,12 +82,7 @@ public final class WSDocumentAttacheServiceImpl implements
                   .createGetDocFormatOrigineResponse(uDocAtt.getContent(), metadatas);
             if (response == null) {
                LOG.debug("{} - Valeur de retour : null", prefixeTrc);
-            } else {
-               // TODO
-               // LOG.debug("{} - Valeur de retour : \"{}\"", prefixeTrc,
-               // response
-               // .getStockageUnitaireResponse().getIdGed().getUuidType());
-            }
+            } 
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
 
