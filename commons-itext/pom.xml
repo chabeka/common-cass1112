@@ -4,7 +4,7 @@
   
   <groupId>fr.urssaf.image.commons</groupId>
   <artifactId>commons-itext</artifactId>
-  <version>0.0.3-SNAPSHOT</version>
+  <version>0.0.3</version>
   
   <name>commons-itext</name>
   
@@ -38,13 +38,13 @@
   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-itext
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-itext-0.0.3
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-itext
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-itext-0.0.3
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-itext
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/commons-itext-0.0.3
       </connection>
    </scm>
 
