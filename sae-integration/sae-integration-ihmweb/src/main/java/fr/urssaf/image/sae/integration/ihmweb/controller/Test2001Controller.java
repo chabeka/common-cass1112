@@ -60,7 +60,7 @@ public class Test2001Controller extends AbstractTestWsController<Test2001Formula
       metadonnees.add("Denomination","Test 2001-ConsultationAffichable-OK-defaut");
       metadonnees.add("FormatFichier","fmt/353");
       metadonnees.add("Hash","76734a4ba9c1dca0ced7960bcd7cc0055c16cefb");
-      metadonnees.add("NbPages","100");
+      metadonnees.add("NbPages","43");
       metadonnees.add("Titre","Attestation de vigilance");
       metadonnees.add("TypeHash","SHA-1");
       
@@ -163,22 +163,22 @@ public class Test2001Controller extends AbstractTestWsController<Test2001Formula
       if (response!=null) { // <= response est null si on a obtenu une SoapFault
       
          MetadonneeValeurList metas = SaeServiceObjectExtractor.extraitMetadonnees(response.getMetadonnees());
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res1 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "CodeOrganismeGestionnaire", 
                "CER69");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res2 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "CodeOrganismeProprietaire", 
                "AC750");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res3 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "CodeRND", 
                "2.3.1.1.12");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res4 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "ContratDeService", 
@@ -189,42 +189,47 @@ public class Test2001Controller extends AbstractTestWsController<Test2001Formula
 //             metas, 
 //             "DateArchivage", 
 //             );
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res5 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "DateCreation", 
                "2011-09-23");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res6 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "DateReception", 
                StringUtils.EMPTY);
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res7 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "FormatFichier", 
                "fmt/353");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res8 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "Hash", 
                "76734a4ba9c1dca0ced7960bcd7cc0055c16cefb");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res9 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "NomFichier", 
                "doc1.tif");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res10 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "TailleFichier", 
                "11714498");
-         getTestsMetasService().verifiePresenceEtValeurAvecLog(
+         boolean res11 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
                "Titre", 
                "Attestation de vigilance");
-         
+         if (res1 || res2 || res3 || res4 || res5 || res6 || res7 || res8 || res9 || res10 || res11) {
+            formConsult.getResultats().setStatus(TestStatusEnum.Echec);
+         } else {
+            formConsult.getResultats().setStatus(TestStatusEnum.Succes);
+         }
+          
       }
       
    }

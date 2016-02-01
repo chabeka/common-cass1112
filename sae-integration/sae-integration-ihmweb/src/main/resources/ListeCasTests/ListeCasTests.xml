@@ -1851,6 +1851,177 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2004-consultationAffichable-OK-10-pages"</luceneExemple>
          </CasTest>
+         <CasTest>
+            <id>2005</id>
+            <code>2005-ConsultationAffichable-OK-page-debut-1-30-pages</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en ne précisant 1 pour le numéro de la première page et 30 pour le nombre de pages que l’on souhaite consulter. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2005-consultationAffichable-OK-page-debut-1-30-pages"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2006</id>
+            <code>2006-ConsultationAffichable-OK-page-debut-30-10-pages</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant 30 pour le numéro de la première page et 10 pour le nombre de pages que l’on souhaite consulter. Les autres options seront les valeurs par défaut. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2006-consultationAffichable-OK-page-debut-30-10-pages"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2007</id>
+            <code>2007-ConsultationAffichable-OK-page-debut-30-10-pages-negatif</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en ne précisant 30 pour le numéro de la première page et -10 pour le nombre de pages que l’on souhaite consulter. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2007-consultationAffichable-OK-page-debut-30-10-pages-negatif"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2008</id>
+            <code>2008-ConsultationAffichable-OK-10-pages-fin</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en ne précisant que le nombre de pages que l’on souhaite consulter à partir de la fin du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2008-ConsultationAffichable-OK-10-pages-fin"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2009</id>
+            <code>2009-ConsultationAffichable-OK-nb-pages</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant le nombre de pages précis du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2009-ConsultationAffichable-OK-nb-pages"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2010</id>
+            <code>2010-ConsultationAffichable-OK-nb-pages-sup</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant un nombre de pages supérieur au nombre de pages du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2010-ConsultationAffichable-OK-nb-pages-sup"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2011</id>
+            <code>2011-ConsultationAffichable-OK-page-34-nb-pages-10</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant que la première page est la page 34 et que le nombre de pages correspond à la  fin du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2011-ConsultationAffichable-OK-page-34-nb-pages-10"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2012</id>
+            <code>2012-ConsultationAffichable-OK-num-page-et-nb-pages-sup</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant que la première page est la page 10 et que le nombre de pages demandé est supérieur au nombre total de pages du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2012-ConsultationAffichable-OK-num-page-et-nb-pages-sup"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2013</id>
+            <code>2013-ConsultationAffichable-OK-page-debut-5-10-pages-negatif</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant 5 pour le numéro de la première page et -10 pour le nombre de pages que l’on souhaite consulter. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2013-ConsultationAffichable-OK-page-debut-5-10-pages-negatif"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2014</id>
+            <code>2014-ConsultationAffichable-OK- pages-negatif-sup-nb-pages</code>
+            <description>
+               Le but de ce test est de voir que l’exécution de l’opération ConsultationAffichable fonctionne en précisant comme nombre de pages que l’on souhaite consulter un nombre négatif supérieur au nombre de pages du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2014-ConsultationAffichable-OK- pages-negatif-sup-nb-pages"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2015</id>
+            <code>2015-ConsultationAffichable-OK-no_page-1-nb-page-negatif</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une seule page lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant que la première page est la une et que l’on souhaite visualiser un nombre négatif de pages. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2015-ConsultationAffichable-OK-no_page-1-nb-page-negatif"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2050</id>
+            <code>2050-ConsultationAffichable-KO-fichier-non-convertible</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document dont on n’a pas encore prévu l’affichage ; actuellement c’est un document autre que tiff ou pdf. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2050-consultationAffichable-KO-fichier-non-convertible"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2051</id>
+            <code>2051-ConsultationAffichable-KO-nb-page-zero</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant que l’on souhaite consulter 0 page. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2051-ConsultationAffichable-KO-nb-page-zero"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2052</id>
+            <code>2052-ConsultationAffichable-KO-no-page-sup-nb-page</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant pour numéro de première page une valeur supérieur au nombre de pages du document. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2052-ConsultationAffichable-KO-no-page-sup-nb-page"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2053</id>
+            <code>2053-ConsultationAffichable-KO-no-page-negatif</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant que la première page est un nombre négatif. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2053-ConsultationAffichable-KO-nb-premiere-page-negatif"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2054</id>
+            <code>2054-ConsultationAffichable-KO-idarchivable-inconnu-MTOM</code>
+            <description>
+                Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant un uuid qui n’existe pas.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2054-ConsultationAffichable-KO-idarchivable-inconnu-MTOM"</luceneExemple>
+         </CasTest>                  
+         <CasTest>
+            <id>2056</id>
+            <code>2056-ConsultationAffichable-KO-MetadonneeConsultInexistante-MTOM</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant des métadonnées qui ne sont pas consultables comme StartPage et VersionNumber. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2056-ConsultationAffichable-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
+         </CasTest>         
+         <CasTest>
+            <id>2058</id>
+            <code>2058-ConsultationAffichable-KO-MetadonneeNonConsultable-MTOM</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant des métadonnées qui ne sont pas consultables comme StartPage et VersionNumber. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2058-ConsultationAffichable-KO-MetadonneeNonConsultable-MTOM"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>2060</id>
+            <code>2060-ConsultationAffichable-KO-no-page-0-MTOM</code>
+            <description>
+                Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationAffichable un document en précisant pour numéro de première page la valeur 0.
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 4.27.	2060-ConsultationAffichable-KO-no-page-0-MTOM"</luceneExemple>
+         </CasTest>
          
       </CasTests>
    </Categorie>
@@ -2619,6 +2790,32 @@
       </CasTests>
 
    </Categorie>
+
+   <!-- ======================================================== -->
+   <!-- SAE - ActivationDocumentArchivable -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>Activation Document Archivable</Nom>
+      <Id>17</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>2401</id>
+            <code>2401-ActivationDocumentArchivable-NumeroIdArchivage-Present</code>
+            <description>
+               SAE - Activation DocumentArchivable NumeroIdArchivage Present 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 2401-ActivationDocumentArchivable-NumeroIdArchivage-Present"</luceneExemple>         
+         </CasTest>
+ 
+      </CasTests>
+
+   </Categorie>
+
+
    
    <!-- ======================================================== -->
    <!-- Formats -->

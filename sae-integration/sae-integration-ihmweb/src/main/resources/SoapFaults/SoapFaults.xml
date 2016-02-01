@@ -110,6 +110,14 @@
       <localPart>ConsultationErreur</localPart>
       <message>Une erreur s'est produite lors de la consultation</message>
    </SoapFault>
+
+   <SoapFault>
+      <id>sae_ErreurInterneConsultation</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ErreurInterneConsultation</localPart>
+      <message>Une erreur s'est produite lors de la consultation</message>
+   </SoapFault>
    
    <SoapFault>
       <id>sae_RequeteLuceneVideOuNull</id>
@@ -485,6 +493,21 @@
       <prefixe>sae</prefixe>
       <localPart>CaptureErreurIdGedExistant</localPart>
       <message>L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.</message>      
+   </SoapFault>
+               
+   <SoapFault>
+      <id>sae_ConsultationAffichableParametrageIncorrect</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ConsultationAffichableParametrageIncorrect</localPart>
+      <message>Le nombre de pages doit être différent de 0.</message>      
+   </SoapFault>
+   <SoapFault>
+      <id>sae_ConsultationAffichableParametrageIncorrect_1</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ConsultationAffichableParametrageIncorrect</localPart>
+      <message>Le numéro de page doit être compris entre la 1ère et la dernière page du document.</message>      
    </SoapFault>
                
 </SoapFaults>

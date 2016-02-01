@@ -17,11 +17,11 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.utils.SaeServiceObjectE
 
 
 /**
- * 2004-consultationAffichable-OK-10-pages 
+ * 2007-ConsultationAffichable-OK-page-debut-30-10-pages-negatif 
  */
 @Controller
-@RequestMapping(value = "test2004")
-public class Test2004Controller extends AbstractTestWsController<Test2001Formulaire> {
+@RequestMapping(value = "test2007")
+public class Test2007Controller extends AbstractTestWsController<Test2001Formulaire> {
 
    
    /**
@@ -29,7 +29,7 @@ public class Test2004Controller extends AbstractTestWsController<Test2001Formula
     */
    @Override
    protected final String getNumeroTest() {
-      return "2004";
+      return "2007";
    }
    
    
@@ -46,7 +46,7 @@ public class Test2004Controller extends AbstractTestWsController<Test2001Formula
       
       // L'URL ECDE du fichier de test
       formCapture.setUrlEcde(
-            getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/ConsulationAffichable-2001-OK-ConsultationAffichable-OK-avec-mtom/documents/doc1.tif"));
+            getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/ConsulationAffichable-2000-OK/documents/doc1.tif"));
       
       // Les métadonnées      
       MetadonneeValeurList metadonnees = new MetadonneeValeurList(); 
@@ -57,7 +57,7 @@ public class Test2004Controller extends AbstractTestWsController<Test2001Formula
       metadonnees.add("CodeRND","2.3.1.1.12");
       metadonnees.add("DateCreation","2011-09-23");
       metadonnees.add("DateDebutConservation","2011-09-01");
-      metadonnees.add("Denomination","Test 2004-consultationAffichable-OK-10-pages");
+      metadonnees.add("Denomination","Test 2007-consultationAffichable-OK-page-debut-30-10-pages-negatif");
       metadonnees.add("FormatFichier","fmt/353");
       metadonnees.add("Hash","76734a4ba9c1dca0ced7960bcd7cc0055c16cefb");
       metadonnees.add("NbPages","43");
@@ -125,7 +125,8 @@ public class Test2004Controller extends AbstractTestWsController<Test2001Formula
          
          // On affecte l'identifiant d'archivage à l'étape 2 (consultation)
          formConsultEtp2.setIdArchivage(consultResult.getIdArchivage());
-         formConsultEtp2.setNombrePages(10);
+         formConsultEtp2.setNumeroPage(30);
+         formConsultEtp2.setNombrePages(-10);
       }
       
 
@@ -182,12 +183,6 @@ public class Test2004Controller extends AbstractTestWsController<Test2001Formula
                metas, 
                "ContratDeService", 
                SaeIntegrationConstantes.VI_DEFAULT_ISSUER);
-         // DateArchivage => à vérifier manuellement
-//       getTestsMetasService().verifiePresenceEtValeurAvecLog(
-//             formConsult.getResultats(), 
-//             metas, 
-//             "DateArchivage", 
-//             );
          boolean res5 = getTestsMetasService().verifiePresenceEtValeurAvecLog(
                formConsult.getResultats(), 
                metas, 
