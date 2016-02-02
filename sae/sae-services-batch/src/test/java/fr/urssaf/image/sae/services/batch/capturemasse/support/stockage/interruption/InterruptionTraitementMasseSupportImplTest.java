@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption;
+package fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
