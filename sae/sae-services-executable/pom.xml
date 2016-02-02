@@ -103,7 +103,7 @@
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-services-capturemasse</artifactId>
+         <artifactId>sae-services-batch</artifactId>
          <version>16.6.0.1-SNAPSHOT</version>
       </dependency>
 
