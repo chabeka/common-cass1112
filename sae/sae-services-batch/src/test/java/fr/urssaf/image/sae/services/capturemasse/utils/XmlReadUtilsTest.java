@@ -10,7 +10,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 
 public class XmlReadUtilsTest {
 

@@ -32,8 +32,8 @@ import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.model.SaeListVirtualReferenceFile;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListVirtualReferenceFile;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)

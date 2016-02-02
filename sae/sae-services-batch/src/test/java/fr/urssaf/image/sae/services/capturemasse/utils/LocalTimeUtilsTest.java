@@ -9,6 +9,8 @@ import org.joda.time.LocalTime;
 import org.junit.Assert;
 import org.junit.Test;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.LocalTimeUtils;
+
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class LocalTimeUtilsTest {
 

@@ -23,7 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })

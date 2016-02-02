@@ -29,11 +29,12 @@ import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.capturemasse.common.CaptureMasseErreur;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.EcdePermissionException;
-import fr.urssaf.image.sae.services.capturemasse.utils.StaxUtils;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
+import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
