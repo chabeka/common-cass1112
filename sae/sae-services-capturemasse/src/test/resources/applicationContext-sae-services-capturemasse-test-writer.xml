@@ -8,7 +8,7 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <bean id="storageDocumentWriter"
-      class="fr.urssaf.image.sae.services.capturemasse.XmlWriter"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.XmlWriter"
       primary="true">
    </bean>
 

@@ -29,12 +29,13 @@ import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
+import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
-import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
@@ -106,10 +107,10 @@ public class TraitementAsynchroneServiceTest {
 
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             "url_ecde", idJob, null, null, null, null);
 
-      service.ajouterJobCaptureMasse(parametres);
+      service.ajouterJob(parametres);
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -296,7 +297,7 @@ public class TraitementAsynchroneServiceTest {
    }
 
    @Test
-   public void lancerJob_failure_JobInattenduException()
+   public void lancerJob_failure_JobTypeInexistantException()
          throws JobInexistantException, JobNonReserveException {
 
       // création d'un traitement de capture en masse
@@ -307,7 +308,7 @@ public class TraitementAsynchroneServiceTest {
 
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
-      job.setType("other_masse");
+      job.setType("type_inexistant");
       job.setJobParameters(jobParam);
 
       jobQueueService.addJob(job);
@@ -317,24 +318,21 @@ public class TraitementAsynchroneServiceTest {
          service.lancerJob(idJob);
 
          Assert
-               .fail("Une exception JobInattenduException doit être levée pour le traitement "
+               .fail("Une exception JobTypeInexistantException doit être levée pour le traitement "
                      + idJob);
 
-      } catch (JobInattenduException e) {
+      } catch (JobTypeInexistantException e) {
 
          Assert
                .assertEquals(
                      "le message de l'exception est inattendu",
-                     "Le traitement n°"
-                           + idJob
-                           + " est inattendu. On attend un traitement de type 'capture_masse' et le type est 'other_masse'.",
+                     "Traitement n° "
+                        + idJob
+                        + " - Le type de traitement 'type_inexistant' est inconnu.",
                      e.getMessage());
 
          Assert.assertEquals("Le job est incorrect", idJob, e.getJob()
                .getIdJob());
-
-         Assert.assertEquals("le type attendu du job est incorrect",
-               "capture_masse", e.getExpectedType());
 
       }
 

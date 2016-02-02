@@ -9,15 +9,15 @@
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
-   <artifactId>sae-services-capturemasse</artifactId>
+   <artifactId>sae-services-batch</artifactId>
    <version>16.6.0.1-SNAPSHOT</version>
 
-   <name>sae-services-capturemasse</name>
+   <name>sae-services-batch</name>
 
-   <description>Artéfact contenant les services capture de masse</description>
+   <description>Artéfact contenant les services de traitement de masse</description>
 
    <properties>
-      <sonar.exclusions>fr/urssaf/image/sae/services/capturemasse/modele/commun_sommaire_et_resultat/*.java,fr/urssaf/image/sae/services/capturemasse/modele/resultats/*.java,fr/urssaf/image/sae/services/capturemasse/modele/sommaire/*.java</sonar.exclusions>
+      <sonar.exclusions>fr/urssaf/image/sae/services/batch/capturemasse/modele/commun_sommaire_et_resultat/*.java,fr/urssaf/image/sae/services/batch/capturemasse/modele/resultats/*.java,fr/urssaf/image/sae/services/batch/capturemasse/modele/sommaire/*.java</sonar.exclusions>
    </properties>
 
    <profiles>

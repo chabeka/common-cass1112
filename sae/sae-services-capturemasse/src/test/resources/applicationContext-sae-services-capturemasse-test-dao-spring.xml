@@ -15,7 +15,7 @@
    </bean>
 
    <bean id="saeDocumentService"
-      class="fr.urssaf.image.sae.services.capturemasse.SAEDocumentTestImpl"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.SAEDocumentTestImpl"
       primary="true" />
 
    <bean id="stepExecutionDao" class="fr.urssaf.image.sae.utils.SaeStepExecutionDao"

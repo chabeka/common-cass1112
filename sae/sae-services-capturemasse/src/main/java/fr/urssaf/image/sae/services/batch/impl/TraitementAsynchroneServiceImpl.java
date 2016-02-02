@@ -20,13 +20,15 @@ import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.services.batch.utils.CaptureMasseAuthentificationUtils;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
@@ -53,7 +55,18 @@ public class TraitementAsynchroneServiceImpl implements
 
    private final JobQueueService jobQueueService;
 
+   @Autowired
+   @Qualifier("captureMasseTraitement")
    private TraitementExecutionSupport captureMasse;
+   
+   @Autowired
+   @Qualifier("suppressionMasseTraitement")
+   private TraitementExecutionSupport suppressinoMasse;
+   
+   @Autowired
+   @Qualifier("restoreMasseTraitement")
+   private TraitementExecutionSupport restoreMasse;
+   
 
    /**
     * 
@@ -71,32 +84,20 @@ public class TraitementAsynchroneServiceImpl implements
 
    }
 
-   /**
-    * 
-    * @param captureMasse
-    *           traitement de capture en masse
-    */
-   @Autowired
-   @Qualifier("captureMasseTraitement")
-   public final void setCaptureMasse(TraitementExecutionSupport captureMasse) {
-      this.captureMasse = captureMasse;
-   }
 
    /**
     * {@inheritDoc}<br>
     * <br>
     * 
-    * 
-    * 
     */
    @Override
-   public final void ajouterJobCaptureMasse(CaptureMasseParametres parameters) {
+   public final void ajouterJob(TraitemetMasseParametres parameters) {
 
       LOG
             .debug(
-                  "{} - ajout d'un traitement de capture en masse avec le sommaire : {} pour  l'identifiant: {}",
-                  new Object[] { "ajouterJobCaptureMasse()",
-                        getEcdeUrl(parameters), parameters.getUuid() });
+                  "{} - ajout d'un traitement de masse de type : {} pour  l'identifiant: {}",
+                  new Object[] { "ajouterJob()",
+                        parameters.getType(), parameters.getUuid() });
 
       String type = CAPTURE_MASSE_JN;
 
@@ -115,7 +116,6 @@ public class TraitementAsynchroneServiceImpl implements
       job.setVi(parameters.getVi());
       job.setJobParameters(parameters.getJobParameters());
       jobQueueService.addJob(job);
-
    }
 
    /**
@@ -143,9 +143,8 @@ public class TraitementAsynchroneServiceImpl implements
       AuthenticationContext.setAuthenticationToken(token);
 
       // vérification que le type de traitement existe bien
-      // pour l'instant seul la capture en masse existe
-      if (!CAPTURE_MASSE_JN.equals(job.getType())) {
-         throw new JobInattenduException(job, CAPTURE_MASSE_JN);
+      if (!Constantes.typeJobExist(job.getType())) {
+         throw new JobTypeInexistantException(job);
       }
 
       // vérification que le job est bien réservé
@@ -176,21 +175,28 @@ public class TraitementAsynchroneServiceImpl implements
       UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       jobQueueService.addHistory(idJob, timeUuid, "LANCEMENT DU JOB.");
 
-      ExitTraitement exitTraitement;
+      ExitTraitement exitTraitement = new ExitTraitement();;
       try {
-
-         // appel de l'implémentation de l'exécution du traitement de capture en
-         // masse
-         exitTraitement = captureMasse.execute(job);
-
+         /*
+          * Appel de l'implémentation de TraitementExecutionSupport 
+          * pour l'exécution du traitement de masse
+          */
+         if(job.getType().equals(TYPES_JOB.capture_masse.name()))
+            exitTraitement = captureMasse.execute(job);
+         else if(job.getType().equals(TYPES_JOB.suppression_masse.name()))
+            exitTraitement = suppressinoMasse.execute(job);
+         else if(job.getType().equals(TYPES_JOB.restore_masse.name()))
+            exitTraitement = restoreMasse.execute(job);
+         else {
+            LOG.warn("Impossible d'executer le traitement ID={0}, de type {1}.", job.getIdJob(), job.getType());
+            exitTraitement.setSucces(false);
+            String mssg = "Impossible d'executer le type de traitement " + job.getType();
+            exitTraitement.setExitMessage(mssg);
+         }
       } catch (Exception e) {
-
          LOG.warn("Erreur grave lors de l'exécution  du traitement.", e);
-
-         exitTraitement = new ExitTraitement();
          exitTraitement.setSucces(false);
          exitTraitement.setExitMessage(e.getMessage());
-
       }
 
       LOG.debug(
@@ -209,7 +215,7 @@ public class TraitementAsynchroneServiceImpl implements
 
    }
 
-   private String getEcdeUrl(CaptureMasseParametres parameters) {
+   private String getEcdeUrl(TraitemetMasseParametres parameters) {
       String url = StringUtils.EMPTY;
       if (StringUtils.isNotBlank(parameters.getEcdeURL())) {
          url = parameters.getEcdeURL();

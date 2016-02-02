@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
@@ -24,7 +24,7 @@ public class TraitementAsynchroneServiceValidation {
    private static final String CLASS = "fr.urssaf.image.sae.services.batch.TraitementAsynchroneService.";
 
    private static final String METHOD_1 = "execution(void " + CLASS
-         + "ajouterJobCaptureMasse(*))" + "&& args(parametres)";
+         + "ajouterJob(*))" + "&& args(parametres)";
 
    private static final String METHOD_2 = "execution(void " + CLASS
          + "lancerJob(*))" + "&& args(idJob)";
@@ -40,7 +40,7 @@ public class TraitementAsynchroneServiceValidation {
     *           l'enregistrement de la capture de masse
     */
    @Before(METHOD_1)
-   public final void ajouterJobCaptureMasse(CaptureMasseParametres parametres) {
+   public final void ajouterJob(TraitemetMasseParametres parametres) {
 
       if (parametres == null) {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,

@@ -6,7 +6,7 @@
 
    <!-- mock du service de capture en masse-->
    <bean id="captureMasseService"
-      class="fr.urssaf.image.sae.services.capturemasse.ServiceMockManager"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.ServiceMockManager"
       factory-method="createSAECaptureMasseService">
    </bean>
 

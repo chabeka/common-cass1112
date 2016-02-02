@@ -116,7 +116,7 @@
    <!-- Bean pour vérifier les traces -->
    <bean
       id="traceAssertUtils"
-      class="fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils" />
+      class="fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils" />
 
 
    <!-- Bean de factory pour les mocks (pour les autres fichiers applicationContext de test) -->

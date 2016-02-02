@@ -7,7 +7,7 @@
       node="/xsd:schema">
       <jaxb:schemaBindings>
          <jaxb:package
-            name="fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat" />
+            name="fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat" />
       </jaxb:schemaBindings>
    </jaxb:bindings>
 
@@ -15,7 +15,7 @@
       node="/xsd:schema">
       <jaxb:schemaBindings>
          <jaxb:package
-            name="fr.urssaf.image.sae.services.capturemasse.modele.sommaire" />
+            name="fr.urssaf.image.sae.services.batch.capturemasse.modele.sommaire" />
       </jaxb:schemaBindings>
    </jaxb:bindings>
 
@@ -23,7 +23,7 @@
       node="/xsd:schema">
       <jaxb:schemaBindings>
          <jaxb:package
-            name="fr.urssaf.image.sae.services.capturemasse.modele.resultats" />
+            name="fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats" />
       </jaxb:schemaBindings>
    </jaxb:bindings>
 </jaxb:bindings>

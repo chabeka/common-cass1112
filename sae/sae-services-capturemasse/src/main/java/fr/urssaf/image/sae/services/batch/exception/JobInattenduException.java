@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
  * 
  * 
  */
+@Deprecated
 public class JobInattenduException extends RuntimeException {
 
    private static final long serialVersionUID = 1L;

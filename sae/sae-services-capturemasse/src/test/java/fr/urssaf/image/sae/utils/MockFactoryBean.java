@@ -9,10 +9,10 @@ import org.easymock.EasyMock;
 import org.springframework.batch.item.ItemProcessor;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
-import fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
-import fr.urssaf.image.sae.services.capturemasse.support.controle.CaptureMasseControleSupport;
-import fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
+import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;

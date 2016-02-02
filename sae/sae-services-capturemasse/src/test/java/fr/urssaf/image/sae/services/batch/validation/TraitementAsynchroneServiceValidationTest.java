@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
@@ -31,7 +31,7 @@ public class TraitementAsynchroneServiceValidationTest {
       service = new TraitementAsynchroneService() {
 
          @Override
-         public void ajouterJobCaptureMasse(CaptureMasseParametres parametres) {
+         public void ajouterJob(TraitemetMasseParametres parametres) {
 
             // aucune implémentation
 
@@ -54,10 +54,10 @@ public class TraitementAsynchroneServiceValidationTest {
    @Test
    public void ajouterJobCaptureMasse_success() {
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(URL_ECDE,
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(URL_ECDE,
             UUID_CAPTURE, null, null, null, null);
 
-      service.ajouterJobCaptureMasse(parametres);
+      service.ajouterJob(parametres);
    }
 
    @Test
@@ -70,11 +70,11 @@ public class TraitementAsynchroneServiceValidationTest {
 
    private void assertAjouterJobCaptureMasse_urlEcde(String urlECDE) {
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(urlECDE,
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(urlECDE,
             UUID_CAPTURE, null, null, null, null);
 
       try {
-         service.ajouterJobCaptureMasse(parametres);
+         service.ajouterJob(parametres);
 
          Assert.fail(FAIL_MESSAGE);
 
@@ -88,11 +88,11 @@ public class TraitementAsynchroneServiceValidationTest {
    @Test
    public void ajouterJobCaptureMasse_failure_empty_uuid() {
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(URL_ECDE,
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(URL_ECDE,
             null, null, null, null, null);
 
       try {
-         service.ajouterJobCaptureMasse(parametres);
+         service.ajouterJob(parametres);
 
          Assert.fail(FAIL_MESSAGE);
 

@@ -15,7 +15,7 @@
 
    <!-- Configuration du délai d'attente pour les tentatives d'écriture sur l'ECDE -->
    <bean
-      class="fr.urssaf.image.sae.services.capturemasse.listener.EcdeConnexionConfiguration">
+      class="fr.urssaf.image.sae.services.batch.capturemasse.listener.EcdeConnexionConfiguration">
       <property name="delaiAttenteMs" value="${sae.dfce.delai.attente}" />
       <property name="nbreEssaiMax" value="${sae.dfce.nombre.essai}" />
    </bean>
@@ -23,14 +23,14 @@
    
    <!-- Configuration du pool d'insertion des documents dans DFCE -->
    <bean id="insertionPoolConfiguration"
-      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration">
       <property name="corePoolSize" value="${sae.archivagemasse.pool.size}" />
    </bean>
    
    
    <!-- Configuration de l'interruption du traitement -->
    <bean id="captureMasseConfig"
-      class="fr.urssaf.image.sae.services.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
       <qualifier value="interruption_capture_masse" />
       <property name="start" value="${sae.archivagemasse.interruption.heure}" />
       <property name="delay" value="${sae.archivagemasse.interruption.delai}" />
@@ -40,7 +40,6 @@
 
    <!-- Component-scan -->
    <context:component-scan base-package="fr.urssaf.image.sae.services.batch" />
-   <context:component-scan base-package="fr.urssaf.image.sae.services.capturemasse" />
    
    <!-- Import du fichier des fichiers de contexte des autres artéfacts -->
    <import resource="applicationContext-sae-services.xml" />

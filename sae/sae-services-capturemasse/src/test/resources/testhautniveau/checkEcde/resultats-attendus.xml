@@ -16,8 +16,8 @@
                 <ns2:erreur>
                     <ns2:code>SAE-CA-BUL001</ns2:code>
                     <ns2:libelle>Une erreur interne à l'application est survenue lors de la capture du document doc1.PDF. Détails : java.lang.Exception: Erreur technique&#xd;
-	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.addException(CheckFileSommaireTasklet.java:91)&#xd;
-	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.execute(CheckFileSommaireTasklet.java:79)&#xd;
+	at fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.addException(CheckFileSommaireTasklet.java:91)&#xd;
+	at fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.batch.CheckFileSommaireTasklet.execute(CheckFileSommaireTasklet.java:79)&#xd;
 	at org.springframework.batch.core.step.tasklet.TaskletStep$ChunkTransactionCallback.doInTransaction(TaskletStep.java:386)&#xd;
 	at org.springframework.transaction.support.TransactionTemplate.execute(TransactionTemplate.java:130)&#xd;
 	at org.springframework.batch.core.step.tasklet.TaskletStep$2.doInChunkContext(TaskletStep.java:264)&#xd;
@@ -37,8 +37,8 @@
 	at org.springframework.batch.core.launch.support.SimpleJobLauncher$1.run(SimpleJobLauncher.java:120)&#xd;
 	at org.springframework.core.task.SyncTaskExecutor.execute(SyncTaskExecutor.java:48)&#xd;
 	at org.springframework.batch.core.launch.support.SimpleJobLauncher.run(SimpleJobLauncher.java:114)&#xd;
-	at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:120)&#xd;
-	at fr.urssaf.image.sae.services.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:68)&#xd;
+	at fr.urssaf.image.sae.services.batch.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:120)&#xd;
+	at fr.urssaf.image.sae.services.batch.capturemasse.impl.SAECaptureMasseServiceImpl.captureMasse(SAECaptureMasseServiceImpl.java:68)&#xd;
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xd;
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xd;
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xd;
@@ -50,7 +50,7 @@
 	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:172)&#xd;
 	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:202)&#xd;
 	at $Proxy59.captureMasse(Unknown Source)&#xd;
-	at fr.urssaf.image.sae.services.capturemasse.support.sommaire.batch.CheckFileSommaireTaskletCheckEcdeTest.testUriDomaineConnuFichierExistantEcritureImpossible(CheckFileSommaireTaskletCheckEcdeTest.java:133)&#xd;
+	at fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.batch.CheckFileSommaireTaskletCheckEcdeTest.testUriDomaineConnuFichierExistantEcritureImpossible(CheckFileSommaireTaskletCheckEcdeTest.java:133)&#xd;
 	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)&#xd;
 	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)&#xd;
 	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)&#xd;

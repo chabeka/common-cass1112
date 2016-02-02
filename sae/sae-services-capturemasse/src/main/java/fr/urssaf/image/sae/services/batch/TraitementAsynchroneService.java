@@ -6,7 +6,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 
 /**
  * Service des traitements de masse.<br>
@@ -20,16 +20,16 @@ import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
 public interface TraitementAsynchroneService {
 
    /**
-    * Ajoute un traitement de capture en masse dans la pile des traitements de
+    * Ajoute un traitement de masse dans la pile des traitements de
     * masse en attente
     * 
     * @param parametres
-    *           ensemble des paramètres nécessaires à l'enregistrement d'une
-    *           capture de masse
+    *           ensemble des paramètres nécessaires à l'enregistrement d'un
+    *           traitement de masse
     * 
     */
-   @PreAuthorize("hasRole('archivage_masse')")
-   void ajouterJobCaptureMasse(CaptureMasseParametres parametres);
+   //@PreAuthorize("hasRole('archivage_masse')")
+   void ajouterJob(TraitemetMasseParametres parametres);
 
    /**
     * Exécute un traitement de masse stocké dans la pile des traitements en

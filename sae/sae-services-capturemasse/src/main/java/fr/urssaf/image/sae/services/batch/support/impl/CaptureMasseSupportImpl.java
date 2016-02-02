@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
-import fr.urssaf.image.sae.services.capturemasse.SAECaptureMasseService;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 
 /**
  * Implémentation du service {@link TraitementExecutionSupport} pour la capture
@@ -27,18 +27,8 @@ import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
 @Qualifier("captureMasseTraitement")
 public class CaptureMasseSupportImpl implements TraitementExecutionSupport {
 
+   @Autowired
    private SAECaptureMasseService captureMasseService;
-
-   /**
-    * 
-    * @param captureMasseService
-    *           service de capture en masse
-    */
-   @Autowired(required = false)
-   public final void setSAECaptureMasseService(
-         SAECaptureMasseService captureMasseService) {
-      this.captureMasseService = captureMasseService;
-   }
 
    /**
     * {@inheritDoc}

@@ -30,7 +30,7 @@
    <logger name="fr.urssaf.image.sae.trace" level="INFO" />
    <logger name="fr.urssaf.image.sae.rnd" level="INFO" />
    <logger name="fr.urssaf.image.sae.services" level="INFO" />
-   <logger name="fr.urssaf.image.sae.services.capturemasse" level="INFO" />
+   <logger name="fr.urssaf.image.sae.services.batch.capturemasse" level="INFO" />
    
    <root level="debug">
       <appender-ref ref="console" />

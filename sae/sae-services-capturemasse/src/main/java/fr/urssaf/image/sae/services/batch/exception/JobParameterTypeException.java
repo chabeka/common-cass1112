@@ -6,7 +6,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**
  * Erreur levée lorsque que les paramètres du job dans la pile des travaux ne

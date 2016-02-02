@@ -19,11 +19,11 @@
          </array>
       </property>
       <property name="contextPath"
-         value="fr.urssaf.image.sae.services.capturemasse.modele.commun_sommaire_et_resultat" />
+         value="fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat" />
    </bean>
 
    <bean id="captureMasseFactory"
-      class="fr.urssaf.image.sae.services.capturemasse.factory.CaptureMasseFactory" />
+      class="fr.urssaf.image.sae.services.batch.capturemasse.factory.CaptureMasseFactory" />
 
    <bean id="sommaireReader" scope="step"
       class="org.springframework.batch.item.xml.StaxEventItemReader"
