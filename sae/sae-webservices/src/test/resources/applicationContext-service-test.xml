@@ -65,7 +65,7 @@
       factory-method="createSAETransfertService" />
 
    <bean id="ecdeControleSupport"
-      class="fr.urssaf.image.sae.services.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />
 
    <!-- Services necessaires à la consultation des etats des services  -->
    <context:component-scan

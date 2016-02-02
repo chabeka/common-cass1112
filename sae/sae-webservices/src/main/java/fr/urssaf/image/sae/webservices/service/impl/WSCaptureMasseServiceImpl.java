@@ -24,13 +24,13 @@ import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
-import fr.urssaf.image.sae.services.batch.model.CaptureMasseParametres;
-import fr.urssaf.image.sae.services.capturemasse.common.Constantes;
-import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.capturemasse.utils.XmlReadUtils;
+import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
@@ -97,11 +97,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       HashMap<String, String> params = new HashMap<String, String>();
       params.put(Constantes.ECDE_URL, ecdeUrl);
-      CaptureMasseParametres parametres = new CaptureMasseParametres(params,
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(params,
             identifiant, hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobCaptureMasse(parametres);
+      traitementService.ajouterJob(parametres);
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
@@ -172,11 +172,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
 
-      CaptureMasseParametres parametres = new CaptureMasseParametres(jobParam,
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParam,
             uuid, hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobCaptureMasse(parametres);
+      traitementService.ajouterJob(parametres);
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE

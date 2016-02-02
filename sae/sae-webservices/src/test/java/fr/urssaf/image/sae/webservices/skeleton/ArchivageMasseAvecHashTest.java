@@ -27,10 +27,10 @@ import fr.cirtil.www.saeservice.ArchivageMasseAvecHash;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
-import fr.urssaf.image.sae.services.capturemasse.controles.SAEControleSupportService;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireHashException;
-import fr.urssaf.image.sae.services.capturemasse.exception.CaptureMasseSommaireTypeHashException;
+import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
