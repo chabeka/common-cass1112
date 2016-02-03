@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.services.batch.validation;
 import java.text.MessageFormat;
 import java.util.UUID;
 
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -47,17 +46,31 @@ public class TraitementAsynchroneServiceValidation {
                "parametres"));
       }
 
-      if (MapUtils.isEmpty(parametres.getJobParameters())) {
-         if (StringUtils.isBlank(parametres.getEcdeURL())) {
+      if (parametres.getType() == null) {
 
-            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
-                  "urlEcde"));
-         }
-      } else {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "type"));
+      }
+
+      String type = parametres.getType();
+
+      if (Constantes.TYPES_JOB.capture_masse.name().equals(type)) {
          if (StringUtils.isBlank(parametres.getJobParameters().get(
                Constantes.ECDE_URL))) {
             throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                   "urlEcde"));
+         }
+      } else if (Constantes.TYPES_JOB.restore_masse.name().equals(type)) {
+         if (StringUtils.isBlank(parametres.getJobParameters().get(
+               Constantes.UUID_TRAITEMENT))) {
+            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+                  "uuid"));
+         }
+      } else if (Constantes.TYPES_JOB.suppression_masse.name().equals(type)) {
+         if (StringUtils.isBlank(parametres.getJobParameters().get(
+               Constantes.REQUETE))) {
+            throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+                  "requete"));
          }
       }
 

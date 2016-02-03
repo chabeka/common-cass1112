@@ -150,28 +150,38 @@ public final class Constantes {
    public static final Object REQ_LUCENE_SUPPRESSION = "traitement.masse.supression.reqlucene";
 
    /**
+    * Requête utilisée par le service de suppression de masse
+    */
+   public static final String REQUETE = "requete";
+
+   /**
+    * UUID du traitement de suppression de masse à restorer par le service de
+    * restore de masse
+    */
+   public static final String UUID_TRAITEMENT = "uuidTraitement";
+
+   /**
     * Constructeur
     */
    private Constantes() {
    }
-   
+
    /**
     * Types de traitements
     */
-   public static enum TYPES_JOB{
-      capture_masse,
-      suppression_masse,
-      restore_masse;
+   public static enum TYPES_JOB {
+      capture_masse, suppression_masse, restore_masse;
    }
-   
+
    /**
     * Vérifiez si le nom d'un type de travail spécifique existe
+    * 
     * @param name
     * @return true/false
     */
-   public static Boolean typeJobExist(final String name){
+   public static Boolean typeJobExist(final String name) {
       for (TYPES_JOB elm : TYPES_JOB.values()) {
-         if(elm.name().equals(name)){
+         if (elm.name().equals(name)) {
             return true;
          }
       }
