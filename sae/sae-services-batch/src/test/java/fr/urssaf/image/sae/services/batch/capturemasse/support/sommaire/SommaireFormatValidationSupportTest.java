@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.capturemasse.support.sommaire;
+package fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire;
 
 import java.io.File;
 import java.io.FileOutputStream;

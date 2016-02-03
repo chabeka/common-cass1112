@@ -61,7 +61,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFa
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
-import fr.urssaf.image.sae.services.capturemasse.utils.TraceAssertUtils;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.capturemasse.support.resultats;
+package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 
 import java.io.File;
 import java.io.IOException;
