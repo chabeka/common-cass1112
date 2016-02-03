@@ -71,11 +71,6 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    /**
-    * Nom du job d'un traitement de capture en masse
-    */
-   public static final String CAPTURE_MASSE_JN = "capture_masse";
-
-   /**
     * {@inheritDoc}
     */
    @Override
@@ -103,8 +98,8 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       HashMap<String, String> params = new HashMap<String, String>();
       params.put(Constantes.ECDE_URL, ecdeUrl);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            params, identifiant, CAPTURE_MASSE_JN, hName, callerIP, nbDoc,
-            extrait);
+            params, identifiant, Constantes.TYPES_JOB.capture_masse.name(),
+            hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJob(parametres);
@@ -178,8 +173,8 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             .getContext().getAuthentication().getPrincipal();
 
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParam, uuid, CAPTURE_MASSE_JN, hName, callerIP, nbDoc,
-            extrait);
+            jobParam, uuid, Constantes.TYPES_JOB.capture_masse.name(), hName,
+            callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJob(parametres);

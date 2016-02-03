@@ -40,12 +40,6 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
    private TraitementAsynchroneService traitementService;
    
    /**
-    * Nom du job d'un traitement de suppression en masse
-    */
-   public static final String SUPPRESSION_MASSE_JN = "suppression_masse";
-
-
-   /**
     * 
     * {@inheritDoc}
     */
@@ -78,7 +72,7 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
 
       // Création du job de suppression dans la pile
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParam,
-            uuid, SUPPRESSION_MASSE_JN, hName, callerIP, null, extrait);
+            uuid, Constantes.TYPES_JOB.suppression_masse.name(), hName, callerIP, null, extrait);
 
        // appel de la méthode d'insertion du job dans la pile des travaux
        traitementService.ajouterJob(parametres);

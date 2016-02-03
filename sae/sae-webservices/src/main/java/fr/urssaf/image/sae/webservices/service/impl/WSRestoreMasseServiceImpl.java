@@ -41,12 +41,6 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
    
    
    /**
-    * Nom du job d'un traitement de restore en masse
-    */
-   public static final String RESTORE_MASSE_JN = "restore_masse";
-
-
-   /**
     * 
     * {@inheritDoc}
     */
@@ -79,7 +73,7 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
 
       // Création du job de restore dans la pile
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParam, uuid, RESTORE_MASSE_JN, hName, callerIP, null, extrait);
+            jobParam, uuid, Constantes.TYPES_JOB.restore_masse.name(), hName, callerIP, null, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJob(parametres);
