@@ -1023,6 +1023,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (SuppressionAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new SuppressionAxisFault(

@@ -35,7 +35,7 @@ public final class ObjectSuppressionFactory {
     * 
     * @return instance de {@link SuppressionResponse}
     */
-   public static SuppressionResponse createSupressionResponse() {
+   public static SuppressionResponse createSuppressionResponse() {
       String prefixeTrc = "createSuppressionResponse()";
       LOG.debug("{} - Début", prefixeTrc);
       SuppressionResponse response = new SuppressionResponse();

@@ -133,7 +133,7 @@ public class TraitementAsynchroneServiceTest {
    }
    
    @Test
-   public void ajouterJobSupressionMasse_success() {
+   public void ajouterJobSuppressionMasse_success() {
    
        String[] roles = new String[] { "suppression_masse" };
        AuthenticationToken token = AuthenticationFactory.createAuthentication(
