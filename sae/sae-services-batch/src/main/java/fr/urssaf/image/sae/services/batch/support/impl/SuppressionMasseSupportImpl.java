@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
-import fr.urssaf.image.sae.services.batch.supression.SAESupressionMasseService;
+import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
 
 /**
  * Implémentation du service {@link TraitementExecutionSupport} 
@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.services.batch.supression.SAESupressionMasseService;
 public class SuppressionMasseSupportImpl implements TraitementExecutionSupport {
 
    @Autowired
-   private SAESupressionMasseService suppressionMasseService;
+   private SAESuppressionMasseService suppressionMasseService;
 
    /**
     * {@inheritDoc}
@@ -33,7 +33,7 @@ public class SuppressionMasseSupportImpl implements TraitementExecutionSupport {
       Assert
             .notNull(
                   this.suppressionMasseService,
-                  "Il n'existe aucune configuration pour instancier le composant 'SAESupressionMasseService'");
+                  "Il n'existe aucune configuration pour instancier le composant 'SAESuppressionMasseService'");
 
       Assert.notNull(job, "'job' is required");
 
@@ -41,7 +41,7 @@ public class SuppressionMasseSupportImpl implements TraitementExecutionSupport {
       String reqLucene = job.getJobParameters().get(Constantes.REQ_LUCENE_SUPPRESSION);
       
       ExitTraitement exitTraitement = null;
-      exitTraitement = suppressionMasseService.supressionMasse(idTraitement, reqLucene);
+      exitTraitement = suppressionMasseService.suppressionMasse(idTraitement, reqLucene);
 
       return exitTraitement;
    }

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.supression;
+package fr.urssaf.image.sae.services.batch.suppression;
 
 import java.util.UUID;
 
@@ -10,10 +10,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 
 /**
- * Service de supression en masse du SAE
+ * Service de suppression en masse du SAE
  * 
  */
-public interface SAESupressionMasseService {
+public interface SAESuppressionMasseService {
 
    /**
     * Service de suppression de masse
@@ -26,6 +26,6 @@ public interface SAESupressionMasseService {
     *           
     * @return le status du traitement
     */
-   @PreAuthorize("hasRole('supression_masse')")
-   ExitTraitement supressionMasse(UUID idTraitement, String reqLucene);
+   @PreAuthorize("hasRole('suppression_masse')")
+   ExitTraitement suppressionMasse(UUID idTraitement, String reqLucene);
 }

@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.services.batch.supression.impl;
+package fr.urssaf.image.sae.services.batch.suppression.impl;
 
 import java.util.UUID;
 
@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.supression.SAESupressionMasseService;
+import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
 
 /**
- * Implémentation du service {@link SAESupressionMasseService}
+ * Implémentation du service {@link SAESuppressionMasseService}
  */
 @Service
-public class SAESupressionMasseServiceImpl implements SAESupressionMasseService{
+public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseService{
    
    /**
     * Job de la suppression de masse
@@ -29,10 +29,10 @@ public class SAESupressionMasseServiceImpl implements SAESupressionMasseService{
     * {@inheritDoc}
     */
    @Override
-   public ExitTraitement supressionMasse(UUID idTraitement, String reqLucene) {
+   public ExitTraitement suppressionMasse(UUID idTraitement, String reqLucene) {
       // TODO Auto-generated method stub
       
-      System.out.println("supressionMasse" + idTraitement + " " + reqLucene);
+      System.out.println("suppressionMasse" + idTraitement + " " + reqLucene);
 
 
       // TODO : Appel SB pour exécuter le traitement de restore
