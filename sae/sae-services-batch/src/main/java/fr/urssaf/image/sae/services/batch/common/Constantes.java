@@ -146,19 +146,17 @@ public final class Constantes {
     * Traçabilité : contexte pour la capture de masse
     */
    public static final String CONTEXTE_CAPTURE_MASSE = "captureMasse";
-
-   public static final Object REQ_LUCENE_SUPPRESSION = "traitement.masse.supression.reqlucene";
-
+   
    /**
     * Requête utilisée par le service de suppression de masse
     */
-   public static final String REQUETE = "requete";
+   public static final String REQ_LUCENE_SUPPRESSION = "requeteSuppression";
 
    /**
     * UUID du traitement de suppression de masse à restorer par le service de
     * restore de masse
     */
-   public static final String UUID_TRAITEMENT = "uuidTraitement";
+   public static final String UUID_TRAITEMENT_RESTORE = "uuidTraitement";
 
    /**
     * Constructeur

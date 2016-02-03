@@ -62,13 +62,13 @@ public class TraitementAsynchroneServiceValidation {
          }
       } else if (Constantes.TYPES_JOB.restore_masse.name().equals(type)) {
          if (StringUtils.isBlank(parametres.getJobParameters().get(
-               Constantes.UUID_TRAITEMENT))) {
+               Constantes.UUID_TRAITEMENT_RESTORE))) {
             throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                   "uuid"));
          }
       } else if (Constantes.TYPES_JOB.suppression_masse.name().equals(type)) {
          if (StringUtils.isBlank(parametres.getJobParameters().get(
-               Constantes.REQUETE))) {
+               Constantes.REQ_LUCENE_SUPPRESSION))) {
             throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                   "requete"));
          }

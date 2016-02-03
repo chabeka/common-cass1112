@@ -89,11 +89,9 @@ public class TraitementAsynchroneServiceTest {
 
       EasyMock.reset(captureMasseServiceSansSpringSecurity);
 
-      // suppression du traitement dde masse
+      //-- Suppression du traitement de masse
       if (idJob != null) {
-
          jobQueueService.deleteJob(idJob);
-
       }
    }
 
@@ -106,9 +104,13 @@ public class TraitementAsynchroneServiceTest {
       AuthenticationContext.setAuthenticationToken(token);
 
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
+      
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, "url_ecde");
+      
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            "url_ecde", idJob, null, null, null, null);
+            jobParams, idJob, Constantes.TYPES_JOB.capture_masse.name(), 
+            null, null, null, null);
 
       service.ajouterJob(parametres);
 
@@ -118,14 +120,82 @@ public class TraitementAsynchroneServiceTest {
 
       Assert
             .assertEquals(
-                  "L'identifiant unique du traitement doit correspondre à l'identifiant du traitement de capture en masse",
+                  "L'identifiant unique du traitement est invalide",
                   idJob, job.getIdJob());
 
       Assert.assertEquals(
             "La paramètre de la capture en masse doit être une URL ECDE",
-            "url_ecde", job.getParameters());
-
+            "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
+      
+      Assert.assertEquals(
+            "Le type de traitement doit correspondre à la capture de masse",
+            Constantes.TYPES_JOB.capture_masse.name(), job.getType());
    }
+   
+   @Test
+   public void ajouterJobSupressionMasse_success() {
+   
+       String[] roles = new String[] { "suppression_masse" };
+       AuthenticationToken token = AuthenticationFactory.createAuthentication(
+             "cle", "valeur", roles);
+       AuthenticationContext.setAuthenticationToken(token);
+   
+       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+       
+       Map<String, String> jobParams = new HashMap<String, String>();
+       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, "req_lucene");
+       
+       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+             jobParams, idJob, Constantes.TYPES_JOB.suppression_masse.name(), 
+             null, null, null, null);
+       
+       service.ajouterJob(parametres);
+   
+       JobRequest job = jobLectureService.getJobRequest(idJob);
+   
+       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+   
+       Assert.assertEquals(
+                   "L'identifiant unique du traitement est invalide",
+                   idJob, job.getIdJob());
+       
+       Assert.assertEquals(
+             "Le type de traitement est incorrect",
+             Constantes.TYPES_JOB.suppression_masse.name(), job.getType());
+   }  
+   
+   @Test
+   public void ajouterJobRestoreMasse_success() {
+   
+       String[] roles = new String[] { "suppression_masse" };
+       AuthenticationToken token = AuthenticationFactory.createAuthentication(
+             "cle", "valeur", roles);
+       AuthenticationContext.setAuthenticationToken(token);
+   
+       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+       
+       Map<String, String> jobParams = new HashMap<String, String>();
+       jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "id_traitement");
+       
+       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+             jobParams, idJob, Constantes.TYPES_JOB.restore_masse.name(), 
+             null, null, null, null);
+       
+       service.ajouterJob(parametres);
+   
+       JobRequest job = jobLectureService.getJobRequest(idJob);
+   
+       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+   
+       Assert.assertEquals(
+                   "L'identifiant unique du traitement est invalide",
+                   idJob, job.getIdJob());
+       
+       Assert.assertEquals(
+             "Le type de traitement est incorrect",
+             Constantes.TYPES_JOB.restore_masse.name(), job.getType());
+   }  
+   
 
    @Test
    public void lancerJob_success() throws Exception {

@@ -28,8 +28,7 @@ public interface TraitementAsynchroneService {
     *           traitement de masse
     * 
     */
-   //@PreAuthorize("hasRole('traitement_masse')")
-   //@PreAuthorize("hasAnyRole('archivage_masse', 'suppression_masse', 'restore_masse')")
+   @PreAuthorize("hasAnyRole('archivage_masse', 'suppression_masse', 'restore_masse')")
    void ajouterJob(TraitemetMasseParametres parametres);
 
    /**

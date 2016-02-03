@@ -61,7 +61,7 @@ public class TraitementAsynchroneServiceImpl implements
    
    @Autowired
    @Qualifier("suppressionMasseTraitement")
-   private TraitementExecutionSupport suppressinoMasse;
+   private TraitementExecutionSupport suppressionMasse;
    
    @Autowired
    @Qualifier("restoreMasseTraitement")
@@ -173,7 +173,7 @@ public class TraitementAsynchroneServiceImpl implements
       UUID timeUuid = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       jobQueueService.addHistory(idJob, timeUuid, "LANCEMENT DU JOB.");
 
-      ExitTraitement exitTraitement = new ExitTraitement();;
+      ExitTraitement exitTraitement = new ExitTraitement();
       try {
          /*
           * Appel de l'implémentation de TraitementExecutionSupport 
@@ -182,7 +182,7 @@ public class TraitementAsynchroneServiceImpl implements
          if(job.getType().equals(TYPES_JOB.capture_masse.name()))
             exitTraitement = captureMasse.execute(job);
          else if(job.getType().equals(TYPES_JOB.suppression_masse.name()))
-            exitTraitement = suppressinoMasse.execute(job);
+            exitTraitement = suppressionMasse.execute(job);
          else if(job.getType().equals(TYPES_JOB.restore_masse.name()))
             exitTraitement = restoreMasse.execute(job);
          else {

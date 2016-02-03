@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.restore.SAERestoreMasseService;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
@@ -37,9 +38,9 @@ public class RestoreMasseSupportImpl implements TraitementExecutionSupport {
 
       Assert.notNull(job, "'job' is required");
 
-      UUID idTraitement = job.getIdJob();
+      String idTraitement = job.getJobParameters().get(Constantes.UUID_TRAITEMENT_RESTORE);
       ExitTraitement exitTraitement = null;
-      exitTraitement = restoreMasseService.restoreMasse(idTraitement);
+      exitTraitement = restoreMasseService.restoreMasse(UUID.fromString(idTraitement));
 
       return exitTraitement;
    }
