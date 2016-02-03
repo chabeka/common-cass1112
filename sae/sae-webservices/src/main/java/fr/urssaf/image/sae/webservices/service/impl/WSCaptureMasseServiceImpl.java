@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSom
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;

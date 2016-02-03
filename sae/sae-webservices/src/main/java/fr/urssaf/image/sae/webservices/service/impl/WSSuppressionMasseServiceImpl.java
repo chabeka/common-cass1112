@@ -16,7 +16,7 @@ import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
