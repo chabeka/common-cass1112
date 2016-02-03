@@ -87,6 +87,10 @@ public class TracesWsSupport {
       } else if ("archivageMasse".equals(nomOperation)
             || "archivageMasseAvecHash".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_ARCHIVAGE_MASSE_KO;
+      } else if ("suppressionMasse".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_SUPPRESSION_MASSE_KO;
+      } else if ("restoreMasse".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_RESTORE_MASSE_KO;
       } else if ("consultation".equals(nomOperation)
             || "consultationMTOM".equals(nomOperation)
             || "consultationAffichable".equals(nomOperation)) {

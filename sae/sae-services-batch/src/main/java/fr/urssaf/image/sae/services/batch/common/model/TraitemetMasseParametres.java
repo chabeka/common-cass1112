@@ -39,56 +39,6 @@ public class TraitemetMasseParametres {
    private Map<String, String> jobParameters;
 
    /**
-    * @param ecdeURL
-    *           l'url ecde
-    * @param uuid
-    *           l'identifiant de traitement
-    * @param saeHost
-    *           le nom de la machine locale
-    * @param clientHost
-    *           l'adresse de la machine demandant le traitement
-    * @param nbreDocs
-    *           nombre de documents contenus dans le fichier sommaire.xml
-    * @param viExtrait
-    *           contenu du VI
-    */
-   public TraitemetMasseParametres(String ecdeURL, UUID uuid, String saeHost,
-         String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
-      super();
-      this.ecdeURL = ecdeURL;
-      this.uuid = uuid;
-      this.saeHost = saeHost;
-      this.clientHost = clientHost;
-      this.nbreDocs = nbreDocs;
-      this.viExtrait = viExtrait;
-   }
-   
-   /**
-    * @param jobParameters
-    *           Les paramètres de la capture de masse
-    * @param uuid
-    *           l'identifiant de traitement
-    * @param saeHost
-    *           le nom de la machine locale
-    * @param clientHost
-    *           l'adresse de la machine demandant le traitement
-    * @param nbreDocs
-    *           nombre de documents contenus dans le fichier sommaire.xml
-    * @param viExtrait
-    *           contenu du VI
-    */
-   public TraitemetMasseParametres(Map<String,String> jobParameters, UUID uuid, String saeHost,
-         String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
-      super();
-      this.jobParameters = jobParameters;
-      this.uuid = uuid;
-      this.saeHost = saeHost;
-      this.clientHost = clientHost;
-      this.nbreDocs = nbreDocs;
-      this.viExtrait = viExtrait;
-   }
-   
-   /**
     * @param jobParameters
     *           Les paramètres de la capture de masse
     * @param uuid

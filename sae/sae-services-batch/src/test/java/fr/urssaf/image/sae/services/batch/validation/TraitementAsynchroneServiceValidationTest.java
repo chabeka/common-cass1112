@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.validation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -11,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 
@@ -30,18 +33,31 @@ public class TraitementAsynchroneServiceValidationTest {
 
       service = new TraitementAsynchroneService() {
 
-         @Override
-         public void ajouterJob(TraitemetMasseParametres parametres) {
-
-            // aucune implémentation
-
-         }
 
          @Override
          public void lancerJob(UUID idJob) {
 
             // aucune implémentation
 
+         }
+
+         @Override
+         public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres) {
+            // TODO Auto-generated method stub
+            
+         }
+
+         @Override
+         public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
+            // TODO Auto-generated method stub
+            
+         }
+
+         @Override
+         public void ajouterJobSuppressionMasse(
+               TraitemetMasseParametres parametres) {
+            // TODO Auto-generated method stub
+            
          }
 
       };
@@ -53,11 +69,13 @@ public class TraitementAsynchroneServiceValidationTest {
 
    @Test
    public void ajouterJobCaptureMasse_success() {
+      
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+     
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParams, UUID_CAPTURE, Constantes.TYPES_JOB.capture_masse.name(), null, null, null, null);
 
-      TraitemetMasseParametres parametres = new TraitemetMasseParametres(URL_ECDE,
-            UUID_CAPTURE, null, null, null, null);
-
-      service.ajouterJob(parametres);
+      service.ajouterJobCaptureMasse(parametres);
    }
 
    @Test
@@ -70,11 +88,14 @@ public class TraitementAsynchroneServiceValidationTest {
 
    private void assertAjouterJobCaptureMasse_urlEcde(String urlECDE) {
 
-      TraitemetMasseParametres parametres = new TraitemetMasseParametres(urlECDE,
-            UUID_CAPTURE, null, null, null, null);
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, urlECDE);
+     
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParams, UUID_CAPTURE, Constantes.TYPES_JOB.capture_masse.name(), null, null, null, null);
 
+      
       try {
-         service.ajouterJob(parametres);
+         service.ajouterJobCaptureMasse(parametres);
 
          Assert.fail(FAIL_MESSAGE);
 
@@ -88,11 +109,14 @@ public class TraitementAsynchroneServiceValidationTest {
    @Test
    public void ajouterJobCaptureMasse_failure_empty_uuid() {
 
-      TraitemetMasseParametres parametres = new TraitemetMasseParametres(URL_ECDE,
-            null, null, null, null, null);
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+     
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParams, null, Constantes.TYPES_JOB.capture_masse.name(), null, null, null, null);
+
 
       try {
-         service.ajouterJob(parametres);
+         service.ajouterJobCaptureMasse(parametres);
 
          Assert.fail(FAIL_MESSAGE);
 

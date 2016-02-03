@@ -23,6 +23,16 @@ public final class TracesConstantes {
     * Le code de l'événement de l'échec du WS d'archivage de masse
     */
    public static final String CODE_EVT_WS_ARCHIVAGE_MASSE_KO = "WS_CAPTURE_MASSE|KO";
+   
+   /**
+    * Le code de l'événement de l'échec du WS de suppression de masse
+    */
+   public static final String CODE_EVT_WS_SUPPRESSION_MASSE_KO = "WS_SUPPRESSION_MASSE|KO";
+   
+   /**
+    * Le code de l'événement de l'échec du WS de suppression de masse
+    */
+   public static final String CODE_EVT_WS_RESTORE_MASSE_KO = "WS_RESTORE_MASSE|KO";
 
    /**
     * Le code de l'événement de l'échec du WS de consultation

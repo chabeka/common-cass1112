@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 public interface TraitementAsynchroneService {
 
    /**
-    * Ajoute un traitement de masse dans la pile des traitements de
+    * Ajoute un traitement de capture de masse dans la pile des traitements de
     * masse en attente
     * 
     * @param parametres
@@ -28,8 +28,32 @@ public interface TraitementAsynchroneService {
     *           traitement de masse
     * 
     */
-   @PreAuthorize("hasAnyRole('archivage_masse', 'suppression_masse', 'restore_masse')")
-   void ajouterJob(TraitemetMasseParametres parametres);
+   @PreAuthorize("hasRole('archivage_masse')")
+   void ajouterJobCaptureMasse(TraitemetMasseParametres parametres);
+
+   /**
+    * Ajoute un traitement de restore de masse dans la pile des traitements de
+    * masse en attente
+    * 
+    * @param parametres
+    *           ensemble des paramètres nécessaires à l'enregistrement d'un
+    *           traitement de masse
+    * 
+    */
+   @PreAuthorize("hasRole('restore_masse')")
+   void ajouterJobRestoreMasse(TraitemetMasseParametres parametres);
+
+   /**
+    * Ajoute un traitement de suppression masse dans la pile des traitements de
+    * masse en attente
+    * 
+    * @param parametres
+    *           ensemble des paramètres nécessaires à l'enregistrement d'un
+    *           traitement de masse
+    * 
+    */
+   @PreAuthorize("hasRole('suppression_masse')")
+   void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres);
 
    /**
     * Exécute un traitement de masse stocké dans la pile des traitements en

@@ -75,7 +75,7 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
             uuid, Constantes.TYPES_JOB.suppression_masse.name(), hName, callerIP, null, extrait);
 
        // appel de la méthode d'insertion du job dans la pile des travaux
-       traitementService.ajouterJob(parametres);
+       traitementService.ajouterJobSuppressionMasse(parametres);
 
       // On prend acte de la demande
       return ObjectStorageResponseFactory.createSuppressionMasseResponse(uuid

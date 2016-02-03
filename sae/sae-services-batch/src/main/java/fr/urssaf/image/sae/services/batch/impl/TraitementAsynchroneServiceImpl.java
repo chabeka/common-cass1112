@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -85,13 +86,8 @@ public class TraitementAsynchroneServiceImpl implements
    }
 
 
-   /**
-    * {@inheritDoc}<br>
-    * <br>
-    * 
-    */
-   @Override
-   public final void ajouterJob(TraitemetMasseParametres parameters) {
+
+   private void ajouterJob(TraitemetMasseParametres parameters) {
 
       LOG
             .debug(
@@ -115,6 +111,7 @@ public class TraitementAsynchroneServiceImpl implements
       job.setJobParameters(parameters.getJobParameters());
       jobQueueService.addJob(job);
    }
+   
 
    /**
     * {@inheritDoc}
@@ -222,5 +219,38 @@ public class TraitementAsynchroneServiceImpl implements
       }
 
       return url;
+   }
+
+
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    * 
+    */
+   @Override
+   public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);
+   }
+
+
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    * 
+    */
+   @Override
+   public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);     
+   }
+
+
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    * 
+    */
+   @Override
+   public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);      
    }
 }

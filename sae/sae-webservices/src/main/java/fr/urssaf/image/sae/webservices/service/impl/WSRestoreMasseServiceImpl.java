@@ -76,7 +76,7 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
             jobParam, uuid, Constantes.TYPES_JOB.restore_masse.name(), hName, callerIP, null, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJob(parametres);
+      traitementService.ajouterJobRestoreMasse(parametres);
 
       // On prend acte de la demande
       return ObjectStorageResponseFactory.createRestoreMasseResponse(uuid

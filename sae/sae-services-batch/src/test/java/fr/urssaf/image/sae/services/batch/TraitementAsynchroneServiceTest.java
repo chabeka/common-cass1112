@@ -112,7 +112,7 @@ public class TraitementAsynchroneServiceTest {
             jobParams, idJob, Constantes.TYPES_JOB.capture_masse.name(), 
             null, null, null, null);
 
-      service.ajouterJob(parametres);
+      service.ajouterJobCaptureMasse(parametres);
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -149,7 +149,7 @@ public class TraitementAsynchroneServiceTest {
              jobParams, idJob, Constantes.TYPES_JOB.suppression_masse.name(), 
              null, null, null, null);
        
-       service.ajouterJob(parametres);
+       service.ajouterJobSuppressionMasse(parametres);
    
        JobRequest job = jobLectureService.getJobRequest(idJob);
    
@@ -167,7 +167,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobRestoreMasse_success() {
    
-       String[] roles = new String[] { "suppression_masse" };
+       String[] roles = new String[] { "restore_masse" };
        AuthenticationToken token = AuthenticationFactory.createAuthentication(
              "cle", "valeur", roles);
        AuthenticationContext.setAuthenticationToken(token);
@@ -181,7 +181,7 @@ public class TraitementAsynchroneServiceTest {
              jobParams, idJob, Constantes.TYPES_JOB.restore_masse.name(), 
              null, null, null, null);
        
-       service.ajouterJob(parametres);
+       service.ajouterJobRestoreMasse(parametres);
    
        JobRequest job = jobLectureService.getJobRequest(idJob);
    
