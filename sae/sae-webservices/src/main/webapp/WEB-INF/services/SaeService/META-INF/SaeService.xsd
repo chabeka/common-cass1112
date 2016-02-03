@@ -432,6 +432,73 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:complexType name="suppressionMasseRequestType">
+        <xsd:annotation>
+            <xsd:documentation>Paramètre d'entrée de l'opération
+            'suppressionMasse'
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="requete" type="sae:requeteRechercheType">
+                <xsd:annotation>
+                    <xsd:documentation>
+                  La requête de recherche des documents
+                  à supprimer
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="suppressionMasseResponseType">
+        <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+            'suppessionMasse'. Le type est un UUID, il sert à
+            identifier
+            la tâche dans la pile des travaux
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>identifiant unique de la tâche
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="restoreMasseRequestType">
+        <xsd:annotation>
+            <xsd:documentation>Paramètre d'entrée de l'opération
+            'restoreMasse'
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="sae:uuidType">
+                <xsd:annotation>
+                    <xsd:documentation>Identifiant unique du job de
+                  suppression
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="restoreMasseResponseType">
+        <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+            'restoreMasse'. Le type est un UUID, il sert à
+            identifier la
+            tâche dans la pile des travaux
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>Identifiant unique de la tâche
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:complexType name="rechercheRequestType">
         <xsd:sequence>
             <xsd:element name="requete" type="sae:requeteRechercheType">
@@ -1108,6 +1175,8 @@
     <xsd:element name="stockageUnitaireResponse" type="sae:stockageUnitaireResponseType"/>
     <xsd:element name="getDocFormatOrigine" type="sae:getDocFormatOrigineRequestType"/>
     <xsd:element name="getDocFormatOrigineResponse" type="sae:getDocFormatOrigineResponseType"/>
+    <xsd:element name="suppressionMasse" type="sae:suppressionMasseRequestType"/>
+    <xsd:element name="restoreMasse" type="sae:restoreMasseRequestType"/>
     <xsd:element name="archivageMasse" type="sae:archivageMasseRequestType"/>
     <xsd:element name="archivageMasseResponse" type="sae:archivageMasseResponseType"/>
     <xsd:element name="archivageMasseAvecHash" type="sae:archivageMasseAvecHashRequestType"/>
@@ -1133,4 +1202,6 @@
     <xsd:element name="rechercheParIterateurResponse" type="sae:rechercheParIterateurResponseType"/>
     <xsd:element name="ajoutNote" type="sae:ajoutNoteRequestType"/>
     <xsd:element name="ajoutNoteResponse" type="sae:ajoutNoteResponseType"/>
+    <xsd:element name="suppressionMasseResponse" type="sae:suppressionMasseResponseType"/>
+    <xsd:element name="restoreMasseResponse" type="sae:restoreMasseResponseType"/>
 </xsd:schema>

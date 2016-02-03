@@ -134,6 +134,16 @@
               
                   if (
                   "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "restoreMasseRequestType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.RestoreMasseRequestType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
                   "getDocFormatOrigineRequestType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.GetDocFormatOrigineRequestType.Factory.parse(reader);
@@ -364,6 +374,16 @@
               
                   if (
                   "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "suppressionMasseRequestType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.SuppressionMasseRequestType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
                   "requeteRechercheType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.RequeteRechercheType.Factory.parse(reader);
@@ -377,6 +397,16 @@
                   "rechercheParIterateurResponseType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.RechercheParIterateurResponseType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "suppressionMasseResponseType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.SuppressionMasseResponseType.Factory.parse(reader);
                         
 
                   }
@@ -537,6 +567,16 @@
                   "consultationAffichableRequestType".equals(typeName)){
                    
                             return  fr.cirtil.www.saeservice.ConsultationAffichableRequestType.Factory.parse(reader);
+                        
+
+                  }
+
+              
+                  if (
+                  "http://www.cirtil.fr/saeService".equals(namespaceURI) &&
+                  "restoreMasseResponseType".equals(typeName)){
+                   
+                            return  fr.cirtil.www.saeservice.RestoreMasseResponseType.Factory.parse(reader);
                         
 
                   }

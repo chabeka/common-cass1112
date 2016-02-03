@@ -34,9 +34,13 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
+import fr.cirtil.www.saeservice.RestoreMasse;
+import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.StockageUnitaire;
 import fr.cirtil.www.saeservice.StockageUnitaireResponse;
 import fr.cirtil.www.saeservice.Suppression;
+import fr.cirtil.www.saeservice.SuppressionMasse;
+import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
@@ -277,5 +281,31 @@ public interface SaeServiceSkeletonInterface {
     */
    GetDocFormatOrigineResponse getDocFormatOrigineSecure(
          GetDocFormatOrigine request) throws AxisFault;
+
+   /**
+    * Endpoint de la restore de masse
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la restore de masse
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   RestoreMasseResponse restoreMasseSecure(RestoreMasse request, String callerIP)
+         throws AxisFault;
+
+   /**
+    * Endpoint de la suppression de masse
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la suppression de masse
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   SuppressionMasseResponse suppressionMasseSecure(SuppressionMasse request,
+         String callerIP) throws AxisFault;
 
 }

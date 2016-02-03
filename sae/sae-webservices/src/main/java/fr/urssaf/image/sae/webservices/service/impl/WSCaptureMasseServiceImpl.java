@@ -71,6 +71,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
    /**
+    * Nom du job d'un traitement de capture en masse
+    */
+   public static final String CAPTURE_MASSE_JN = "capture_masse";
+
+   /**
     * {@inheritDoc}
     */
    @Override
@@ -97,8 +102,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       HashMap<String, String> params = new HashMap<String, String>();
       params.put(Constantes.ECDE_URL, ecdeUrl);
-      TraitemetMasseParametres parametres = new TraitemetMasseParametres(params,
-            identifiant, hName, callerIP, nbDoc, extrait);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            params, identifiant, CAPTURE_MASSE_JN, hName, callerIP, nbDoc,
+            extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJob(parametres);
@@ -135,8 +141,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       File fileEcde;
       try {
          fileEcde = ecdeServices.convertSommaireToFile(new URI(ecdeUrl));
-         LOG
-               .debug("Contrôle de cohérence du hash du fichier sommaire.xml par rapport au hash transmis");
+         LOG.debug("Contrôle de cohérence du hash du fichier sommaire.xml par rapport au hash transmis");
 
          controleSupport.checkHash(fileEcde, hash, typeHash);
       } catch (EcdeBadURLException e) {
@@ -154,8 +159,8 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
          throw new CaptureAxisFault("TypeHashSommaireIncorrect",
                e.getMessage(), e);
       } catch (CaptureMasseRuntimeException e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable", e
-               .getMessage(), e);
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
       }
 
       Map<String, String> jobParam = new HashMap<String, String>();
@@ -172,8 +177,9 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
 
-      TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParam,
-            uuid, hName, callerIP, nbDoc, extrait);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParam, uuid, CAPTURE_MASSE_JN, hName, callerIP, nbDoc,
+            extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJob(parametres);
@@ -194,8 +200,8 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
                e);
       } catch (CaptureEcdeUrlFileNotFoundEx e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable", e
-               .getMessage(), e);
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
       } catch (CaptureEcdeWriteFileEx e) {
          throw new CaptureAxisFault("CaptureEcdeDroitEcriture", e.getMessage(),
                e);
