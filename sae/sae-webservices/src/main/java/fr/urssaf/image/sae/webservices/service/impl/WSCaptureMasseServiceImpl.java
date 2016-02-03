@@ -102,7 +102,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJob(parametres);
+      traitementService.ajouterJobCaptureMasse(parametres);
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
