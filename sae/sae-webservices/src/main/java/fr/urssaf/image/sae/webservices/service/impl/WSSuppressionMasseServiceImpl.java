@@ -58,7 +58,7 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
       LOG.debug("{} - Requete: {}", prefixeTrc, requete);
 
       Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put(Constantes.REQUETE, requete);
+      jobParam.put(Constantes.REQ_LUCENE_SUPPRESSION, requete);
 
       String hName = HostnameUtil.getHostname();
 
