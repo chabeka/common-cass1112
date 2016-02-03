@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.services.batch.support;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 
 /**
  * Support pour l'exécution des traitements de masse

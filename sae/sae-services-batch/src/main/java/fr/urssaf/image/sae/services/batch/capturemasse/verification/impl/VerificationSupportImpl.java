@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeSommaireFileSupport;
@@ -29,7 +30,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.model.DebutT
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
-import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**

@@ -15,13 +15,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.EcdeConnexionConfiguration;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReader;
-import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**

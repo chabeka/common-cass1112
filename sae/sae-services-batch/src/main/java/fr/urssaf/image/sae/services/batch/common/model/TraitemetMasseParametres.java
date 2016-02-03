@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.model;
+package fr.urssaf.image.sae.services.batch.common.model;
 
 import java.util.Map;
 import java.util.UUID;
@@ -9,10 +9,10 @@ import java.util.UUID;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
- * Objet représentant l'ensemble des paramètres de la capture en masse
+ * Objet représentant l'ensemble des paramètres de traitement de masse
  * 
  */
-public class CaptureMasseParametres {
+public class TraitemetMasseParametres {
    
    @Deprecated
    private String ecdeURL;
@@ -27,8 +27,14 @@ public class CaptureMasseParametres {
 
    private final VIContenuExtrait viExtrait;
    
+   
    /**
-    * Paramètre de la capture de masse
+    * Type du traitement de masse
+    */
+   private String type;
+   
+   /**
+    * Paramètre du traitement de masse
     */
    private Map<String, String> jobParameters;
 
@@ -46,7 +52,7 @@ public class CaptureMasseParametres {
     * @param viExtrait
     *           contenu du VI
     */
-   public CaptureMasseParametres(String ecdeURL, UUID uuid, String saeHost,
+   public TraitemetMasseParametres(String ecdeURL, UUID uuid, String saeHost,
          String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
       super();
       this.ecdeURL = ecdeURL;
@@ -71,7 +77,7 @@ public class CaptureMasseParametres {
     * @param viExtrait
     *           contenu du VI
     */
-   public CaptureMasseParametres(Map<String,String> jobParameters, UUID uuid, String saeHost,
+   public TraitemetMasseParametres(Map<String,String> jobParameters, UUID uuid, String saeHost,
          String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
       super();
       this.jobParameters = jobParameters;
@@ -81,6 +87,34 @@ public class CaptureMasseParametres {
       this.nbreDocs = nbreDocs;
       this.viExtrait = viExtrait;
    }
+   
+   /**
+    * @param jobParameters
+    *           Les paramètres de la capture de masse
+    * @param uuid
+    *           l'identifiant de traitement
+    * @param type
+    *           le type de traitement
+    * @param saeHost
+    *           le nom de la machine locale
+    * @param clientHost
+    *           l'adresse de la machine demandant le traitement
+    * @param nbreDocs
+    *           nombre de documents contenus dans le fichier sommaire.xml
+    * @param viExtrait
+    *           contenu du VI
+    */
+   public TraitemetMasseParametres(Map<String,String> jobParameters, UUID uuid, String type, String saeHost,
+         String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
+      super();
+      this.jobParameters = jobParameters;
+      this.uuid = uuid;
+      this.type = type;
+      this.saeHost = saeHost;
+      this.clientHost = clientHost;
+      this.nbreDocs = nbreDocs;
+      this.viExtrait = viExtrait;
+   }   
 
    /**
     * @return l'url ECDE
@@ -95,6 +129,13 @@ public class CaptureMasseParametres {
     */
    public final UUID getUuid() {
       return uuid;
+   }
+   
+   /**
+    * @return le type du traitement
+    */
+   public String getType() {
+      return type;
    }
 
    /**

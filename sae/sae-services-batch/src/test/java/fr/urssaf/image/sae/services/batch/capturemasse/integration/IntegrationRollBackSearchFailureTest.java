@@ -57,7 +57,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;

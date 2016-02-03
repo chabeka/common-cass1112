@@ -22,11 +22,11 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
-import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.services.batch.utils.CaptureMasseAuthentificationUtils;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -99,15 +99,13 @@ public class TraitementAsynchroneServiceImpl implements
                   new Object[] { "ajouterJob()",
                         parameters.getType(), parameters.getUuid() });
 
-      String type = CAPTURE_MASSE_JN;
-
       String parametres = parameters.getEcdeURL();
       Date dateDemande = new Date();
       UUID idJob = parameters.getUuid();
 
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
-      job.setType(type);
+      job.setType(parameters.getType());
       job.setParameters(parametres);
       job.setCreationDate(dateDemande);
       job.setClientHost(parameters.getClientHost());

@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 
 /**
  * Implémentation du service de capture de masse du SAE

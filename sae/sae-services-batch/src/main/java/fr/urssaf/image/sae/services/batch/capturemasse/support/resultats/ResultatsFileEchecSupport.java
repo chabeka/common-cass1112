@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 
 import java.io.File;
 
-import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
+import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 
 /**
  * Suppoprt pour l'écriture des fichiers resultats.xml en cs d'échec lors du

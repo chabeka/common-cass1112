@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.services.batch.supression.SAESupressionMasseService;
 

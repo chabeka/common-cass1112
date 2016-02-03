@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.common;
+package fr.urssaf.image.sae.services.batch.capturemasse;
 
 import java.util.List;
 

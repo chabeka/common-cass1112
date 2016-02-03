@@ -13,11 +13,11 @@ import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.tasklet.AbstractCaptureMasseTasklet;
-import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**

@@ -8,7 +8,7 @@ import java.io.File;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.batch.common.CaptureMasseErreur;
+import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 
 /**
  * Validation des arguments en entrée des implémentations du service

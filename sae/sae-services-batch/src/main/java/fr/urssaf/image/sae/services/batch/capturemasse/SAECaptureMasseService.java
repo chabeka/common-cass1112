@@ -8,7 +8,7 @@ import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import fr.urssaf.image.sae.services.batch.model.ExitTraitement;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 
 /**
  * Service de capture en masse du SAE

@@ -21,10 +21,10 @@ public class SAECaptureMasseServiceValidation {
 
    private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
-   private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
+   private static final String CAPTURE_METHOD = "execution(fr.urssaf.image.sae.services.batch.common.model.ExitTraitement fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService.captureMasse(*,*))"
          + " && args(sommaireURL, idTraitement)";
 
-   private static final String CAPTURE_METHOD_HASH = "execution(fr.urssaf.image.sae.services.batch.model.ExitTraitement fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService.captureMasse(*,*,*,*))"
+   private static final String CAPTURE_METHOD_HASH = "execution(fr.urssaf.image.sae.services.batch.common.model.ExitTraitement fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService.captureMasse(*,*,*,*))"
          + " && args(sommaireURL, idTraitement, hash, typeHash)";
 
    /**

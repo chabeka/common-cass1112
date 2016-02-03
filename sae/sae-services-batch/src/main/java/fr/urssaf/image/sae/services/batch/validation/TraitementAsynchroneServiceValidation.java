@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service

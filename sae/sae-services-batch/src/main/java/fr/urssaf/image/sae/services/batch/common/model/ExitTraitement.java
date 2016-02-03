@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.services.batch.model;
+package fr.urssaf.image.sae.services.batch.common.model;
 
 /**
  * Modèle pour le résultat de l'exécution d'un traitement de masse.<br>
