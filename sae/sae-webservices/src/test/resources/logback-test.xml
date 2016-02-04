@@ -28,7 +28,7 @@
    <logger name="fr.urssaf.image.sae.igc" level="WARN" />
    <logger name="fr.urssaf.image.sae.vi" level="WARN" />
    <logger name="fr.urssaf.image.sae.droit" level="WARN" />
-   <logger name="fr.urssaf.image.sae.services.batch.capturemasse" level="WARN" />
+   <logger name="fr.urssaf.image.sae.services.batch" level="WARN" />
    
    
    <root level="debug">
