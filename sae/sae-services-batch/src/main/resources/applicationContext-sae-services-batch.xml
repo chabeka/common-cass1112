@@ -28,5 +28,6 @@
    <!-- Tout le reste -->
    <import resource="applicationContext-sae-services-capturemasse-main.xml" />
    <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />
+   <import resource="applicationContext-sae-services-restoremasse-main.xml" />
    
 </beans>
