@@ -109,7 +109,79 @@ public class TracesDfceSupport {
       }
 
    }
+   
+   
+   /**
+    * Trace l'événement "Dépôt d'un document attaché dans DFCE"
+    * 
+    * @param idDoc
+    *           l'identifiant unique DFCE du document parent archivé
+    * @param hash
+    *           le hash du document
+    * @param typeHash
+    *           le type de hash ayant servi à calculer le hash fourni en
+    *           paramètre
+    * @param dateArchivageDfce
+    *           la date d'archivage DFCE
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public final void traceDepotAttachmentDansDFCE(UUID idDoc, String hash,
+         String typeHash, Date dateArchivageDfce) {
 
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
+
+         // Traces
+         String prefix = "traceDepotAttachmentDansDFCE()";
+         LOGGER.debug("{} - Début", prefix);
+
+         // Instantiation de l'objet TraceToCreate
+         TraceToCreate traceToCreate = new TraceToCreate();
+
+         // Code de l'événement
+         traceToCreate.setCodeEvt(Constants.TRACE_CODE_EVT_DEPOT_ATTACH_DFCE);
+
+         // Contexte
+         traceToCreate.setContexte("DepotAttachmentDansDFCE");
+
+         // Contrat de service et login
+         setInfosAuth(traceToCreate);
+
+         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+         // ce code
+         traceToCreate.getInfos().put("saeServeurHostname",
+               HostnameUtil.getHostname());
+         traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+         // Info supplémentaire : identifiant d'archivage
+         traceToCreate.getInfos().put("idDoc", idDoc.toString());
+
+         // Info supplémentaire : hash du document
+         traceToCreate.getInfos().put("hash", hash);
+
+         // Info supplémentaire : type de hash
+         traceToCreate.getInfos().put("typeHash", typeHash);
+
+         // Info supplémentaire : date d'archivage DFCE
+         traceToCreate.getInfos().put("dateArchivageDfce", dateArchivageDfce);
+
+         // Appel du dispatcheur
+         dispatcheurService.ajouterTrace(traceToCreate);
+
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+               .error(
+                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document attaché dans DFCE",
+                     ex);
+      }
+
+   }
+   
+   
    /**
     * Trace l'événement "Modification d'un document dans DFCE"
     * 

@@ -789,9 +789,10 @@ public class SAECassandraUpdater {
       // On positionne la version à 16
       saeDao.setDatabaseVersion(VERSION_16);
    }
-   
+
    /**
     * Version 17 : <li>Création des métadonnées pour WATT</li>
+    * <li>Ajout des événements DFCE_DEPOT_ATTACH|OK</li>
     */
    public void updateToVersion17() {
 
@@ -814,8 +815,11 @@ public class SAECassandraUpdater {
 
       // Ajout du format pdf (pour DEA)
       donnees.addReferentielFormatV4();
-      
-      // On positionne la version à 14
+
+      // Ajout des évenements DFCE_DEPOT_ATTACH|OK
+      donnees.addReferentielEvenementV9();
+
+      // On positionne la version à 17
       saeDao.setDatabaseVersion(VERSION_17);
    }
 }

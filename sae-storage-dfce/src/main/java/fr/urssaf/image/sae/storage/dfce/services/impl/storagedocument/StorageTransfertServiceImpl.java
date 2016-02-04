@@ -162,7 +162,7 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
       ServiceProvider dfceService = dfceServiceManager.getDFCEService();
       DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
       storageServiceSupport.addDocumentAttachment(dfceService, cnxParams,
-            docUuid, docName, extension, contenu, LOGGER);
+            docUuid, docName, extension, contenu, LOGGER, tracesSupport);
 
    }
 

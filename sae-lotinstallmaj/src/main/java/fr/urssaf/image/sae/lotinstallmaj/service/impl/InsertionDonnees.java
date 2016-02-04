@@ -569,6 +569,20 @@ public class InsertionDonnees {
 
    
    /**
+    * Ajout de l'action unitaire suppression_masse et restore_masse
+    */
+   public void addActionUnitaireTraitementMasse() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("suppression_masse", "Suppression de masse",
+            cfTmpl);
+      addActionUnitaire("restore_masse", "Restore de masse",
+            cfTmpl);
+
+   }
+   
+   /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
    public void addReferentielEvenementV3() {
@@ -771,6 +785,100 @@ public class InsertionDonnees {
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
+   }
+   
+   /**
+    * Référentiel des événements en V9
+    * Ajout des évenements : 
+    * <li>DFCE_DEPOT_ATTACHC|OK</li>
+    */
+   public void addReferentielEvenementV9() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+     
+      // DFCE_DEPOT_ATTACH|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_DEPOT_ATTACH|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      
+   }
+   
+   
+   /**
+    * Référentiel des événements en V10
+    * Ajout des évenements : 
+    * <li>WS_SUPPRESSION_MASSE|KO</li>
+    * <li>WS_RESTORE_MASSE|KO</li>
+    * <li>SUPPRESSION_MASSE|KO</li>
+    * <li>RESTORE_MASSE_KO</li>
+    * <li>DFCE_CORBEILLE_DOC|OK</li>
+    * <li>DFCE_RESTORE_DOC|OK</li>
+    */
+   public void addReferentielEvenementV10() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // WS_SUPPRESSION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_SUPPRESSION_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+     
+      // WS_RESTORE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_RESTORE_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // SUPPRESSION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("SUPPRESSION_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // RESTORE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("RESTORE_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // DFCE_CORBEILLE_DOC|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_CORBEILLE_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      
+      // DFCE_RESTORE_DOC|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_RESTORE_DOC|OK");
+      addColumn("JOURN_EVT", allInfos, StringSerializer.get(), ListSerializer
+            .get(), updater);
+      cfTmpl.update(updater);
+      
    }
    
    /**

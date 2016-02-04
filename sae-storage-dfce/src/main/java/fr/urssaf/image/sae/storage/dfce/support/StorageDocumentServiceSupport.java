@@ -614,8 +614,8 @@ public class StorageDocumentServiceSupport {
     */
    public void addDocumentAttachment(ServiceProvider dfceService,
          DFCEConnection cnxParams, UUID docUuid, String docName,
-         String extension, DataHandler contenu, Logger log)
-         throws StorageDocAttachmentServiceEx {
+         String extension, DataHandler contenu, Logger log,
+         TracesDfceSupport tracesSupport) throws StorageDocAttachmentServiceEx {
 
       // -- Traces debug - entrée méthode
       String prefixeTrc = "addDocumentAttachment()";
@@ -627,8 +627,18 @@ public class StorageDocumentServiceSupport {
          String hash = checkHash(contenu, digestAlgo, docName);
 
          InputStream docStream = contenu.getInputStream();
-         dfceService.getStoreService().addAttachment(docUuid, docName,
-               extension, false, hash, docStream);
+         Document doc = dfceService.getStoreService().addAttachment(docUuid,
+               docName, extension, false, hash, docStream);
+
+         // Trace l'événement "Dépôt d'un document attaché dans DFCE"
+         Set<Attachment> listeAttach = doc.getAttachments();
+         for (Attachment attachment : listeAttach) {
+            tracesSupport.traceDepotAttachmentDansDFCE(docUuid,
+                  attachment.getDigest(), attachment.getDigestAlgorithm(),
+                  attachment.getArchivageDate());
+            break;
+         }
+
       } catch (FrozenDocumentException e) {
          log.debug(
                "{} - Une exception a été levée lors de l'ajout d'un document attaché : {}",

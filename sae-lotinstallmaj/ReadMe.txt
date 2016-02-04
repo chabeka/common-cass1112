@@ -308,19 +308,22 @@ DomaineCotisant-ApplicationProductrice-ApplicationTraitement-ApplicationMetier-C
 
 - Ajout de l'action unitaire ajout_doc_attache
 
-- MIse à jour référentiel des évenement (WS_GET_DOC_FORMAT_ORIGINE|KO)
+- MIse à jour référentiel des événements (WS_GET_DOC_FORMAT_ORIGINE|KO)
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160300
 
 
 // ------------------------------------------
-// 12) Lot 160400SAE
+// 13) Lot 160400SAE
 // ------------------------------------------
 
 Lot 160400SAE
 Met la base Cassandra du SAE en version 17 :
 
 - Ajout des métadonnées pour WATT
+
+- Ajout de l'événement :
+	DFCE_DEPOT_ATTACH|OK
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160400
 
