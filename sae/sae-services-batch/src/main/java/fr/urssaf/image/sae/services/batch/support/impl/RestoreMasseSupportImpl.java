@@ -39,7 +39,7 @@ public class RestoreMasseSupportImpl implements TraitementExecutionSupport {
 
       String idTraitement = job.getJobParameters().get(Constantes.UUID_TRAITEMENT_RESTORE);
       ExitTraitement exitTraitement = null;
-      exitTraitement = restoreMasseService.restoreMasse(UUID.fromString(idTraitement));
+      exitTraitement = restoreMasseService.restoreMasse(job.getIdJob(), UUID.fromString(idTraitement));
 
       return exitTraitement;
    }

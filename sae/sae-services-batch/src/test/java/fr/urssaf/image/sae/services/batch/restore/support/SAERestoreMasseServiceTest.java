@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.services.batch.suppression.support;
+package fr.urssaf.image.sae.services.batch.restore.support;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,18 +16,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
-import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
+import fr.urssaf.image.sae.services.batch.restore.SAERestoreMasseService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml" })
-public class SAESuppressionMasseServiceTest {
-
+@ContextConfiguration(locations = { "/applicationContext-sae-services-restoremasse-test.xml" })
+public class SAERestoreMasseServiceTest {
+   
    @Autowired
-   private SAESuppressionMasseService service;
+   private SAERestoreMasseService service;
    
    @Before
    public void init() {
@@ -44,10 +44,10 @@ public class SAESuppressionMasseServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "suppression_masse" };
+      String[] roles = new String[] { "restore_masse" };
       saePrmds.add(saePrmd);
 
-      saeDroits.put("suppression_masse", saePrmds);
+      saeDroits.put("restore_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
@@ -61,7 +61,8 @@ public class SAESuppressionMasseServiceTest {
    
    //@Test(expected = IllegalArgumentException.class)
    @Test
-   public void testRequeteObligatoire() {
-      service.suppressionMasse(UUID.randomUUID(), null);
+   public void testIdTraitementSuppressionObligatoire() {
+      service.restoreMasse(UUID.randomUUID(), UUID.randomUUID());
    }
+
 }

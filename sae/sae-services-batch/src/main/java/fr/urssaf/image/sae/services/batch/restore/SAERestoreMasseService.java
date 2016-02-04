@@ -19,11 +19,15 @@ public interface SAERestoreMasseService {
    /**
     * Service de restore de masse
     * 
-    * @param idTraitement
-    *           identifiant unique du traitement
+    * @param idTraitementRestore
+    *           identifiant unique du traitement de restore des documents. 
+    *           C'est l'identifiant du job en cours d'exécution.
+    * @param idTraitementSuppression
+    *           identifiant unique du traitement de supperssion des documents.
+    *           C'est l'identifiant du job qui a permis de mettre les documents dans la corbeille.
     *           
     * @return le status du traitement
     */
    @PreAuthorize("hasRole('restore_masse')")
-   ExitTraitement restoreMasse(UUID idTraitement);
+   ExitTraitement restoreMasse(UUID idTraitementRestore, UUID idTraitementSuppression);
 }
