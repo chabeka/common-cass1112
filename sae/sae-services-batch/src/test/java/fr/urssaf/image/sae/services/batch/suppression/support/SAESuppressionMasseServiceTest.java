@@ -24,7 +24,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml" })
 public class SAESuppressionMasseServiceTest {
 
    @Autowired
