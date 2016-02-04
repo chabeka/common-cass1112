@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.utils;
+package fr.urssaf.image.sae.services.batch.common.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +15,29 @@ import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.impl.skip.SaeDroitServiceSkipImpl;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
- * Classe permettant de gérer les droits pour la capture de masse
+ * Classe permettant de gérer les droits pour les traitements de masse.
+ * 
+ * <br><br><b>Note :</b> A la différence de l'ajout des jobs dans la pile 
+ * qui passe par un contexte de sécurité initialisé par le WebService, 
+ * le lancement de job utilise cette classe.
+ * 
+ * @see {@link TraitementAsynchroneService#lancerJob(java.util.UUID) }
  * 
  */
-public final class CaptureMasseAuthentificationUtils {
+public final class BatchAuthentificationUtils {
 
    private static final String ROLE_RECHERCHE = "recherche";
 
    private static final Logger LOG = LoggerFactory
-         .getLogger(CaptureMasseAuthentificationUtils.class);
+         .getLogger(BatchAuthentificationUtils.class);
 
-   private CaptureMasseAuthentificationUtils() {
-   }
+   private BatchAuthentificationUtils() {}
 
    /**
     * 

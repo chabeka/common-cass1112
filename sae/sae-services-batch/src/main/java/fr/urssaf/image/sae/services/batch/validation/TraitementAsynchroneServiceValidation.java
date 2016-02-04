@@ -32,7 +32,7 @@ public class TraitementAsynchroneServiceValidation {
          + "ajouterJobRestoreMasse(*))" + "&& args(parametres)";
    
    
-   private static final String METHOD_2 = "execution(void " + CLASS
+   private static final String METHOD_LANCER_JOB = "execution(void " + CLASS
          + "lancerJob(*))" + "&& args(idJob)";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
@@ -134,7 +134,7 @@ public class TraitementAsynchroneServiceValidation {
       if (StringUtils.isBlank(parametres.getJobParameters().get(
             Constantes.UUID_TRAITEMENT_RESTORE))) {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
-               "uuid"));
+               "idTraitement"));
       }
 
       if (parametres.getUuid() == null) {
@@ -152,7 +152,7 @@ public class TraitementAsynchroneServiceValidation {
     * @param idJob
     *           doit être renseigné
     */
-   @Before(METHOD_2)
+   @Before(METHOD_LANCER_JOB)
    public final void lancerJob(UUID idJob) {
 
       if (idJob == null) {

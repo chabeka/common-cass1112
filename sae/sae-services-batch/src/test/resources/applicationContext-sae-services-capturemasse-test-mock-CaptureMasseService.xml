@@ -6,8 +6,18 @@
 
    <!-- mock du service de capture en masse-->
    <bean id="captureMasseService"
-      class="fr.urssaf.image.sae.services.batch.capturemasse.ServiceMockManager"
+      class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
       factory-method="createSAECaptureMasseService">
+   </bean>
+   
+   <bean id="suppressionMasseService"
+      class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
+      factory-method="createSAESuppressionMasseService">
+   </bean>
+   
+   <bean id="restoreMasseService"
+      class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
+      factory-method="createSAERestoreMasseService">
    </bean>
 
 </beans>

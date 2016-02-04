@@ -25,11 +25,11 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.common.utils.BatchAuthentificationUtils;
 import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
-import fr.urssaf.image.sae.services.batch.utils.CaptureMasseAuthentificationUtils;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
@@ -44,11 +44,6 @@ public class TraitementAsynchroneServiceImpl implements
 
    private static final Logger LOG = LoggerFactory
          .getLogger(TraitementAsynchroneServiceImpl.class);
-
-   /**
-    * Nom du job d'un traitement de capture en masse
-    */
-   public static final String CAPTURE_MASSE_JN = "capture_masse";
 
    private static final String TRC_LANCER = "lancerJob";
 
@@ -130,7 +125,7 @@ public class TraitementAsynchroneServiceImpl implements
 
       LOG.debug("{} - récupération du VI", TRC_LANCER);
 
-      AuthenticationToken token = CaptureMasseAuthentificationUtils
+      AuthenticationToken token = BatchAuthentificationUtils
             .getToken(job);
 
       LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);

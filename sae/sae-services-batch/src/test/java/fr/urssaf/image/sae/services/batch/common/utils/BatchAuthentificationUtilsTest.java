@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.utils;
+package fr.urssaf.image.sae.services.batch.common.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,16 +15,17 @@ import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.batch.common.utils.BatchAuthentificationUtils;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
-public class CaptureMasseAuthentificationUtilsTest {
+public class BatchAuthentificationUtilsTest {
 
    @Test
    public void testViVide() {
 
       JobRequest job = new JobRequest();
-      AuthenticationToken token = CaptureMasseAuthentificationUtils
+      AuthenticationToken token = BatchAuthentificationUtils
             .getToken(job);
 
       Assert.assertNotNull("le token ne doit pas etre null", token);
@@ -68,7 +69,7 @@ public class CaptureMasseAuthentificationUtilsTest {
 
       job.setVi(extrait);
 
-      AuthenticationToken token = CaptureMasseAuthentificationUtils
+      AuthenticationToken token = BatchAuthentificationUtils
             .getToken(job);
 
       Assert.assertNotNull("le token ne doit pas etre null", token);
@@ -111,7 +112,7 @@ public class CaptureMasseAuthentificationUtilsTest {
 
       job.setVi(extrait);
 
-      AuthenticationToken token = CaptureMasseAuthentificationUtils
+      AuthenticationToken token = BatchAuthentificationUtils
             .getToken(job);
 
       Assert.assertNotNull("le token ne doit pas etre null", token);
