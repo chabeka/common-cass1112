@@ -65,7 +65,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, URL_ECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse.name(), 
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, 
             null, null, null, null);
       service.ajouterJobCaptureMasse(parametres);
    }
@@ -84,7 +84,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, URL_ECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, null, TYPES_JOB.capture_masse.name(), null, null, null, null);
+            jobParams, null, TYPES_JOB.capture_masse, null, null, null, null);
       try {
          service.ajouterJobCaptureMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
@@ -116,7 +116,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, UUID_TRAITEMENT.toString());
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.suppression_masse.name(), 
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.suppression_masse, 
             null, null, null, null);
       service.ajouterJobSuppressionMasse(parametres);
    }
@@ -150,7 +150,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, REQ_LUCENE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, null, TYPES_JOB.capture_masse.name(), null, null, null, null);
+            jobParams, null, TYPES_JOB.capture_masse, null, null, null, null);
       try {
          service.ajouterJobSuppressionMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
@@ -167,7 +167,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "UUID_TRAITEMENT");
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse.name(), null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
       service.ajouterJobRestoreMasse(parametres);
    }
    
@@ -201,7 +201,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, REQ_LUCENE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, null, TYPES_JOB.restore_masse.name(), null, null, null, null);
+            jobParams, null, TYPES_JOB.restore_masse, null, null, null, null);
       try {
          service.ajouterJobRestoreMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
@@ -231,7 +231,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, idTraitement);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse.name(), null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
       try {
          service.ajouterJobRestoreMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
@@ -246,7 +246,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, urlECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse.name(), null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null, null, null);
       try {
          service.ajouterJobCaptureMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
@@ -261,7 +261,7 @@ public class TraitementAsynchroneServiceValidationTest {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, requete);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse.name(), null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null, null, null);
       try {
          service.ajouterJobSuppressionMasse(parametres);
          Assert.fail(FAIL_MESSAGE);

@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.batch.common.model;
 import java.util.Map;
 import java.util.UUID;
 
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
@@ -31,7 +32,7 @@ public class TraitemetMasseParametres {
    /**
     * Type du traitement de masse
     */
-   private String type;
+   private TYPES_JOB type;
    
    /**
     * Paramètre du traitement de masse
@@ -54,7 +55,7 @@ public class TraitemetMasseParametres {
     * @param viExtrait
     *           contenu du VI
     */
-   public TraitemetMasseParametres(Map<String,String> jobParameters, UUID uuid, String type, String saeHost,
+   public TraitemetMasseParametres(Map<String,String> jobParameters, UUID uuid, TYPES_JOB type, String saeHost,
          String clientHost, Integer nbreDocs, VIContenuExtrait viExtrait) {
       super();
       this.jobParameters = jobParameters;
@@ -84,7 +85,7 @@ public class TraitemetMasseParametres {
    /**
     * @return le type du traitement
     */
-   public String getType() {
+   public TYPES_JOB getType() {
       return type;
    }
 

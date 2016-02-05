@@ -133,7 +133,7 @@ public class TraitementAsynchroneServiceTest {
       jobParams.put(Constantes.ECDE_URL, "url_ecde");
       
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, idJob, Constantes.TYPES_JOB.capture_masse.name(), 
+            jobParams, idJob, TYPES_JOB.capture_masse, 
             null, null, null, null);
 
       service.ajouterJobCaptureMasse(parametres);
@@ -153,7 +153,7 @@ public class TraitementAsynchroneServiceTest {
       
       Assert.assertEquals(
             "Le type de traitement doit correspondre à la capture de masse",
-            Constantes.TYPES_JOB.capture_masse.name(), job.getType());
+            TYPES_JOB.capture_masse.name(), job.getType());
    }
    
    @Test
@@ -170,7 +170,7 @@ public class TraitementAsynchroneServiceTest {
        jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, "req_lucene");
        
        TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-             jobParams, idJob, Constantes.TYPES_JOB.suppression_masse.name(), 
+             jobParams, idJob, TYPES_JOB.suppression_masse, 
              null, null, null, null);
        
        service.ajouterJobSuppressionMasse(parametres);
@@ -185,7 +185,7 @@ public class TraitementAsynchroneServiceTest {
        
        Assert.assertEquals(
              "Le type de traitement est incorrect",
-             Constantes.TYPES_JOB.suppression_masse.name(), job.getType());
+             TYPES_JOB.suppression_masse.name(), job.getType());
    }  
    
    @Test
@@ -202,7 +202,7 @@ public class TraitementAsynchroneServiceTest {
        jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "id_traitement");
        
        TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-             jobParams, idJob, Constantes.TYPES_JOB.restore_masse.name(), 
+             jobParams, idJob, TYPES_JOB.restore_masse, 
              null, null, null, null);
        
        service.ajouterJobRestoreMasse(parametres);

@@ -1,17 +1,16 @@
 package fr.urssaf.image.sae.services.batch.impl;
 
+import java.lang.management.ManagementFactory;
 import java.util.Date;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -26,7 +25,6 @@ import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.common.utils.BatchAuthentificationUtils;
-import fr.urssaf.image.sae.services.batch.exception.JobInattenduException;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
@@ -90,15 +88,11 @@ public class TraitementAsynchroneServiceImpl implements
                   new Object[] { "ajouterJob()",
                         parameters.getType(), parameters.getUuid() });
 
-      String parametres = parameters.getEcdeURL();
-      Date dateDemande = new Date();
-      UUID idJob = parameters.getUuid();
-
       JobToCreate job = new JobToCreate();
-      job.setIdJob(idJob);
-      job.setType(parameters.getType());
-      job.setParameters(parametres);
-      job.setCreationDate(dateDemande);
+      job.setIdJob(parameters.getUuid());
+      job.setType(parameters.getType().name());
+      job.setParameters(parameters.getEcdeURL());
+      job.setCreationDate(new Date());
       job.setClientHost(parameters.getClientHost());
       job.setSaeHost(parameters.getSaeHost());
       job.setDocCount(parameters.getNbreDocs());
@@ -118,7 +112,7 @@ public class TraitementAsynchroneServiceImpl implements
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
-      // vérification que le traitement existe bien dans la pile des travaux
+      // Vérification que le traitement existe bien dans la pile des travaux
       if (job == null) {
          throw new JobInexistantException(idJob);
       }
@@ -132,28 +126,24 @@ public class TraitementAsynchroneServiceImpl implements
       AuthenticationContext.setModeHeritage();
       AuthenticationContext.setAuthenticationToken(token);
 
-      // vérification que le type de traitement existe bien
+      // Vérification que le type de traitement existe bien
       if (!Constantes.typeJobExist(job.getType())) {
          throw new JobTypeInexistantException(job);
       }
 
-      // vérification que le job est bien réservé
+      // Vérification que le job est bien réservé
       if (!JobState.RESERVED.equals(job.getState())) {
          throw new JobNonReserveException(idJob);
       }
 
-      // récupération du PID
-      String processName = java.lang.management.ManagementFactory
-            .getRuntimeMXBean().getName();
+      // Récupération du PID
       String pid = null;
+      String processName = ManagementFactory.getRuntimeMXBean().getName();
 
       if (processName.contains("@")) {
          pid = processName.split("@")[0];
-
          LOG.debug("PID = " + pid);
-
          jobQueueService.renseignerPidJob(idJob, Integer.valueOf(pid));
-
       } else {
          LOG.info("impossible de récupérer le pid");
       }
@@ -202,25 +192,11 @@ public class TraitementAsynchroneServiceImpl implements
       // on met à jour la pile des travaux
       jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
             exitTraitement.getExitMessage());
-
    }
-
-   private String getEcdeUrl(TraitemetMasseParametres parameters) {
-      String url = StringUtils.EMPTY;
-      if (StringUtils.isNotBlank(parameters.getEcdeURL())) {
-         url = parameters.getEcdeURL();
-      } else {
-         url = parameters.getJobParameters().get(Constantes.ECDE_URL);
-      }
-
-      return url;
-   }
-
 
    /**
     * {@inheritDoc}<br>
     * <br>
-    * 
     */
    @Override
    public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres) {
@@ -231,7 +207,6 @@ public class TraitementAsynchroneServiceImpl implements
    /**
     * {@inheritDoc}<br>
     * <br>
-    * 
     */
    @Override
    public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
@@ -242,7 +217,6 @@ public class TraitementAsynchroneServiceImpl implements
    /**
     * {@inheritDoc}<br>
     * <br>
-    * 
     */
    @Override
    public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
