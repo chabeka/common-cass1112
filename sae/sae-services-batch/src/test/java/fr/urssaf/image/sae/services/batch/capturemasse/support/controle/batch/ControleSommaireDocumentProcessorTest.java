@@ -39,7 +39,7 @@ import fr.urssaf.image.sae.services.exception.format.validation.ValidationExcept
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-batch-test.xml",
 "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class ControleSommaireDocumentProcessorTest {

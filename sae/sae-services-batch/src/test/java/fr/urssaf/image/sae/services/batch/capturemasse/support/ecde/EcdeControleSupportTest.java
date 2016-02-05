@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeControle
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
 public class EcdeControleSupportTest {
 
    @Autowired

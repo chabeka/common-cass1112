@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-batch-test.xml" })
 public class ControleFichiersReferenceStepTest {
 
    @Autowired

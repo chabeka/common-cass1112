@@ -43,7 +43,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
       "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml",
-      "/applicationContext-sae-services-capturemasse-test.xml" })
+      "/applicationContext-sae-services-batch-test.xml" })
 public class PersistanceStepTest {
 
    @Autowired

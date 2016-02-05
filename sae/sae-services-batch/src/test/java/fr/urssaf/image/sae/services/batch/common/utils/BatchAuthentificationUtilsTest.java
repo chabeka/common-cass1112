@@ -50,27 +50,7 @@ public class BatchAuthentificationUtilsTest {
    @Test
    public void testViElementRecherche() {
 
-      JobRequest job = new JobRequest();
-      VIContenuExtrait extrait = new VIContenuExtrait();
-      extrait.setCodeAppli("TEST");
-      extrait.setIdUtilisateur("TEST_UTILISATION");
-
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> listPrmd = new ArrayList<SaePrmd>();
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("codePrmd");
-      prmd.setDescription("description");
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setPrmd(prmd);
-      listPrmd.add(saePrmd);
-      saeDroits.put("recherche", listPrmd);
-      extrait.setSaeDroits(saeDroits);
-
-      job.setVi(extrait);
-
-      AuthenticationToken token = BatchAuthentificationUtils
-            .getToken(job);
+      AuthenticationToken token = getJobToken("recherche");
 
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
@@ -93,27 +73,7 @@ public class BatchAuthentificationUtilsTest {
    @Test
    public void testViElementCaptureMasse() {
 
-      JobRequest job = new JobRequest();
-      VIContenuExtrait extrait = new VIContenuExtrait();
-      extrait.setCodeAppli("TEST");
-      extrait.setIdUtilisateur("TEST_UTILISATION");
-
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> listPrmd = new ArrayList<SaePrmd>();
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("codePrmd");
-      prmd.setDescription("description");
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setPrmd(prmd);
-      listPrmd.add(saePrmd);
-      saeDroits.put("archivage_masse", listPrmd);
-      extrait.setSaeDroits(saeDroits);
-
-      job.setVi(extrait);
-
-      AuthenticationToken token = BatchAuthentificationUtils
-            .getToken(job);
+      AuthenticationToken token = getJobToken("archivage_masse");
 
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
@@ -131,6 +91,77 @@ public class BatchAuthentificationUtilsTest {
                + " dans la liste des éléments récupérés", authList
                .contains(auth));
       }
+   }
+   
+   @Test
+   public void testViElementSuppressionMasse() {
+
+      AuthenticationToken token = getJobToken("suppression_masse");
+
+      Assert.assertNotNull("le token ne doit pas etre null", token);
+      List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
+            .getAuthorities();
+      List<String> sAuthorities = Arrays.asList("recherche", "suppression_masse");
+      Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
+            2, authorities.size());
+      List<String> authList = new ArrayList<String>();
+      for (GrantedAuthority authority : authorities) {
+         authList.add(authority.getAuthority());
+      }
+
+      for (String auth : sAuthorities) {
+         Assert.assertTrue("l'élement " + auth + " doit etre présent "
+               + " dans la liste des éléments récupérés", authList
+               .contains(auth));
+      }
+   }
+   
+   @Test
+   public void testViElementRestoreMasse() {
+
+      AuthenticationToken token = getJobToken("restore_masse");
+
+      Assert.assertNotNull("le token ne doit pas etre null", token);
+      List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
+            .getAuthorities();
+      List<String> sAuthorities = Arrays.asList("recherche", "restore_masse");
+      Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
+            2, authorities.size());
+      List<String> authList = new ArrayList<String>();
+      for (GrantedAuthority authority : authorities) {
+         authList.add(authority.getAuthority());
+      }
+
+      for (String auth : sAuthorities) {
+         Assert.assertTrue("l'élement " + auth + " doit etre présent "
+               + " dans la liste des éléments récupérés", authList
+               .contains(auth));
+      }
+   }
+   
+   private AuthenticationToken getJobToken(String droit) {
+      JobRequest job = new JobRequest();
+      VIContenuExtrait extrait = new VIContenuExtrait();
+      extrait.setCodeAppli("TEST");
+      extrait.setIdUtilisateur("TEST_UTILISATION");
+
+      SaeDroits saeDroits = new SaeDroits();
+      List<SaePrmd> listPrmd = new ArrayList<SaePrmd>();
+      Prmd prmd = new Prmd();
+      prmd.setBean("permitAll");
+      prmd.setCode("codePrmd");
+      prmd.setDescription("description");
+      SaePrmd saePrmd = new SaePrmd();
+      saePrmd.setPrmd(prmd);
+      listPrmd.add(saePrmd);
+      saeDroits.put(droit, listPrmd);
+      extrait.setSaeDroits(saeDroits);
+
+      job.setVi(extrait);
+
+      AuthenticationToken token = BatchAuthentificationUtils
+            .getToken(job);
+      return token;
    }
 
 }

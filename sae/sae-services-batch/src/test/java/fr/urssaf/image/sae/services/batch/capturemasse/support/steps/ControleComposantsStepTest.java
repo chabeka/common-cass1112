@@ -50,7 +50,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(value = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(value = { "/applicationContext-sae-services-batch-test.xml" })
 public class ControleComposantsStepTest {
 
    @Autowired

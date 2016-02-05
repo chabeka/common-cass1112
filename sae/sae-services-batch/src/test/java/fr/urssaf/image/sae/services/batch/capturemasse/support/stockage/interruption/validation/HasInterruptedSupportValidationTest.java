@@ -12,7 +12,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class HasInterruptedSupportValidationTest {
 

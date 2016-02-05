@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-batch-test.xml",
       "/applicationContext-sae-services-capturemasse-test-mock-storagedocument.xml" })
 public class ControleStorageDocumentProcessorTest {
 

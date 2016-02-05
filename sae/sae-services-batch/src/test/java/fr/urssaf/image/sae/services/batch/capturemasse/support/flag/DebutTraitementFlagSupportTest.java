@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.DebutTraitem
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.model.DebutTraitementFlag;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
 public class DebutTraitementFlagSupportTest {
 
    @Autowired

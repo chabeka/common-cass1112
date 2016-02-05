@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-batch-test.xml",
       "/applicationContext-sae-services-capturemasse-test-mock-stax.xml" })
 public class NfsResultatsFileEchecSupportTest {
 

@@ -70,7 +70,7 @@ import fr.urssaf.image.sae.utils.SaeLogAppender;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-batch-test.xml",
       "/applicationContext-sae-services-capturemasse-test-integration.xml",
       "/applicationContext-sae-services-capturemasse-test-mock-dfcemanager.xml" })
 public class IntegrationInterrutionReconnexionImpossibleTest {

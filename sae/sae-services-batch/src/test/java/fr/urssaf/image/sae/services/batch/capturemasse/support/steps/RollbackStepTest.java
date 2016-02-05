@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
       "/applicationContext-sae-services-capturemasse-test-mock-deletion.xml",
-      "/applicationContext-sae-services-capturemasse-test.xml" })
+      "/applicationContext-sae-services-batch-test.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class RollbackStepTest {
 

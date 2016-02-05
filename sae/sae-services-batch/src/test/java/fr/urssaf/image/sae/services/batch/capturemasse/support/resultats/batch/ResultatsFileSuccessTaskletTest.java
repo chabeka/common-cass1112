@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithr
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-capturemasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
 @DirtiesContext
 public class ResultatsFileSuccessTaskletTest {
 

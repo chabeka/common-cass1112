@@ -53,7 +53,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
+      "/applicationContext-sae-services-batch-test.xml",
       "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class PersistanceFichiersReferenceStepTest {
 

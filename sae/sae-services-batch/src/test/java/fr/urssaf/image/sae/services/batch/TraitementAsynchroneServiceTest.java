@@ -49,8 +49,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-capturemasse-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-mock-CaptureMasseService.xml" })
+      "/applicationContext-sae-services-batch-test.xml",
+      "/applicationContext-sae-services-batch-test-mock-Services.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class TraitementAsynchroneServiceTest {
