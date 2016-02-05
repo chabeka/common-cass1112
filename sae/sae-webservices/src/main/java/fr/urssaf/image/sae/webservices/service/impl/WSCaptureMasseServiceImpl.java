@@ -30,6 +30,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSom
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
@@ -98,7 +99,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       HashMap<String, String> params = new HashMap<String, String>();
       params.put(Constantes.ECDE_URL, ecdeUrl);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            params, identifiant, Constantes.TYPES_JOB.capture_masse.name(),
+            params, identifiant, TYPES_JOB.capture_masse,
             hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
@@ -173,7 +174,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             .getContext().getAuthentication().getPrincipal();
 
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParam, uuid, Constantes.TYPES_JOB.capture_masse.name(), hName,
+            jobParam, uuid, TYPES_JOB.capture_masse, hName,
             callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux

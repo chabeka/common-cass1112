@@ -16,6 +16,7 @@ import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
@@ -73,7 +74,7 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
 
       // Création du job de restore dans la pile
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParam, uuid, Constantes.TYPES_JOB.restore_masse.name(), hName, callerIP, null, extrait);
+            jobParam, uuid, TYPES_JOB.restore_masse, hName, callerIP, null, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
       traitementService.ajouterJobRestoreMasse(parametres);
