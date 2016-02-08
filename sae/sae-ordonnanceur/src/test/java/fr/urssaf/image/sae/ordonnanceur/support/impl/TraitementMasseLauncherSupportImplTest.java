@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
-public class CaptureMasseLauncherSupportImplTest {
+public class TraitementMasseLauncherSupportImplTest {
 
    @Test
    public void constructeur_failure_saeconfig_notfound() {
@@ -25,7 +25,7 @@ public class CaptureMasseLauncherSupportImplTest {
             "/sae-config.properties");
 
       try {
-         new CaptureMasseLauncherSupportImpl("executable", saeConfigResource);
+         new TraitementMasseLauncherSupportImpl("executable", saeConfigResource);
 
          Assert
                .fail("une exception de type OrdonnanceurRuntimeException doit être levée");
@@ -48,9 +48,9 @@ public class CaptureMasseLauncherSupportImplTest {
       saeConfiguration.load(saeConfigResource.getInputStream());
 
       String executable = saeConfiguration
-            .getProperty("sae.archivagemasse.executable");
+            .getProperty("sae.traitementmasse.executable");
 
-      CaptureMasseLauncherSupportImpl launcher = new CaptureMasseLauncherSupportImpl(
+      TraitementMasseLauncherSupportImpl launcher = new TraitementMasseLauncherSupportImpl(
             executable, saeConfigResource);
 
       String parameters = "ecde://ecde.cer69.recouv/sommaire.xml";

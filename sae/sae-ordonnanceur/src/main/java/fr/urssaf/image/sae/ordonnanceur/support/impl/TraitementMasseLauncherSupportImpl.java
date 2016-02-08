@@ -21,11 +21,11 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
  * 
  * 
  */
-public class CaptureMasseLauncherSupportImpl implements
+public class TraitementMasseLauncherSupportImpl implements
       TraitementLauncherSupport {
 
    private static final Logger LOG = LoggerFactory
-         .getLogger(CaptureMasseLauncherSupportImpl.class);
+         .getLogger(TraitementMasseLauncherSupportImpl.class);
 
    private static final String PREFIX_LOG = "ordonnanceur()";
 
@@ -40,11 +40,11 @@ public class CaptureMasseLauncherSupportImpl implements
    /***
     * 
     * @param executable
-    *           exécutable du traitement de capture en masse
+    *           exécutable du traitement de masse
     * @param saeConfigResource
     *           fichier de configuration générale du SAE
     */
-   public CaptureMasseLauncherSupportImpl(String executable,
+   public TraitementMasseLauncherSupportImpl(String executable,
          Resource saeConfigResource) {
 
       Assert.notNull(executable, "'executable' is required");
@@ -63,9 +63,9 @@ public class CaptureMasseLauncherSupportImpl implements
    }
 
    @Override
-   public final void lancerTraitement(JobQueue captureMasse) {
+   public final void lancerTraitement(JobQueue traitementMasse) {
 
-      String command = this.createCommand(captureMasse);
+      String command = this.createCommand(traitementMasse);
 
       LOG.info("{} - lancement du processus: {}", PREFIX_LOG, command);
 
@@ -76,9 +76,9 @@ public class CaptureMasseLauncherSupportImpl implements
       }
    }
 
-   protected final String createCommand(JobQueue captureMasse) {
+   protected final String createCommand(JobQueue traitementMasse) {
 
-      String idTraitement = ObjectUtils.toString(captureMasse.getIdJob());
+      String idTraitement = ObjectUtils.toString(traitementMasse.getIdJob());
 
       // remplacement de _UUID_TO_REPLACE
       String command = StringUtils.replace(this.executable, "_UUID_TO_REPLACE",
@@ -92,7 +92,7 @@ public class CaptureMasseLauncherSupportImpl implements
 
       // les trois arguments sont dans l'ordre
       // 1 - le nom de l'opération : traitementMasse
-      // 2 - identifiant du traitement de capture en masse
+      // 2 - identifiant du traitement de masse
       // 3 - Le chemin complet du fichier de configuration globale du SAE
 
       StrBuilder builder = new StrBuilder();

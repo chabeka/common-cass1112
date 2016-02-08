@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
-import fr.urssaf.image.sae.ordonnanceur.support.CaptureMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraceOrdoSupport;
+import fr.urssaf.image.sae.ordonnanceur.support.TraitementMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.util.ListeUtils;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 @Service
 public class DecisionServiceImpl implements DecisionService {
 
-   private final CaptureMasseSupport captureMasseSupport;
+   private final TraitementMasseSupport traitementMasseSupport;
 
    private final DFCESupport dfceSuppport;
 
@@ -60,6 +60,8 @@ public class DecisionServiceImpl implements DecisionService {
     * 
     * @param captureMasseSupport
     *           support pour les traitements de capture en masse
+    * @param traitementMasseSupport
+    *           support pour les traitements de masse
     * @param dfceSuppport
     *           service de DFCE
     * @param jobFailureService
@@ -68,11 +70,11 @@ public class DecisionServiceImpl implements DecisionService {
     *           support pour l'écriture de la traçabilité
     */
    @Autowired
-   public DecisionServiceImpl(CaptureMasseSupport captureMasseSupport,
+   public DecisionServiceImpl(TraitementMasseSupport traitementMasseSupport,
          DFCESupport dfceSuppport, JobFailureService jobFailureService,
          TraceOrdoSupport traceOrdoSupport) {
 
-      this.captureMasseSupport = captureMasseSupport;
+      this.traitementMasseSupport = traitementMasseSupport;
       this.dfceSuppport = dfceSuppport;
       this.jobFailureService = jobFailureService;
       this.traceOrdoSupport = traceOrdoSupport;
@@ -89,27 +91,30 @@ public class DecisionServiceImpl implements DecisionService {
       // que les traitements d'archivage de masse.
       // si un nouveau type de traitement est ajouté, l'algo sera modifié.
 
-      // vérification que des traitements de capture en masse sont à lancer
+      // vérification que des traitements de masse sont à lancer
       if (CollectionUtils.isEmpty(jobsEnAttente)) {
          throw new AucunJobALancerException();
       }
 
-      // filtrage des capture en masse sur l'ECDE local
-      List<JobQueue> jobInstances = captureMasseSupport
-            .filtrerCaptureMasseLocal(jobsEnAttente);
+      // filtrage des traitements de masse :
+      // - capture en masse sur l'ECDE local
+      // - suppression en masse sur tous les CNP
+      // - restore en masse sur tous les CNP
+      List<JobQueue> jobInstances = traitementMasseSupport
+            .filtrerTraitementMasse(jobsEnAttente);
 
-      // vérification que des traitements de capture en masse sur l'ECDE local
-      // sont à lancer
+      // vérification que des traitements de masse
       if (CollectionUtils.isEmpty(jobInstances)) {
          throw new AucunJobALancerException();
       }
 
-      // filtrage des traitements en cours sur les capture en masse
+      // filtrage des traitements en cours sur les capture en masse, suppression
+      // et restore
       if (!CollectionUtils.isEmpty(jobsEnCours)) {
-         Collection<JobRequest> enCours = captureMasseSupport
-               .filtrerCaptureMasse(jobsEnCours);
+         Collection<JobRequest> enCours = traitementMasseSupport
+               .filtrerTraitementMasse(jobsEnCours);
 
-         // si un traitement de capture en masse est en cours alors aucun
+         // si un traitement en masse est en cours alors aucun
          // traitement n'est à lancer sur le serveur
          if (!enCours.isEmpty()) {
             throw new AucunJobALancerException();
@@ -173,10 +178,10 @@ public class DecisionServiceImpl implements DecisionService {
    private void controleDispoEcdeCaptureMasse(JobQueue jobAlancer)
          throws AucunJobALancerException {
 
-      if ((captureMasseSupport.isCaptureMasse(jobAlancer))
-            && (!captureMasseSupport.isEcdeUpJobCaptureMasse(jobAlancer))) {
+      if ((traitementMasseSupport.isCaptureMasse(jobAlancer))
+            && (!traitementMasseSupport.isEcdeUpJobCaptureMasse(jobAlancer))) {
 
-         URI urlEcde = captureMasseSupport.extractUrlEcde(jobAlancer);
+         URI urlEcde = traitementMasseSupport.extractUrlEcde(jobAlancer);
 
          // On écrit la trace qu'une seule fois pour éviter une
          // redondance inutile

@@ -16,18 +16,28 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
- * Support pour les traitements de capture en masse
+ * Support pour les traitements en masse
  * 
  * 
  */
 @Component
-public class CaptureMasseSupport {
+public class TraitementMasseSupport {
 
    /**
     * Nom du job d'un traitement de capture en masse
     */
    public static final String CAPTURE_MASSE_JN = "capture_masse";
-
+   
+   /**
+    * Nom du job d'un traitement de suppression de masse
+    */
+   public static final String SUPPRESSION_MASSE_JN = "suppression_masse";
+   
+   /**
+    * Nom du job d'un traitement de restore de masse
+    */
+   public static final String RESTORE_MASSE_JN = "restore_masse";
+   
    private final EcdeSupport ecdeSupport;
 
    private static final String ECDE_URL = "ecdeUrl";
@@ -39,19 +49,25 @@ public class CaptureMasseSupport {
     * 
     */
    @Autowired
-   public CaptureMasseSupport(EcdeSupport ecdeSupport) {
+   public TraitementMasseSupport(EcdeSupport ecdeSupport) {
 
       this.ecdeSupport = ecdeSupport;
    }
 
    /**
-    * Filtre les traitements de masse pour ne récupérer que ceux concernant les
-    * capture en masse pour l'ECDE local.<br>
+    * Filtre les traitements de masse pour ne récupérer que ceux : <br>
+    * <li>concernant les captures en masse pour l'ECDE local</li>
+    * <li>concernant les suppressions de masse tous CNP</li>
+    * <li>concernant les restore de masse tous CNP</li>
     * <br>
-    * Les traitements de capture en masse sont indiqués par la propriété
+    * Le type des traitements de masse est indiqué par la propriété
     * <code>jobName</code> de l'instance {@link JobRequest}.<br>
-    * Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
-    * en masse.<br>
+    * <li>Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
+    * en masse.</li>
+    * <li>Si il indique '{@value #SUPPRESSION_MASSE_JN}' alors il s'agit d'une suppresion
+    * en masse.</li>
+    * <li>Si il indique '{@value #RESTORE_MASSE_JN}' alors il s'agit d'une restore
+    * en masse.</li>
     * <br>
     * Un traitement de capture en masse indique dans ses paramètres l'URL ECDE
     * du fichier sommaire.xml.<br>
@@ -60,13 +76,13 @@ public class CaptureMasseSupport {
     * 
     * @param jobRequests
     *           traitements de masse
-    * @return traitements de capture en masse filtrés
+    * @return traitements de masse filtrés
     */
-   public final List<JobQueue> filtrerCaptureMasseLocal(
+   public final List<JobQueue> filtrerTraitementMasse(
          List<JobQueue> jobRequests) {
 
       @SuppressWarnings("unchecked")
-      List<JobQueue> jobCaptureMasse = (List<JobQueue>) CollectionUtils.select(
+      List<JobQueue> jobTraitementMasse = (List<JobQueue>) CollectionUtils.select(
             jobRequests, new Predicate() {
 
                @Override
@@ -75,32 +91,42 @@ public class CaptureMasseSupport {
                   JobQueue jobRequest = (JobQueue) object;
 
                   boolean isCaptureMasse = isCaptureMasse(jobRequest);
+                  
+                  boolean isSuppressionMasse = isSuppressionMasse(jobRequest);
+                  
+                  boolean isRestoreMasse = isRestoreMasse(jobRequest);
 
                   boolean isLocal = isLocal(jobRequest);
 
-                  return isCaptureMasse && isLocal;
+                  return isRestoreMasse || isSuppressionMasse || (isCaptureMasse && isLocal);
                }
 
             });
 
-      return jobCaptureMasse;
+      return jobTraitementMasse;
    }
 
    /**
-    * Filtre les traitements de masse pour ne récupérer que ceux concernant les
-    * capture en masse.<br>
+    * Filtre les traitements de masse pour ne récupérer que ceux : <br>
+    * <li>concernant les captures en masse</li>
+    * <li>concernant les suppressions de masse tous CNP</li>
+    * <li>concernant les restore de masse tous CNP</li>
     * <br>
-    * Les traitements de capture en masse sont indiqués par la propriété
+    * Le type des traitements de masse est indiqué par la propriété
     * <code>jobName</code> de l'instance {@link JobRequest}.<br>
-    * Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
-    * en masse.<br>
+    * <li>Si il indique '{@value #CAPTURE_MASSE_JN}' alors il s'agit d'une capture
+    * en masse.</li>
+    * <li>Si il indique '{@value #SUPPRESSION_MASSE_JN}' alors il s'agit d'une suppresion
+    * en masse.</li>
+    * <li>Si il indique '{@value #RESTORE_MASSE_JN}' alors il s'agit d'une restore
+    * en masse.</li>
     * <br>
     * 
     * @param jobRequests
     *           traitements de masse
-    * @return traitements de capture en masse filtrés
+    * @return traitements de masse filtrés
     */
-   public final List<JobRequest> filtrerCaptureMasse(
+   public final List<JobRequest> filtrerTraitementMasse(
          Collection<JobRequest> jobRequests) {
 
       @SuppressWarnings("unchecked")
@@ -113,8 +139,12 @@ public class CaptureMasseSupport {
                   JobRequest jobRequest = (JobRequest) object;
 
                   boolean isCaptureMasse = isCaptureMasseJobRequest(jobRequest);
+                  
+                  boolean isSuppressionMasse = isSuppressionMasseJobRequest(jobRequest);
+                  
+                  boolean isRestoreMasse = isRestoreMasseJobRequest(jobRequest);
 
-                  return isCaptureMasse;
+                  return isCaptureMasse || isSuppressionMasse || isRestoreMasse;
                }
 
             });
@@ -136,12 +166,57 @@ public class CaptureMasseSupport {
 
       return isCaptureMasse;
    }
+   
+   /**
+    * Indique si le job passé en paramètre est un job de type "suppression de masse"
+    * 
+    * @param jobRequest
+    *           le job
+    * @return true si le job est une suppression de masse, false dans le cas
+    *         contraire
+    */
+   public final boolean isSuppressionMasse(JobQueue jobRequest) {
 
+      boolean isSuppressionMasse = SUPPRESSION_MASSE_JN.equals(jobRequest.getType());
+
+      return isSuppressionMasse;
+   }
+
+   /**
+    * Indique si le job passé en paramètre est un job de type "restore de masse"
+    * 
+    * @param jobRequest
+    *           le job
+    * @return true si le job est une restore de masse, false dans le cas
+    *         contraire
+    */
+   public final boolean isRestoreMasse(JobQueue jobRequest) {
+
+      boolean isRestoreMasse = RESTORE_MASSE_JN.equals(jobRequest.getType());
+
+      return isRestoreMasse;
+   }
+   
+   
    private boolean isCaptureMasseJobRequest(JobRequest jobRequest) {
 
       boolean isCaptureMasse = CAPTURE_MASSE_JN.equals(jobRequest.getType());
 
       return isCaptureMasse;
+   }
+   
+   private boolean isSuppressionMasseJobRequest(JobRequest jobRequest) {
+
+      boolean isSuppressionMasse = SUPPRESSION_MASSE_JN.equals(jobRequest.getType());
+
+      return isSuppressionMasse;
+   }
+   
+   private boolean isRestoreMasseJobRequest(JobRequest jobRequest) {
+
+      boolean isRestoreMasse = RESTORE_MASSE_JN.equals(jobRequest.getType());
+
+      return isRestoreMasse;
    }
 
    private boolean isLocal(JobQueue jobQueue) {
@@ -228,4 +303,4 @@ public class CaptureMasseSupport {
 
    }
 
- }
+}

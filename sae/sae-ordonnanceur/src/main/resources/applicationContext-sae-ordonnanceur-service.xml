@@ -10,11 +10,11 @@
    <context:component-scan base-package="fr.urssaf.image.sae.ordonnanceur.service" />
    <context:component-scan base-package="fr.urssaf.image.sae.ordonnanceur.support" />
 
-   <!-- traitement de capture en masse -->
-   <bean id="captureMasseLauncher"
-      class="fr.urssaf.image.sae.ordonnanceur.support.impl.CaptureMasseLauncherSupportImpl">
-      <qualifier value="captureMasseLauncher" />
-      <constructor-arg value="${sae.archivagemasse.executable}" />
+   <!-- traitement de masse -->
+   <bean id="traitementMasseLauncher"
+      class="fr.urssaf.image.sae.ordonnanceur.support.impl.TraitementMasseLauncherSupportImpl">
+      <qualifier value="traitementMasseLauncher" />
+      <constructor-arg value="${sae.traitementmasse.executable}" />
       <constructor-arg ref="saeConfigResource" />
    </bean>
 

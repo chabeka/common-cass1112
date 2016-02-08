@@ -38,6 +38,8 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 public class DecisionServiceTest {
 
    private static final String CAPTURE_MASSE_JN = "capture_masse";
+   private static final String SUPPRESSION_MASSE_JN = "suppression_masse";
+   private static final String RESTORE_MASSE_JN = "restore_masse";
 
    private static final String CER44_SOMMAIRE = "ecde://ecde.cer44.recouv/CS/20130916/02/sommaire.xml";
 
@@ -54,6 +56,11 @@ public class DecisionServiceTest {
 
    @Autowired
    private EcdeTestTools ecdeTestTools;
+
+   private static final String ECDE_URL = "ecdeUrl";
+   private static final String REQUETE_SUPPRESSION = "requeteSuppression";
+   private static final String AUTRE_PARAM = "autreParam";
+   private static final String UUID_SUPPRESSION = "uuidSuppression";
 
    @Before
    public void before() {
@@ -138,7 +145,8 @@ public class DecisionServiceTest {
          throws AucunJobALancerException {
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
-
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true);
       EasyMock.replay(dfceSuppport);
 
       List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
@@ -148,18 +156,46 @@ public class DecisionServiceTest {
 
       List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
 
-      Map<String, String> param = new HashMap<String, String>();
-      param.put("ecdeUrl", ecdeTestSommaire.getUrlEcde().toString());
-      JobQueue job5 = createJobWithJobParam(CAPTURE_MASSE_JN, param);
+      Map<String, String> param1 = new HashMap<String, String>();
+      param1.put(ECDE_URL, CER44_SOMMAIRE);
+      JobQueue job1 = createJobWithJobParam(CAPTURE_MASSE_JN, param1);
+      jobsEnAttente.add(job1);
 
-      jobsEnAttente.add(job5);
+      Map<String, String> param2 = new HashMap<String, String>();
+      param2.put(ECDE_URL, ecdeTestSommaire.getUrlEcde().toString());
+      JobQueue job2 = createJobWithJobParam(CAPTURE_MASSE_JN, param2);
+      jobsEnAttente.add(job2);
+
+      Map<String, String> param3 = new HashMap<String, String>();
+      param3.put(UUID_SUPPRESSION, "82369970-cbdf-11e5-b669-b8ca3a83061d");
+      JobQueue job3 = createJobWithJobParam(RESTORE_MASSE_JN, param3);
+      jobsEnAttente.add(job3);
+      
+      Map<String, String> param4 = new HashMap<String, String>();
+      param4.put(REQUETE_SUPPRESSION, "requete");
+      JobQueue job4 = createJobWithJobParam(RESTORE_MASSE_JN, param3);
+      jobsEnAttente.add(job4);
 
       JobQueue job = decisionService.trouverJobALancer(jobsEnAttente,
             jobsEnCours);
 
-      Assert.assertEquals("le traitement attendu est le job2", job5.getIdJob(),
+      Assert.assertEquals("le traitement attendu est le job2", job2.getIdJob(),
             job.getIdJob());
 
+      jobsEnAttente.remove(1);
+      job = decisionService.trouverJobALancer(jobsEnAttente,
+            jobsEnCours);
+
+      Assert.assertEquals("le traitement attendu est le job3", job3.getIdJob(),
+            job.getIdJob());
+      
+      jobsEnAttente.remove(1);
+      job = decisionService.trouverJobALancer(jobsEnAttente,
+            jobsEnCours);
+
+      Assert.assertEquals("le traitement attendu est le job4", job4.getIdJob(),
+            job.getIdJob());
+      
       EasyMock.verify(dfceSuppport);
 
    }
@@ -200,8 +236,7 @@ public class DecisionServiceTest {
 
          decisionService.trouverJobALancer(null, jobsEnCours);
 
-         Assert
-               .fail("une exception de type AucunJobALancerException doit être levée");
+         Assert.fail("une exception de type AucunJobALancerException doit être levée");
 
       } catch (AucunJobALancerException e) {
 
@@ -212,11 +247,11 @@ public class DecisionServiceTest {
    }
 
    /**
-    * aucun traitement de capture en masse en attente
+    * aucun traitement en masse en attente
     * 
     */
    @Test(expected = AucunJobALancerException.class)
-   public void decisionService_failure_noJobEnAttente_nojobCaptureMasse()
+   public void decisionService_failure_noJobEnAttente_nojobTraitementMasse()
          throws AucunJobALancerException {
 
       List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
@@ -231,7 +266,8 @@ public class DecisionServiceTest {
    }
 
    /**
-    * aucun traitement de capture en masse en local en attente
+    * aucun traitement de capture en masse en local, ou de suppression/restore
+    * de masse en attente
     * 
     */
    @Test(expected = AucunJobALancerException.class)

@@ -38,7 +38,9 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    private final JobService jobService;
 
-   private final TraitementLauncherSupport captureMasseLauncher;
+   @Autowired
+   @Qualifier("traitementMasseLauncher")
+   private TraitementLauncherSupport traitementMasseLauncher;
 
    private final OrdonnanceurConfiguration ordonnanceurConfiguration;
 
@@ -51,19 +53,16 @@ public class CoordinationServiceImpl implements CoordinationService {
     * @param jobService
     *           service de la pile des travaux
     * @param launcher
-    *           service de lancement du traitement de la capture en masse
+    *           service de lancement du traitement de masse
     * @param config
     *           configuration des traitements
     */
    @Autowired
    public CoordinationServiceImpl(DecisionService decisionService,
-         JobService jobService,
-         @Qualifier("captureMasseLauncher") TraitementLauncherSupport launcher,
-         OrdonnanceurConfiguration config) {
+         JobService jobService, OrdonnanceurConfiguration config) {
 
       this.decisionService = decisionService;
       this.jobService = jobService;
-      this.captureMasseLauncher = launcher;
       this.ordonnanceurConfiguration = config;
 
    }
@@ -86,7 +85,7 @@ public class CoordinationServiceImpl implements CoordinationService {
       // Récupération de l'identifiant du traitement de capture en masse
       LOG.debug("{} - lancement du traitement {}", PREFIX_LOG,
             toString(traitement));
-      this.captureMasseLauncher.lancerTraitement(traitement);
+      this.traitementMasseLauncher.lancerTraitement(traitement);
 
       // renvoie l'identifiant du traitement lancé
       return traitement.getIdJob();
@@ -112,9 +111,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       JobQueue traitement = this.decisionService.trouverJobALancer(
             jobsEnAttente, jobsEnCours);
-      LOG
-            .debug("{} - traitement à lancer {}", PREFIX_LOG,
-                  toString(traitement));
+      LOG.debug("{} - traitement à lancer {}", PREFIX_LOG, toString(traitement));
 
       // Etape 4 : Réservation du traitement
 
@@ -128,10 +125,9 @@ public class CoordinationServiceImpl implements CoordinationService {
 
          // le traitement n'existe plus, on chercher un nouveau traitement à
          // lancer
-         LOG
-               .warn(
-                     "{} - échec de la réservation du traitement {} - il n'existe plus",
-                     new Object[] { PREFIX_LOG, toString(traitement) });
+         LOG.warn(
+               "{} - échec de la réservation du traitement {} - il n'existe plus",
+               new Object[] { PREFIX_LOG, toString(traitement) });
          // traitement = trouverJobALancer();
          throw new JobRuntimeException(traitement, e);
 
@@ -139,21 +135,18 @@ public class CoordinationServiceImpl implements CoordinationService {
 
          // le traitement est déjà réservé, on chercher un nouveau traitement à
          // lancer
-         LOG
-               .warn(
-                     "{} - échec de la réservation du traitement {} - il est déjà réservé par {}",
-                     new Object[] { PREFIX_LOG, toString(traitement),
-                           e.getServer() });
+         LOG.warn(
+               "{} - échec de la réservation du traitement {} - il est déjà réservé par {}",
+               new Object[] { PREFIX_LOG, toString(traitement), e.getServer() });
          // traitement = trouverJobALancer();
          throw new JobRuntimeException(traitement, e);
 
       } catch (RuntimeException e) {
 
          // le traitement n'a pas pu être réservé pour une raison inconnue
-         LOG
-               .warn("{} - échec de la réservation du traitement {} - {}",
-                     new Object[] { PREFIX_LOG, toString(traitement),
-                           e.getMessage() });
+         LOG.warn(
+               "{} - échec de la réservation du traitement {} - {}",
+               new Object[] { PREFIX_LOG, toString(traitement), e.getMessage() });
 
          throw new JobRuntimeException(traitement, e);
       }
@@ -177,36 +170,37 @@ public class CoordinationServiceImpl implements CoordinationService {
 
          boolean isJobReserveBloque = JobState.RESERVED.equals(jobCourant
                .getState())
-               && currentDate.after(DateUtils.addMinutes(jobCourant
-                     .getReservationDate(), ordonnanceurConfiguration
-                     .getTpsMaxReservation()))
+               && currentDate.after(DateUtils.addMinutes(
+                     jobCourant.getReservationDate(),
+                     ordonnanceurConfiguration.getTpsMaxReservation()))
                && !Boolean.TRUE.equals(jobCourant.getToCheckFlag());
 
          boolean isJobLanceBloque = JobState.STARTING.equals(jobCourant
                .getState())
-               && currentDate.after(DateUtils.addMinutes(jobCourant
-                     .getStartingDate(), ordonnanceurConfiguration
-                     .getTpsMaxTraitement()))
+               && currentDate.after(DateUtils.addMinutes(
+                     jobCourant.getStartingDate(),
+                     ordonnanceurConfiguration.getTpsMaxTraitement()))
                && !Boolean.TRUE.equals(jobCourant.getToCheckFlag());
 
          if (isJobReserveBloque) {
-            LOG
-                  .error(
-                        "Contrôler le traitement n°{}. Raison : Etat \"réservé\" "
-                              + "depuis plus de {} minutes (date de réservation : {}, date de contrôle : {})",
-                        new Object[] {
-                              jobCourant.getIdJob(),
-                              ordonnanceurConfiguration.getTpsMaxReservation(),
-                              DateFormatUtils.format(jobCourant
-                                    .getReservationDate(), FORMAT),
-                              DateFormatUtils.format(currentDate, FORMAT) });
+            LOG.error(
+                  "Contrôler le traitement n°{}. Raison : Etat \"réservé\" "
+                        + "depuis plus de {} minutes (date de réservation : {}, date de contrôle : {})",
+                  new Object[] {
+                        jobCourant.getIdJob(),
+                        ordonnanceurConfiguration.getTpsMaxReservation(),
+                        DateFormatUtils.format(jobCourant.getReservationDate(),
+                              FORMAT),
+                        DateFormatUtils.format(currentDate, FORMAT) });
             try {
-               jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
+               jobService.updateToCheckFlag(
+                     jobCourant.getIdJob(),
+                     true,
                      "Job réservé depuis plus de "
                            + ordonnanceurConfiguration.getTpsMaxReservation()
                            + " minutes (date de réservation : "
-                           + DateFormatUtils.format(jobCourant
-                                 .getReservationDate(), FORMAT)
+                           + DateFormatUtils.format(
+                                 jobCourant.getReservationDate(), FORMAT)
                            + ", date de contrôle : "
                            + DateFormatUtils.format(currentDate, FORMAT));
 
@@ -215,23 +209,25 @@ public class CoordinationServiceImpl implements CoordinationService {
             }
 
          } else if (isJobLanceBloque) {
-            LOG
-                  .error(
-                        "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
-                              + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
-                              + "date de contrôle : {})", new Object[] {
-                              jobCourant.getIdJob(),
-                              ordonnanceurConfiguration.getTpsMaxTraitement(),
-                              DateFormatUtils.format(jobCourant
-                                    .getStartingDate(), FORMAT),
-                              DateFormatUtils.format(currentDate, FORMAT) });
+            LOG.error(
+                  "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
+                        + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                        + "date de contrôle : {})",
+                  new Object[] {
+                        jobCourant.getIdJob(),
+                        ordonnanceurConfiguration.getTpsMaxTraitement(),
+                        DateFormatUtils.format(jobCourant.getStartingDate(),
+                              FORMAT),
+                        DateFormatUtils.format(currentDate, FORMAT) });
             try {
-               jobService.updateToCheckFlag(jobCourant.getIdJob(), true,
+               jobService.updateToCheckFlag(
+                     jobCourant.getIdJob(),
+                     true,
                      "Job en cours depuis plus de "
                            + ordonnanceurConfiguration.getTpsMaxTraitement()
                            + " minutes (date de démarrage : "
-                           + DateFormatUtils.format(jobCourant
-                                 .getStartingDate(), FORMAT)
+                           + DateFormatUtils.format(
+                                 jobCourant.getStartingDate(), FORMAT)
                            + ", date de contrôle : "
                            + DateFormatUtils.format(currentDate, FORMAT));
 

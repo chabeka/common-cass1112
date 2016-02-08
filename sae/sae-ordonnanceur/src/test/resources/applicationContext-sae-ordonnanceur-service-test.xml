@@ -23,11 +23,11 @@
       <property name="tpsMaxTraitement" value="${sae.piletravaux.seuilCheckEncours}" />
    </bean>
 
-   <!-- configuration de lancement du traitement de capture en masse -->
+   <!-- configuration de lancement du traitement de masse -->
 
-   <bean id="captureMasseLauncher" factory-bean="serviceMockFactory"
+   <bean id="traitementMasseLauncher" factory-bean="serviceMockFactory"
       factory-method="createTraitementLauncherSupport">
-      <qualifier value="captureMasseLauncher" />
+      <qualifier value="traitementMasseLauncher" />
    </bean>
 
    <bean id="DFCESupportImpl" factory-bean="serviceMockFactory"
