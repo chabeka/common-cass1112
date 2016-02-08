@@ -2,8 +2,6 @@ package fr.urssaf.image.sae.webservices.skeleton;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.File;
-import java.net.URI;
 import java.util.UUID;
 
 import javax.xml.stream.XMLStreamReader;
@@ -12,7 +10,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.lang.exception.NestableRuntimeException;
-import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,13 +23,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.cirtil.www.saeservice.ArchivageMasse;
-import fr.cirtil.www.saeservice.ArchivageMasseResponse;
+import fr.cirtil.www.saeservice.SuppressionMasse;
+import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
-import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
-import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
-import fr.urssaf.image.sae.ecde.service.EcdeServices;
-import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
@@ -44,12 +37,6 @@ public class SuppressionMasseTest {
 
    @Autowired
    private SaeServiceSkeletonInterface skeleton;
-
-   @Autowired
-   private SAEControlesCaptureService controlesService;
-
-   @Autowired
-   private EcdeServices ecdeServices;
 
    @Before
    public void before() {
@@ -70,49 +57,31 @@ public class SuppressionMasseTest {
       extrait.setCodeAppli("TU");
       extrait.setIdUtilisateur("login_test");
       SaeDroits droits = new SaeDroits();
+   
       extrait.setSaeDroits(droits);
 
       Authentication authentication = new TestingAuthenticationToken(extrait,
             "password_test", new String[] { "ROLE_TOUS" });
+      
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
    }
 
-   // TODO AGA: TU Suppression de masse
 
    @After
    public void after() {
 
-      EasyMock.reset(controlesService, ecdeServices);
-
       SecurityContextHolder.getContext().setAuthentication(null);
    }
 
-   private ArchivageMasse createArchivageMasse(String filePath) {
-
-      try {
-         EasyMock
-               .expect(
-                     ecdeServices.convertSommaireToFile(EasyMock
-                           .anyObject(URI.class)))
-               .andReturn(
-                     new File(
-                           "C:/appl/sae/ecde_local/SAE_INTEGRATION/"
-                                 + "20110822/CaptureMasse-201-CaptureMasse-OK-Tor-10/sommaire.xml"));
-      } catch (EcdeBadURLException e) {
-         throw new NestableRuntimeException(e);
-      } catch (EcdeBadURLFormatException e) {
-         throw new NestableRuntimeException(e);
-      }
-
-      EasyMock.replay(ecdeServices);
+   private SuppressionMasse createSuppressionMasse(String filePath) {
 
       try {
 
          XMLStreamReader reader = XMLStreamUtils
                .createXMLStreamReader(filePath);
-         return ArchivageMasse.Factory.parse(reader);
+         return SuppressionMasse.Factory.parse(reader);
 
       } catch (Exception e) {
          throw new NestableRuntimeException(e);
@@ -121,15 +90,17 @@ public class SuppressionMasseTest {
    }
 
    @Test
-   public void archivageMasse_success() throws AxisFault {
+   public void suppressionMasse_success() throws AxisFault {
 
-      ArchivageMasse request = createArchivageMasse("src/test/resources/request/archivageMasse_success.xml");
+      SuppressionMasse request = createSuppressionMasse("src/test/resources/request/suppressionMasse_success.xml");
 
-      ArchivageMasseResponse response = skeleton.archivageMasseSecure(request,
+      SuppressionMasseResponse response = skeleton.suppressionMasseSecure(request,
             "127.0.0.1");
 
-      assertNotNull("Test de l'archivage masse",
-            response.getArchivageMasseResponse());
+      assertNotNull("Test de suppression de masse",
+            response.getSuppressionMasseResponse());
+
+
    }
 
 }

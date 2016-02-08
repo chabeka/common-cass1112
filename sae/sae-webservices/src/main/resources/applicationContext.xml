@@ -42,7 +42,7 @@
 
    <import resource="applicationContext-security.xml" />
    <import resource="applicationContext-service.xml" />
-   <import resource="applicationContext-sae-services-capturemasse.xml" />
+   <import resource="applicationContext-sae-services-batch.xml" />
    <import resource="applicationContext-sae-storage-dfce.xml" />
    <import resource="applicationContext-sae-metadata.xml" />
    <import resource="applicationContext-storageConnectionParameter.xml" />
