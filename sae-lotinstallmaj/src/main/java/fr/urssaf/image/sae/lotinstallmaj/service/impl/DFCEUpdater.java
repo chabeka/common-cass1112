@@ -1,17 +1,27 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
+import me.prettyprint.cassandra.serializers.BooleanSerializer;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.DateSerializer;
+import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.ColumnSlice;
+import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.factory.HFactory;
@@ -53,8 +63,8 @@ public class DFCEUpdater {
       credentials = new HashMap<String, String>();
       credentials.put("username", config.getLogin());
       credentials.put("password", config.getPassword());
-      CassandraHostConfigurator chc = new CassandraHostConfigurator(config
-            .getHosts());
+      CassandraHostConfigurator chc = new CassandraHostConfigurator(
+            config.getHosts());
       cluster = HFactory.getOrCreateCluster("SAECluster", chc, credentials);
    }
 
@@ -74,7 +84,7 @@ public class DFCEUpdater {
     * @param indexes
     *           Liste des index composites à supprimer
     */
-   public final void disableCompositeIndex(List<String[]> indexes) {
+   public final void disableCompositeIndex(Map<String[], String> indexes) {
 
       // On se connecte au keyspace
       connectToKeyspace();
@@ -83,7 +93,8 @@ public class DFCEUpdater {
       Mutator<String> mutator = HFactory.createMutator(keyspace,
             StringSerializer.get());
 
-      for (String[] index : indexes) {
+      for (Entry<String[], String> entry : indexes.entrySet()) {
+         String[] index = entry.getKey();
 
          // calcul le nom de la cle
          StringBuffer nomCle = new StringBuffer();
@@ -105,10 +116,9 @@ public class DFCEUpdater {
                .execute();
          for (Row<String, String, String> row : result.get().getList()) {
             if (row.getKey().startsWith(getStartKey(nomCle.toString()))) {
-               LOG
-                     .info(
-                           "Suppression de l'indexation de l'index composite : {} -> {}",
-                           nomCle.toString(), row.getKey());
+               LOG.info(
+                     "Suppression de l'indexation de l'index composite : {} -> {}",
+                     nomCle.toString(), row.getKey());
                mutator.addDeletion(nomCle.toString(), cfName);
             }
          }
@@ -126,9 +136,7 @@ public class DFCEUpdater {
                .execute();
          if (resultCompositeIndex != null && resultCompositeIndex.get() != null
                && !resultCompositeIndex.get().getColumns().isEmpty()) {
-            LOG
-                  .info("Suppression de l'index composite : {}", nomCle
-                        .toString());
+            LOG.info("Suppression de l'index composite : {}", nomCle.toString());
             mutator.addDeletion(nomCle.toString(), cfName);
          } else {
             LOG.info("L'index composite {} n'existe pas", nomCle.toString());
@@ -137,6 +145,165 @@ public class DFCEUpdater {
 
       // execute l'ensemble des mises a jour
       mutator.execute();
+   }
+
+   /**
+    * Indexe à vide les index composite si nécessaire (met les colonnes indexed
+    * et computed à true dans la colonne de famille CompositeIndexesReference
+    * 
+    * @param indexes
+    *           Liste des index composites à créer
+    */
+   public final void indexeAVideCompositeIndex(String indexName) {
+
+      // On se connecte au keyspace
+      connectToKeyspace();
+
+      // On indexe l'index composite si ce n'est pas déjà le cas dans DFCE
+      if (!isCompositeIndexComputed(indexName)) {
+
+         updateColumn("CompositeIndexesReference", indexName, "computed", true);
+
+      }
+   }
+
+   
+   /**
+    * Indexe à vide un index simple si nécessaire (met les colonnes indexed
+    * et computed à true dans la colonne de famille BaseCategoriesReference
+    * 
+    * @param indexes
+    *           Liste des index composites à créer
+    */
+   public final void indexeAVideIndexSimple(String indexName, String baseName) {
+
+      // On se connecte au keyspace
+      connectToKeyspace();
+      
+      // creation de la rowKey
+      StringBuffer buffer = new StringBuffer();
+      buffer.append(baseName);
+      buffer.append((char) 65535);
+      buffer.append(indexName);
+      String rowKey = buffer.toString();
+
+      // On indexe l'index composite si ce n'est pas déjà le cas dans DFCE
+      if (!isMetaIndexedAndComputed(rowKey)) {
+         updateColumn("BaseCategoriesReference", rowKey, "indexed", true);
+         updateColumn("BaseCategoriesReference", rowKey, "computed", true);
+      }
+   }
+   
+   /**
+    * Vérifie si l'index est déjà indexée dans DFCE (computed à true)
+    * 
+    * @param indexName
+    *           le nom de l'index
+    * @return vrai si l'index est indexée
+    */
+   private boolean isCompositeIndexComputed(String indexName) {
+
+      boolean isIndexee = false;
+
+      SliceQuery<String, String, byte[]> queryDocubase = HFactory
+            .createSliceQuery(keyspace, StringSerializer.get(),
+                  StringSerializer.get(), BytesArraySerializer.get());
+      queryDocubase.setColumnFamily("CompositeIndexesReference");
+      queryDocubase.setKey(indexName);
+      queryDocubase.setColumnNames("computed");
+
+      QueryResult<ColumnSlice<String, byte[]>> resultat = queryDocubase
+            .execute();
+      if (resultat.get() != null && !resultat.get().getColumns().isEmpty()) {
+         HColumn<String, byte[]> isComputed = resultat.get().getColumnByName(
+               "computed");
+         if (isComputed != null) {
+            isIndexee = BooleanSerializer.get()
+                  .fromBytes(isComputed.getValue());
+         }
+      }
+      return isIndexee;
+   }
+
+   public boolean isMetaIndexedAndComputed(String rowKey) {
+
+      SliceQuery<byte[], String, byte[]> queryDocubase = HFactory
+            .createSliceQuery(keyspace, BytesArraySerializer.get(),
+                  StringSerializer.get(), BytesArraySerializer.get());
+      queryDocubase.setColumnFamily("BaseCategoriesReference");
+      queryDocubase.setKey(StringSerializer.get().toBytes(rowKey));
+      queryDocubase.setColumnNames("indexed", "computed");
+
+      boolean valeurRetour = false;
+      
+      QueryResult<ColumnSlice<String, byte[]>> resultat = queryDocubase
+            .execute();
+      if (resultat.get() != null && !resultat.get().getColumns().isEmpty()) {
+         HColumn<String, byte[]> isIndexed = resultat.get().getColumnByName(
+               "indexed");
+         HColumn<String, byte[]> isComputed = resultat.get().getColumnByName(
+               "computed");
+
+         
+         if (isIndexed != null && isComputed != null) {
+            boolean valeurIndexed = BooleanSerializer.get().fromBytes(
+                  isIndexed.getValue());
+            boolean valeurComputed = BooleanSerializer.get().fromBytes(
+                  isComputed.getValue());
+
+            if (valeurIndexed && valeurComputed) {
+               valeurRetour = true;
+            }
+         }
+      }
+      return valeurRetour;
+   }
+
+   private void updateColumn(String CFName, String rowName, String columnName,
+         Object value) {
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, CFName, StringSerializer.get(), StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater(rowName);
+
+      Collection<String> columnNames = cfTmpl.queryColumns(rowName)
+            .getColumnNames();
+
+      if (columnNames.contains(columnName)) {
+
+         if (value != null && value instanceof String) {
+            HColumn<String, String> column = HFactory.createColumn(columnName,
+                  (String) value, StringSerializer.get(),
+                  StringSerializer.get());
+            updater.setColumn(column);
+            cfTmpl.update(updater);
+         } else if (value != null && value instanceof Long) {
+            HColumn<String, Long> column = HFactory.createColumn(columnName,
+                  (Long) value, StringSerializer.get(), LongSerializer.get());
+            updater.setColumn(column);
+            cfTmpl.update(updater);
+         } else if (value != null && value instanceof Date) {
+            HColumn<String, Date> column = HFactory.createColumn(columnName,
+                  (Date) value, StringSerializer.get(), DateSerializer.get());
+            updater.setColumn(column);
+            cfTmpl.update(updater);
+         } else if (value != null && value instanceof Boolean) {
+            HColumn<String, Boolean> column = HFactory.createColumn(columnName,
+                  (Boolean) value, StringSerializer.get(),
+                  BooleanSerializer.get());
+            updater.setColumn(column);
+            cfTmpl.update(updater);
+         } else if (value != null) {
+            LOG.info("Type de valeur non prise en charge : "
+                  + value.getClass().getName());
+         }
+
+      } else {
+         LOG.info("Column " + columnName + " inexistante pour la key "
+               + rowName + " dans la CF " + CFName);
+      }
    }
 
    private String getStartKey(String nomCle) {

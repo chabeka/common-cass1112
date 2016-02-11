@@ -325,5 +325,12 @@ Met la base Cassandra du SAE en version 17 :
 - Ajout de l'événement :
 	DFCE_DEPOT_ATTACH|OK
 
+- Ajout des index composite + indexation NumeroIdArchivage utilisé par la recherche documentaire suite à mise en prod des LAD2GED
+
+- Indexation vide par défaut pour les 4 index composite créés dans le 160300
+
+- Ajout de l'événement :
+	DFCE_DEPOT_ATTACH|OK
+
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160400
 

@@ -2208,4 +2208,52 @@
       <label>Existence document au format d'origine</label>
       <description>Permet de déterminer si le document possède un document attaché au format d'origine</description>
    </metaDataReference>
+   <metaDataReference>
+      <shortCode>isi</shortCode>
+      <longCode>IdSuppressionMasseInterne</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>36</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>false</archivable>
+      <label>Identifiant interne de suppression de masse</label>
+      <description>Identifiant permettant de gérer la restore sur les suppressions de masse</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>iri</shortCode>
+      <longCode>IdRestoreMasseInterne</longCode>
+      <type>String</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>36</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>false</archivable>
+      <label>Identifiant interne de restore de masse</label>
+      <description>Identifiant permettant de savoir quel traitement de restore a restaurer les documents de la corbeille</description>
+   </metaDataReference>
+   <metaDataReference>
+      <shortCode>dmc</shortCode>
+      <longCode>DateMiseEnCorbeille</longCode>
+      <type>Date</type>
+      <requiredForArchival>false</requiredForArchival>
+      <requiredForStorage>false</requiredForStorage>
+      <length>10</length>
+      <pattern></pattern>
+      <consultable>true</consultable>
+      <defaultConsultable>false</defaultConsultable>
+      <searchable>true</searchable>
+      <internal>false</internal>
+      <archivable>false</archivable>
+      <label>Date de déplacement du document dans la corbeille</label>
+      <description>Date de déplacement du document dans la corbeille</description>
+   </metaDataReference>
 </referentiel>

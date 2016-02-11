@@ -16,6 +16,8 @@
 			<xs:element name="composition" type="xs:string"/>
 			
 			<xs:element name="aCreer" type="xs:string"/>
+         
+            <xs:element name="aIndexerVide" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

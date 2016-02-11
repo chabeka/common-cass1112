@@ -809,7 +809,7 @@ public class SAECassandraUpdater {
 
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-
+      
       // Insertion des données initiales
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
 
