@@ -159,6 +159,38 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for getDocFormatOrigine method
+            * override this method for handling normal response from getDocFormatOrigine operation
+            */
+           public void receiveResultgetDocFormatOrigine(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.GetDocFormatOrigineResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from getDocFormatOrigine operation
+           */
+            public void receiveErrorgetDocFormatOrigine(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for stockageUnitaire method
+            * override this method for handling normal response from stockageUnitaire operation
+            */
+           public void receiveResultstockageUnitaire(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from stockageUnitaire operation
+           */
+            public void receiveErrorstockageUnitaire(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for ping method
             * override this method for handling normal response from ping operation
             */

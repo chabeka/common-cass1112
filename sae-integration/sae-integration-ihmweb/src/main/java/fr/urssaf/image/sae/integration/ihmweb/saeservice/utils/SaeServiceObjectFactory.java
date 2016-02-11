@@ -1,14 +1,19 @@
 package fr.urssaf.image.sae.integration.ihmweb.saeservice.utils;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
 
+import org.apache.axiom.attachments.ByteArrayDataSource;
+import org.apache.axiom.attachments.utils.IOUtils;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 import org.springframework.util.CollectionUtils;
+
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -38,6 +43,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.D
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.FiltreType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.GetDocFormatOrigine;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.GetDocFormatOrigineRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.IdentifiantPageType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
@@ -58,6 +65,10 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequetePrincipaleType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaire;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type0;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type1;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Transfert;
@@ -87,7 +98,13 @@ public final class SaeServiceObjectFactory {
    public static EcdeUrlType buildEcdeUrl(String urlEcde)
          throws MalformedURIException {
       EcdeUrlType ecdeUrlType = new EcdeUrlType();
-      ecdeUrlType.setEcdeUrlType(new URI(urlEcde));
+      
+      try {
+         ecdeUrlType.setEcdeUrlType(new URI(urlEcde));
+        } catch (MalformedURIException e) {
+           throw new IntegrationRuntimeException(e);
+        }       
+
       return ecdeUrlType;
    }
 
@@ -271,6 +288,129 @@ public final class SaeServiceObjectFactory {
 
    }
 
+   /**
+    * Construit un objet de requête pour l'opération "stockageUnitaire"
+    * 
+    * @param urlEcde
+    *           l'URL ECDE du document à archiver
+    * @param urlEcdeOrig
+    *           l'URL ECDE du document origine à archiver
+    * @param metadonnees
+    *           les métadonnées associés au document
+    * @return l'objet pour la couche web service
+    */
+   public static StockageUnitaire buildStockageUnitaireRequest(
+         String urlEcde,String urlEcdeOrig, MetadonneeValeurList metadonnees) {
+     
+      StockageUnitaire stockageUnitaire = new StockageUnitaire();
+
+      StockageUnitaireRequestType stockageUnitaireReqType = new StockageUnitaireRequestType();
+
+      stockageUnitaire.setStockageUnitaire(stockageUnitaireReqType);
+      
+      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      stockageUnitaireReqType
+            .setStockageUnitaireRequestTypeChoice_type0(choice0);
+      
+      // URL ECDE du document parent
+      EcdeUrlType ecdeUrlFichier = null;
+      try {
+         ecdeUrlFichier = buildEcdeUrl(urlEcde);
+         choice0.setUrlEcdeDoc(ecdeUrlFichier);
+        } catch (MalformedURIException e) {
+         throw new IntegrationRuntimeException(e);
+      } 
+      
+      // URL ECDE du document au format d'origine
+        StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+        stockageUnitaireReqType
+              .setStockageUnitaireRequestTypeChoice_type1(choice1);       
+        EcdeUrlType ecdeUrlFichierOrig = null;
+        if (!urlEcdeOrig.isEmpty()){
+           try {
+              ecdeUrlFichierOrig = buildEcdeUrl(urlEcdeOrig);
+              choice1.setUrlEcdeDocOrigine(ecdeUrlFichierOrig);
+              } catch (MalformedURIException e) {
+                 throw new IntegrationRuntimeException(e);
+              }
+        }
+        
+      // Les métadonnées
+      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+      stockageUnitaireReqType.setMetadonnees(listeMetadonneeType);
+     
+      // fin
+      return stockageUnitaire;
+
+   }
+   
+   /**
+    * Construit un objet de requête pour l'opération "stockageUnitairePJContenuSansMtom"
+    * 
+    * @param urlEcde
+    *           l'URL ECDE du document à archiver
+    * @param contenu
+    *           le flux pointant vers le fichier à archiver     
+    * @param urlEcdeOrig
+    *           l'URL ECDE du document origine à archiver
+    * @param contenuOrig
+    *           le flux pointant vers le fichier à archiver
+    * @param metadonnees
+    *           les métadonnées associés au document
+    * @return l'objet pour la couche web service
+    */
+
+   public static StockageUnitaire buildStockageUnitaireRequestavecContenu(
+         String urlEcde, InputStream contenu,
+         String urlEcdeOrig, InputStream contenuFormatOrigine,
+         MetadonneeValeurList metadonnees) {
+
+      StockageUnitaire stockageUnitaire = new StockageUnitaire();
+      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+      stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
+
+      // Nom et contenu du fichier
+      DataFileType dataFile = new DataFileType();
+      dataFile.setFileName(urlEcde);
+      byte[] contenuBytes;
+      try {
+         contenuBytes = IOUtils.getStreamAsByteArray(contenu);
+      } catch (IOException e) {
+         throw new IntegrationRuntimeException(e);
+      }
+      ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
+      DataHandler dataHandler = new DataHandler(byteArray);
+      dataFile.setFile(dataHandler);
+      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type0(choice0);
+      choice0.setDataFileDoc(dataFile);
+      
+      // Nom et contenu du fichier au format d'origine
+      DataFileType dataFileFormatOrigine = new DataFileType();
+      dataFileFormatOrigine.setFileName(urlEcdeOrig);
+      byte[] contenuBytesFormatOrigine;
+      try {
+         contenuBytesFormatOrigine = IOUtils.getStreamAsByteArray(contenuFormatOrigine);
+      } catch (IOException e) {
+         throw new IntegrationRuntimeException(e);
+      }
+      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(contenuBytesFormatOrigine);
+      DataHandler dataHandlerFormatOrigine = new DataHandler(byteArrayFormatOrigine);
+      dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
+      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type1(choice1);
+      choice1.setDataFileAttached(dataFileFormatOrigine);
+
+      // Métadonnées
+      ListeMetadonneeType listeMetadonnee = buildListeMetadonnes(metadonnees);
+      stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
+
+      // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
+      return stockageUnitaire;
+
+   }
+
+   
    /**
     * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
     * comme paramètre d'entrée une URL ECDE
@@ -457,6 +597,26 @@ public final class SaeServiceObjectFactory {
 
    }
 
+   /**
+    * Construit un objet de requête pour le service web "getDocFormatOrigine"
+    * 
+    * @param uuidDocParent
+    *           l'identifiant d'archivage du document parent
+    * @return l'objet pour la couche WebService
+    */
+   public static GetDocFormatOrigine buildGetDocFormatOrigineRequest(String uuidDocParent) {
+      GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
+      GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
+      getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
+
+      // UUID du document parent
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuidDocParent.toString());
+      getDocFormatOrigineRequest.setIdDoc(uuidType);
+      
+      return getDocFormatOrigine;
+   }
+   
    /**
     * Construit un objet de requête pour le service web "consultationMTOM"
     * 

@@ -43,7 +43,7 @@
       <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
       <javassist.version>3.18.1-GA</javassist.version>
       
-      <sae.version>15.12.0.4-SNAPSHOT</sae.version>
+      <sae.version>16.03.0.2-SNAPSHOT</sae.version>
       
    </properties>
 

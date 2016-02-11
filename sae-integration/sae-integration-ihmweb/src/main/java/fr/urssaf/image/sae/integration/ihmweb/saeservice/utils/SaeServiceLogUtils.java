@@ -25,13 +25,16 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.GetDocFormatOrigineResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -168,6 +171,29 @@ public final class SaeServiceLogUtils {
 
    }
 
+   /**
+    * Ajoute, dans le log du résultat du test, un résultat de l'opération
+    * "getDocFormatOrigine"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param resultat
+    *           la réponse de l'opération "getDocFormatOrigine"
+    */
+   public static void logResultatGetDocFormatOrigine(ResultatTest resultatTest,
+         GetDocFormatOrigineResultat resultat) {
+
+      // Le contenu
+      logGetDocFormatOrigineDataHandler(resultatTest, resultat.getContenu());
+
+      // Les métadonnées
+      resultatTest.getLog().appendLogNewLine();
+      resultatTest.getLog().appendLogLn("Métadonnées :");
+      logMetadonnees(resultatTest.getLog(), resultat.getMetadonnees());
+
+   }
+
+
    private static void logConsultationDataHandler(ResultatTest resultatTest,
          DataHandler contenu) {
 
@@ -226,6 +252,65 @@ public final class SaeServiceLogUtils {
 
    }
 
+
+   private static void logGetDocFormatOrigineDataHandler(ResultatTest resultatTest,
+         DataHandler contenu) {
+
+      ResultatTestLog log = resultatTest.getLog();
+      if (contenu == null) {
+
+         log.appendLogLn("Le contenu est null");
+
+      } else {
+
+         log.appendLog("Le contenu est renseigné : ");
+
+         // Création d'un fichier temporaire
+         File file;
+         try {
+            file = File.createTempFile("SAE_Integration_", null);
+         } catch (IOException e) {
+            throw new IntegrationRuntimeException(e);
+         }
+         // LOG.debug("Création d'un fichier temporaire nommé " +
+         // file.getAbsolutePath());
+         OutputStream outputStream = null;
+         try {
+            outputStream = new FileOutputStream(file);
+         } catch (FileNotFoundException e) {
+            throw new IntegrationRuntimeException(e);
+         }
+         try {
+            contenu.writeTo(outputStream);
+         } catch (IOException e) {
+            throw new IntegrationRuntimeException(e);
+         }
+
+         // Ajout du lien de téléchargement dans le fichier résultat
+         String nomFichierComplet = file.getAbsolutePath();
+         String nomFichier = FilenameUtils.getName(nomFichierComplet);
+         int idLien = resultatTest.getLiens().ajouteLien("objet numérique",
+               "download.do?filename=" + nomFichier);
+
+         // Ajout le log du lien
+         log.appendLog("[Voir Lien n°" + idLien + "]");
+
+         // Log du SHA-1
+         String sha1 = null;
+         try {
+            sha1 = DigestUtils.shaHex(contenu.getInputStream());
+         } catch (IOException e) {
+            throw new IntegrationRuntimeException(e);
+         }
+         log.appendLogLn("SHA-1 = " + sha1);
+
+         // Type MIME
+         log.appendLogLn("Type MIME = " + contenu.getContentType());
+
+      }
+
+   }
+   
    /**
     * Ajoute, dans le log du résultat du test, une réponse de l'opération
     * "recherche"
@@ -418,6 +503,27 @@ public final class SaeServiceLogUtils {
 
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "stockageUnitaire"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelStockageUnitaire(ResultatTestLog log,
+         StockageUnitaireFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération stockageUnitaire");
+      log.appendLogLn("Mode d'appel : " + formulaire.getModeStockage());
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("URL ECDE : " + formulaire.getUrlEcde());
+      log.appendLogLn("Nom du fichier : " + formulaire.getNomFichier());
+      log.appendLogLn("Métadonnées :");
+      logMetadonnees(log, formulaire.getMetadonnees());
+      log.appendLogNewLine();
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
     * l'opération "archivageMasse"
     * 
     * @param log
@@ -457,6 +563,33 @@ public final class SaeServiceLogUtils {
                .appendLogLn(StringUtils.join(formulaire.getCodeMetadonnees(),
                      ','));
       }
+
+      log.appendLogNewLine();
+   }
+
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "getDocFormatOrigine"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelGetDocFormatOrigine(ResultatTestLog log,
+         GetDocFormatOrigineFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération getDocFormatOrigine");
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("Id archivage : " + formulaire.getIdArchivage());
+//      log.appendLogLn("Métadonnées :");
+//      
+//      if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
+//         log.appendLogLn("non spécifiées");
+//      } else {
+//         log
+//               .appendLogLn(StringUtils.join(formulaire.getCodeMetadonnees(),
+//                     ','));
+//      }
 
       log.appendLogNewLine();
    }
@@ -647,6 +780,31 @@ public final class SaeServiceLogUtils {
 
    }
 
+
+   /**
+    * Ajoute, dans le log du résultat du test, la réponse de l'opération
+    * "stockageUnitaire"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param idArchivage
+    *           l'identifiant unique d'archivage renvoyé par le stockage unitaire
+    */
+   public static void logResultatStockageUnitaire(ResultatTest resultatTest,
+         String idArchivage) {
+
+      // Initialise
+      ResultatTestLog log = resultatTest.getLog();
+
+      // L'identifiant d'archivage
+      log.appendLog("Identifiant d'archivage : ");
+      log.appendLog(idArchivage);
+      log.appendLog(" (en minuscule pour Cassandra : ");
+      log.appendLog(StringUtils.lowerCase(idArchivage));
+      log.appendLogLn(")");
+
+   }
+   
    /**
     * Log le résumé du contenu d'un fichier resultats.xml
     * 

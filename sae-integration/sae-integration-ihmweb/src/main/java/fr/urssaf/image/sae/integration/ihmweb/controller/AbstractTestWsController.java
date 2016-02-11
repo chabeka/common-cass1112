@@ -23,10 +23,12 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestServ
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.GetDocFormatOrigineTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
@@ -70,11 +72,17 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    private ConsultationTestService consultTestServ;
    
    @Autowired
+   private GetDocFormatOrigineTestService getDocFormatOriginetTestServ;
+ 
+   @Autowired
    private ConsultationAffichableTestService consultAffichableTestServ;
 
    @Autowired
    private CaptureUnitaireTestService captUnitTestServ;
 
+   @Autowired
+   private StockageUnitaireTestService stockUnitTestServ;
+   
    @Autowired
    private CaptureMasseTestService captMassTestServ;
 
@@ -158,6 +166,16 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    }
 
    /**
+    * Service des tests de l'opération "getDocFormatOrigine" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "getDocFormatOrigine" du service web
+    *         SaeService
+    */
+   public final GetDocFormatOrigineTestService getGetDocFormatOrigineTestService() {
+      return getDocFormatOriginetTestServ;
+   }
+
+   /**
     * Service des tests de l'opération "consultationAffichable" du service web SaeService
     * 
     * @return Service des tests de l'opération "consultationAffichable" du service web
@@ -178,6 +196,17 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return captUnitTestServ;
    }
 
+   /**
+    * Service des tests de l'opération "stockage unitaire" du service web
+    * SaeService
+    * 
+    * @return Service des tests de l'opération "stockage unitaire" du service web
+    *         SaeService
+    */
+   public final StockageUnitaireTestService getStockageUnitaireTestService() {
+      return stockUnitTestServ;
+   }
+   
    /**
     * Service des tests de la fonctionnalité "Capture de masse"
     * 

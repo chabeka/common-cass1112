@@ -792,5 +792,17 @@
         <obligatoireAuStockage>false</obligatoireAuStockage>
         <typeDfce>String</typeDfce>
     </Metadonnee>
+    <Metadonnee>
+        <codeLong>DocFormatOrigine</codeLong>
+        <codeCourt>dfo</codeCourt>
+        <archivablePossible>false</archivablePossible>
+        <archivableObligatoire>false</archivableObligatoire>
+        <consulteeParDefaut>false</consulteeParDefaut>
+        <consultable>true</consultable>
+        <critereRecherche>false</critereRecherche>
+        <client>true</client>
+        <obligatoireAuStockage>false</obligatoireAuStockage>
+        <typeDfce>Boolean</typeDfce>
+    </Metadonnee>
 
 </ReferentielMetadonnees>

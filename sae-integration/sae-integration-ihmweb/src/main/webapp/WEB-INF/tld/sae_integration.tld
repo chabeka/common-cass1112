@@ -42,6 +42,12 @@
    </tag-file>
 
    <tag-file>
+      <name>getDocFormatOrigine</name>
+      <description>Appel du service web de getDocFormatOrigine</description>
+      <path>/WEB-INF/tags/getDocFormatOrigine.tag</path>
+   </tag-file>
+
+   <tag-file>
       <name>consultationAffichable</name>
       <description>Appel du service web de consultationAffichable
       </description>
@@ -134,6 +140,14 @@
       <description>Ajout d'une note à un document</description>
       <path>/WEB-INF/tags/ajoutnote.tag</path>
    </tag-file>
+   
+   <tag-file>
+      <name>stockageUnitaire</name>
+      <description>Appel du service web de capture unitaire</description>
+      <path>/WEB-INF/tags/stockageUnitaire.tag</path>
+   </tag-file>
+
+  
 
    <function>
       <name>booleanToOuiNon</name>

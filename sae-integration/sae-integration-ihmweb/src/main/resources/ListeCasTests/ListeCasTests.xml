@@ -408,6 +408,57 @@
 
 
    <!-- ======================================================== -->
+   <!-- Stockage Unitaire -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>Stockage Unitaire</Nom>
+      <Id>18</Id>
+      <CasTests>
+         <CasTest>
+            <id>2700</id>
+            <code>2700-StockageUnitaire-TestLibre</code>
+            <description>
+               Test libre du stockage unitaire => pas de résultat attendu 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+         <CasTest>
+            <id>2799</id>
+            <code>2799-StockageUnitaire-TestLibre</code>
+            <description>
+               Test libre du stockage unitaire => pas de résultat attendu 
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 2700-CaptureStockage-TestLibre"</luceneExempleList>
+         </CasTest>
+
+      </CasTests>
+
+   </Categorie>
+
+   <!-- ======================================================== -->
+   <!-- Récupération du document d'origine                       -->
+   <!-- ======================================================== -->
+
+   <Categorie>
+
+      <Nom>Récupération du document origine</Nom>
+      <Id>19</Id>
+      <CasTests>
+         <CasTest>
+            <id>2800</id>
+            <code>2800-getDocFormatOrigine-TestLibre</code>
+            <description>
+               Test libre de récupération du format d'origine à partir de l'UUID du parent                
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+      </CasTests>
+
+   </Categorie>
+   <!-- ======================================================== -->
    <!-- Capture de masse -->
    <!-- ======================================================== -->
 
