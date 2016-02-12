@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2015.01.16 à 04:19:17 PM CET 
+// Généré le : 2016.02.09 à 11:29:35 AM CET 
 //
 
 
@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="nom" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="composition" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="aCreer" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="aIndexerVide" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -39,7 +40,8 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "IndexReference", propOrder = {
     "nom",
     "composition",
-    "aCreer"
+    "aCreer",
+    "aIndexerVide"
 })
 // CHECKSTYLE:OFF
 @SuppressWarnings("all")
@@ -51,6 +53,8 @@ public class IndexReference {
     protected String composition;
     @XmlElement(required = true)
     protected String aCreer;
+    @XmlElement(required = true)
+    protected String aIndexerVide;
 
     /**
      * Obtient la valeur de la propriété nom.
@@ -122,6 +126,30 @@ public class IndexReference {
      */
     public void setACreer(String value) {
         this.aCreer = value;
+    }
+
+    /**
+     * Obtient la valeur de la propriété aIndexerVide.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getAIndexerVide() {
+        return aIndexerVide;
+    }
+
+    /**
+     * Définit la valeur de la propriété aIndexerVide.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setAIndexerVide(String value) {
+        this.aIndexerVide = value;
     }
 
 }

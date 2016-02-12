@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -29,7 +30,7 @@ public class RefMetaInitialisationServiceTest {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
-      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 138,
+      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 141,
             metadonnees.size());
    }
 
@@ -49,7 +50,7 @@ public class RefMetaInitialisationServiceTest {
 //          throw new MajLotRuntimeException(e);
 //       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2211, lignes.size());
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2259, lignes.size());
    }
 
    @Test
@@ -74,7 +75,7 @@ public class RefMetaInitialisationServiceTest {
 //          throw new MajLotRuntimeException(e);
 //       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1187, lignes.size());
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1217, lignes.size());
 
    }
 
@@ -210,7 +211,7 @@ public class RefMetaInitialisationServiceTest {
    public void chargerFichierIdxCompositesTest() throws IOException, JAXBException, SAXException{
       String message = "";
       
-      List<String[]> indexes = refMetaService.chargerFichierIdxComposites(true);  
+      Map<String[], String> indexes = refMetaService.chargerFichierIdxComposites(true);  
       
       //-- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes attendu (fichier v3.3) est incorrect";
@@ -221,11 +222,11 @@ public class RefMetaInitialisationServiceTest {
    public void chargerFichierIdxCompositesASupprimerTest() throws IOException, JAXBException, SAXException{
       String message = "";
       
-      List<String[]> indexes = refMetaService.chargerFichierIdxComposites(false);  
+      Map<String[], String> indexes = refMetaService.chargerFichierIdxComposites(false);  
       
       //-- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes attendu (fichier v3.3) est incorrect";
-      Assert.assertEquals(message, 3, indexes.size());
+      message = "Le nombre d'indexes attendu (fichier v3.4) est incorrect";
+      Assert.assertEquals(message, 10, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

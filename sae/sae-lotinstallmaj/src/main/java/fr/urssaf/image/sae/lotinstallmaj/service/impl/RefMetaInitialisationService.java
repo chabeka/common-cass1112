@@ -3,7 +3,9 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
@@ -49,7 +51,7 @@ public final class RefMetaInitialisationService {
    
    private List<MetadataReference> listMetas;
    
-   private List<String[]> indexesComposites;
+   private Map<String[], String> indexesComposites;
    
    /**
     * Récupération après chargement du fichier,
@@ -80,7 +82,7 @@ public final class RefMetaInitialisationService {
     * 
     * @return : La liste des métadonnées
     */
-   public List<String[]> getIndexesComposites(){
+   public Map<String[], String> getIndexesComposites(){
       if(indexesComposites == null){
          try {
             //-- Lecture du fichier XML, et remplissage 
@@ -103,8 +105,8 @@ public final class RefMetaInitialisationService {
     * 
     * @return : La liste des métadonnées
     */
-   public List<String[]> getIndexesCompositesASupprimer() {
-      List<String[]> indexASupprimer;
+   public Map<String[], String> getIndexesCompositesASupprimer() {
+      Map<String[], String> indexASupprimer;
       try {
          //-- Lecture du fichier XML, et remplissage 
          // d'une liste d'objets métadonnées
@@ -142,9 +144,9 @@ public final class RefMetaInitialisationService {
       LOG.info("Fin de l'initialisation du nouveau référentiel des métadonnées");
    }
    
-   protected List<String[]> chargerFichierIdxComposites(boolean aCreer) throws IOException, JAXBException, SAXException  {
+   protected Map<String[], String> chargerFichierIdxComposites(boolean aCreer) throws IOException, JAXBException, SAXException  {
       
-      String cheminRessourceXml = "IndexesComposites3.3.xml";
+      String cheminRessourceXml = "IndexesComposites3.4.xml";
       String xsdResPath = "/xsd/metadata/IndexesComposites.xsd";
       
       ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
@@ -155,7 +157,7 @@ public final class RefMetaInitialisationService {
       
       List<IndexReference> indexes = ref.getIndexReference();
       
-      List<String[]> indexesAcreer = new ArrayList<String[]>();
+      Map<String[], String> indexesAcreer = new HashMap<String[], String>();
       
       for (int i = 0; i < indexes.size(); i++) {
          IndexReference indexXml = indexes.get(i);
@@ -167,14 +169,15 @@ public final class RefMetaInitialisationService {
          
          String composition = indexXml.getComposition();
          String[] metasList = readString(composition).split(":");
-         indexesAcreer.add(metasList);
+         String aIndexerVide = indexXml.getAIndexerVide();
+         indexesAcreer.put(metasList, aIndexerVide);
       }
       return indexesAcreer;
    }
    
    protected List<MetadataReference> chargeFichierMeta() throws JAXBException, SAXException, IOException {
       
-      String cheminRessourceXml = "Metadonnees.3.3.xml";
+      String cheminRessourceXml = "Metadonnees.3.4.xml";
       String xsdResPath = "/xsd/metadata/Metadonnees.xsd";
       
       ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);

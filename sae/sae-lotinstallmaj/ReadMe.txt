@@ -308,13 +308,13 @@ DomaineCotisant-ApplicationProductrice-ApplicationTraitement-ApplicationMetier-C
 
 - Ajout de l'action unitaire ajout_doc_attache
 
-- MIse à jour référentiel des évenement (WS_GET_DOC_FORMAT_ORIGINE|KO)
+- MIse à jour référentiel des événements (WS_GET_DOC_FORMAT_ORIGINE|KO)
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160300
 
 
 // ------------------------------------------
-// 12) Lot 160400SAE
+// 13) Lot 160400SAE
 // ------------------------------------------
 
 Lot 160400SAE
@@ -322,5 +322,31 @@ Met la base Cassandra du SAE en version 17 :
 
 - Ajout des métadonnées pour WATT
 
+- Ajout des index composite + indexation NumeroIdArchivage utilisé par la recherche documentaire suite à mise en prod des LAD2GED
+
+- Indexation vide par défaut pour les 4 index composite créés dans le 160300
+
+- Ajout de l'événement :
+	DFCE_DEPOT_ATTACH|OK
+
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160400
 
+
+// ------------------------------------------
+// 13) Lot 160600SAE
+// ------------------------------------------
+
+Lot 160600SAE
+Met la base Cassandra du SAE en version 18 :
+
+- Ajout des actions unitaire suppression_masse et restore_masse
+- Ajout des événements :
+	WS_SUPPRESSION_MASSE|KO,
+	WS_RESTORE_MASSE|KO, 
+	SUPPRESSION_MASSE|KO, 
+	RESTORE_MASSE_KO,
+	DFCE_CORBEILLE_DOC|OK,
+	DFCE_RESTORE_DOC|OK
+	
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160600

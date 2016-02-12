@@ -44,6 +44,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_15 = 15;
    private static final int VERSION_16 = 16;
    private static final int VERSION_17 = 17;
+   private static final int VERSION_18 = 18;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -789,9 +790,10 @@ public class SAECassandraUpdater {
       // On positionne la version à 16
       saeDao.setDatabaseVersion(VERSION_16);
    }
-   
+
    /**
     * Version 17 : <li>Création des métadonnées pour WATT</li>
+    * <li>Ajout des événements DFCE_DEPOT_ATTACH|OK</li>
     */
    public void updateToVersion17() {
 
@@ -808,14 +810,53 @@ public class SAECassandraUpdater {
 
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-
+      
       // Insertion des données initiales
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
 
       // Ajout du format pdf (pour DEA)
       donnees.addReferentielFormatV4();
-      
-      // On positionne la version à 14
+
+      // Ajout des évenements DFCE_DEPOT_ATTACH|OK
+      donnees.addReferentielEvenementV9();
+
+      // On positionne la version à 17
       saeDao.setDatabaseVersion(VERSION_17);
+   }
+
+   /**
+    * Version 18 : <li>Ajout d'un nouveau droit pour la suppression de masse et
+    * la restore de masse</li> <li>Ajout des événements WS_SUPPRESSION_MASSE|KO,
+    * WS_RESTORE_MASSE|KO, SUPPRESSION_MASSE|KO, RESTORE_MASSE_KO,
+    * DFCE_CORBEILLE_DOC|OK, DFCE_RESTORE_DOC|OK</li>
+    */
+   public void updateToVersion18() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_18) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_18);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Ajout des métadonnées
+      // refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // Insertion des données initiales
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout de l'action unitaire restore_masse et suppression_masse
+      donnees.addActionUnitaireTraitementMasse();
+
+      // Ajout des évenements WS_SUPPRESSION_MASSE|KO, WS_RESTORE_MASSE|KO,
+      // SUPPRESSION_MASSE|KO, RESTORE_MASSE_KO, DFCE_CORBEILLE_DOC|OK, DFCE_RESTORE_DOC|OK
+      donnees.addReferentielEvenementV10();
+
+      // On positionne la version à 18
+      saeDao.setDatabaseVersion(VERSION_18);
    }
 }

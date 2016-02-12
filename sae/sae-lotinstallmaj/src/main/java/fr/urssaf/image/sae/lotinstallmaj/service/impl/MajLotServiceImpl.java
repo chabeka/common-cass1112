@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
@@ -58,7 +59,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_151201 = "CASSANDRA_DFCE_151201";
    public static final String CASSANDRA_DFCE_160300 = "CASSANDRA_DFCE_160300";
    public static final String CASSANDRA_DFCE_160400 = "CASSANDRA_DFCE_160400";
-   
+   public static final String CASSANDRA_DFCE_160600 = "CASSANDRA_DFCE_160600";
+
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -218,9 +220,15 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation)) {
          updateCassandra160300();
          addIndexesCompositeToDfce("META_160300");
-      }  else if (CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation)) {
+      } else if (CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation)) {
          updateCassandra160400();
          updateMetaDfce("META_160400");
+         // Indexation du numeroIdArchivage
+         updateDFCE160400();
+      } else if (CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160600();
+         // Pas de nouvelles méta pour le moment
+         // updateMetaDfce("META_160600");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
 
@@ -501,8 +509,8 @@ public final class MajLotServiceImpl implements MajLotService {
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion16();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
-   } 
-   
+   }
+
    /**
     * Pour lot 160400 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 17
@@ -512,8 +520,19 @@ public final class MajLotServiceImpl implements MajLotService {
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion17();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
-   }   
-   
+   }
+
+   /**
+    * Pour lot 160600 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 18
+    */
+   private void updateCassandra160600() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160600");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion18();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
    /**
     * Ajout des droits GED
     */
@@ -616,7 +635,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
       // -- Crétion des indexes composites (Si ils n'existent pas déjà)
       createIndexesCompositeIfNotExist(service.getIndexesComposites());
-
+      
       LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})",
             operation);
    }
@@ -630,7 +649,7 @@ public final class MajLotServiceImpl implements MajLotService {
             "Début de l'opération : Création des nouveaux index composites ({})",
             operation);
 
-      // -- Crétion des indexes composites
+      // -- Création des indexes composites
       createIndexesCompositeIfNotExist(service.getIndexesComposites());
 
       LOG.info(
@@ -772,21 +791,26 @@ public final class MajLotServiceImpl implements MajLotService {
    /**
     * Création des indexes composites à partir d'une liste de noms d'indexes.
     * Les indexes composites sont créés seulement si ils n'existent pas déjà.
+    * Indexe à vide l'index composite si besoin
     * 
     * @param indexes
-    *           Liste contenant des tableau de code courts de méta Chaque
-    *           tableau de codes meta correspond à la composition de l'indexe
-    *           composite à créer.
+    *           Liste contenant des tableaux de code courts de méta et le
+    *           boolean indiquant si on doit indexer à vide Chaque tableau de
+    *           codes meta correspond à la composition de l'indexe composite à
+    *           créer.
     */
-   private void createIndexesCompositeIfNotExist(List<String[]> indexes) {
+   private void createIndexesCompositeIfNotExist(Map<String[], String> indexes) {
 
       // -- dcfe connect
       connectDfce();
 
       StorageAdministrationService storageAdminService;
       storageAdminService = serviceProvider.getStorageAdministrationService();
+      DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
 
-      for (String[] metas : indexes) {
+      for (Entry<String[], String> entry : indexes.entrySet()) {
+         String[] metas = entry.getKey();
+         String aIndexerVide = entry.getValue();
 
          StringBuffer nomIndex = new StringBuffer();
          Category[] categories = new Category[metas.length];
@@ -827,6 +851,12 @@ public final class MajLotServiceImpl implements MajLotService {
             String mssgErreur = "Impossible de créer l'index composite: "
                   + nomIndex;
             throw new MajLotRuntimeException(mssgErreur);
+         }
+
+         // Indexation à vide si besoin
+         if ("oui".equals(aIndexerVide)) {
+            LOG.info("Indexation de l'index composite {}", nomIndex);
+            dfceUpdater.indexeAVideCompositeIndex(nomIndex.toString());
          }
       }
    }
@@ -903,6 +933,19 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
+    * Pour lot 160400 du SAE : 
+    * Indexation du numeroIdArchivage
+    */
+   private void updateDFCE160400() {
+
+      LOG.info("Début de l'opération : Lot 160400 - Indexation du numeroIdArchivage");
+      // Indexation de numeroIdArchivage
+      DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
+      dfceUpdater.indexeAVideIndexSimple("nid", dfceConfig.getBaseName() );
+      LOG.info("Fin de l'opération : Lot 160400 - Indexation du numeroIdArchivage");
+   }
+   
+   /**
     * Création de la base GED
     */
    private void createGedBase() {
@@ -923,6 +966,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion15();
       updater.updateToVersion16();
       updater.updateToVersion17();
+      updater.updateToVersion18();
    }
 
 }
