@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
+import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentAttachmentService;
@@ -40,6 +41,9 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
    @Autowired
    private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
+   @Autowired
+   private TracesDfceSupport tracesSupport;
+
    private static final String TRC_DOC_ATTACH_INSERT = "addDocumentAttachment()";
    private static final String TRC_DOC_ATTACH_GET = "addDocumentAttachment()";
 
@@ -56,7 +60,8 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
       LOGGER.debug("{} - Début ajout du document attaché",
             TRC_DOC_ATTACH_INSERT);
       storageDocumentServiceSupport.addDocumentAttachment(getDfceService(),
-            getCnxParameters(), docUuid, docName, extension, contenu, LOGGER);
+            getCnxParameters(), docUuid, docName, extension, contenu, LOGGER,
+            tracesSupport);
 
    }
 
@@ -75,7 +80,7 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
             getDfceService(), getCnxParameters(), docUuid, LOGGER);
 
    }
-   
+
    /**
     * {@inheritDoc}
     */

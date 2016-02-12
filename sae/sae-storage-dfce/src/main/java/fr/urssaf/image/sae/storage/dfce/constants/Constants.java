@@ -89,5 +89,19 @@ public final class Constants {
     * Traçabilité : code de l'événément "Transfert d'un document vers la GNS"
     */
    public static final String TRACE_CODE_EVT_TRANSFERT_DOC_DFCE = "DFCE_TRANSFERT_DOC|OK";
+   
+   /**
+    * Traçabilité : code de l'événément "Dépot d'un document attaché dans DFCE"
+    */
+   public static final String TRACE_CODE_EVT_DEPOT_ATTACH_DFCE = "DFCE_DEPOT_ATTACH|OK";
+   
+   /**
+    * Traçabilité : code de l'événément "Mise à la corbeille d'un document dans DFCE"
+    */
+   public static final String TRACE_CODE_EVT_CORBEILLE_DOC_DFCE = "DFCE_CORBEILLE_DOC|OK";
 
+   /**
+    * Traçabilité : code de l'événément "Restore d'un document dans DFCE"
+    */
+   public static final String TRACE_CODE_EVT_RESTORE_DOC_DFCE = "DFCE_RESTORE_DOC|OK";
 }
