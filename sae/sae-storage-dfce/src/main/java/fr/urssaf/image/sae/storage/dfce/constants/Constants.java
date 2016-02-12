@@ -39,6 +39,16 @@ public final class Constants {
     * Code du message d'erreur lors d'un problème de connection à DFCE
     */
    public static final String CNT_CODE_ERROR = "connection.code.message";
+   
+   /**
+    * Code du message d'erreur lors d'un problème de mise en corbeille de document
+    */
+   public static final String COR_CODE_ERROR = "recyclebin.code.message";
+   
+   /**
+    * Code du message d'erreur lors d'un problème de restore de document
+    */
+   public static final String RST_CODE_ERROR = "restore.code.message";
 
    /**
     * Protocole HTTPS

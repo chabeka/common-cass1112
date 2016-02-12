@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -31,6 +32,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
+import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
 import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
@@ -71,6 +73,9 @@ public class CommonsServices {
    @Autowired
    @Qualifier("deletionService")
    private DeletionService deletionService;
+   @Autowired
+   @Qualifier("recycleBinService")
+   private RecycleBinService recycleBinService;
    @Autowired
    private UpdateService updateService;
 
@@ -145,12 +150,46 @@ public class CommonsServices {
             desiredStorageMetadatas);
       deletionService.deleteStorageDocument(uuidCriteria.getUuid());
    }
+   
+   /**
+    * Initialisation des tests. <br>{@inheritDoc}
+    */
+   public final StorageDocument getMockDataForRecycleBin(
+         final InsertionService insertionService, final RecycleBinService recycleBinService) throws IOException,
+         ParseException, InsertionServiceEx, RecycleBinServiceEx {
+      // Injection de jeu de donnée.
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final StorageDocument storageDocument = DocumentForTestMapper
+            .saeDocumentXmlToStorageDocument(saeDocument);
+      StorageDocument doc = insertionService.insertStorageDocument(storageDocument);
+      recycleBinService.moveStorageDocumentToRecycleBin(doc.getUuid());
+      return doc;
+   }
+
+   /**
+    * Suppression du jeu de donnée.<br>{@inheritDoc}
+    */
+   public final void destroyMockForRecycleBinTest(final UUID uuid,
+         final RecycleBinService recycleBinService) throws RecycleBinServiceEx {
+      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
+            desiredStorageMetadatas);
+      recycleBinService.deleteStorageDocumentFromRecycleBin(uuidCriteria.getUuid());
+   }
 
    /**
     * @return the updateService
     */
    public final UpdateService getUpdateService() {
       return updateService;
+   }
+   
+   /**
+    * @return the updateService
+    */
+   public final RecycleBinService getRecycleBinService() {
+      return recycleBinService;
    }
 
    /**
@@ -170,6 +209,8 @@ public class CommonsServices {
       getSearchingService().setSearchingServiceParameter(
             getDfceServicesManager().getDFCEService());
       getUpdateService().setUpdateServiceParameter(
+            getDfceServicesManager().getDFCEService());
+      getRecycleBinService().setRecycleBinServiceParameter(
             getDfceServicesManager().getDFCEService());
    }
 

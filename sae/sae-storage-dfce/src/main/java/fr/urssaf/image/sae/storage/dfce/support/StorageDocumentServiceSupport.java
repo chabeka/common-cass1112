@@ -42,6 +42,7 @@ import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
@@ -743,5 +744,136 @@ public class StorageDocumentServiceSupport {
                e.getMessage(), e);
       }
 
+   }
+   
+   /**
+    * Deplacement de document dans la corbeille
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uuid
+    *           UUID du document à déplacer
+    * @param log
+    *           Logger
+    * @param tracesSupport
+    *           Support pour l'ecriture des traces
+    * @throws RecycleBinServiceEx
+    *            Exception levée si erreur lors de la mise a la corbeille
+    */
+   public final void moveStorageDocumentToRecycleBin(ServiceProvider dfceService,
+         DFCEConnection cnxParams, final UUID uuid, Logger log,
+         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "moveStorageDocumentToRecycleBin()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         log.debug("{} - UUID à mettre dans la corbeille : {}", prefixeTrc, uuid);
+         Document docInRB = dfceService.getRecycleBinService().throwAwayDocument(uuid);
+
+         // -- Trace l'événement "Mise en corbeille d'un document de DFCE"
+         tracesSupport.traceCorbeilleDocDansDFCE(uuid, docInRB.getDigest(),
+               docInRB.getDigestAlgorithm(), docInRB.getArchivageDate());
+
+         log.debug("{} - Sortie", prefixeTrc);
+
+      } catch (FrozenDocumentException frozenExcept) {
+         log.debug(
+               "{} - Une exception a été levée lors de la suppression du document : {}",
+               prefixeTrc, frozenExcept.getMessage());
+         throw new RecycleBinServiceEx(
+               StorageMessageHandler.getMessage(Constants.COR_CODE_ERROR),
+               frozenExcept.getMessage(), frozenExcept);
+      }
+   }
+   
+   /**
+    * Restore de document de la corbeille
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uuid
+    *           UUID du document à restaurer
+    * @param log
+    *           Logger
+    * @param tracesSupport
+    *           Support pour l'ecriture des traces
+    * @throws RecycleBinServiceEx
+    *            Exception levée si erreur lors de la restore de la corbeille
+    */
+   public final void restoreStorageDocumentFromRecycleBin(ServiceProvider dfceService,
+         DFCEConnection cnxParams, final UUID uuid, Logger log,
+         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "restoreStorageDocumentFromRecycleBin()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         log.debug("{} - UUID à restaurer de la corbeille : {}", prefixeTrc, uuid);
+         Document docRestore = dfceService.getRecycleBinService().restoreDocument(uuid);
+
+         // -- Trace l'événement "Restore d'un document de la corbeille de DFCE"
+         tracesSupport.traceRestoreDocDansDFCE(uuid, docRestore.getDigest(),
+               docRestore.getDigestAlgorithm(), docRestore.getArchivageDate());
+
+         log.debug("{} - Sortie", prefixeTrc);
+
+      } catch (TagControlException frozenExcept) {
+         log.debug(
+               "{} - Une exception a été levée lors de la suppression du document : {}",
+               prefixeTrc, frozenExcept.getMessage());
+         throw new RecycleBinServiceEx(
+               StorageMessageHandler.getMessage(Constants.RST_CODE_ERROR),
+               frozenExcept.getMessage(), frozenExcept);
+      }
+   }
+   
+   /**
+    * Suppression de document de la corbeille
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uuid
+    *           UUID du document à supprimer
+    * @param log
+    *           Logger
+    * @param tracesSupport
+    *           Support pour l'ecriture des traces
+    * @throws RecycleBinServiceEx
+    *            Exception levée si erreur lors de la restore de la corbeille
+    */
+   public final void deleteStorageDocumentFromRecycleBin(ServiceProvider dfceService,
+         DFCEConnection cnxParams, final UUID uuid, Logger log,
+         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "deleteStorageDocumentFromRecycleBin()";
+      log.debug("{} - Début", prefixeTrc);
+
+      try {
+         log.debug("{} - UUID à supprimer de la corbeille : {}", prefixeTrc, uuid);
+         dfceService.getRecycleBinService().deleteDocument(uuid);
+
+         // -- Trace l'événement "Restore d'un document de la corbeille de DFCE"
+         tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
+
+         log.debug("{} - Sortie", prefixeTrc);
+
+      } catch (FrozenDocumentException frozenExcept) {
+         log.debug(
+               "{} - Une exception a été levée lors de la suppression du document : {}",
+               prefixeTrc, frozenExcept.getMessage());
+         throw new RecycleBinServiceEx(
+               StorageMessageHandler.getMessage(Constants.DEL_CODE_ERROR),
+               frozenExcept.getMessage(), frozenExcept);
+      }
    }
 }

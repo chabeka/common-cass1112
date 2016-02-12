@@ -61,6 +61,20 @@
             </column>
          </row>
          <row>
+            <key>DFCE_CORBEILLE_DOC|OK</key>
+            <column>
+               <name>JOURN_EVT</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
+         <row>
+            <key>DFCE_RESTORE_DOC|OK</key>
+            <column>
+               <name>JOURN_EVT</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
+         <row>
             <key>MAJ_VERSION_RND|OK</key>
             <column>
                <name>JOURN_EVT</name>

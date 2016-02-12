@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
+import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
@@ -37,6 +38,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
  * {@link RetrievalService} : services de récupération.</li>
  * <li>
  * {@link DeletionService} : services de suppression.</li>
+ * <li>
+ * {@link RecycleBinService} : services de gestion de la corbeille.</li>
  * </ul>
  */
 public interface StorageDocumentService {
@@ -325,5 +328,39 @@ public interface StorageDocumentService {
    StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws StorageDocAttachmentServiceEx;
 
+   /**
+    * Permet de deplacer un StorageDocument dans la corbeille
+    * 
+    * @param uuid
+    *           document concerné
+    * @throws RecycleBinServiceEx
+    *            Runtime exception
+    */
 
+   void moveStorageDocumentToRecycleBin(final UUID uuid) 
+         throws RecycleBinServiceEx;
+   
+   /**
+    * Permet de restaurer un StorageDocument de la corbeille
+    * 
+    * @param uuid
+    *           document concerné
+    * @throws RecycleBinServiceEx
+    *            Runtime exception
+    */
+
+   void restoreStorageDocumentFromRecycleBin(final UUID uuid) 
+         throws RecycleBinServiceEx;
+   
+   /**
+    * Permet de supprimer un StorageDocument de la corbeille
+    * 
+    * @param uuid
+    *           document concerné
+    * @throws RecycleBinServiceEx
+    *            Runtime exception
+    */
+
+   void deleteStorageDocumentFromRecycleBin(final UUID uuid) 
+         throws RecycleBinServiceEx;
 }

@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
+import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
@@ -37,6 +38,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentAttachmentService;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
+import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
 import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
@@ -78,6 +80,9 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
    @Autowired
    @Qualifier("documentAttachmentService")
    private DocumentAttachmentService documentAttachmentService;
+   @Autowired
+   @Qualifier("recycleBinService")
+   private RecycleBinService recycleBinService;
 
    /**
     * @return les services de suppression
@@ -345,6 +350,36 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
       documentAttachmentService
             .setDocumentAttachmentServiceParameter(getDfceService());
       return documentAttachmentService.getDocumentAttachments(docUuid);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void moveStorageDocumentToRecycleBin(UUID uuid)
+         throws RecycleBinServiceEx {
+      recycleBinService.setRecycleBinServiceParameter(getDfceService());
+      recycleBinService.moveStorageDocumentToRecycleBin(uuid);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void restoreStorageDocumentFromRecycleBin(UUID uuid)
+         throws RecycleBinServiceEx {
+      recycleBinService.setRecycleBinServiceParameter(getDfceService());
+      recycleBinService.restoreStorageDocumentFromRecycleBin(uuid);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void deleteStorageDocumentFromRecycleBin(UUID uuid)
+         throws RecycleBinServiceEx {
+      recycleBinService.setRecycleBinServiceParameter(getDfceService());
+      recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
    }
 
 }
