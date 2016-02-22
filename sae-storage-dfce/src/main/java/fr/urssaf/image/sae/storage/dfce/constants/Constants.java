@@ -94,4 +94,4 @@ public final class Constants {
     * Traçabilité : code de l'événément "Dépot d'un document attaché dans DFCE"
     */
    public static final String TRACE_CODE_EVT_DEPOT_ATTACH_DFCE = "DFCE_DEPOT_ATTACH|OK";
-   
+}   
