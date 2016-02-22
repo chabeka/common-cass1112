@@ -145,45 +145,45 @@
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismePropriétaire-StatutWATT-CodeProduitV2-CodeTraitementV2-DateArchivage</ns1:nom>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-StatutWATT-CodeProduitV2-CodeTraitementV2-DateArchivage</ns1:nom>
 		<ns1:composition>cot:cop:swa:cpr:ctr:SM_ARCHIVAGE_DATE</ns1:composition>
 		<ns1:aCreer>non</ns1:aCreer>
 		<ns1:aIndexerVide>non</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismePropriétaire-StatutWATT-DateArchivage</ns1:nom>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-StatutWATT-DateArchivage</ns1:nom>
 		<ns1:composition>cot:cop:swa:SM_ARCHIVAGE_DATE</ns1:composition>
 		<ns1:aCreer>non</ns1:aCreer>
 		<ns1:aIndexerVide>non</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismeGestionnaire-DatePaiement</ns1:nom>
-		<ns1:composition>cot:cog:dpa</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-DatePaiement</ns1:nom>
+		<ns1:composition>cot:cop:dpa</ns1:composition>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismeGestionnaire-NumeroCheque</ns1:nom>
-		<ns1:composition>cot:cog:nch</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-NumeroCheque</ns1:nom>
+		<ns1:composition>cot:cop:nch</ns1:composition>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismeGestionnaire-NumeroCompteBancaire</ns1:nom>
-		<ns1:composition>cot:cog:ncb</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-NumeroCompteBancaire</ns1:nom>
+		<ns1:composition>cot:cop:ncb</ns1:composition>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>CodeOrganismeGestionnaire-NumeroLot</ns1:nom>
-		<ns1:composition>cog:nlo</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:nom>CodeOrganismeProprietaire-NumeroLot</ns1:nom>
+		<ns1:composition>cop:nlo</ns1:composition>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineCotisant-CodeOrganismeGestionnaire-MontantCheque</ns1:nom>
-		<ns1:composition>cot:cog:mch</ns1:composition>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-MontantCheque</ns1:nom>
+		<ns1:composition>cot:cop:mch</ns1:composition>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 </ns1:indexesComposites>
