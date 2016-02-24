@@ -381,9 +381,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+         throw new RechercheAxis2Fault(
+               "ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
+               ex);
       }
    }
 
@@ -622,9 +623,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", trcPrefix);
             setCodeHttp412();
-            throw new SuppressionAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+            throw new SuppressionAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
          }
 
       } catch (SuppressionAxisFault ex) {
@@ -778,9 +778,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+         throw new RechercheAxis2Fault(
+               "ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
+               ex);
       }
    }
 
@@ -821,9 +822,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+         throw new RechercheAxis2Fault(
+               "ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
+               ex);
       }
    }
 
