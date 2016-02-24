@@ -58,7 +58,7 @@ public class WSTransfertServiceImpl implements WSTransfertService {
       } catch (TransfertException e) {
          throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(), e);
       } catch (Exception e) {
-         throw new TransfertAxisFault("ErreurInterne", e.getMessage(), e);
+         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(), e);
       }
 
       TransfertResponseType responseType = new TransfertResponseType();

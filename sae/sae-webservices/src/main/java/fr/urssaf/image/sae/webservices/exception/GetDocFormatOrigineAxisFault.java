@@ -45,12 +45,12 @@ public class GetDocFormatOrigineAxisFault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
-    * @param message
-    *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     */
-   public GetDocFormatOrigineAxisFault(String message, String localPart) {
+   public GetDocFormatOrigineAxisFault(String localPart, String message) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"));
@@ -67,14 +67,14 @@ public class GetDocFormatOrigineAxisFault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
+    * @param localPart
+    *           localPart du code du SOAPFault 
     * @param message
     *           message de l'exception
-    * @param localPart
-    *           localPart du code du SOAPFault
     * @param cause
     *           cause de l'exception
     */
-   public GetDocFormatOrigineAxisFault(String message, String localPart, Throwable cause) {
+   public GetDocFormatOrigineAxisFault(String localPart, String message, Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"), cause);

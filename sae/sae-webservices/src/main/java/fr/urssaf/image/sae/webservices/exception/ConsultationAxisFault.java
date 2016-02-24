@@ -45,12 +45,12 @@ public class ConsultationAxisFault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
-    * @param message
-    *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     */
-   public ConsultationAxisFault(String message, String localPart) {
+   public ConsultationAxisFault(String localPart, String message) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"));

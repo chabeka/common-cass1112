@@ -381,9 +381,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault(
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-               "ErreurInterneRecherche", ex);
+                ex);
       }
    }
 
@@ -417,9 +417,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new ConsultationAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (ConsultationAxisFault ex) {
@@ -467,9 +466,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new ConsultationAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+
+            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (ConsultationAxisFault ex) {
@@ -582,9 +581,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", trcPrefix);
             setCodeHttp412();
-            throw new ModificationAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+            throw new ModificationAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
          }
 
       } catch (ModificationAxisFault ex) {
@@ -693,9 +691,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", trcPrefix);
             setCodeHttp412();
-            throw new TransfertAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+            throw new TransfertAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
          }
 
       } catch (TransfertAxisFault e) {
@@ -736,9 +733,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new ConsultationAxisFault(
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null),
-                  STOCKAGE_INDISPO);
+            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
       } catch (ConsultationAxisFault ex) {
@@ -782,9 +778,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault(
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-               "ErreurInterneRecherche", ex);
+                ex);
       }
    }
 
@@ -825,9 +821,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new RechercheAxis2Fault(
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
                "Une erreur interne à l'application est survenue lors de la recherche.",
-               "ErreurInterneRecherche", ex);
+                ex);
       }
    }
 
@@ -855,7 +851,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+            throw new AjoutNoteAxisFault(STOCKAGE_INDISPO,
                   wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
@@ -868,8 +864,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new AjoutNoteAxisFault(
+               "ErreurInterneAjoutNote",
                "Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
-               "ErreurInterneAjoutNote", ex);
+               ex);
       }
 
    }
@@ -899,7 +896,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+            throw new CaptureAxisFault(STOCKAGE_INDISPO,
                   wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
@@ -943,7 +940,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
             LOG.debug("{} - Sortie", prefixeTrc);
             setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
+            throw new GetDocFormatOrigineAxisFault(STOCKAGE_INDISPO,
                   wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
 
          }
@@ -955,7 +952,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new CaptureAxisFault(
+         throw new GetDocFormatOrigineAxisFault(
                "ErreurInterneGetDocFormatOrigine",
                "Une erreur interne à l'application est survenue lors de la récupération du document au format d'origine.",
                ex);
