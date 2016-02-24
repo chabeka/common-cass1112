@@ -22,15 +22,15 @@ public class RechercheAxis2Fault extends AxisFault {
     * <li><code>localPart</code>:<code>localPart</code></li>
     * <li><code>prefix</code>:sae</li>
     * </ul>
-    * 
-    * @param message
-    *           message de l'exception
+    *
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     * @param cause
     *           exception levée qui génère la SOAPFault
     */
-   public RechercheAxis2Fault(String message, String localPart, Throwable cause) {
+   public RechercheAxis2Fault(String localPart, String message, Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"), cause);
@@ -47,12 +47,12 @@ public class RechercheAxis2Fault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
-    * @param message
-    *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     */
-   public RechercheAxis2Fault(String message, String localPart) {
+   public RechercheAxis2Fault(String localPart, String message) {
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"));
    }

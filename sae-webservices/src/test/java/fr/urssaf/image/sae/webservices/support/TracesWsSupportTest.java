@@ -85,24 +85,24 @@ public class TracesWsSupportTest {
       evenement.setCodeEvt(TracesConstantes.CODE_EVT_WS_RECHERCHE_KO);
       Map<String, List<String>> map = new HashMap<String, List<String>>();
       evenement.setDestinataires(map);
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
-            .asList("all_infos"));
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE,
+            Arrays.asList("all_infos"));
       destSupport.create(evenement, new Date().getTime());
 
       evenement = new TraceDestinataire();
       evenement.setCodeEvt(TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE);
       map = new HashMap<String, List<String>>();
       evenement.setDestinataires(map);
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
-            .asList("all_infos"));
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE,
+            Arrays.asList("all_infos"));
       destSupport.create(evenement, new Date().getTime());
 
       evenement = new TraceDestinataire();
       evenement.setCodeEvt(TracesConstantes.CODE_EVT_CHARGE_CRL);
       map = new HashMap<String, List<String>>();
       evenement.setDestinataires(map);
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, Arrays
-            .asList("all_infos"));
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE,
+            Arrays.asList("all_infos"));
       destSupport.create(evenement, new Date().getTime());
 
    }
@@ -119,8 +119,9 @@ public class TracesWsSupportTest {
       String soapRequest = "<xml><balise>contenu de la balise</balise></xml>";
 
       Exception exceptionMere = new Exception("Exception mère");
-      Exception axisFault = new RechercheAxis2Fault("Erreur dans la recherche",
-            "RechercheMetadonneesInterdite", exceptionMere);
+      Exception axisFault = new RechercheAxis2Fault(
+            "RechercheMetadonneesInterdite", "Erreur dans la recherche",
+            exceptionMere);
 
       String clientIP = "1.2.3.4";
 
@@ -146,8 +147,8 @@ public class TracesWsSupportTest {
 
       assertEquals(
             "Le code événement dans la trace (dans son index) est incorrect",
-            TracesConstantes.CODE_EVT_WS_RECHERCHE_KO, traceTechIndex
-                  .getCodeEvt());
+            TracesConstantes.CODE_EVT_WS_RECHERCHE_KO,
+            traceTechIndex.getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
             "CodeContratService", traceTechIndex.getContrat());
@@ -165,12 +166,12 @@ public class TracesWsSupportTest {
       assertEquals("Le contrat de service dans la trace est incorrect",
             "CodeContratService", trace.getContratService());
       checkPagms(trace.getPagms());
-      assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
-            .getLogin());
+      assertEquals("Le login dans la trace est incorrect", "LeIdUser",
+            trace.getLogin());
       assertEquals("Le contexte dans la trace est incorrect", "recherche",
             trace.getContexte());
-      assertEquals("La stacktrace dans la trace est incorrect", ExceptionUtils
-            .getFullStackTrace(axisFault), trace.getStacktrace());
+      assertEquals("La stacktrace dans la trace est incorrect",
+            ExceptionUtils.getFullStackTrace(axisFault), trace.getStacktrace());
       assertTrue("Les infos supplémentaires ne devraient pas être vides",
             MapUtils.isNotEmpty(trace.getInfos()));
       assertEquals(
@@ -196,8 +197,9 @@ public class TracesWsSupportTest {
       String soapRequest = "<xml><balise>contenu de la balise</balise></xml>";
 
       Exception exceptionMere = new Exception("Exception mère");
-      Exception axisFault = new RechercheAxis2Fault("Erreur dans la recherche",
-            "RechercheMetadonneesInterdite", exceptionMere);
+      Exception axisFault = new RechercheAxis2Fault(
+            "RechercheMetadonneesInterdite", "Erreur dans la recherche",
+            exceptionMere);
 
       String clientIP = "5.6.7.8";
 
@@ -216,8 +218,8 @@ public class TracesWsSupportTest {
             StringUtils.isEmpty(traceTechIndex.getContrat()));
       Assert.assertTrue("La liste des PAGM ne devrait pas être renseignée",
             CollectionUtils.isEmpty(traceTechIndex.getPagms()));
-      Assert.assertTrue("Le login ne devrait pas être renseigné", StringUtils
-            .isEmpty(traceTechIndex.getLogin()));
+      Assert.assertTrue("Le login ne devrait pas être renseigné",
+            StringUtils.isEmpty(traceTechIndex.getLogin()));
 
       TraceRegTechnique trace = regTechniqueService.lecture(traceTechIndex
             .getIdentifiant());
@@ -226,8 +228,8 @@ public class TracesWsSupportTest {
             StringUtils.isEmpty(trace.getContratService()));
       Assert.assertTrue("La liste des PAGM ne devrait pas être renseignée",
             CollectionUtils.isEmpty(trace.getPagms()));
-      Assert.assertTrue("Le login ne devrait pas être renseigné", StringUtils
-            .isEmpty(trace.getLogin()));
+      Assert.assertTrue("Le login ne devrait pas être renseigné",
+            StringUtils.isEmpty(trace.getLogin()));
 
    }
 
@@ -283,8 +285,8 @@ public class TracesWsSupportTest {
          int expected) {
 
       List<TraceRegExploitationIndex> tracesIndex = regExploitationService
-            .lecture(DateUtils.addDays(new Date(), -1), DateUtils.addDays(
-                  new Date(), 1), 100, true);
+            .lecture(DateUtils.addDays(new Date(), -1),
+                  DateUtils.addDays(new Date(), 1), 100, true);
 
       if (expected <= 0) {
          assertTrue(
@@ -366,8 +368,8 @@ public class TracesWsSupportTest {
 
       assertEquals(
             "Le code événement dans la trace (dans son index) est incorrect",
-            TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE, traceTechIndex
-                  .getCodeEvt());
+            TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE,
+            traceTechIndex.getCodeEvt());
       assertEquals(
             "Le contrat de service dans la trace (dans son index) est incorrect",
             "CodeContratService", traceTechIndex.getContrat());
@@ -385,8 +387,8 @@ public class TracesWsSupportTest {
       assertEquals("Le contrat de service dans la trace est incorrect",
             "CodeContratService", trace.getContratService());
       checkPagms(trace.getPagms());
-      assertEquals("Le login dans la trace est incorrect", "LeIdUser", trace
-            .getLogin());
+      assertEquals("Le login dans la trace est incorrect", "LeIdUser",
+            trace.getLogin());
       assertEquals("Le contexte dans la trace est incorrect",
             "ChargementCertACRacine", trace.getContexte());
       assertTrue("Les infos supplémentaires ne devraient pas être vides",

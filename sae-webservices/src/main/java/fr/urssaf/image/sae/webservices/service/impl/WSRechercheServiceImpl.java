@@ -96,35 +96,34 @@ public class WSRechercheServiceImpl implements WSRechercheService {
                requeteLucene, listMDDesired);
          if (untypedDocuments.size() > maxResult) {
             resultatTronque = true;
-            LOG
-                  .debug(
-                        "{} - Les résultats de recherche sont tronqués à {} résultats",
-                        prefixeTrc, maxResult);
+            LOG.debug(
+                  "{} - Les résultats de recherche sont tronqués à {} résultats",
+                  prefixeTrc, maxResult);
          }
 
          response = createRechercheResponse(untypedDocuments, resultatTronque);
 
       } catch (SAESearchServiceEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ErreurInterneRecherche", except);
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+               except.getMessage(), except);
       } catch (MetaDataUnauthorizedToSearchEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RechercheMetadonneesInterdite", except);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
+               except.getMessage(), except);
       } catch (MetaDataUnauthorizedToConsultEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ConsultationMetadonneesInterdite", except);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
+               except.getMessage(), except);
       } catch (UnknownDesiredMetadataEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ConsultationMetadonneesInconnues", except);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
+               except.getMessage(), except);
       } catch (UnknownLuceneMetadataEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RechercheMetadonneesInconnues", except);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
+               except.getMessage(), except);
       } catch (SyntaxLuceneEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "SyntaxeLuceneNonValide", except);
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
+               except.getMessage(), except);
       } catch (RechercheAxis2Fault except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RequeteLuceneVideOuNull", except);
+         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
+               except.getMessage(), except);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -166,26 +165,26 @@ public class WSRechercheServiceImpl implements WSRechercheService {
                resultatTronque, maxResult);
 
       } catch (SAESearchServiceEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ErreurInterneRecherche", except);
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+               except.getMessage(), except);
       } catch (MetaDataUnauthorizedToSearchEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RechercheMetadonneesInterdite", except);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
+               except.getMessage(), except);
       } catch (MetaDataUnauthorizedToConsultEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ConsultationMetadonneesInterdite", except);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
+               except.getMessage(), except);
       } catch (UnknownDesiredMetadataEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "ConsultationMetadonneesInconnues", except);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
+               except.getMessage(), except);
       } catch (UnknownLuceneMetadataEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RechercheMetadonneesInconnues", except);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
+               except.getMessage(), except);
       } catch (SyntaxLuceneEx except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "SyntaxeLuceneNonValide", except);
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
+               except.getMessage(), except);
       } catch (RechercheAxis2Fault except) {
-         throw new RechercheAxis2Fault(except.getMessage(),
-               "RequeteLuceneVideOuNull", except);
+         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
+               except.getMessage(), except);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -248,11 +247,11 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       // a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
       // l'identifiant de la dernière page
       if (!listeMetaSouhaitees.contains(untypedRangeMeta.getLongCode())) {
-         if(listeMetaSouhaitees.isEmpty()) {
-          listeMetaSouhaitees = new ArrayList<String>();
-          listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+         if (listeMetaSouhaitees.isEmpty()) {
+            listeMetaSouhaitees = new ArrayList<String>();
+            listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
          } else {
-         listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+            listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
          }
       }
 
@@ -299,29 +298,29 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          // response.setRechercheParIterateurResponse(rechParItRespType);
 
       } catch (MetaDataUnauthorizedToSearchEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "RechercheMetadonneesInterdite", e);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
+               e.getMessage(), e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "ConsultationMetadonneesInterdite", e);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
+               e.getMessage(), e);
       } catch (UnknownLuceneMetadataEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "RechercheMetadonneesInconnues", e);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
+               e.getMessage(), e);
       } catch (SAESearchServiceEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "ErreurInterneRecherche", e);
+         throw new RechercheAxis2Fault("ErreurInterneRecherche",
+               e.getMessage(), e);
       } catch (SyntaxLuceneEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "SyntaxeLuceneNonValide", e);
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
+               e.getMessage(), e);
       } catch (UnknownDesiredMetadataEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "ConsultationMetadonneesInconnues", e);
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
+               e.getMessage(), e);
       } catch (UnknownFiltresMetadataEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "RechercheMetadonneesInconnues", e);
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
+               e.getMessage(), e);
       } catch (DoublonFiltresMetadataEx e) {
-         throw new RechercheAxis2Fault(e.getMessage(),
-               "RechercheMetadonneesDoublons", e);
+         throw new RechercheAxis2Fault("RechercheMetadonneesDoublons",
+               e.getMessage(), e);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -482,19 +481,17 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       String prefixeTrc = "checkNotNull()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
-      LOG
-            .debug(
-                  "{} - Début de la vérification : La requête de recherche est renseignée",
-                  prefixeTrc);
+      LOG.debug(
+            "{} - Début de la vérification : La requête de recherche est renseignée",
+            prefixeTrc);
       if (isEmpty(requeteLucene.trim())) {
-         throw new RechercheAxis2Fault(wsMessageRessourcesUtils
-               .recupererMessage("search.lucene.videornull", null),
-               "RequeteLuceneVideOuNull");
+         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
+               wsMessageRessourcesUtils.recupererMessage(
+                     "search.lucene.videornull", null));
       }
-      LOG
-            .debug(
-                  "{} - Fin de la vérification : La requête de recherche est renseignée",
-                  prefixeTrc);
+      LOG.debug(
+            "{} - Fin de la vérification : La requête de recherche est renseignée",
+            prefixeTrc);
       LOG.debug("{} - Sortie", prefixeTrc);
    }
 

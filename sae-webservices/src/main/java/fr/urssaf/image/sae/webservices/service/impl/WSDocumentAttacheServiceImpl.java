@@ -65,24 +65,29 @@ public final class WSDocumentAttacheServiceImpl implements
 
          uDocAtt = saeService.getDocumentAttachment(docUuid);
 
-         // Si le document ne possède pas de document attaché au format d'origine
+         // Si le document ne possède pas de document attaché au format
+         // d'origine
          if (uDocAtt == null) {
             LOG.debug(
                   "{} - L'archive demandée ne possède pas de document attaché au format d'origine ({})",
                   prefixeTrc, docUuid);
             throw new GetDocFormatOrigineAxisFault(
+                  "AucunDocFormatOrigine",
                   "Il n'existe aucun document au format d'origine pour l'identifiant d'archivage '"
-                        + docUuid + "'", "AucunDocFormatOrigine");
+                        + docUuid + "'");
          } else {
-            // Conversion de l'objet UntypedDocument en un objet de la couche web
+            // Conversion de l'objet UntypedDocument en un objet de la couche
+            // web
             // service
-            List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(uDocAtt.getUMetadatas());
+            List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(uDocAtt
+                  .getUMetadatas());
             // Construction de l'objet de réponse
             GetDocFormatOrigineResponse response = ObjectGetDocFormatOrigineFactory
-                  .createGetDocFormatOrigineResponse(uDocAtt.getContent(), metadatas);
+                  .createGetDocFormatOrigineResponse(uDocAtt.getContent(),
+                        metadatas);
             if (response == null) {
                LOG.debug("{} - Valeur de retour : null", prefixeTrc);
-            } 
+            }
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
 
@@ -98,7 +103,7 @@ public final class WSDocumentAttacheServiceImpl implements
       }
 
    }
-   
+
    private List<MetadonneeType> convertListeMetasServiceToWebService(
          List<UntypedMetadata> listeMetasService) {
 

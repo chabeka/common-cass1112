@@ -131,8 +131,8 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       UntypedDocument untypedDocument = consultationCommune(uuid, listeMetas);
 
       // Récupération du type MIME et suppression si besoin de FormatFichier
-      String typeMime = typeMimeDepuisFormatFichier(untypedDocument
-            .getUMetadatas(), fmtFicAjoute);
+      String typeMime = typeMimeDepuisFormatFichier(
+            untypedDocument.getUMetadatas(), fmtFicAjoute);
 
       // Conversion de l'objet UntypedDocument en un objet de la couche web
       // service
@@ -163,27 +163,29 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       // Fin des traces debug - entrée méthode
 
       // Lecture de l'UUID depuis l'objet de requête de la couche ws
-      UUID uuid = UUID.fromString(request.getConsultationAffichable().getIdArchive()
-            .getUuidType());
+      UUID uuid = UUID.fromString(request.getConsultationAffichable()
+            .getIdArchive().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             uuid);
 
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
       ListeMetadonneeCodeType listeMetaWs = request.getConsultationAffichable()
             .getMetadonnees();
-      
+
       // Convertit la liste des métadonnées de l'objet de la couche ws vers un
       // objet plus exploitable
       List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
-      
+
       // recuperation du numero de page et du nombre de pages
       Integer numeroPage = null;
       Integer nombrePages = null;
       if (request.getConsultationAffichable().isNumeroPageSpecified()) {
-         numeroPage = Integer.valueOf(request.getConsultationAffichable().getNumeroPage());
+         numeroPage = Integer.valueOf(request.getConsultationAffichable()
+               .getNumeroPage());
       }
       if (request.getConsultationAffichable().isNombrePagesSpecified()) {
-         nombrePages = Integer.valueOf(request.getConsultationAffichable().getNombrePages());
+         nombrePages = Integer.valueOf(request.getConsultationAffichable()
+               .getNombrePages());
       }
 
       // Ajout de la métadonnée FormatFichier si besoin
@@ -192,17 +194,18 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
       // Appel de la méthode de consultation affichable
       // Cette méthode se charge des vérifications et de la levée des AxisFault
-      UntypedDocument untypedDocument = consultationAffichable(uuid, listeMetas, numeroPage, nombrePages);
+      UntypedDocument untypedDocument = consultationAffichable(uuid,
+            listeMetas, numeroPage, nombrePages);
 
       // Récupération du type MIME et suppression si besoin de FormatFichier
-      String typeMime = typeMimeDepuisFormatFichier(untypedDocument
-            .getUMetadatas(), fmtFicAjoute);
+      String typeMime = typeMimeDepuisFormatFichier(
+            untypedDocument.getUMetadatas(), fmtFicAjoute);
 
       // Conversion de l'objet UntypedDocument en un objet de la couche web
       // service
       List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
             .getUMetadatas());
-      
+
       ConsultationAffichableResponse response = ObjectConsultationFactory
             .createConsultationAffichableResponse(untypedDocument.getContent(),
                   metadatas, typeMime);
@@ -232,13 +235,12 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
          // Regarde si l'archive a été retrouvée dans le SAE. Si ce n'est pas le
          // cas, on lève la SoapFault correspondante
          if (untypedDocument == null) {
-            LOG
-                  .debug(
-                        "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
-                        prefixeTrc, uuid);
-            throw new ConsultationAxisFault(
+            LOG.debug(
+                  "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
+                  prefixeTrc, uuid);
+            throw new ConsultationAxisFault("ArchiveNonTrouvee",
                   "Il n'existe aucun document pour l'identifiant d'archivage '"
-                        + uuid + "'", "ArchiveNonTrouvee");
+                        + uuid + "'");
 
          } else {
 
@@ -262,8 +264,9 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       }
 
    }
-   
-   private UntypedDocument consultationAffichable(UUID uuid, List<String> listMetas, Integer numeroPage, Integer nombrePages)
+
+   private UntypedDocument consultationAffichable(UUID uuid,
+         List<String> listMetas, Integer numeroPage, Integer nombrePages)
          throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
@@ -274,20 +277,20 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       try {
 
          // Appel de la couche service
-         ConsultParams consultParams = new ConsultParams(uuid, listMetas, numeroPage, nombrePages);
+         ConsultParams consultParams = new ConsultParams(uuid, listMetas,
+               numeroPage, nombrePages);
          UntypedDocument untypedDocument = saeService
                .consultationAffichable(consultParams);
 
          // Regarde si l'archive a été retrouvée dans le SAE. Si ce n'est pas le
          // cas, on lève la SoapFault correspondante
          if (untypedDocument == null) {
-            LOG
-                  .debug(
-                        "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
-                        prefixeTrc, uuid);
-            throw new ConsultationAxisFault(
+            LOG.debug(
+                  "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
+                  prefixeTrc, uuid);
+            throw new ConsultationAxisFault("ArchiveNonTrouvee",
                   "Il n'existe aucun document pour l'identifiant d'archivage '"
-                        + uuid + "'", "ArchiveNonTrouvee");
+                        + uuid + "'");
 
          } else {
 
@@ -376,18 +379,16 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       if (org.apache.commons.collections.CollectionUtils.isEmpty(listeMetas)
             || listeMetas.contains(FORMAT_FICHIER)) {
 
-         LOG
-               .debug(
-                     "{} - La métadonnée FormatFichier n'a pas besoin d'être ajoutée à la liste",
-                     prefixeTrc);
+         LOG.debug(
+               "{} - La métadonnée FormatFichier n'a pas besoin d'être ajoutée à la liste",
+               prefixeTrc);
          metaAjoutee = false;
 
       } else {
 
-         LOG
-               .debug(
-                     "{} - Ajout automatique et temporaire de la métadonnée FormatFichier",
-                     prefixeTrc);
+         LOG.debug(
+               "{} - Ajout automatique et temporaire de la métadonnée FormatFichier",
+               prefixeTrc);
          metaAjoutee = listeMetas.add(FORMAT_FICHIER);
 
       }
@@ -433,22 +434,19 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       }
       if (metaFormatFichier == null) {
          // Erreur technique et non fonctionnelle
-         LOG
-               .debug(
-                     "{} - Levée d'une ConsultationAxisFault : la métadonnée FormatFichier n'a pas été trouvée dans la liste des mtadonnées, alors qu'elle est censée être présente.",
-                     prefixeTrc);
-         throw new ConsultationAxisFault(
-               "Une erreur interne à l'application est survenue.",
-               "ErreurInterne");
+         LOG.debug(
+               "{} - Levée d'une ConsultationAxisFault : la métadonnée FormatFichier n'a pas été trouvée dans la liste des mtadonnées, alors qu'elle est censée être présente.",
+               prefixeTrc);
+         throw new ConsultationAxisFault("ErreurInterne",
+               "Une erreur interne à l'application est survenue.");
       }
 
       // Si besoin, supprime la métadonnée FormatFichier de la liste des
       // métadonnées
       if (supprMetaFmtFic) {
-         LOG
-               .debug(
-                     "{} - Suppression de la métadonnée FormatFichier de la liste des métadonnées.",
-                     prefixeTrc);
+         LOG.debug(
+               "{} - Suppression de la métadonnée FormatFichier de la liste des métadonnées.",
+               prefixeTrc);
          listeMetas.remove(metaFormatFichier);
       }
 

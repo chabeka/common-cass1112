@@ -45,12 +45,12 @@ public class AjoutNoteAxisFault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
-    * @param message
-    *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     */
-   public AjoutNoteAxisFault(String message, String localPart) {
+   public AjoutNoteAxisFault(String localPart, String message) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"));
@@ -67,14 +67,14 @@ public class AjoutNoteAxisFault extends AxisFault {
     * <li><code>prefix</code>:sae</li>
     * </ul>
     * 
-    * @param message
-    *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
+    * @param message
+    *           message de l'exception
     * @param cause
     *           cause de l'exception
     */
-   public AjoutNoteAxisFault(String message, String localPart, Throwable cause) {
+   public AjoutNoteAxisFault(String localPart, String message, Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"), cause);
