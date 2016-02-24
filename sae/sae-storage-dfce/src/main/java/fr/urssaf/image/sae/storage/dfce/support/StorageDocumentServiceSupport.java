@@ -351,11 +351,12 @@ public class StorageDocumentServiceSupport {
          ServiceProvider dfceService, DFCEConnection cnxParams,
          UUIDCriteria uUIDCriteria, Logger log) throws SearchingServiceEx {
 
-      // -- Récupération base dfce
-      Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
-            cnxParams);
-
       try {
+         
+         // -- Récupération base dfce
+         Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
+               cnxParams);
+         
          // -- Traces debug - entrée méthode
          String prefixeTrc = "searchStorageDocumentByUUIDCriteria()";
          log.debug("{} - Début", prefixeTrc);
