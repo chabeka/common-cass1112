@@ -55,13 +55,9 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
-import fr.cirtil.www.saeservice.RestoreMasse;
-import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.StockageUnitaire;
 import fr.cirtil.www.saeservice.StockageUnitaireResponse;
 import fr.cirtil.www.saeservice.Suppression;
-import fr.cirtil.www.saeservice.SuppressionMasse;
-import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
@@ -74,7 +70,6 @@ import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
-import fr.urssaf.image.sae.webservices.exception.RestoreAxisFault;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
 import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
@@ -86,8 +81,6 @@ import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
-import fr.urssaf.image.sae.webservices.service.WSRestoreMasseService;
-import fr.urssaf.image.sae.webservices.service.WSSuppressionMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
@@ -122,12 +115,6 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSCaptureMasseService captureMasse;
-
-   @Autowired
-   private WSSuppressionMasseService suppressionMasse;
-
-   @Autowired
-   private WSRestoreMasseService restoreMasse;
 
    @Autowired
    private WSModificationService modificationService;
@@ -958,78 +945,6 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new GetDocFormatOrigineAxisFault(
                "ErreurInterneGetDocFormatOrigine",
                "Une erreur interne à l'application est survenue lors de la récupération du document au format d'origine.",
-               ex);
-      }
-   }
-
-   @Override
-   public RestoreMasseResponse restoreMasseSecure(RestoreMasse request,
-         String callerIP) throws AxisFault {
-
-      try {
-
-         // Traces debug - entrée méthode
-         String prefixeTrc = "Opération restoreMasseSecure()";
-         LOG.debug("{} - Début", prefixeTrc);
-         // Fin des traces debug - entrée méthode
-
-         // l'opération web service n'interagit pas avec DFCE
-         // il n'est pas nécessaire de vérifier si DFCE est Up
-         RestoreMasseResponse response = restoreMasse.restoreEnMasse(request,
-               callerIP);
-
-         // Traces debug - sortie méthode
-         LOG.debug("{} - Sortie", prefixeTrc);
-         // Fin des traces debug - sortie méthode
-
-         return response;
-
-      } catch (RestoreAxisFault ex) {
-         logSoapFault(ex);
-         throw ex;
-      } catch (AccessDeniedException exception) {
-         throw new SaeAccessDeniedAxisFault(exception);
-      } catch (RuntimeException ex) {
-         logRuntimeException(ex);
-         throw new RestoreAxisFault(
-               "ErreurInterneRestore",
-               "Une erreur interne à l'application est survenue lors de la restore.",
-               ex);
-      }
-
-   }
-
-   @Override
-   public SuppressionMasseResponse suppressionMasseSecure(
-         SuppressionMasse request, String callerIP) throws AxisFault {
-      try {
-
-         // Traces debug - entrée méthode
-         String prefixeTrc = "Opération suppressionMasseSecure()";
-         LOG.debug("{} - Début", prefixeTrc);
-         // Fin des traces debug - entrée méthode
-
-         // l'opération web service n'interagit pas avec DFCE
-         // il n'est pas nécessaire de vérifier si DFCE est Up
-         SuppressionMasseResponse response = suppressionMasse
-               .suppressionEnMasse(request, callerIP);
-
-         // Traces debug - sortie méthode
-         LOG.debug("{} - Sortie", prefixeTrc);
-         // Fin des traces debug - sortie méthode
-
-         return response;
-
-      } catch (SuppressionAxisFault ex) {
-         logSoapFault(ex);
-         throw ex;
-      } catch (AccessDeniedException exception) {
-         throw new SaeAccessDeniedAxisFault(exception);
-      } catch (RuntimeException ex) {
-         logRuntimeException(ex);
-         throw new SuppressionAxisFault(
-               "ErreurInterneSuppression",
-               "Une erreur interne à l'application est survenue lors de la suppression.",
                ex);
       }
    }
