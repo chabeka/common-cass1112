@@ -256,11 +256,11 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
          throw new ConsultationAxisFault(e);
 
       } catch (UnknownDesiredMetadataEx e) {
-         throw new ConsultationAxisFault(e.getMessage(),
-               "ConsultationMetadonneesInexistante", e);
+         throw new ConsultationAxisFault("ConsultationMetadonneesInexistante",
+               e.getMessage(), e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new ConsultationAxisFault(e.getMessage(),
-               "ConsultationMetadonneesNonAutorisees", e);
+         throw new ConsultationAxisFault(
+               "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
       }
 
    }
@@ -306,14 +306,14 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
          throw new ConsultationAxisFault(e);
 
       } catch (UnknownDesiredMetadataEx e) {
-         throw new ConsultationAxisFault(e.getMessage(),
-               "ConsultationMetadonneesInexistante", e);
+         throw new ConsultationAxisFault("ConsultationMetadonneesInexistante",
+               e.getMessage(), e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new ConsultationAxisFault(e.getMessage(),
-               "ConsultationMetadonneesNonAutorisees", e);
+         throw new ConsultationAxisFault(
+               "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
       } catch (SAEConsultationAffichableParametrageException e) {
-         throw new ConsultationAxisFault(e.getMessage(),
-               "ConsultationAffichableParametrageIncorrect", e);
+         throw new ConsultationAxisFault(
+               "ConsultationAffichableParametrageIncorrect", e.getMessage(), e);
       }
 
    }

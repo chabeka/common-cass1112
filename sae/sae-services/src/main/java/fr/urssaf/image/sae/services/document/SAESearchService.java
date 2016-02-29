@@ -111,6 +111,7 @@ public interface SAESearchService {
     *           iterateur précédente
     * @param listeDesiredMetadata
     *           Liste des métadonnées souhaitées en retour de recherche
+    *           du résultat final
     * @return La liste des documents trouvés
     * @throws MetaDataUnauthorizedToSearchEx
     *            Erreur si une méta n'est pas autorisée à la recherche

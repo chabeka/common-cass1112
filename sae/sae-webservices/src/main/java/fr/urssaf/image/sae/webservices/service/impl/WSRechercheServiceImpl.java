@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import static fr.urssaf.image.sae.webservices.service.factory.ObjectRechercheFactory.createRechercheNbResResponse;
+import static fr.urssaf.image.sae.webservices.service.factory.ObjectRechercheFactory.createRechercheParIterateurResponse;
 import static fr.urssaf.image.sae.webservices.service.factory.ObjectRechercheFactory.createRechercheResponse;
 import static org.apache.commons.lang.StringUtils.isEmpty;
 
@@ -246,12 +247,15 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       // On ajoute la métadonnée variable dans la liste des méta désirés, car on
       // a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
       // l'identifiant de la dernière page
+      boolean isMetaVariableAjoute = false;
       if (!listeMetaSouhaitees.contains(untypedRangeMeta.getLongCode())) {
          if (listeMetaSouhaitees.isEmpty()) {
             listeMetaSouhaitees = new ArrayList<String>();
             listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+            isMetaVariableAjoute = true;
          } else {
             listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
+            isMetaVariableAjoute = true;
          }
       }
 
@@ -274,7 +278,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
             lastUuid = lastDoc.getUuid();
          }
 
-         response = createRechercheResponse(listeUDoc);
+         response = createRechercheParIterateurResponse(listeUDoc, isMetaVariableAjoute, untypedRangeMeta.getLongCode());
          // RechercheParIterateurResponseType rechParItRespType = new
          // RechercheParIterateurResponseType();
 

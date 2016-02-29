@@ -71,9 +71,10 @@ public class ConsultationAxisFault extends AxisFault {
     *           message de l'exception
     * @param localPart
     *           localPart du code du SOAPFault
-    * @param cause cause de l'exception
+    * @param cause
+    *           cause de l'exception
     */
-   public ConsultationAxisFault(String message, String localPart,
+   public ConsultationAxisFault(String localPart, String message,
          Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
