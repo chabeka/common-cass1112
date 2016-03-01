@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobParameter;
@@ -53,7 +54,7 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       mapParam.put(Constantes.REQ_LUCENE_SUPPRESSION,
             new JobParameter(reqLucene));
-      mapParam.put(Constantes.ID_TRAITEMENT, new JobParameter(idTraitement
+      mapParam.put(Constantes.ID_TRAITEMENT_SUPPRESSION, new JobParameter(idTraitement
             .toString()));
 
       JobParameters parameters = new JobParameters(mapParam);
@@ -62,10 +63,15 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
       
       try {
          jobExecution = jobLauncher.run(jobSuppression, parameters);
+         
+         if (ExitStatus.COMPLETED.equals(jobExecution.getExitStatus())) {
+            exitTraitement.setExitMessage("Traitement réalisé avec succès");
+            exitTraitement.setSucces(true);
+         } else {
 
-         // TODO : gerer le retour d'execution du job
-         exitTraitement.setExitMessage("Traitement " + TRC_SUPPRESSION + "réalisé avec succès");
-         exitTraitement.setSucces(true);
+            exitTraitement.setExitMessage("Traitement en erreur");
+            exitTraitement.setSucces(false);
+         }
 
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
@@ -76,7 +82,6 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
 
          List<Throwable> listThrowables = new ArrayList<Throwable>();
          listThrowables.add(e);
-         // TODO : voir si cette gestion des exception suffit ou s'il faut faire une verif final
 
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);

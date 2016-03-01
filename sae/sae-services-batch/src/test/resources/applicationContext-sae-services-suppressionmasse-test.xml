@@ -94,23 +94,37 @@
    <bean id="transactionManager"
       class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
       
-   <!-- bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
-      <property name="job" ref="capture_masse" />
-   </bean-->
+   <bean id="suppressionLauncher" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="suppression_masse" />
+   </bean>
    
    
    <!-- Bean pour vérifier les traces -->
-   <bean
+   <!--bean
       id="traceAssertUtils"
-      class="fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils" />
+      class="fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils" /-->
       
    <!-- Import du fichier des fichiers de contexte des autres artéfacts -->
    <import resource="applicationContext-sae-trace.xml" />
+   <import resource="applicationContext-sae-metadata.xml" />
+   <import resource="applicationContext-sae-droit.xml" />
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <context:component-scan base-package="fr.urssaf.image.sae.services.context" />
+   <context:component-scan base-package="fr.urssaf.image.sae.services.document" use-default-filters="false">
+      <context:include-filter type="regex" expression="fr.urssaf.image.sae.services.document.*SearchQueryParser*.*"/>
+   </context:component-scan>
+   <context:component-scan base-package="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption" />
+   <!--Gestion de message à partir d'un fichier -->
+   <bean id="messageSource_sae_services"
+      class="org.springframework.context.support.ResourceBundleMessageSource">
+      <property name="basename" value="i18n.sae_services_messages" />
+   </bean>
 
    <!-- Bean de factory pour les mocks (pour les autres fichiers applicationContext de test) -->
    <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
    
    <!-- Component-scan -->
+   <context:component-scan base-package="fr.urssaf.image.sae.services.batch.common" />
    <context:component-scan base-package="fr.urssaf.image.sae.services.batch.suppression" />
    <context:component-scan base-package="fr.urssaf.image.sae.services.batch.restore.support" />
   

@@ -12,9 +12,25 @@
    
    Il peut être importé tel quel dans les TU. 
    -->
+   
+   <!-- Configuration du pool de suppression des documents dans DFCE -->
+   <bean id="suppressionPoolConfiguration"
+      class="fr.urssaf.image.sae.services.batch.suppression.support.stockage.multithreading.SuppressionPoolConfiguration">
+      <property name="corePoolSize" value="${sae.suppressionmasse.pool.size}" />
+   </bean>
+   
+   
+   <!-- Configuration de l'interruption du traitement -->
+   <bean id="captureMasseConfig"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_capture_masse" />
+      <property name="start" value="${sae.archivagemasse.interruption.heure}" />
+      <property name="delay" value="${sae.archivagemasse.interruption.delai}" />
+      <property name="tentatives"
+         value="${sae.archivagemasse.interruption.tentatives}" />
+   </bean>
 
    <!-- Import du fichier de définition du job de suppression de masse -->
-   <!-- import resource="applicationContext-sae-services-capturemasse-item.xml" /-->
    <import resource="jobs/job-sae-suppression-masse.xml" />   
    
 </beans>

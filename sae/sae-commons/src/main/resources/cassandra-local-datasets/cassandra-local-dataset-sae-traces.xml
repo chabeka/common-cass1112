@@ -130,6 +130,13 @@
                <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
             </column>
          </row>
+         <row>
+            <key>SUPPRESSION_MASSE|KO</key>
+            <column>
+               <name>REG_TECHNIQUE</name>
+               <value>&lt;?xml version=&quot;1.0&quot; ?&gt;&lt;java.util.Arrays_-ArrayList&gt;&lt;a class=&quot;string-array&quot;&gt;&lt;string&gt;all_infos&lt;/string&gt;&lt;/a&gt;&lt;/java.util.Arrays_-ArrayList&gt;</value>
+            </column>
+         </row>
       </columnFamily>
       <columnFamily>
          <name>TraceRegSecurite</name>

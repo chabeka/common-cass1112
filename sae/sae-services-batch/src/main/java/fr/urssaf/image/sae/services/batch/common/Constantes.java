@@ -148,9 +148,44 @@ public final class Constantes {
    public static final String CONTEXTE_CAPTURE_MASSE = "captureMasse";
    
    /**
+    * Liste des erreurs de suppression
+    */
+   public static final String SUPPRESSION_EXCEPTION = "SUPPRESSION_EXCEPTION";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'une suppression de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_SM = "SUPPRESSION_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la suppression de masse
+    */
+   public static final String CONTEXTE_SUPPRESSION_MASSE = "suppressionMasse";
+   
+   /**
     * Requête utilisée par le service de suppression de masse
     */
    public static final String REQ_LUCENE_SUPPRESSION = "requeteSuppression";
+   
+   /**
+    * Requête finale de suppression de masse
+    */
+   public static final String REQ_FINALE_SUPPRESSION = "requeteFinale";
+   
+   /**
+    * UUID du traitement de suppression de masse.
+    */
+   public static final String ID_TRAITEMENT_SUPPRESSION = "idTraitementSuppression";
+   
+   /**
+    * Code court de la métadonnée 'identifiant de suppression de masse'
+    */
+   public static final String CODE_COURT_META_ID_SUPPRESSION = "isi";
+   
+   /**
+    * Code court de la métadonnée 'date de mise en corbeille'
+    */
+   public static final String CODE_COURT_META_DATE_CORBEILLE = "dmc";
 
    /**
     * UUID du traitement de suppression de masse à restorer par le service de

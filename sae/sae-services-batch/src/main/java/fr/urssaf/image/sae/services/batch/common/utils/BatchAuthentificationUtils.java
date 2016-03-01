@@ -33,6 +33,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 public final class BatchAuthentificationUtils {
 
    private static final String ROLE_RECHERCHE = "recherche";
+   
+   private static final String ROLE_RECHERCHE_ITERATEUR = "recherche_iterateur";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(BatchAuthentificationUtils.class);
@@ -89,11 +91,18 @@ public final class BatchAuthentificationUtils {
       if (!lRoles.contains(ROLE_RECHERCHE)) {
          lRoles.add(ROLE_RECHERCHE);
       }
+      // Attention, en suppression de masse et restore de masse
+      // nous avons besoin de faire de la recherche par iterateur
+      // on ajoute les droits si le vi ne l'a pas
+      if (!lRoles.contains(ROLE_RECHERCHE_ITERATEUR)) {
+         lRoles.add(ROLE_RECHERCHE_ITERATEUR);
+      }
 
       String[] roles = new String[lRoles.size()];
       lRoles.toArray(roles);
       viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
-
+      viExtrait.getSaeDroits().put(ROLE_RECHERCHE_ITERATEUR, prmdList);
+      
       token = AuthenticationFactory.createAuthentication(viExtrait
             .getIdUtilisateur(), viExtrait, roles);
 

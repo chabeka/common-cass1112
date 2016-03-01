@@ -2,8 +2,8 @@ package fr.urssaf.image.sae.services.document.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,11 +12,6 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
-import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.util.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -231,9 +226,10 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                "search.notexist.metadata.desired.error",
                FormatUtils.formattingDisplayList(listMetaDesiredErrors)));
       }
-      LOG.debug(
-            "{} - Fin de la vérification : Les métadonnées demandées dans les résultats de recherche existent dans le référentiel des métadonnées",
-            prefixeTrc);
+      LOG
+            .debug(
+                  "{} - Fin de la vérification : Les métadonnées demandées dans les résultats de recherche existent dans le référentiel des métadonnées",
+                  prefixeTrc);
    }
 
    /**
@@ -311,46 +307,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
             prefixeTrc);
    }
 
-   /**
-    * Vérifie rapidement la syntaxe de la requête LUCENE en utilisant un
-    * QueryParser LUCENE
-    * 
-    * @param requete
-    *           : Requête Lucene.
-    * @throws SyntaxLuceneEx
-    *            : Une exception de type {@link SyntaxLuceneEx}
-    */
-   private void verifieSyntaxeLucene(String requete) throws SyntaxLuceneEx {
-
-      // Traces debug - entrée méthode
-      String prefixeTrc = "verifieSyntaxeLucene()";
-      LOG.debug("{} - Début", prefixeTrc);
-      LOG.debug(
-            "{} - Début de la vérification SAE: La requête de recherche est syntaxiquement correcte",
-            prefixeTrc);
-      // Fin des traces debug - entrée méthode
-
-      // Utilise un QueryParser LUCENE pour analyse la requête
-      Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-      QueryParser queryParser = new QueryParser(Version.LUCENE_CURRENT,
-            StringUtils.EMPTY, analyzer);
-      queryParser.setAllowLeadingWildcard(true);
-      try {
-         queryParser.parse(requete);
-      } catch (ParseException except) {
-         LOG.debug("{} - {}", prefixeTrc,
-               ResourceMessagesUtils.loadMessage("search.syntax.lucene.error"));
-         throw new SyntaxLuceneEx(
-               ResourceMessagesUtils.loadMessage("search.syntax.lucene.error"),
-               except);
-      }
-      LOG.debug(
-            "{} - Fin de la vérification SAE: La requête de recherche est syntaxiquement correcte",
-            prefixeTrc);
-
-      LOG.debug("{} - Fin", prefixeTrc);
-
-   }
+   
 
    /**
     * Recupération des codes courts et des codes longs pour la recherche
@@ -553,7 +510,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
       try {
 
          // Vérifie globalement la syntaxe de la requête LUCENE
-         verifieSyntaxeLucene(requeteTrim);
+         SAESearchUtil.verifieSyntaxeLucene(requeteTrim);
          String requeteFinal = requeteTrim;
 
          // Conversion de la requête avec les codes long en code court
@@ -689,7 +646,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                varyingMetadata);
 
          // Vérification de la requête lucène
-         verifieSyntaxeLucene(requeteLucene);
+         SAESearchUtil.verifieSyntaxeLucene(requeteLucene);
 
          // Conversion de la requête avec les codes long en code court
          SAESearchQueryParserResult parserResult = queryParseService
