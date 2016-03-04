@@ -225,6 +225,12 @@ public class DFCEUpdater {
       return isIndexee;
    }
 
+   /**
+    * Methode permettant de verifier qu'une métadonnée est indexée
+    * et que l'index est 'actif'.
+    * @param rowKey nom de la métadonnées
+    * @return boolean indiquant s'il y a quelquechose a faire
+    */
    public boolean isMetaIndexedAndComputed(String rowKey) {
 
       SliceQuery<byte[], String, byte[]> queryDocubase = HFactory

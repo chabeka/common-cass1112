@@ -8,12 +8,19 @@ import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.stereotype.Component;
 
+/**
+ * Tasklet bidon qui sera supprimé lors de l'implementation du service de restore.
+ *
+ */
 @Component
 public class EmptyTasklet implements Tasklet {
    
    private static final Logger LOGGER = LoggerFactory
          .getLogger(EmptyTasklet.class);
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {

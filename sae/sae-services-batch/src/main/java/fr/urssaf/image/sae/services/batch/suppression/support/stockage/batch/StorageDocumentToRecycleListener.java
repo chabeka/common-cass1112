@@ -18,6 +18,10 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.suppression.support.stockage.exception.SuppressionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.suppression.support.stockage.multithreading.SuppressionPoolThreadExecutor;
 
+/**
+ * Listener permettant de vérifier le step de mise à la corbeille.
+ * 
+ */
 @Component
 public class StorageDocumentToRecycleListener {
    
