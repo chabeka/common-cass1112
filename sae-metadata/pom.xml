@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>16.4.0.2-SNAPSHOT</version>
+      <version>16.4.0.2</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-metadata</artifactId>
-   <version>16.4.0.2-SNAPSHOT</version>
+   <version>16.4.0.2</version>
 
    <name>sae-metadata</name>
 
@@ -20,22 +20,22 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>16.4.0.2-SNAPSHOT</version>
+         <version>16.4.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>16.4.0.2-SNAPSHOT</version>
+         <version>16.4.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>16.4.0.2-SNAPSHOT</version>
+         <version>16.4.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>16.4.0.2-SNAPSHOT</version>
+         <version>16.4.0.2</version>
       </dependency>
       
       <!-- Commons -->

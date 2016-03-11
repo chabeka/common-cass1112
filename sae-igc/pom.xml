@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>16.4.0.2-SNAPSHOT</version>
+      <version>16.4.0.2</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-igc</artifactId>
-   <version>16.4.0.2-SNAPSHOT</version>
+   <version>16.4.0.2</version>
 
    <name>sae-igc</name>
 
@@ -32,7 +32,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>16.4.0.2-SNAPSHOT</version>
+         <version>16.4.0.2</version>
       </dependency>
 
       <!-- APACHE COMMONS -->
