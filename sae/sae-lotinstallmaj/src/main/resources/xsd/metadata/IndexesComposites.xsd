@@ -15,9 +15,10 @@
 			<!-- codes courts meta avec separateur ':' -->
 			<xs:element name="composition" type="xs:string"/>
 			
-			<xs:element name="aCreer" type="xs:string"/>
-         
-            <xs:element name="aIndexerVide" type="xs:string"/>
+			<xs:element name="aCreerGNT" type="xs:string"/>
+			<xs:element name="aCreerGNS" type="xs:string"/>
+			
+			<xs:element name="aIndexerVide" type="xs:string"/>
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

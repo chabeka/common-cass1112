@@ -26,61 +26,68 @@ public class RefMetaInitialisationServiceTest {
    private RefMetaInitialisationService refMetaService;
 
    @Test
-   public void chargeFichierMeta_test() throws JAXBException, SAXException, IOException {
+   public void chargeFichierMeta_test() throws JAXBException, SAXException,
+         IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
-      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect", 141,
-            metadonnees.size());
+      Assert.assertEquals("Le nombre de métadonnées attendu est incorrect",
+            141, metadonnees.size());
    }
 
    @Test
-   public void genereFichierXmlAncienneVersion_test() throws JAXBException, SAXException, IOException {
+   public void genereFichierXmlAncienneVersion_test() throws JAXBException,
+         SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionRefMeta(metadonnees);
-       
-//       try {
-//          //-- Ecriture dans un fichier temporaire, pour mieux visualiser
-//          File fileTemp = new File("c:/divers/refmeta_verif1.xml");
-//          FileUtils.writeLines(fileTemp, lignes);
-//       } catch (IOException e) {
-//          throw new MajLotRuntimeException(e);
-//       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2259, lignes.size());
+      // try {
+      // //-- Ecriture dans un fichier temporaire, pour mieux visualiser
+      // File fileTemp = new File("c:/divers/refmeta_verif1.xml");
+      // FileUtils.writeLines(fileTemp, lignes);
+      // } catch (IOException e) {
+      // throw new MajLotRuntimeException(e);
+      // }
+
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2259,
+            lignes.size());
    }
 
    @Test
-   public void verification1_test() throws JAXBException, SAXException, IOException {
+   public void verification1_test() throws JAXBException, SAXException,
+         IOException {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
       refMetaService.verification1(metadonnees);
    }
 
    @Test
-   public void genereFichierXmlAncienneVersionBaseDfce_test() throws JAXBException, SAXException, IOException {
+   public void genereFichierXmlAncienneVersionBaseDfce_test()
+         throws JAXBException, SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       List<String> lignes = refMetaService
             .genereFichierXmlAncienneVersionBaseDfce(metadonnees);
-       
-//       try {
-//          //-- Ecriture dans un fichier temporaire, pour mieux visualiser
-//          File fileTemp = new File("c:/divers/refmeta_verif2.xml");
-//          FileUtils.writeLines(fileTemp, lignes);
-//       } catch (IOException e) {
-//          throw new MajLotRuntimeException(e);
-//       }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1217, lignes.size());
+      // try {
+      // //-- Ecriture dans un fichier temporaire, pour mieux visualiser
+      // File fileTemp = new File("c:/divers/refmeta_verif2.xml");
+      // FileUtils.writeLines(fileTemp, lignes);
+      // } catch (IOException e) {
+      // throw new MajLotRuntimeException(e);
+      // }
+
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1217,
+            lignes.size());
 
    }
 
    @Test
-   public void verification2_test() throws JAXBException, SAXException, IOException {
+   public void verification2_test() throws JAXBException, SAXException,
+         IOException {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
       refMetaService.verification2(metadonnees);
    }
@@ -91,21 +98,23 @@ public class RefMetaInitialisationServiceTest {
     * Il s'agit de générer le dataset du Cassandra local à partir du fichier des
     * métadonnées utilisé par RefMetaInitialisationService. Et ceci afin
     * d'éviter les erreurs de saisie !
-    * @throws IOException 
-    * @throws SAXException 
-    * @throws JAXBException 
+    * 
+    * @throws IOException
+    * @throws SAXException
+    * @throws JAXBException
     */
    @Test
-   //@Ignore("Ceci n'est pas un vrai TU")
-   public void genereDatasetCassandraLocal() throws JAXBException, SAXException, IOException {
+   // @Ignore("Ceci n'est pas un vrai TU")
+   public void genereDatasetCassandraLocal() throws JAXBException,
+         SAXException, IOException {
 
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
       List<String> dataSet = new ArrayList<String>();
 
       for (MetadataReference metadonnee : metadonnees) {
          dataSet.add("         <row>");
-         dataSet.add(String.format("            <key>%s</key>", metadonnee
-               .getLongCode()));
+         dataSet.add(String.format("            <key>%s</key>",
+               metadonnee.getLongCode()));
          dataSet.add("            <column>");
          dataSet.add("               <name>sCode</name>");
          dataSet.add(String.format("               <value>%s</value>",
@@ -197,36 +206,52 @@ public class RefMetaInitialisationServiceTest {
          dataSet.add("");
       }
 
-//      // Ecriture dans un fichier temporaire, pour mieux visualiser
-//      try {
-//         File fileTemp = new File("c:/divers/bout-de-dataset-metadata.xml");
-//         FileUtils.writeLines(fileTemp, dataSet);
-//      } catch (IOException e) {
-//         throw new MajLotRuntimeException(e);
-//      }
+      // // Ecriture dans un fichier temporaire, pour mieux visualiser
+      // try {
+      // File fileTemp = new File("c:/divers/bout-de-dataset-metadata.xml");
+      // FileUtils.writeLines(fileTemp, dataSet);
+      // } catch (IOException e) {
+      // throw new MajLotRuntimeException(e);
+      // }
 
    }
-   
+
    @Test
-   public void chargerFichierIdxCompositesTest() throws IOException, JAXBException, SAXException{
+   public void chargerFichierIdxCompositesTest() throws IOException,
+         JAXBException, SAXException {
       String message = "";
-      
-      Map<String[], String> indexes = refMetaService.chargerFichierIdxComposites(true);  
-      
-      //-- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes attendu (fichier v3.3) est incorrect";
-      Assert.assertEquals(message, 21, indexes.size());
+
+      Map<String[], String> indexes = refMetaService
+            .chargerFichierIdxCompositesGNS(true);
+
+      // -- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.5) est incorrect";
+      Assert.assertEquals(message, 26, indexes.size());
+
+      indexes = refMetaService.chargerFichierIdxCompositesGNT(true);
+
+      // -- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
+      Assert.assertEquals(message, 28, indexes.size());
    }
-   
+
    @Test
-   public void chargerFichierIdxCompositesASupprimerTest() throws IOException, JAXBException, SAXException{
+   public void chargerFichierIdxCompositesASupprimerTest() throws IOException,
+         JAXBException, SAXException {
       String message = "";
-      
-      Map<String[], String> indexes = refMetaService.chargerFichierIdxComposites(false);  
-      
-      //-- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes attendu (fichier v3.4) est incorrect";
-      Assert.assertEquals(message, 10, indexes.size());
+
+      Map<String[], String> indexes = refMetaService
+            .chargerFichierIdxCompositesGNS(false);
+
+      // -- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.5) est incorrect";
+      Assert.assertEquals(message, 5, indexes.size());
+
+      indexes = refMetaService.chargerFichierIdxCompositesGNT(false);
+
+      // -- Test version du fichiers des indexes composites
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
+      Assert.assertEquals(message, 3, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

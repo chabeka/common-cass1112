@@ -59,7 +59,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_151201 = "CASSANDRA_DFCE_151201";
    public static final String CASSANDRA_DFCE_160300 = "CASSANDRA_DFCE_160300";
    public static final String CASSANDRA_DFCE_160400 = "CASSANDRA_DFCE_160400";
-   public static final String CASSANDRA_DFCE_160600 = "CASSANDRA_DFCE_160600";
+   public static final String GNS_CASSANDRA_DFCE_160600 = "GNS_CASSANDRA_DFCE_160600";
+   public static final String GNT_CASSANDRA_DFCE_160600 = "GNT_CASSANDRA_DFCE_160600";
 
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -75,10 +76,15 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_151001 = "CASSANDRA_DFCE_151001";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
    public static final String CREATION_GED = "CREATION_GED";
-   public static final String DISABLE_COMPOSITE_INDEX = "DISABLE_COMPOSITE_INDEX";
+   public static final String GNS_DISABLE_COMPOSITE_INDEX = "GNS_DISABLE_COMPOSITE_INDEX";
+   public static final String GNT_DISABLE_COMPOSITE_INDEX = "GNT_DISABLE_COMPOSITE_INDEX";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
+
+   public static enum GED_CONCERNEE {
+      GNS, GNT;
+   }
 
    private final ServiceProvider serviceProvider = ServiceProvider
          .newServiceProvider();
@@ -181,9 +187,13 @@ public final class MajLotServiceImpl implements MajLotService {
 
          updateDFCE150400_P5();
 
-      } else if (DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
+      } else if (GNS_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
 
-         disableCompositeIndex();
+         disableCompositeIndex(GED_CONCERNEE.GNS);
+
+      } else if (GNT_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
+
+         disableCompositeIndex(GED_CONCERNEE.GNT);
 
       } else if (CASSANDRA_DFCE_150600.equalsIgnoreCase(nomOperation)) {
          // -- Mise à jour cassandra
@@ -195,7 +205,11 @@ public final class MajLotServiceImpl implements MajLotService {
          // -- Mise à jour cassandra
          updateCassandra150601();
          // -- Creation des index composite dans DFCE
-         addIndexesCompositeToDfce("DFCE_150601");
+         // addIndexesCompositeToDfce("DFCE_150601");
+         // 160600 :Mise en commentaire car si on créé une base du départ, les
+         // index
+         // composite seront créés à partir de la nouvelle méthode différenciant
+         // GNT et GNS
 
       } else if (DFCE_151000.equalsIgnoreCase(nomOperation)) {
          updateDFCE151000();
@@ -219,16 +233,31 @@ public final class MajLotServiceImpl implements MajLotService {
          // Pas de modif côté DFCE donc pas d'appel updateMetaDfce
       } else if (CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation)) {
          updateCassandra160300();
-         addIndexesCompositeToDfce("META_160300");
+         // addIndexesCompositeToDfce("META_160300");
+         // 160600 : Mise en commentaire car si on créé une base du départ, les
+         // index
+         // composite seront créés à partir de la nouvelle méthode différenciant
+         // GNT et GNS
+
       } else if (CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation)) {
          updateCassandra160400();
          updateMetaDfce("META_160400");
          // Indexation du numeroIdArchivage
          updateDFCE160400();
-      } else if (CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
+      } else if (GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
-         // Pas de nouvelles méta pour le moment
+         // Pas de nouvelles méta pour le moment (à décommenter si ajout de
+         // nouvelles méta)
          // updateMetaDfce("META_160600");
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
+      } else if (GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160600();
+         // Pas de nouvelles méta pour le moment (à décommenter si ajout de
+         // nouvelles méta)
+         // updateMetaDfce("META_160600");
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
 
@@ -619,6 +648,10 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Fin de l'opération : ajout des métadonnées au document");
    }
 
+   // ATTENTION, depuis la version 160600, afin de différencier GNT/GNS, cette
+   // méthode ne gère que les méta DFCE et plus les indexes composite
+   // Pour ajouter les indexes composites il faut utiliser
+   // addIndexesCompositeToDfce
    private void updateMetaDfce(String operation) {
 
       // -- Récupération de la liste des métadonnées
@@ -633,27 +666,29 @@ public final class MajLotServiceImpl implements MajLotService {
       // -- Mise à jour des métas
       updateBaseDfce(service.genereMetaBaseDfce(metadonnees));
 
-      // -- Crétion des indexes composites (Si ils n'existent pas déjà)
-      createIndexesCompositeIfNotExist(service.getIndexesComposites());
-      
       LOG.info("Fin de l'opération : Création des nouvelles métadonnées ({})",
             operation);
    }
 
-   private void addIndexesCompositeToDfce(String operation) {
+   private void addIndexesCompositeToDfce(String operation,
+         GED_CONCERNEE gedConcernee) {
+
       // -- Récupération de la liste des métadonnées
-      LOG.debug("Lecture du fichier XML contenant les index composites à ajouter - Début");
+      LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
       RefMetaInitialisationService service = updater.getRefMetaInitService();
 
       LOG.info(
-            "Début de l'opération : Création des nouveaux index composites ({})",
+            "Début de l'opération : Création des nouveaux index composite ({})",
             operation);
-
-      // -- Création des indexes composites
-      createIndexesCompositeIfNotExist(service.getIndexesComposites());
+      // -- Crétion des indexes composites (Si ils n'existent pas déjà)
+      if (gedConcernee.equals(GED_CONCERNEE.GNS)) {
+         createIndexesCompositeIfNotExist(service.getIndexesCompositesGNS());
+      } else if (gedConcernee.equals(GED_CONCERNEE.GNT)) {
+         createIndexesCompositeIfNotExist(service.getIndexesCompositesGNT());
+      }
 
       LOG.info(
-            "Fin de l'opération : Création des nouveaux index composites ({})",
+            "Fin de l'opération : Création des nouveaux index composite ({})",
             operation);
    }
 
@@ -909,13 +944,31 @@ public final class MajLotServiceImpl implements MajLotService {
     * le bon index composite (JIRA-154). Pour pallier temporaire ce probleme,
     * nous allons supprimer cette index composite de docubase.
     */
-   private void disableCompositeIndex() {
+
+   // private void disableCompositeIndex() {
+   //
+   // RefMetaInitialisationService service = updater.getRefMetaInitService();
+   // LOG.info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+   // DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
+   // dfceUpdater.disableCompositeIndex(service
+   // .getIndexesCompositesASupprimer());
+   // LOG.info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
+   // }
+
+   private void disableCompositeIndex(GED_CONCERNEE gedConcernee) {
 
       RefMetaInitialisationService service = updater.getRefMetaInitService();
       LOG.info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
       DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
-      dfceUpdater.disableCompositeIndex(service
-            .getIndexesCompositesASupprimer());
+
+      if (GED_CONCERNEE.GNS.equals(gedConcernee)) {
+         dfceUpdater.disableCompositeIndex(service
+               .getIndexesCompositesASupprimerGNS());
+      } else if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
+         dfceUpdater.disableCompositeIndex(service
+               .getIndexesCompositesASupprimerGNT());
+      }
+
       LOG.info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
    }
 
@@ -933,18 +986,17 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Pour lot 160400 du SAE : 
-    * Indexation du numeroIdArchivage
+    * Pour lot 160400 du SAE : Indexation du numeroIdArchivage
     */
    private void updateDFCE160400() {
 
       LOG.info("Début de l'opération : Lot 160400 - Indexation du numeroIdArchivage");
       // Indexation de numeroIdArchivage
       DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
-      dfceUpdater.indexeAVideIndexSimple("nid", dfceConfig.getBaseName() );
+      dfceUpdater.indexeAVideIndexSimple("nid", dfceConfig.getBaseName());
       LOG.info("Fin de l'opération : Lot 160400 - Indexation du numeroIdArchivage");
    }
-   
+
    /**
     * Création de la base GED
     */

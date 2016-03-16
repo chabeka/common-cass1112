@@ -157,7 +157,9 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.DFCE_150400_P5.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNS_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.GNT_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.CASSANDRA_DFCE_150600.equalsIgnoreCase(nomOperation))
          return;
@@ -177,8 +179,11 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation))
+         return;
+
       
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)

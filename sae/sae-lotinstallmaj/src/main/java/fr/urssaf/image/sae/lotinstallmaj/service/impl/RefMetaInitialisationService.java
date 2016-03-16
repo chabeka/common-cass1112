@@ -46,6 +46,13 @@ import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 @Service
 public final class RefMetaInitialisationService {
 
+   private static final String XSD_METADONNEES = "/xsd/metadata/Metadonnees.xsd";
+   private static final String XSD_INDEXES_COMPOSITES = "/xsd/metadata/IndexesComposites.xsd";
+
+   // A MODIFIER LORS DES EVOLUTIONS DE FICHIERS !!
+   private static final String FICHIER_METADONNEES = "Metadonnees.3.4.xml";
+   private static final String NOM_FICHIER_INDEX_COMPOSITE = "IndexesComposites3.5.xml";
+
    private static final Logger LOG = LoggerFactory
          .getLogger(RefMetaInitialisationService.class);
    
@@ -78,16 +85,16 @@ public final class RefMetaInitialisationService {
    
    /**
     * Récupération après chargement du fichier,
-    * de la liste des métadonnées
+    * de la liste des index composite pour la GNT
     * 
-    * @return : La liste des métadonnées
+    * @return : La liste des index composite pour la GNT
     */
-   public Map<String[], String> getIndexesComposites(){
+   public Map<String[], String> getIndexesCompositesGNT(){
       if(indexesComposites == null){
          try {
             //-- Lecture du fichier XML, et remplissage 
             // d'une liste d'objets métadonnées
-            indexesComposites = chargerFichierIdxComposites(true);
+            indexesComposites = chargerFichierIdxCompositesGNT(true);
          } catch (JAXBException e) {
             throw new MajLotRuntimeException(e);
          } catch (SAXException e) {
@@ -101,16 +108,39 @@ public final class RefMetaInitialisationService {
    
    /**
     * Récupération après chargement du fichier,
-    * de la liste des métadonnées
+    * de la liste des index composite pour la GNS
     * 
-    * @return : La liste des métadonnées
+    * @return : La liste des index composite pour la GNS
     */
-   public Map<String[], String> getIndexesCompositesASupprimer() {
+   public Map<String[], String> getIndexesCompositesGNS(){
+      if(indexesComposites == null){
+         try {
+            //-- Lecture du fichier XML, et remplissage 
+            // d'une liste d'objets métadonnées
+            indexesComposites = chargerFichierIdxCompositesGNS(true);
+         } catch (JAXBException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (SAXException e) {
+            throw new MajLotRuntimeException(e);
+         } catch (IOException e) {
+            throw new MajLotRuntimeException(e);
+         }
+      }
+      return indexesComposites;
+   }
+   
+   /**
+    * Récupération après chargement du fichier,
+    * de la liste des index composite à supprimer de la GNT
+    * 
+    * @return : La liste des index composite à supprimer de la GNT
+    */
+   public Map<String[], String> getIndexesCompositesASupprimerGNT() {
       Map<String[], String> indexASupprimer;
       try {
          //-- Lecture du fichier XML, et remplissage 
          // d'une liste d'objets métadonnées
-         indexASupprimer = chargerFichierIdxComposites(false);
+         indexASupprimer = chargerFichierIdxCompositesGNT(false);
       } catch (JAXBException e) {
          throw new MajLotRuntimeException(e);
       } catch (SAXException e) {
@@ -121,6 +151,30 @@ public final class RefMetaInitialisationService {
       return indexASupprimer;
    }
 
+   
+   /**
+    * Récupération après chargement du fichier,
+    * de la liste des index composite à supprimer de la GNS
+    * 
+    * @return : La liste des index composite à supprimer de la GNT
+    */
+   public Map<String[], String> getIndexesCompositesASupprimerGNS() {
+      Map<String[], String> indexASupprimer;
+      try {
+         //-- Lecture du fichier XML, et remplissage 
+         // d'une liste d'objets métadonnées
+         indexASupprimer = chargerFichierIdxCompositesGNS(false);
+       } catch (JAXBException e) {
+         throw new MajLotRuntimeException(e);
+      } catch (SAXException e) {
+         throw new MajLotRuntimeException(e);
+      } catch (IOException e) {
+         throw new MajLotRuntimeException(e);
+      }
+      return indexASupprimer;
+   }
+   
+   
    /**
     * Initialisation du référentiel des métadonnées en version 3.3 
     * 
@@ -144,15 +198,13 @@ public final class RefMetaInitialisationService {
       LOG.info("Fin de l'initialisation du nouveau référentiel des métadonnées");
    }
    
-   protected Map<String[], String> chargerFichierIdxComposites(boolean aCreer) throws IOException, JAXBException, SAXException  {
+   protected Map<String[], String> chargerFichierIdxCompositesGNT(boolean aCreer) throws IOException, JAXBException, SAXException  {
       
-      String cheminRessourceXml = "IndexesComposites3.4.xml";
-      String xsdResPath = "/xsd/metadata/IndexesComposites.xsd";
-      
-      ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
+     
+      ClassPathResource ressourceXml = new ClassPathResource(NOM_FICHIER_INDEX_COMPOSITE);
       InputStream xmlStream = ressourceXml.getInputStream();
 
-      ClassPathResource ressourceXsd = new ClassPathResource(xsdResPath);
+      ClassPathResource ressourceXsd = new ClassPathResource(XSD_INDEXES_COMPOSITES);
       IndexesComposites ref = XmlUtils.unmarshalStream(IndexesComposites.class, xmlStream, ressourceXsd);
       
       List<IndexReference> indexes = ref.getIndexReference();
@@ -163,7 +215,35 @@ public final class RefMetaInitialisationService {
          IndexReference indexXml = indexes.get(i);
          
          //-- On ignore les indexes qui ne sont pas "aCreer"
-         if(readBoolean(indexXml.getACreer()) != aCreer) {
+         if(readBoolean(indexXml.getACreerGNT()) != aCreer) {
+            continue;
+         }
+         
+         String composition = indexXml.getComposition();
+         String[] metasList = readString(composition).split(":");
+         String aIndexerVide = indexXml.getAIndexerVide();
+         indexesAcreer.put(metasList, aIndexerVide);
+      }
+      return indexesAcreer;
+   }
+   
+   protected Map<String[], String> chargerFichierIdxCompositesGNS(boolean aCreer) throws IOException, JAXBException, SAXException  {
+      
+      ClassPathResource ressourceXml = new ClassPathResource(NOM_FICHIER_INDEX_COMPOSITE);
+      InputStream xmlStream = ressourceXml.getInputStream();
+
+      ClassPathResource ressourceXsd = new ClassPathResource(XSD_INDEXES_COMPOSITES);
+      IndexesComposites ref = XmlUtils.unmarshalStream(IndexesComposites.class, xmlStream, ressourceXsd);
+      
+      List<IndexReference> indexes = ref.getIndexReference();
+      
+      Map<String[], String> indexesAcreer = new HashMap<String[], String>();
+      
+      for (int i = 0; i < indexes.size(); i++) {
+         IndexReference indexXml = indexes.get(i);
+         
+         //-- On ignore les indexes qui ne sont pas "aCreer"
+         if(readBoolean(indexXml.getACreerGNS()) != aCreer) {
             continue;
          }
          
@@ -177,13 +257,11 @@ public final class RefMetaInitialisationService {
    
    protected List<MetadataReference> chargeFichierMeta() throws JAXBException, SAXException, IOException {
       
-      String cheminRessourceXml = "Metadonnees.3.4.xml";
-      String xsdResPath = "/xsd/metadata/Metadonnees.xsd";
-      
-      ClassPathResource ressourceXml = new ClassPathResource(cheminRessourceXml);
+          
+      ClassPathResource ressourceXml = new ClassPathResource(FICHIER_METADONNEES);
       InputStream xmlStream = ressourceXml.getInputStream();
 
-      ClassPathResource ressourceXsd = new ClassPathResource(xsdResPath);
+      ClassPathResource ressourceXsd = new ClassPathResource(XSD_METADONNEES);
       ReferentielMeta ref = XmlUtils.unmarshalStream(ReferentielMeta.class, xmlStream, ressourceXsd);
       List<MetaReference> metas = ref.getMetaReference();
       
