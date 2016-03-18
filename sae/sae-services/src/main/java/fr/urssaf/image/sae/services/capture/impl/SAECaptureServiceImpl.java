@@ -408,7 +408,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       try {
          serviceProvider.openConnexion();
 
-         // 160600 : dÈsactivation de ce contrÙle qui est fait plus bas nivrau 
+         // 160600 : d√©sactivation de ce contr√¥le qui est fait plus bas niveau 
          // pour tester aussi la capture de masse
          // -- Controle sur la m√©ta IdGed
          // checkDocumentUuid(null, metadatas);
