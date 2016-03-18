@@ -145,26 +145,26 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
          try {
 
-            ConsultParams params = new ConsultParams(consultParams
-                  .getIdArchive(), new ArrayList<String>(referenceDAO
-                  .getAllMetadataReferences().keySet()));
-
-            // On récupère la liste de toutes les méta du référentiel
-            List<StorageMetadata> allMeta = manageMetaData(params);
-
             // Liste des métadonnées à consulter
             List<String> metadatas = manageMetaDataNames(consultParams);
 
             LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
                   prefixeTrc, buildMessageFromList(metadatas));
 
+            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+            Map<String, MetadataReference> listeAllMeta = referenceDAO
+                  .getAllMetadataReferences();
+            for (String mapKey : listeAllMeta.keySet()) {
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
+            }
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
             // On récupère le document à partir de l'UUID, avec toutes les
             // métadonnées du référentiel
             StorageDocument storageDocument = this.getStorageServiceProvider()
-                  .getStorageDocumentService().retrieveStorageDocumentByUUID(
-                        uuidCriteria);
+                  .getStorageDocumentService()
+                  .retrieveStorageDocumentByUUID(uuidCriteria);
 
             UntypedDocument untypedDocument = null;
 
@@ -179,8 +179,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                List<SaePrmd> saePrmds = token.getSaeDroits()
                      .get("consultation");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
-               boolean isPermitted = prmdService.isPermitted(untypedDocument
-                     .getUMetadatas(), saePrmds);
+               boolean isPermitted = prmdService.isPermitted(
+                     untypedDocument.getUMetadatas(), saePrmds);
 
                if (!isPermitted) {
                   throw new AccessDeniedException(
@@ -222,7 +222,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       }
    }
 
-
    /**
     * {@inheritDoc}
     */
@@ -245,11 +244,13 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
          try {
 
-            ConsultParams params = new ConsultParams(consultParams
-                  .getIdArchive(), new ArrayList<String>(referenceDAO
-                  .getAllMetadataReferences().keySet()));
-
-            List<StorageMetadata> allMeta = manageMetaData(params);
+            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+            Map<String, MetadataReference> listeAllMeta = referenceDAO
+                  .getAllMetadataReferences();
+            for (String mapKey : listeAllMeta.keySet()) {
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
+            }
 
             List<String> metadatas = manageMetaDataNames(consultParams);
 
@@ -261,8 +262,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
             // On récupère le document à partir de l'UUID, avec toutes les
             // métadonnées du référentiel
             StorageDocument storageDocument = this.getStorageServiceProvider()
-                  .getStorageDocumentService().retrieveStorageDocumentByUUID(
-                        uuidCriteria);
+                  .getStorageDocumentService()
+                  .retrieveStorageDocumentByUUID(uuidCriteria);
 
             UntypedDocument untypedDocument = null;
 
@@ -276,8 +277,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                List<SaePrmd> saePrmds = token.getSaeDroits()
                      .get("consultation");
                LOG.debug("{} - Vérification des droits", prefixeTrc);
-               boolean isPermitted = prmdService.isPermitted(untypedDocument
-                     .getUMetadatas(), saePrmds);
+               boolean isPermitted = prmdService.isPermitted(
+                     untypedDocument.getUMetadatas(), saePrmds);
 
                if (!isPermitted) {
                   throw new AccessDeniedException(
@@ -341,8 +342,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
          } catch (UnknownFormatException ex) {
             throw new SAEConsultationServiceException(ex);
          } catch (ConversionParametrageException ex) {
-            throw new SAEConsultationAffichableParametrageException(ex
-                  .getMessage(), ex);
+            throw new SAEConsultationAffichableParametrageException(
+                  ex.getMessage(), ex);
          } catch (ConversionRuntimeException ex) {
             throw new SAEConsultationServiceException(ex);
          }
@@ -410,8 +411,8 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 
          } catch (LongCodeNotFoundException longExcept) {
             String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante", StringUtils.join(
-                        longExcept.getListCode(), SEPARATOR_STRING));
+                  "consultation.metadonnees.inexistante",
+                  StringUtils.join(longExcept.getListCode(), SEPARATOR_STRING));
             throw new UnknownDesiredMetadataEx(message, longExcept);
          }
 
@@ -430,71 +431,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       }
 
       return keyList;
-   }
-
-   /**
-    * Retourne la liste des metadatas à renvoyer en fonction de celles stockées
-    * dans l'objet de paramétrage
-    * 
-    * @param consultParams
-    *           paramètres de consultation
-    * @return la liste des metadatas à consulter
-    * @throws UnknownDesiredMetadataEx
-    *            levée lorsque la metadata paramétrée n'existe pas
-    * @throws ReferentialException
-    *            levée lorsqu'au moins une metadata n'existe pas
-    * @throws MetaDataUnauthorizedToConsultEx
-    *            levée lorsqu'au moins une metadata n'est pas consultable
-    */
-   private List<StorageMetadata> manageMetaData(ConsultParams consultParams)
-         throws UnknownDesiredMetadataEx, ReferentialException,
-         MetaDataUnauthorizedToConsultEx {
-
-      List<StorageMetadata> metadatas = new ArrayList<StorageMetadata>();
-
-      List<String> keyList = new ArrayList<String>();
-
-      if (CollectionUtils.isEmpty(consultParams.getMetadonnees())) {
-
-         Map<String, MetadataReference> map = this.referenceDAO
-               .getDefaultConsultableMetadataReferences();
-
-         for (MetadataReference metaRef : map.values()) {
-            keyList.add(metaRef.getShortCode());
-         }
-
-      } else {
-
-         try {
-            controlService.controlLongCodeExist(consultParams.getMetadonnees());
-
-         } catch (LongCodeNotFoundException longExcept) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante", StringUtils.join(
-                        longExcept.getListCode(), SEPARATOR_STRING));
-            throw new UnknownDesiredMetadataEx(message, longExcept);
-         }
-
-         Map<String, String> mapShortCode = null;
-         try {
-            mapShortCode = convertService.longCodeToShortCode(consultParams
-                  .getMetadonnees());
-         } catch (LongCodeNotFoundException longExcept) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante", StringUtils.join(
-                        longExcept.getListCode(), SEPARATOR_STRING));
-            throw new UnknownDesiredMetadataEx(message, longExcept);
-         }
-
-         keyList.addAll(mapShortCode.keySet());
-
-      }
-
-      for (String shortCode : keyList) {
-         metadatas.add(new StorageMetadata(shortCode));
-      }
-
-      return metadatas;
    }
 
    /**

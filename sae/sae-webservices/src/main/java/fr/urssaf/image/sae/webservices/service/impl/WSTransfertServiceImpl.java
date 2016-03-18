@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.Transfert;
@@ -30,7 +31,7 @@ import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 public class WSTransfertServiceImpl implements WSTransfertService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(WSTransfertServiceImpl.class);
-   
+
    /**
     * Service permettant de réaliser le transfert du document
     */
@@ -54,11 +55,16 @@ public class WSTransfertServiceImpl implements WSTransfertService {
       } catch (ArchiveInexistanteEx e) {
          throw new TransfertAxisFault("ArchiveNonTrouvee", e.getMessage(), e);
       } catch (ArchiveAlreadyTransferedException e) {
-         throw new TransfertAxisFault("ArchiveDejaTransferee", e.getMessage(), e);
+         throw new TransfertAxisFault("ArchiveDejaTransferee", e.getMessage(),
+               e);
       } catch (TransfertException e) {
-         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(), e);
+         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(),
+               e);
+      } catch (AccessDeniedException e) {
+         throw e;
       } catch (Exception e) {
-         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(), e);
+         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(),
+               e);
       }
 
       TransfertResponseType responseType = new TransfertResponseType();

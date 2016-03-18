@@ -90,10 +90,13 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          getStorageServiceProvider().openConnexion();
 
          // On récupère la liste de toutes les méta du référentiel
-         ConsultParams params = new ConsultParams(docUuid,
-               new ArrayList<String>(referenceDAO.getAllMetadataReferences()
-                     .keySet()));
-         List<StorageMetadata> allMeta = manageMetaData(params);
+         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         Map<String, MetadataReference> listeAllMeta = referenceDAO
+               .getAllMetadataReferences();
+         for (String mapKey : listeAllMeta.keySet()) {
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                  .getShortCode()));
+         }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
@@ -141,12 +144,6 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
       } catch (RetrievalServiceEx e) {
          throw new SAEDocumentNoteException(
                "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (UnknownDesiredMetadataEx e) {
-         throw new SAEDocumentNoteException(
-               "Une erreur a eu lieu lors de l'ajout d'une note", e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new SAEDocumentNoteException(
-               "Une erreur a eu lieu lors de l'ajout d'une note", e);
       } catch (InvalidSAETypeException e) {
          throw new SAEDocumentNoteException(
                "Une erreur a eu lieu lors de l'ajout d'une note", e);
@@ -180,71 +177,6 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
       return getStorageServiceProvider().getStorageDocumentService()
             .getDocumentsNotes(docUuid);
 
-   }
-
-   /**
-    * Retourne la liste des metadatas à renvoyer en fonction de celles stockées
-    * dans l'objet de paramétrage
-    * 
-    * @param consultParams
-    *           paramètres de consultation
-    * @return la liste des metadatas à consulter
-    * @throws UnknownDesiredMetadataEx
-    *            levée lorsque la metadata paramétrée n'existe pas
-    * @throws ReferentialException
-    *            levée lorsqu'au moins une metadata n'existe pas
-    * @throws MetaDataUnauthorizedToConsultEx
-    *            levée lorsqu'au moins une metadata n'est pas consultable
-    */
-   private List<StorageMetadata> manageMetaData(ConsultParams consultParams)
-         throws UnknownDesiredMetadataEx, ReferentialException,
-         MetaDataUnauthorizedToConsultEx {
-
-      List<StorageMetadata> metadatas = new ArrayList<StorageMetadata>();
-
-      List<String> keyList = new ArrayList<String>();
-
-      if (CollectionUtils.isEmpty(consultParams.getMetadonnees())) {
-
-         Map<String, MetadataReference> map = this.referenceDAO
-               .getDefaultConsultableMetadataReferences();
-
-         for (MetadataReference metaRef : map.values()) {
-            keyList.add(metaRef.getShortCode());
-         }
-
-      } else {
-
-         try {
-            controlService.controlLongCodeExist(consultParams.getMetadonnees());
-
-         } catch (LongCodeNotFoundException longExcept) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante", StringUtils.join(
-                        longExcept.getListCode(), SEPARATOR_STRING));
-            throw new UnknownDesiredMetadataEx(message, longExcept);
-         }
-
-         Map<String, String> mapShortCode = null;
-         try {
-            mapShortCode = convertService.longCodeToShortCode(consultParams
-                  .getMetadonnees());
-         } catch (LongCodeNotFoundException longExcept) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante", StringUtils.join(
-                        longExcept.getListCode(), SEPARATOR_STRING));
-            throw new UnknownDesiredMetadataEx(message, longExcept);
-         }
-
-         keyList.addAll(mapShortCode.keySet());
-
-      }
-
-      for (String shortCode : keyList) {
-         metadatas.add(new StorageMetadata(shortCode));
-      }
-
-      return metadatas;
    }
 
 }

@@ -63,8 +63,6 @@ public class WSConsultationServiceImplTest {
 
    private static final String FORMAT_FICHIER = "FormatFichier";
 
-   private static final String TYPE_MIME_DEFAUT = "application/octet-stream";
-
    private static final String TYPE_MIME_PDF = "application/pdf";
 
    @Test
@@ -131,26 +129,26 @@ public class WSConsultationServiceImplTest {
 
    }
 
-   @Test
-   public void convertitPronomEnTypeMime_success_TypePronomNull() {
+   @Test(expected = IllegalArgumentException.class)
+   public void convertitPronomEnTypeMime_success_TypePronomNull() throws ConsultationAxisFault {
 
       String typeMime = consultService.convertitPronomEnTypeMime(null);
 
-      assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
+      //assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
 
    }
 
-   @Test
-   public void convertitPronomEnTypeMime_success_TypePronomVide() {
+   @Test(expected = IllegalArgumentException.class)
+   public void convertitPronomEnTypeMime_success_TypePronomVide() throws ConsultationAxisFault {
 
       String typeMime = consultService.convertitPronomEnTypeMime("");
 
-      assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
+     // assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
 
    }
 
    @Test
-   public void convertitPronomEnTypeMime_success_TypePronomPdfSlashA() {
+   public void convertitPronomEnTypeMime_success_TypePronomPdfSlashA() throws ConsultationAxisFault {
 
       String typeMime = consultService.convertitPronomEnTypeMime("fmt/354");
 
@@ -158,13 +156,13 @@ public class WSConsultationServiceImplTest {
 
    }
 
-   @Test
-   public void convertitPronomEnTypeMime_success_TypePronomInconnu() {
+   @Test(expected = ConsultationAxisFault.class)
+   public void convertitPronomEnTypeMime_success_TypePronomInconnu() throws ConsultationAxisFault {
 
       String typeMime = consultService
             .convertitPronomEnTypeMime("gloubi_boulga");
 
-      assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
+   //   assertEquals("Le type MIME est incorrect", TYPE_MIME_DEFAUT, typeMime);
 
    }
 

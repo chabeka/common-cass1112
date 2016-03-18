@@ -21,6 +21,8 @@ import fr.cirtil.www.saeservice.ListeMetadonneeCodeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
 import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -50,6 +52,9 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
    @Autowired
    @Qualifier("documentService")
    private SAEDocumentService saeService;
+
+   @Autowired
+   private ReferentielFormatService referentielFormatService;
 
    /**
     * {@inheritDoc}
@@ -470,8 +475,10 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
     * @param typePronom
     *           le type PRONOM
     * @return le type MIME correspondant
+    * @throws ConsultationAxisFault
     */
-   protected String convertitPronomEnTypeMime(String typePronom) {
+   protected String convertitPronomEnTypeMime(String typePronom)
+         throws ConsultationAxisFault {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "convertitPronomEnTypeMime()";
@@ -480,12 +487,23 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
       // C'est parti pour une clause if
       // Pour l'instant, le SAE n'accepte que le "fmt/354"
+      // String typeMime;
+      // if (StringUtils.equalsIgnoreCase("fmt/354", typePronom)) {
+      // typeMime = "application/pdf";
+      // } else {
+      // typeMime = "application/octet-stream"; // correspond à la valeur par
+      // // défaut précédemment utilisée
+      // }
+
+      // EVO du 02/03/2016 : on récupère le typeMime dans le référentiel des
+      // formats
       String typeMime;
-      if (StringUtils.equalsIgnoreCase("fmt/354", typePronom)) {
-         typeMime = "application/pdf";
-      } else {
-         typeMime = "application/octet-stream"; // correspond à la valeur par
-         // défaut précédemment utilisée
+      try {
+         typeMime = referentielFormatService.getFormat(typePronom)
+               .getTypeMime();
+      } catch (UnknownFormatException e) {
+         throw new ConsultationAxisFault("FormatFichierInconnu",
+               e.getMessage(), e);
       }
 
       // Renvoie du type MIME à l'appelant

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
@@ -16,8 +16,16 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.droit.service.PrmdService;
+import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
+import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
+import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
@@ -30,6 +38,7 @@ import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
@@ -47,6 +56,7 @@ import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.service.CycleVieService;
 import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceImpl;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe implémentant l'interface {@link SAETransfertService}. Cette classe est
@@ -97,6 +107,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
    @Autowired
    private JournalEvtServiceImpl journalEvtService;
 
+   @Autowired
+   private MappingDocumentService mappingService;
+
+   @Autowired
+   private PrmdService prmdService;
+
    /**
     * {@inheritDoc}
     */
@@ -117,8 +133,41 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          storageTransfertService.openConnexion();
          traceServiceSupport.connect();
 
-         LOG.debug("{} - recherche du document", trcPrefix);
+         LOG.debug("{} - Vérification des droits", trcPrefix);
+         // On récupère le document à partir de l'UUID, avec toutes les
+         // métadonnées du référentiel
+         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
+               .getAllMetadataReferences();
+         for (String mapKey : listeAllMeta.keySet()) {
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                  .getShortCode()));
+         }
+         UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 
+         StorageDocument documentDroit = storageDocumentService
+               .searchStorageDocumentByUUIDCriteria(uuidCriteriaDroit);
+         if (documentDroit != null) {
+            UntypedDocument untypedDocument = this.mappingService
+                  .storageDocumentToUntypedDocument(documentDroit);
+
+            LOG.debug("{} - Récupération des droits", trcPrefix);
+            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                  .getContext().getAuthentication();
+            List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
+            LOG.debug("{} - Vérification des droits", trcPrefix);
+            boolean isPermitted = prmdService.isPermitted(
+                  untypedDocument.getUMetadatas(), saePrmds);
+
+            if (!isPermitted) {
+               throw new AccessDeniedException(
+                     "Le document est refusé au transfert car les droits sont insuffisants");
+            }
+
+         }
+
+         LOG.debug("{} - recherche du document", trcPrefix);
+         // On récupère le document avec uniquement les méta transférables
          List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
          UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
 
@@ -212,6 +261,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
                } catch (InsertionServiceEx ex) {
                   throw new TransfertException(erreur, ex);
+               } catch (InsertionIdGedExistantEx e1) {
+                  throw new TransfertException(erreur, e1);
                }
             } else {
                // -- Le document existe sur la GNS et sur la GNT
@@ -247,6 +298,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (InvalidSAETypeException ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (MappingFromReferentialException ex) {
          throw new TransfertException(erreur, ex);
       }
    }
