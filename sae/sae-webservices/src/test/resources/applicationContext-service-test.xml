@@ -21,6 +21,7 @@
    </bean>
 
    <import resource="applicationContext-sae-trace.xml" />
+   <import resource="applicationContext-sae-format.xml" />
 
    <import resource="applicationContext-service.xml" />
    
