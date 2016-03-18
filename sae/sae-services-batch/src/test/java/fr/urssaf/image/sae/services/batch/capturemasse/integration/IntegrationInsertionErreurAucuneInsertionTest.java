@@ -61,6 +61,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -190,7 +191,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initComposantsThrowable();
       initDatas();
 
@@ -212,7 +213,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initComposantsRuntime();
       initDatas();
 
@@ -232,7 +233,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposantsThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx {
+         DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -260,7 +261,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposantsRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx {
+         DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();

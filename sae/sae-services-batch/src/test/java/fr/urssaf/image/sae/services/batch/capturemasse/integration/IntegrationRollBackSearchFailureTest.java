@@ -67,6 +67,7 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -337,7 +338,7 @@ public class IntegrationRollBackSearchFailureTest {
    private void initComposantsHorsSearch() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();

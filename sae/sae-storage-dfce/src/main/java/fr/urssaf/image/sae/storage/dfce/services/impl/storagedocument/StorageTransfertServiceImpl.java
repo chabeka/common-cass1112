@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
@@ -74,10 +75,11 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
 
    /**
     * {@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    @Override
    public final StorageDocument insertBinaryStorageDocument(
-         StorageDocument storageDocument) throws InsertionServiceEx {
+         StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       ServiceProvider dfceService = dfceServiceManager.getDFCEService();
       DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();

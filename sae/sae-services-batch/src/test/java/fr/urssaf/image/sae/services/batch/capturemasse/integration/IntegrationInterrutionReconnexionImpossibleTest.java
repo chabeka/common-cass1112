@@ -61,6 +61,7 @@ import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -156,19 +157,19 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
          InsertionServiceEx, IOException, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
-         JAXBException, SAXException {
+         JAXBException, SAXException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService, dfceManager);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -179,7 +180,8 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
          InsertionServiceEx, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
+         InsertionIdGedExistantEx {
 
       // configuration de l'interruption
       Date dateNow = new Date();
@@ -197,17 +199,18 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
       EasyMock.expectLastCall().anyTimes();
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
 
       // règlage storageDocumentService
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
       // simulation de la non intégration d'un seul document
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService, dfceManager);
@@ -233,28 +236,28 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés",
+            Integer.valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;
@@ -335,8 +338,8 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
       List<ILoggingEvent> errors = LogUtils.getLogsByLevel(loggingEvents,
             Level.ERROR);
 
-      Assert.assertEquals("un seul message de niveau ERREUR attendu", 1, errors
-            .size());
+      Assert.assertEquals("un seul message de niveau ERREUR attendu", 1,
+            errors.size());
 
       boolean messageFound = LogUtils.logContainsMessage(errors.get(0),
             LOG_ERROR.replace("{}", uuid));

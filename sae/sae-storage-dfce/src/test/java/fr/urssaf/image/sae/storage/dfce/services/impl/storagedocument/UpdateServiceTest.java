@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
@@ -114,11 +115,12 @@ public class UpdateServiceTest {
     * @throws ConnectionServiceEx
     * @throws UpdateServiceEx
     * @throws SearchingServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void modifDocument() throws IOException, ParseException,
          InsertionServiceEx, ConnectionServiceEx, UpdateServiceEx,
-         SearchingServiceEx {
+         SearchingServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
       commonsServices.getInsertionService().setInsertionServiceParameter(
             commonsServices.getDfceServicesManager().getDFCEService());

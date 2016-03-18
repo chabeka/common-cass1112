@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 
 /**
@@ -37,9 +38,10 @@ public class InsertionServiceValidationTest {
    /**
     * {@link fr.urssaf.image.sae.storage.dfce.InsertionServiceValidation#insertStorageDocumentValidation(fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument)}
     * <br>
+    * @throws InsertionIdGedExistantEx 
     */
    @Test(expected = IllegalArgumentException.class)
-   public void insertStorageDocumentValidation() throws InsertionServiceEx {
+   public void insertStorageDocumentValidation() throws InsertionServiceEx, InsertionIdGedExistantEx {
       // Initialisation des jeux de données UUID
       commonsServices.getInsertionService().insertStorageDocument(null);
    }

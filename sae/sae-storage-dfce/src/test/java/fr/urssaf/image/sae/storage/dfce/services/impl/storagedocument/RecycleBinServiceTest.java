@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -114,10 +115,11 @@ public class RecycleBinServiceTest {
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void moveStorageDocumentToRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, RecycleBinServiceEx {
+         ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
@@ -152,10 +154,11 @@ public class RecycleBinServiceTest {
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void restoreStorageDocumentFromRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, DeletionServiceEx, RecycleBinServiceEx {
+         ParseException, RetrievalServiceEx, DeletionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
@@ -191,10 +194,11 @@ public class RecycleBinServiceTest {
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void deleteStorageDocumentFromRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, RecycleBinServiceEx {
+         ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices

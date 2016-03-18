@@ -54,6 +54,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -119,7 +120,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, 
+         UnknownFormatException, UnexpectedDomainException,
          InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
       // Traces debug - entrée méthode
       String prefixeTrc = "capture()";
@@ -156,8 +157,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws MetadataValueNotInDictionaryEx
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
-    * @throws InvalidPagmsCombinaisonException 
-    * @throws UnexpectedDomainException 
+    * @throws InvalidPagmsCombinaisonException
+    * @throws UnexpectedDomainException
     */
    @Override
    public final CaptureResult captureFichier(List<UntypedMetadata> metadatas,
@@ -167,7 +168,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
          FileNotFoundException, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException, 
+         ValidationExceptionInvalidFile, UnknownFormatException,
          UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
       // Traces debug - entrée méthode
@@ -196,10 +197,10 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       return result;
 
    }
-   
+
    /**
     * {@inheritDoc}
-    * @throws CaptureExistingUuuidException 
+    * @throws CaptureExistingUuuidException
     */
    @Override
    public final CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
@@ -209,8 +210,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
          UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         UnknownFormatException, ValidationExceptionInvalidFile,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
 
       // Traces debug - entrée méthode
@@ -238,7 +239,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       try {
          storageDoc = commonsService.buildBinaryStorageDocumentForCapture(
                untypedDocument, result);
-   
+
          // archivage du document dans DFCE
          UUID uuid = insererBinaryStorageDocument(storageDoc);
          result.setIdDoc(uuid);
@@ -299,20 +300,21 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @return UUID
     * @throws SAECaptureServiceEx
     *            {@link SAECaptureServiceEx}
-    * @throws CaptureExistingUuuidException 
-    * @throws SearchingServiceEx 
+    * @throws CaptureExistingUuuidException
+    * @throws SearchingServiceEx
     */
    private UUID insererBinaryStorageDocument(StorageDocument storageDoc)
-         throws SAECaptureServiceEx, SearchingServiceEx, CaptureExistingUuuidException {
+         throws SAECaptureServiceEx, SearchingServiceEx,
+         CaptureExistingUuuidException {
       // insertion du document à archiver dans DFCE puis fermeture de la
       // connexion DFCE
       UUID uuid = null;
       try {
          serviceProvider.openConnexion();
-         
-         //-- On controle que l'uuid si il est founit dans les métas
+
+         // -- On controle que l'uuid si il est founit dans les métas
          checkDocumentUuid(storageDoc, null);
-         
+
          uuid = serviceProvider.getStorageDocumentService()
                .insertBinaryStorageDocument(storageDoc).getUuid();
 
@@ -320,6 +322,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          throw new SAECaptureServiceEx(e);
       } catch (InsertionServiceEx e) {
          throw new SAECaptureServiceEx(e);
+      } catch (InsertionIdGedExistantEx e) {
+         throw new CaptureExistingUuuidException(e.getMessage());
       }
       return uuid;
    }
@@ -374,8 +378,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws MetadataValueNotInDictionaryEx
     * @throws ValidationExceptionInvalidFile
     * @throws UnknownFormatException
-    * @throws InvalidPagmsCombinaisonException 
-    * @throws UnexpectedDomainException 
+    * @throws InvalidPagmsCombinaisonException
+    * @throws UnexpectedDomainException
     */
    private UUID insertDocument(List<UntypedMetadata> metadatas, File file,
          CaptureResult captureResult) throws SAECaptureServiceEx,
@@ -384,8 +388,8 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+         UnknownFormatException, ValidationExceptionInvalidFile,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
 
       // instanciation d'un UntypedDocument
@@ -399,74 +403,83 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          throw new SAECaptureServiceEx(e);
       }
 
-      //-- Insertion du document à archiver dans DFCE
+      // -- Insertion du document à archiver dans DFCE
       UUID uuid = null;
       try {
          serviceProvider.openConnexion();
-         
-         //-- Controle sur la méta IdGed       
-         checkDocumentUuid(null, metadatas);
-         
+
+         // 160600 : d�sactivation de ce contr�le qui est fait plus bas nivrau 
+         // pour tester aussi la capture de masse
+         // -- Controle sur la méta IdGed
+         // checkDocumentUuid(null, metadatas);
+
          uuid = serviceProvider.getStorageDocumentService()
                .insertStorageDocument(storageDoc).getUuid();
 
       } catch (ConnectionServiceEx e) {
          throw new SAECaptureServiceEx(e);
-      } catch (SearchingServiceEx e) {
-         throw new SAECaptureServiceEx(e);
       } catch (InsertionServiceEx e) {
          throw new SAECaptureServiceEx(e);
+      } catch (InsertionIdGedExistantEx e) {
+         throw new CaptureExistingUuuidException(e.getMessage());
       }
       return uuid;
    }
-   
+
    /**
-    * Méthode de controle si la méta IdGed est founit, qu'elle ne correspond pas à
-    * un UUID déjà existant en base
+    * Méthode de controle si la méta IdGed est founit, qu'elle ne correspond pas
+    * à un UUID déjà existant en base
     * 
-    * @param doc : Le document à archiver
-    * @param metas : Les métas du document à archiver
+    * @param doc
+    *           : Le document à archiver
+    * @param metas
+    *           : Les métas du document à archiver
     * 
-    * Cette méthode utiltaire cherche la méta à partir d'une liste d'objets 
-    * {@link UntypedMetadata} ou de l'objet {@link StorageDocument}
+    *           Cette méthode utiltaire cherche la méta à partir d'une liste
+    *           d'objets {@link UntypedMetadata} ou de l'objet
+    *           {@link StorageDocument}
     * 
-    * @see {@link #insererBinaryStorageDocument(StorageDocument)}, 
-    * {@link #insertDocument(List, File, CaptureResult)}
+    * @see {@link #insererBinaryStorageDocument(StorageDocument)},
+    *      {@link #insertDocument(List, File, CaptureResult)}
     * 
     * @throws CaptureExistingUuuidException
     * @throws SearchingServiceEx
     */
-   private void checkDocumentUuid(StorageDocument doc, List<UntypedMetadata> metas) 
-      throws CaptureExistingUuuidException, SearchingServiceEx {
-      
-      //-- On recherche la présence de la métadonnée IdeGed (UUID du document)
-      
+   private void checkDocumentUuid(StorageDocument doc,
+         List<UntypedMetadata> metas) throws CaptureExistingUuuidException,
+         SearchingServiceEx {
+
+      // -- On recherche la présence de la métadonnée IdeGed (UUID du document)
+
       UUID uuid = null;
-      
-      if(doc != null){
+
+      if (doc != null) {
          for (StorageMetadata meta : doc.getMetadatas()) {
-            if(meta.getShortCode().equals(StorageTechnicalMetadatas.IDGED.getShortCode())){
+            if (meta.getShortCode().equals(
+                  StorageTechnicalMetadatas.IDGED.getShortCode())) {
                uuid = (UUID) meta.getValue();
                break;
             }
          }
-      }
-      else if(metas != null){
-         //-- On recherche la présence de la métadonnée IdeGed (UUID du document)
+      } else if (metas != null) {
+         // -- On recherche la présence de la métadonnée IdeGed (UUID du
+         // document)
          for (UntypedMetadata meta : metas) {
-            if(meta.getLongCode().equals(StorageTechnicalMetadatas.IDGED.getLongCode())){
+            if (meta.getLongCode().equals(
+                  StorageTechnicalMetadatas.IDGED.getLongCode())) {
                uuid = UUID.fromString(meta.getValue());
                break;
             }
          }
       }
-      
-      //-- Si l'uuid est spécifié on vérifie qu'il n'existe pas déjà en base
-      if(uuid != null){
-         UUIDCriteria uuidCrit = new UUIDCriteria(uuid, new ArrayList<StorageMetadata>());
+
+      // -- Si l'uuid est spécifié on vérifie qu'il n'existe pas déjà en base
+      if (uuid != null) {
+         UUIDCriteria uuidCrit = new UUIDCriteria(uuid,
+               new ArrayList<StorageMetadata>());
          StorageDocument document = serviceProvider.getStorageDocumentService()
-            .searchStorageDocumentByUUIDCriteria(uuidCrit);
-         if(document != null){
+               .searchStorageDocumentByUUIDCriteria(uuidCrit);
+         if (document != null) {
             String mssg = "L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.";
             throw new CaptureExistingUuuidException(String.format(mssg, uuid));
          }

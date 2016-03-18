@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -58,11 +59,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithWildcard() throws SearchingServiceEx,
-         IOException, ParseException, InsertionServiceEx, QueryParseServiceEx {
+         IOException, ParseException, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("wildcard");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -82,9 +84,10 @@ public class LuceneSimpleQueryTest {
     *            Exception lévée
     * @throws InsertionServiceEx
     *            Exception lévée
+    * @throws InsertionIdGedExistantEx 
     */
    private void createStorageDocument() throws FileNotFoundException,
-         IOException, ParseException, InsertionServiceEx {
+         IOException, ParseException, InsertionServiceEx, InsertionIdGedExistantEx {
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
                   new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
@@ -96,11 +99,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueries() throws SearchingServiceEx, InsertionServiceEx,
-         IOException, ParseException, QueryParseServiceEx {
+         IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       final Map<String, LuceneCriteria> queries = buildQueries("simple");
       createStorageDocument();
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -112,11 +116,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithRange() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx {
+         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("range");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -128,11 +133,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorAnd() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx {
+         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAnd");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -144,11 +150,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorOr() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx {
+         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorOr");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -160,11 +167,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorAndOr() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx {
+         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAndOr");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -176,11 +184,12 @@ public class LuceneSimpleQueryTest {
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorNot() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx {
+         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorNot");
       for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
@@ -203,10 +212,11 @@ public class LuceneSimpleQueryTest {
     *            Exception lévée
     * @throws InsertionServiceEx
     *            Exception lévée
+    * @throws InsertionIdGedExistantEx 
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public Map<String, LuceneCriteria> buildQueries(final String queryType)
-         throws InsertionServiceEx, IOException, ParseException {
+         throws InsertionServiceEx, IOException, ParseException, InsertionIdGedExistantEx {
       createStorageDocument();
       final LuceneQueries queries = commonsServices.getXmlDataService()
             .queriesReader(new File(Constants.XML_FILE_QUERIES[0]));

@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -116,10 +117,11 @@ public class InsertionServiceTest {
     * 
     * @throws ConnectionServiceEx
     *            Exception lévée lorsque la connexion n'aboutie pas.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void insertOneDocument() throws IOException, ParseException,
-         InsertionServiceEx, ConnectionServiceEx {
+         InsertionServiceEx, ConnectionServiceEx, InsertionIdGedExistantEx {
 
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
@@ -153,10 +155,11 @@ public class InsertionServiceTest {
     * différents.
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void insertTwiceSameDocument() throws IOException, ParseException,
-         InsertionServiceEx, ConnectionServiceEx {
+         InsertionServiceEx, ConnectionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
       commonsServices.getInsertionService().setInsertionServiceParameter(
             commonsServices.getDfceServicesManager().getDFCEService());

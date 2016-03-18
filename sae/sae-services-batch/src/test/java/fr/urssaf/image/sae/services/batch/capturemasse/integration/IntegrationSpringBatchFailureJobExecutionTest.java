@@ -68,6 +68,7 @@ import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -195,18 +196,19 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
          DeletionServiceEx, InsertionServiceEx, IOException,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SAESearchServiceEx, JAXBException, SAXException {
+         SAESearchServiceEx, JAXBException, SAXException,
+         InsertionIdGedExistantEx {
       initErreurBefore();
       initComposantsGeneral();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesBefore();
 
@@ -220,18 +222,19 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
          DeletionServiceEx, InsertionServiceEx, IOException,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-         SAESearchServiceEx, JAXBException, SAXException {
+         SAESearchServiceEx, JAXBException, SAXException,
+         InsertionIdGedExistantEx {
       initErreurAfter();
       initComposantsGeneral();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesAfter();
 
@@ -255,23 +258,25 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
    private void initComposantsGeneral() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
-         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
+         UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx,
+         InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
       EasyMock.expectLastCall().anyTimes();
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
 
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
       // simulation de la non intégration d'un seul document
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
@@ -298,28 +303,28 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés",
+            Integer.valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;
@@ -364,28 +369,28 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("0 documents doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("10 documents doivent être intégrés", Integer
-            .valueOf(10), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être intégrés",
+            Integer.valueOf(10), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
    }
 
@@ -469,8 +474,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
                   + "fichier fin_traitement.flag car il n'a "
                   + "pas été généré par le job de capture de masse");
 
-      Assert
-            .assertTrue("présence du message de fin_traitement.flag", messageOk);
+      Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
    }
 

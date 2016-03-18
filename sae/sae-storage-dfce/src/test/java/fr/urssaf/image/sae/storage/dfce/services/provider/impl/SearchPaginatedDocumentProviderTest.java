@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -49,7 +50,7 @@ public class SearchPaginatedDocumentProviderTest {
    @Test
    @Ignore
    public final void searchDocument() throws ConnectionServiceEx,
-         SearchingServiceEx, InsertionServiceEx, QueryParseServiceEx {
+         SearchingServiceEx, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
 
       // On récupère la connexion
       commonsServices.getServiceProvider().openConnexion();

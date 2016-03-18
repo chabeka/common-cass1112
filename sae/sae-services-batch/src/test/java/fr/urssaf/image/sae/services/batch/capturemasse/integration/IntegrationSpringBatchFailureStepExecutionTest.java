@@ -65,6 +65,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -214,13 +215,13 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       initComposantsSansRollback("compteElements");
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesAvantStockage();
 
@@ -237,13 +238,13 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       initComposantsSansRollback("debutTraitement");
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesAvantStockage();
 
@@ -255,20 +256,20 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    @DirtiesContext
    public void testLancementErreurApresPersistance()
          throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, JAXBException, SAXException {
+         IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
       initSaveSansRollback();
       initComposantsSansRollback("finSucces");
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesApresStockage();
 
@@ -280,20 +281,20 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    @DirtiesContext
    public void testLancementErreurApresRollbackErreur()
          throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, JAXBException, SAXException {
+         IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
 
       initComposantsAvecRollback("finErreur");
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFilesApresStockage();
 
@@ -313,25 +314,28 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
 
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
 
-   private void initSaveSansRollback() throws InsertionServiceEx {
+   private void initSaveSansRollback() throws InsertionServiceEx,
+         InsertionIdGedExistantEx {
       UUID idTraitement = UUID.randomUUID();
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(idTraitement);
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).times(10);
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposantsAvecRollback(String stepToFail)
-         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx {
+         throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
+         InsertionIdGedExistantEx {
       SaeStepExecutionDao dao = (SaeStepExecutionDao) stepExecutionDao;
       dao.setStepToFail(stepToFail);
 
@@ -341,8 +345,8 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
 
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
@@ -353,15 +357,17 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(idTraitement);
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).times(9);
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-            new Error(MESSAGE_ERREUR)).once();
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
+            .andThrow(new Error(MESSAGE_ERREUR)).once();
 
       JobExecution jobExecution = new JobExecution(1L);
       StepExecution execution = new StepExecution("controleSommaireStep",
@@ -396,28 +402,28 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés",
+            Integer.valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;
@@ -460,28 +466,28 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés",
+            Integer.valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;
@@ -557,8 +563,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
 
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
-      Assert
-            .assertTrue("au moins deux une trace SAE", loggingEvents.size() > 1);
+      Assert.assertTrue("au moins deux une trace SAE", loggingEvents.size() > 1);
 
       List<ILoggingEvent> list = LogUtils.getLogsByLevel(loggingEvents,
             Level.ERROR);
@@ -580,8 +585,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
                   + "fichier fin_traitement.flag car il n'a "
                   + "pas été généré par le job de capture de masse");
 
-      Assert
-            .assertTrue("présence du message de fin_traitement.flag", messageOk);
+      Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
    }
 
    private void checkLogsApresPersistance(String uuid) {
@@ -623,8 +627,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
                   + "fichier fin_traitement.flag car il n'a "
                   + "pas été généré par le job de capture de masse");
 
-      Assert
-            .assertTrue("présence du message de fin_traitement.flag", messageOk);
+      Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
    }
 
@@ -664,8 +667,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
                   + "fichier fin_traitement.flag car il n'a "
                   + "pas été généré par le job de capture de masse");
 
-      Assert
-            .assertTrue("présence du message de fin_traitement.flag", messageOk);
+      Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
    }
 
@@ -703,8 +705,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
                   + "fichier fin_traitement.flag car il n'a "
                   + "pas été généré par le job de capture de masse");
 
-      Assert
-            .assertTrue("présence du message de fin_traitement.flag", messageOk);
+      Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
    }
 

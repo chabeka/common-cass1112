@@ -62,6 +62,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -189,7 +190,7 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementThrowableConnexionRollback()
          throws DeletionServiceEx, ConnectionServiceEx, InsertionServiceEx,
-         IOException, JAXBException, SAXException {
+         IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
 
       initComposantsThrowableConnection();
       initComposantsGeneralRollbackListener();
@@ -198,13 +199,13 @@ public class IntegrationRollbackFailureTest {
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -215,7 +216,7 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementRuntimeConnexionRollback()
          throws DeletionServiceEx, ConnectionServiceEx, InsertionServiceEx,
-         IOException, JAXBException, SAXException {
+         IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
 
       initComposantsRuntimeConnection();
       initComposantsGeneralRollbackListener();
@@ -224,13 +225,13 @@ public class IntegrationRollbackFailureTest {
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -241,7 +242,7 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementThrowableClose() throws DeletionServiceEx,
          ConnectionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
 
       initComposantsThrowableClose();
       initComposantsGeneralClose();
@@ -250,13 +251,13 @@ public class IntegrationRollbackFailureTest {
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -267,7 +268,7 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementRuntimeClose() throws DeletionServiceEx,
          ConnectionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
 
       initComposantsRuntimeClose();
       initComposantsGeneralClose();
@@ -276,13 +277,13 @@ public class IntegrationRollbackFailureTest {
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -293,20 +294,20 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementException() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initComposantsException();
       initComposantsGeneral();
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -318,20 +319,20 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementRuntimeException() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initComposantsRuntimeException();
       initComposantsGeneral();
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -343,20 +344,20 @@ public class IntegrationRollbackFailureTest {
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initComposantsThrowable();
       initComposantsGeneral();
       initDatas();
 
       UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      ExitTraitement exitStatus = service.captureMasse(
+            ecdeTestSommaire.getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+      Assert.assertFalse("le traitement doit etre en erreur",
+            exitStatus.isSucces());
 
       checkFiles();
 
@@ -365,27 +366,30 @@ public class IntegrationRollbackFailureTest {
    }
 
    private void initComposantsGeneral() throws ConnectionServiceEx,
-         InsertionServiceEx {
+         InsertionServiceEx, InsertionIdGedExistantEx {
       // règlage provider
       provider.openConnexion();
       EasyMock.expectLastCall().anyTimes();
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).times(4);
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-            new CaptureMasseRuntimeException("erreur runtime créé par mock"))
-            .anyTimes();
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
+            .andThrow(
+                  new CaptureMasseRuntimeException(
+                        "erreur runtime créé par mock")).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -396,8 +400,8 @@ public class IntegrationRollbackFailureTest {
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
       EasyMock.expectLastCall().once();
-      EasyMock.expectLastCall().andThrow(
-            new DeletionServiceEx("erreur rollback")).once();
+      EasyMock.expectLastCall()
+            .andThrow(new DeletionServiceEx("erreur rollback")).once();
       EasyMock.expectLastCall().anyTimes();
    }
 
@@ -407,8 +411,8 @@ public class IntegrationRollbackFailureTest {
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
       EasyMock.expectLastCall().once();
-      EasyMock.expectLastCall().andThrow(
-            new RuntimeException("erreur rollback")).once();
+      EasyMock.expectLastCall()
+            .andThrow(new RuntimeException("erreur rollback")).once();
       EasyMock.expectLastCall().anyTimes();
    }
 
@@ -423,25 +427,29 @@ public class IntegrationRollbackFailureTest {
    }
 
    private void initComposantsGeneralRollbackListener()
-         throws ConnectionServiceEx, InsertionServiceEx {
+         throws ConnectionServiceEx, InsertionServiceEx,
+         InsertionIdGedExistantEx {
       // règlage provider
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).times(4);
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-            new CaptureMasseRuntimeException("erreur runtime créé par mock"))
-            .anyTimes();
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
+            .andThrow(
+                  new CaptureMasseRuntimeException(
+                        "erreur runtime créé par mock")).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -466,24 +474,25 @@ public class IntegrationRollbackFailureTest {
    }
 
    private void initComposantsGeneralClose() throws ConnectionServiceEx,
-         InsertionServiceEx, DeletionServiceEx {
+         InsertionServiceEx, DeletionServiceEx, InsertionIdGedExistantEx {
       provider.openConnexion();
       EasyMock.expectLastCall().anyTimes();
 
-      EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+      EasyMock.expect(provider.getStorageDocumentService())
+            .andReturn(storageDocumentService).anyTimes();
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
-      EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
+      EasyMock
+            .expect(
+                  storageDocumentService.insertStorageDocument(EasyMock
+                        .anyObject(StorageDocument.class)))
             .andReturn(storageDocument).anyTimes();
 
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().andThrow(
-            new DeletionServiceEx("erreur rollback")).anyTimes();
+      EasyMock.expectLastCall()
+            .andThrow(new DeletionServiceEx("erreur rollback")).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -499,8 +508,8 @@ public class IntegrationRollbackFailureTest {
    private void initComposantsRuntimeClose() throws DeletionServiceEx,
          ConnectionServiceEx {
       provider.closeConnexion();
-      EasyMock.expectLastCall().andThrow(
-            new RuntimeException("erreur rollback")).once();
+      EasyMock.expectLastCall()
+            .andThrow(new RuntimeException("erreur rollback")).once();
       EasyMock.expectLastCall().once();
 
    }
@@ -526,28 +535,28 @@ public class IntegrationRollbackFailureTest {
       File fin = new File(repTraitement, "fin_traitement.flag");
       File resultats = new File(repTraitement, "resultats.xml");
 
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+      Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+            debut.exists());
+      Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+            fin.exists());
+      Assert.assertTrue("le fichier resultats.xml doit exister",
+            resultats.exists());
 
       ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
             Integer.valueOf(10), res.getInitialDocumentsCount());
-      Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
-      Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+      Assert.assertEquals("10 documents doivent être rejetés",
+            Integer.valueOf(10), res.getNonIntegratedDocumentsCount());
+      Assert.assertEquals("0 documents doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
-      Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+            "0 documents virtuels doivent être initialement présents",
+            Integer.valueOf(0), res.getInitialVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être rejetés",
+            Integer.valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+      Assert.assertEquals("0 documents virtuels doivent être intégrés",
+            Integer.valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;

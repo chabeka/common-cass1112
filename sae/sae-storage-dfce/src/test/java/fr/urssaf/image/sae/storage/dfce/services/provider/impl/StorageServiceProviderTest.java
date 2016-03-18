@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 
 /**
@@ -40,10 +41,11 @@ public class StorageServiceProviderTest {
 
    /**
     * Test de validation par aspect du paramètre du service d'insertion.
+    * @throws InsertionIdGedExistantEx 
     */
    @Test(expected = IllegalArgumentException.class)
    public final void storageServiceProvider() throws ConnectionServiceEx,
-         InsertionServiceEx {
+         InsertionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getServiceProvider().openConnexion();
       commonsServices.getServiceProvider().getStorageDocumentService()
             .insertStorageDocument(null);

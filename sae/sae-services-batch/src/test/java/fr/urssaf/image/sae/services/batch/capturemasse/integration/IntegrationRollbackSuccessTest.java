@@ -61,6 +61,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -186,7 +187,7 @@ public class IntegrationRollbackSuccessTest {
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initThrowable();
       initGeneral();
       initDatas();
@@ -211,7 +212,7 @@ public class IntegrationRollbackSuccessTest {
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,
          DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+         SAXException, InsertionIdGedExistantEx {
       initRuntime();
       initGeneral();
       initDatas();
@@ -253,7 +254,7 @@ public class IntegrationRollbackSuccessTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initThrowable() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
+         InsertionServiceEx, InsertionIdGedExistantEx {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(
@@ -274,7 +275,7 @@ public class IntegrationRollbackSuccessTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initRuntime() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
+         InsertionServiceEx, InsertionIdGedExistantEx {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(

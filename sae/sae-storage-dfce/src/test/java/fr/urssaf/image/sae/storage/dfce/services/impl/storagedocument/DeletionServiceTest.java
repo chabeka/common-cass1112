@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.dfce.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -115,10 +116,11 @@ public class DeletionServiceTest {
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void deleteStorageDocument() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx {
+         ParseException, RetrievalServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
@@ -151,10 +153,11 @@ public class DeletionServiceTest {
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void deleteStorageDocForTransfer() throws InsertionServiceEx, IOException,
-   ParseException, RetrievalServiceEx {
+   ParseException, RetrievalServiceEx, InsertionIdGedExistantEx {
       
       //-- Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
@@ -182,13 +185,14 @@ public class DeletionServiceTest {
     * Test du service :
     * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.DeletionServiceImpl#rollBack(java.lang.String)
     * rollBack}.
+    * @throws InsertionIdGedExistantEx 
     * 
     * @throws ConnectionServiceEx
     */
    @Test
    @Ignore("034c37dd-7b45-4b11-be63-fe639d90df68 car ce document est gele A revoir")
    public void rollBack() throws InsertionServiceEx, IOException,
-         ParseException, DeletionServiceEx {
+         ParseException, DeletionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getMockData(commonsServices.getInsertionService());
       try {
          // ID process.

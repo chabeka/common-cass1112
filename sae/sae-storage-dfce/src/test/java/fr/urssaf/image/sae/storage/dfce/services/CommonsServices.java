@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.storage.dfce.services.xml.XmlDataService;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -128,10 +129,11 @@ public class CommonsServices {
 
    /**
     * Initialisation des tests. <br>{@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    public final StorageDocument getMockData(
          final InsertionService insertionService) throws IOException,
-         ParseException, InsertionServiceEx {
+         ParseException, InsertionServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
             new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
@@ -153,10 +155,11 @@ public class CommonsServices {
    
    /**
     * Initialisation des tests. <br>{@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    public final StorageDocument getMockDataForRecycleBin(
          final InsertionService insertionService, final RecycleBinService recycleBinService) throws IOException,
-         ParseException, InsertionServiceEx, RecycleBinServiceEx {
+         ParseException, InsertionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
             new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));

@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -61,11 +62,12 @@ public class RetrievalServiceTest {
     * <br>{@inheritDoc}
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void retrieveStorageDocumentByUUID() throws RetrievalServiceEx,
          InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
-         ConnectionServiceEx {
+         ConnectionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
       commonsServices.getInsertionService().setInsertionServiceParameter(
             commonsServices.getDfceServicesManager().getDFCEService());
@@ -91,12 +93,13 @@ public class RetrievalServiceTest {
     * 
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void retrieveStorageDocumentContentByUUID()
          throws RetrievalServiceEx, IOException, InsertionServiceEx,
          ParseException, DeletionServiceEx, NoSuchAlgorithmException,
-         ConnectionServiceEx {
+         ConnectionServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
@@ -122,11 +125,12 @@ public class RetrievalServiceTest {
     * <br>{@inheritDoc}
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void retrieveStorageDocumentMetaDatasByUUID()
          throws RetrievalServiceEx, DeletionServiceEx, InsertionServiceEx,
-         IOException, ParseException, ConnectionServiceEx {
+         IOException, ParseException, ConnectionServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(

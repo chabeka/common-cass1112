@@ -41,6 +41,7 @@ import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -90,11 +91,12 @@ public class StorageDocumentServiceSupport {
     * @return Le document inséré
     * @throws InsertionServiceEx
     *            Exception levée si erreur lors de l'insertion
+    * @throws InsertionIdGedExistantEx 
     */
    public final StorageDocument insertBinaryStorageDocument(
          ServiceProvider dfceService, DFCEConnection cnxParams,
          DocumentsTypeList typeDocList, StorageDocument storageDocument,
-         Logger log, TracesDfceSupport tracesSupport) throws InsertionServiceEx {
+         Logger log, TracesDfceSupport tracesSupport) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       Base base = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
             cnxParams);
@@ -126,6 +128,8 @@ public class StorageDocumentServiceSupport {
          String messg = StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR);
          throw new InsertionServiceEx(messg, ex.getMessage(), ex);
+      } catch (InsertionIdGedExistantEx ex) {
+         throw ex;
       } catch (Exception ex) {
          String messg = StorageMessageHandler
                .getMessage(Constants.INS_CODE_ERROR);
@@ -155,13 +159,14 @@ public class StorageDocumentServiceSupport {
     * @return Le document inséré
     * @throws InsertionServiceEx
     *            Exception levée si erreur lors de l'insertion
+    * @throws InsertionIdGedExistantEx 
     */
    public final StorageDocument insertDocumentInStorage(
          ServiceProvider dfceService, DFCEConnection cxnParam,
          DocumentsTypeList typeDocList, Document docDfce,
          DataHandler documentContent, String[] file,
          List<StorageMetadata> metadatas, TracesDfceSupport tracesSupport)
-         throws InsertionServiceEx {
+         throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       String trcInsert = "insertStorageDocument()";
 
@@ -230,7 +235,8 @@ public class StorageDocumentServiceSupport {
 
          // Appel de l'API DFCE pour l'archivage du document
          Document docArchive = insertStorageDocument(dfceService, docDfce,
-               digest, inputStream, hashMeta, typeHashMeta, tracesSupport, note);
+               digest, inputStream, hashMeta, typeHashMeta, tracesSupport,
+               note, cxnParam);
 
          // Trace
          LOGGER.debug("{} - Document inséré dans DFCE (UUID: {})", trcInsert,
@@ -249,6 +255,8 @@ public class StorageDocumentServiceSupport {
                StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
                tagCtrlEx.getMessage(), tagCtrlEx);
 
+      } catch (InsertionIdGedExistantEx ex) {
+         throw ex;
       } catch (Exception except) {
 
          throw new InsertionServiceEx(
@@ -277,12 +285,29 @@ public class StorageDocumentServiceSupport {
     * 
     * 
     * @throws TagControlException
+    * @throws InsertionServiceEx
+    * @throws InsertionIdGedExistantEx
     */
    private Document insertStorageDocument(ServiceProvider dfceService,
          Document document, String digest, InputStream inputStream,
          String hashPourTrace, String typeHashPourTrace,
-         TracesDfceSupport tracesSupport, String note)
-         throws TagControlException, FrozenDocumentException {
+         TracesDfceSupport tracesSupport, String note, DFCEConnection cnxParams)
+         throws TagControlException, FrozenDocumentException,
+         InsertionIdGedExistantEx {
+
+      // On vérifie que le document n'existe pas déjà en base
+      if (document.getUuid() != null) {
+         // -- Récupération base dfce
+         Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
+               cnxParams);
+
+         if (dfceService.getSearchService().getDocumentByUUID(baseDfce,
+               document.getUuid()) != null) {
+            String mssg = "L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.";
+            throw new InsertionIdGedExistantEx(String.format(mssg,
+                  document.getUuid()));
+         }
+      }
 
       Document doc;
 
@@ -352,11 +377,11 @@ public class StorageDocumentServiceSupport {
          UUIDCriteria uUIDCriteria, Logger log) throws SearchingServiceEx {
 
       try {
-         
+
          // -- Récupération base dfce
          Base baseDfce = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
                cnxParams);
-         
+
          // -- Traces debug - entrée méthode
          String prefixeTrc = "searchStorageDocumentByUUIDCriteria()";
          log.debug("{} - Début", prefixeTrc);
@@ -746,7 +771,7 @@ public class StorageDocumentServiceSupport {
       }
 
    }
-   
+
    /**
     * Deplacement de document dans la corbeille
     * 
@@ -763,17 +788,20 @@ public class StorageDocumentServiceSupport {
     * @throws RecycleBinServiceEx
     *            Exception levée si erreur lors de la mise a la corbeille
     */
-   public final void moveStorageDocumentToRecycleBin(ServiceProvider dfceService,
-         DFCEConnection cnxParams, final UUID uuid, Logger log,
-         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+   public final void moveStorageDocumentToRecycleBin(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         final UUID uuid, Logger log, TracesDfceSupport tracesSupport)
+         throws RecycleBinServiceEx {
 
       // -- Traces debug - entrée méthode
       String prefixeTrc = "moveStorageDocumentToRecycleBin()";
       log.debug("{} - Début", prefixeTrc);
 
       try {
-         log.debug("{} - UUID à mettre dans la corbeille : {}", prefixeTrc, uuid);
-         Document docInRB = dfceService.getRecycleBinService().throwAwayDocument(uuid);
+         log.debug("{} - UUID à mettre dans la corbeille : {}", prefixeTrc,
+               uuid);
+         Document docInRB = dfceService.getRecycleBinService()
+               .throwAwayDocument(uuid);
 
          // -- Trace l'événement "Mise en corbeille d'un document de DFCE"
          tracesSupport.traceCorbeilleDocDansDFCE(uuid, docInRB.getDigest(),
@@ -790,7 +818,7 @@ public class StorageDocumentServiceSupport {
                frozenExcept.getMessage(), frozenExcept);
       }
    }
-   
+
    /**
     * Restore de document de la corbeille
     * 
@@ -807,17 +835,20 @@ public class StorageDocumentServiceSupport {
     * @throws RecycleBinServiceEx
     *            Exception levée si erreur lors de la restore de la corbeille
     */
-   public final void restoreStorageDocumentFromRecycleBin(ServiceProvider dfceService,
-         DFCEConnection cnxParams, final UUID uuid, Logger log,
-         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+   public final void restoreStorageDocumentFromRecycleBin(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         final UUID uuid, Logger log, TracesDfceSupport tracesSupport)
+         throws RecycleBinServiceEx {
 
       // -- Traces debug - entrée méthode
       String prefixeTrc = "restoreStorageDocumentFromRecycleBin()";
       log.debug("{} - Début", prefixeTrc);
 
       try {
-         log.debug("{} - UUID à restaurer de la corbeille : {}", prefixeTrc, uuid);
-         Document docRestore = dfceService.getRecycleBinService().restoreDocument(uuid);
+         log.debug("{} - UUID à restaurer de la corbeille : {}", prefixeTrc,
+               uuid);
+         Document docRestore = dfceService.getRecycleBinService()
+               .restoreDocument(uuid);
 
          // -- Trace l'événement "Restore d'un document de la corbeille de DFCE"
          tracesSupport.traceRestoreDocDansDFCE(uuid, docRestore.getDigest(),
@@ -834,7 +865,7 @@ public class StorageDocumentServiceSupport {
                frozenExcept.getMessage(), frozenExcept);
       }
    }
-   
+
    /**
     * Suppression de document de la corbeille
     * 
@@ -851,16 +882,18 @@ public class StorageDocumentServiceSupport {
     * @throws RecycleBinServiceEx
     *            Exception levée si erreur lors de la restore de la corbeille
     */
-   public final void deleteStorageDocumentFromRecycleBin(ServiceProvider dfceService,
-         DFCEConnection cnxParams, final UUID uuid, Logger log,
-         TracesDfceSupport tracesSupport) throws RecycleBinServiceEx {
+   public final void deleteStorageDocumentFromRecycleBin(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         final UUID uuid, Logger log, TracesDfceSupport tracesSupport)
+         throws RecycleBinServiceEx {
 
       // -- Traces debug - entrée méthode
       String prefixeTrc = "deleteStorageDocumentFromRecycleBin()";
       log.debug("{} - Début", prefixeTrc);
 
       try {
-         log.debug("{} - UUID à supprimer de la corbeille : {}", prefixeTrc, uuid);
+         log.debug("{} - UUID à supprimer de la corbeille : {}", prefixeTrc,
+               uuid);
          dfceService.getRecycleBinService().deleteDocument(uuid);
 
          // -- Trace l'événement "Restore d'un document de la corbeille de DFCE"

@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -48,7 +49,7 @@ public class InsertionServiceProviderTest {
 
    // Ici on insert le document.
    @Test
-   public final void insertion() throws ConnectionServiceEx, InsertionServiceEx {
+   public final void insertion() throws ConnectionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
       int insertOcuurences = 10;
       // On récupère la connexion
       commonsServices.getServiceProvider().openConnexion();

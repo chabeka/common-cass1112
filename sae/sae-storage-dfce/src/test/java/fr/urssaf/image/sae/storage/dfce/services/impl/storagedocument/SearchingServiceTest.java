@@ -30,6 +30,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -62,11 +63,12 @@ public class SearchingServiceTest {
     * {@inheritDoc}
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void searchDocumentByUUID() throws SearchingServiceEx,
          InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
-         ConnectionServiceEx {
+         ConnectionServiceEx, InsertionIdGedExistantEx {
       StorageDocument document = commonsServices.getMockData(commonsServices
             .getInsertionService());
       UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
@@ -141,11 +143,12 @@ public class SearchingServiceTest {
     * Récupérer les métadonnées par UUID. <br>{@inheritDoc}
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void searchMetaDatasByUUID() throws SearchingServiceEx,
          InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
-         ConnectionServiceEx {
+         ConnectionServiceEx, InsertionIdGedExistantEx {
       // Initialisation des jeux de données UUID
       StorageDocument document = commonsServices.getMockData(commonsServices
             .getInsertionService());
@@ -165,11 +168,12 @@ public class SearchingServiceTest {
     * métadonnées spécifique. <br>{@inheritDoc}
     * 
     * @throws ConnectionServiceEx
+    * @throws InsertionIdGedExistantEx 
     */
    @Test
    public void searchMetaDatasByUUIDWithDesiredMetaData()
          throws SearchingServiceEx, IOException, ParseException,
-         InsertionServiceEx, DeletionServiceEx, ConnectionServiceEx {
+         InsertionServiceEx, DeletionServiceEx, ConnectionServiceEx, InsertionIdGedExistantEx {
       // Initialisation des jeux de données UUID
       StorageDocument document = commonsServices.getMockData(commonsServices
             .getInsertionService());

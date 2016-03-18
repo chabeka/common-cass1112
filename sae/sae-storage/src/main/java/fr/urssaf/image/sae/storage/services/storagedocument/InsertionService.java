@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.storage.services.storagedocument;
 
 import java.util.UUID;
 
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -29,9 +30,11 @@ public interface InsertionService {
     * @throws InsertionServiceEx
     *            Exception lévée lorsque l'insertion d'un document ne se déroule
     *            pas bien.
+    * @throws InsertionIdGedExistantEx
+    *            Exception levée lorsqu'un IdGed existe déjà à l'insertion
     */
    StorageDocument insertStorageDocument(StorageDocument storageDocument)
-         throws InsertionServiceEx;
+         throws InsertionServiceEx, InsertionIdGedExistantEx;
 
    /**
     * 
@@ -52,9 +55,11 @@ public interface InsertionService {
     * @return le document persisté
     * @throws InsertionServiceEx
     *            levée lorsque l'insertion d'un document ne se déroule pas bien
+    * @throws InsertionIdGedExistantEx
+    *            Exception levée lorsqu'un IdGed existe déjà à l'insertion
     */
    StorageDocument insertBinaryStorageDocument(StorageDocument storageDoc)
-         throws InsertionServiceEx;
+         throws InsertionServiceEx, InsertionIdGedExistantEx;
 
    /**
     * Réalise l'appel afin d'insérer le fichier de référence pour des documents

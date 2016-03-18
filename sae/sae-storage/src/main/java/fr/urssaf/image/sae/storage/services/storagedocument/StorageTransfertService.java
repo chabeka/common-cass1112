@@ -9,6 +9,7 @@ import javax.activation.DataHandler;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
@@ -49,9 +50,12 @@ public interface StorageTransfertService {
     * @throws InsertionServiceEx
     *            Exception lévée lorsque l'insertion d'un document ne se déroule
     *            pas bien.
+    * @throws InsertionIdGedExistantEx
+    *            Exception levée lorsqu'un IdGed existe déjà à l'insertion
     */
    StorageDocument insertBinaryStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx;
+         final StorageDocument storageDocument) throws InsertionServiceEx,
+         InsertionIdGedExistantEx;
 
    /**
     * Permet de supprimer un StorageDocument à partir du critère « UUIDCriteria

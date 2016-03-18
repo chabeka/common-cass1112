@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -56,13 +57,13 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Autowired
    @Qualifier("deletionService")
    private DeletionService deletionService;
-   
+
    @Autowired
    private DocumentsTypeList typeList;
-   
+
    @Autowired
    private TracesDfceSupport tracesSupport;
-   
+
    @Autowired
    private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
@@ -85,56 +86,61 @@ public class InsertionServiceImpl extends AbstractServices implements
 
    /**
     * {@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final StorageDocument insertStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx {
+         final StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       try {
-    	 //-- ici on récupère le nom et l'extension du fichier
+         // -- ici on récupère le nom et l'extension du fichier
          final String[] file = BeanMapper.findFileNameAndExtension(
-                storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
-                      .getShortCode().toString());
+               storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
+                     .getShortCode().toString());
          LOGGER.debug("{} - Enrichissement des métadonnées : "
-                + "ajout de la métadonnée NomFichier valeur : {}.{}",
-                new Object[] { TRC_INSERT, file[0], file[1] });
-          
-         //-- conversion du storageDocument en DFCE Document
+               + "ajout de la métadonnée NomFichier valeur : {}.{}",
+               new Object[] { TRC_INSERT, file[0], file[1] });
+
+         // -- conversion du storageDocument en DFCE Document
          Document docDfce = BeanMapper.storageDocumentToDfceDocument(
                getBaseDFCE(), storageDocument, file);
 
-         //-- ici on récupère le contenu du fichier.
+         // -- ici on récupère le contenu du fichier.
          File fileContent = new File(storageDocument.getFilePath());
          final DataHandler docContent = new DataHandler(new FileDataSource(
                fileContent));
-         
-         LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
-         
-         return storageDocumentServiceSupport.insertDocumentInStorage(getDfceService(), 
-               getCnxParameters(), typeList, docDfce, docContent, file, storageDocument.getMetadatas(), tracesSupport);
 
+         LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
+
+         return storageDocumentServiceSupport.insertDocumentInStorage(
+               getDfceService(), getCnxParameters(), typeList, docDfce,
+               docContent, file, storageDocument.getMetadatas(), tracesSupport);
+
+      } catch (InsertionIdGedExistantEx ex) {
+         throw ex;
       } catch (Exception except) {
 
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), except.getMessage(),
-               except);
+         throw new InsertionServiceEx(
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               except.getMessage(), except);
       }
    }
 
    /**
     * {@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final StorageDocument insertBinaryStorageDocument(
-         StorageDocument storageDoc) throws InsertionServiceEx {
+         StorageDocument storageDoc) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
-      //-- Insertion du document
-      return storageDocumentServiceSupport.insertBinaryStorageDocument(getDfceService(), 
-            getCnxParameters(), typeList, storageDoc, LOGGER, tracesSupport);
+      // -- Insertion du document
+      return storageDocumentServiceSupport.insertBinaryStorageDocument(
+            getDfceService(), getCnxParameters(), typeList, storageDoc, LOGGER,
+            tracesSupport);
    }
-
 
    /**
     * {@inheritDoc}
@@ -169,22 +175,22 @@ public class InsertionServiceImpl extends AbstractServices implements
          referenceFile = BeanMapper
                .fileReferenceToStorageReferenceFile(fileReference);
 
-         LOGGER.debug("{} - insertion réalisée. Fichier inséré : {}{}",
+         LOGGER.debug(
+               "{} - insertion réalisée. Fichier inséré : {}{}",
                new Object[] { trcPrefix, IOUtils.LINE_SEPARATOR,
                      referenceFile.toString() });
 
       } catch (Exception exception) {
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), exception.getMessage(),
-               exception);
+         throw new InsertionServiceEx(
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               exception.getMessage(), exception);
 
       } finally {
          if (stream != null) {
             try {
                stream.close();
             } catch (IOException exception) {
-               LOGGER
-                     .info("Impossible de fermer le flux du contenu", exception);
+               LOGGER.info("Impossible de fermer le flux du contenu", exception);
             }
          }
       }
@@ -200,8 +206,8 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final UUID insertVirtualStorageDocument(VirtualStorageDocument vDocument)
-         throws InsertionServiceEx {
+   public final UUID insertVirtualStorageDocument(
+         VirtualStorageDocument vDocument) throws InsertionServiceEx {
       String trcPrefix = "insertVirtualStorageDocument";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -229,15 +235,14 @@ public class InsertionServiceImpl extends AbstractServices implements
          uuid = generateDocument.getUuid();
 
       } catch (Exception exception) {
-         throw new InsertionServiceEx(StorageMessageHandler
-               .getMessage(Constants.INS_CODE_ERROR), exception.getMessage(),
-               exception);
+         throw new InsertionServiceEx(
+               StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
+               exception.getMessage(), exception);
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
 
       return uuid;
    }
-
 
 }

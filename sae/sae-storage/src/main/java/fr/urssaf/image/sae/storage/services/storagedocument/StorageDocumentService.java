@@ -7,6 +7,7 @@ import javax.activation.DataHandler;
 
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
@@ -54,9 +55,11 @@ public interface StorageDocumentService {
     * @throws InsertionServiceEx
     *            Exception lévée lorsque l'insertion d'un document ne se déroule
     *            pas bien.
+    * @throws InsertionIdGedExistantEx
+    *            Exception levée lorsqu'un IdGed existe déjà à l'insertion
     */
    StorageDocument insertStorageDocument(final StorageDocument storageDocument)
-         throws InsertionServiceEx;
+         throws InsertionServiceEx, InsertionIdGedExistantEx;
 
    /**
     * Permet d'insérer un document unique avec piece jointe
@@ -69,9 +72,12 @@ public interface StorageDocumentService {
     * @throws InsertionServiceEx
     *            Exception lévée lorsque l'insertion d'un document ne se déroule
     *            pas bien.
+    * @throws InsertionIdGedExistantEx
+    *            Exception levée lorsqu'un IdGed existe déjà à l'insertion
     */
    StorageDocument insertBinaryStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx;
+         final StorageDocument storageDocument) throws InsertionServiceEx,
+         InsertionIdGedExistantEx;
 
    /**
     * Permet de faire une recherche des métadonnées par UUID.
@@ -337,9 +343,9 @@ public interface StorageDocumentService {
     *            Runtime exception
     */
 
-   void moveStorageDocumentToRecycleBin(final UUID uuid) 
+   void moveStorageDocumentToRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx;
-   
+
    /**
     * Permet de restaurer un StorageDocument de la corbeille
     * 
@@ -349,9 +355,9 @@ public interface StorageDocumentService {
     *            Runtime exception
     */
 
-   void restoreStorageDocumentFromRecycleBin(final UUID uuid) 
+   void restoreStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx;
-   
+
    /**
     * Permet de supprimer un StorageDocument de la corbeille
     * 
@@ -361,6 +367,6 @@ public interface StorageDocumentService {
     *            Runtime exception
     */
 
-   void deleteStorageDocumentFromRecycleBin(final UUID uuid) 
+   void deleteStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx;
 }

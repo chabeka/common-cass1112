@@ -15,6 +15,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
@@ -101,19 +102,25 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws InsertionIdGedExistantEx
     */
 
    public final StorageDocument insertStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx {
+         final StorageDocument storageDocument) throws InsertionServiceEx,
+         InsertionIdGedExistantEx {
       insertionService.setInsertionServiceParameter(getDfceService());
       return insertionService.insertStorageDocument(storageDocument);
    }
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws InsertionIdGedExistantEx
     */
    public final StorageDocument insertBinaryStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx {
+         final StorageDocument storageDocument) throws InsertionServiceEx,
+         InsertionIdGedExistantEx {
       insertionService.setInsertionServiceParameter(getDfceService());
       return insertionService.insertBinaryStorageDocument(storageDocument);
    }
@@ -339,7 +346,6 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
       documentAttachmentService.addDocumentAttachment(docUuid, docName,
             extension, contenu);
    }
-
 
    /**
     * {@inheritDoc}
