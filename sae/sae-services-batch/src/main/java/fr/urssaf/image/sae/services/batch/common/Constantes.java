@@ -192,6 +192,11 @@ public final class Constantes {
     * restore de masse
     */
    public static final String UUID_TRAITEMENT_RESTORE = "uuidTraitement";
+   
+   /**
+    * Nombre de docs supprimés.
+    */
+   public static final String NB_DOCS_SUPPRIMES = "nbDocsSupprimes";
 
    /**
     * Constructeur

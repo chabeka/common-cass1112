@@ -191,6 +191,11 @@ public class CheckDroitRequeteLuceneTaskletTest {
             .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
             listeErreurs.isEmpty());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
    }
    
    /**
@@ -232,5 +237,10 @@ public class CheckDroitRequeteLuceneTaskletTest {
             .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
             listeErreurs.isEmpty());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
    }
 }

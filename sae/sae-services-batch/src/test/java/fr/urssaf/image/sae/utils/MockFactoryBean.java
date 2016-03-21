@@ -9,6 +9,7 @@ import org.easymock.EasyMock;
 import org.springframework.batch.item.ItemProcessor;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
@@ -119,4 +120,11 @@ public class MockFactoryBean {
       return EasyMock.createMock(SAEControleSupportService.class);
    }
 
+   /**
+    * 
+    * @return instance de {@link JobQueueService}
+    */
+   public final JobQueueService createJobQueueService() {
+      return EasyMock.createMock(JobQueueService.class);
+   }
 }

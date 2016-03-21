@@ -39,6 +39,11 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    private SuppressionMasseRuntimeException exception;
 
    private static final String PREFIX_TRACE = "SuppressionPoolExecutor()";
+   
+   /**
+    * Nombre de documents supprimés.
+    */
+   private int nombreSupprimes;
 
    /**
     * Constructeur
@@ -286,6 +291,8 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    
             LOGGER.info("{} - Mise a la corbeille du document (uuid:{})",
                   new Object[] { trcPrefix, document.getUuid().toString() });
+            
+            nombreSupprimes++;
    
          } else {
    
@@ -296,6 +303,24 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    
          }
       }
+   }
+   
+   /**
+    * Permet de récupérer le nombre de documents supprimés.
+    * 
+    * @return int
+    */
+   public final int getNombreSupprimes() {
+      return nombreSupprimes;
+   }
 
+   /**
+    * Permet de modifier le nombre de documents supprimés.
+    * 
+    * @param nombreSupprimes
+    *           nombre de documents supprimés
+    */
+   public final void setNombreSupprimes(final int nombreSupprimes) {
+      this.nombreSupprimes = nombreSupprimes;
    }
 }

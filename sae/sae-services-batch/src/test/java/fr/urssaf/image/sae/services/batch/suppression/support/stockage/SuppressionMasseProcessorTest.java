@@ -110,6 +110,11 @@ public class SuppressionMasseProcessorTest {
       Assert.assertFalse("Une exception aurait du être levée",
             listeErreurs.isEmpty());
       
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
+      
       EasyMock.reset(mockService);
    }
    
@@ -166,6 +171,11 @@ public class SuppressionMasseProcessorTest {
             listeErreurs.isEmpty());
       
       Assert.assertEquals("Aucun doc n'aurait du être trouvé",  0, step.getReadCount());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
       
       EasyMock.reset(mockService);
    }
@@ -238,7 +248,12 @@ public class SuppressionMasseProcessorTest {
             listeErreurs.isEmpty());
       
       Assert.assertEquals("Plusieurs documents auraient du être trouvés",  nbDocs, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  nbDocs, step.getWriteCount()); 
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  nbDocs, step.getWriteCount());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Plusieurs documents auraient du être supprimés", nbDocs,
+            nbDocsSupprimes);
       
       EasyMock.reset(mockService);
    }
@@ -308,7 +323,12 @@ public class SuppressionMasseProcessorTest {
             listeErreurs.isEmpty());
       
       Assert.assertEquals("Plusieurs documents auraient du être trouvés",  1, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount()); 
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
       
       EasyMock.reset(mockService); 
    }
@@ -378,7 +398,12 @@ public class SuppressionMasseProcessorTest {
             listeErreurs.isEmpty());
       
       Assert.assertEquals("Plusieurs documents auraient du être trouvés",  1, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount()); 
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount());
+      
+      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
+            .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
+            nbDocsSupprimes);
       
       EasyMock.reset(mockService); 
    }

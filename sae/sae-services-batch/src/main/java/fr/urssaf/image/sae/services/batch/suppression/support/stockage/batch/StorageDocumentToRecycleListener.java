@@ -79,7 +79,7 @@ public class StorageDocumentToRecycleListener {
             executor.shutdown();
 
             executor.waitFinishSuppression();
-
+            
             final SuppressionMasseRuntimeException exception = executor
                   .getSuppressionMasseException();
 
@@ -89,7 +89,10 @@ public class StorageDocumentToRecycleListener {
 
             }
          }
-      }
+      } 
+      
+      // ajout dans le contexte du nombre de docs supprimés 
+      setNombreDocsSupprimes(executor.getNombreSupprimes());
 
       return exitStatus;
    }
@@ -104,6 +107,16 @@ public class StorageDocumentToRecycleListener {
             .getExecutionContext();
       return (ConcurrentLinkedQueue<Exception>) jobExecution
             .get(Constantes.SUPPRESSION_EXCEPTION);
+   }
+   
+   /**
+    * @param nombre de documents supprimés.
+    */
+   protected final void setNombreDocsSupprimes(int nbDocsSupprimes) {
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      jobExecution
+            .putInt(Constantes.NB_DOCS_SUPPRIMES, nbDocsSupprimes);
    }
    
    /**

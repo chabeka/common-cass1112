@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
@@ -33,6 +34,12 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
     */
    @Autowired
    private JobLauncher jobLauncher;
+   
+   /**
+    * Service de gestion de la pile des travaux.
+    */
+   @Autowired
+   private JobQueueService jobQueueService;
    
    /**
     * Job de la suppression de masse
@@ -72,6 +79,15 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
+         
+         // met a jour le job pour renseigner le nombre de docs supprimes
+         int nbDocsSupprimes = 0;
+         if (jobExecution.getExecutionContext().containsKey(
+               Constantes.NB_DOCS_SUPPRIMES)) {
+            nbDocsSupprimes = jobExecution.getExecutionContext().getInt(
+                  Constantes.NB_DOCS_SUPPRIMES);
+         }
+         jobQueueService.renseignerDocCountJob(idTraitement, nbDocsSupprimes);
 
          /* erreurs Spring non gérées */
       } catch (Throwable e) {

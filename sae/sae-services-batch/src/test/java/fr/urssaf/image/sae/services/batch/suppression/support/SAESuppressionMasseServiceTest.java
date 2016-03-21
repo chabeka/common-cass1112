@@ -23,6 +23,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
@@ -53,6 +55,10 @@ public class SAESuppressionMasseServiceTest {
    @Qualifier("storageDocumentService")
    private StorageDocumentService mockService;
    
+   @Autowired
+   @Qualifier("jobQueueService")
+   private JobQueueService mockJobService;
+   
    @Before
    public void init() {
       // initialisation du contexte de sécurité
@@ -77,11 +83,21 @@ public class SAESuppressionMasseServiceTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
+      
+      try {
+         mockJobService.renseignerDocCountJob(EasyMock.anyObject(UUID.class), EasyMock.anyObject(Integer.class));
+         EasyMock.expectLastCall().once();
+         EasyMock.replay(mockJobService);
+      } catch (JobInexistantException e) {
+         e.printStackTrace();
+      }
    }
    
    @After
    public void end() {
       AuthenticationContext.setAuthenticationToken(null);
+      
+      EasyMock.reset(mockJobService);
    }
    
    @Test

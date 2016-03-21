@@ -11,5 +11,10 @@
       factory-method="createStorageDocumentService" primary="true">
       <qualifier value="storageDocumentService" />
    </bean>
+   
+   <bean id="jobQueueService" factory-bean="mockFactory"
+      factory-method="createJobQueueService" primary="true">
+      <qualifier value="jobQueueService" />
+   </bean>
 
 </beans>

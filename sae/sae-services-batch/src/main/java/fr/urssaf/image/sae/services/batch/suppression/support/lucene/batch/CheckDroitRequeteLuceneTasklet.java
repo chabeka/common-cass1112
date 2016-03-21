@@ -59,6 +59,9 @@ public class CheckDroitRequeteLuceneTasklet extends AbstractSuppressionMasseTask
          context.put(Constantes.REQ_FINALE_SUPPRESSION, requeteFinale);
       } catch (SuppressionMasseRequeteValidationException e) {
          getExceptionErreurListe(chunkContext).add(e);
+         
+         // specifie le nombre de docs supprimés
+         context.putInt(Constantes.NB_DOCS_SUPPRIMES, 0);
       }
       LOGGER.debug("{} - Fin de vérification des droits de la requete lucene de suppression",
             TRC_EXEC);

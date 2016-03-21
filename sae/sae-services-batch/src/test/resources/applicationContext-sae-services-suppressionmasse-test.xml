@@ -109,6 +109,7 @@
    <import resource="applicationContext-sae-metadata.xml" />
    <import resource="applicationContext-sae-droit.xml" />
    <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-pile-travaux.xml" />
    <context:component-scan base-package="fr.urssaf.image.sae.services.context" />
    <context:component-scan base-package="fr.urssaf.image.sae.services.document" use-default-filters="false">
       <context:include-filter type="regex" expression="fr.urssaf.image.sae.services.document.*SearchQueryParser*.*"/>

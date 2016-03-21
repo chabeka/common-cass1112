@@ -413,6 +413,55 @@ public class JobQueueServiceImpl implements JobQueueService {
             clock);
 
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void renseignerDocCountJob(UUID idJob, Integer nbDocs)
+         throws JobInexistantException {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         throw new JobInexistantException(idJob);
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération du timestamp courant de la colonne "docCount", si elle est
+      // présente
+
+      // Récupération de la colonne "docCount"
+      HColumn<?, ?> columnDocCount = result.getColumn(JobRequestDao.JR_DOC_COUNT);
+
+      long clock;
+
+      if (columnDocCount == null) {
+
+         clock = jobClockSupport.currentCLock();
+
+      } else {
+
+         clock = jobClockSupport.currentCLock(columnDocCount);
+
+      }
+
+      // Ecriture dans la CF "JobRequest"
+      this.jobRequestSupport.renseignerDocCountDansJobRequest(idJob, nbDocs, clock);
+
+      // Ecriture dans la CF "JobQueues"
+      // rien à écrire
+
+      // Ecriture dans la CF "JobHistory"
+      String messageTrace = "DOC_COUNT RENSEIGNE";
+      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
+            clock);
+
+   }
 
    /**
     * {@inheritDoc}

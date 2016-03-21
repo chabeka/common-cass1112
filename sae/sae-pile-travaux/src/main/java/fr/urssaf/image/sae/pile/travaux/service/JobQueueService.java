@@ -113,6 +113,19 @@ public interface JobQueueService {
     *            le traitement n'existe pas
     */
    void renseignerPidJob(UUID idJob, Integer pid) throws JobInexistantException;
+   
+   /**
+    * Renseigne le nombre de docs traités par le traitement de masse dans la pile des
+    * travaux
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param nbDocs
+    *           Nombre de docs traités
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
+    */
+   void renseignerDocCountJob(UUID idJob, Integer nbDocs) throws JobInexistantException;
 
    /**
     * Renseigne le flag de vérification du traitement de masse.<br>

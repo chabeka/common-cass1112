@@ -324,4 +324,30 @@ public class JobRequestSupport {
       mutator.execute();
 
    }
+   
+   /**
+    * Ajoute le nombre de docs traités dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param nbDocs
+    *           Nombre de docs traités
+    * @param clock
+    *           horloge de l'ajout du PID
+    */
+   public final void renseignerDocCountDansJobRequest(UUID idJob, Integer nbDocs,
+         long clock) {
+
+      // On utilise un ColumnFamilyUpdater, et on renseigne
+      // la valeur de la clé dans la construction de l'updater
+      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+
+      // Ecriture des colonnes
+      jobRequestDao.ecritColonneDocCount(updaterJobRequest, nbDocs, clock);
+
+      // Ecrit en base
+      jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+
+   }
 }
