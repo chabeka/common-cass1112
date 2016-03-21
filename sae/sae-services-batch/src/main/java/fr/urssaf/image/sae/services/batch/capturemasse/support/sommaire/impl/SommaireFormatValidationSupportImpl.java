@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLEventReader;
@@ -148,6 +150,105 @@ public class SommaireFormatValidationSupportImpl implements
 
       } catch (XMLStreamException e) {
          throw new CaptureMasseRuntimeException(e);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws CaptureMasseSommaireFormatValidationException
+    */
+   @Override
+   public void validerUniciteUuid(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException {
+      FileInputStream sommaireStream = null;
+      XMLEventReader reader = null;
+
+      try {
+         sommaireStream = new FileInputStream(sommaireFile);
+         reader = openSommaire(sommaireStream);
+         String nomMeta = null;
+         String uuid = null;
+         List<String> listUuid = new ArrayList<String>();
+         XMLEvent event;
+
+         while (reader.hasNext()) {
+
+            // On parcourt le sommaire pour tomber sur un document
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && "document".equals(event.asStartElement().getName()
+                        .getLocalPart())) {
+
+               // On continue le parcourt pour trouver la métadonnée IdGed
+               while (reader.hasNext()) {
+                  event = reader.nextEvent();
+
+                  if (event.isStartElement()
+                        && "code".equals(event.asStartElement().getName()
+                              .getLocalPart())) {
+                     event = reader.nextEvent();
+                     nomMeta = event.asCharacters().getData();
+
+                     // Si on trouve la métadonnée IdGed, on regarde si la
+                     // valeur
+                     // de l'UUID a déjà été utilisée
+                     if ("IdGed".equals(nomMeta)) {
+                        while (reader.hasNext()) {
+                           event = reader.nextEvent();
+                           if (event.isStartElement()
+                                 && "valeur".equals(event.asStartElement()
+                                       .getName().getLocalPart())) {
+                              event = reader.nextEvent();
+                              uuid = event.asCharacters().getData();
+
+                              if (listUuid.contains(uuid)) {
+                                 // UUID déjà présent, on renvoie une exception
+                                 throw new CaptureMasseSommaireFormatValidationException(
+                                       "IdGed " + uuid
+                                             + " présent plusieurs fois",
+                                       new Exception(
+                                             "IdGed présent plusieurs fois : "
+                                                   + uuid));
+
+                              } else {
+                                 // UUID inconnu, on l'ajoute à la liste
+                                 listUuid.add(uuid);
+                                 break;
+                              }
+                           }
+                        }
+                     }
+                  }
+               }
+            }
+         }
+
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
+         if (sommaireStream != null) {
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
       }
    }
 

@@ -74,14 +74,13 @@ public class SommaireFormatValidationSupportTest {
 
          support.validationSommaire(sommaire);
 
-         Assert
-               .fail("la validation doit lever une exception de type CaptureMasseSommaireFormatValidationException");
+         Assert.fail("la validation doit lever une exception de type CaptureMasseSommaireFormatValidationException");
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Aucun document du sommaire ne sera intégré dans le SAE.", e
-                     .getMessage());
+               "Aucun document du sommaire ne sera intégré dans le SAE.",
+               e.getMessage());
       }
 
    }
@@ -144,6 +143,29 @@ public class SommaireFormatValidationSupportTest {
 
       try {
          support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("on attend un retour valide");
+      }
+
+   }
+
+   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+   public void testUniciteUuidFailure() throws CaptureMasseSommaireFormatValidationException {
+
+      File sommaire = new File(
+            "src/test/resources/sommaire/sommaire_uuid_failure.xml");
+
+      support.validerUniciteUuid(sommaire);
+   }
+
+   @Test
+   public void testUniciteUuidSuccess() {
+
+      File sommaire = new File(
+            "src/test/resources/sommaire/sommaire_uuid_succes.xml");
+
+      try {
+         support.validerUniciteUuid(sommaire);
       } catch (CaptureMasseSommaireFormatValidationException e) {
          Assert.fail("on attend un retour valide");
       }

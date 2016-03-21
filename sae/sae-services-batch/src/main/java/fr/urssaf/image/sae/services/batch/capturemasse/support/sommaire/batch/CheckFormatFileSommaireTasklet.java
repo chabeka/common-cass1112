@@ -89,6 +89,14 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
          LOGGER.debug("{} - Fin de validation du BATCH_MODE du sommaire.xml",
                TRC_EXEC);
 
+         LOGGER.debug("{} - Début de validation unicité IdGed des documents",
+               TRC_EXEC);
+         
+         validationSupport.validerUniciteUuid(sommaireFile);
+         
+         LOGGER.debug("{} - Fin de validation unicité IdGed des documents",
+               TRC_EXEC);
+         
          boolean restitutionUuids = false;
          String valeur = XmlReadUtils.getElementValue(sommaireFile,
                "restitutionUuids");

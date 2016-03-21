@@ -38,4 +38,17 @@ public interface SommaireFormatValidationSupport {
     */
    void validerModeBatch(File sommaireFile, String batchMode)
          throws CaptureMasseSommaireFormatValidationException;
+
+   /**
+    * validation de l'unicité de chaque UUID si présence dans le fichier
+    * sommaire
+    * 
+    * @param sommaireFile
+    *           le fichier soammire.xml
+    * @throws CaptureMasseSommaireFormatValidationException
+    *            Le fichier sommaire.xml est invalide
+    */
+   void validerUniciteUuid(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException;
+
 }
