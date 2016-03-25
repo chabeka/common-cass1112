@@ -45,6 +45,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_16 = 16;
    private static final int VERSION_17 = 17;
    private static final int VERSION_18 = 18;
+   private static final int VERSION_19 = 19;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -62,6 +63,9 @@ public class SAECassandraUpdater {
 
    @Autowired
    private RefMetaInitialisationService refMetaInitService;
+
+   @Autowired
+   private DroitService droitService;
 
    /**
     * Getter sur le service d'initialisation des métas
@@ -792,8 +796,8 @@ public class SAECassandraUpdater {
    }
 
    /**
-    * Version 17 : <li>Création des métadonnées pour WATT</li>
-    * <li>Ajout des événements DFCE_DEPOT_ATTACH|OK</li>
+    * Version 17 : <li>Création des métadonnées pour WATT</li> <li>Ajout des
+    * événements DFCE_DEPOT_ATTACH|OK</li>
     */
    public void updateToVersion17() {
 
@@ -810,7 +814,7 @@ public class SAECassandraUpdater {
 
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // Insertion des données initiales
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
 
@@ -853,10 +857,16 @@ public class SAECassandraUpdater {
       donnees.addActionUnitaireTraitementMasse();
 
       // Ajout des évenements WS_SUPPRESSION_MASSE|KO, WS_RESTORE_MASSE|KO,
-      // SUPPRESSION_MASSE|KO, RESTORE_MASSE_KO, DFCE_CORBEILLE_DOC|OK, DFCE_RESTORE_DOC|OK
+      // SUPPRESSION_MASSE|KO, RESTORE_MASSE_KO, DFCE_CORBEILLE_DOC|OK,
+      // DFCE_RESTORE_DOC|OK
       donnees.addReferentielEvenementV10();
+
+      // On échappe tous les . des valeurs des métadonnées des PRMD suite
+      // passage aux expressions régulières
+      droitService.majPrmdExpReguliere160600(saeDao.getKeyspace());
 
       // On positionne la version à 18
       saeDao.setDatabaseVersion(VERSION_18);
    }
+
 }

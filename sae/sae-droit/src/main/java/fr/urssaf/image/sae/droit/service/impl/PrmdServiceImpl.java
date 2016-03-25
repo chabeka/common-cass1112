@@ -297,12 +297,12 @@ public class PrmdServiceImpl implements PrmdService {
       String currentValue;
 
       while (iterator.hasNext() && !found) {
-         currentValue = iterator.next();
-         if (currentValue.equalsIgnoreCase(value)) {
+         currentValue = iterator.next().toUpperCase();
+         if (value.toUpperCase().matches(currentValue)) {
             found = true;
          }
       }
-
+      
       return found;
    }
 

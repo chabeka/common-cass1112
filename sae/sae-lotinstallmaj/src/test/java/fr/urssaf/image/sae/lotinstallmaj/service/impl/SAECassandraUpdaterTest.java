@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 
+
 public class SAECassandraUpdaterTest {
 
 //   @BeforeClass
