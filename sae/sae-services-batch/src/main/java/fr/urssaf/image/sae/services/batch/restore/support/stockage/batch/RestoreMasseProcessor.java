@@ -8,10 +8,8 @@ import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
-import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
  * Item Processor pour vérifier que le document n'est pas gelé, et pour alimenter la 
@@ -48,36 +46,18 @@ public class RestoreMasseProcessor implements
     */
    @Override
    public StorageDocument process(StorageDocument item) throws Exception {
-      StorageDocument retour = null;
+
       LOGGER.debug("Traitement du document : {}", item.getUuid().toString());
 
-      // recupere le flag indiquant si le document est gele ou non
-      boolean estGele = false;
-      Object value = StorageMetadataUtils.valueObjectMetadataFinder(
-            item.getMetadatas(), StorageTechnicalMetadatas.GEL.getShortCode());
-      if (value != null) {
-         estGele = (Boolean) value;
-      }
-      LOGGER.debug("Le document est il gele ? : {}", estGele);
-
-      // pour tous les documents non gele, on fait la mise a jour par le writer
-      // sinon, les autres sont skippes
-      if (!estGele) {
-         retour = item;
-
-         LOGGER.debug("Enrichissement de l'identifiant de restore pour le document : {}", 
-               item.getUuid().toString());
-         // dans le cas ou le document n'est pas gele
-         // on va enrichir l'identifiant de restore de masse
-         item.getMetadatas().add(
-               new StorageMetadata(Constantes.CODE_COURT_META_ID_RESTORE,
-                     uuid));
-         item.setProcessId(uuid);
+      LOGGER.debug("Enrichissement de l'identifiant de restore pour le document : {}", 
+            item.getUuid().toString());
+      // dans le cas ou le document n'est pas gele
+      // on va enrichir l'identifiant de restore de masse
+      item.getMetadatas().add(
+            new StorageMetadata(Constantes.CODE_COURT_META_ID_RESTORE,
+                  uuid));
+      item.setProcessId(uuid);
          
-      } else {
-         LOGGER.debug("Le document {} a été ignoré car il est gelé", item.getUuid().toString());
-      }
-
-      return retour;
+      return item;
    }
 }

@@ -281,7 +281,11 @@ public class SearchingServiceImpl extends AbstractServices implements
          // pouvoir tester les droits
          List<String> metadonneesRef = new ArrayList<String>(referentielMeta
                .keySet());
-         List<StorageMetadata> allMeta = convertToStorageMeta(metadonneesRef);
+         List<StorageMetadata> allMeta = null;
+         // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
+         if (!searchInRecycleBean) {
+            allMeta = convertToStorageMeta(metadonneesRef);
+         } 
 
          // Si appel au service de recherche avec passage de l'UUID du dernier
          // document, on boucle sur l'itérateur jusqu'à ce qu'on ait atteint le
@@ -313,14 +317,18 @@ public class SearchingServiceImpl extends AbstractServices implements
             if (compteur < limite) {
                // On vérifie que le document courant est autorisé par le
                // périmètre de donnée
-               LOG.debug("{} - Récupération des droits", prefixeTrc);
-               AuthenticationToken token = (AuthenticationToken) AuthenticationContext
-                     .getAuthenticationToken();
-               List<SaePrmd> saePrmds = token.getSaeDroits().get(
-                     "recherche_iterateur");
-               LOG.debug("{} - Vérification des droits", prefixeTrc);
-               boolean isPermitted = prmdService.isPermitted(untypedDocument
-                     .getUMetadatas(), saePrmds);
+               boolean isPermitted = true;
+               // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
+               if (!searchInRecycleBean) {
+                  LOG.debug("{} - Récupération des droits", prefixeTrc);
+                  AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+                        .getAuthenticationToken();
+                  List<SaePrmd> saePrmds = token.getSaeDroits().get(
+                        "recherche_iterateur");
+                  LOG.debug("{} - Vérification des droits", prefixeTrc);
+                  isPermitted = prmdService.isPermitted(untypedDocument
+                        .getUMetadatas(), saePrmds);
+               }
 
                if (isPermitted) {
                   storageDocuments.add(BeanMapper

@@ -3,9 +3,7 @@
  */
 package fr.urssaf.image.sae.services.batch.restore.support.stockage.batch;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.UUID;
 
 import org.joda.time.DateTime;
@@ -21,13 +19,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.building.services.BuildService;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.restore.exception.RestoreMasseSearchException;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -95,21 +91,6 @@ public class RecycleBeanStorageDocumentReader
    private UUID lastIdDoc = null;
    
    /**
-    * Liste des métadonnées que l'on souhaite récupérés
-    */
-   private final static List<SAEMetadata> DESIRED_METADATAS = new ArrayList<SAEMetadata>();
-   
-   /**
-    * Initialisation de la liste des métadonnées désirées.
-    */
-   static {
-      // En l'occurrence, on veut savoir si le document est gelé ou non
-      SAEMetadata metadataGel = new SAEMetadata(StorageTechnicalMetadatas.GEL.getLongCode(),
-            StorageTechnicalMetadatas.GEL.getShortCode(), null);
-      DESIRED_METADATAS.add(metadataGel);
-   }
-   
-   /**
     * Permet de verifier s'il y a un élément suivant.
     * @return boolean
     * @throws RestoreMasseSearchException 
@@ -162,7 +143,7 @@ public class RecycleBeanStorageDocumentReader
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
          PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                     MAX_PAR_PAGE, DESIRED_METADATAS, null,
+                     MAX_PAR_PAGE, null, null,
                      lastIdDoc, "");
 
          storageServiceProvider.openConnexion();
