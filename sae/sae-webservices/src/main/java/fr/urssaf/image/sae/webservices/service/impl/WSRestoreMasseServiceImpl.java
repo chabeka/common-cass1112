@@ -60,7 +60,7 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
       LOG.debug("{} - UUID traitement : {}", prefixeTrc, uuidTraitement);
 
       Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put(Constantes.UUID_TRAITEMENT_RESTORE, uuidTraitement);
+      jobParam.put(Constantes.ID_TRAITEMENT_A_RESTORER, uuidTraitement);
 
       String hName = HostnameUtil.getHostname();
 
