@@ -388,4 +388,15 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
       recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx {
+      searchingService.setSearchingServiceParameter(getDfceService());
+      return searchingService
+            .searchStorageDocumentsInRecycleBean(paginatedLuceneCriteria);
+   }
 }

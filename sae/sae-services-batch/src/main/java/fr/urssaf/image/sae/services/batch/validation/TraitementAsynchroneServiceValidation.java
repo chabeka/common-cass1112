@@ -132,7 +132,7 @@ public class TraitementAsynchroneServiceValidation {
       }
 
       if (StringUtils.isBlank(parametres.getJobParameters().get(
-            Constantes.UUID_TRAITEMENT_RESTORE))) {
+            Constantes.ID_TRAITEMENT_A_RESTORER))) {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                "idTraitement"));
       }

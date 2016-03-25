@@ -49,7 +49,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     * Constructeur
     * 
     * @param poolConfiguration
-    *           configuration du pool d'insertion des documents dans DFCE
+    *           configuration du pool de suppression des documents dans DFCE
     * @param support
     *           support pour l'arrêt du traitement de la capture en masse
     * @param config
@@ -160,7 +160,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
 
    /**
     * 
-    * @return l'insertion levée lors du traitement de capture en masse
+    * @return exception levée lors du traitement de suppression en masse
     */
    public final synchronized SuppressionMasseRuntimeException getSuppressionMasseException() {
       return this.exception;
@@ -262,17 +262,14 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     * 
     * Après chaque suppression, plusieurs cas possibles : <br>
     * <ol>
-    * <li>la suppression a réussi : on ajoute le résultat à liste des documents
-    * persistés</li>
-    * <li>l'insertion a échouée : on shutdown le pool de suppression</li>
-    * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à
-    * liste des documents persistés et on shutdown le pool d'insertion</li>
+    * <li>la suppression a réussi : on incremente le compteur de suppression</li>
+    * <li>la suppression a échouée : on shutdown le pool de suppression</li>
     * </ol>
     * 
     * @param runnable
-    *           le thread d'insertion d'un document
+    *           le thread de suppression d'un document
     * @param throwable
-    *           l'exception éventuellement levée lors de l'insertion du document
+    *           l'exception éventuellement levée lors de la suppression du document
     * 
     */
    @Override

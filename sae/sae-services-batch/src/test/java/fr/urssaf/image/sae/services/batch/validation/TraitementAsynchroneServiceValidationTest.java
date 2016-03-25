@@ -165,7 +165,7 @@ public class TraitementAsynchroneServiceValidationTest {
    public void ajouterJobRestoreMasse_success() {
       
       Map<String, String> jobParams = new HashMap<String, String>();
-      jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "UUID_TRAITEMENT");
+      jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "UUID_TRAITEMENT");
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
       service.ajouterJobRestoreMasse(parametres);
@@ -176,7 +176,7 @@ public class TraitementAsynchroneServiceValidationTest {
    public void ajouterJobRestoreMasse_failure_empty_type() {
 
       Map<String, String> jobParams = new HashMap<String, String>();
-      jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "UUID_TRAITEMENT");
+      jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "UUID_TRAITEMENT");
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, null, null, null, null, null);
       try {
@@ -199,7 +199,7 @@ public class TraitementAsynchroneServiceValidationTest {
    @Test
    public void ajouterJobRestoreMasse_failure_empty_uuid() {
       Map<String, String> jobParams = new HashMap<String, String>();
-      jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, REQ_LUCENE);
+      jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, REQ_LUCENE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, null, TYPES_JOB.restore_masse, null, null, null, null);
       try {
@@ -229,7 +229,7 @@ public class TraitementAsynchroneServiceValidationTest {
    private void assertAjouterJobRestoreMasse_idTraitement(String idTraitement) {
 
       Map<String, String> jobParams = new HashMap<String, String>();
-      jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, idTraitement);
+      jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
       try {

@@ -369,4 +369,19 @@ public interface StorageDocumentService {
 
    void deleteStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx;
+   
+   /**
+    * Permet de faire une recherche paginée dans la corbeille.
+    * 
+    * @param paginatedLuceneCriteria
+    *           Objet contenant les critères de recherche
+    * @return La liste des documents trouvés
+    * @throws SearchingServiceEx
+    *            Une exception est levée lors de la recherche
+    * @throws QueryParseServiceEx
+    *            Une exception est levée lors de la recherche
+    */
+   PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx;
 }

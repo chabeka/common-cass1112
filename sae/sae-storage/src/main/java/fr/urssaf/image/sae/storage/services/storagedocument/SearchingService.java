@@ -21,6 +21,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCrit
  * des métadonnées par UUID.</li>
  * <li>searchPaginatedStorageDocuments : service qui permet de faire une
  * recherche paginée</li>
+ * <li>searchStorageDocumentsInRecycleBean : service qui permet de faire une
+ * recherche paginée dans la corbeille</li>
  * </ul>
  */
 public interface SearchingService {
@@ -92,6 +94,21 @@ public interface SearchingService {
     *            Une exception est levée lors de la recherche
     */
    PaginatedStorageDocuments searchPaginatedStorageDocuments(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx;
+   
+   /**
+    * Permet de faire une recherche paginée dans la corbeille.
+    * 
+    * @param paginatedLuceneCriteria
+    *           Objet contenant les critères de recherche
+    * @return La liste des documents trouvés
+    * @throws QueryParseServiceEx
+    *            Une exception est levée lors de la recherche
+    * @throws SearchingServiceEx
+    *            Une exception est levée lors de la recherche
+    */
+   PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
 }

@@ -56,7 +56,7 @@ public class CheckDroitRequeteLuceneTasklet extends AbstractSuppressionMasseTask
          
          // quand la verification de droit reussie, on va stocker la requete finale
          // dans le contexte d'execution de l'execution du job
-         context.put(Constantes.REQ_FINALE_SUPPRESSION, requeteFinale);
+         context.put(Constantes.REQ_FINALE_TRT_MASSE, requeteFinale);
       } catch (SuppressionMasseRequeteValidationException e) {
          getExceptionErreurListe(chunkContext).add(e);
          

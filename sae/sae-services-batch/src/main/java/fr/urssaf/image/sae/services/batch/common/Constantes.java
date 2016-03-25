@@ -168,9 +168,9 @@ public final class Constantes {
    public static final String REQ_LUCENE_SUPPRESSION = "requeteSuppression";
    
    /**
-    * Requête finale de suppression de masse
+    * Requête finale de suppression de masse  ou de restore de masse
     */
-   public static final String REQ_FINALE_SUPPRESSION = "requeteFinale";
+   public static final String REQ_FINALE_TRT_MASSE = "requeteFinale";
    
    /**
     * UUID du traitement de suppression de masse.
@@ -191,12 +191,42 @@ public final class Constantes {
     * UUID du traitement de suppression de masse à restorer par le service de
     * restore de masse
     */
-   public static final String UUID_TRAITEMENT_RESTORE = "uuidTraitement";
+   public static final String ID_TRAITEMENT_A_RESTORER = "idTraitementARestorer";
+   
+   /**
+    * UUID du traitement de restore de masse.
+    */
+   public static final String ID_TRAITEMENT_RESTORE = "idTraitementRestore";
    
    /**
     * Nombre de docs supprimés.
     */
    public static final String NB_DOCS_SUPPRIMES = "nbDocsSupprimes";
+   
+   /**
+    * Liste des erreurs de restore
+    */
+   public static final String RESTORE_EXCEPTION = "RESTORE_EXCEPTION";
+   
+   /**
+    * Code court de la métadonnée 'identifiant de restore de masse'
+    */
+   public static final String CODE_COURT_META_ID_RESTORE = "iri";
+   
+   /**
+    * Nombre de docs restorés.
+    */
+   public static final String NB_DOCS_RESTORES = "nbDocsRestores";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'une restore de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_RM = "RESTORE_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la restore de masse
+    */
+   public static final String CONTEXTE_RESTORE_MASSE = "restoreMasse";
 
    /**
     * Constructeur

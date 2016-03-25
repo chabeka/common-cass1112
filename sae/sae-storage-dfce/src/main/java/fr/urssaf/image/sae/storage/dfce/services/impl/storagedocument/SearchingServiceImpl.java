@@ -214,9 +214,34 @@ public class SearchingServiceImpl extends AbstractServices implements
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx {
 
+      return searchByIterator(paginatedLuceneCriteria, false, true);
+   }
+
+   /**
+    * Methode de rechercher par iterateur.
+    * 
+    * @param paginatedLuceneCriteria
+    *           requete lucene que l'on veut paginer
+    * @param searchInRecycleBean
+    *           boolean indiquant si l'on recherche dans le stockage par defaut
+    *           ou la corbeille
+    * @param useChainedFilter
+    *           boolean indiquant si la requete peut utiliser les filtres
+    * @return PaginatedStorageDocuments
+    * @throws SearchingServiceEx
+    *            exception levée lors d'une erreur de recherche
+    * @throws QueryParseServiceEx
+    *            exception levée lorsque la syntaxe de la recherche n'est pas
+    *            valide
+    */
+   private PaginatedStorageDocuments searchByIterator(
+         PaginatedLuceneCriteria paginatedLuceneCriteria,
+         boolean searchInRecycleBean, 
+         boolean useChainedFilter)
+         throws SearchingServiceEx, QueryParseServiceEx {
       PaginatedStorageDocuments paginatedStorageDocuments = new PaginatedStorageDocuments();
       try {
-         String prefixeTrc = "searchPaginatedStorageDocuments()";
+         String prefixeTrc = "searchByIterator()";
 
          final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
 
@@ -229,18 +254,26 @@ public class SearchingServiceImpl extends AbstractServices implements
          Map<String, MetadataReference> referentielMeta = referenceDAO
                .getAllMetadataReferences();
 
-         // Création de la chainedFilter
-         ChainedFilter chainedFilter = createChaineFilter(
-               paginatedLuceneCriteria, referentielMeta);
-         // On l'ajoute à la searchQuery
-         searchQuery.setChainedFilter(chainedFilter);
+         if (useChainedFilter) { 
+            // Création de la chainedFilter
+            ChainedFilter chainedFilter = createChaineFilter(
+                  paginatedLuceneCriteria, referentielMeta);
+            // On l'ajoute à la searchQuery
+            searchQuery.setChainedFilter(chainedFilter);
+         }
          // On fixe le pas d'execution de l'itérateur
          searchQuery.setSearchLimit(LIMITE);
 
          // Recherche des documents par l'itérateur DFCE
-         Iterator<Document> iterateur = getDfceService().getSearchService()
-               .createDocumentIterator(searchQuery);
-
+         Iterator<Document> iterateur;
+         if (searchInRecycleBean) {
+            iterateur = getDfceService().getRecycleBinService()
+                  .createDocumentIterator(searchQuery);
+         } else {
+            iterateur = getDfceService().getSearchService()
+                  .createDocumentIterator(searchQuery);
+         }
+         
          Integer limite = paginatedLuceneCriteria.getLimit();
          Integer compteur = 0;
 
@@ -473,4 +506,14 @@ public class SearchingServiceImpl extends AbstractServices implements
       return metadatas;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+         throws SearchingServiceEx, QueryParseServiceEx {
+
+      return searchByIterator(paginatedLuceneCriteria, true, false);
+   }
 }

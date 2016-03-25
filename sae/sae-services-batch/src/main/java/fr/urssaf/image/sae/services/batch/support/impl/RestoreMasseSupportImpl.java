@@ -37,7 +37,7 @@ public class RestoreMasseSupportImpl implements TraitementExecutionSupport {
 
       Assert.notNull(job, "'job' is required");
 
-      String idTraitement = job.getJobParameters().get(Constantes.UUID_TRAITEMENT_RESTORE);
+      String idTraitement = job.getJobParameters().get(Constantes.ID_TRAITEMENT_A_RESTORER);
       ExitTraitement exitTraitement = null;
       exitTraitement = restoreMasseService.restoreMasse(job.getIdJob(), UUID.fromString(idTraitement));
 

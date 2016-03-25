@@ -59,7 +59,7 @@ public class MetadataReferenceDAOImplTest {
             .getAllMetadataReferences();
 
       Assert.assertEquals("Le nombre de métadonnées attendues est incorrect",
-            63, metadonnees.size());
+            64, metadonnees.size());
 
       String metaNonTrouve = "Métadonnéee %s non trouvée";
 
@@ -199,7 +199,7 @@ public class MetadataReferenceDAOImplTest {
 
       Assert.assertEquals(
             "Le nombre de métadonnées consultables attendues est incorrect",
-            58, metadonnees.size());
+            59, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
@@ -510,7 +510,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
             .assertEquals(
                   "Le nombre de métadonnées utilisables en critère de recherche attendues est incorrect",
-                  42, metadonnees.size());
+                  43, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
@@ -861,7 +861,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
       .assertEquals(
             "Le nombre de métadonnées transférables attendues est incorrect",
-            49, metadonnees.size());
+            50, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {

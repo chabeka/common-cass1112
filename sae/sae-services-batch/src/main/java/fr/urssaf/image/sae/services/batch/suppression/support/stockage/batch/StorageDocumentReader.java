@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemReader;
@@ -22,6 +23,9 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.building.services.BuildService;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.suppression.exception.SuppressionMasseSearchException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
@@ -64,6 +68,12 @@ public class StorageDocumentReader
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider storageServiceProvider;
+   
+   @Autowired
+   private InterruptionTraitementMasseSupport support;
+   
+   @Autowired
+   private InterruptionTraitementConfig config;
    
    /**
     * Nombre de documents par page d'itération.
@@ -113,6 +123,9 @@ public class StorageDocumentReader
          if (lastIteration) {
             hasNext = false;
          } else {
+            // avant de faire appel à la base pour récupérer les éléments, on va tester qu'on est pas à l'heure 
+            // de l'interruption des serveurs
+            gererInterruption();
             // on appelle la récupération des prochains éléments
             hasNext = fetchMore();
          }
@@ -195,5 +208,24 @@ public class StorageDocumentReader
          LOGGER.debug("Read du document : {}", doc.getUuid().toString());
       }
       return doc;
+   }
+   
+   /**
+    * Methode permettant de gerer la plage d'interruption.
+    * @throws SuppressionMasseSearchException
+    */
+   private void gererInterruption() throws SuppressionMasseSearchException {
+      // on vérifie que le traitement ne doit pas s'interrompre
+      final DateTime currentDate = new DateTime();
+
+      if (config != null
+            && support.hasInterrupted(currentDate, config)) {
+         
+         try {
+            support.interruption(currentDate, config);
+         } catch (InterruptionTraitementException e) {
+            throw new SuppressionMasseSearchException(e);
+         }
+      }
    }
 }

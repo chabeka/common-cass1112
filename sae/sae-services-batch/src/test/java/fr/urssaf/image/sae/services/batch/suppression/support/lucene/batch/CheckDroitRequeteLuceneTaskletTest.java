@@ -103,7 +103,7 @@ public class CheckDroitRequeteLuceneTaskletTest {
             step.getExitStatus());
       
       Assert.assertNotNull("La requete lucene finale doit être présent dans le contexte d'execution",
-            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_SUPPRESSION));
+            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
@@ -143,7 +143,7 @@ public class CheckDroitRequeteLuceneTaskletTest {
             step.getExitStatus());
       
       Assert.assertNotNull("La requete lucene finale doit être présent dans le contexte d'execution",
-            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_SUPPRESSION));
+            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
@@ -184,7 +184,7 @@ public class CheckDroitRequeteLuceneTaskletTest {
             step.getExitStatus());
       
       Assert.assertNull("La requete lucene finale ne doit être présent dans le contexte d'execution",
-            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_SUPPRESSION));
+            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
@@ -230,7 +230,7 @@ public class CheckDroitRequeteLuceneTaskletTest {
             step.getExitStatus());
       
       Assert.assertNull("La requete lucene finale ne doit être présent dans le contexte d'execution",
-            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_SUPPRESSION));
+            step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()

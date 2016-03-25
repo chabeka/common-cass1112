@@ -75,7 +75,7 @@ public class SuppressionMasseProcessorTest {
 
       String requete = "srt:[123456 TO ]";
       
-      this.context.put(Constantes.REQ_FINALE_SUPPRESSION, requete);
+      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
       this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
       
       // permet juste de rendre unique le job au niveau spring-batch
@@ -146,7 +146,7 @@ public class SuppressionMasseProcessorTest {
       
       EasyMock.replay(mockService);
       
-      this.context.put(Constantes.REQ_FINALE_SUPPRESSION, requete);
+      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
       this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
       
       // permet juste de rendre unique le job au niveau spring-batch
@@ -224,7 +224,7 @@ public class SuppressionMasseProcessorTest {
       
       EasyMock.replay(mockService);
       
-      this.context.put(Constantes.REQ_FINALE_SUPPRESSION, requete);
+      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
       this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
       
       // permet juste de rendre unique le job au niveau spring-batch
@@ -268,7 +268,7 @@ public class SuppressionMasseProcessorTest {
 
       String requete = "srt:123456";
       
-      this.context.put(Constantes.REQ_FINALE_SUPPRESSION, requete);
+      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
       this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
       
       // configure le mock
@@ -343,7 +343,7 @@ public class SuppressionMasseProcessorTest {
 
       String requete = "srt:123456";
       
-      this.context.put(Constantes.REQ_FINALE_SUPPRESSION, requete);
+      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
       this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
       
       // configure le mock

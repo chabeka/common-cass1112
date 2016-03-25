@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.services.batch.suppression.support.lucene.validation;
 
-import org.apache.cxf.common.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 

@@ -199,7 +199,7 @@ public class TraitementAsynchroneServiceTest {
        idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
        
        Map<String, String> jobParams = new HashMap<String, String>();
-       jobParams.put(Constantes.UUID_TRAITEMENT_RESTORE, "id_traitement");
+       jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "id_traitement");
        
        TraitemetMasseParametres parametres = new TraitemetMasseParametres(
              jobParams, idJob, TYPES_JOB.restore_masse, 
@@ -337,7 +337,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       UUID idTraitement = UUID.randomUUID();
       Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put(Constantes.UUID_TRAITEMENT_RESTORE, idTraitement.toString());
+      jobParam.put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement.toString());
       
       String codeVi = "TEST_LANCER_JOB_RESTORE";
       VIContenuExtrait viExtrait = createTestVi("restore_masse", codeVi);
