@@ -12,6 +12,7 @@ import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class JobsQueueDao {
    private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
 
    private final ColumnFamilyTemplate<String, UUID> jobsQueueTmpl;
+   
+   private static final int MAX_ROWS = 5000;
 
    private final Keyspace keyspace;
 
@@ -173,5 +176,19 @@ public class JobsQueueDao {
             UUIDSerializer.get(), clock);
 
    }
-
+   
+   /**
+    * 
+    * @return RangeSlicesQuery de <code>JobsQueue</code>
+    */
+   public RangeSlicesQuery<String, UUID, String> createRangeSlicesQuery() {
+      RangeSlicesQuery<String, UUID, String> query = HFactory
+            .createRangeSlicesQuery(keyspace, StringSerializer.get(),
+                  UUIDSerializer.get(), StringSerializer.get());
+      
+      query.setColumnFamily(JOBSQUEUE_CFNAME);
+      query.setRowCount(MAX_ROWS);
+      
+      return query;
+   }
 }

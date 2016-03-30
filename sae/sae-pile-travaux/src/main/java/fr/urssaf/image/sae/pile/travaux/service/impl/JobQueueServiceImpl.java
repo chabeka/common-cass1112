@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.service.impl;
 
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -613,4 +614,11 @@ public class JobQueueServiceImpl implements JobQueueService {
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<String> getHosts() {
+      return this.jobsQueueSupport.getHosts();
+   }
 }

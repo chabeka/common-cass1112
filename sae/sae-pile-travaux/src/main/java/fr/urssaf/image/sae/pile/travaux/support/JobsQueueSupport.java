@@ -1,10 +1,16 @@
 package fr.urssaf.image.sae.pile.travaux.support;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -329,4 +335,26 @@ public class JobsQueueSupport {
 
    }
 
+   /**
+    * Recupere la liste des serveurs qui ont deja traite au moins un job.
+    * 
+    * @return List<String> liste des serveurs
+    */
+   public final List<String> getHosts() {
+      List<String> hosts = new ArrayList<String>();
+      
+      RangeSlicesQuery<String, UUID, String> query = this.jobsQueueDao.createRangeSlicesQuery();
+      query.setReturnKeysOnly();
+      
+      QueryResult<OrderedRows<String, UUID, String>> resultat = query.execute();
+      if (resultat.get() != null && resultat.get().getCount() > 0) {
+         for (Row<String, UUID, String> row : resultat.get().getList()) {
+            if (!row.getKey().equals(JOBS_WAITING_KEY)) {
+               hosts.add(row.getKey());
+            }
+         }
+      }
+      
+      return hosts;
+   }
 }

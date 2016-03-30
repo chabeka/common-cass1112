@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
@@ -160,4 +161,12 @@ public interface JobQueueService {
     *            exception levée lorsque le travail n'est pas réinitialisable
     */
    void resetJob(UUID idJob) throws JobNonReinitialisableException;
+   
+   /**
+    * Methode permettant de recuperer la liste des serveurs qui ont deja traites
+    * au moins un job.
+    * 
+    * @return List<String>
+    */
+   List<String> getHosts();
 }
