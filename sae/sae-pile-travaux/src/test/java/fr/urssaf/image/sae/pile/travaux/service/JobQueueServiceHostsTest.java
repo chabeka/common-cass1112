@@ -21,9 +21,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -68,8 +65,7 @@ public class JobQueueServiceHostsTest {
       // verifie quy'aucun host n'a traite de jobs
       List<String> hosts = jobQueueService.getHosts();
       Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
-      Assert.assertTrue("La liste des hosts doit être vide", hosts.isEmpty());
-
+      
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
