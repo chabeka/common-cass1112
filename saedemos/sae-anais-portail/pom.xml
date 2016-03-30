@@ -4,7 +4,7 @@
    
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-anais-portail</artifactId>
-   <version>1.0.9</version>
+   <version>1.0.10-SNAPSHOT</version>
    
    <packaging>war</packaging>
    
@@ -256,13 +256,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.9
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.9
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/tags/sae-anais-portail-1.0.9
+        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-portail/
       </connection>
    </scm>
    
