@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import recouv.cirti.anais.api.source.AnaisExceptionAuthFailure;
@@ -31,6 +32,7 @@ public class SaeAnaisServiceRgTest {
 
    }
 
+   @Ignore
    @Test
    public void success_quatre_droits() throws AucunDroitException {
 
