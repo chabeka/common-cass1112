@@ -667,7 +667,7 @@ public class AnaisUser
       }
       else
       {
-         filter += "(|(uniqueMember=$userdn)";
+         filter += "(|(uniqueMember=" + userdn + ")";
          for (AnaisSecurityGroup secgroup: securitygrouplist)
          {
             
