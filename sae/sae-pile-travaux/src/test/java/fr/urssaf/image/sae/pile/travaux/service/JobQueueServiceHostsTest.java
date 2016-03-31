@@ -80,8 +80,15 @@ public class JobQueueServiceHostsTest {
       hosts = jobQueueService.getHosts();
       Assert.assertNotNull("La liste des hosts ne doit pas être null", hosts);
       Assert.assertFalse("La liste des hosts ne doit pas être vide", hosts.isEmpty());
-      Assert.assertEquals("La liste des hosts doit comporter un host", 1, hosts.size());
-      Assert.assertEquals("Le nom du hosts n'est pas le bon", "hostname", hosts.get(0));
+      
+      boolean hostPresent = false;
+      for (String hostname : hosts) {
+         if (hostname.equals("hostname")) {
+            hostPresent = true;
+            break;
+         }
+      }
+      Assert.assertTrue("Le nom du hosts n'est pas present dans la liste", hostPresent);
       
    }
 
