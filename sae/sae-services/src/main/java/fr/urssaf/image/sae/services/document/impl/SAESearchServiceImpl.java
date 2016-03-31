@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
@@ -840,21 +841,48 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    private String constructionReqLucene(List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata) {
       String requeteLucene = "";
-      int nbMetaFixes = fixedMetadatas.size();
-      int compteur = 0;
-
+      
       if (fixedMetadatas != null) {
-         // On boucle sur les méta fixes et on sépare les couples code/valeur
-         // par des AND
+         // On boucle sur les méta fixes pour rassembler les valeurs multiples de méta
+         Map<String, List<String>> listeMetaFixe = new HashMap<String, List<String>>();
+         
          for (UntypedMetadata metaFixe : fixedMetadatas) {
-            requeteLucene = requeteLucene.concat(metaFixe.getLongCode()
-                  .concat(":").concat("\"").concat(metaFixe.getValue())
-                  .concat("\""));
+            if (listeMetaFixe.containsKey(metaFixe.getLongCode())) {
+               listeMetaFixe.get(metaFixe.getLongCode()).add(metaFixe.getValue());
+            } else {
+               List<String> listeValeur = new ArrayList<String>();
+               listeValeur.add(metaFixe.getValue());
+               listeMetaFixe.put(metaFixe.getLongCode(), listeValeur);
+            }
+            
+         }
+      
+         int nbMetaFixes = listeMetaFixe.size();
+         int compteur = 0;
+         
+         // On boucle sur la nouvelle liste des méta, en séparant les différentes valeur par des OR et les méta par des AND
+         for(Entry<String, List<String>> entry : listeMetaFixe.entrySet()) {
+            String cle = entry.getKey();
+            List<String> valeurs = entry.getValue();
+            int compteurValeurs = 0;
+            
+            requeteLucene = requeteLucene.concat("(");
+            for (String valeur : valeurs) {
+               requeteLucene = requeteLucene.concat(cle
+                     .concat(":").concat("\"").concat(valeur)
+                     .concat("\""));
+               if (compteurValeurs < valeurs.size() - 1) {
+                  requeteLucene = requeteLucene.concat(" OR ");
+               }
+               compteurValeurs++;
+            }
+            requeteLucene = requeteLucene.concat(")");
+            
             if (compteur < nbMetaFixes - 1) {
                requeteLucene = requeteLucene.concat(" AND ");
             }
             compteur++;
-         }
+        }
       }
 
       if (varyingMetadata != null) {
