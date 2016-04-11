@@ -217,4 +217,18 @@
 		<ns1:aCreerGNS>oui</ns1:aCreerGNS>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
+	<ns1:indexReference>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-CodeRND-DateArchivage</ns1:nom>
+		<ns1:composition/>
+		<ns1:aCreerGNT>non</ns1:aCreerGNT>
+		<ns1:aCreerGNS>non</ns1:aCreerGNS>
+		<ns1:aIndexerVide>non</ns1:aIndexerVide>
+	</ns1:indexReference>
+	<ns1:indexReference>
+		<ns1:nom>ATransfererScribe-ApplicationProductrice-DateArchivage</ns1:nom>
+		<ns1:composition>ats:apr:SM_ARCHIVAGE_DATE</ns1:composition>
+		<ns1:aCreerGNT>oui</ns1:aCreerGNT>
+		<ns1:aCreerGNS>non</ns1:aCreerGNS>
+		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
+	</ns1:indexReference>
 </ns1:indexesComposites>

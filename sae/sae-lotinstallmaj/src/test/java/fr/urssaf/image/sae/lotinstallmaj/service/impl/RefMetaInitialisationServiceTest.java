@@ -32,7 +32,7 @@ public class RefMetaInitialisationServiceTest {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       Assert.assertEquals("Le nombre de métadonnées attendu est incorrect",
-            141, metadonnees.size());
+            142, metadonnees.size());
    }
 
    @Test
@@ -52,7 +52,7 @@ public class RefMetaInitialisationServiceTest {
       // throw new MajLotRuntimeException(e);
       // }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2259,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2275,
             lignes.size());
    }
 
@@ -80,7 +80,7 @@ public class RefMetaInitialisationServiceTest {
       // throw new MajLotRuntimeException(e);
       // }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1217,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1227,
             lignes.size());
 
    }
@@ -232,7 +232,7 @@ public class RefMetaInitialisationServiceTest {
 
       // -- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
-      Assert.assertEquals(message, 28, indexes.size());
+      Assert.assertEquals(message, 29, indexes.size());
    }
 
    @Test
@@ -245,13 +245,13 @@ public class RefMetaInitialisationServiceTest {
 
       // -- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes composite attendu en GNS (fichier v3.5) est incorrect";
-      Assert.assertEquals(message, 5, indexes.size());
+      Assert.assertEquals(message, 7, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(false);
 
       // -- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
-      Assert.assertEquals(message, 3, indexes.size());
+      Assert.assertEquals(message, 4, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

@@ -61,6 +61,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_160400 = "CASSANDRA_DFCE_160400";
    public static final String GNS_CASSANDRA_DFCE_160600 = "GNS_CASSANDRA_DFCE_160600";
    public static final String GNT_CASSANDRA_DFCE_160600 = "GNT_CASSANDRA_DFCE_160600";
+   public static final String GNS_CASSANDRA_DFCE_160601 = "GNS_CASSANDRA_DFCE_160601";
+   public static final String GNT_CASSANDRA_DFCE_160601 = "GNT_CASSANDRA_DFCE_160601";
 
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -246,21 +248,26 @@ public final class MajLotServiceImpl implements MajLotService {
          updateDFCE160400();
       } else if (GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
-         // Pas de nouvelles méta pour le moment (à décommenter si ajout de
-         // nouvelles méta)
-         // updateMetaDfce("META_160600");
-         // Ajout des index composites
+        // Ajout des index composites
          addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
-         // Pas de nouvelles méta pour le moment (à décommenter si ajout de
-         // nouvelles méta)
-         // updateMetaDfce("META_160600");
          // Ajout des index composites
          addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
+      } else if (GNS_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160601();
+         // Création des métadonnées
+         updateMetaDfce("META_160601");
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNS);
+      } else if (GNT_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160601();
+         // Création des métadonnées
+         updateMetaDfce("META_160601");
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNT);
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
-
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -562,6 +569,18 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
+   /**
+    * Pour lot 160601 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 19
+    */
+   private void updateCassandra160601() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160601");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion19();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+   
+   
    /**
     * Ajout des droits GED
     */
@@ -1019,6 +1038,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion16();
       updater.updateToVersion17();
       updater.updateToVersion18();
+      updater.updateToVersion19();
 
    }
 

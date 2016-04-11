@@ -869,4 +869,28 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_18);
    }
 
+   /**
+    * Version 19 : <li>Ajout de la nouvelle metadonnee ATransfererScribe pour
+    * les besoins de SCRIBE/li>
+    */
+   public void updateToVersion19() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_19) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_19);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      // On positionne la version à 19
+      saeDao.setDatabaseVersion(VERSION_19);
+   }
+
 }
