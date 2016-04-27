@@ -340,7 +340,7 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 // 13) Lot 160600SAE
 // ------------------------------------------
 
-Lot 160600SAE
+13-1) Lot 160600SAE
 Met la base Cassandra du SAE en version 18 :
 
 - Ajout des actions unitaire suppression_masse et restore_masse
@@ -357,9 +357,25 @@ Met la base Cassandra du SAE en version 18 :
 	DomaineCotisant-CodeOrganismeProprietaire-StatutWATT-CodeProduitV2-CodeTraitementV2-DateArchivage
 	DomaineCotisant-CodeOrganismeProprietaire-StatutWATT-DateArchivage
 	
+- On échappe tous les . des valeurs des métadonnées des PRMD suite passage aux expressions régulières
+	
 Attention le nom de l'opération est différent entre GNT et GNS pour différencier la création des index composite.	
 POUR LA GNS :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_160600
 
 POUR LA GNT :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_160600
+
+13-2) Lot 160601SAE
+Met la base Cassandra du SAE en version 19 :
+
+- Ajout de la nouvelle metadonnee ATransfererScribe pour les besoins de SCRIBE
+
+- Ajout de l'index composite ATransfererScribe-ApplicationProductrice-DateArchivage pour les besoins de SCRIBE
+
+Attention le nom de l'opération est différent entre GNT et GNS pour différencier la création des index composite.	
+POUR LA GNS :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_160601
+
+POUR LA GNT :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_160601
