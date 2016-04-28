@@ -303,6 +303,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for restoreMasse method
+            * override this method for handling normal response from restoreMasse operation
+            */
+           public void receiveResultrestoreMasse(
+                    sae.client.demo.webservice.modele.SaeServiceStub.RestoreMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from restoreMasse operation
+           */
+            public void receiveErrorrestoreMasse(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for archivageMasse method
             * override this method for handling normal response from archivageMasse operation
             */
@@ -316,6 +332,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from archivageMasse operation
            */
             public void receiveErrorarchivageMasse(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for suppressionMasse method
+            * override this method for handling normal response from suppressionMasse operation
+            */
+           public void receiveResultsuppressionMasse(
+                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from suppressionMasse operation
+           */
+            public void receiveErrorsuppressionMasse(java.lang.Exception e) {
             }
                 
            /**

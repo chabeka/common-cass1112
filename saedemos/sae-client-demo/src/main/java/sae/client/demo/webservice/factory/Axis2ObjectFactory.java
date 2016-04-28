@@ -57,11 +57,15 @@ import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequetePrincipaleType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RestoreMasse;
+import sae.client.demo.webservice.modele.SaeServiceStub.RestoreMasseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaire;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type0;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type1;
 import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
+import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasse;
+import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Transfert;
 import sae.client.demo.webservice.modele.SaeServiceStub.TransfertRequestType;
@@ -1028,6 +1032,46 @@ public final class Axis2ObjectFactory {
       
       return getDocFormatOrigine;
       
+   }
+
+   
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * @param requete La requête de suppression des documents
+    * @return le paramètre d'entrée de l'opération "suppressionMasse"
+    */
+   public static SuppressionMasse contruitParamsEntreeSuppressionMasse(
+         String requete) {
+      SuppressionMasse suppressionMasse = new SuppressionMasse();
+      SuppressionMasseRequestType suppressionMasseRequest = new SuppressionMasseRequestType();
+      suppressionMasse.setSuppressionMasse(suppressionMasseRequest);
+      
+      // Requete de suppression
+      RequeteRechercheType requeteType = new RequeteRechercheType();
+      requeteType.setRequeteRechercheType(requete);
+      suppressionMasseRequest.setRequete(requeteType);
+      
+      return suppressionMasse;
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * @param idTraitementSuppression L'identifiant du traitement de suppression de masse à restorer
+    * @return le paramètre d'entrée de l'opération "restoreMasse"
+    */
+   public static RestoreMasse contruitParamsEntreeRestoreMasse(
+         String idTraitementSuppression) {
+      RestoreMasse restoreMasse = new RestoreMasse();
+      RestoreMasseRequestType restoreMasseRequest = new RestoreMasseRequestType();
+      restoreMasse.setRestoreMasse(restoreMasseRequest);
+      
+      UuidType requeteType = new UuidType();
+      requeteType.setUuidType(idTraitementSuppression);
+      restoreMasseRequest.setUuid(requeteType);
+      
+      return restoreMasse;
    }
 
 }
