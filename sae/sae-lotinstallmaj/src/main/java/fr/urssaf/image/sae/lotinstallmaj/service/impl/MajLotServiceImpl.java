@@ -252,6 +252,8 @@ public final class MajLotServiceImpl implements MajLotService {
          addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
+         // Création des métadonnées
+         updateMetaDfce("META_160600");
          // Ajout des index composites
          addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
       } else if (GNS_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation)) {
