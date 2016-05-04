@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>16.6.0.3-SNAPSHOT</version>
+      <version>16.6.0.3</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-vi</artifactId>
-   <version>16.6.0.3-SNAPSHOT</version>
+   <version>16.6.0.3</version>
 
    <name>sae-vi</name>
    
@@ -109,12 +109,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-saml</artifactId>
-         <version>16.6.0.3-SNAPSHOT</version>
+         <version>16.6.0.3</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
-         <version>16.6.0.3-SNAPSHOT</version>
+         <version>16.6.0.3</version>
       </dependency>
 
       <!-- AspectJ -->
