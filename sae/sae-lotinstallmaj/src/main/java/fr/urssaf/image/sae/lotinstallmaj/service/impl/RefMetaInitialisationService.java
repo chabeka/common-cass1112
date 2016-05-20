@@ -50,7 +50,7 @@ public final class RefMetaInitialisationService {
    private static final String XSD_INDEXES_COMPOSITES = "/xsd/metadata/IndexesComposites.xsd";
 
    // A MODIFIER LORS DES EVOLUTIONS DE FICHIERS !!
-   private static final String FICHIER_METADONNEES = "Metadonnees.3.5.xml";
+   private static final String FICHIER_METADONNEES = "Metadonnees.3.6.xml";
    private static final String NOM_FICHIER_INDEX_COMPOSITE = "IndexesComposites3.5.xml";
 
    private static final Logger LOG = LoggerFactory
@@ -461,7 +461,7 @@ public final class RefMetaInitialisationService {
 
    protected void verification1(List<MetadataReference> metadonnees) {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionRefMeta(metadonnees);
-      compareDeuxListeLignes("1", "refmeta/MetadataReferential_Lot160600_ameliore.xml", lignesGenerees);
+      compareDeuxListeLignes("1", "refmeta/MetadataReferential_Lot160900_ameliore.xml", lignesGenerees);
    }
 
    @SuppressWarnings("unchecked")
@@ -597,7 +597,7 @@ public final class RefMetaInitialisationService {
 
    protected void verification2(List<MetadataReference> metadonnees) {
       List<String> lignesGenerees = genereFichierXmlAncienneVersionBaseDfce(metadonnees);
-      compareDeuxListeLignes("2", "refmeta/saeBase_Lot160600_ameliore.xml", lignesGenerees);
+      compareDeuxListeLignes("2", "refmeta/saeBase_Lot160900_ameliore.xml", lignesGenerees);
    }
 
    private void persisteMetadonnees(Keyspace keyspace, List<MetadataReference> metadonnees) {

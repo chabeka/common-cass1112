@@ -379,3 +379,15 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 POUR LA GNT :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_160601
+
+
+// ------------------------------------------
+// 13) Lot 160900SAE
+// ------------------------------------------
+
+Met la base Cassandra du SAE en version 20 :
+
+- Passage à 7 de la taille de la métadonnée NumeroIntControle
+- Ajout de la métadonnée DomaineRSI
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160900

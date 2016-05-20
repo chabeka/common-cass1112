@@ -63,6 +63,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNT_CASSANDRA_DFCE_160600 = "GNT_CASSANDRA_DFCE_160600";
    public static final String GNS_CASSANDRA_DFCE_160601 = "GNS_CASSANDRA_DFCE_160601";
    public static final String GNT_CASSANDRA_DFCE_160601 = "GNT_CASSANDRA_DFCE_160601";
+   public static final String CASSANDRA_DFCE_160900 = "CASSANDRA_DFCE_160900";
 
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -268,6 +269,10 @@ public final class MajLotServiceImpl implements MajLotService {
          updateMetaDfce("META_160601");
          // Ajout des index composites
          addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNT);
+      } else if (CASSANDRA_DFCE_160900.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160900();
+         // Création des métadonnées
+         updateMetaDfce("META_160900");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
       } else {
@@ -582,6 +587,17 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
    
+   /**
+    * Pour lot 160900 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 20
+    */
+   private void updateCassandra160900() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160900");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion20();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+   
    
    /**
     * Ajout des droits GED
@@ -818,7 +834,7 @@ public final class MajLotServiceImpl implements MajLotService {
                baseCategory.setSingle(category.isSingle());
                base.addBaseCategory(baseCategory);
 
-               LOG.info("La métadonnée {} ser ajoutee.",
+               LOG.info("La métadonnée {} sera ajoutee.",
                      category.getDescriptif());
             } else {
 
@@ -1041,6 +1057,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion17();
       updater.updateToVersion18();
       updater.updateToVersion19();
+      updater.updateToVersion20();
 
    }
 
