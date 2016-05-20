@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
@@ -40,6 +41,7 @@ import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -133,8 +135,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          storageTransfertService.openConnexion();
          traceServiceSupport.connect();
 
-         LOG.debug("{} - Vérification des droits", trcPrefix);
-         // On récupère le document à partir de l'UUID, avec toutes les
+
+         // On récupère les métadonnées du document à partir de l'UUID, avec toutes les
          // métadonnées du référentiel
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
@@ -145,25 +147,25 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          }
          UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 
-         StorageDocument documentDroit = storageDocumentService
-               .searchStorageDocumentByUUIDCriteria(uuidCriteriaDroit);
-         if (documentDroit != null) {
-            UntypedDocument untypedDocument = this.mappingService
-                  .storageDocumentToUntypedDocument(documentDroit);
+         List<StorageMetadata> listeStorageMeta = storageDocumentService
+               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
 
+         if (listeStorageMeta.size() != 0) {
+            List<UntypedMetadata> listeUMeta = mappingService
+                  .storageMetadataToUntypedMetadata(listeStorageMeta);
+
+            // Vérification des droits
             LOG.debug("{} - Récupération des droits", trcPrefix);
             AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                   .getContext().getAuthentication();
             List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
             LOG.debug("{} - Vérification des droits", trcPrefix);
-            boolean isPermitted = prmdService.isPermitted(
-                  untypedDocument.getUMetadatas(), saePrmds);
+            boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
             if (!isPermitted) {
                throw new AccessDeniedException(
                      "Le document est refusé au transfert car les droits sont insuffisants");
             }
-
          }
 
          LOG.debug("{} - recherche du document", trcPrefix);
@@ -302,6 +304,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       } catch (InvalidSAETypeException ex) {
          throw new TransfertException(erreur, ex);
       } catch (MappingFromReferentialException ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (RetrievalServiceEx ex) {
          throw new TransfertException(erreur, ex);
       }
    }

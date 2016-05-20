@@ -100,7 +100,7 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
-         // On récupère le document sur lequel on souhaite ajouter la note pour
+         // On récupère les métadonnées du document sur lequel on souhaite ajouter la note pour
          // vérifier les droits
          List<StorageMetadata> listeStorageMeta = this
                .getStorageServiceProvider().getStorageDocumentService()

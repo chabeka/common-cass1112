@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
@@ -32,6 +33,7 @@ import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -55,13 +57,13 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
    @Autowired
    @Qualifier("storageDocumentService")
    private StorageDocumentService storageService;
-   
+
    @Autowired
    private MetadataReferenceDAO referenceDAO;
-   
+
    @Autowired
    private PrmdService prmdService;
-   
+
    @Autowired
    private MappingDocumentService mappingService;
 
@@ -69,13 +71,14 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public final void suppression(UUID idArchive) throws SuppressionException, ArchiveInexistanteEx {
+   public final void suppression(UUID idArchive) throws SuppressionException,
+         ArchiveInexistanteEx {
       String trcPrefix = "suppression";
       LOG.debug("{} - début", trcPrefix);
       LOG.debug("{} - Début de suppression du document {}", new Object[] {
             trcPrefix, idArchive.toString() });
 
-            try {
+      try {
          this.getStorageServiceProvider().openConnexion();
 
          try {
@@ -88,41 +91,39 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
                      .getShortCode()));
             }
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-            
-            StorageDocument document = storageService
-                  .searchStorageDocumentByUUIDCriteria(uuidCriteria);
-            if (document == null) {
+
+            // On récupère les métadonnées du document à partir de l'UUID, avec
+            // toutes les
+            // métadonnées du référentiel
+            List<StorageMetadata> listeStorageMeta = this
+                  .getStorageServiceProvider().getStorageDocumentService()
+                  .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+            if (listeStorageMeta.size() == 0) {
                String message = StringUtils
                      .replace(
                            "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
                            "{0}", idArchive.toString());
                throw new ArchiveInexistanteEx(message);
+            }
+            List<UntypedMetadata> listeUMeta = mappingService
+                  .storageMetadataToUntypedMetadata(listeStorageMeta);
 
-            } else {
-               UntypedDocument untypedDocument = this.mappingService
-                     .storageDocumentToUntypedDocument(document);
+            // Vérification des droits
+            LOG.debug("{} - Récupération des droits", trcPrefix);
+            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                  .getContext().getAuthentication();
+            List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
+            LOG.debug("{} - Vérification des droits", trcPrefix);
+            boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
-               LOG.debug("{} - Récupération des droits", trcPrefix);
-               AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-                     .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getSaeDroits()
-                     .get("suppression");
-               LOG.debug("{} - Vérification des droits", trcPrefix);
-               boolean isPermitted = prmdService.isPermitted(
-                     untypedDocument.getUMetadatas(), saePrmds);
-
-               if (!isPermitted) {
-                  throw new AccessDeniedException(
-                        "Le document est refusé à la suppression car les droits sont insuffisants");
-               }
+            if (!isPermitted) {
+               throw new AccessDeniedException(
+                     "Le document est refusé à la suppression car les droits sont insuffisants");
 
             }
 
             LOG.debug("{} - suppression du document", trcPrefix);
             storageService.deleteStorageDocument(idArchive);
-
-         } catch (SearchingServiceEx exception) {
-            throw new SuppressionException(exception);
 
          } catch (DeletionServiceEx exception) {
             throw new SuppressionException(exception);
@@ -131,6 +132,8 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
          } catch (InvalidSAETypeException exception) {
             throw new SuppressionException(exception);
          } catch (MappingFromReferentialException exception) {
+            throw new SuppressionException(exception);
+         } catch (RetrievalServiceEx exception) {
             throw new SuppressionException(exception);
          }
       } catch (ConnectionServiceEx e) {

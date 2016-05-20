@@ -53,6 +53,7 @@ import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeEx
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -92,7 +93,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
    @Autowired
    private MappingDocumentService mappingService;
-   
+
    @Autowired
    private PrmdService prmdService;
 
@@ -117,10 +118,10 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       try {
          this.getStorageServiceProvider().openConnexion();
 
-         StorageDocument document;
-         
+         List<StorageMetadata> listeStorageMeta;
+
          try {
-            
+
             // On récupère la liste de toutes les méta du référentiel
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
@@ -132,45 +133,43 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-          
-            // On récupère le document à partir de l'UUID, avec toutes les
+            // On récupère les métadonnées du document à partir de l'UUID, avec
+            // toutes les
             // métadonnées du référentiel
-            document = documentService
-                  .searchStorageDocumentByUUIDCriteria(uuidCriteria);
-            if (document == null) {
+            listeStorageMeta = this.getStorageServiceProvider()
+                  .getStorageDocumentService()
+                  .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+            if (listeStorageMeta.size() == 0) {
                String message = StringUtils
                      .replace(
                            "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
                            "{0}", idArchive.toString());
                throw new ArchiveInexistanteEx(message);
-            } else {
+            }
+            List<UntypedMetadata> listeUMeta = mappingService
+                  .storageMetadataToUntypedMetadata(listeStorageMeta);
 
-               UntypedDocument untypedDocument = this.mappingService
-                     .storageDocumentToUntypedDocument(document);
+            // Vérification des droits
+            LOG.debug("{} - Récupération des droits", trcPrefix);
+            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                  .getContext().getAuthentication();
+            List<SaePrmd> saePrmds = token.getSaeDroits().get("modification");
+            LOG.debug("{} - Vérification des droits", trcPrefix);
+            boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
-               LOG.debug("{} - Récupération des droits", trcPrefix);
-               AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-                     .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getSaeDroits()
-                     .get("modification");
-               LOG.debug("{} - Vérification des droits", trcPrefix);
-               boolean isPermitted = prmdService.isPermitted(
-                     untypedDocument.getUMetadatas(), saePrmds);
-
-               if (!isPermitted) {
-                  throw new AccessDeniedException(
-                        "Le document est refusé à la modification car les droits sont insuffisants");
-               }
+            if (!isPermitted) {
+               throw new AccessDeniedException(
+                     "Le document est refusé à la modification car les droits sont insuffisants");
 
             }
 
-         } catch (SearchingServiceEx exception) {
-            throw new ModificationException(exception);
          } catch (InvalidSAETypeException exception) {
             throw new ModificationException(exception);
          } catch (MappingFromReferentialException exception) {
             throw new ModificationException(exception);
          } catch (ReferentialException exception) {
+            throw new ModificationException(exception);
+         } catch (RetrievalServiceEx exception) {
             throw new ModificationException(exception);
          }
 
@@ -210,7 +209,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          // enrichissement du code fonction, activité et
          // date de fin si modification du code RND)
          List<List<UntypedMetadata>> completedMetadatas = completeMetadatas(
-               modifiedMetadatas, deletedMetadatas, document.getMetadatas());
+               modifiedMetadatas, deletedMetadatas, listeStorageMeta);
 
          modifiedMetadatas = completedMetadatas.get(0);
          deletedMetadatas = completedMetadatas.get(1);
@@ -349,5 +348,5 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
       return value;
    }
- 
+
 }
