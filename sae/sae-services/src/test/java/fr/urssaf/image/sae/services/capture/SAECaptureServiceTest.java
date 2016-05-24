@@ -238,6 +238,21 @@ public class SAECaptureServiceTest {
       //-- Lance la capture du document
       captureErrorUnexpectedDomain("DomaineComptable");
    }
+   /**
+    * Teste le fait que le DomainRSI ne peut être renseigné par le client dans 
+    * les métadonnées du documents lors la capture.
+    * @throws CaptureExistingUuuidException 
+    */
+   @Test
+   public void captureErrorUnexpectedDomainRSI() throws SAECaptureServiceEx, 
+      ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, 
+      UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, 
+      NotArchivableMetadataEx, UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, 
+      MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile, UnknownFormatException, InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+      
+      //-- Lance la capture du document
+      captureErrorUnexpectedDomain("DomaineRSI");
+   }
    
    /**
     * Teste le fait que le domaine ne peut être renseigné par le client dans 
