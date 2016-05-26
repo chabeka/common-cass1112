@@ -66,6 +66,8 @@ public class JobExecutionInfo {
 	private JobParametersConverter converter = new DefaultJobParametersConverter();
 
 	private final TimeZone timeZone;
+	
+	private String executionContext;
 
 	public JobExecutionInfo(JobExecution jobExecution, TimeZone timeZone) {
 
@@ -100,6 +102,13 @@ public class JobExecutionInfo {
 			this.startTime = timeFormat.format(jobExecution.getStartTime());
 			Date endTime = jobExecution.getEndTime() != null ? jobExecution.getEndTime() : new Date();
 			this.duration = durationFormat.format(new Date(endTime.getTime() - jobExecution.getStartTime().getTime()));
+		}
+		
+		if (jobExecution.getExecutionContext() != null) {
+		   this.executionContext = jobExecution.getExecutionContext().toString();
+		   
+		} else {
+		   this.executionContext = "NONE"; 
 		}
 
 	}
@@ -162,4 +171,7 @@ public class JobExecutionInfo {
 		return jobParameters;
 	}
 
+	public String getExecutionContext() {
+	   return executionContext;
+	}
 }

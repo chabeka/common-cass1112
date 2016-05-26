@@ -31,9 +31,14 @@
 					<#assign rowClass="name-sublevel1-odd" />
 				</#if>
 				<tr class="${rowClass}">
-					<td>${execution.id}</td>
-					<#assign execution_url><@spring.url relativeUrl="${servletPath}/jobs/executions/${execution.jobExecutionId?c}/steps/${execution.id?c}/progress"/></#assign>
-					<td><a href="${execution_url}">detail</a></td>
+					<#if execution.id??>
+						<td>${execution.id}</td>
+						<#assign execution_url><@spring.url relativeUrl="${servletPath}/jobs/executions/${execution.jobExecutionId?c}/steps/${execution.id?c}/progress"/></#assign>
+						<td><a href="${execution_url}">detail</a></td>
+					<#else>
+						<td>NONE</td>
+						<td><a href="#">detail</a></td>
+					</#if>
 					<td>${execution.jobExecutionId}</td>
 					<td>${execution.name}</td>
 					<td>${execution.startDate}</td>

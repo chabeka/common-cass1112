@@ -78,11 +78,11 @@ public class StepExecutionInfo {
 			this.durationMillis = endTime.getTime() - stepExecution.getStartTime().getTime();
 			this.duration = durationFormat.format(new Date(durationMillis));
 		}
-
+		
 	}
 
 	public Long getId() {
-		return id;
+      return id;
 	}
 
 	public Long getJobExecutionId() {
