@@ -51,7 +51,7 @@ public final class RefMetaInitialisationService {
 
    // A MODIFIER LORS DES EVOLUTIONS DE FICHIERS !!
    private static final String FICHIER_METADONNEES = "Metadonnees.3.6.xml";
-   private static final String NOM_FICHIER_INDEX_COMPOSITE = "IndexesComposites3.5.xml";
+   private static final String NOM_FICHIER_INDEX_COMPOSITE = "IndexesComposites3.6.xml";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(RefMetaInitialisationService.class);

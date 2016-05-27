@@ -225,13 +225,13 @@ public class RefMetaInitialisationServiceTest {
             .chargerFichierIdxCompositesGNS(true);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.5) est incorrect";
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.6) est incorrect";
       Assert.assertEquals(message, 26, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(true);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.6) est incorrect";
       Assert.assertEquals(message, 29, indexes.size());
    }
 
@@ -244,13 +244,13 @@ public class RefMetaInitialisationServiceTest {
             .chargerFichierIdxCompositesGNS(false);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.5) est incorrect";
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.6) est incorrect";
       Assert.assertEquals(message, 7, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(false);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.5) est incorrect";
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.6) est incorrect";
       Assert.assertEquals(message, 4, indexes.size());
    }
 
