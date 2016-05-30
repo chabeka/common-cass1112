@@ -49,7 +49,7 @@
       <!-- SAE - Objet utilisé dans le contexte Spring batch -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-services-capturemasse</artifactId>
+         <artifactId>sae-services-batch</artifactId>
          <version>${sae.version}</version>
          <exclusions>
             <exclusion>
