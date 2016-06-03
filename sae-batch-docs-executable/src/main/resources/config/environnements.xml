@@ -80,7 +80,7 @@
    <configuration>
       <nom>FORMATION_GNS</nom>
       <dfceAddress>http://hwi31forgnsappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
-      <dfceBaseName>SAE-FORM</dfceBaseName>
+      <dfceBaseName>GNS-FOR</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
       <dfceTimeout>30000</dfceTimeout>
@@ -89,7 +89,7 @@
    <configuration>
       <nom>FORMATION_GNT</nom>
       <dfceAddress>http://hwi31forgntappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
-      <dfceBaseName>GNT-FORM</dfceBaseName>
+      <dfceBaseName>GNT-FOR</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
       <dfceTimeout>30000</dfceTimeout>
