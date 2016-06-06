@@ -1,10 +1,12 @@
 package fr.urssaf.image.sae.services.batch;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 
@@ -70,4 +72,13 @@ public interface TraitementAsynchroneService {
     */
    void lancerJob(UUID idJob) throws JobInexistantException,
          JobNonReserveException;
+
+   /**
+    * Récupère la liste des jobs demandés
+    * 
+    * @param listeUuid
+    *           Liste des UUID des jobs que l'on souhaite récupérer
+    * @return La liste des jobs correspondants aux UUID fournis en paramètre          
+    */
+   List<JobRequest> recupererJobs(List<UUID> listeUuid);
 }

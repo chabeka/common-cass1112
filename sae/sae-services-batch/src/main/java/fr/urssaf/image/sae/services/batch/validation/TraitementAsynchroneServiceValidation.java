@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.services.batch.validation;
 
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,20 +26,20 @@ public class TraitementAsynchroneServiceValidation {
    private static final String METHOD_AJOUT_CAPTURE = "execution(void " + CLASS
          + "ajouterJobCaptureMasse(*))" + "&& args(parametres)";
 
-   private static final String METHOD_AJOUT_SUPPRESSION = "execution(void " + CLASS
-         + "ajouterJobSuppressionMasse(*))" + "&& args(parametres)";
-   
+   private static final String METHOD_AJOUT_SUPPRESSION = "execution(void "
+         + CLASS + "ajouterJobSuppressionMasse(*))" + "&& args(parametres)";
+
    private static final String METHOD_AJOUT_RESTORE = "execution(void " + CLASS
          + "ajouterJobRestoreMasse(*))" + "&& args(parametres)";
-   
-   
+
+   private static final String METHOD_RECUPERER_JOB = "execution(List<fr.urssaf.image.sae.pile.travaux.model.JobRequest> "
+         + CLASS + "recupererJobs(*))" + "&& args(listeUuid)";
+
    private static final String METHOD_LANCER_JOB = "execution(void " + CLASS
          + "lancerJob(*))" + "&& args(idJob)";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
 
-   
-   
    /**
     * Validation des arguments d'entrée de la méthode
     * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobCaptureMasse}
@@ -73,7 +74,7 @@ public class TraitementAsynchroneServiceValidation {
                "uuid"));
       }
    }
-   
+
    /**
     * Validation des arguments d'entrée de la méthode
     * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobSuppressionMasse}
@@ -83,7 +84,8 @@ public class TraitementAsynchroneServiceValidation {
     *           l'enregistrement de la capture de masse
     */
    @Before(METHOD_AJOUT_SUPPRESSION)
-   public final void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
+   public final void ajouterJobSuppressionMasse(
+         TraitemetMasseParametres parametres) {
 
       if (parametres == null) {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
@@ -108,7 +110,7 @@ public class TraitementAsynchroneServiceValidation {
                "uuid"));
       }
    }
-   
+
    /**
     * Validation des arguments d'entrée de la méthode
     * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobRestoreMasse}
@@ -145,6 +147,23 @@ public class TraitementAsynchroneServiceValidation {
 
    }
 
+   /**
+    * Validation des arguments d'entrée de la méthode
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#recupererJobs
+    * 
+    * @param listeUuid
+    *           Liste des UUID nécessaires à la récupération des jobs
+    */
+   @Before(METHOD_RECUPERER_JOB)
+   public final void recupererJobs(List<UUID> listeUuid) {
+
+      if (listeUuid == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "listeUuid"));
+      }
+
+   }
+   
    /**
     * Validation des arguments d'entrée de la méthode
     * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#lancerJob(UUID)}

@@ -432,13 +432,34 @@ public class SaeServiceMessageReceiverInOut extends
                String callerIP = (String) msgContext
                      .getProperty(MessageContext.REMOTE_ADDR);
 
-               suppressionMasseResponse39 = skel.suppressionMasseSecure(wrappedParam, callerIP);
+               suppressionMasseResponse39 = skel.suppressionMasseSecure(
+                     wrappedParam, callerIP);
 
                envelope = toEnvelope(getSOAPFactory(msgContext),
                      suppressionMasseResponse39, false,
                      new javax.xml.namespace.QName(
                            "http://www.cirtil.fr/saeService",
                            "suppressionMasseResponse"));
+
+            } else if ("etatTraitementsMasse".equals(methodName)) {
+
+               fr.cirtil.www.saeservice.EtatTraitementsMasseResponse etatTraitementsMasseResponse40 = null;
+               fr.cirtil.www.saeservice.EtatTraitementsMasse wrappedParam = (fr.cirtil.www.saeservice.EtatTraitementsMasse) fromOM(
+                     msgContext.getEnvelope().getBody().getFirstElement(),
+                     fr.cirtil.www.saeservice.EtatTraitementsMasse.class,
+                     getEnvelopeNamespaces(msgContext.getEnvelope()));
+
+               String callerIP = (String) msgContext
+                     .getProperty(MessageContext.REMOTE_ADDR);
+
+               etatTraitementsMasseResponse40 = skel.etatTraitementsMasse(
+                     wrappedParam, callerIP);
+
+               envelope = toEnvelope(getSOAPFactory(msgContext),
+                     etatTraitementsMasseResponse40, false,
+                     new javax.xml.namespace.QName(
+                           "http://www.cirtil.fr/saeService",
+                           "etatTraitementsMasseResponse"));
 
             } else {
                throw new java.lang.RuntimeException("method not found");
@@ -1219,6 +1240,34 @@ public class SaeServiceMessageReceiverInOut extends
       return wrappedElement;
    }
 
+   
+   private org.apache.axiom.soap.SOAPEnvelope toEnvelope(
+         org.apache.axiom.soap.SOAPFactory factory,
+         fr.cirtil.www.saeservice.EtatTraitementsMasseResponse param,
+         boolean optimizeContent, javax.xml.namespace.QName methodQName)
+         throws org.apache.axis2.AxisFault {
+      try {
+         org.apache.axiom.soap.SOAPEnvelope emptyEnvelope = factory
+               .getDefaultEnvelope();
+
+         emptyEnvelope
+               .getBody()
+               .addChild(
+                     param.getOMElement(
+                           fr.cirtil.www.saeservice.EtatTraitementsMasseResponse.MY_QNAME,
+                           factory));
+
+         return emptyEnvelope;
+      } catch (org.apache.axis2.databinding.ADBException e) {
+         throw org.apache.axis2.AxisFault.makeFault(e);
+      }
+   }
+
+   private fr.cirtil.www.saeservice.EtatTraitementsMasseResponse wrapEtatTraitementMasse() {
+      fr.cirtil.www.saeservice.EtatTraitementsMasseResponse wrappedElement = new fr.cirtil.www.saeservice.EtatTraitementsMasseResponse();
+      return wrappedElement;
+   }
+   
    /**
     * get the default envelope
     */
@@ -1485,30 +1534,42 @@ public class SaeServiceMessageReceiverInOut extends
             return fr.cirtil.www.saeservice.GetDocFormatOrigineResponse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
          }
-         
+
          if (fr.cirtil.www.saeservice.RestoreMasse.class.equals(type)) {
 
-            return fr.cirtil.www.saeservice.RestoreMasse.Factory
-                  .parse(param.getXMLStreamReaderWithoutCaching());
+            return fr.cirtil.www.saeservice.RestoreMasse.Factory.parse(param
+                  .getXMLStreamReaderWithoutCaching());
          }
-         
-         if (fr.cirtil.www.saeservice.RestoreMasseResponse.class
-               .equals(type)) {
+
+         if (fr.cirtil.www.saeservice.RestoreMasseResponse.class.equals(type)) {
 
             return fr.cirtil.www.saeservice.RestoreMasseResponse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
          }
-         
+
          if (fr.cirtil.www.saeservice.SuppressionMasse.class.equals(type)) {
 
             return fr.cirtil.www.saeservice.SuppressionMasse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
          }
-         
+
          if (fr.cirtil.www.saeservice.SuppressionMasseResponse.class
                .equals(type)) {
 
             return fr.cirtil.www.saeservice.SuppressionMasseResponse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+         }
+         
+         if (fr.cirtil.www.saeservice.EtatTraitementsMasse.class.equals(type)) {
+
+            return fr.cirtil.www.saeservice.EtatTraitementsMasse.Factory
+                  .parse(param.getXMLStreamReaderWithoutCaching());
+         }
+         
+         if (fr.cirtil.www.saeservice.EtatTraitementsMasseResponse.class
+               .equals(type)) {
+
+            return fr.cirtil.www.saeservice.EtatTraitementsMasseResponse.Factory
                   .parse(param.getXMLStreamReaderWithoutCaching());
          }
 

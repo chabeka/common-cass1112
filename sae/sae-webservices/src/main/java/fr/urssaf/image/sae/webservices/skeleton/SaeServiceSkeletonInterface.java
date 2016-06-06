@@ -18,6 +18,8 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.EtatTraitementsMasse;
+import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
@@ -307,5 +309,20 @@ public interface SaeServiceSkeletonInterface {
     */
    SuppressionMasseResponse suppressionMasseSecure(SuppressionMasse request,
          String callerIP) throws AxisFault;
+
+   /**
+    * Endpoint de la récupération des états des traitements de masse (opération
+    * sans authentification)
+    * 
+    * @param request
+    *           Objet contenant les paramètres de la récupération des états des
+    *           traitements de masse
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    */
+   EtatTraitementsMasseResponse etatTraitementsMasse(
+         EtatTraitementsMasse request, String callerIP) throws AxisFault;
 
 }

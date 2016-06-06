@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.services.batch.impl;
 
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -52,15 +54,14 @@ public class TraitementAsynchroneServiceImpl implements
    @Autowired
    @Qualifier("captureMasseTraitement")
    private TraitementExecutionSupport captureMasse;
-   
+
    @Autowired
    @Qualifier("suppressionMasseTraitement")
    private TraitementExecutionSupport suppressionMasse;
-   
+
    @Autowired
    @Qualifier("restoreMasseTraitement")
    private TraitementExecutionSupport restoreMasse;
-   
 
    /**
     * 
@@ -78,15 +79,12 @@ public class TraitementAsynchroneServiceImpl implements
 
    }
 
-
-
    private void ajouterJob(TraitemetMasseParametres parameters) {
 
-      LOG
-            .debug(
-                  "{} - ajout d'un traitement de masse de type : {} pour  l'identifiant: {}",
-                  new Object[] { "ajouterJob()",
-                        parameters.getType(), parameters.getUuid() });
+      LOG.debug(
+            "{} - ajout d'un traitement de masse de type : {} pour  l'identifiant: {}",
+            new Object[] { "ajouterJob()", parameters.getType(),
+                  parameters.getUuid() });
 
       JobToCreate job = new JobToCreate();
       job.setIdJob(parameters.getUuid());
@@ -100,7 +98,6 @@ public class TraitementAsynchroneServiceImpl implements
       job.setJobParameters(parameters.getJobParameters());
       jobQueueService.addJob(job);
    }
-   
 
    /**
     * {@inheritDoc}
@@ -119,8 +116,7 @@ public class TraitementAsynchroneServiceImpl implements
 
       LOG.debug("{} - récupération du VI", TRC_LANCER);
 
-      AuthenticationToken token = BatchAuthentificationUtils
-            .getToken(job);
+      AuthenticationToken token = BatchAuthentificationUtils.getToken(job);
 
       LOG.debug("{} - initialisation du contexte de sécurité", TRC_LANCER);
       AuthenticationContext.setModeHeritage();
@@ -158,19 +154,22 @@ public class TraitementAsynchroneServiceImpl implements
       ExitTraitement exitTraitement = new ExitTraitement();
       try {
          /*
-          * Appel de l'implémentation de TraitementExecutionSupport 
-          * pour l'exécution du traitement de masse
+          * Appel de l'implémentation de TraitementExecutionSupport pour
+          * l'exécution du traitement de masse
           */
-         if(job.getType().equals(TYPES_JOB.capture_masse.name()))
+         if (job.getType().equals(TYPES_JOB.capture_masse.name()))
             exitTraitement = captureMasse.execute(job);
-         else if(job.getType().equals(TYPES_JOB.suppression_masse.name()))
+         else if (job.getType().equals(TYPES_JOB.suppression_masse.name()))
             exitTraitement = suppressionMasse.execute(job);
-         else if(job.getType().equals(TYPES_JOB.restore_masse.name()))
+         else if (job.getType().equals(TYPES_JOB.restore_masse.name()))
             exitTraitement = restoreMasse.execute(job);
          else {
-            LOG.warn("Impossible d'executer le traitement ID={0}, de type {1}.", job.getIdJob(), job.getType());
+            LOG.warn(
+                  "Impossible d'executer le traitement ID={0}, de type {1}.",
+                  job.getIdJob(), job.getType());
             exitTraitement.setSucces(false);
-            String mssg = "Impossible d'executer le type de traitement " + job.getType();
+            String mssg = "Impossible d'executer le type de traitement "
+                  + job.getType();
             exitTraitement.setExitMessage(mssg);
          }
       } catch (Exception e) {
@@ -203,16 +202,14 @@ public class TraitementAsynchroneServiceImpl implements
       ajouterJob(parametres);
    }
 
-
    /**
     * {@inheritDoc}<br>
     * <br>
     */
    @Override
    public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
-      ajouterJob(parametres);     
+      ajouterJob(parametres);
    }
-
 
    /**
     * {@inheritDoc}<br>
@@ -220,6 +217,23 @@ public class TraitementAsynchroneServiceImpl implements
     */
    @Override
    public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
-      ajouterJob(parametres);      
+      ajouterJob(parametres);
+   }
+
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    */
+   @Override
+   public List<JobRequest> recupererJobs(List<UUID> listeUuid) {
+
+      List<JobRequest> listJobs = new ArrayList<JobRequest>();
+
+      for (UUID idJob : listeUuid) {
+         JobRequest job = jobLectureService.getJobRequest(idJob);
+         listJobs.add(job);
+      }
+
+      return listJobs;
    }
 }

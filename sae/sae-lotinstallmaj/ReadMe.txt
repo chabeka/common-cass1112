@@ -382,8 +382,10 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 
 // ------------------------------------------
-// 13) Lot 160900SAE
+// 14) Lot 160900SAE
 // ------------------------------------------
+
+14-1) Lot 160900SAE
 
 Met la base Cassandra du SAE en version 20 :
 
@@ -391,3 +393,11 @@ Met la base Cassandra du SAE en version 20 :
 - Ajout de la métadonnée DomaineRSI
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160900
+
+14-1) Lot 160901SAE
+
+Met la base Cassandra du SAE en version 21 :
+
+- Ajout de l'évenement WS_ETAT_TRAITEMENTS_MASSE|KO dans le référentiel des évenments
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160901

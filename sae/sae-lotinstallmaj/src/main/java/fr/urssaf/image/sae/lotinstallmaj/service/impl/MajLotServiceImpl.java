@@ -64,7 +64,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNS_CASSANDRA_DFCE_160601 = "GNS_CASSANDRA_DFCE_160601";
    public static final String GNT_CASSANDRA_DFCE_160601 = "GNT_CASSANDRA_DFCE_160601";
    public static final String CASSANDRA_DFCE_160900 = "CASSANDRA_DFCE_160900";
-
+   public static final String CASSANDRA_DFCE_160901 = "CASSANDRA_DFCE_160901";
+   
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -249,7 +250,7 @@ public final class MajLotServiceImpl implements MajLotService {
          updateDFCE160400();
       } else if (GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
-        // Ajout des index composites
+         // Ajout des index composites
          addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
@@ -273,6 +274,8 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra160900();
          // Création des métadonnées
          updateMetaDfce("META_160900");
+      } else if (CASSANDRA_DFCE_160901.equalsIgnoreCase(nomOperation)) {
+         updateCassandra160901();
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
       } else {
@@ -586,7 +589,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion19();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
    /**
     * Pour lot 160900 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 20
@@ -597,8 +600,18 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion20();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
-   
+
+   /**
+    * Pour lot 160901 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
+    * version 21
+    */
+   private void updateCassandra160901() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 160901");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion21();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
    /**
     * Ajout des droits GED
     */
@@ -1058,6 +1071,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion18();
       updater.updateToVersion19();
       updater.updateToVersion20();
+      updater.updateToVersion21();
 
    }
 

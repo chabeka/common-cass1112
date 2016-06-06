@@ -87,11 +87,7 @@ public class DecisionServiceImpl implements DecisionService {
    public final JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
          List<JobRequest> jobsEnCours) throws AucunJobALancerException {
 
-      // pour l'instant la partie décisionnelle ne prend actuellement en compte
-      // que les traitements d'archivage de masse.
-      // si un nouveau type de traitement est ajouté, l'algo sera modifié.
-
-      // vérification que des traitements de masse sont à lancer
+       // vérification que des traitements de masse sont à lancer
       if (CollectionUtils.isEmpty(jobsEnAttente)) {
          throw new AucunJobALancerException();
       }

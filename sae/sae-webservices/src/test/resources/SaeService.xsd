@@ -53,6 +53,95 @@
             value="[A-Fa-f0-9]{8}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{4}-[A-Fa-f0-9]{12}" />
       </xsd:restriction>
    </xsd:simpleType>
+   <xsd:complexType name="listeUuidType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste d'UUID</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="uuid" type="sae:uuidType"
+            minOccurs="0" maxOccurs="unbounded">
+            <xsd:annotation>
+               <xsd:documentation>Les uuids</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+
+   </xsd:complexType>
+   <xsd:complexType name="traitementMasseType">
+      <xsd:annotation>
+         <xsd:documentation>Un traitement de masse</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="idJob" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>L'identifiant du traitement de masse
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="type" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le type de traitement (capture_masse,
+                  suppression_masse)</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="dateCreation" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>La date de création du job dans la
+                  pile</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="etat" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>L'état du job</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="nombreDocuments" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Le nombre de documents traités par le
+                  job</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="dateReservation" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>La date de réservation du job
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="dateDebut" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>La date de début de traitement du job
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="dateFin" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>La date de fin de traitement du job
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="message" type="xsd:string">
+            <xsd:annotation>
+               <xsd:documentation>Message éventuel sur l'état du job
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+
+   <xsd:complexType name="listeTraitementsMasseType">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de traitements de masse</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="traitementMasse" type="sae:traitementMasseType"
+            minOccurs="0" maxOccurs="unbounded">
+            <xsd:annotation>
+               <xsd:documentation>Les traitements de masse</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+
    <xsd:simpleType name="ecdeUrlType">
       <xsd:annotation>
          <xsd:documentation>Une URL pointant sur l'ECDE, de la forme
@@ -1069,6 +1158,38 @@
          </xsd:element>
       </xsd:sequence>
    </xsd:complexType>
+   <xsd:complexType name="etatTraitementsMasseRequestType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>Paramètre d'entrée de l'opération
+               'etatTraitementsMasse'
+            </xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="listeUuid" type="sae:listeUuidType">
+            <xsd:annotation>
+               <xsd:documentation>La liste des identifiants dont on
+                  souhaite récupérer l'état
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="etatTraitementsMasseResponseType">
+      <xsd:sequence>
+         <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+               'etatTraitementsMasse'
+            </xsd:documentation>
+         </xsd:annotation>
+         <xsd:element name="traitementsMasse" type="sae:listeTraitementsMasseType">
+            <xsd:annotation>
+               <xsd:documentation>La liste des traitements de masse
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+
    <xsd:simpleType name="requeteRechercheNbResType">
       <xsd:annotation>
          <xsd:documentation>Une requête de recherche (chaîne non vide)
@@ -1302,8 +1423,8 @@
    <xsd:element name="getDocFormatOrigineResponse" type="sae:getDocFormatOrigineResponseType" />
    <xsd:element name="suppressionMasse" type="sae:suppressionMasseRequestType" />
    <xsd:element name="restoreMasse" type="sae:restoreMasseRequestType" />
-
-
+   <xsd:element name="etatTraitementsMasse" type="sae:etatTraitementsMasseRequestType" />
+   
    <xsd:element name="archivageMasse" type="sae:archivageMasseRequestType" />
    <xsd:element name="archivageMasseResponse" type="sae:archivageMasseResponseType" />
    <xsd:element name="archivageMasseAvecHash" type="sae:archivageMasseAvecHashRequestType" />
@@ -1334,5 +1455,6 @@
    <xsd:element name="ajoutNoteResponse" type="sae:ajoutNoteResponseType" />
    <xsd:element name="suppressionMasseResponse" type="sae:suppressionMasseResponseType" />
    <xsd:element name="restoreMasseResponse" type="sae:restoreMasseResponseType" />
+   <xsd:element name="etatTraitementsMasseResponse" type="sae:etatTraitementsMasseResponseType" />
 
 </xsd:schema>

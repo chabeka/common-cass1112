@@ -47,6 +47,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_18 = 18;
    private static final int VERSION_19 = 19;
    private static final int VERSION_20 = 20;
+   private static final int VERSION_21 = 21;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -893,10 +894,10 @@ public class SAECassandraUpdater {
       // On positionne la version à 19
       saeDao.setDatabaseVersion(VERSION_19);
    }
-   
+
    /**
-    * Version 20 : <li>Passage sur 7 de la taille de NumeroIntControle</li>
-    * <li>Ajout de la métadonnée DomaineRSI pour les besoins d'ODP</li>
+    * Version 20 : <li>Passage sur 7 de la taille de NumeroIntControle</li> <li>
+    * Ajout de la métadonnée DomaineRSI pour les besoins d'ODP</li>
     */
    public void updateToVersion20() {
 
@@ -914,8 +915,33 @@ public class SAECassandraUpdater {
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
 
-      // On positionne la version à 19
+      // On positionne la version à 20
       saeDao.setDatabaseVersion(VERSION_20);
    }
 
+   /**
+    * Version 21 : <li>Ajout évenement WS_ETAT_TRAITEMENTS_MASSE|KO</li>
+    */
+   public void updateToVersion21() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_21) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_21);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Insertion des données initiales
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout de l'évenement WS_ETAT_TRAITEMENTS_MASSE|KO
+      donnees.addReferentielEvenementV11();
+
+      // On positionne la version à 21
+      saeDao.setDatabaseVersion(VERSION_21);
+   }
 }

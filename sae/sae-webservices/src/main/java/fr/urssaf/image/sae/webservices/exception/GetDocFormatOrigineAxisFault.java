@@ -5,7 +5,7 @@ import org.apache.axis2.AxisFault;
 import fr.urssaf.image.sae.vi.exception.factory.SoapFaultCodeFactory;
 
 /**
- * Exception levée dans le service de consultation
+ * Exception levée dans le service de récupération du document au format d'origine
  * 
  * 
  */

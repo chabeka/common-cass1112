@@ -5,7 +5,7 @@ import org.apache.axis2.AxisFault;
 import fr.urssaf.image.sae.vi.exception.factory.SoapFaultCodeFactory;
 
 /**
- * Exception levée dans de le service de capture
+ * Exception levée dans de le service de suppression
  * 
  * 
  */

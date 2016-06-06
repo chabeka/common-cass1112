@@ -1,134 +1,161 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This file was auto-generated from 
-   WSDL -->
-<!-- by the Apache Axis2 version: 1.5.4 
-   Built on : Dec 19, 2010 (08:18:42 CET) Le fichier est ensuite mis à jour 
-   MANUELLEMENT pour l'ajout de nouvelles opérations -->
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.5.4 Built on : Dec 19, 2010 (08:18:42 
+   CET) Le fichier est ensuite mis à jour MANUELLEMENT pour l'ajout de nouvelles 
+   opérations -->
 <serviceGroup>
-    <!-- <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext"> 
+   <!-- <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext"> 
       <description>This web service initializes Spring.</description> <parameter 
       name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext 
       </parameter> <parameter name="ServiceTCCL">composite</parameter> <parameter 
       name="load-on-startup">true</parameter> <operation name="springInit"> <messageReceiver 
       class="org.apache.axis2.receivers.RawXMLINOutMessageReceiver"/> </operation> 
       </service> -->
-    <service name="SaeService">
-        <messageReceivers>
-            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="fr.urssaf.image.sae.webservices.skeleton.SaeServiceMessageReceiverInOut"/>
-        </messageReceivers>
-        <parameter name="ServiceObjectSupplier">org.apache.axis2.extensions.spring.receivers.SpringAppContextAwareObjectSupplier
+   <service name="SaeService">
+      <messageReceivers>
+         <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out"
+            class="fr.urssaf.image.sae.webservices.skeleton.SaeServiceMessageReceiverInOut" />
+      </messageReceivers>
+      <parameter name="ServiceObjectSupplier">org.apache.axis2.extensions.spring.receivers.SpringAppContextAwareObjectSupplier
       </parameter>
-        <parameter name="SpringBeanName" locked="false">saeServiceSkeleton
+      <parameter name="SpringBeanName" locked="false">saeServiceSkeleton
       </parameter>
-        <parameter name="useOriginalwsdl">true</parameter>
-        <parameter name="modifyUserWSDLPortAddress">true</parameter>
-        <operation name="Ping" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>Ping</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/PingResponse
+      <parameter name="useOriginalwsdl">true</parameter>
+      <parameter name="modifyUserWSDLPortAddress">true</parameter>
+      <operation name="Ping" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>Ping</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/PingResponse
          </outputActionMapping>
-        </operation>
-        <operation name="PingSecure" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>PingSecure</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/PingSecureResponse
+      </operation>
+      <operation name="PingSecure" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>PingSecure</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/PingSecureResponse
          </outputActionMapping>
-        </operation>
-        <operation name="archivageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>archivageUnitaire</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageUnitaireResponse
+      </operation>
+      <operation name="archivageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>archivageUnitaire</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageUnitaireResponse
          </outputActionMapping>
-        </operation>
-        <operation name="stockageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>stockageUnitaire</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/stockageUnitaireResponse
+      </operation>
+      <operation name="stockageUnitaire" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>stockageUnitaire</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/stockageUnitaireResponse
          </outputActionMapping>
-        </operation>
-        <operation name="getDocFormatOrigine" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <parameter name="enableMTOM">true</parameter>
-            <actionMapping>getDocFormatOrigine</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/getDocFormatOrigineResponse
+      </operation>
+      <operation name="getDocFormatOrigine" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <parameter name="enableMTOM">true</parameter>
+         <actionMapping>getDocFormatOrigine</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/getDocFormatOrigineResponse
          </outputActionMapping>
-        </operation>
-        <operation name="archivageMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>archivageMasse</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseResponse
+      </operation>
+      <operation name="archivageMasse" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>archivageMasse</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseResponse
          </outputActionMapping>
-        </operation>
-        <operation name="archivageMasseAvecHash" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>archivageMasseAvecHash</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseAvecHashResponse
+      </operation>
+      <operation name="archivageMasseAvecHash" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>archivageMasseAvecHash</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageMasseAvecHashResponse
          </outputActionMapping>
-        </operation>
-        <operation name="suppressionMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>suppressionMasse</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/suppressionMasseResponse
+      </operation>
+      <operation name="suppressionMasse" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>suppressionMasse</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/suppressionMasseResponse
          </outputActionMapping>
-        </operation>  
-        <operation name="restoreMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>restoreMasse</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/restoreMasseResponse
+      </operation>
+      <operation name="restoreMasse" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>restoreMasse</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/restoreMasseResponse
          </outputActionMapping>
-        </operation>               
-        <operation name="recherche" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>recherche</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheResponse
+      </operation>
+      <operation name="recherche" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>recherche</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheResponse
          </outputActionMapping>
-        </operation>
-        <operation name="consultation" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>consultation</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationResponse
+      </operation>
+      <operation name="consultation" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>consultation</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationResponse
          </outputActionMapping>
-        </operation>
-        <operation name="consultationMTOM" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <parameter name="enableMTOM">true</parameter>
-            <actionMapping>consultationMTOM</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationMTOMResponse
+      </operation>
+      <operation name="consultationMTOM" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <parameter name="enableMTOM">true</parameter>
+         <actionMapping>consultationMTOM</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationMTOMResponse
          </outputActionMapping>
-        </operation>
-        <operation name="archivageUnitairePJ" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>archivageUnitairePJ</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageUnitairePJResponse
+      </operation>
+      <operation name="archivageUnitairePJ" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>archivageUnitairePJ</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/archivageUnitairePJResponse
          </outputActionMapping>
-        </operation>
-        <operation name="modification" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>modification</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/modificationResponse
+      </operation>
+      <operation name="modification" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>modification</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/modificationResponse
          </outputActionMapping>
-        </operation>
-        <operation name="suppression" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>suppression</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/suppressionResponse
+      </operation>
+      <operation name="suppression" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>suppression</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/suppressionResponse
          </outputActionMapping>
-        </operation>
-        <operation name="recuperationMetadonnees" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>recuperationMetadonnees</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/recuperationMetadonneesResponse
+      </operation>
+      <operation name="recuperationMetadonnees" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>recuperationMetadonnees</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/recuperationMetadonneesResponse
          </outputActionMapping>
-        </operation>
-        <operation name="transfert" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>transfert</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/transfertResponse
+      </operation>
+      <operation name="transfert" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>transfert</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/transfertResponse
          </outputActionMapping>
-        </operation>
-        <operation name="consultationAffichable" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <parameter name="enableMTOM">true</parameter>
-            <actionMapping>consultationAffichable</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationAffichableResponse
+      </operation>
+      <operation name="consultationAffichable" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <parameter name="enableMTOM">true</parameter>
+         <actionMapping>consultationAffichable</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationAffichableResponse
          </outputActionMapping>
-        </operation>
-        <operation name="rechercheNbRes" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>rechercheNbRes</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheNbResResponse
+      </operation>
+      <operation name="rechercheNbRes" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>rechercheNbRes</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheNbResResponse
          </outputActionMapping>
-        </operation>
-        <operation name="rechercheParIterateur" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>rechercheParIterateur</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheParIterateurResponse
+      </operation>
+      <operation name="rechercheParIterateur" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>rechercheParIterateur</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/rechercheParIterateurResponse
          </outputActionMapping>
-        </operation>
-        <operation name="ajoutNote" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
-            <actionMapping>ajoutNote</actionMapping>
-            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/ajoutNoteResponse
+      </operation>
+      <operation name="ajoutNote" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>ajoutNote</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/ajoutNoteResponse
          </outputActionMapping>
-        </operation>
-    </service>
+      </operation>
+      <operation name="etatTraitementsMasse" mep="http://www.w3.org/ns/wsdl/in-out"
+         namespace="http://www.cirtil.fr/saeService">
+         <actionMapping>etatTraitementsMasse</actionMapping>
+         <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/etatTraitementsMasseResponse
+         </outputActionMapping>
+      </operation>
+   </service>
 </serviceGroup>

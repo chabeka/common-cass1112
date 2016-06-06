@@ -5,11 +5,12 @@ import org.apache.axis2.AxisFault;
 import fr.urssaf.image.sae.vi.exception.factory.SoapFaultCodeFactory;
 
 /**
- * Exception levée dans de le service de modification
+ * Exception levée dans de le service de récupération des états des traitements
+ * de masse
  * 
  * 
  */
-public class ModificationAxisFault extends AxisFault {
+public class EtatTraitementsMasseAxisFault extends AxisFault {
 
    private static final long serialVersionUID = 1L;
 
@@ -30,7 +31,8 @@ public class ModificationAxisFault extends AxisFault {
     * @param cause
     *           exception levée qui génère la SOAPFault
     */
-   public ModificationAxisFault(String localPart, String message, Throwable cause) {
+   public EtatTraitementsMasseAxisFault(String localPart, String message,
+         Throwable cause) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"), cause);
@@ -53,10 +55,25 @@ public class ModificationAxisFault extends AxisFault {
     * @param message
     *           message de l'exception
     */
-   public ModificationAxisFault(String localPart, String message) {
+   public EtatTraitementsMasseAxisFault(String localPart, String message) {
 
       super(message, SoapFaultCodeFactory.createSoapFaultCode(
             "urn:sae:faultcodes", localPart, "sae"));
+
+   }
+
+   /**
+    * Instanciation de {@link AxisFault#AxisFault}
+    * 
+    * @param cause
+    *           cause de l'exception
+    */
+   public EtatTraitementsMasseAxisFault(Throwable cause) {
+
+      super(
+            "Une erreur interne à l'application est survenue lors de la récupération des états des traitements de masse.",
+            SoapFaultCodeFactory.createSoapFaultCode("urn:sae:faultcodes",
+                  "ErreurInterneEtatTraitementsMasse", "sae"), cause);
 
    }
 

@@ -151,50 +151,69 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.META_150100.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_150400.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_150400
+            .equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.DFCE_150400.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.DFCE_150400_P5.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNS_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNS_DISABLE_COMPOSITE_INDEX
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNT_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNT_DISABLE_COMPOSITE_INDEX
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_150600.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_150600
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_150601.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_150601
+            .equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.DFCE_151000.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.CASSANDRA_151000.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_151001.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_151001
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_151200.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_151200
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_151201.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_151201
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_160300.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_160300
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_160400.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_160400
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160600
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160600
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNS_CASSANDRA_DFCE_160601
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_160601
+            .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_DFCE_160900.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_160900
+            .equalsIgnoreCase(nomOperation))
          return;
-      
+      if (MajLotServiceImpl.CASSANDRA_DFCE_160901
+            .equalsIgnoreCase(nomOperation))
+         return;
+
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
 
       // Opération non trouvée
-      String message = String.format("Erreur : Opération inconnue : %s", nomOperation);
+      String message = String.format("Erreur : Opération inconnue : %s",
+            nomOperation);
       LOG.warn(message);
       throw new MajLotGeneralException(message);
    }

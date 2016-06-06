@@ -39,6 +39,8 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.EtatTraitementsMasse;
+import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
@@ -71,6 +73,7 @@ import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
+import fr.urssaf.image.sae.webservices.exception.EtatTraitementsMasseAxisFault;
 import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
@@ -82,6 +85,7 @@ import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.WSDocumentAttacheService;
+import fr.urssaf.image.sae.webservices.service.WSEtatJobMasseService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
@@ -147,6 +151,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    @Autowired
    private WSDocumentAttacheService documentAttacheService;
 
+   @Autowired
+   private WSEtatJobMasseService etatJobMasseService;
+   
    @Autowired
    private DfceInfoService dfceInfoService;
 
@@ -1032,5 +1039,39 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                "Une erreur interne à l'application est survenue lors de la suppression.",
                ex);
       }
+   }
+
+   @Override
+   public EtatTraitementsMasseResponse etatTraitementsMasse(
+         EtatTraitementsMasse request, String callerIP) throws AxisFault {
+
+
+      try {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "Opération etatTraitementsMasse()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      EtatTraitementsMasseResponse response = etatJobMasseService.etatJobMasse(request, callerIP);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
+
+      return response;
+      
+      } catch (EtatTraitementsMasseAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new EtatTraitementsMasseAxisFault(
+               "ErreurInterneEtatTraitementsMasse",
+               "Une erreur interne à l'application est survenue lors de la récupération des états des traitemens de masse.",
+               ex);
+      }
+      
    }
 }

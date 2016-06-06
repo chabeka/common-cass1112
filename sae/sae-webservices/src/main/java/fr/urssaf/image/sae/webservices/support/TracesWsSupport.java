@@ -113,6 +113,8 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_AJOUT_NOTE_KO;
       } else if ("getDocFormatOrigine".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_GET_DOC_FORMAT_ORIGINE;
+      } else if ("etatTraitementsMasse".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_ETAT_TRAIT_MASSE;
       }
 
       return result;

@@ -88,4 +88,9 @@ public final class TracesConstantes {
     * Le code de l'événement échec de récupération d'un document attaché
     */
    public static final String CODE_EVT_WS_GET_DOC_FORMAT_ORIGINE = "WS_GET_DOC_FORMAT_ORIGINE|KO";
+   
+   /**
+    * Le code de l'événement échec de récupération des états des traitements de masse
+    */
+   public static final String CODE_EVT_WS_ETAT_TRAIT_MASSE = "WS_ETAT_TRAITEMENTS_MASSE|KO";
 }

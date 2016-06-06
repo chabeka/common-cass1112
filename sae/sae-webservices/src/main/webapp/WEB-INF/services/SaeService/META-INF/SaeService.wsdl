@@ -80,6 +80,14 @@
     <wsdl:part name="input" element="tns:rechercheNbRes">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="etatTraitementsMasseResponseMessage">
+<wsdl:documentation>
+         Message de réponse de récupération des états
+         des traitements de masse
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:etatTraitementsMasseResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="rechercheRequestMessage">
 <wsdl:documentation>Message de demande d'une recherche
          documentaire sur le SAE
@@ -103,12 +111,19 @@
     <wsdl:part name="output" element="tns:ajoutNoteResponse">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="consultationMTOMRequestMessage">
+<wsdl:documentation>Message contenant le résultat de la
+         consultationMTOM de documents au SAE
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:consultationMTOM">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="getDocFormatOrigineResponseMessage">
 <wsdl:documentation>
          Message de réponse de récupération d'un
          document
          Au format
-         d'originr
+         d'origine
       </wsdl:documentation>
     <wsdl:part name="output" element="tns:getDocFormatOrigineResponse">
     </wsdl:part>
@@ -125,13 +140,6 @@
          Message de demande pour la suppressionde masse
       </wsdl:documentation>
     <wsdl:part name="input" element="tns:suppressionMasse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="consultationMTOMRequestMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         consultationMTOM de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:consultationMTOM">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="archivageUnitairePJResponseMessage">
@@ -298,6 +306,13 @@
          documentaire sur le SAE (par iterateur)
       </wsdl:documentation>
     <wsdl:part name="output" element="tns:rechercheParIterateurResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="etatTraitementsMasseRequestMessage">
+<wsdl:documentation>Message de demande de récupération des états
+         des traitements de masse
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:etatTraitementsMasse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="stockageUnitaireResponseMessage">
@@ -536,6 +551,15 @@
       <wsdl:input message="tns:ajoutNoteRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:ajoutNoteResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="etatTraitementsMasse" parameterOrder="input">
+<wsdl:documentation>Opération de récupération des états des
+            traitements de masse
+         </wsdl:documentation>
+      <wsdl:input message="tns:etatTraitementsMasseRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:etatTraitementsMasseResponseMessage">
     </wsdl:output>
     </wsdl:operation>
   </wsdl:portType>
@@ -792,6 +816,18 @@
             rattaché au format d'origine
          </wsdl:documentation>
       <soap:operation soapAction="getDocFormatOrigine"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="etatTraitementsMasse">
+<wsdl:documentation>
+            Service de récupération des états des traitements de masse
+         </wsdl:documentation>
+      <soap:operation soapAction="etatTraitementsMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

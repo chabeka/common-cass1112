@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.services.batch.validation;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
@@ -29,7 +32,7 @@ public class TraitementAsynchroneServiceValidationTest {
    private static final String FAIL_MESSAGE = "Une exception de type illegalArgumentException doit être levée";
 
    private static final String EXCEPTION_MESSAGE = "Le message de l'exception est inattendu";
-   
+
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
 
    @Before
@@ -40,17 +43,27 @@ public class TraitementAsynchroneServiceValidationTest {
          public void lancerJob(UUID idJob) {
             // Aucune implémentation
          }
+
          @Override
          public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres) {
             // Aucune implémentation
          }
+
          @Override
          public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
             // Aucune implémentation
          }
+
          @Override
-         public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
+         public void ajouterJobSuppressionMasse(
+               TraitemetMasseParametres parametres) {
             // Aucune implémentation
+         }
+
+         @Override
+         public List<JobRequest> recupererJobs(List<UUID> listeJobs) {
+            // Aucune implémentation
+            return null;
          }
       };
    }
@@ -61,12 +74,12 @@ public class TraitementAsynchroneServiceValidationTest {
 
    @Test
    public void ajouterJobCaptureMasse_success() {
-      
+
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, URL_ECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, 
-            null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null,
+            null, null);
       service.ajouterJobCaptureMasse(parametres);
    }
 
@@ -76,7 +89,6 @@ public class TraitementAsynchroneServiceValidationTest {
       assertAjouterJobCaptureMasse_urlEcde("");
       assertAjouterJobCaptureMasse_urlEcde(" ");
    }
-   
 
    @Test
    public void ajouterJobCaptureMasse_failure_empty_uuid() {
@@ -93,7 +105,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
       }
    }
-   
+
    @Test
    public void ajouterJobCaptureMasse_failure_empty_type() {
 
@@ -112,23 +124,23 @@ public class TraitementAsynchroneServiceValidationTest {
 
    @Test
    public void ajouterJobSuppressionMasse_success() {
-      
+
       Map<String, String> jobParams = new HashMap<String, String>();
-      jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, UUID_TRAITEMENT.toString());
+      jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION,
+            UUID_TRAITEMENT.toString());
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.suppression_masse, 
-            null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.suppression_masse, null,
+            null, null, null);
       service.ajouterJobSuppressionMasse(parametres);
    }
-   
-   
+
    @Test
    public void ajouterJobSuppressionMasse_failure_empty_requete() {
       assertAjouterJobSuppressionMasse_requete(null);
       assertAjouterJobSuppressionMasse_requete("");
       assertAjouterJobSuppressionMasse_requete(" ");
    }
-   
+
    @Test
    public void ajouterJobSuppressionMasse_failure_empty_type() {
 
@@ -144,7 +156,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
       }
    }
-   
+
    @Test
    public void ajouterJobSuppressionMasse_failure_empty_uuid() {
       Map<String, String> jobParams = new HashMap<String, String>();
@@ -159,19 +171,18 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
       }
    }
-   
-   
+
    @Test
    public void ajouterJobRestoreMasse_success() {
-      
+
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "UUID_TRAITEMENT");
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null,
+            null, null);
       service.ajouterJobRestoreMasse(parametres);
    }
-   
-   
+
    @Test
    public void ajouterJobRestoreMasse_failure_empty_type() {
 
@@ -187,14 +198,13 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
       }
    }
-   
+
    @Test
    public void ajouterJobRestoreMasse_failure_empty_idTraitement() {
       assertAjouterJobRestoreMasse_idTraitement(null);
       assertAjouterJobRestoreMasse_idTraitement("");
       assertAjouterJobRestoreMasse_idTraitement(" ");
    }
-
 
    @Test
    public void ajouterJobRestoreMasse_failure_empty_uuid() {
@@ -210,8 +220,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
       }
    }
-   
-   
+
    @Test
    public void lancerJob_failure_empty_idJob() throws JobInexistantException,
          JobNonReserveException {
@@ -224,51 +233,72 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "idJob"), e.getMessage());
       }
    }
-  
+
+   @Test
+   public void recupererJobs_success() {
+
+      List<UUID> listeUUID = new ArrayList<UUID>();
+      listeUUID.add(UUID_TRAITEMENT);
+
+      service.recupererJobs(listeUUID);
+   }
+
+   @Test
+   public void recupererJobs_failure_null_listeJobs() {
+      try {
+         service.recupererJobs(null);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "listeUuid"), e.getMessage());
+      }
+   }
 
    private void assertAjouterJobRestoreMasse_idTraitement(String idTraitement) {
 
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null,
+            null, null);
       try {
          service.ajouterJobRestoreMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
       } catch (IllegalArgumentException e) {
-         Assert.assertEquals(EXCEPTION_MESSAGE, 
+         Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "idTraitement"), e.getMessage());
       }
-   } 
-   
+   }
+
    private void assertAjouterJobCaptureMasse_urlEcde(String urlECDE) {
 
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, urlECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null,
+            null, null);
       try {
          service.ajouterJobCaptureMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
       } catch (IllegalArgumentException e) {
-         Assert.assertEquals(EXCEPTION_MESSAGE, 
+         Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
       }
-   } 
-   
+   }
+
    private void assertAjouterJobSuppressionMasse_requete(String requete) {
-      
+
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, requete);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null, null, null);
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null,
+            null, null);
       try {
          service.ajouterJobSuppressionMasse(parametres);
          Assert.fail(FAIL_MESSAGE);
       } catch (IllegalArgumentException e) {
-         Assert.assertEquals(EXCEPTION_MESSAGE, 
+         Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "requete"), e.getMessage());
       }
-   } 
-   
+   }
+
 }
