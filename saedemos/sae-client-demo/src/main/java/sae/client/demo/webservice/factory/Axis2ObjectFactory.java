@@ -34,6 +34,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.DataFileType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlType;
+import sae.client.demo.webservice.modele.SaeServiceStub.EtatTraitementsMasse;
+import sae.client.demo.webservice.modele.SaeServiceStub.EtatTraitementsMasseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.FiltreType;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigine;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigineRequestType;
@@ -41,6 +43,7 @@ import sae.client.demo.webservice.modele.SaeServiceStub.IdentifiantPageType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeMetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ListeRangeMetadonneeType;
+import sae.client.demo.webservice.modele.SaeServiceStub.ListeUuidType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeValeurType;
@@ -1072,6 +1075,30 @@ public final class Axis2ObjectFactory {
       restoreMasseRequest.setUuid(requeteType);
       
       return restoreMasse;
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * @param listeUuid La liste des uuid des traitements de masse
+    * @return le paramètre d'entrée de l'opération "etatTraitementsMasse"
+    */
+   public static EtatTraitementsMasse contruitParamsEntreeEtatTraitementsMasse(
+         List<String> listeUuid) {
+      
+      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();
+      EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
+      etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
+      
+      ListeUuidType listeUuidType = new ListeUuidType();
+      for (String uuid : listeUuid) {
+         UuidType uuidType = new UuidType();
+         uuidType.setUuidType(uuid);
+         listeUuidType.addUuid(uuidType);
+      }
+      etatTraitementsMasseRequest.setListeUuid(listeUuidType);
+      
+      return etatTraitementsMasse;
    }
 
 }

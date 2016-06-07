@@ -33,7 +33,7 @@ public class RestoreMasseTest {
       RestoreMasse paramsEntree = Axis2ObjectFactory.contruitParamsEntreeRestoreMasse(
             idTraitementSuppression);
       
-      // Appel de l'opération archivageMasse
+      // Appel de l'opération restoreMasse
       // => en attendu, l'identifiant unique de traitement de masse affecté par le SAE
       RestoreMasseResponse reponse = saeService.restoreMasse(paramsEntree);
       String idTraitementSae = reponse.getRestoreMasseResponse().getUuid();

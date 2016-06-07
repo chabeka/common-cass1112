@@ -33,7 +33,7 @@ public class SuppressionMasseTest {
       SuppressionMasse paramsEntree = Axis2ObjectFactory.contruitParamsEntreeSuppressionMasse(
             requete);
       
-      // Appel de l'opération archivageMasse
+      // Appel de l'opération suppressionMasse
       // => en attendu, l'identifiant unique de traitement de masse affecté par le SAE
       SuppressionMasseResponse reponse = saeService.suppressionMasse(paramsEntree);
       String idTraitementSae = reponse.getSuppressionMasseResponse().getUuid();
