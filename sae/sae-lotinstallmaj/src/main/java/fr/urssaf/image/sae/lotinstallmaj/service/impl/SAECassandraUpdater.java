@@ -941,6 +941,9 @@ public class SAECassandraUpdater {
       // Ajout de l'évenement WS_ETAT_TRAITEMENTS_MASSE|KO
       donnees.addReferentielEvenementV11();
 
+      // Ajout du format fmt/13 (PNG) et fmt/44 (JPG)
+      donnees.addReferentielFormatV5();
+      
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }

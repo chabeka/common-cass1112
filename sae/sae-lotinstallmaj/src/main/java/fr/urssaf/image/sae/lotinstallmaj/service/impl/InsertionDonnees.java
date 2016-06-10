@@ -1053,6 +1053,61 @@ public class InsertionDonnees {
       LOG.info("Format ajouté : {}", nouveauFormat);
 
    }
+   
+   
+   /**
+    * Ajout des données dans le référentiel des formats en V5 : <li>fmt/13</li><li>fmt/44</li>
+    */
+   public void addReferentielFormatV5() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      String formatPNG = "fmt/13";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatPNG);
+      addColumn("idFormat", formatPNG, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier PNG",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "png", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "image/png", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatPNG);
+      
+      String formatJPG = "fmt/44";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatJPG);
+      addColumn("idFormat", formatJPG, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier JPG",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "jpg", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "image/jpeg", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatJPG);
+
+   }
 
    /**
     * Modification des données dans le référentiel des formats : Ajout d'un
