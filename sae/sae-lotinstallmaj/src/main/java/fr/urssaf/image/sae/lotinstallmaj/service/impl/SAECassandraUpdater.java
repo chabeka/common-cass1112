@@ -944,6 +944,9 @@ public class SAECassandraUpdater {
       // Ajout du format fmt/13 (PNG) et fmt/44 (JPG)
       donnees.addReferentielFormatV5();
       
+      // Ajout des paramètres pour la purge de la corbeille
+      donnees.addCorbeilleParameters();
+      
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }

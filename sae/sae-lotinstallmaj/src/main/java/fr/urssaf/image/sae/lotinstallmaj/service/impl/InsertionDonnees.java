@@ -273,6 +273,33 @@ public class InsertionDonnees {
 
    }
 
+   /**
+    * Ajoute les paramètres nécessaires à la purge de la corbeille
+    */
+   public void addCorbeilleParameters() {
+
+      LOG.info("Création des paramètres de purge de la corbeille");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "Parameters", StringSerializer.get(),
+            StringSerializer.get());
+
+      Date debutPurgeCorbeille = getCorbeilleDerniereDateTraitee();
+
+      checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DUREE",
+            Integer.valueOf(10));
+
+      checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_IS_RUNNING",
+            Boolean.FALSE);
+
+      checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_LANCEMENT",
+            debutPurgeCorbeille);
+
+      checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_SUCCES",
+            debutPurgeCorbeille);
+
+   }
+
    private void checkAndAddTracabiliteParameter(
          ColumnFamilyTemplate<String, String> cfTmpl, String subname,
          Object valeur) {
@@ -295,6 +322,19 @@ public class InsertionDonnees {
 
       if (!inserted) {
          LOG.info("Le paramètre de maj du RND {} existe déjà", subname);
+      }
+
+   }
+
+   private void checkAndAddCorbeilleParameter(
+         ColumnFamilyTemplate<String, String> cfTmpl, String subname,
+         Object valeur) {
+
+      boolean inserted = checkAndAddValue(cfTmpl, "parametresCorbeille",
+            subname, valeur, StringSerializer.get(), ObjectSerializer.get());
+
+      if (!inserted) {
+         LOG.info("Le paramètre de corbeille {} existe déjà", subname);
       }
 
    }
@@ -359,13 +399,25 @@ public class InsertionDonnees {
 
    private Date getRndDate() {
 
-      // On démarre la traçabilité SAE au 01/02/2013
-      // La dernière date des traitements est positionné au 31/01/2013
-      // Car les traitements font un J+1 à partir des valeurs de paramètres
-
       Calendar calendar = Calendar.getInstance();
       calendar.set(Calendar.YEAR, 1970);
       calendar.set(Calendar.MONTH, 0); // les numéros de mois commencent à 0
+      calendar.set(Calendar.DAY_OF_MONTH, 1);
+      calendar.set(Calendar.HOUR_OF_DAY, 0);
+      calendar.set(Calendar.MINUTE, 0);
+      calendar.set(Calendar.SECOND, 0);
+      calendar.set(Calendar.MILLISECOND, 0);
+      return calendar.getTime();
+
+   }
+
+   private Date getCorbeilleDerniereDateTraitee() {
+
+      // La dernière date des traitements est positionné au 01/06/2016
+
+      Calendar calendar = Calendar.getInstance();
+      calendar.set(Calendar.YEAR, 2016);
+      calendar.set(Calendar.MONTH, 5); // les numéros de mois commencent à 0
       calendar.set(Calendar.DAY_OF_MONTH, 1);
       calendar.set(Calendar.HOUR_OF_DAY, 0);
       calendar.set(Calendar.MINUTE, 0);
@@ -1053,10 +1105,10 @@ public class InsertionDonnees {
       LOG.info("Format ajouté : {}", nouveauFormat);
 
    }
-   
-   
+
    /**
-    * Ajout des données dans le référentiel des formats en V5 : <li>fmt/13</li><li>fmt/44</li>
+    * Ajout des données dans le référentiel des formats en V5 : <li>fmt/13</li>
+    * <li>fmt/44</li>
     */
    public void addReferentielFormatV5() {
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
@@ -1072,8 +1124,8 @@ public class InsertionDonnees {
       addColumn("idFormat", formatPNG, StringSerializer.get(),
             StringSerializer.get(), updater);
       cfTmpl.update(updater);
-      addColumn("description", "Fichier PNG",
-            StringSerializer.get(), StringSerializer.get(), updater);
+      addColumn("description", "Fichier PNG", StringSerializer.get(),
+            StringSerializer.get(), updater);
       cfTmpl.update(updater);
       addColumn("extension", "png", StringSerializer.get(),
             StringSerializer.get(), updater);
@@ -1085,7 +1137,7 @@ public class InsertionDonnees {
             BooleanSerializer.get(), updater);
       cfTmpl.update(updater);
       LOG.info("Format ajouté : {}", formatPNG);
-      
+
       String formatJPG = "fmt/44";
 
       LOG.info("Mise à jour du référentiel des formats");
@@ -1093,8 +1145,8 @@ public class InsertionDonnees {
       addColumn("idFormat", formatJPG, StringSerializer.get(),
             StringSerializer.get(), updater);
       cfTmpl.update(updater);
-      addColumn("description", "Fichier JPG",
-            StringSerializer.get(), StringSerializer.get(), updater);
+      addColumn("description", "Fichier JPG", StringSerializer.get(),
+            StringSerializer.get(), updater);
       cfTmpl.update(updater);
       addColumn("extension", "jpg", StringSerializer.get(),
             StringSerializer.get(), updater);
