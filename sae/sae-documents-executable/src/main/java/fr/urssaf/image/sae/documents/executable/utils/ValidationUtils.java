@@ -420,7 +420,7 @@ public final class ValidationUtils {
    private static boolean isNumericParam(String paramName, String paramValue,
          onVerifiedCallback callback) {
       if (NumberUtils.isDigits(paramValue)) {
-         LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
+         LOGGER.info("Paramètre '{}' : {}", paramName, paramValue);
          callback.onVerified();
          return true;
       } else {
@@ -441,7 +441,7 @@ public final class ValidationUtils {
    private static boolean isStringParam(String paramName, String paramValue,
          onVerifiedCallback callback) {
       if (StringUtils.isNotBlank(paramValue)) {
-         LOGGER.info("Paramètere '{}' : {}", paramName, paramValue);
+         LOGGER.info("Paramètre '{}' : {}", paramName, paramValue);
          callback.onVerified();
          return true;
       } else {
@@ -588,7 +588,7 @@ public final class ValidationUtils {
          if (chemin.exists()) {
             parametres
                   .setCheminFichier(cheminFichierCSV);
-            LOGGER.info("Paramètere '{}' : {}", "addMeta.chemin.fichier.csv", cheminFichierCSV);
+            LOGGER.info("Paramètre '{}' : {}", "addMeta.chemin.fichier.csv", cheminFichierCSV);
          } else {
             LOGGER
                .warn(

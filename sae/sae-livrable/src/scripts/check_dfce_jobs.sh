@@ -115,4 +115,14 @@ if ! grep -q "Fin de la synchronisation avec l'ADRN" "$LOG_DIR/sae_rnd_executabl
     ERRNO+=1
 fi
 
+
+#
+# ============ Analyses des logs sae-documents-executable.jar ============ 
+#
+
+if ! grep -q "fin du traitement de la purge de la corbeille" "$LOG_DIR/sae_documents_executable-PURGE_CORBEILLE.log"; then
+    error "Erreur dans la purge de la corbeille"
+    ERRNO+=1
+fi
+
 exit $ERRNO

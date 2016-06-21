@@ -650,6 +650,9 @@ public class TraitementServiceImpl implements TraitementService {
    public void purgerCorbeille(PurgeCorbeilleParametres parametres) {
 
       String trcPrefix = "purgerCorbeille()";
+      
+      LOGGER.info("{} - Début du traitement de la purge de la corbeille", trcPrefix);
+
 
       // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
@@ -757,6 +760,8 @@ public class TraitementServiceImpl implements TraitementService {
 
          // Mise à jour de la date de dernier succès
          paramService.setPurgeCorbeilleDateSucces(dateLancement);
+         
+         LOGGER.info("{} - fin du traitement de la purge de la corbeille", trcPrefix);
 
          
       } catch (ParameterNotFoundException ex) {
