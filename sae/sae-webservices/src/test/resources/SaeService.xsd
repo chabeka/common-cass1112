@@ -59,7 +59,7 @@
       </xsd:annotation>
       <xsd:sequence>
          <xsd:element name="uuid" type="sae:uuidType"
-            minOccurs="0" maxOccurs="unbounded">
+            minOccurs="1" maxOccurs="unbounded">
             <xsd:annotation>
                <xsd:documentation>Les uuids</xsd:documentation>
             </xsd:annotation>

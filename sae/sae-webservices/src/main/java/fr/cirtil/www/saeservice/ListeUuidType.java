@@ -33,17 +33,6 @@
                         
                                     protected fr.cirtil.www.saeservice.UuidType[] localUuid ;
                                 
-                           /*  This tracker boolean wil be used to detect whether the user called the set method
-                          *   for this attribute. It will be used to determine whether to include this field
-                           *   in the serialized XML
-                           */
-                           protected boolean localUuidTracker = false ;
-
-                           public boolean isUuidSpecified(){
-                               return localUuidTracker;
-                           }
-
-                           
 
                            /**
                            * Auto generated getter method
@@ -63,6 +52,10 @@
                                */
                               protected void validateUuid(fr.cirtil.www.saeservice.UuidType[] param){
                              
+                              if ((param != null) && (param.length < 1)){
+                                throw new java.lang.RuntimeException();
+                              }
+                              
                               }
 
 
@@ -74,8 +67,7 @@
                               
                                    validateUuid(param);
 
-                               localUuidTracker = param != null;
-                                      
+                               
                                       this.localUuid=param;
                               }
 
@@ -90,9 +82,6 @@
                                    localUuid = new fr.cirtil.www.saeservice.UuidType[]{};
                                    }
 
-                            
-                                 //update the setting tracker
-                                localUuidTracker = true;
                             
 
                                java.util.List list =
@@ -163,7 +152,7 @@
 
                
                    }
-                if (localUuidTracker){
+               
                                        if (localUuid!=null){
                                             for (int i = 0;i < localUuid.length;i++){
                                                 if (localUuid[i] != null){
@@ -171,7 +160,7 @@
                                                            xmlWriter);
                                                 } else {
                                                    
-                                                        // we don't have to do any thing since minOccures is zero
+                                                           throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
                                                     
                                                 }
 
@@ -181,7 +170,7 @@
                                                throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
                                         
                                     }
-                                 }
+                                 
                     xmlWriter.writeEndElement();
                
 
@@ -366,7 +355,7 @@
                  java.util.ArrayList elementList = new java.util.ArrayList();
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
-                 if (localUuidTracker){
+                
                              if (localUuid!=null) {
                                  for (int i = 0;i < localUuid.length;i++){
 
@@ -376,7 +365,7 @@
                                          elementList.add(localUuid[i]);
                                     } else {
                                         
-                                                // nothing to do
+                                               throw new org.apache.axis2.databinding.ADBException("uuid cannot be null !!");
                                             
                                     }
 
@@ -387,7 +376,7 @@
                                     
                              }
 
-                        }
+                        
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -507,10 +496,11 @@
                                                             
                               }  // End of if for expected property start element
                                 
-                                    else {
-                                        
-                                    }
-                                  
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                              
                             while (!reader.isStartElement() && !reader.isEndElement())
                                 reader.next();
                             
