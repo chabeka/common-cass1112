@@ -25,6 +25,11 @@ public enum ParameterType {
    PURGE_EXPLOIT_DUREE,
 
    /**
+    * Nom du paramètre de durée de rétention de la purge de la corbeille
+    */
+   PURGE_CORBEILLE_DUREE,
+
+   /**
     * Nom du paramètre de la dernière date minimale utilisée par la purge des
     * registres technique
     */
@@ -43,6 +48,22 @@ public enum ParameterType {
    PURGE_EXPLOIT_DATE,
 
    /**
+    * Nom du paramètre de la dernière date de succès de la purge de la corbeille
+    */
+   PURGE_CORBEILLE_DATE_SUCCES,
+
+   /**
+    * Nom du paramètre de la dernière date de lancement de la purge de la
+    * corbeille
+    */
+   PURGE_CORBEILLE_DATE_LANCEMENT,
+   /**
+    * Nom du paramètre de la date à utiliser pour la borne minimale de
+    * l’intervalle de document à purger
+    */
+   PURGE_CORBEILLE_DATE_DEBUT_PURGE,
+
+   /**
     * Nom du paramètre indiquant si une purge des registres techniques est déjà
     * en cours
     */
@@ -59,6 +80,11 @@ public enum ParameterType {
     * déjà en cours
     */
    PURGE_EXPLOIT_IS_RUNNING,
+
+   /**
+    * Nom du paramètre indiquant si une purge de la corbeille est déjà en cours
+    */
+   PURGE_CORBEILLE_IS_RUNNING,
 
    /**
     * Nom du paramètre de la dernière date minimale utilisée par la
@@ -119,23 +145,21 @@ public enum ParameterType {
    /**
     * Métadonnée code organisme (propriétaire et gestionnaire)
     */
-   JOURNALISATION_EVT_META_CODE_ORGA, 
-   
+   JOURNALISATION_EVT_META_CODE_ORGA,
+
    /**
     * Métadonnée Code RND
     */
    JOURNALISATION_EVT_META_CODE_RND,
-   
+
    /**
     * Version du RND en cours dans le SAE
     */
    VERSION_RND_NUMERO,
-   
+
    /**
     * Date de dernière mise à jour de la version du RND
     */
    VERSION_RND_DATE_MAJ
-   
-   
 
 }

@@ -34,6 +34,18 @@ public interface DfceService {
     */
    Iterator<Document> executerRequete(String requeteLucene)
          throws SearchQueryParseException;
+   
+   
+   /**
+    * Retourne des documents de la corbeille concernés par la requête.
+    * 
+    * @param requeteLucene
+    *           La requête à exécuter
+    * @return Liste des documents correspondants à la recherche
+    * @throws SearchQueryParseException
+    */
+   Iterator<Document> executerRequeteCorbeille(String requeteLucene)
+         throws SearchQueryParseException;
 
    /**
     * Retourne le contenu du document.

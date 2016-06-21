@@ -6,10 +6,14 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionHandler;
@@ -18,6 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import net.docubase.toolkit.model.document.Document;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.pdfbox.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,16 +33,24 @@ import au.com.bytecode.opencsv.CSVReader;
 
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.documents.executable.exception.PurgeRuntimeException;
 import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
+import fr.urssaf.image.sae.documents.executable.model.PurgeCorbeilleParametres;
 import fr.urssaf.image.sae.documents.executable.multithreading.AddMetadatasPoolThreadExecutor;
 import fr.urssaf.image.sae.documents.executable.multithreading.AddMetadatasRunnable;
 import fr.urssaf.image.sae.documents.executable.multithreading.FormatRunnable;
 import fr.urssaf.image.sae.documents.executable.multithreading.FormatValidationPoolThreadExecutor;
+import fr.urssaf.image.sae.documents.executable.multithreading.PurgeCorbeillePoolThreadExecutor;
+import fr.urssaf.image.sae.documents.executable.multithreading.PurgeCorbeilleRunnable;
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
+import fr.urssaf.image.sae.documents.executable.service.StatusPurgeService;
 import fr.urssaf.image.sae.documents.executable.service.TraitementService;
+import fr.urssaf.image.sae.documents.executable.support.TracesDfceSupport;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
 
@@ -54,17 +67,29 @@ public class TraitementServiceImpl implements TraitementService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TraitementServiceImpl.class);
 
+   private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
+         "yyyyMMdd", Locale.FRENCH);
+
    /**
     * Service permettant de réaliser des opérations sur DFCE.
     */
    @Autowired
    private DfceService dfceService;
    
+   @Autowired
+   private TracesDfceSupport tracesSupport;
+
    /**
     * Service permettant de réaliser des opérations sur les fichiers.
     */
    @Autowired
    private FormatFichierService formatFichierService;
+
+   @Autowired
+   private ParametersService paramService;
+
+   @Autowired
+   private StatusPurgeService statusService;
 
    /**
     * {@inheritDoc}
@@ -87,12 +112,12 @@ public class TraitementServiceImpl implements TraitementService {
                .executerRequete(requeteLucene);
 
          // initialise le pool de thread
-         executor = new FormatValidationPoolThreadExecutor(
-               parametres);
-         
+         executor = new FormatValidationPoolThreadExecutor(parametres);
+
          executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
             @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            public void rejectedExecution(Runnable r,
+                  ThreadPoolExecutor executor) {
                try {
                   Thread.sleep(2000);
                } catch (InterruptedException e) {
@@ -130,8 +155,8 @@ public class TraitementServiceImpl implements TraitementService {
 
                if ((parametres.getModeVerification() == MODE_VERIFICATION.IDENTIFICATION)
                      && (file != null)) {
-                  LOGGER.debug("Suppression du fichier temporaire {}", file
-                        .getAbsolutePath());
+                  LOGGER.debug("Suppression du fichier temporaire {}",
+                        file.getAbsolutePath());
                   if (!file.delete()) {
                      LOGGER.error(
                            "Impossible de supprimer le fichier temporaire {}",
@@ -139,10 +164,9 @@ public class TraitementServiceImpl implements TraitementService {
                   }
                }
             } catch (IOException e) {
-               LOGGER
-                     .error(
-                           "Erreur de conversion du stream en fichier temporaire : {}",
-                           e.getMessage());
+               LOGGER.error(
+                     "Erreur de conversion du stream en fichier temporaire : {}",
+                     e.getMessage());
             }
          }
 
@@ -151,11 +175,11 @@ public class TraitementServiceImpl implements TraitementService {
                nbDocErreurIdent);
 
       } catch (SearchQueryParseException ex) {
-         LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
-               .getMessage());
+         LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
+               ex.getMessage());
       } catch (Error ex) {
          // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (executor != null && !executor.isShutdown()) {
             waitFinTraitementValidation(parametres, nbDocTraites, executor,
                   nbDocErreurIdent);
@@ -164,7 +188,7 @@ public class TraitementServiceImpl implements TraitementService {
          throw ex;
       } catch (RuntimeException ex) {
          // gestion des runtime exception
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (executor != null && !executor.isShutdown()) {
             waitFinTraitementValidation(parametres, nbDocTraites, executor,
                   nbDocErreurIdent);
@@ -201,8 +225,8 @@ public class TraitementServiceImpl implements TraitementService {
 
       LOGGER.info("{} documents analysés au total", nbDocTraites);
       LOGGER.info("{} documents en erreur d'identification", nbDocErreurIdent);
-      LOGGER.info("{} documents en erreur de validation", executor
-            .getNombreDocsErreur());
+      LOGGER.info("{} documents en erreur de validation",
+            executor.getNombreDocsErreur());
    }
 
    /**
@@ -346,15 +370,15 @@ public class TraitementServiceImpl implements TraitementService {
       try {
          File repertoireTemporaire = null;
          if (StringUtils.isNotBlank(parametres.getCheminRepertoireTemporaire())) {
-            repertoireTemporaire = new File(parametres
-                  .getCheminRepertoireTemporaire());
+            repertoireTemporaire = new File(
+                  parametres.getCheminRepertoireTemporaire());
          }
          tmpFile = File.createTempFile("sae-doc-exec-", ".pdf",
                repertoireTemporaire);
          fos = new FileOutputStream(tmpFile);
          IOUtils.copy(stream, fos);
-         LOGGER.debug("Création du fichier temporaire {}", tmpFile
-               .getAbsolutePath());
+         LOGGER.debug("Création du fichier temporaire {}",
+               tmpFile.getAbsolutePath());
          return tmpFile;
       } finally {
          IOUtils.closeQuietly(stream);
@@ -386,6 +410,15 @@ public class TraitementServiceImpl implements TraitementService {
     */
    public final DfceService getDfceService() {
       return dfceService;
+   }
+   
+   /**
+    * Permet de récupérer le support des traces
+    * 
+    * @return TracesDfceSupport
+    */
+   public final TracesDfceSupport getTracesDfceSupport() {
+      return tracesSupport;
    }
 
    /**
@@ -439,10 +472,11 @@ public class TraitementServiceImpl implements TraitementService {
                .executerRequete(requeteLucene);
 
          poolThead = new AddMetadatasPoolThreadExecutor(parametres);
-         
+
          poolThead.setRejectedExecutionHandler(new RejectedExecutionHandler() {
             @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            public void rejectedExecution(Runnable r,
+                  ThreadPoolExecutor executor) {
                try {
                   Thread.sleep(2000);
                } catch (InterruptedException e) {
@@ -461,13 +495,13 @@ public class TraitementServiceImpl implements TraitementService {
 
          // attend la fin du traitement
          waitFinTraitementAddMetadatas(poolThead);
-         
+
       } catch (SearchQueryParseException ex) {
-         LOGGER.error("La syntaxe de la requête n'est pas valide : {}", ex
-               .getMessage());
+         LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
+               ex.getMessage());
       } catch (Error ex) {
          // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
             // attend la fin du traitement
             waitFinTraitementAddMetadatas(poolThead);
@@ -476,14 +510,14 @@ public class TraitementServiceImpl implements TraitementService {
          throw ex;
       } catch (RuntimeException ex) {
          // gestion des erreurs de types runtime
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
             // attend la fin du traitement
             waitFinTraitementAddMetadatas(poolThead);
          }
          // et on envoie l'erreur à l'appelant
          throw ex;
-      } 
+      }
 
       // -- Fermeture connexion dfce
       getDfceService().fermerConnexion();
@@ -503,10 +537,27 @@ public class TraitementServiceImpl implements TraitementService {
       // -- On attend la fin de l'execution du poolThead
       poolThead.waitFinishAddMetadata();
 
-      LOGGER
-            .info("{} documents traités au total", poolThead.getNombreTraites());
+      LOGGER.info("{} documents traités au total", poolThead.getNombreTraites());
    }
-   
+
+   /**
+    * Methode permettant d'attendre la fin du traitement de purge de la
+    * corbeille
+    * 
+    * @param poolThread
+    *           pool de thread
+    */
+   private void waitFinTraitementPurgeCorbeille(
+         PurgeCorbeillePoolThreadExecutor poolThread) {
+      poolThread.shutdown();
+
+      // -- On attend la fin de l'execution du poolThead
+      poolThread.waitFinishPurgeCorbeille();
+
+      LOGGER.info("{} documents supprimés au total",
+            poolThread.getNombreTraites());
+   }
+
    /**
     * {@inheritDoc}
     */
@@ -515,16 +566,17 @@ public class TraitementServiceImpl implements TraitementService {
 
       // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
-      
+
       AddMetadatasPoolThreadExecutor poolThead = null;
-      
+
       try {
-         
+
          poolThead = new AddMetadatasPoolThreadExecutor(parametres);
-         
+
          poolThead.setRejectedExecutionHandler(new RejectedExecutionHandler() {
             @Override
-            public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+            public void rejectedExecution(Runnable r,
+                  ThreadPoolExecutor executor) {
                try {
                   Thread.sleep(2000);
                } catch (InterruptedException e) {
@@ -533,41 +585,43 @@ public class TraitementServiceImpl implements TraitementService {
                executor.execute(r);
             }
          });
-         
-         CSVReader reader = new CSVReader(new FileReader(new File(parametres.getCheminFichier())), ';');
-         
+
+         CSVReader reader = new CSVReader(new FileReader(new File(
+               parametres.getCheminFichier())), ';');
+
          String[] nextLine;
          while ((nextLine = reader.readNext()) != null) {
-            
+
             UUID idDoc = UUID.fromString(nextLine[0]);
             Document doc = getDfceService().getDocumentById(idDoc);
             String codeMeta = nextLine[1];
-            
+
             if ((doc != null) && (doc.getCriterions(codeMeta).isEmpty())) {
-               
+
                Map<String, String> metadonnees = new HashMap<String, String>();
                metadonnees.put(codeMeta, "true");
-               
+
                // execution en mode multi thread
-               AddMetadatasRunnable addMetasRun = new AddMetadatasRunnable(getDfceService(), doc, metadonnees);
+               AddMetadatasRunnable addMetasRun = new AddMetadatasRunnable(
+                     getDfceService(), doc, metadonnees);
                poolThead.execute(addMetasRun);
             }
          }
-         
+
          // attend la fin du traitement
          waitFinTraitementAddMetadatas(poolThead);
 
          reader.close();
-         
+
       } catch (FileNotFoundException ex) {
-         LOGGER.error("Le fichier n'a pas été trouvé : {}", ex
-               .getMessage());
+         LOGGER.error("Le fichier n'a pas été trouvé : {}", ex.getMessage());
       } catch (IOException ex) {
-         LOGGER.error("Une erreur s'est produite lors de la fermeture du fichier : {}", ex
-               .getMessage());
+         LOGGER.error(
+               "Une erreur s'est produite lors de la fermeture du fichier : {}",
+               ex.getMessage());
       } catch (Error ex) {
          // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
             // attend la fin du traitement
             waitFinTraitementAddMetadatas(poolThead);
@@ -576,17 +630,149 @@ public class TraitementServiceImpl implements TraitementService {
          throw ex;
       } catch (RuntimeException ex) {
          // gestion des erreurs de types runtime
-         // on essaie d'arrêter le pool et d'attendre la fin 
+         // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
             // attend la fin du traitement
             waitFinTraitementAddMetadatas(poolThead);
          }
          // et on envoie l'erreur à l'appelant
          throw ex;
-      } 
-      
+      }
+
       // -- Fermeture connexion dfce
       getDfceService().fermerConnexion();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void purgerCorbeille(PurgeCorbeilleParametres parametres) {
+
+      String trcPrefix = "purgerCorbeille()";
+
+      // -- Overture connexion dfce
+      getDfceService().ouvrirConnexion();
+
+      // Vérification que la purge n'est pas déjà en cours
+      Boolean isRunning = statusService.isPurgeRunning();
+      if (Boolean.TRUE.equals(isRunning)) {
+
+         throw new PurgeRuntimeException(
+               "La purge de la corbeille est déjà en cours");
+      }
+
+      // Mettre le flag purge en cours à true
+      LOGGER.debug("{} - mise à jour du flag de traitement à TRUE", trcPrefix);
+
+      statusService.updatePurgeStatus(Boolean.TRUE);
+
+      // Mise à jour de la date de lancement
+      Date dateLancement = new Date();
+      paramService.setPurgeCorbeilleDateLancement(dateLancement);
+
+      try {
+         Date minDate = paramService.getPurgeCorbeilleDateDebutPurge();
+         Integer retentionDuration = paramService.getPurgeCorbeilleDuree();
+         Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
+
+         if (minDate.before(maxDate)) {
+
+            PurgeCorbeillePoolThreadExecutor poolThread = null;
+
+             String requeteLucene = "dmc:[" +
+             dateJourneeFormat.format(minDate)
+             + " TO " + dateJourneeFormat.format(maxDate) + "]";
+
+             LOGGER.debug("{} - Requête de suppression : {}", trcPrefix,
+                   requeteLucene);
+
+            try {
+               Iterator<Document> it = getDfceService()
+                     .executerRequeteCorbeille(requeteLucene);
+
+               poolThread = new PurgeCorbeillePoolThreadExecutor(parametres);
+
+               poolThread
+                     .setRejectedExecutionHandler(new RejectedExecutionHandler() {
+                        @Override
+                        public void rejectedExecution(Runnable r,
+                              ThreadPoolExecutor executor) {
+                           try {
+                              Thread.sleep(2000);
+                           } catch (InterruptedException e) {
+                              LOGGER.error("Erreur : {}", e.getMessage());
+                           }
+                           executor.execute(r);
+                        }
+                     });
+
+               while (it.hasNext()) {
+
+                  Document doc = (Document) it.next();
+                  LOGGER.debug("{} - DOC ID : {}", trcPrefix, doc.getUuid());
+                  PurgeCorbeilleRunnable purgeCorbeilleRun;
+                  purgeCorbeilleRun = new PurgeCorbeilleRunnable(
+                        getDfceService(), getTracesDfceSupport(), doc);
+                  poolThread.execute(purgeCorbeilleRun);
+               }
+
+               // attend la fin du traitement
+               waitFinTraitementPurgeCorbeille(poolThread);
+
+            } catch (SearchQueryParseException ex) {
+               LOGGER.error(
+                     "{} - La syntaxe de la requête n'est pas valide : {}",
+                     trcPrefix, ex.getMessage());
+
+            } catch (Error ex) {
+               // gestion des erreurs grave de la jvm
+               // on essaie d'arrêter le pool et d'attendre la fin
+               if (poolThread != null && !poolThread.isShutdown()) {
+                  // attend la fin du traitement
+                  waitFinTraitementPurgeCorbeille(poolThread);
+               }
+               // et on envoie l'erreur à l'appelant
+               throw ex;
+            } catch (RuntimeException ex) {
+               // gestion des erreurs de types runtime
+               // on essaie d'arrêter le pool et d'attendre la fin
+               if (poolThread != null && !poolThread.isShutdown()) {
+                  // attend la fin du traitement
+                  waitFinTraitementPurgeCorbeille(poolThread);
+               }
+               // et on envoie l'erreur à l'appelant
+               throw ex;
+            } finally {
+               LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
+                     trcPrefix);
+
+               statusService.updatePurgeStatus(Boolean.FALSE);
+            }
+         }
+
+         // Mise à jour de la date min de l'intervalle pour la prochaine purge
+         maxDate = DateUtils.truncate(maxDate, Calendar.DATE);
+         paramService.setPurgeCorbeilleDateDebutPurge(maxDate);
+
+         // Mise à jour de la date de dernier succès
+         paramService.setPurgeCorbeilleDateSucces(dateLancement);
+
+         
+      } catch (ParameterNotFoundException ex) {
+         LOGGER.error(
+               "{} - Les paramètres de la purge de la corbeille n'ont pas été trouvés : {}",
+               trcPrefix, ex.getMessage());
+      } finally {
+         LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
+               trcPrefix);
+
+         statusService.updatePurgeStatus(Boolean.FALSE);
+      }
+
+      // -- Fermeture connexion dfce
+      getDfceService().fermerConnexion();
+
    }
 
 }

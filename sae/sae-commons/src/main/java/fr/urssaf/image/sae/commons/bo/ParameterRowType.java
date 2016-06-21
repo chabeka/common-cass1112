@@ -15,6 +15,15 @@ public enum ParameterRowType {
       }
    },
 
+   /** Nom correspondant à la ligne contenant les paramètres de purge de la corbeille */
+   CORBEILLE {
+
+      @Override
+      public String toString() {
+         return "parametresCorbeille";
+      }
+   },
+   
    /**
     * Nom correspondant à la ligne contenant les paramètres du RND
     */

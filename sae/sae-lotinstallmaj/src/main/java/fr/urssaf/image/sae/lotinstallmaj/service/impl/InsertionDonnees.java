@@ -297,6 +297,9 @@ public class InsertionDonnees {
 
       checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_SUCCES",
             debutPurgeCorbeille);
+      
+      checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_DEBUT_PURGE",
+            debutPurgeCorbeille);
 
    }
 

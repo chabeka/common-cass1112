@@ -302,5 +302,64 @@ public class ParametersServiceTest {
             numVersion, numVersionRecup);
 
    }
+   
+   @Test
+   public void testPurgeCorbeilleDuree() throws ParameterNotFoundException {
+      Integer duree = 3;
+      parametersService.setPurgeCorbeilleDuree(duree);
 
+      Integer dureeRetour = parametersService.getPurgeCorbeilleDuree();
+
+      Assert.assertEquals("la durée doit etre correcte", duree, dureeRetour);
+
+   }
+
+   
+   @Test
+   public void testPurgeCorbeilleRunning() throws ParameterNotFoundException {
+      Boolean storedRunning = true;
+      parametersService.setPurgeCorbeilleIsRunning(storedRunning);
+
+      Boolean running = parametersService.isPurgeCorbeilleIsRunning();
+
+      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
+            running);
+
+   }
+   
+   @Test
+   public void testPurgeCorbeilleDateDebut() throws ParameterNotFoundException {
+      Date storedDate = DateUtils.addDays(date, -3);
+      parametersService.setPurgeCorbeilleDateDebutPurge(storedDate);
+
+      Date dateRecup = parametersService.getPurgeCorbeilleDateDebutPurge();
+            
+      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+
+      Assert
+            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+
+   }
+   
+   @Test
+   public void testPurgeCorbeilleDateLancement() throws ParameterNotFoundException {
+      Date storedDate = DateUtils.addDays(date, -6);
+      parametersService.setPurgeCorbeilleDateLancement(storedDate);
+      Date dateRecup = parametersService.getPurgeCorbeilleDateLancement();
+      
+      Assert
+            .assertEquals("la date doit etre correcte", storedDate, dateRecup);
+
+   }
+   
+   @Test
+   public void testPurgeCorbeilleDateSucces() throws ParameterNotFoundException {
+      Date storedDate = DateUtils.addDays(date, -6);
+      parametersService.setPurgeCorbeilleDateSucces(storedDate);
+      Date dateRecup = parametersService.getPurgeCorbeilleDateSucces();
+      
+      Assert
+            .assertEquals("la date doit etre correcte", storedDate, dateRecup);
+
+   }
 }

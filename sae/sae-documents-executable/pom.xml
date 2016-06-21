@@ -1,20 +1,21 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
       <version>16.9.0.2-SNAPSHOT</version>
    </parent>
-   
+
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-documents-executable</artifactId>
    <name>sae-documents-executable</name>
    <version>16.9.0.2-SNAPSHOT</version>
    <description>Module gérant les différents traitements concernant les documents</description>
-   
+
    <dependencies>
-   
+
       <!-- commons-dfce -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
@@ -31,7 +32,7 @@
             </exclusion>
          </exclusions>
       </dependency>
-      
+
       <!-- SAE -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -43,7 +44,17 @@
          <artifactId>sae-commons</artifactId>
          <version>16.9.0.2-SNAPSHOT</version>
       </dependency>
-      
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-trace</artifactId>
+         <version>16.9.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-vi</artifactId>
+         <version>16.9.0.2-SNAPSHOT</version>
+      </dependency>
+
       <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>
@@ -55,7 +66,7 @@
          <artifactId>aspectjweaver</artifactId>
          <version>${aspectj.version}</version>
       </dependency>
-      
+
       <!-- EasyMock -->
       <dependency>
          <groupId>org.easymock</groupId>
@@ -63,7 +74,7 @@
          <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
-      
+
       <!-- Apache Commons -->
       <dependency>
          <groupId>commons-collections</groupId>
@@ -75,13 +86,13 @@
          <artifactId>commons-beanutils</artifactId>
          <version>${apache.commons-beanutils.version}</version>
       </dependency>
-      
+
    </dependencies>
-   
+
    <build>
 
       <plugins>
-         
+
          <!-- Compilation Aspect -->
          <plugin>
             <inherited>true</inherited>
@@ -98,7 +109,7 @@
                <argumentFileName>builddef-sae-documents-executable.lst</argumentFileName>
             </configuration>
          </plugin>
-         
+
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-shade-plugin</artifactId>
@@ -125,23 +136,18 @@
                               <exclude>META-INF/*.RSA</exclude>
                            </excludes>
                         </filter>
-                        <!--
-                        Toutes les classes de org.aspectj:aspectjrt sont reprises
-                        dans le jar org.aspectj:aspectjweaver
-                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
-                        L'exclusion des classes se fait donc au niveau de Shade. 
-                        -->
+                        <!-- Toutes les classes de org.aspectj:aspectjrt 
+                           sont reprises dans le jar org.aspectj:aspectjweaver Néanmoins, il faut inclure 
+                           les 2 jar dans les dépendances. L'exclusion des classes se fait donc au niveau 
+                           de Shade. -->
                         <filter>
                            <artifact>org.aspectj:aspectjrt</artifact>
                            <excludes>
                               <exclude>org/aspectj/**</exclude>
                            </excludes>
                         </filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
+                        <!-- Exclusion de 4 classes qui ont été copiées/collées 
+                           de commons-collection vers commons-beanutils https://issues.apache.org/jira/browse/BEANUTILS-278 -->
                         <filter>
                            <artifact>commons-beanutils:commons-beanutils</artifact>
                            <excludes>
@@ -153,13 +159,16 @@
                         </filter>
                      </filters>
                      <transformers>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.documents.executable.bootstrap.DocumentsExecutableMain</mainClass>
                         </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.handlers</resource>
                         </transformer>
-                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer
+                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
                         </transformer>
                      </transformers>
@@ -171,5 +180,5 @@
       </plugins>
 
    </build>
-   
+
 </project>

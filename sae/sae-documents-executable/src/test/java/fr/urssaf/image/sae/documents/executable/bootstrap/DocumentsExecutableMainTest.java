@@ -42,25 +42,25 @@ public class DocumentsExecutableMainTest {
       AddMetadatasParametres parametres = new AddMetadatasParametres();
       
       //-- Aucun Parametre
-      Boolean result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Boolean result = main.verifierConfFichierParamAddMeta(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyé une erreur", result);
       
       //-- RequeteLucene
       properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
-      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      result = main.verifierConfFichierParamAddMeta(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
       
       //-- Taille pool
       properties.put("addMeta.taille.pool", "5");
       properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
-      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      result = main.verifierConfFichierParamAddMeta(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
       
       //-- Taille pas d'execution
       properties.put("addMeta.taille.pool", "5");
       properties.put("addMeta.taille.pas.execution", "10000");
       properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
-      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      result = main.verifierConfFichierParamAddMeta(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
    }
    
@@ -71,7 +71,7 @@ public class DocumentsExecutableMainTest {
       Properties properties = new Properties();
       AddMetadatasParametres parametres = new AddMetadatasParametres();
       
-      Boolean result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      Boolean result = main.verifierConfFichierParamAddMeta(properties, parametres);
       
       //-- Liste des métadonnées
       properties.put("addMeta.taille.pool", "5");
@@ -80,7 +80,7 @@ public class DocumentsExecutableMainTest {
       properties.put("addMeta.metadonnees", "cot:1,cpt:0,drh:0");
       properties.put("addMeta.requete.lucene", "SM_ARCHIVAGE_DATE :[20120101 TO 20150401]");
       
-      result = main.vefierConfFichierParamAddMeta(properties, parametres);
+      result = main.verifierConfFichierParamAddMeta(properties, parametres);
       
       Assert.assertTrue("La vérification ne doit renvoyer aucune erreur", result);
       
@@ -345,7 +345,7 @@ public class DocumentsExecutableMainTest {
       }
       
       AddMetadatasParametres parametres = new AddMetadatasParametres();
-      if (!main.vefierConfFichierParamAddMeta(properties, parametres)) {
+      if (!main.verifierConfFichierParamAddMeta(properties, parametres)) {
          Assert.fail("Le fichier de paramètrage n'est pas correct");
       }
       
@@ -377,25 +377,25 @@ public class DocumentsExecutableMainTest {
       AddMetadatasParametres parametres = new AddMetadatasParametres();
       
       //-- Aucun Parametre
-      Boolean result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      Boolean result = main.verifierConfFichierParamAddMetaFromCSV(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyé une erreur", result);
       
       //-- Taille pool
       properties.put("addMeta.taille.pool", "5");
-      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      result = main.verifierConfFichierParamAddMetaFromCSV(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
       
       //-- Taille pas d'execution
       properties.put("addMeta.taille.pool", "5");
       properties.put("addMeta.taille.pas.execution", "10000");
-      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      result = main.verifierConfFichierParamAddMetaFromCSV(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
       
       //-- Taille queue
       properties.put("addMeta.taille.pool", "5");
       properties.put("addMeta.taille.pas.execution", "10000");
       properties.put("addMeta.taille.queue", "20");
-      result = main.vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+      result = main.verifierConfFichierParamAddMetaFromCSV(properties, parametres);
       Assert.assertFalse("La vérification aurait du renvoyer une erreur", result);
    }
    
@@ -406,7 +406,7 @@ public class DocumentsExecutableMainTest {
       Properties properties = new Properties();
       AddMetadatasParametres parametres = new AddMetadatasParametres();
 
-      Boolean result = main.vefierConfFichierParamAddMetaFromCSV(properties,
+      Boolean result = main.verifierConfFichierParamAddMetaFromCSV(properties,
             parametres);
 
       // -- Liste des métadonnées
@@ -417,7 +417,7 @@ public class DocumentsExecutableMainTest {
             "src/test/resources/add-meta/addMetadatas.csv");
 
       result = main
-            .vefierConfFichierParamAddMetaFromCSV(properties, parametres);
+            .verifierConfFichierParamAddMetaFromCSV(properties, parametres);
 
       Assert.assertTrue("La vérification ne doit renvoyer aucune erreur",
             result);
@@ -445,7 +445,7 @@ public class DocumentsExecutableMainTest {
       }
       
       AddMetadatasParametres parametres = new AddMetadatasParametres();
-      if (!main.vefierConfFichierParamAddMetaFromCSV(properties, parametres)) {
+      if (!main.verifierConfFichierParamAddMetaFromCSV(properties, parametres)) {
          Assert.fail("Le fichier de paramètrage n'est pas correct");
       }
       

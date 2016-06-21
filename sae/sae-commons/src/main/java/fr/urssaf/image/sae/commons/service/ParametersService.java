@@ -496,4 +496,114 @@ public interface ParametersService {
     */
    void setVersionRndDateMaj(Date dateMajRnd);
 
+   /**
+    * Durée de rétention des documents dans la corbeille avant qu'ils soient
+    * purgés
+    * 
+    * @param duree
+    *           Durée de rétention des documents dans la corbeille avant qu'ils
+    *           soient purgés (en nombre de jours)
+    */
+   void setPurgeCorbeilleDuree(Integer duree);
+
+   /**
+    * Dernière date de succès de la purge de la corbeille
+    * 
+    * @return Durée de rétention des traces dans le registre de surveillance
+    *         technique avant purge (en nombre de jours)
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Integer getPurgeCorbeilleDuree() throws ParameterNotFoundException;
+
+   /**
+    * Dernière date de succès de la purge de la corbeille
+    * 
+    * @param date
+    *           Tous documents antérieurs ou datant de cette journée ont été
+    *           purgées dans la corbeille
+    */
+   void setPurgeCorbeilleDateSucces(Date date);
+
+   /**
+    * Tous documents antérieurs ou datant de cette journée ont été purgées dans
+    * la corbeille<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return Tous documents antérieurs ou datant de cette journée ont été
+    *         purgées dans la corbeille
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Date getPurgeCorbeilleDateSucces() throws ParameterNotFoundException;
+
+   /**
+    * Dernière date de lancement de la purge de la corbeille A noter que la date
+    * est tronquée à la journée (année/mois/jour), l'heure n'est pas prise en
+    * compte. Tous documents antérieurs ou datant de cette journée ont été
+    * purgées dans la corbeille<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @param date
+    *           Dernière date de lancement
+    */
+   void setPurgeCorbeilleDateDebutPurge(Date date);
+
+   /**
+    * Date à utiliser pour la borne minimale de l’intervalle de document à
+    * purger Tous documents antérieurs ou datant de cette journée ont été
+    * purgées dans la corbeille<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte. Tous documents antérieurs ou datant de cette
+    * journée ont été purgées dans la corbeille<br>
+    * A noter que la date est tronquée à la journée (année/mois/jour), l'heure
+    * n'est pas prise en compte.
+    * 
+    * @return date Dernière date de lancement
+    * 
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Date getPurgeCorbeilleDateDebutPurge() throws ParameterNotFoundException;
+
+   /**
+    * Sate à utiliser pour la borne minimale de l’intervalle de document à
+    * purger
+    * 
+    * @param date
+    *           Dernière date de lancement
+    */
+   void setPurgeCorbeilleDateLancement(Date date);
+
+   /**
+    * Dernière date de lancement de la purge de la corbeille A noter que la date
+    * est tronquée à la journée (année/mois/jour), l'heure n'est pas prise en
+    * compte.
+    * 
+    * @return date Dernière date de lancement
+    * 
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Date getPurgeCorbeilleDateLancement() throws ParameterNotFoundException;
+
+   /**
+    * Flag indiquant si la purge de la corbeille est en cours
+    * 
+    * @return Flag indiquant si la purge de la corbeille est en cours
+    * @throws ParameterNotFoundException
+    *            exception levée si le paramètre n'est pas trouvé
+    */
+   Boolean isPurgeCorbeilleIsRunning() throws ParameterNotFoundException;
+
+   /**
+    * Flag indiquant si la purge de la corbeille est en cours
+    * 
+    * @param isRunning
+    *           Flag indiquant si la purge de la corbeille est en cours
+    */
+   void setPurgeCorbeilleIsRunning(Boolean isRunning);
+
 }

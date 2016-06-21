@@ -9,6 +9,7 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.RecycleBinService;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
@@ -79,7 +80,7 @@ public class DfceServiceImpl implements DfceService {
    @Override
    public final Iterator<Document> executerRequete(final String requeteLucene)
          throws SearchQueryParseException {
-      LOGGER.debug("Exécution de la requête lunèce : {}", requeteLucene);
+      LOGGER.debug("Exécution de la requête lucène : {}", requeteLucene);
       final SearchService searchService = getServiceProvider()
             .getSearchService();
       final Base base = getServiceProvider().getBaseAdministrationService()
@@ -88,6 +89,27 @@ public class DfceServiceImpl implements DfceService {
             .createMonobaseQuery(requeteLucene, base);
       searchQuery.setSearchLimit(1000);
       return searchService.createDocumentIterator(searchQuery);
+   }
+   
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws SearchQueryParseException
+    */
+   @Override
+   public final Iterator<Document> executerRequeteCorbeille(final String requeteLucene)
+         throws SearchQueryParseException {
+      LOGGER.debug("Exécution de la requête lucène : {}", requeteLucene);
+      final RecycleBinService recycleBinService = getServiceProvider().getRecycleBinService();
+
+      final Base base = getServiceProvider().getBaseAdministrationService()
+            .getBase(getDfceConnection().getBaseName());
+      
+      final SearchQuery searchQuery = ToolkitFactory.getInstance()
+            .createMonobaseQuery(requeteLucene, base);
+      
+      return recycleBinService.createDocumentIterator(searchQuery);
+      
    }
 
    /**

@@ -16,6 +16,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import fr.urssaf.image.sae.commons.context.ContextFactory;
 import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
+import fr.urssaf.image.sae.documents.executable.model.PurgeCorbeilleParametres;
 import fr.urssaf.image.sae.documents.executable.service.TraitementService;
 import fr.urssaf.image.sae.documents.executable.utils.ValidationUtils;
 
@@ -33,9 +34,11 @@ public class DocumentsExecutableMain {
    public static final String VERIFICATION_FORMAT = "VERIFICATION_FORMAT";
    public static final String ADD_METADATAS = "ADD_METADATAS";
    public static final String ADD_METADATAS_FROM_CSV = "ADD_METADATAS_FROM_CSV";
+   public static final String PURGE_CORBEILLE = "PURGE_CORBEILLE";
 
    protected static final String[] AVAIBLE_SERVICES = new String[] {
-         ADD_METADATAS, ADD_METADATAS_FROM_CSV, VERIFICATION_FORMAT };
+         ADD_METADATAS, ADD_METADATAS_FROM_CSV, VERIFICATION_FORMAT,
+         PURGE_CORBEILLE };
 
    private final String configLocation;
 
@@ -57,8 +60,8 @@ public class DocumentsExecutableMain {
     */
    public static void main(String[] args) {
 
-      LOGGER.info("Arguments de la ligne de commande : {}", StringUtils.join(
-            args, ' '));
+      LOGGER.info("Arguments de la ligne de commande : {}",
+            StringUtils.join(args, ' '));
 
       DocumentsExecutableMain documentsExecutableMain = new DocumentsExecutableMain(
             "/applicationContext-sae-documents-executable.xml");
@@ -89,22 +92,21 @@ public class DocumentsExecutableMain {
       }
 
       if (ValidationUtils.isArgumentsVide(args, 1)) {
-         LOGGER
-               .warn("Le chemin complet du fichier de configuration générale du SAE doit être renseigné.");
+         LOGGER.warn("Le chemin complet du fichier de configuration générale du SAE doit être renseigné.");
 
          return;
       }
 
       if (ValidationUtils.isArgumentsVide(args, 2)) {
-         LOGGER
-               .warn(
-                     "Le chemin complet du fichier de paramètrage du service {} doit être renseigné.",
-                     service);
+         LOGGER.warn(
+               "Le chemin complet du fichier de paramètrage du service {} doit être renseigné.",
+               service);
 
          return;
       }
 
       Properties properties = new Properties();
+
       if (!chargerFichierParam(args[2], properties)) {
          return;
       }
@@ -149,26 +151,21 @@ public class DocumentsExecutableMain {
          stream = new FileInputStream(pathFichierParam);
          properties.load(stream);
       } catch (FileNotFoundException e) {
-         LOGGER
-               .error(
-                     "Le fichier de paramètrage de vérification de format n'a pas été trouvé : {}",
-                     pathFichierParam);
+         LOGGER.error("Le fichier de paramètrage n'a pas été trouvé : {}",
+               pathFichierParam);
          chargementOk = false;
       } catch (IOException e) {
-         LOGGER
-               .error(
-                     "Le fichier de paramètrage de vérification de format ne peut pas être lu : {}",
-                     pathFichierParam);
+         LOGGER.error("Le fichier de paramètrage ne peut pas être lu : {}",
+               pathFichierParam);
          chargementOk = false;
       } finally {
          if (stream != null) {
             try {
                stream.close();
             } catch (IOException e) {
-               LOGGER
-                     .error(
-                           "Le fichier de paramètrage de vérification de format ne peut pas être fermé : {}",
-                           pathFichierParam);
+               LOGGER.error(
+                     "Le fichier de paramètrage ne peut pas être fermé : {}",
+                     pathFichierParam);
                chargementOk = false;
             }
          }
@@ -243,7 +240,7 @@ public class DocumentsExecutableMain {
     *           parametres
     * @return true si vérif OK
     */
-   public boolean vefierConfFichierParamAddMeta(final Properties properties,
+   public boolean verifierConfFichierParamAddMeta(final Properties properties,
          final AddMetadatasParametres parametres) {
 
       boolean confOk = true;
@@ -278,7 +275,7 @@ public class DocumentsExecutableMain {
 
       return confOk;
    }
-   
+
    /**
     * 
     * @param properties
@@ -287,11 +284,11 @@ public class DocumentsExecutableMain {
     *           parametres
     * @return true si vérif OK
     */
-   public boolean vefierConfFichierParamAddMetaFromCSV(final Properties properties,
-         final AddMetadatasParametres parametres) {
+   public boolean verifierConfFichierParamAddMetaFromCSV(
+         final Properties properties, final AddMetadatasParametres parametres) {
 
       boolean confOk = true;
-      
+
       // -- verifie la taille du pool de thread (obligatoire)
       if (ValidationUtils.verifAddMetaParamTaillePool(properties, parametres)) {
          confOk = false;
@@ -307,10 +304,43 @@ public class DocumentsExecutableMain {
             parametres)) {
          confOk = false;
       }
-      
+
       // -- verifie le chemin du fichier csv (obligatoire)
-      if (ValidationUtils.verifAddMetaParamCheminCSV(properties,
+      if (ValidationUtils.verifAddMetaParamCheminCSV(properties, parametres)) {
+         confOk = false;
+      }
+
+      return confOk;
+   }
+
+   /**
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return true si vérif OK
+    */
+   public boolean verifierConfFichierParamPurgeCorbeille(
+         final Properties properties, final PurgeCorbeilleParametres parametres) {
+
+      boolean confOk = true;
+
+      // -- verifie la taille du pool de thread (obligatoire)
+      if (ValidationUtils.verifPurgeCorbeilleParamTaillePool(properties,
             parametres)) {
+         confOk = false;
+      }
+
+      // -- verifie la taille de la queue en attente d'exécution (obligatoire)
+      if (ValidationUtils.verifPurgeCorbeilleParamTailleQueue(properties,
+            parametres)) {
+         confOk = false;
+      }
+
+      // -- verifie la taille du pas d'execution (obligatoire)
+      if (ValidationUtils.verifPurgeCorbeilleParamTaillePasExecution(
+            properties, parametres)) {
          confOk = false;
       }
 
@@ -342,7 +372,7 @@ public class DocumentsExecutableMain {
 
       } else if (service.equals(ADD_METADATAS)) {
          AddMetadatasParametres parametres = new AddMetadatasParametres();
-         if (!vefierConfFichierParamAddMeta(properties, parametres)) {
+         if (!verifierConfFichierParamAddMeta(properties, parametres)) {
             return;
          }
 
@@ -351,12 +381,21 @@ public class DocumentsExecutableMain {
          // -------------------------------------------
       } else if (service.equals(ADD_METADATAS_FROM_CSV)) {
          AddMetadatasParametres parametres = new AddMetadatasParametres();
-         if (!vefierConfFichierParamAddMetaFromCSV(properties, parametres)) {
+         if (!verifierConfFichierParamAddMetaFromCSV(properties, parametres)) {
             return;
          }
 
          // -- Fichier param OK : On execute le service
          execSceAddMetadatasFromCVS(context, parametres);
+         // -------------------------------------------
+      } else if (service.equals(PURGE_CORBEILLE)) {
+
+         PurgeCorbeilleParametres parametres = new PurgeCorbeilleParametres();
+         if (!verifierConfFichierParamPurgeCorbeille(properties, parametres)) {
+            return;
+         }
+         // -- Fichier param OK : On execute le service
+         execScePurgeCorbeille(context, parametres);
          // -------------------------------------------
       }
    }
@@ -391,7 +430,7 @@ public class DocumentsExecutableMain {
             .getBean(TraitementService.class);
       traitementService.addMetadatasToDocuments(parametres);
    }
-   
+
    /**
     * Methode permettant de lancer l'ajout de métadonnées sur des fichiers.
     * 
@@ -400,10 +439,26 @@ public class DocumentsExecutableMain {
     * @param parametres
     *           parametres du fichier de paramètrage
     */
-   protected final void execSceAddMetadatasFromCVS(final ApplicationContext context,
+   protected final void execSceAddMetadatasFromCVS(
+         final ApplicationContext context,
          final AddMetadatasParametres parametres) {
       TraitementService traitementService = context
             .getBean(TraitementService.class);
       traitementService.addMetadatasToDocumentsFromCSV(parametres);
+   }
+
+   /**
+    * Methode permettant de lancer la purge de la corbeille
+    * 
+    * @param context
+    *           contexte spring
+    * @param parametres
+    *           parametres du fichier de paramètrage
+    */
+   protected final void execScePurgeCorbeille(final ApplicationContext context,
+         final PurgeCorbeilleParametres parametres) {
+      TraitementService traitementService = context
+            .getBean(TraitementService.class);
+      traitementService.purgerCorbeille(parametres);
    }
 }

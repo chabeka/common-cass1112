@@ -258,9 +258,25 @@ public final class ValidationUtils {
       final String paramName = "addMeta.taille.pas.execution";
       return verifParamTaillePasExecution(properties, parametres, paramName);
    }
+   
+   /**
+    * Methode permettant de vérifier la saisie du paramètre
+    * 'purgeCorbeille.taille.pas.execution'
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           paramètres
+    * @return boolean : false si validation réussie
+    */
+   public static boolean verifPurgeCorbeilleParamTaillePasExecution(
+         final Properties properties, final AbstractParametres parametres) {
+      final String paramName = "purgeCorbeille.taille.pas.execution";
+      return verifParamTaillePasExecution(properties, parametres, paramName);
+   }
 
    /**
-    * Vérification de la taille du Pool de Theards
+    * Vérification de la taille du Pool de Threads
     * 
     * @param properties
     *           properties
@@ -271,6 +287,11 @@ public final class ValidationUtils {
    public static boolean verifAddMetaParamTaillePool(
          final Properties properties, final AbstractParametres parametres) {
       final String paramName = "addMeta.taille.pool";
+      return verifParamTaillePool(properties, parametres, paramName);
+   }
+
+   private static boolean verifParamTaillePool(final Properties properties,
+         final AbstractParametres parametres, final String paramName) {
       final String paramValue = properties.getProperty(paramName);
 
       if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
@@ -285,6 +306,22 @@ public final class ValidationUtils {
          return true;
    }
 
+   
+   /**
+    * Vérification de la taille du Pool de Threads
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return Renvoie vrai si taille OK
+    */
+   public static boolean verifPurgeCorbeilleParamTaillePool(
+         final Properties properties, final AbstractParametres parametres) {
+      final String paramName = "purgeCorbeille.taille.pool";
+      return verifParamTaillePool(properties, parametres, paramName);
+   }
+   
    /**
     * Vérification de la taille de la queue en attente d'exécution.
     * 
@@ -297,6 +334,28 @@ public final class ValidationUtils {
    public static boolean verifAddMetaParamTailleQueue(
          final Properties properties, final AbstractParametres parametres) {
       final String paramName = "addMeta.taille.queue";
+      return verifParamTailleQueue(properties, parametres, paramName);
+   }
+
+   
+   /**
+    * Vérification de la taille de la queue en attente d'exécution.
+    * 
+    * @param properties
+    *           properties
+    * @param parametres
+    *           parametres
+    * @return Renvoie vrai si taille OK
+    */
+   public static boolean verifPurgeCorbeilleParamTailleQueue(
+         final Properties properties, final AbstractParametres parametres) {
+      final String paramName = "purgeCorbeille.taille.queue";
+      return verifParamTailleQueue(properties, parametres, paramName);
+   }
+   
+   
+   private static boolean verifParamTailleQueue(final Properties properties,
+         final AbstractParametres parametres, final String paramName) {
       final String paramValue = properties.getProperty(paramName);
 
       if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {

@@ -896,7 +896,7 @@ public class StorageDocumentServiceSupport {
                uuid);
          dfceService.getRecycleBinService().deleteDocument(uuid);
 
-         // -- Trace l'événement "Restore d'un document de la corbeille de DFCE"
+         // -- Trace l'événement "Suppression d'un document de DFCE"
          tracesSupport.traceSuppressionDocumentDeDFCE(uuid);
 
          log.debug("{} - Sortie", prefixeTrc);

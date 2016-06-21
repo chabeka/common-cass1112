@@ -545,8 +545,8 @@ public class ParametersServiceImpl implements ParametersService {
       try {
          ZookeeperUtils.acquire(mutex, resourceName);
 
-         parametersSupport.create(parameter, rowType, clockSupport
-               .currentCLock());
+         parametersSupport.create(parameter, rowType,
+               clockSupport.currentCLock());
 
          checkLock(mutex, parameter, rowType);
 
@@ -578,6 +578,115 @@ public class ParametersServiceImpl implements ParametersService {
 
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setPurgeCorbeilleDuree(Integer duree) {
+      Parameter parameter = new Parameter(ParameterType.PURGE_CORBEILLE_DUREE,
+            duree);
+      insertParameter(parameter, ParameterRowType.CORBEILLE);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Integer getPurgeCorbeilleDuree() throws ParameterNotFoundException {
+      return (Integer) parametersSupport.find(
+            ParameterType.PURGE_CORBEILLE_DUREE, ParameterRowType.CORBEILLE)
+            .getValue();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setPurgeCorbeilleDateSucces(Date date) {
+      Parameter parameter = new Parameter(
+            ParameterType.PURGE_CORBEILLE_DATE_SUCCES, date);
+      insertParameter(parameter, ParameterRowType.CORBEILLE);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Date getPurgeCorbeilleDateSucces() throws ParameterNotFoundException {
+      return (Date) parametersSupport.find(
+            ParameterType.PURGE_CORBEILLE_DATE_SUCCES,
+            ParameterRowType.CORBEILLE).getValue();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setPurgeCorbeilleDateLancement(Date date) {
+      Parameter parameter = new Parameter(
+            ParameterType.PURGE_CORBEILLE_DATE_LANCEMENT, date);
+      insertParameter(parameter, ParameterRowType.CORBEILLE);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Date getPurgeCorbeilleDateLancement()
+         throws ParameterNotFoundException {
+      return (Date) parametersSupport.find(
+            ParameterType.PURGE_CORBEILLE_DATE_LANCEMENT,
+            ParameterRowType.CORBEILLE).getValue();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Boolean isPurgeCorbeilleIsRunning() throws ParameterNotFoundException {
+      return (Boolean) parametersSupport.find(
+            ParameterType.PURGE_CORBEILLE_IS_RUNNING,
+            ParameterRowType.CORBEILLE).getValue();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setPurgeCorbeilleIsRunning(Boolean isRunning) {
+      Parameter parameter = new Parameter(
+            ParameterType.PURGE_CORBEILLE_IS_RUNNING, isRunning);
+      insertParameter(parameter, ParameterRowType.CORBEILLE);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void setPurgeCorbeilleDateDebutPurge(Date date) {
+      Date dateOk = DateUtils.truncate(date, Calendar.DATE);
+      Parameter parameter = new Parameter(
+            ParameterType.PURGE_CORBEILLE_DATE_DEBUT_PURGE, dateOk);
+      insertParameter(parameter, ParameterRowType.CORBEILLE);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws ParameterNotFoundException
+    */
+   @Override
+   public Date getPurgeCorbeilleDateDebutPurge()
+         throws ParameterNotFoundException {
+      return (Date) parametersSupport.find(
+            ParameterType.PURGE_CORBEILLE_DATE_DEBUT_PURGE,
+            ParameterRowType.CORBEILLE).getValue();
    }
 
 }

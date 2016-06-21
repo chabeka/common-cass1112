@@ -67,5 +67,38 @@
             </column>
          </row>
       </columnFamily>
+      
+            <!--
+      Les paramètres
+      -->
+      <columnFamily>
+         <name>Parameters</name>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         
+         <row>
+            <key>ParametresCorbeille</key>
+            <column>
+               <name>PURGE_CORBEILLE_DATE_DEBUT_PURGE</name>
+               <value></value>
+            </column>
+            <column>
+               <name>PURGE_CORBEILLE_DATE_DEBUT_LANCEMENT</name>
+               <value></value>
+            </column>
+            <column>
+               <name>PURGE_CORBEILLE_DATE_SUCCES</name>
+               <value></value>
+            </column>
+            <column>
+               <name>PURGE_CORBEILLE_DUREE</name>
+               <value></value>
+            </column>
+            <column>
+               <name>PURGE_CORBEILLE_IS_RUNNING</name>
+               <value></value>
+            </column>
+         </row>
+      </columnFamily>
    </columnFamilies>
 </keyspace>

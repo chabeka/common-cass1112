@@ -14,8 +14,10 @@ import java.util.UUID;
 import junit.framework.Assert;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.RecycleBinService;
 import net.docubase.toolkit.service.ged.StoreService;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
@@ -28,10 +30,12 @@ import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
 
+import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.documents.executable.model.AddMetadatasParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres;
 import fr.urssaf.image.sae.documents.executable.model.FormatValidationParametres.MODE_VERIFICATION;
-import fr.urssaf.image.sae.documents.executable.service.impl.DfceServiceImpl;
+import fr.urssaf.image.sae.documents.executable.model.PurgeCorbeilleParametres;
 import fr.urssaf.image.sae.documents.executable.service.impl.TraitementServiceImpl;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,6 +44,9 @@ public class TraitementServiceTest {
 
    @Autowired
    private TraitementService traitementService;
+
+   @Autowired
+   private ParametersService paramService;
 
    @Autowired
    private DfceService dfceService;
@@ -52,7 +59,7 @@ public class TraitementServiceTest {
 
    private final File doc = new File(
          "src/test/resources/identification/word.doc");
-   
+
    private final int TYPE_RETOUR_OK = 0;
    private final int TYPE_RETOUR_TAG_CONTROL_EXCEPTION = 1;
    private final int TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION = 2;
@@ -70,7 +77,7 @@ public class TraitementServiceTest {
       parametres.setMetadonnees(new ArrayList<String>());
       return parametres;
    }
-   
+
    private AddMetadatasParametres createAddMetaParametres(String requeteLucene,
          String cheminFichier) {
       AddMetadatasParametres parametres = new AddMetadatasParametres();
@@ -79,12 +86,22 @@ public class TraitementServiceTest {
       parametres.setTaillePool(1);
       parametres.setTailleQueue(5);
       parametres.setCheminFichier(cheminFichier);
-      
+
       Map<String, String> metas = new HashMap<String, String>();
       metas.put("toDelete", null);
       metas.put("toAdd", "true");
-      
+
       parametres.setMetadonnees(metas);
+      return parametres;
+   }
+
+   private PurgeCorbeilleParametres createPurgeCorbeilleParametres() {
+      PurgeCorbeilleParametres parametres = new PurgeCorbeilleParametres();
+
+      parametres.setTaillePasExecution(5);
+      parametres.setTaillePool(1);
+      parametres.setTailleQueue(5);
+
       return parametres;
    }
 
@@ -115,8 +132,8 @@ public class TraitementServiceTest {
       DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
       EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
             listeDoc.iterator());
-      EasyMock.expect(dfceService.recupererContenu(document)).andAnswer(
-            new IAnswer<InputStream>() {
+      EasyMock.expect(dfceService.recupererContenu(document))
+            .andAnswer(new IAnswer<InputStream>() {
                @Override
                public InputStream answer() throws Throwable {
                   return new FileInputStream(fichier);
@@ -126,10 +143,11 @@ public class TraitementServiceTest {
       EasyMock.replay(dfceService);
       traitementService.setDfceService(dfceService);
    }
-   
+
    private void createAddMetaMock(TraitementServiceImpl traitementService,
-         String requeteLucene, int typeRetour) throws SearchQueryParseException,
-         TagControlException, FrozenDocumentException {
+         String requeteLucene, int typeRetour)
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
       Document document = createDocument("fmt/354");
       document.addCriterion("toDelete", "maValeur");
@@ -141,60 +159,118 @@ public class TraitementServiceTest {
 
       // creation du mock
       DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      ServiceProvider serviceProvider = EasyMock.createNiceMock(ServiceProvider.class);
+      ServiceProvider serviceProvider = EasyMock
+            .createNiceMock(ServiceProvider.class);
       StoreService storeService = EasyMock.createNiceMock(StoreService.class);
       EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
             listeDoc.iterator());
-      EasyMock.expect(dfceService.getServiceProvider()).andReturn(
-            serviceProvider).anyTimes();
-      EasyMock.expect(serviceProvider.getStoreService()).andReturn(
-            storeService).anyTimes();
+      EasyMock.expect(dfceService.getServiceProvider())
+            .andReturn(serviceProvider).anyTimes();
+      EasyMock.expect(serviceProvider.getStoreService())
+            .andReturn(storeService).anyTimes();
       if (typeRetour == TYPE_RETOUR_OK) {
-         EasyMock.expect(storeService.updateDocument(document)).andReturn(
-               document).anyTimes();
+         EasyMock.expect(storeService.updateDocument(document))
+               .andReturn(document).anyTimes();
       } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
-         EasyMock.expect(storeService.updateDocument(document)).andThrow(
-               new TagControlException("Erreur simulé par junit")).anyTimes();
+         EasyMock.expect(storeService.updateDocument(document))
+               .andThrow(new TagControlException("Erreur simulé par junit"))
+               .anyTimes();
       } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
-         EasyMock.expect(storeService.updateDocument(document)).andThrow(
-               new FrozenDocumentException("Erreur simulé par junit")).anyTimes();
+         EasyMock
+               .expect(storeService.updateDocument(document))
+               .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+               .anyTimes();
       }
       EasyMock.replay(dfceService);
       EasyMock.replay(serviceProvider);
       EasyMock.replay(storeService);
       traitementService.setDfceService(dfceService);
    }
-   
-   private void createAddMetaFromCsvMock(TraitementServiceImpl traitementService,
-         int typeRetour) throws SearchQueryParseException,
-         TagControlException, FrozenDocumentException {
+
+   private void createAddMetaFromCsvMock(
+         TraitementServiceImpl traitementService, int typeRetour)
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
       Document document = createDocument("fmt/354");
       document.addCriterion("toDelete", "maValeur");
-      
+
       // creation du mock
       DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
-      ServiceProvider serviceProvider = EasyMock.createNiceMock(ServiceProvider.class);
+      ServiceProvider serviceProvider = EasyMock
+            .createNiceMock(ServiceProvider.class);
       StoreService storeService = EasyMock.createNiceMock(StoreService.class);
-      EasyMock.expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class))).andReturn(
-            document).anyTimes();
-      EasyMock.expect(dfceService.getServiceProvider()).andReturn(
-            serviceProvider).anyTimes();
-      EasyMock.expect(serviceProvider.getStoreService()).andReturn(
-            storeService).anyTimes();
+      EasyMock
+            .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+            .andReturn(document).anyTimes();
+      EasyMock.expect(dfceService.getServiceProvider())
+            .andReturn(serviceProvider).anyTimes();
+      EasyMock.expect(serviceProvider.getStoreService())
+            .andReturn(storeService).anyTimes();
       if (typeRetour == TYPE_RETOUR_OK) {
-         EasyMock.expect(storeService.updateDocument(document)).andReturn(
-               document).anyTimes();
+         EasyMock.expect(storeService.updateDocument(document))
+               .andReturn(document).anyTimes();
       } else if (typeRetour == TYPE_RETOUR_TAG_CONTROL_EXCEPTION) {
-         EasyMock.expect(storeService.updateDocument(document)).andThrow(
-               new TagControlException("Erreur simulé par junit")).anyTimes();
+         EasyMock.expect(storeService.updateDocument(document))
+               .andThrow(new TagControlException("Erreur simulé par junit"))
+               .anyTimes();
       } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
-         EasyMock.expect(storeService.updateDocument(document)).andThrow(
-               new FrozenDocumentException("Erreur simulé par junit")).anyTimes();
+         EasyMock
+               .expect(storeService.updateDocument(document))
+               .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+               .anyTimes();
       }
       EasyMock.replay(dfceService);
       EasyMock.replay(serviceProvider);
       EasyMock.replay(storeService);
+      traitementService.setDfceService(dfceService);
+   }
+
+   private void createPurgeCorbeilleMock(
+         TraitementServiceImpl traitementService, int typeRetour)
+         throws SearchQueryParseException, FrozenDocumentException,
+         ParameterNotFoundException {
+
+      Document document = createDocument("fmt/354");
+      document.addCriterion("toDelete", "maValeur");
+
+      // creation de la liste des documents
+      List<Document> listeDoc = new ArrayList<Document>();
+      for (int index = 0; index < 10; index++) {
+         listeDoc.add(document);
+      }
+
+      // creation du mock
+      DfceService dfceService = EasyMock.createNiceMock(DfceService.class);
+      ServiceProvider serviceProvider = EasyMock
+            .createNiceMock(ServiceProvider.class);
+      RecycleBinService recycleService = EasyMock
+            .createNiceMock(RecycleBinService.class);
+      EasyMock
+            .expect(dfceService.getDocumentById(EasyMock.anyObject(UUID.class)))
+            .andReturn(document).anyTimes();
+      EasyMock.expect(dfceService.getServiceProvider())
+            .andReturn(serviceProvider).anyTimes();
+      EasyMock.expect(serviceProvider.getRecycleBinService())
+            .andReturn(recycleService).anyTimes();
+
+      EasyMock.expect(
+            dfceService.executerRequeteCorbeille(EasyMock
+                  .anyObject(String.class))).andReturn(listeDoc.iterator());
+
+      if (typeRetour == TYPE_RETOUR_OK) {
+         recycleService.deleteDocument(document.getUuid());
+
+      } else if (typeRetour == TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION) {
+         recycleService.deleteDocument(document.getUuid());
+         EasyMock
+               .expectLastCall()
+               .andThrow(new FrozenDocumentException("Erreur simulé par junit"))
+               .anyTimes();
+      }
+      EasyMock.replay(dfceService);
+      EasyMock.replay(serviceProvider);
+      EasyMock.replay(recycleService);
       traitementService.setDfceService(dfceService);
    }
 
@@ -361,52 +437,49 @@ public class TraitementServiceTest {
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
-   public void addMetadatasToDocumentsOK()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+   public void addMetadatasToDocumentsOK() throws SearchQueryParseException,
+         TagControlException, FrozenDocumentException {
 
       AddMetadatasParametres parametres = createAddMetaParametres(
-            "iti:73132b50-d404-11e2-9df1-005056c00008",
-            "");
+            "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
       createAddMetaMock((TraitementServiceImpl) traitementService,
-            parametres.getRequeteLucene(),
-            TYPE_RETOUR_OK);
+            parametres.getRequeteLucene(), TYPE_RETOUR_OK);
 
       // cas d'identification valide
       traitementService.addMetadatasToDocuments(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsTagControlException()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
       AddMetadatasParametres parametres = createAddMetaParametres(
-            "iti:73132b50-d404-11e2-9df1-005056c00008",
-            "");
+            "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
       createAddMetaMock((TraitementServiceImpl) traitementService,
-            parametres.getRequeteLucene(),
-            TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
+            parametres.getRequeteLucene(), TYPE_RETOUR_TAG_CONTROL_EXCEPTION);
 
       // cas d'identification valide
       traitementService.addMetadatasToDocuments(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsFrozenDocumentException()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
       AddMetadatasParametres parametres = createAddMetaParametres(
-            "iti:73132b50-d404-11e2-9df1-005056c00008",
-            "");
+            "iti:73132b50-d404-11e2-9df1-005056c00008", "");
 
       createAddMetaMock((TraitementServiceImpl) traitementService,
             parametres.getRequeteLucene(),
@@ -414,17 +487,17 @@ public class TraitementServiceTest {
 
       // cas d'identification valide
       traitementService.addMetadatasToDocuments(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsFromCsvOK()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
-      AddMetadatasParametres parametres = createAddMetaParametres(
-            "",
+      AddMetadatasParametres parametres = createAddMetaParametres("",
             "src/test/resources/add-meta/addMetadatas.csv");
 
       createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
@@ -432,17 +505,17 @@ public class TraitementServiceTest {
 
       // cas d'identification valide
       traitementService.addMetadatasToDocumentsFromCSV(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsFromCsvTagControlException()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
-      AddMetadatasParametres parametres = createAddMetaParametres(
-            "",
+      AddMetadatasParametres parametres = createAddMetaParametres("",
             "src/test/resources/add-meta/addMetadatas.csv");
 
       createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
@@ -450,17 +523,17 @@ public class TraitementServiceTest {
 
       // cas d'identification valide
       traitementService.addMetadatasToDocumentsFromCSV(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsFromCsvFrozenDocumentException()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
-      AddMetadatasParametres parametres = createAddMetaParametres(
-            "",
+      AddMetadatasParametres parametres = createAddMetaParametres("",
             "src/test/resources/add-meta/addMetadatas.csv");
 
       createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
@@ -468,17 +541,17 @@ public class TraitementServiceTest {
 
       // cas d'identification valide
       traitementService.addMetadatasToDocumentsFromCSV(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
    }
-   
+
    @Test
    public void addMetadatasToDocumentsFromCsvFileNotFoundException()
-         throws SearchQueryParseException, TagControlException, FrozenDocumentException {
+         throws SearchQueryParseException, TagControlException,
+         FrozenDocumentException {
 
-      AddMetadatasParametres parametres = createAddMetaParametres(
-            "",
+      AddMetadatasParametres parametres = createAddMetaParametres("",
             "src/test/resources/add-meta/zorg");
 
       createAddMetaFromCsvMock((TraitementServiceImpl) traitementService,
@@ -486,8 +559,56 @@ public class TraitementServiceTest {
 
       // cas d'identification valide
       traitementService.addMetadatasToDocumentsFromCSV(parametres);
-      
+
       // remet a jour le context
       ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+
+   @Test
+   public void purgeCorbeilleFrozenDocumentException()
+         throws SearchQueryParseException, FrozenDocumentException,
+         ParameterNotFoundException {
+
+      PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
+
+      paramService.setPurgeCorbeilleDateLancement(new Date());
+      paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
+            new Date(), -20));
+
+      paramService.setPurgeCorbeilleDateSucces(new Date());
+      paramService.setPurgeCorbeilleDuree(10);
+      paramService.setPurgeCorbeilleIsRunning(false);
+
+      createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_FROZEN_DOCUMENT_EXCEPTION);
+
+      traitementService.purgerCorbeille(parametres);
+
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+   }
+
+   @Test
+   public void purgeCorbeilleOK() throws SearchQueryParseException,
+         ParameterNotFoundException, FrozenDocumentException {
+
+      PurgeCorbeilleParametres parametres = createPurgeCorbeilleParametres();
+
+      paramService.setPurgeCorbeilleDateLancement(new Date());
+      paramService.setPurgeCorbeilleDateDebutPurge(DateUtils.addDays(
+            new Date(), -20));
+
+      paramService.setPurgeCorbeilleDateSucces(new Date());
+      paramService.setPurgeCorbeilleDuree(10);
+      paramService.setPurgeCorbeilleIsRunning(false);
+
+      createPurgeCorbeilleMock((TraitementServiceImpl) traitementService,
+            TYPE_RETOUR_OK);
+
+      traitementService.purgerCorbeille(parametres);
+
+      // remet a jour le context
+      ((TraitementServiceImpl) traitementService).setDfceService(dfceService);
+
    }
 }

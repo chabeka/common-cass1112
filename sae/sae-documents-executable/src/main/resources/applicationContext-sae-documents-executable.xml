@@ -43,5 +43,6 @@
    </bean>
    
    <import resource="classpath*:/applicationContext-sae-format.xml" />
+   <import resource="classpath*:/applicationContext-sae-trace.xml" />
 
 </beans>
