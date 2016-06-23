@@ -287,7 +287,7 @@ public class InsertionDonnees {
       Date debutPurgeCorbeille = getCorbeilleDerniereDateTraitee();
 
       checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DUREE",
-            Integer.valueOf(10));
+            Integer.valueOf(20));
 
       checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_IS_RUNNING",
             Boolean.FALSE);
