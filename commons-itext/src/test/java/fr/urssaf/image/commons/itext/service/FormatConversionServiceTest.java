@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.lowagie.text.ExceptionConverter;
+import com.itextpdf.text.ExceptionConverter;
 
 import fr.urssaf.image.commons.itext.exception.FormatConversionException;
 import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageException;
@@ -101,6 +101,32 @@ public class FormatConversionServiceTest {
       } catch (IOException e) {
          Assert.fail("La conversion du fichier en byte n'aurait pas du echouee");
       }
+   }
+   
+   /**
+    * Test pour le cap CER44-141643
+    */
+   @Test
+   public void conversionTiffToPdf_file_background_transparent() throws FormatConversionException, FormatConversionParametrageException, IOException {
+      
+      File fichier = new File("src/test/resources/tiff/background-transparent.tif");
+      
+      byte[] fichierConverti = conversionService.conversionTiffToPdf(fichier, null, null);
+      Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+      Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
+   }
+   
+   /**
+    * Test pour le cap CER44-142153
+    */
+   @Test
+   public void conversionTiffToPdf_file_compression_lzw() throws FormatConversionException, FormatConversionParametrageException, IOException {
+      
+      File fichier = new File("src/test/resources/tiff/Lzw-compression.tif");
+      
+      byte[] fichierConverti = conversionService.conversionTiffToPdf(fichier, null, null);
+      Assert.assertNotNull("Le tableau de byte aurait du être non null", fichierConverti);
+      Assert.assertTrue("Le tableau de byte aurait du être non vide", fichierConverti.length > 0);
    }
    
    @Test

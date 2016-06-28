@@ -23,8 +23,8 @@
       <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 
       <!-- numéro de version de dépendance de itext -->
-      <!-- cette version est la dernière version LGPL que nous pouvons utiliser gratuitement sans publier nos sources -->
-      <itext.version>4.2.1</itext.version>
+      <!-- cette version est une version en AGPL v3 -->
+      <itext.version>5.0.6</itext.version>
             
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
@@ -152,10 +152,10 @@
       <!-- ITEXT -->
 
       <dependency>
-         <groupId>com.lowagie</groupId>
-         <artifactId>itext</artifactId>
+         <groupId>com.itextpdf</groupId>
+         <artifactId>itextpdf</artifactId>
          <version>${itext.version}</version>
-      </dependency>  
+      </dependency>
 
       <!-- SLF4J et Logback -->
       <dependency>
