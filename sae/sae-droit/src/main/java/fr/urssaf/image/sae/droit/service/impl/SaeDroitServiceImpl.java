@@ -849,6 +849,8 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          saePagm.setParametres(pagm.getParametres());
          saePagm.setPagma(saePagma);
          saePagm.setPagmp(saePagmp);
+         saePagm.setCompressionPdfActive(pagm.getCompressionPdfActive());
+         saePagm.setSeuilCompressionPdf(pagm.getSeuilCompressionPdf());
 
          if (pagm.getPagmf() != null) {
             Pagmf pagmf = getPagmf(pagm.getPagmf());
@@ -1128,6 +1130,12 @@ public class SaeDroitServiceImpl implements SaeDroitService {
          pagm.setPagmf(saePagm.getPagmf().getCodePagmf());
       }
       pagm.setParametres(saePagm.getParametres());
+      if (saePagm.getCompressionPdfActive() != null) {
+         pagm.setCompressionPdfActive(saePagm.getCompressionPdfActive());
+      }
+      if (saePagm.getSeuilCompressionPdf() != null) {
+         pagm.setSeuilCompressionPdf(saePagm.getSeuilCompressionPdf());
+      }
       pagmSupport.create(idContratService, pagm, clockSupport.currentCLock(),
             mutator);
 

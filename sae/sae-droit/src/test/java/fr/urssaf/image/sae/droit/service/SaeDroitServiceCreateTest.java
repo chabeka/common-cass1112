@@ -237,7 +237,10 @@ public class SaeDroitServiceCreateTest {
                   .getPagmf().getCodePagmf());
       Assert.assertEquals("les pagm stockés doivent être identiques",
             listeSaePagm.get(0).getPagmp(), storedSaePagm.get(0).getPagmp());
-
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getCompressionPdfActive(), storedSaePagm.get(0).getCompressionPdfActive());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getSeuilCompressionPdf(), storedSaePagm.get(0).getSeuilCompressionPdf());
    }
 
    @Test(expected = PagmReferenceException.class)
@@ -525,5 +528,90 @@ public class SaeDroitServiceCreateTest {
                            .getMessage());
       }
 
+   }
+   
+   @Test
+   public void testCreateSucces_WithCompression() {
+      ServiceContract serviceContract = new ServiceContract();
+      serviceContract.setCodeClient("codeClient");
+      serviceContract.setDescription("description");
+      serviceContract.setLibelle("libellé");
+      serviceContract.setViDuree(Long.valueOf(60));
+      serviceContract.setIdPki("pki 1");
+      serviceContract.setVerifNommage(false);
+
+      SaePagma pagma = new SaePagma();
+      pagma.setActionUnitaires(Arrays.asList(new String[] { "consultation" }));
+      pagma.setCode("pagma");
+
+      SaePagmp pagmp = new SaePagmp();
+      pagmp.setCode("pagmp");
+      pagmp.setDescription("description pagmp");
+      pagmp.setPrmd("codePrmd");
+
+      SaePagmf pagmf = new SaePagmf();
+      pagmf.setCodePagmf("pagmf");
+      pagmf.setDescription("description pagmf");
+      pagmf.setFormatProfile("formatProfile");
+
+      FormatProfil formatProfil = new FormatProfil();
+      formatProfil.setFileFormat("fmt/354");
+      formatProfil.setFormatIdentification(true);
+      formatProfil.setFormatValidation(true);
+      formatProfil.setFormatValidationMode("STRICT");
+
+      FormatControlProfil formatControlProfil = new FormatControlProfil();
+      formatControlProfil.setFormatCode("formatProfile");
+      formatControlProfil.setDescription("description");
+      formatControlProfil.setControlProfil(formatProfil);
+
+      formatControlProfilSupport.create(formatControlProfil, clockSupport
+            .currentCLock());
+
+      List<SaePagm> listeSaePagm = new ArrayList<SaePagm>();
+      SaePagm saePagm = new SaePagm();
+      saePagm.setCode("codePagm");
+      saePagm.setDescription("description pagm");
+      saePagm.setPagma(pagma);
+      saePagm.setPagmp(pagmp);
+      saePagm.setPagmf(pagmf);
+      saePagm.setCompressionPdfActive(Boolean.TRUE);
+      saePagm.setSeuilCompressionPdf(Integer.valueOf(2097152));
+      listeSaePagm.add(saePagm);
+
+      ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("consultation");
+      actionUnitaire.setDescription("consultation");
+      support.create(actionUnitaire, new Date().getTime());
+
+      service.createContratService(serviceContract, listeSaePagm);
+
+      ServiceContract storedContract = contratSupport.find("codeClient");
+
+      Assert.assertEquals(
+            "les deux contrats de service doivent être identiques",
+            serviceContract, storedContract);
+
+      List<SaePagm> storedSaePagm = service.getListeSaePagm("codeClient");
+      Assert.assertEquals(
+            "les deux listes de pagms doivent avoir la meme longueur",
+            listeSaePagm.size(), storedSaePagm.size());
+
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getCode(), storedSaePagm.get(0).getCode());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getDescription(), storedSaePagm.get(0)
+                  .getDescription());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagma(), storedSaePagm.get(0).getPagma());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagmf().getCodePagmf(), storedSaePagm.get(0)
+                  .getPagmf().getCodePagmf());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getPagmp(), storedSaePagm.get(0).getPagmp());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getCompressionPdfActive(), storedSaePagm.get(0).getCompressionPdfActive());
+      Assert.assertEquals("les pagm stockés doivent être identiques",
+            listeSaePagm.get(0).getSeuilCompressionPdf(), storedSaePagm.get(0).getSeuilCompressionPdf());
    }
 }

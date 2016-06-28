@@ -88,8 +88,28 @@
 
          <next on="FAILED" to="finErreur" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="compressionDocuments" />
+      </step>
+      
+      <!-- compression éventuelle des documents -->
+      <step id="compressionDocuments">
+         <tasklet>
+            <chunk reader="sommaireReader" processor="compositeCompressionProcessor"
+               writer="emptyWriter" commit-interval="1000" />
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="controleListener" />
+               <listener ref="controleCompressionDocumentProcessor" />
+               <listener ref="compressionDocumentProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finErreur" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="persistanceDocuments" />
       </step>
+      
 
       <!-- persistance des documents du fichier sommaire.xml -->
 
@@ -103,6 +123,7 @@
                <listener ref="controleStorageDocumentProcessor" />
                <listener ref="stockageListener" />
                <listener ref="enrichissementStorageDocumentProcessor" />
+               <listener ref="replacementDocumentProcessor" />
                <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>

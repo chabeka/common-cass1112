@@ -28,6 +28,17 @@ public class Pagm {
 
    /** valeurs des paramètres dynamiques du PRMD associé */
    private Map<String, String> parametres;
+   
+   /**
+    * Flag indiquant que la compression est active.
+    */
+   private Boolean compressionPdfActive;
+   
+   /**
+    * Nombre d'octet à partir duqel la compression de pdf est effectuée si la
+    * compression est activée.
+    */
+   private Integer seuilCompressionPdf;
 
    /**
     * @return le code intelligible du PAGM
@@ -120,6 +131,38 @@ public class Pagm {
    }
 
    /**
+    * @return le flag indiquant si la compression est active.
+    */
+   public final Boolean getCompressionPdfActive() {
+      return compressionPdfActive;
+   }
+
+   /**
+    * @param compressionPdfActive
+    *           flag indiquant si la compression de pdf doit etre activee
+    */
+   public final void setCompressionPdfActive(Boolean compressionPdfActive) {
+      this.compressionPdfActive = compressionPdfActive;
+   }
+
+   /**
+    * @return le seuil a partir duquel il faut compressé les pdf si la
+    *         compression est active
+    */
+   public final Integer getSeuilCompressionPdf() {
+      return seuilCompressionPdf;
+   }
+
+   /**
+    * @param seuilCompressionPdf
+    *           le seuil a partir duquel il faut compressé les pdf si la
+    *           compression est active
+    */
+   public final void setSeuilCompressionPdf(Integer seuilCompressionPdf) {
+      this.seuilCompressionPdf = seuilCompressionPdf;
+   }
+
+   /**
     * {@inheritDoc}
     */
    @Override
@@ -136,8 +179,11 @@ public class Pagm {
                && parametres.keySet().size() == pagm.getParametres().keySet()
                      .size()
                && parametres.keySet()
-                     .containsAll(pagm.getParametres().keySet());
-
+                     .containsAll(pagm.getParametres().keySet())
+               && ((compressionPdfActive == null && pagm.getCompressionPdfActive() == null) 
+                     || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
+               && ((seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null) 
+                     || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
       }
 
       return areEquals;
@@ -158,7 +204,9 @@ public class Pagm {
       return "code : " + code + "\n" + "description : " + description + "\n"
             + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
             + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"
-            + buffer.toString();
+            + buffer.toString() + "\n"
+            + "compressionPdfActive : " + compressionPdfActive + "\n"
+            + "seuilCompressionPdf : " + seuilCompressionPdf + "\n";
    }
 
    /**

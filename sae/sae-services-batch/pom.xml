@@ -301,6 +301,13 @@
          </exclusions>
       </dependency>
       
+      <!-- commons-itext -->
+      <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-itext</artifactId>
+         <version>${commons-itext}</version>
+      </dependency>
+      
    </dependencies>
 
 </project>

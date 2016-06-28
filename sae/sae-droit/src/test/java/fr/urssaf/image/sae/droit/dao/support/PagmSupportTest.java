@@ -89,6 +89,9 @@ public class PagmSupportTest {
                + " doit etre correcte", PARAMETRES1.get(key), res
                .getParametres().get(key));
       }
+      
+      Assert.assertNull("le flag compressionPdfActive doit être null", res.getCompressionPdfActive());
+      Assert.assertNull("le seuilCompressionPdf doit être null", res.getSeuilCompressionPdf());
    }
 
    @Test
@@ -188,6 +191,9 @@ public class PagmSupportTest {
 
                   found = true;
                }
+               
+               Assert.assertNull("le flag compressionPdfActive doit être null", list.get(index).getCompressionPdfActive());
+               Assert.assertNull("le seuilCompressionPdf doit être null", list.get(index).getSeuilCompressionPdf());
             }
 
             index++;
@@ -196,5 +202,51 @@ public class PagmSupportTest {
          Assert.assertTrue("le code " + code + " doit etre trouvé", found);
       }
 
+   }
+   
+   @Test
+   public void testCreateFindWithCompression() {
+
+      Pagm pagm = new Pagm();
+      pagm.setCode("code4");
+      pagm.setDescription("description4");
+      pagm.setPagma("pagma4");
+      pagm.setPagmp("pagmp4");
+      
+      Map<String, String> param = new HashMap<String, String>();
+      param.put("cle7", "valeur7");
+      param.put("cle8", "valeur8");
+      pagm.setParametres(param);
+      pagm.setCompressionPdfActive(Boolean.TRUE);
+      pagm.setSeuilCompressionPdf(Integer.valueOf(1048576)); // 1Mo
+
+      support.create(ID_CLIENT, pagm, new Date().getTime());
+
+      List<Pagm> list = support.find(ID_CLIENT);
+
+      Assert.assertEquals("longueur de liste correcte", 1, list.size());
+
+      Pagm res = list.get(0);
+
+      Assert.assertNotNull("le pagm ne doit pas être null", res);
+      Assert.assertEquals("l'identifiant (code) doit être correct", "code4", res
+            .getCode());
+      Assert.assertEquals("la description doit être correcte", "description4",
+            res.getDescription());
+      Assert.assertEquals("le pagma doit être correct", "pagma4", res.getPagma());
+      Assert.assertEquals("le pagmp doit être correct", "pagmp4", res.getPagmp());
+
+      Assert.assertEquals("il doit y avoir deux paramètres", 2, res
+            .getParametres().size());
+      Assert.assertTrue("toutes les clés doivent concorder", param
+            .keySet().containsAll(res.getParametres().keySet()));
+      for (String key : param.keySet()) {
+         Assert.assertEquals("la valeur de la clé " + key
+               + " doit etre correcte", param.get(key), res
+               .getParametres().get(key));
+      }
+      
+      Assert.assertEquals("le flag compressionPdfActive doit être correct", Boolean.TRUE, res.getCompressionPdfActive());
+      Assert.assertEquals("le seuilCompressionPdf doit être correct", Integer.valueOf(1048576), res.getSeuilCompressionPdf());
    }
 }

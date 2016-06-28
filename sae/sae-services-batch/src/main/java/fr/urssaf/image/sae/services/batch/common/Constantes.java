@@ -227,6 +227,11 @@ public final class Constantes {
     * Traçabilité : contexte pour la restore de masse
     */
    public static final String CONTEXTE_RESTORE_MASSE = "restoreMasse";
+   
+   /**
+    * Seuil de compression par défaut : 2 Mo
+    */
+   public static final Integer SEUIL_COMPRESSION_DEFAUT = 2097152; 
 
    /**
     * Constructeur

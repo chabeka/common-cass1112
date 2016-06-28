@@ -96,6 +96,7 @@
             <ref bean="controleStorageDocumentProcessor" />
             <ref bean="processorConvertMetier" />
             <ref bean="enrichissementStorageDocumentProcessor" />
+            <ref bean="replacementDocumentProcessor" />
          </list>
       </property>
    </bean>
@@ -109,6 +110,17 @@
             <ref bean="controleStorageVirtualDocumentProcessor" />
             <ref bean="convertSaeVirtualDocumentProcessor" />
             <ref bean="enrichissementVirtualStorageDocumentProcessor" />
+         </list>
+      </property>
+   </bean>
+   
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="compositeCompressionProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertSommaireDocumentProcessor" />
+            <ref bean="controleCompressionDocumentProcessor" />
+            <ref bean="compressionDocumentProcessor" />
          </list>
       </property>
    </bean>

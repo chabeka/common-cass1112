@@ -38,6 +38,17 @@ public class SaePagm {
     * valeurs des paramètres dynamiques du PRMD associé
     **/
    private Map<String, String> parametres;
+   
+   /**
+    * Flag indiquant que la compression est active.
+    */
+   private Boolean compressionPdfActive;
+   
+   /**
+    * Nombre d'octet à partir duqel la compression de pdf est effectuée si la
+    * compression est activée.
+    */
+   private Integer seuilCompressionPdf;
 
    /**
     * @return the code
@@ -113,6 +124,38 @@ public class SaePagm {
    public final void setParametres(Map<String, String> parametres) {
       this.parametres = parametres;
    }
+   
+   /**
+    * @return le flag indiquant si la compression est active.
+    */
+   public final Boolean getCompressionPdfActive() {
+      return compressionPdfActive;
+   }
+
+   /**
+    * @param compressionPdfActive
+    *           flag indiquant si la compression de pdf doit etre activee
+    */
+   public final void setCompressionPdfActive(Boolean compressionPdfActive) {
+      this.compressionPdfActive = compressionPdfActive;
+   }
+
+   /**
+    * @return le seuil a partir duquel il faut compressé les pdf si la
+    *         compression est active
+    */
+   public final Integer getSeuilCompressionPdf() {
+      return seuilCompressionPdf;
+   }
+
+   /**
+    * @param seuilCompressionPdf
+    *           le seuil a partir duquel il faut compressé les pdf si la
+    *           compression est active
+    */
+   public final void setSeuilCompressionPdf(Integer seuilCompressionPdf) {
+      this.seuilCompressionPdf = seuilCompressionPdf;
+   }
 
    /**
     * {@inheritDoc}
@@ -147,6 +190,22 @@ public class SaePagm {
                return false;
             }
          }
+         
+         if (!(compressionPdfActive == null && pagm.getCompressionPdfActive() == null)) {
+            if (compressionPdfActive != null && pagm.getCompressionPdfActive() != null) {
+               areEquals = areEquals && compressionPdfActive.equals(pagm.getCompressionPdfActive());
+            } else {
+               return false;
+            }
+         }
+         
+         if (!(seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null)) {
+            if (seuilCompressionPdf != null && pagm.getSeuilCompressionPdf() != null) {
+               areEquals = areEquals && seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf());
+            } else {
+               return false;
+            }
+         }
       }
 
       return areEquals;
@@ -172,6 +231,14 @@ public class SaePagm {
 
       if (pagmf != null) {
          message += "pagmf : " + pagmf + "\n";
+      }
+      
+      if (compressionPdfActive != null) {
+         message += "compressionPdfActive : " + compressionPdfActive + "\n";
+      }
+      
+      if (seuilCompressionPdf != null) {
+         message += "seuilCompressionPdf : " + seuilCompressionPdf + "\n";
       }
 
       return message;
