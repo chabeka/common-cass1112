@@ -45,15 +45,7 @@ public final class ImageUtils {
       int neww = (int) Math.round(w * cos + h * sin);
       int newh = (int) Math.round(h * cos + w * sin);
 
-      // -----------------------MODIFIED--------------------------------------
-      GraphicsEnvironment ge = GraphicsEnvironment
-            .getLocalGraphicsEnvironment();
-      GraphicsDevice gd = ge.getDefaultScreenDevice();
-      // ---------------------------------------------------------------------
-
-      GraphicsConfiguration gc = gd.getDefaultConfiguration();
-      
-      BufferedImage result = createNewImage(image, neww, newh, gc);
+      BufferedImage result = createNewImage(image, neww, newh);
       Graphics2D g = result.createGraphics();
 
       // -----------------------MODIFIED--------------------------------------
@@ -87,12 +79,10 @@ public final class ImageUtils {
     *           largeur de l'image a creer
     * @param height
     *           hauteur de l'image a creer
-    * @param gc
-    *           configuration graphique
     * @return BufferedImage
     */
    private static BufferedImage createNewImage(BufferedImage image, int width,
-         int height, GraphicsConfiguration gc) {
+         int height) {
       BufferedImage result;
       if (image.getType() == BufferedImage.TYPE_BYTE_BINARY
             || image.getType() == BufferedImage.TYPE_BYTE_INDEXED) {
@@ -102,8 +92,20 @@ public final class ImageUtils {
             || image.getType() == BufferedImage.TYPE_USHORT_GRAY) {
          result = new BufferedImage(width, height, image.getType());
       } else {
-         result = gc.createCompatibleImage(width, height,
-               image.getTransparency());
+         // -----------------------MODIFIED--------------------------------------
+         GraphicsEnvironment ge = GraphicsEnvironment
+               .getLocalGraphicsEnvironment();
+         if (!ge.isHeadless()) {
+            GraphicsDevice gd = ge.getDefaultScreenDevice();
+            // ---------------------------------------------------------------------
+   
+            GraphicsConfiguration gc = gd.getDefaultConfiguration();
+            
+            result = gc.createCompatibleImage(width, height,
+                  image.getTransparency());
+         } else {
+            result = new BufferedImage(width, height, image.getType());
+         }
       }
       return result;
    }
