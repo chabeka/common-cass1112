@@ -144,7 +144,7 @@ public class TraitementImageServiceImpl implements TraitementImageService {
                         new Object[] { trcPrefix, numeroDePage + 1, rotation });
                   try {
                      bi = ImageUtils.rotate(bi, rotation);
-                  } catch (InternalError ex) {
+                  } catch (Throwable ex) {
                      LOGGER.warn("{}", ex.getMessage());
                   }
                }
