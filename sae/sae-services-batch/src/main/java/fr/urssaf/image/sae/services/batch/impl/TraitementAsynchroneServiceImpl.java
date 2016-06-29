@@ -231,6 +231,18 @@ public class TraitementAsynchroneServiceImpl implements
 
       for (UUID idJob : listeUuid) {
          JobRequest job = jobLectureService.getJobRequest(idJob);
+         // Si le job n'est pas trouvé, on renvoie juste l'UUID dans le
+         // jobrequest
+         // Ceci est utilisé ensuite pour renvoyer une état UNKNOWN lors de
+         // l'appel du service de récupération des états des jobs (demande de
+         // Saturne)
+         // Nous préférons de pas ajouter un JobState UNKNOWN pour éviter tout
+         // risque de régression
+
+         if (job == null) {
+            job = new JobRequest();
+            job.setIdJob(idJob);
+         }
          listJobs.add(job);
       }
 

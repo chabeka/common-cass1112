@@ -49,37 +49,49 @@ public final class ObjectEtatTraitementMasseFactory {
       ListeTraitementsMasseType listeTraitementsMasseType = new ListeTraitementsMasseType();
 
       for (JobRequest job : listJobs) {
-         
+
          if (job != null) {
 
-         TraitementMasseType traitementMasseType = new TraitementMasseType();
+            TraitementMasseType traitementMasseType = new TraitementMasseType();
 
-         traitementMasseType.setDateCreation(Utils.datetimeToString(job
-               .getCreationDate()));
-         traitementMasseType.setDateDebut(Utils.datetimeToString(job
-               .getStartingDate()));
-         traitementMasseType.setDateFin(Utils.datetimeToString(job
-               .getEndingDate()));
-         traitementMasseType.setDateReservation(Utils.datetimeToString(job
-               .getReservationDate()));
-         traitementMasseType.setEtat(job.getState().toString());
-         UuidType uuid = new UuidType();
-         uuid.setUuidType(job.getIdJob().toString());
-         traitementMasseType.setIdJob(uuid);
-         if (job.getMessage() != null) {
-            traitementMasseType.setMessage(job.getMessage());
-         } else {
-            traitementMasseType.setMessage(StringUtils.EMPTY);
-         }
-         if (job.getDocCount() != null) {
-            traitementMasseType.setNombreDocuments(job.getDocCount().toString());
-         } else {
-            traitementMasseType.setNombreDocuments(StringUtils.EMPTY);
-         }
+            traitementMasseType.setDateCreation(Utils.datetimeToString(job
+                  .getCreationDate()));
+            traitementMasseType.setDateDebut(Utils.datetimeToString(job
+                  .getStartingDate()));
+            traitementMasseType.setDateFin(Utils.datetimeToString(job
+                  .getEndingDate()));
+            traitementMasseType.setDateReservation(Utils.datetimeToString(job
+                  .getReservationDate()));
+            if (job.getState() == null) {
+               // Cas des UUID inexistant dans la pile, on renvoit UNKNOWN
+               // (demande de Saturne)
+               traitementMasseType.setEtat("UNKNOWN");
+            } else {
+               traitementMasseType.setEtat(job.getState().toString());
+            }
+            UuidType uuid = new UuidType();
+            uuid.setUuidType(job.getIdJob().toString());
+            traitementMasseType.setIdJob(uuid);
+            if (job.getMessage() != null) {
+               traitementMasseType.setMessage(job.getMessage());
+            } else {
+               traitementMasseType.setMessage(StringUtils.EMPTY);
+            }
+            if (job.getDocCount() != null) {
+               traitementMasseType.setNombreDocuments(job.getDocCount()
+                     .toString());
+            } else {
+               traitementMasseType.setNombreDocuments(StringUtils.EMPTY);
+            }
 
-         traitementMasseType.setType(job.getType());
-         
-         listeTraitementsMasseType.addTraitementMasse(traitementMasseType);
+            if (job.getType() == null) {
+               traitementMasseType.setType(StringUtils.EMPTY);
+            } else {
+               traitementMasseType.setType(job.getType());
+            }
+
+            listeTraitementsMasseType.addTraitementMasse(traitementMasseType);
+
          }
 
       }
