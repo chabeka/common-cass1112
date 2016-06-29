@@ -142,7 +142,11 @@ public class TraitementImageServiceImpl implements TraitementImageService {
                   // applique la rotation
                   LOGGER.debug("{} - Rotation de l'image {} - angle {}",
                         new Object[] { trcPrefix, numeroDePage + 1, rotation });
-                  bi = ImageUtils.rotate(bi, rotation);
+                  try {
+                     bi = ImageUtils.rotate(bi, rotation);
+                  } catch (InternalError ex) {
+                     LOGGER.warn("{}", ex.getMessage());
+                  }
                }
 
                LOGGER.debug("{} - Extraction de l'image {}", new Object[] {

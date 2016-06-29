@@ -95,7 +95,7 @@ public final class ImageUtils {
          // -----------------------MODIFIED--------------------------------------
          GraphicsEnvironment ge = GraphicsEnvironment
                .getLocalGraphicsEnvironment();
-         if (!ge.isHeadless()) {
+         if (!ge.isHeadlessInstance()) {
             GraphicsDevice gd = ge.getDefaultScreenDevice();
             // ---------------------------------------------------------------------
    
