@@ -1,4 +1,4 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    
    <parent>
       <artifactId>sae</artifactId>
@@ -10,7 +10,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>16.9.0.2-SNAPSHOT</version>
+   <version>16.9.0.2</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
@@ -23,13 +23,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+        scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-16.9.0.2
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-16.9.0.2
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+         scm:svn:svn://cer69-svn.cer69.recouv/image/java/tags/sae-batch-docs-executable-16.9.0.2
       </connection>
    </scm>
    
