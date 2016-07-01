@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    
    <parent>
       <artifactId>sae</artifactId>
@@ -15,7 +15,9 @@
    
    <properties>
       <junit.version>4.8.2</junit.version>
-      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>  
+      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+      <sae.version>16.9.0.2</sae.version>
+      <commons.dfce.version>1.7.2-CRTL-1</commons.dfce.version>
    </properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -37,7 +39,7 @@
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>
          <artifactId>commons-dfce</artifactId>
-         <version>1.7.2-CRTL-1</version>
+         <version>${commons.dfce.version}</version>
          <exclusions>
             <exclusion>
                <groupId>org.aspectj</groupId>
@@ -54,19 +56,19 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>16.9.0.1</version>
+         <version>${sae.version}</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>16.9.0.1</version>
+         <version>${sae.version}</version>
       </dependency>
       
 	  <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>16.9.0.1</version>
+         <version>${sae.version}</version>
       </dependency>
       
       <!-- AspectJ -->
