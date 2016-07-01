@@ -31,7 +31,7 @@
       <sae.anais.framework.version>1.0.1</sae.anais.framework.version>
       <commons.maquette.version>1.0.1</commons.maquette.version>
       
-      <sae.version>16.9.0.2-SNAPSHOT</sae.version>
+      <sae.version>16.9.0.2</sae.version>
       
    </properties>
    
