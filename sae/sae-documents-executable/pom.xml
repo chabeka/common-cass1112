@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>16.9.0.2-SNAPSHOT</version>
+      <version>16.9.0.2</version>
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-documents-executable</artifactId>
    <name>sae-documents-executable</name>
-   <version>16.9.0.2-SNAPSHOT</version>
+   <version>16.9.0.2</version>
    <description>Module gérant les différents traitements concernant les documents</description>
 
    <dependencies>
@@ -37,22 +36,22 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
-         <version>16.9.0.2-SNAPSHOT</version>
+         <version>16.9.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>16.9.0.2-SNAPSHOT</version>
+         <version>16.9.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>16.9.0.2-SNAPSHOT</version>
+         <version>16.9.0.2</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>16.9.0.2-SNAPSHOT</version>
+         <version>16.9.0.2</version>
       </dependency>
 
       <!-- AspectJ -->
@@ -159,16 +158,13 @@
                         </filter>
                      </filters>
                      <transformers>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                            <mainClass>fr.urssaf.image.sae.documents.executable.bootstrap.DocumentsExecutableMain</mainClass>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.handlers</resource>
                         </transformer>
-                        <transformer
-                           implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
                         </transformer>
                      </transformers>
