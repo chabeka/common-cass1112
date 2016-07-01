@@ -48,12 +48,23 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
 
       final File ecdeDirectory = sommaire.getParentFile();
 
-      String cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
-            + "documents" + File.separator + item.getFilePath();
+      String cheminDocOnEcde;
+      if (!item.getFilePath().contains(ecdeDirectory.getAbsolutePath())) {
+         cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
+               + "documents" + File.separator + item.getFilePath();
+      } else {
+         cheminDocOnEcde = item.getFilePath();
+      }
+      LOGGER.debug("{} - chemin on ecde: {}", trcPrefix, cheminDocOnEcde);
 
       // recupere la map des documents compressés
       Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
             .getJobExecution().getExecutionContext().get("documentsCompressed");
+      if (documentsCompressed == null) {
+         LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring", trcPrefix);
+      } else {
+         LOGGER.debug("{} - Clé de la map des documents compresses : {}", trcPrefix, documentsCompressed.keySet());
+      }
       
       // test si le document courant a ete compressé
       if (documentsCompressed != null && documentsCompressed.containsKey(cheminDocOnEcde)) {
@@ -63,6 +74,8 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
          // le nom
          LOGGER.debug("remplacement du nom du fichier {} par {}", new String[] { item.getFileName(), compressedDoc.getFileName()});
          item.setFileName(compressedDoc.getFileName());
+         LOGGER.debug("remplacement du chemin du fichier {} par {}", new String[] { item.getFilePath(), compressedDoc.getFilePath()});
+         item.setFilePath(compressedDoc.getFilePath());
          // le contenu du fichier
          LOGGER.debug("remplacement du contenu du fichier par {}", new String[] { compressedDoc.getFilePath()});
          InputStreamSource streamSource = new InputStreamSource(new FileInputStream(compressedDoc.getFilePath()));

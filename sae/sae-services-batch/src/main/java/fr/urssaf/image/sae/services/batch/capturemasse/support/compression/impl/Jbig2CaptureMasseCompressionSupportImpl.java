@@ -1,9 +1,12 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.compression.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -336,10 +339,31 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements
 
                // remplacement de _PATH_OUTPUT_FILE_TO_REPLACE
                command = StringUtils.replace(command, "_PATH_OUTPUT_FILE_TO_REPLACE", pathCompressedFile);
-
+               
                // lance la commande
                try {
-                  executeCommand(command);
+                  LOGGER.debug("{} - execution de la commande : {}", trcPrefix, command);
+                  Process p = executeCommand(command);
+                  int codeRetour = 0;
+                  try {
+                     codeRetour = p.waitFor();
+                  } catch (InterruptedException e) {
+                     LOGGER.error(e.getMessage());
+                  }
+                  
+                  if (codeRetour != 0) {
+                     InputStream stream = p.getErrorStream();
+                     BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+                     String ligne = br.readLine();
+                     StringBuffer buffer = new StringBuffer();
+                     while (ligne != null) {
+                        buffer.append(ligne);
+                        buffer.append("\n");
+                        ligne = br.readLine();
+                     }
+                     LOGGER.error(buffer.toString());
+                     
+                  }
                } catch (IOException e) {
                   LOGGER.error(e.getMessage());
                }
@@ -370,7 +394,7 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements
             final String algoHashCode = UntypedMetadataFinderUtils
                   .valueMetadataFinder(document.getUMetadatas(),
                         SAEArchivalMetadatas.TYPE_HASH.getLongCode());
-
+            
             // on calcule la hash du nouveau document pdf
             FileInputStream inCompressedFile = null;
             try {
@@ -378,6 +402,7 @@ public class Jbig2CaptureMasseCompressionSupportImpl implements
                final String hashCalculated = HashUtils.hashHex(
                      inCompressedFile, algoHashCode);
 
+               LOGGER.debug("{} - hash du document compresse : {}", trcPrefix, hashCalculated);
                // stocke le nouveau hash
                compressedDocument.setHash(hashCalculated);
 

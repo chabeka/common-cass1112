@@ -3,13 +3,13 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.commons.utils.InputStreamSource;
+import de.schlichtherle.io.File;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
@@ -107,7 +107,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          
          // ajout le fichier d'origine en pièce jointe
          // si le document a été compressé
-         ajoutFichierOrigineSiNecessaire(retour);         
+         ajoutFichierOrigineSiNecessaire(storageDocument, retour);         
 
          return retour;
       } catch (Exception except) {
@@ -129,6 +129,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     * Methode permettant d'ajouter le fichier d'origine si le document qui a été
     * stocké en piece principale et un document issu de la compression.
     * 
+    * @param storageDocument
+    *           document insere
     * @param retour
     *           document principal
     * @throws FileNotFoundException
@@ -137,15 +139,19 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     *            Exception levée lors d'une erreur d'ajout de pièce jointe
     */
    @SuppressWarnings("unchecked")
-   private void ajoutFichierOrigineSiNecessaire(final StorageDocument retour)
+   private void ajoutFichierOrigineSiNecessaire(
+         final StorageDocument storageDocument, final StorageDocument retour)
          throws FileNotFoundException, StorageDocAttachmentServiceEx {
+      String trcPrefix = "ajoutFichierOrigineSiNecessaire";
 
       if (getStepExecution() != null) {
          // recupere la map des documents compressés
          Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
                .getJobExecution().getExecutionContext().get("documentsCompressed");
-   
+         
          if (documentsCompressed != null) {
+            LOGGER.debug("{} - Clé de la map des documents compresses : {}", trcPrefix, documentsCompressed.keySet());
+            LOGGER.debug("{} - Recherche du document : {}", trcPrefix, storageDocument.getFilePath());
             String pathOriginalFile = null;
             String originalName = null;
             // on parcours la liste des documents compressés pour savoir si le
@@ -156,7 +162,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             for (Entry<String, CompressedDocument> entry : documentsCompressed
                   .entrySet()) {
                CompressedDocument doc = entry.getValue();
-               if (doc.getFileName().equals(retour.getFileName())) {
+               LOGGER.debug("{} - Analyse du document : {}", trcPrefix, doc.getFilePath());
+               if (doc.getFilePath().equals(storageDocument.getFilePath())) {
                   // on a trouvé le nom du fichier dans les listes des fichiers
                   // compressés
                   // donc, c'est le document compressés qui a été stockés
@@ -168,16 +175,20 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                }
             }
             if (pathOriginalFile != null) {
+               LOGGER.debug("{} - Document original trouvé : {}", trcPrefix, pathOriginalFile);
                // calcul du nom du fichier et de l'extension
                String docName = FilenameUtils.getBaseName(originalName);
                String extension = FilenameUtils.getExtension(originalName);
-               InputStreamSource streamSource = new InputStreamSource(
-                     new FileInputStream(pathOriginalFile));
+               DataHandler contenu = new DataHandler(new FileDataSource(new File(pathOriginalFile)));
                // on a un doc original qu'on va mettre en piece jointe
                serviceProvider.getStorageDocumentService().addDocumentAttachment(
                      retour.getUuid(), docName, extension,
-                     new DataHandler(streamSource));
+                     contenu);
+            } else {
+               LOGGER.debug("{} - Document original non trouvé", trcPrefix);
             }
+         } else {
+            LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring", trcPrefix);
          }
       }
    }
