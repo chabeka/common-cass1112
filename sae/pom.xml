@@ -134,7 +134,7 @@
       commons-itext
       ==========================================
       -->
-      <commons-itext>0.0.4-SNAPSHOT</commons-itext>
+      <commons-itext>0.0.4</commons-itext>
       
       <!--
       Modèle de dépendance :

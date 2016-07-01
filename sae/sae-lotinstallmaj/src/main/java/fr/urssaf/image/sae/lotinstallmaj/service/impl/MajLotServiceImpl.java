@@ -276,6 +276,8 @@ public final class MajLotServiceImpl implements MajLotService {
          updateMetaDfce("META_160900");
       } else if (CASSANDRA_DFCE_160901.equalsIgnoreCase(nomOperation)) {
          updateCassandra160901();
+         // Création des métadonnées
+         updateMetaDfce("META_160901");
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
       } else {

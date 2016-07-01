@@ -947,6 +947,9 @@ public class SAECassandraUpdater {
       // Ajout des paramètres pour la purge de la corbeille
       donnees.addCorbeilleParameters();
       
+      // -- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }

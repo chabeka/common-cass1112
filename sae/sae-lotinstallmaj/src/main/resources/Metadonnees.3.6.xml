@@ -3747,4 +3747,50 @@
 		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NumeroNotification</ns1:longCode>
+		<ns1:shortCode>nno</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Numéro de notifications contentieuses</ns1:label>
+		<ns1:description>Numéro de notifications contentieuses</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>non</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
+	<ns1:metaReference>
+		<ns1:longCode>NomMaritalSalarie</ns1:longCode>
+		<ns1:shortCode>nms</ns1:shortCode>
+		<ns1:type>String</ns1:type>
+		<ns1:requiredForArchival>non</ns1:requiredForArchival>
+		<ns1:requiredForStorage>non</ns1:requiredForStorage>
+		<ns1:consultable>oui</ns1:consultable>
+		<ns1:defaultConsultable>non</ns1:defaultConsultable>
+		<ns1:searchable>oui</ns1:searchable>
+		<ns1:internal>non</ns1:internal>
+		<ns1:archivable>oui</ns1:archivable>
+		<ns1:label>Nom marital du salarié</ns1:label>
+		<ns1:description>Nom marital du salarié</ns1:description>
+		<ns1:hasDictionary>non</ns1:hasDictionary>
+		<ns1:isIndexed>oui</ns1:isIndexed>
+		<ns1:modifiable>oui</ns1:modifiable>
+		<ns1:clientAvailable>oui</ns1:clientAvailable>
+		<ns1:leftTrimable>oui</ns1:leftTrimable>
+		<ns1:rightTrimable>oui</ns1:rightTrimable>
+		<ns1:transferable>oui</ns1:transferable>
+		<ns1:aCreer>oui</ns1:aCreer>
+		<ns1:aModifier>non</ns1:aModifier>
+	</ns1:metaReference>
 </ns1:referentiel>
