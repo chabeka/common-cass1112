@@ -15,6 +15,10 @@ import org.apache.axis2.databinding.types.URI.MalformedURIException;
 import org.springframework.util.CollectionUtils;
 
 
+
+
+
+
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
@@ -65,11 +69,15 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequetePrincipaleType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RestoreMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RestoreMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaire;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type0;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireRequestTypeChoice_type1;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Suppression;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Transfert;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertRequestType;
@@ -1072,5 +1080,32 @@ public final class SaeServiceObjectFactory {
 
       return ajoutnote;
    }
-   
+
+
+   public static SuppressionMasse buildSuppressionMasseRequest(String requeteLucene) {
+
+      SuppressionMasse suppressionmasse = new SuppressionMasse();
+      SuppressionMasseRequestType requestType = new SuppressionMasseRequestType();
+      RequeteRechercheType requeteRechType = new RequeteRechercheType();  
+      requestType.setRequete(requeteRechType);
+      suppressionmasse.setSuppressionMasse(requestType);
+      
+      suppressionmasse.getSuppressionMasse().getRequete().setRequeteRechercheType(requeteLucene);
+      return suppressionmasse;
+   }
+
+
+   public static RestoreMasse buildRestoreMasseRequest(String idArchivage) {
+
+      RestoreMasse restoremasse = new RestoreMasse();
+      RestoreMasseRequestType restoremasseReqType = new RestoreMasseRequestType();
+      
+      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+      restoremasseReqType.setUuid(uuid);
+      restoremasse.setRestoreMasse(restoremasseReqType);
+      
+      return restoremasse;
+      
+   }
+
 }

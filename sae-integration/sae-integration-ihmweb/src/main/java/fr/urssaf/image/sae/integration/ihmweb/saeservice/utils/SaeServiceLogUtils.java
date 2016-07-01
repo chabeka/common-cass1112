@@ -29,8 +29,10 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineForm
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.RestoreMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
@@ -49,7 +51,9 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.M
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponseType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RestoreMasseResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionMasseResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.utils.Base64Utils;
 
 /**
@@ -961,4 +965,68 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Id du document : " + formulaire.getIdArchivage());
       log.appendLogNewLine();
    }
+
+   /**
+    * Ajoute, dans le log de l'appel au test
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logAppelSuppressionMasseSimple(ResultatTestLog log,
+         SuppressionMasseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération SuppressionMasse");
+            
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test cf l'id du job
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logResultatSuppressionMasse(ResultatTestLog log,
+         SuppressionMasseResponseType suppressionMasseResponse) {
+      log.appendLogLn("Stockage dans la pile de l'appel de l'opération SuppressionMasse");      
+      log.appendLogNewLine();
+   }
+
+
+   /**
+    * Ajoute, dans le log de l'appel au test
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logAppelRestoreMasseSimple(ResultatTestLog log,
+         RestoreMasseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération RestoreMasse");
+            
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test 
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logResultatRestoreMasse(ResultatTestLog log,
+         RestoreMasseResponseType RestoreMasseResponse) {
+      log.appendLogLn("Restore de l'opération SuppressionMasse dont l'UUID a été spécifié");      
+      log.appendLogLn("Consulter la pile pour voir le résultat (succès et nombre de documents restorés)");
+      log.appendLogNewLine();
+   }
+   
+
 }

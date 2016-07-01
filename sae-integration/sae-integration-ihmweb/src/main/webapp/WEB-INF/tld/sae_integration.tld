@@ -140,6 +140,12 @@
       <description>Ajout d'une note à un document</description>
       <path>/WEB-INF/tags/ajoutnote.tag</path>
    </tag-file>
+
+   <tag-file>
+      <name>suppressionMasse</name>
+      <description>Appel du service web de suppresion de masse</description>
+      <path>/WEB-INF/tags/suppressionMasse.tag</path>
+   </tag-file>
    
    <tag-file>
       <name>stockageUnitaire</name>
@@ -147,7 +153,12 @@
       <path>/WEB-INF/tags/stockageUnitaire.tag</path>
    </tag-file>
 
-  
+   <tag-file>
+      <name>restoreMasse</name>
+      <description>Appel du service web de restoreMasse</description>
+      <path>/WEB-INF/tags/restoreMasse.tag</path>
+   </tag-file>
+   
 
    <function>
       <name>booleanToOuiNon</name>

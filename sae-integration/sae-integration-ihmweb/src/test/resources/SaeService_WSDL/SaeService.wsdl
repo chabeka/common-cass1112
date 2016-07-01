@@ -5,6 +5,14 @@
          <xsd:import namespace="http://www.cirtil.fr/saeService" schemaLocation="SaeService.xsd"/>
       </xsd:schema>
   </wsdl:types>
+  <wsdl:message name="restoreMasseResponseMessage">
+<wsdl:documentation>
+         Message de reponse à un demande de restore
+         masse
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:restoreMasseResponse">
+    </wsdl:part>
+  </wsdl:message>
   <wsdl:message name="recuperationMetadonneesResponseMessage">
 <wsdl:documentation>Message contenant la liste des
          métadonnées
@@ -41,6 +49,13 @@
          multiples avec le hash du sommaire.xml
       </wsdl:documentation>
     <wsdl:part name="input" element="tns:archivageMasseAvecHash">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="restoreMasseRequestMessage">
+<wsdl:documentation>
+         Message de demande pour la restore masse
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:restoreMasse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="suppressionResponseMessage">
@@ -103,6 +118,13 @@
          serveur en mode sécurisé
       </wsdl:documentation>
     <wsdl:part name="input" element="tns:PingSecureRequest">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="suppressionMasseRequestMessage">
+<wsdl:documentation>
+         Message de demande pour la suppressionde masse
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:suppressionMasse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="consultationMTOMRequestMessage">
@@ -173,18 +195,18 @@
     <wsdl:part name="output" element="tns:consultationAffichableResponse">
     </wsdl:part>
   </wsdl:message>
-  <wsdl:message name="archivageUnitaireResponseMessage">
-<wsdl:documentation>Message de réponse à l'archivage d'un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:archivageUnitaireResponse">
-    </wsdl:part>
-  </wsdl:message>
   <wsdl:message name="suppressionRequestMessage">
 <wsdl:documentation>Message contenant le résultat de la
          suppression de documents au SAE
       </wsdl:documentation>
     <wsdl:part name="input" element="tns:suppression">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="archivageUnitaireResponseMessage">
+<wsdl:documentation>Message de réponse à l'archivage d'un document
+         unique
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:archivageUnitaireResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="rechercheParIterateurRequestMessage">
@@ -224,6 +246,14 @@
          résultats)
       </wsdl:documentation>
     <wsdl:part name="output" element="tns:rechercheNbResResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="suppressionMasseResponseMessage">
+<wsdl:documentation>
+         Message de reponse à une demande de
+         suppression de masse
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:suppressionMasseResponse">
     </wsdl:part>
   </wsdl:message>
   <wsdl:message name="consultationResponseMessage">
@@ -343,10 +373,29 @@
       <wsdl:output message="tns:archivageMasseAvecHashResponseMessage">
     </wsdl:output>
     </wsdl:operation>
+    <wsdl:operation name="suppressionMasse" parameterOrder="input">
+<wsdl:documentation>
+            Opération de suppression de masse de
+            documents
+         </wsdl:documentation>
+      <wsdl:input message="tns:suppressionMasseRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:suppressionMasseResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="restoreMasse" parameterOrder="input">
+<wsdl:documentation>
+            Opération de restauration en masse de
+            documents supprimés
+         </wsdl:documentation>
+      <wsdl:input message="tns:restoreMasseRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:restoreMasseResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
     <wsdl:operation name="recherche" parameterOrder="input">
 <wsdl:documentation>Opération de recherche documentaire
-            sur
-            le
+            sur le
             SAE
          </wsdl:documentation>
       <wsdl:input message="tns:rechercheRequestMessage">
@@ -539,6 +588,31 @@
             multiples avec un hash fournit pour le sommaire.xml
          </wsdl:documentation>
       <soap:operation soapAction="archivageMasseAvecHash"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="suppressionMasse">
+<wsdl:documentation>
+            Opération de suppression de documents en
+            masse
+         </wsdl:documentation>
+      <soap:operation soapAction="suppressionMasse"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="restoreMasse">
+<wsdl:documentation>
+            Opération de restaure de documents en masse
+         </wsdl:documentation>
+      <soap:operation soapAction="restoreMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

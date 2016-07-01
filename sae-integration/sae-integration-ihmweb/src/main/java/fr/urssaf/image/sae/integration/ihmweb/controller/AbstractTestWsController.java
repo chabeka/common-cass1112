@@ -28,8 +28,10 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestServ
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.RestoreMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
@@ -109,6 +111,13 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private AjoutNoteTestService ajoutNoteTestServ;
+
+   @Autowired
+   private SuppressionMasseTestService suppressionMasseTestServ;
+
+   @Autowired
+   private RestoreMasseTestService restoreMasseTestServ;
+
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -281,6 +290,26 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return this.ajoutNoteTestServ;
    }
 
+   /**
+    * Service des tests de l'opération "suppressionMasse" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "suppressionMasse" du service web
+    *         SaeService
+    */
+   public final SuppressionMasseTestService getSuppressionMasseTestService() {
+      return this.suppressionMasseTestServ;
+   }
+   
+
+   /**
+    * Service des tests de l'opération "restoreMasse" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "restoreMasse" du service web
+    *         SaeService
+    */
+   public final RestoreMasseTestService getRestoreMasseTestService() {
+      return this.restoreMasseTestServ;
+   }   
    
    /**
     * Renvoie le numéro du test

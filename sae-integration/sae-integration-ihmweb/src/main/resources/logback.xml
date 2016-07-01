@@ -8,20 +8,20 @@
    
    
    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-   
+     <!--
       <file>C:/sae/integration/logs/logs_appli_integration.log</file>
-       
-      <!-- 
+   -->
       <file>/appl/sae_integration/logs/logs_appli_integration.log</file>
-      -->
+   
       
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-     
-         <fileNamePattern>c:/logs/logs_appli_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
-   
    <!--
+         <fileNamePattern>c:/logs/logs_appli_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
+   -->
+     
          <fileNamePattern>/appl/sae_integration/logs/logs_appli_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
-   -->     
+   
+        
          <maxHistory>30</maxHistory>
          
       </rollingPolicy>

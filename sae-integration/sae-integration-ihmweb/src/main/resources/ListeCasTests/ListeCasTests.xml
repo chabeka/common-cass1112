@@ -10,7 +10,7 @@
    <Categorie>
 
       <Nom>Tests techniques</Nom>
-      <Id>42</Id>
+      <Id>20</Id>
       <CasTests>
 
          <CasTest>
@@ -2866,7 +2866,45 @@
 
    </Categorie>
 
+   
+   <!-- ======================================================== -->
+   <!-- SuppressionMasse -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Suppression Masse</Nom>
+      <Id>21</Id>
+      <CasTests>
+         <CasTest>
+            <id>3000</id>
+            <code>3000-SuppressionMasse-TestLibre</code>
+            <description>
+               Test libre de la suppression de masse 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3000-SuppressionMasse-Test-Libre"</luceneExemple>
+         </CasTest>		 
+      </CasTests>
+   </Categorie>
 
+   
+   <!-- ======================================================== -->
+   <!-- RestoreSuppressionMasse -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Restore Suppression Masse</Nom>
+      <Id>22</Id>
+      <CasTests>
+         <CasTest>
+            <id>3100</id>
+            <code>3100-RestoreSuppressionMasse-TestLibre</code>
+            <description>
+               Test libre de la restore de la suppression de masse 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3100-RestoreSuppressionMasse-Test-Libre"</luceneExemple>
+         </CasTest>      
+      </CasTests>
+   </Categorie>
    
    <!-- ======================================================== -->
    <!-- Formats -->
