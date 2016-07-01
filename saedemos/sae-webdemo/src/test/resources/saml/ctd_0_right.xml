@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:vi xmlns:ns2="http://www.cirtil.fr/sae/viPortailAportail">
-    <issuer>SAE_PORTAIL_WEB_IHM_EXPLOIT</issuer>
-    <audience>http://exploit.sae.urssaf.fr</audience>
-    <nameID>AGENT-CTD-SAE-90040 Prenom-90040</nameID>
-    <pagms />
-    <habilitationAnais>ADMINISTRATION TECHNIQUE</habilitationAnais>
-</ns2:vi>
