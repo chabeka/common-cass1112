@@ -1069,7 +1069,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          logRuntimeException(ex);
          throw new EtatTraitementsMasseAxisFault(
                "ErreurInterneEtatTraitementsMasse",
-               "Une erreur interne à l'application est survenue lors de la récupération des états des traitemens de masse.",
+               "Une erreur interne à l'application est survenue lors de la récupération des états des traitements de masse.",
                ex);
       }
       
