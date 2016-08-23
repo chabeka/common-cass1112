@@ -635,6 +635,19 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajout de l'action unitaire suppression et modification
+    */
+   public void addActionUnitaireSuppressionModification() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("suppression", "Suppression unitaire", cfTmpl);
+      addActionUnitaire("modification", "Modification unitaire", cfTmpl);
+
+   }
+   
+   
+   /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
    public void addReferentielEvenementV3() {

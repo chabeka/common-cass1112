@@ -48,7 +48,8 @@ public class SAECassandraUpdater {
    private static final int VERSION_19 = 19;
    private static final int VERSION_20 = 20;
    private static final int VERSION_21 = 21;
-
+   private static final int VERSION_22 = 22;
+   
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_FORMAT_CONTROL_PROFIL = "DroitFormatControlProfil";
@@ -953,4 +954,30 @@ public class SAECassandraUpdater {
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }
+   
+   /**
+    * Version 21 : <li>Ajout de l'action unitaire suppression et modification pour la GNS</li>
+    */
+   public void updateToVersion22() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_22) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_22);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout de l'action unitaire suppression et modification
+      donnees.addActionUnitaireSuppressionModification();
+      
+      // On positionne la version à 22
+      saeDao.setDatabaseVersion(VERSION_22);
+   }
+   
 }
