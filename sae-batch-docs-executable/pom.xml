@@ -3,7 +3,7 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>16.9.0.1</version>
+      <version>16.9.0.3-SNAPSHOT</version>
    </parent>
    
    <modelVersion>4.0.0</modelVersion>
@@ -16,7 +16,7 @@
    <properties>
       <junit.version>4.8.2</junit.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-      <sae.version>16.9.0.2</sae.version>
+      <sae.version>16.11.0.1</sae.version>
       <commons.dfce.version>1.7.2-CRTL-1</commons.dfce.version>
    </properties>
    
