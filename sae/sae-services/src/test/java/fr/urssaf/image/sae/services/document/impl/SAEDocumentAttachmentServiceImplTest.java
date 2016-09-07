@@ -77,7 +77,6 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -201,8 +200,12 @@ public class SAEDocumentAttachmentServiceImplTest {
       provider.closeConnexion();
 
       if (ecde != null) {
-         // supprime le repertoire ecde
-         ecdeTestTools.cleanEcdeTestDocument(ecde);
+         try {
+            // supprime le repertoire ecde
+            ecdeTestTools.cleanEcdeTestDocument(ecde);
+         } catch (IOException e) {
+            // rien à faire
+         }
       }
    }
 
