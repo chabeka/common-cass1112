@@ -406,3 +406,12 @@ Met la base Cassandra du SAE en version 21 :
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_160901
 
+// ------------------------------------------
+// 15) Lot 161100SAE
+// ------------------------------------------
+
+Met la base Cassandra du SAE en version 22 :
+
+- Ajout de l'action unitaire suppression et modification qui n'existait pas en GNS
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_161100
