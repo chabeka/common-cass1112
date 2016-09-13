@@ -1,14 +1,58 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project-modules id="moduleCoreId" project-version="1.5.0">
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
     <wb-module deploy-name="sae-webservices">
-        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
-        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/test/resources"/>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/sae-ecde/sae-ecde">
+        <dependent-module archiveName="sae-trace-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-trace/sae-trace">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module deploy-path="/WEB-INF/lib" handle="module:/resource/sae-services-batch/sae-services-batch">
+        <dependent-module archiveName="sae-commons-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-commons/sae-commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-vi-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-vi/sae-vi">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-saml-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-saml/sae-saml">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-droit-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-droit/sae-droit">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-igc-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-igc/sae-igc">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-services-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-services/sae-services">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-bo-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-bo/sae-bo">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-format-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-format/sae-format">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-rnd-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-rnd/sae-rnd">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-ecde-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-ecde/sae-ecde">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-metadata-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-metadata/sae-metadata">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-mapping-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-mapping/sae-mapping">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-storage-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-storage/sae-storage">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-storage-dfce-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-storage-dfce/sae-storage-dfce">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-services-batch-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-services-batch/sae-services-batch">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-pile-travaux-16.11.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-pile-travaux/sae-pile-travaux">
             <dependency-type>uses</dependency-type>
         </dependent-module>
         <property name="context-root" value="sae-webservices"/>
