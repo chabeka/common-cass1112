@@ -22,7 +22,7 @@
       <axis2.version>1.6.2</axis2.version>
       <rampart.version>1.6.2</rampart.version>
       
-      <sae.version>12.9.10.1</sae.version>
+      <sae.version>15.10.0.2</sae.version>
       
    </properties>
 
