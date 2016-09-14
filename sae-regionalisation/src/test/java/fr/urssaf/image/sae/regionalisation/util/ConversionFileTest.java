@@ -19,7 +19,7 @@ public class ConversionFileTest {
    public void generateFile() throws IOException {
 
       File parentDirectory = new File(
-            "S:/REFERENTIEL/03- SI/SAE/PROJETS TECHNIQUES OU FONCTIONNELS/Régionalisation/Vague 4 (mi 2014)/Fichiers de fusion à blanc (FAB)/FAB3");
+            "S:/REFERENTIEL/03- SI/SAE/PROJETS TECHNIQUES OU FONCTIONNELS/Régionalisation/Vague 5 (fin 2016)/Fichiers de fusion à blanc (FAB)/FAB1");
 
       regroupFiles(parentDirectory);
 
