@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSu
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-cassandra-test.xml" })
-@Ignore
+//@Ignore
 public class ExtractionFondsDocProdPourPgSqlTest {
 
    @Autowired
