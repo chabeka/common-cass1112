@@ -41,13 +41,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-integration/sae-integration-droits/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-integration/sae-integration-droits/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-integration/sae-integration-droits/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-integration/sae-integration-droits/
       </connection>
    </scm>
 
