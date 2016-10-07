@@ -42,7 +42,7 @@ public class SaeUpdaterTest {
       };
       String servers;
 
-      // servers =
+      // servers = 
       // "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
       // servers = "cer69imageint9.cer69.recouv:9160";
