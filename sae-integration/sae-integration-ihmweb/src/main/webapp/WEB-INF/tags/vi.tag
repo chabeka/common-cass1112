@@ -54,6 +54,7 @@
                   <form:option value="1">IGC AED (val), CN=PNR_Application_Test</form:option>
                   <form:option value="2">IGC AED (val), CN=ApplicationTestSAE</form:option>
                   <form:option value="3">IGC cellule int&eacute;gration, CN=APPLICATION_TEST_1</form:option>
+                  <form:option value="4">IGC gammeimage, CN=gammeimage.cer69.recouv</form:option>                  
                </form:select></td>
                <td>&nbsp;</td>
             </tr>

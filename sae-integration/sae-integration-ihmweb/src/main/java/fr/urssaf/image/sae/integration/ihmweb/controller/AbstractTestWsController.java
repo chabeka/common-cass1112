@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestServ
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.EtatTraitementMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.GetDocFormatOrigineTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
@@ -118,6 +119,8 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    @Autowired
    private RestoreMasseTestService restoreMasseTestServ;
 
+   @Autowired
+   private EtatTraitementMasseTestService etatTraitementMasseTestServ;
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -309,6 +312,16 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    public final RestoreMasseTestService getRestoreMasseTestService() {
       return this.restoreMasseTestServ;
+   }   
+   
+   /**
+    * Service des tests de l'opération "etatTraitementMasse" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "etatTraitementMasse" du service web
+    *         SaeService
+    */
+   public final EtatTraitementMasseTestService getEtatTraitementMasseTestService() {
+      return this.etatTraitementMasseTestServ;
    }   
    
    /**

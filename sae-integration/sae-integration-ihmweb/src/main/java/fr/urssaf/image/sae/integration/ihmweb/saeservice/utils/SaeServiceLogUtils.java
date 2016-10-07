@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RestoreMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionMasseFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.EtatTraitementMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
@@ -1028,5 +1029,35 @@ public final class SaeServiceLogUtils {
       log.appendLogNewLine();
    }
    
+
+   /**
+    * Ajoute, dans le log de l'appel au test
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logAppelEtatTraitementMasseSimple(ResultatTestLog log,
+         EtatTraitementMasseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération EtatTraitementMasse");
+            
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test cf l'id du job
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+
+   public static void logResultatEtatTraitementMasse(ResultatTestLog log) {
+      log.appendLogLn("Fin de récupération du contenu de la pile suite à l'appel de l'opération EtatTraitementMasse");      
+      log.appendLogNewLine();
+   }
+
 
 }

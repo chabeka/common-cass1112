@@ -9,7 +9,7 @@
 
    <Categorie>
 
-      <Nom>Tests techniques</Nom>
+      <Nom>Tests techniques - 000</Nom>
       <Id>20</Id>
       <CasTests>
 
@@ -33,7 +33,7 @@
 
    <Categorie>
 
-      <Nom>Capture unitaire</Nom>
+      <Nom>Capture unitaire - 100</Nom>
       <Id>1</Id>
       <CasTests>
          <CasTest>
@@ -413,7 +413,7 @@
 
    <Categorie>
 
-      <Nom>Stockage Unitaire</Nom>
+      <Nom>Stockage Unitaire - 2700</Nom>
       <Id>18</Id>
       <CasTests>
          <CasTest>
@@ -444,7 +444,7 @@
 
    <Categorie>
 
-      <Nom>Récupération du document origine</Nom>
+      <Nom>Récupération du document origine - 2800</Nom>
       <Id>19</Id>
       <CasTests>
          <CasTest>
@@ -464,7 +464,7 @@
 
    <Categorie>
 
-      <Nom>Capture de masse</Nom>
+      <Nom>Capture de masse - 200</Nom>
       <Id>2</Id>
       <CasTests>
 
@@ -1061,7 +1061,7 @@
    <!-- ======================================================== -->
 
    <Categorie>
-      <Nom>Notes</Nom>
+      <Nom>Notes - 2500</Nom>
       <Id>15</Id>
       <CasTests>
 
@@ -1155,7 +1155,7 @@
    <!-- ======================================================== -->
 
    <Categorie>
-      <Nom>UUID</Nom>
+      <Nom>UUID - 2600</Nom>
       <Id>16</Id>
       <CasTests>
 
@@ -1260,7 +1260,7 @@
 
    <Categorie>
 
-      <Nom>Recherche</Nom>
+      <Nom>Recherche - 300</Nom>
       <Id>3</Id>
       <CasTests>
 
@@ -1554,7 +1554,7 @@
    <!-- Recherche avec nombre de résultats -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>Recherche avec nombre de résultats</Nom>
+      <Nom>Recherche avec nombre de résultats - 2100</Nom>
       <Id>12</Id>
       <CasTests>
          <CasTest>
@@ -1574,7 +1574,7 @@
    <!-- Recherche par itérateur -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>Recherche par itérateur</Nom>
+      <Nom>Recherche par itérateur - 2300</Nom>
       <Id>13</Id>
       <CasTests>
          <CasTest>
@@ -1649,7 +1649,7 @@
    <!-- Isolation des données -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>Isolation des données</Nom>
+      <Nom>Isolation des données - 2200</Nom>
       <Id>14</Id>
       <CasTests>
          <CasTest>
@@ -1768,7 +1768,7 @@
 
    <Categorie>
 
-      <Nom>Consultation</Nom>
+      <Nom>Consultation - 400</Nom>
       <Id>4</Id>
       <CasTests>
 
@@ -1872,7 +1872,7 @@
 
    <Categorie>
 
-      <Nom>Consultation affichable</Nom>
+      <Nom>Consultation affichable - 2000</Nom>
       <Id>11</Id>
       <CasTests>
 
@@ -2083,7 +2083,7 @@
 
    <Categorie>
 
-      <Nom>Droits</Nom>
+      <Nom>Droits - 1100</Nom>
       <Id>5</Id>
       <CasTests>
 
@@ -2516,7 +2516,7 @@
 
    <Categorie>
 
-      <Nom>SAI - Modification</Nom>
+      <Nom>SAI - Modification - 1700</Nom>
       <Id>6</Id>
       <CasTests>
 
@@ -2749,7 +2749,7 @@
 
    <Categorie>
 
-      <Nom>SAI - Suppression</Nom>
+      <Nom>SAI - Suppression - 1600</Nom>
       <Id>7</Id>
       <CasTests>
 
@@ -2790,7 +2790,7 @@
 
    <Categorie>
 
-      <Nom>SAI - Transfert</Nom>
+      <Nom>SAI - Transfert - 1900</Nom>
       <Id>10</Id>
       <CasTests>
 
@@ -2848,7 +2848,7 @@
 
    <Categorie>
 
-      <Nom>Activation Document Archivable</Nom>
+      <Nom>Activation Document Archivable - 2400</Nom>
       <Id>17</Id>
       <CasTests>
 
@@ -2871,7 +2871,7 @@
    <!-- SuppressionMasse -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>Suppression Masse</Nom>
+      <Nom>Suppression Masse - 3000</Nom>
       <Id>21</Id>
       <CasTests>
          <CasTest>
@@ -2891,7 +2891,7 @@
    <!-- RestoreSuppressionMasse -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>Restore Suppression Masse</Nom>
+      <Nom>Restore Suppression Masse - 3100</Nom>
       <Id>22</Id>
       <CasTests>
          <CasTest>
@@ -2912,7 +2912,7 @@
    
    <Categorie>
 
-      <Nom>Formats</Nom>
+      <Nom>Formats - 1800</Nom>
       <Id>8</Id>
       <CasTests>
          <!-- Controle de format en capture unitaire -->
@@ -3108,7 +3108,7 @@
 
    <Categorie>
 
-      <Nom>PKI</Nom>
+      <Nom>PKI 1200</Nom>
       <Id>9</Id>
       <CasTests>
 
@@ -3158,6 +3158,15 @@
             <luceneExemple>Denomination:"Test 1205-PKI-CS-PLUSIEURS-CERTIFICATS-APPLICATIFS"</luceneExemple>
          </CasTest>
          <CasTest>
+            <id>1206</id>
+            <code>1206-PKI-NAT-Verification-OK-Nom-Certificat-OK-Flag-OK</code>
+            <description>
+               Ce test permet de valider le bon fonctionnement avec un contrat de service IGC NAT. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 1206-PKI-NAT-Verification-OK-Nom-Certificat-OK-Flag-OK"</luceneExemple>
+         </CasTest>
+         <CasTest>
             <id>1251</id>
             <code>1251-PKI-Verification-KO-Nom-Certificat-CS-OK-Flag-OK</code>
             <description>
@@ -3202,6 +3211,24 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1255-PKI-CS-ANCIEN-SYSTEME-VI-KO"</luceneExemple>
          </CasTest>
+      </CasTests>
+
+   </Categorie>
+   <Categorie>
+
+      <Nom>Etat Traitement Masse - 3200</Nom>
+      <Id>23</Id>
+      <CasTests>
+
+         <CasTest>
+            <id>3200</id>
+            <code>3200-EtatTraitementMasse-OK-TestLibre</code>
+            <description>
+               Tests qui permet de récupérer les informations dans la pile 
+            </description>
+            <implemente>true</implemente>
+         </CasTest>
+
       </CasTests>
 
    </Categorie>

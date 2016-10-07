@@ -158,6 +158,11 @@
       <description>Appel du service web de restoreMasse</description>
       <path>/WEB-INF/tags/restoreMasse.tag</path>
    </tag-file>
+   <tag-file>
+      <name>etatTraitementMasse</name>
+      <description>Appel du service web de etatTraitementMasse</description>
+      <path>/WEB-INF/tags/etatTraitementMasse.tag</path>
+   </tag-file>
    
 
    <function>

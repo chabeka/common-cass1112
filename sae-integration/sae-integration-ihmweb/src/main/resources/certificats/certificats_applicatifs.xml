@@ -20,4 +20,11 @@
    </certificat>
    
    
+   <certificat>
+      <id>4</id>
+      <chemin>certificats/gammeimage.p12</chemin>
+      <password>gammeimage</password>
+   </certificat>
+
+     
 </certificats>

@@ -61,6 +61,16 @@ public final class SaeIntegrationConstantes {
     */
    public static final String VI_DEFAULT_PAGM = "PAGM_TOUTES_ACTIONS";
    
+   
+   /**
+    * Pour les VI : issuer NAT
+    */
+   public static final String VI_DEFAULT_ISSUER_NAT = "CS_DEV_TOUTES_ACTIONS_NAT";
+   
+   /**
+    * Pour les VI : PAGM NAT
+    */
+   public static final String VI_DEFAULT_PAGM_NAT = "PAGM_TOUTES_ACTIONS_NAT";
 
    /**
     * Le code long de la métadonnée CodeOrganismeProprietaire
@@ -81,4 +91,10 @@ public final class SaeIntegrationConstantes {
     * PKI de l'application de test 1 provenant de l'IGC de la cellule d'intégration.
     */
    public static final String PKI_IGC_CELL_INTEG_APPLI_TEST_1 = "3";
+   
+   /**
+    * PKI de l'application gammeimage
+    */
+   public static final String PKI_IGC_GAMMEIMAGE = "4";
+   
 }

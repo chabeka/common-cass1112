@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
+import fr.urssaf.image.sae.integration.ihmweb.modele.UUIDList;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.CodeMetadonneeListEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.IdentifiantPageEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.LienHttpListEditor;
@@ -20,6 +21,7 @@ import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.RangeMetadonneeEdit
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.RangeMetadonneeListEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.ResultatTestLogEditor;
 import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.TestStatusEnumEditor;
+import fr.urssaf.image.sae.integration.ihmweb.propertyeditor.UUIDListEditor;
 
 /**
  * Méthodes utilitaires pour les contrôleurs
@@ -74,6 +76,10 @@ public final class ControllerUtils {
       binder.registerCustomEditor(
             PagmList.class,
             new PagmListEditor());
+      
+      binder.registerCustomEditor(
+            UUIDList.class,
+            new UUIDListEditor());
       
    }
    

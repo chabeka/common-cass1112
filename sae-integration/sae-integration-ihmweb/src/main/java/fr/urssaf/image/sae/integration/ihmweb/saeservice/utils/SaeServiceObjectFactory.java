@@ -19,6 +19,10 @@ import org.springframework.util.CollectionUtils;
 
 
 
+
+
+
+
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
@@ -46,6 +50,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.C
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DataFileType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EtatTraitementsMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EtatTraitementsMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.FiltreType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.GetDocFormatOrigine;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.GetDocFormatOrigineRequestType;
@@ -53,6 +59,7 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.I
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeRangeMetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeUuidType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeCodeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeValeurType;
@@ -1108,4 +1115,20 @@ public final class SaeServiceObjectFactory {
       
    }
 
+   public static EtatTraitementsMasse buildEtatTraitementMasseRequest( List<String> listeUuid) {
+
+      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();     
+      EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
+      etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
+      
+      ListeUuidType listeUuidType = new ListeUuidType();
+      for (String uuid : listeUuid) {
+         UuidType uuidType = new UuidType();
+         uuidType.setUuidType(uuid);
+         listeUuidType.addUuid(uuidType);
+      }
+      etatTraitementsMasseRequest.setListeUuid(listeUuidType);
+      
+      return etatTraitementsMasse;
+      }
 }
