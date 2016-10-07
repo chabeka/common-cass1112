@@ -33,13 +33,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-pdfbox
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-pdfbox
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-pdfbox
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-pdfbox
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-pdfbox
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-pdfbox
       </connection>
    </scm>
 
