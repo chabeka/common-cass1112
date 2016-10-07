@@ -34,13 +34,13 @@
     <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-droid
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
       </connection>
    </scm>
 
