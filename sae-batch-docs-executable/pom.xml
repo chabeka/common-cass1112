@@ -23,13 +23,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </connection>
    </scm>
    
