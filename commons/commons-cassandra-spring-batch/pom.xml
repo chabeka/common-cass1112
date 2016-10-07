@@ -42,13 +42,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
       </connection>
    </scm>
 

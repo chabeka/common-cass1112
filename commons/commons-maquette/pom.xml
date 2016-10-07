@@ -146,13 +146,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-maquette/
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-maquette/
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/trunk/commons/commons-maquette/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-maquette/
       </connection>
    </scm>
 

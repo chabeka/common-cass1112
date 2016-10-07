@@ -47,13 +47,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
       </connection>
    </scm>
 

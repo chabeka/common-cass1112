@@ -78,13 +78,13 @@
 
    <scm>
       <url>
-        scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/sae-livrable
       </url>
       <developerConnection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/sae-livrable
       </developerConnection>
       <connection>
-         scm:svn:svn://cer69-svn.cer69.recouv/image/java/trunk/sae/sae-livrable
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/sae-livrable
       </connection>
    </scm>
 
