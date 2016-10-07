@@ -195,13 +195,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-framework/
       </url>
       <developerConnection>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-framework/
       </developerConnection>
       <connection>
-        scm:svn:svn://cer69-svn/image/java/trunk/saedemos/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-framework/
       </connection>
    </scm>
 
