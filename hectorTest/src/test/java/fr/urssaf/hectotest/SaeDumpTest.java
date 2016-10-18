@@ -50,16 +50,37 @@ public class SaeDumpTest {
       };
       String servers;
 
-      // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+      //servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+      //servers = "cer69-saeint3.cer69.recouv";
+      
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
       servers = "cer69imageint9.cer69.recouv:9160";
-      // servers = "cer69imageint10.cer69.recouv:9160";
+      
+      // INTEGRATION CLIENTE
+      // -------------------
+      //servers = "hwi69intgnscas1.gidn.recouv:9160,hwi69intgnscas2.gidn.recouv:9160";
+      //servers = "cnp69intgntcas1.gidn.recouv:9160,cnp69intgntcas2.gidn.recouv:9160,cnp69intgntcas3.gidn.recouv:9160";
+
+      //servers = "cer69imageint10.cer69.recouv:9160";
       // servers = "10.203.34.39:9160"; // Noufnouf
       // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
-      // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
+       //servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
       // servers = "hwi69ginsaecas2.cer69.recouv:9160";
       // servers = "cer69-saeint3.cer69.recouv:9160";
-
+      //servers = "cnp69devgntcas1.gidn.recouv:9160";
+      
+      // GIIN GNS
+      // --------
+      //servers = "hwi31ginsaecas1.cer31.recouv:9160,hwi31ginsaecas2.cer31.recouv:9160";
+      
+      // GIIN GNT
+      // --------
+      //servers = "cnp31gingntcas1.cer31.recouv:9160";
+      
+      // CSPP GNS
+      // --------
+      //servers = "cnp3saecvecas1.cve.recouv";
+      
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
@@ -182,9 +203,15 @@ public class SaeDumpTest {
    @Test
    public void testDumpJobRequest() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("JobRequest", 500);
+      dumper.dumpCF("JobRequest", 500, true);
    }
 
+   @Test
+   public void testDumpMetadatas() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.dumpCF("Metadata", 500);
+   }
+   
    @Test
    public void testDumpTraceDestinataire() throws Exception {
       dumper.printKeyInHex = false;
@@ -249,7 +276,7 @@ public class SaeDumpTest {
    @Test
    public void deleteJobDansJobRequest() {
       
-      UUID idJob = UUID.fromString("1ae1e290-eec7-11e2-a9e3-000c29aa49ae");
+      UUID idJob = UUID.fromString("9965db20-68b7-11e3-a563-000c29aa49ae");
       
       Mutator<UUID> mutator = HFactory.createMutator(keyspace, UUIDSerializer
             .get());
