@@ -1,11 +1,11 @@
 package fr.urssaf.image.sae.pile.travaux.service;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.hector.api.Keyspace;
-
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -79,6 +79,19 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getAllJobs(Keyspace keyspace, int maxKeysToRead);
+   
+   /**
+    * Récupère l'ensemble des jobs présents dans la pile des travaux (non
+    * démarrés, démarrés, terminés) dont la date de creation est inferieure ou
+    * egale à la date max, afin de pouvoir etre supprimer
+    * 
+    * @param keyspace
+    *           Keyspace
+    * @param dateMax
+    *           date maximum
+    * @return liste des traitements
+    */
+   List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax);
    
    /**
     * Teste si le job peut être réinitialisé

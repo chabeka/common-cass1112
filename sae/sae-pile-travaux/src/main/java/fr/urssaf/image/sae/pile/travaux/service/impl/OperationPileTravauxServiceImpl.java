@@ -8,7 +8,6 @@ import java.util.List;
 
 import me.prettyprint.hector.api.Keyspace;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ public class OperationPileTravauxServiceImpl implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(OperationPileTravauxServiceImpl.class);
    
-   private static final int MAX_ALL_JOBS = 20000;
-
    /**
     * Service permettant de réaliser des objets sur les jobs
     */
@@ -62,16 +59,12 @@ public class OperationPileTravauxServiceImpl implements
                "La date maximum de suppression des jobs doit être renseignée");
       }
 
-      List<JobRequest> listeJobRequest = jobLectureService.getAllJobs(keyspace, MAX_ALL_JOBS);
+      List<JobRequest> listeJobRequest = jobLectureService.getJobsToDelete(keyspace, dateMax);
 
       int nbJobSupprimes = 0;
       for (JobRequest jobRequest : listeJobRequest) {
-         Date dateCreation = jobRequest.getCreationDate();
-         if (dateCreation.before(dateMax)
-               || DateUtils.isSameDay(dateCreation, dateMax)) {
-            jobQueueService.deleteJob(jobRequest.getIdJob());
+         jobQueueService.deleteJob(jobRequest.getIdJob());
             nbJobSupprimes++;
-         }
       }
       LOGGER.info("Nombre de travaux supprimés : {}", nbJobSupprimes);
 

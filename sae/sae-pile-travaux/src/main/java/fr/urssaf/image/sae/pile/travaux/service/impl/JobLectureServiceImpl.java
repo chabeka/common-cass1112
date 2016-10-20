@@ -20,6 +20,7 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
+import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobRequestRowsIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
@@ -216,6 +218,36 @@ public class JobLectureServiceImpl implements JobLectureService {
       }
       return list;
 
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax) {
+      
+      List<JobRequest> list = new ArrayList<JobRequest>();
+      // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
+      // en requêtant directement dans la CF JobRequest
+      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+            .createRangeSlicesQuery(keyspace, UUIDSerializer.get(),
+                  StringSerializer.get(), bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
+      rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
+      
+      JobRequestRowsIterator iterator = new JobRequestRowsIterator(rangeSlicesQuery, 1000, jobRequestDao);
+      while (iterator.hasNext()) {
+         JobRequest jobRequest = iterator.next();
+         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
+         // effacé
+         if (jobRequest != null && (jobRequest.getCreationDate().before(dateMax)
+               || DateUtils.isSameDay(jobRequest.getCreationDate(), dateMax))) {
+            list.add(jobRequest);
+         }
+      }
+      
+      return list;
    }
 
    /**
