@@ -300,6 +300,116 @@ public class RechercheDocsTest {
    
    @Test
    //@Ignore
+   public void rechercheDocRd31() throws SearchQueryParseException, IOException {
+      LOGGER.debug("Ouverture de la connexion à DFCE");
+      ServiceProvider serviceProvider = dfceConnectionService.openConnection();
+      
+      //DateTime dateDebut = new DateTime().withDate(2015, 10, 23).withTime(0, 0, 0, 0);
+      DateTime dateDebut = new DateTime().withDate(2016, 6, 15).withTime(21, 0, 0, 0);
+      //DateTime dateFin = new DateTime().withDate(2015, 11, 2).withTime(23, 59, 59, 999);
+      DateTime dateFin = new DateTime().withDate(2016, 6, 16).withTime(19, 00, 00, 000);
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+      
+      // Exemple de code produit et code traitement
+      //CodeProduitV2:PD31B
+      //CodeTraitementV2:RD31.L04
+      
+      Map<String, String> produitsEnErreur = new HashMap<String, String>();
+      produitsEnErreur.put("RD31.L00", "QD31A");
+      produitsEnErreur.put("RD31.L01", "QD31B");
+      produitsEnErreur.put("RD31.L02", "QD31C");
+      produitsEnErreur.put("RD31.L03", "PD31A");
+      produitsEnErreur.put("RD31.L04", "PD31B");
+      produitsEnErreur.put("RD31.L05", "PD31C");
+      
+      FileOutputStream outputStream = new FileOutputStream("c:/tmp/rd31-ur117-juin-2016.csv");
+      
+      DateTime dateDebutJour = dateDebut;
+      DateTime dateFinJour = dateDebutJour.plusDays(1).minusHours(2).minusMillis(1);
+      while (dateFinJour.isBefore(dateFin) || dateFinJour.isEqual(dateFin)) {
+         
+         // effectue la requete jour par jour
+          
+         String requeteLucene = "SM_ARCHIVAGE_DATE:[" + formatter.format(dateDebutJour.toDate()) + " TO " + formatter.format(dateFinJour.toDate()) + "]";
+         
+         LOGGER.debug("Exécution de la requête lucène : {}", requeteLucene);
+         final SearchService searchService = serviceProvider
+               .getSearchService();
+         final Base base = serviceProvider.getBaseAdministrationService()
+               .getBase(dfceConnection.getBaseName());
+         final SearchQuery searchQuery = ToolkitFactory.getInstance()
+               .createMonobaseQuery(requeteLucene, base);
+         
+         // pas d'iteration
+         searchQuery.setSearchLimit(500);
+         
+         Iterator<Document> iterateur = searchService.createDocumentIterator(searchQuery);
+         long nbDocsTrouve = 0;
+         long nbDocsASupprimer = 0;
+         
+         // boucle de comptage
+         while (iterateur.hasNext()) {
+            Document doc = iterateur.next();
+            nbDocsTrouve++;
+            
+            String id = doc.getUuid().toString();
+            
+            List<Criterion> metaCodeProduit = doc.getCriterions("cpr");
+            List<Criterion> metaCodeTraitement = doc.getCriterions("ctr");
+            List<Criterion> metaIdTraitementMasse = doc.getCriterions("iti");
+            List<Criterion> metaCodeOrgaGestionnaire = doc.getCriterions("cog");
+            List<Criterion> metaCodeOrgaProprietaire = doc.getCriterions("cop");
+            
+            // test si on a un produit V2 issu d'un traitement de masse 
+            if (!metaCodeProduit.isEmpty() && !metaCodeTraitement.isEmpty() && !metaIdTraitementMasse.isEmpty()) {
+               
+               // on est dans le cas d'un produit V2 issu d'un traitement de masse
+               String codeProduit = (String) metaCodeProduit.get(0).getWord();
+               String codeTraitement = (String) metaCodeTraitement.get(0).getWord(); 
+               String idTraitementMasse = (String) metaIdTraitementMasse.get(0).getWord();
+               String codeOrgaGestionnaire = (String) metaCodeOrgaGestionnaire.get(0).getWord();
+               String codeOrgaProprietaire = (String) metaCodeOrgaProprietaire.get(0).getWord();
+               if (produitsEnErreur.containsKey(codeTraitement) && produitsEnErreur.get(codeTraitement).equals(codeProduit)) {
+                  //LOGGER.debug("id: {} ({}.{}) -> traitement de masse : {}", new String[] { id, codeTraitement, codeProduit, idTraitementMasse});
+                  
+                  StringBuffer buffer = new StringBuffer();
+                  
+                  buffer.append(id);
+                  buffer.append(';');
+                  buffer.append(formatter.format(doc.getArchivageDate()));
+                  buffer.append(';');
+                  buffer.append(codeTraitement);
+                  buffer.append(';');
+                  buffer.append(codeProduit);
+                  buffer.append(';');
+                  buffer.append(codeOrgaGestionnaire);
+                  buffer.append(';');
+                  buffer.append(codeOrgaProprietaire);
+                  buffer.append(';');
+                  buffer.append(idTraitementMasse);
+                  buffer.append('\n');
+                  outputStream.write(buffer.toString().getBytes());
+                  
+                  nbDocsASupprimer++;
+               }
+            }
+         }
+         LOGGER.debug("{} docs trouves sur {}", new Object[] {nbDocsASupprimer, nbDocsTrouve});
+         
+         // passe au jour suivant
+         dateDebutJour = dateFinJour.plusMillis(1);
+         dateFinJour = dateDebutJour.plusDays(1).minusMillis(1);
+      }
+      
+      outputStream.close();
+      
+      LOGGER.debug("Fermeture de la connexion à DFCE");
+      serviceProvider.disconnect();
+   }
+   
+   
+   @Test
+   //@Ignore
    public void rechercheDocQd73() throws SearchQueryParseException, IOException {
       LOGGER.debug("Ouverture de la connexion à DFCE");
       ServiceProvider serviceProvider = dfceConnectionService.openConnection();
