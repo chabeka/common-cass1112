@@ -297,7 +297,7 @@ public class InsertionDonnees {
 
       checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_SUCCES",
             debutPurgeCorbeille);
-      
+
       checkAndAddCorbeilleParameter(cfTmpl, "PURGE_CORBEILLE_DATE_DEBUT_PURGE",
             debutPurgeCorbeille);
 
@@ -634,6 +634,14 @@ public class InsertionDonnees {
 
    }
 
+   public void addActionUnitaireCopie() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("copie", "copie d'un document", cfTmpl);
+
+   }
+
    /**
     * Ajout de l'action unitaire suppression et modification
     */
@@ -645,8 +653,7 @@ public class InsertionDonnees {
       addActionUnitaire("modification", "Modification unitaire", cfTmpl);
 
    }
-   
-   
+
    /**
     * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
     */
