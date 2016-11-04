@@ -37,6 +37,14 @@
    <!-- mock pour capture unitaire -->
    <bean id="saeCaptureService" factory-bean="SAEServiceFactory"
       factory-method="createSAECaptureService" />
+      
+      <!-- mock pour copie -->
+   <bean id="saeCopieService" factory-bean="SAEServiceFactory"
+      factory-method="createSAECopieService" />
+      
+       <!-- mock pour documentExistant -->
+   <bean id="saeDocumentExistantService" factory-bean="SAEServiceFactory"
+      factory-method="createSAEDocumentExistantService" />
 
    <bean id="ecdeServices" factory-bean="SAEServiceFactory"
       factory-method="createEcdeServices" />
