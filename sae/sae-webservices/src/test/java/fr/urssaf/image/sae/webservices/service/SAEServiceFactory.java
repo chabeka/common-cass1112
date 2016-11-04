@@ -9,6 +9,8 @@ import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupp
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
+import fr.urssaf.image.sae.services.copie.SAECopieService;
+import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
@@ -29,6 +31,24 @@ public class SAEServiceFactory {
    public final SAECaptureService createSAECaptureService() {
 
       SAECaptureService service = EasyMock.createMock(SAECaptureService.class);
+
+      return service;
+   }
+
+   /**
+    * 
+    * @return instance de {@link SAECopieService}
+    */
+   public final SAECopieService createSAECopieService() {
+
+      SAECopieService service = EasyMock.createMock(SAECopieService.class);
+
+      return service;
+   }
+   
+   public final SAEDocumentExistantService createSAEDocumentExistantService() {
+
+      SAEDocumentExistantService service = EasyMock.createMock(SAEDocumentExistantService.class);
 
       return service;
    }
@@ -126,16 +146,16 @@ public class SAEServiceFactory {
 
       return support;
    }
-   
+
    /**
     * 
     * @return instance de SAETransfertService
     */
    public final SAETransfertService createSAETransfertService() {
-      
+
       SAETransfertService transfertSce = EasyMock
-      .createMock(SAETransfertService.class);
-      
+            .createMock(SAETransfertService.class);
+
       return transfertSce;
    }
 }
