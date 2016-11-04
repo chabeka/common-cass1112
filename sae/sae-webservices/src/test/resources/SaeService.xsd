@@ -1411,7 +1411,74 @@
       </xsd:annotation>
    </xsd:complexType>
 
-
+<xsd:complexType name="copieRequestType">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération de copie
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="idGed" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>l'identifiant unique du document à
+                  copier
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
+            <xsd:annotation>
+               <xsd:documentation>Les métadonnées. La liste peut être
+                  vide.
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="copieResponseType">
+      <xsd:annotation>
+         <xsd:documentation>Retour de l'opération
+            de copie.
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="idGed" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>L'identifiant unique de la copie
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="documentExistantRequestType">
+      <xsd:annotation>
+         <xsd:documentation>Paramètre d'entrée de l'opération de vérification de l'existance du document
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="idGed" type="sae:uuidType">
+            <xsd:annotation>
+               <xsd:documentation>l'identifiant unique du document à
+                  vérifier
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
+   <xsd:complexType name="documentExistantResponseType">
+      <xsd:annotation>
+         <xsd:documentation>Retour de l'opération
+            de copie.
+         </xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="isDocExist" type="xsd:boolean">
+            <xsd:annotation>
+               <xsd:documentation>True si le document existe false sinon
+               </xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+      </xsd:sequence>
+   </xsd:complexType>
 
    <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType" />
    <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType" />
@@ -1456,5 +1523,9 @@
    <xsd:element name="suppressionMasseResponse" type="sae:suppressionMasseResponseType" />
    <xsd:element name="restoreMasseResponse" type="sae:restoreMasseResponseType" />
    <xsd:element name="etatTraitementsMasseResponse" type="sae:etatTraitementsMasseResponseType" />
+   <xsd:element name="copie" type="sae:copieRequestType" />
+   <xsd:element name="copieResponse" type="sae:copieResponseType" />
+   <xsd:element name="documentExistant" type="sae:documentExistantRequestType" />
+   <xsd:element name="documentExistantResponse" type="sae:documentExistantResponseType" />
 
 </xsd:schema>

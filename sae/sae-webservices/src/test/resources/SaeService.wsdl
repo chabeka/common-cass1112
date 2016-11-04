@@ -301,6 +301,30 @@
       </wsdl:documentation>
       <wsdl:part name="output" element="sae:ajoutNoteResponse" />
    </wsdl:message>
+   <wsdl:message name="copieRequestMessage">
+      <wsdl:documentation>Message contenant la demande de
+         copie de documents
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:copie" />
+   </wsdl:message>
+   <wsdl:message name="copieResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         copie de documents
+      </wsdl:documentation>
+      <wsdl:part name="output" element="sae:copieResponse" />
+   </wsdl:message>
+    <wsdl:message name="documentExistantRequestMessage">
+      <wsdl:documentation>Message contenant la demande de
+         verification de l'existance du documents
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:documentExistant" />
+   </wsdl:message>
+   <wsdl:message name="documentExistantResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         verification de l'existance du documents
+      </wsdl:documentation>
+      <wsdl:part name="output" element="sae:documentExistantResponse" />
+   </wsdl:message>
 
 
    <wsdl:portType name="SaeServicePortType">
@@ -493,6 +517,22 @@
          </wsdl:documentation>
          <wsdl:input message="tns:etatTraitementsMasseRequestMessage" />
          <wsdl:output message="tns:etatTraitementsMasseResponseMessage" />
+      </wsdl:operation>
+      
+      <wsdl:operation name="copie" parameterOrder="input">
+         <wsdl:documentation>Opération de copie d'un
+            document
+         </wsdl:documentation>
+         <wsdl:input message="tns:copieRequestMessage" />
+         <wsdl:output message="tns:copieResponseMessage" />
+      </wsdl:operation>
+      
+      <wsdl:operation name="documentExistant" parameterOrder="input">
+         <wsdl:documentation>Opération de vérification d'un
+            document
+         </wsdl:documentation>
+         <wsdl:input message="tns:documentExistantRequestMessage" />
+         <wsdl:output message="tns:documentExistantResponseMessage" />
       </wsdl:operation>
 
    </wsdl:portType>
@@ -762,6 +802,29 @@
             Service de récupération des états des traitements de masse
          </wsdl:documentation>
          <soap:operation soapAction="etatTraitementsMasse" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      <wsdl:operation name="copie">
+         <wsdl:documentation>Service de copie de
+            document
+         </wsdl:documentation>
+         <soap:operation soapAction="copie" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+       <wsdl:operation name="documentExistant">
+         <wsdl:documentation>Service verification existence du document
+         </wsdl:documentation>
+         <soap:operation soapAction="documentExistant" />
          <wsdl:input>
             <soap:body use="literal" />
          </wsdl:input>
