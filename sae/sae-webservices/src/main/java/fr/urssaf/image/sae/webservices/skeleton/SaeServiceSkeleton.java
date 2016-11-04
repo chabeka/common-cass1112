@@ -39,6 +39,10 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.Copie;
+import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.DocumentExistant;
+import fr.cirtil.www.saeservice.DocumentExistantResponse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
@@ -67,11 +71,40 @@ import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
+import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
+import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
+import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
+import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.SaeService;
 import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
+import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
+import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.exception.EtatTraitementsMasseAxisFault;
 import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
@@ -84,7 +117,9 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFau
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
+import fr.urssaf.image.sae.webservices.service.WSCopieService;
 import fr.urssaf.image.sae.webservices.service.WSDocumentAttacheService;
+import fr.urssaf.image.sae.webservices.service.WSDocumentExistantService;
 import fr.urssaf.image.sae.webservices.service.WSEtatJobMasseService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
@@ -153,12 +188,18 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSEtatJobMasseService etatJobMasseService;
-   
+
    @Autowired
    private DfceInfoService dfceInfoService;
 
    @Autowired
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+
+   @Autowired
+   private WSCopieService copieService;
+
+   @Autowired
+   WSDocumentExistantService documentExistantService;
 
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
@@ -487,9 +528,106 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new ConsultationAxisFault("ErreurInterneConsultation",
+         throw new ConsultationAxisFault(
+               "ErreurInterneConsultation",
                "Une erreur interne à l'application est survenue lors de la consultation.",
-                ex);
+               ex);
+      }
+   }
+
+   @Override
+   public final CopieResponse copieSecure(Copie request) throws CopieAxisFault,
+         SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
+         SAEConsultationServiceException, SAECaptureServiceEx,
+         ReferentialRndException, UnknownCodeRndEx, ReferentialException,
+         SAECopieServiceException, UnknownDesiredMetadataEx,
+         MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx,
+         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+         UnknownFormatException, ValidationExceptionInvalidFile,
+         UnexpectedDomainException, InvalidPagmsCombinaisonException,
+         CaptureExistingUuuidException {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération copieSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            CopieResponse response = copieService.copie(request);
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new CopieAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+      } catch (CopieAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CopieAxisFault(
+               "ErreurInterneCopie",
+               "Une erreur interne à l'application est survenue lors de la copie.",
+               ex);
+      }
+   }
+
+   @Override
+   public final DocumentExistantResponse documentExistant(
+         DocumentExistant request) throws DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération copieSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            DocumentExistantResponse response = documentExistantService
+                  .documentExistant(request);
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new DocumentExistantAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+      } catch (DocumentExistantAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new DocumentExistantAxisFault(
+               "ErreurInterneCopie",
+               "Une erreur interne à l'application est survenue lors de la vérification d'un document.",
+               ex);
       }
    }
 
@@ -752,9 +890,10 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new ConsultationAxisFault("ErreurInterneConsultation",
+         throw new ConsultationAxisFault(
+               "ErreurInterneConsultation",
                "Une erreur interne à l'application est survenue lors de la consultation.",
-                ex);
+               ex);
       }
    }
 
@@ -1045,23 +1184,23 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public EtatTraitementsMasseResponse etatTraitementsMasse(
          EtatTraitementsMasse request, String callerIP) throws AxisFault {
 
-
       try {
-      // Traces debug - entrée méthode
-      String prefixeTrc = "Opération etatTraitementsMasse()";
-      LOG.debug("{} - Début", prefixeTrc);
-      // Fin des traces debug - entrée méthode
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération etatTraitementsMasse()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
 
-      // l'opération web service n'interagit pas avec DFCE
-      // il n'est pas nécessaire de vérifier si DFCE est Up
-      EtatTraitementsMasseResponse response = etatJobMasseService.etatJobMasse(request, callerIP);
+         // l'opération web service n'interagit pas avec DFCE
+         // il n'est pas nécessaire de vérifier si DFCE est Up
+         EtatTraitementsMasseResponse response = etatJobMasseService
+               .etatJobMasse(request, callerIP);
 
-      // Traces debug - sortie méthode
-      LOG.debug("{} - Sortie", prefixeTrc);
-      // Fin des traces debug - sortie méthode
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-      return response;
-      
+         return response;
+
       } catch (EtatTraitementsMasseAxisFault ex) {
          logSoapFault(ex);
          throw ex;
@@ -1072,6 +1211,6 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                "Une erreur interne à l'application est survenue lors de la récupération des états des traitements de masse.",
                ex);
       }
-      
+
    }
 }

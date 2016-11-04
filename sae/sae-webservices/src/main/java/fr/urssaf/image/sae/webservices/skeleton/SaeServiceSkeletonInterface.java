@@ -18,6 +18,10 @@ import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.cirtil.www.saeservice.Copie;
+import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.DocumentExistant;
+import fr.cirtil.www.saeservice.DocumentExistantResponse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
@@ -46,6 +50,35 @@ import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertResponse;
+import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
+import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
+import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.CaptureExistingUuuidException;
+import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
+import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
+import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
+import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
+import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
+import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 
 /**
@@ -325,4 +358,10 @@ public interface SaeServiceSkeletonInterface {
    EtatTraitementsMasseResponse etatTraitementsMasse(
          EtatTraitementsMasse request, String callerIP) throws AxisFault;
 
+   CopieResponse copieSecure(Copie request) throws CopieAxisFault,
+         SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
+         SAEConsultationServiceException, SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx, ReferentialException, SAECopieServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, NotArchivableMetadataEx, UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile, UnexpectedDomainException, InvalidPagmsCombinaisonException, CaptureExistingUuuidException;
+
+   DocumentExistantResponse documentExistant(DocumentExistant request)
+         throws  DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
 }
