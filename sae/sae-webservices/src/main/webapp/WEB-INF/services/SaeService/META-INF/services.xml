@@ -1,9 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- This file was auto-generated from WSDL -->
-<!-- by the Apache Axis2 version: 1.5.4 Built on : Dec 19, 2010 (08:18:42 
-   CET) Le fichier est ensuite mis à jour MANUELLEMENT pour l'ajout de nouvelles 
-   opérations -->
-<serviceGroup>
+<?xml version="1.0" encoding="UTF-8"?><!-- This file was auto-generated from 
+   WSDL --><!-- by the Apache Axis2 version: 1.5.4 
+   Built on : Dec 19, 2010 (08:18:42 CET) Le fichier est ensuite mis à jour 
+   MANUELLEMENT pour l'ajout de nouvelles opérations --><serviceGroup>
     <!-- <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext"> 
       <description>This web service initializes Spring.</description> <parameter 
       name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext 
@@ -132,6 +130,16 @@
         <operation name="etatTraitementsMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
             <actionMapping>etatTraitementsMasse</actionMapping>
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/etatTraitementsMasseResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="copie" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>copie</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/copieResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="documentExistant" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>documentExistant</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/documentExistantResponse
          </outputActionMapping>
         </operation>
     </service>
