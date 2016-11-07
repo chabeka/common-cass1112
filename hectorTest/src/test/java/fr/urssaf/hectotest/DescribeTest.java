@@ -125,7 +125,7 @@ public class DescribeTest {
    public void describeKeyspacesSansCf() {
       describeKeyspaces(Boolean.FALSE);
    }
-
+   
    
    @Test
    public void describeKeyspacesAvecCf() {
