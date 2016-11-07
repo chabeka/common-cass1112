@@ -59,7 +59,7 @@
       
       <id>PKI_NAT</id>
       
-      <certifACRacine>@@SAE_HOME@@/certificats/PKI_NAT/ACRacine/AC_RACINE_IGCN_RECOUV_2012.crt</certifACRacine>
+      <certifACRacine>@@SAE_HOME@@/certificats/PKI_NAT/ACRacine/ACOSS_Reseau_des_URSSAF.crt</certifACRacine>
       
       <repertoireCRL>@@SAE_HOME@@/certificats/PKI_NAT/CRL/</repertoireCRL>
       
