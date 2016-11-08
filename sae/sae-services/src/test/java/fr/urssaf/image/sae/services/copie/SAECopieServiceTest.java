@@ -1,8 +1,6 @@
 package fr.urssaf.image.sae.services.copie;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -272,6 +270,8 @@ public class SAECopieServiceTest {
 
       try {
          UUID res = service.copie(uuid, fin);
+         assertNull(res);
+        uuid = null;
       } catch (SAECaptureServiceEx e) {
          fail("C'est l'exception SAECopieServiceException qui est attendue");
       } catch (ReferentialRndException e) {
