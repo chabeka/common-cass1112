@@ -46,6 +46,7 @@ import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSCopieService;
@@ -98,6 +99,15 @@ public class WSCopieServiceImpl implements WSCopieService {
 
       try {
          UUID idCopie = saeService.copie(uuid, metadatas);
+         if (idCopie == null)
+         {
+            LOG.debug(
+                  "{} - L'archive demandée n'a pas été retrouvée dans le SAE ({})",
+                  prefixeTrc, uuid);
+            throw new CopieAxisFault("ArchiveNonTrouvee",
+                  "Il n'existe aucun document pour l'identifiant d'archivage '"
+                        + uuid + "'");
+         }
          LOG.debug("{} - UUID : \"{}\"", idCopie);
          CopieResponse response = createCopieResponse();
          CopieResponseType responseType = response.getCopieResponse();
@@ -124,7 +134,7 @@ public class WSCopieServiceImpl implements WSCopieService {
       } catch (ReferentialException e) {
          throw new CopieAxisFault("Referential", e.getMessage(), e);
       } catch (SAECopieServiceException e) {
-         throw new CopieAxisFault("SAECopieService", e.getMessage(), e);
+         throw new CopieAxisFault("CopieMetadonneInvalide", e.getMessage(), e);
       } catch (UnknownDesiredMetadataEx e) {
          throw new CopieAxisFault("UnknownDesiredMetadata", e.getMessage(), e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
