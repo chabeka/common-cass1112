@@ -125,17 +125,29 @@ public class SAECopieServiceImpl implements SAECopieService {
          list.add(e.getValue().getLongCode());
       }
 
+      // Verification metadatas non specifiables
+      int i = 0;
+      for (UntypedMetadata md : metadata) {
+         for (String str : list) {
+            if (md.getLongCode().equals(str))
+               i = 1;
+         }
+         if (i == 0) {
+            String message = StringUtils.replace(
+                  "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
+                  "{0}", md.getLongCode());
+            throw new SAECopieServiceException(message);
+         }
+         i = 0;
+      }
+
       // Appelle du service de consultation
       ConsultParams param = new ConsultParams(idCopie, list);
       UntypedDocument untypedDocument = new UntypedDocument();
 
       untypedDocument = consultation.consultation(param);
       if (untypedDocument == null) {
-         String message = StringUtils
-               .replace(
-                     "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                     "{0}", idCopie.toString());
-         throw new SAECopieServiceException(message);
+         return null;
       }
 
       // Modification et remplissage des nouvelles métadonnées
