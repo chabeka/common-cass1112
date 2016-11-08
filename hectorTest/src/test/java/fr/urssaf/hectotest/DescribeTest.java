@@ -47,6 +47,7 @@ public class DescribeTest {
 //      String servers = "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160";
 //      String servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
 //      String servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+//
 
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
