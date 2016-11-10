@@ -326,6 +326,18 @@
       <wsdl:part name="output" element="sae:documentExistantResponse" />
    </wsdl:message>
 
+<wsdl:message name="consultationGNTGNSRequestMessage">
+      <wsdl:documentation>Message contenant la demande de
+         consultation GNT vers GNS de documents
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:consultationGNTGNS" />
+   </wsdl:message>
+   <wsdl:message name="consultationGNTGNSResponseMessage">
+      <wsdl:documentation>Message contenant le résultat de la
+         consultation GNT vers GNS de documents
+      </wsdl:documentation>
+      <wsdl:part name="output" element="sae:consultationGNTGNSResponse" />
+   </wsdl:message>
 
    <wsdl:portType name="SaeServicePortType">
       <wsdl:operation name="Ping" parameterOrder="input">
@@ -533,6 +545,14 @@
          </wsdl:documentation>
          <wsdl:input message="tns:documentExistantRequestMessage" />
          <wsdl:output message="tns:documentExistantResponseMessage" />
+      </wsdl:operation>
+      
+      <wsdl:operation name="consultationGNTGNS" parameterOrder="input">
+         <wsdl:documentation>Opération de consultation GNT vers GNS d'un
+            document
+         </wsdl:documentation>
+         <wsdl:input message="tns:consultationGNTGNSRequestMessage" />
+         <wsdl:output message="tns:consultationGNTGNSResponseMessage" />
       </wsdl:operation>
 
    </wsdl:portType>
@@ -825,6 +845,19 @@
          <wsdl:documentation>Service verification existence du document
          </wsdl:documentation>
          <soap:operation soapAction="documentExistant" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      
+       <wsdl:operation name="consultationGNTGNS">
+         <wsdl:documentation>Service de consultation GNT vers GNS de
+            documents
+         </wsdl:documentation>
+         <soap:operation soapAction="consultationGNTGNS" />
          <wsdl:input>
             <soap:body use="literal" />
          </wsdl:input>
