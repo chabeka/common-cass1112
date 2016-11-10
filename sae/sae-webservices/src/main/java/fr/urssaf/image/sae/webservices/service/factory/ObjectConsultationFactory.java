@@ -11,6 +11,8 @@ import org.springframework.util.Assert;
 
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponseType;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponseType;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponseType;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -194,6 +196,42 @@ public final class ObjectConsultationFactory {
 
       responseAffichableType.setMetadonnees(listeMetadonnee);
       responseAffichable.setConsultationAffichableResponse(responseAffichableType);
+      return responseAffichable;
+   }
+   
+   public static ConsultationGNTGNSResponse createConsultationGNTGNSResponse(
+         DataHandler content, List<MetadonneeType> metadonnees, String typeMime) {
+
+      Assert.notNull(content, "content is required");
+
+      ConsultationGNTGNSResponse responseAffichable = new ConsultationGNTGNSResponse();
+      ConsultationGNTGNSResponseType responseAffichableType = new ConsultationGNTGNSResponseType();
+
+      DataSource dataSource;
+      try {
+         dataSource = new ConsultationDataSource(content.getInputStream(),
+               typeMime);
+
+      } catch (IOException e) {
+         throw new RuntimeException(e);
+      }
+      DataHandler dataHandler = new DataHandler(dataSource);
+
+      responseAffichableType.setContenu(dataHandler);
+
+      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+
+      if (CollectionUtils.isNotEmpty(metadonnees)) {
+
+         for (MetadonneeType metadonnee : metadonnees) {
+
+            listeMetadonnee.addMetadonnee(metadonnee);
+         }
+
+      }
+
+      responseAffichableType.setMetadonnees(listeMetadonnee);
+      responseAffichable.setConsultationGNTGNSResponse(responseAffichableType);
       return responseAffichable;
    }
 }
