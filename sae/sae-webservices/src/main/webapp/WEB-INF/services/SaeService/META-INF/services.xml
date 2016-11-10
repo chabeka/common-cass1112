@@ -142,5 +142,11 @@
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/documentExistantResponse
          </outputActionMapping>
         </operation>
+        <operation name="consultationGNTGNS" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <parameter name="enableMTOM">true</parameter>
+            <actionMapping>consultationGNTGNS</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationGNTGNSResponse
+         </outputActionMapping>
+        </operation>
     </service>
 </serviceGroup>
