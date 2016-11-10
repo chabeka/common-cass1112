@@ -1,11 +1,27 @@
 package fr.urssaf.image.sae.webservices.service;
 
+import java.rmi.RemoteException;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.axis2.AxisFault;
+
 import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNS;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
+import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 
 /**
@@ -118,5 +134,9 @@ public interface WSConsultationService {
     */
    ConsultationAffichableResponse consultationAffichable(
          ConsultationAffichable request) throws ConsultationAxisFault;
+   
+   
+   ConsultationGNTGNSResponse consultationGNTGNS(ConsultationGNTGNS request)
+         throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, AxisFault, SAEConsultationAffichableParametrageException, RemoteException;
 
 }
