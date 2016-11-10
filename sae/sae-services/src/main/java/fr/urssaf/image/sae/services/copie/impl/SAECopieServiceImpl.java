@@ -182,7 +182,7 @@ public class SAECopieServiceImpl implements SAECopieService {
          data = IOUtils.toByteArray(untypedDocument.getContent()
                .getInputStream());
       } catch (IOException e) {
-         throw new RuntimeException(e);
+         e.printStackTrace();
       }
 
       ByteArrayDataSource bads = null;
