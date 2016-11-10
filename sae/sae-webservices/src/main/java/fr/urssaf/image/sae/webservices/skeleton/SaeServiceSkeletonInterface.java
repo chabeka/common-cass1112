@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
+import java.rmi.RemoteException;
+
 import org.apache.axis2.AxisFault;
 
 import fr.cirtil.www.saeservice.AjoutNote;
@@ -15,6 +17,8 @@ import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
 import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNS;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -70,6 +74,7 @@ import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
@@ -77,6 +82,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
@@ -364,4 +370,6 @@ public interface SaeServiceSkeletonInterface {
 
    DocumentExistantResponse documentExistant(DocumentExistant request)
          throws  DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
+   
+   ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, AxisFault, SAEConsultationAffichableParametrageException, RemoteException;
 }

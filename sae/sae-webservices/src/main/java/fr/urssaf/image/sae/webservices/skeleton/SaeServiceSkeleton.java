@@ -10,6 +10,7 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -36,6 +37,8 @@ import fr.cirtil.www.saeservice.ArchivageUnitaireResponse;
 import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNS;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
@@ -92,6 +95,7 @@ import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
+import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
@@ -1212,5 +1216,39 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                ex);
       }
 
+   }
+
+   @Override
+   public ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException, RemoteException {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération copieSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         boolean dfceUp = dfceInfoService.isDfceUp();
+         if (dfceUp) {
+
+            ConsultationGNTGNSResponse response = consultation.consultationGNTGNS(request);
+
+            // Traces debug - sortie méthode
+            LOG.debug("{} - Sortie", prefixeTrc);
+            // Fin des traces debug - sortie méthode
+
+            return response;
+
+         } else {
+
+            LOG.debug("{} - Sortie", prefixeTrc);
+            setCodeHttp412();
+            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
+                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+
+         }
+      } catch (ConsultationAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      }
    }
 }
