@@ -1,24 +1,35 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.MessageContext;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.Consultation;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNS;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
+import fr.cirtil.www.saeservice.ConsultationGNTGNSResponseType;
 import fr.cirtil.www.saeservice.ConsultationMTOM;
 import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
 import fr.cirtil.www.saeservice.ListeMetadonneeCodeType;
+import fr.cirtil.www.saeservice.ListeMetadonneeType;
+import fr.cirtil.www.saeservice.MetadonneeCodeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
+import fr.cirtil.www.saeservice.MetadonneeValeurType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -29,11 +40,15 @@ import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectConsultationFactory;
 import fr.urssaf.image.sae.webservices.util.CollectionUtils;
+import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 
 /**
  * Implémentation de {@link WSConsultationService}<br>
@@ -48,6 +63,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
          .getLogger(WSConsultationServiceImpl.class);
 
    private static final String FORMAT_FICHIER = "FormatFichier";
+   private SaeServiceStub stub;
 
    @Autowired
    @Qualifier("documentService")
@@ -55,6 +71,9 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
    @Autowired
    private ReferentielFormatService referentielFormatService;
+
+   @Value("${sae.adresse.GNT}")
+   private String adresseGNT;
 
    /**
     * {@inheritDoc}
@@ -323,6 +342,214 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
    }
 
+   public ConsultationGNTGNSResponse consultationGNTGNS(
+         ConsultationGNTGNS request) throws SearchingServiceEx,
+         ConnectionServiceEx, SAEConsultationServiceException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException, RemoteException {
+
+      // Traces debug - entrée méthode
+      String prefixeTrc = "consultationAffichable()";
+      LOG.debug("{} - Début", prefixeTrc);
+      // Fin des traces debug - entrée méthode
+
+      UUID uuid = UUID.fromString(request.getConsultationGNTGNS()
+            .getIdArchive().getUuidType());
+      LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
+            uuid);
+
+      // Lecture des métadonnées depuis l'objet de requête de la couche ws
+      ListeMetadonneeCodeType listeMetaWs = request.getConsultationGNTGNS()
+            .getMetadonnees();
+
+      // Convertit la liste des métadonnées de l'objet de la couche ws vers un
+      // objet plus exploitable
+      List<String> listeMetas = convertListeMetasWebServiceToService(listeMetaWs);
+
+      boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
+
+      // Regarde si l'archive a été retrouvée dans la GNS si ce n'est pas le cas
+      // appelle a la GNT via le STUB
+
+      LOG.debug(
+            "{} - L'archive demandée n'a pas été retrouvée dans la GNT ({})",
+            prefixeTrc, uuid);
+
+      MessageContext msgCtx = MessageContext.getCurrentMessageContext();
+
+      // Creation du client au web service de la GNT
+      stub = new SaeServiceStub(adresseGNT);
+      // Creation de la requete et de la reponse du client
+      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistant reqDoc = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistant();
+      reqDoc.setDocumentExistant(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantRequestType());
+      reqDoc.getDocumentExistant()
+            .setIdGed(
+                  new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.UuidType());
+      reqDoc.getDocumentExistant()
+            .getIdGed()
+            .setUuidType(
+                  request.getConsultationGNTGNS().getIdArchive().getUuidType());
+      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantResponse respDoc = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantResponse();
+
+      // Appelle au web service documentExistant de la GNT
+      respDoc = stub.documentExistant(reqDoc);
+      boolean isDocExist = respDoc.getDocumentExistantResponse()
+            .getIsDocExist();
+
+      if (isDocExist) {
+
+         // Creation de la requete pour l'appelle au web service
+         // consultationMTOM si le document existe en GNT
+         fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM reqStub = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM();
+
+         reqStub
+               .setConsultationMTOM(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMRequestType());
+
+         reqStub
+               .getConsultationMTOM()
+               .setIdArchive(
+                     new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.UuidType());
+
+         reqStub
+               .getConsultationMTOM()
+               .getIdArchive()
+               .setUuidType(
+                     request.getConsultationGNTGNS().getIdArchive()
+                           .getUuidType());
+
+         if (!org.apache.commons.collections.CollectionUtils
+               .isEmpty(listeMetas)) {
+            fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType codesMetadonnees = buildListeCodesMetadonnes(listeMetas);
+            reqStub.getConsultationMTOM().setMetadonnees(codesMetadonnees);
+         }
+
+         // On change la valeur contenant le nom du service par celui à utiliser
+         // dans l'enveloppe du message contenu dans le Message Context
+         msgCtx.getEnvelope().getBody().getFirstElement()
+               .setLocalName("consultationMTOM");
+
+         fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse resp = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse();
+         ConsultationGNTGNSResponse response = new ConsultationGNTGNSResponse();
+         try {
+            // Si le document existe sur la GNT appelle au web service
+            // consultationMTOM de la GNT
+            resp = stub.consultationMTOM(reqStub);
+
+            // Creation de la reponse ConsultationGNTGNS
+            response
+                  .setConsultationGNTGNSResponse(new ConsultationGNTGNSResponseType());
+            response.getConsultationGNTGNSResponse().setContenu(
+                  resp.getConsultationMTOMResponse().getContenu());
+            List<MetadonneeType> meta = new ArrayList<MetadonneeType>();
+
+            // Creation de la reponse consultationGNTGNS à retourner
+            for (int i = 0; i < resp.getConsultationMTOMResponse()
+                  .getMetadonnees().getMetadonnee().length; i++) {
+               meta.add(new MetadonneeType());
+               meta.get(i).setCode(new MetadonneeCodeType());
+               meta.get(i)
+                     .getCode()
+                     .setMetadonneeCodeType(
+                           resp.getConsultationMTOMResponse().getMetadonnees()
+                                 .getMetadonnee()[i].getCode()
+                                 .getMetadonneeCodeType());
+               meta.get(i).setValeur(new MetadonneeValeurType());
+               meta.get(i)
+                     .getValeur()
+                     .setMetadonneeValeurType(
+                           resp.getConsultationMTOMResponse().getMetadonnees()
+                                 .getMetadonnee()[i].getValeur()
+                                 .getMetadonneeValeurType());
+            }
+            ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+
+            for (MetadonneeType metadonnee : meta) {
+               listeMetadonnee.addMetadonnee(metadonnee);
+            }
+
+            response.getConsultationGNTGNSResponse().setMetadonnees(
+                  listeMetadonnee);
+            return response;
+         } catch (AxisFault fault) {
+            String faultStr = fault.getFaultMessageContext().getEnvelope()
+                  .getBody().getFirstElement().getFirstElement()
+                  .getFirstElement().getText();
+            String strFinal = faultStr.substring(4);
+            throw new ConsultationAxisFault(strFinal, fault.getMessage());
+         }
+      } else {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+
+         // Le document ne se trouve pas en GNT, on consulte en GNS
+         ConsultParams param = new ConsultParams(uuid, listeMetas);
+
+         try {
+            // Appelle au service de consultation affichable de la GNS
+            UntypedDocument untypedDocument = saeService
+                  .consultationAffichable(param);
+            if (untypedDocument == null) {
+               throw new ConsultationAxisFault("ArchiveNonTrouvee",
+                     "Il n'existe aucun document pour l'identifiant d'archivage '"
+                           + uuid + "'");
+            }
+
+            String typeMime = typeMimeDepuisFormatFichier(
+                  untypedDocument.getUMetadatas(), fmtFicAjoute);
+
+            // Le document existe en GNS on construit la reponse normalement
+            List<MetadonneeType> metadatas = convertListeMetasServiceToWebService(untypedDocument
+                  .getUMetadatas());
+
+            ConsultationGNTGNSResponse response = ObjectConsultationFactory
+                  .createConsultationGNTGNSResponse(
+                        untypedDocument.getContent(), metadatas, typeMime);
+
+            return response;
+         } catch (SAEConsultationServiceException e) {
+            throw new ConsultationAxisFault(e);
+
+         } catch (UnknownDesiredMetadataEx e) {
+            throw new ConsultationAxisFault(
+                  "ConsultationMetadonneesInexistante", e.getMessage(), e);
+         } catch (MetaDataUnauthorizedToConsultEx e) {
+            throw new ConsultationAxisFault(
+                  "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
+         } catch (SAEConsultationAffichableParametrageException e) {
+            throw new ConsultationAxisFault(
+                  "ConsultationAffichableParametrageIncorrect", e.getMessage(),
+                  e);
+         }
+      }
+   }
+
+   public static fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType buildListeCodesMetadonnes(
+         List<String> codesMetadonnees) {
+
+      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType listeMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType();
+
+      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[] tabMetadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType[codesMetadonnees
+            .size()];
+      listeMetadonneeCodeType.setMetadonneeCode(tabMetadonneeCodeType);
+
+      int indice = 0;
+      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType metadonneeCodeType;
+
+      Iterator<String> iterator = codesMetadonnees.iterator();
+      while (iterator.hasNext()) {
+
+         metadonneeCodeType = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.MetadonneeCodeType();
+         tabMetadonneeCodeType[indice] = metadonneeCodeType;
+         indice++;
+
+         metadonneeCodeType.setMetadonneeCodeType(iterator.next());
+
+      }
+
+      return listeMetadonneeCodeType;
+
+   }
+
    private List<String> convertListeMetasWebServiceToService(
          ListeMetadonneeCodeType listeMetaWs) {
 
@@ -438,6 +665,8 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
          }
       }
       if (metaFormatFichier == null) {
+
+         System.out.println("MetaFormatFichier = null");
          // Erreur technique et non fonctionnelle
          LOG.debug(
                "{} - Levée d'une ConsultationAxisFault : la métadonnée FormatFichier n'a pas été trouvée dans la liste des mtadonnées, alors qu'elle est censée être présente.",
