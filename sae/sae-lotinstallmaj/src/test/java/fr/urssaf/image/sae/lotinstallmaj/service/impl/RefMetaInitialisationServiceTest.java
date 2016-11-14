@@ -32,7 +32,7 @@ public class RefMetaInitialisationServiceTest {
       List<MetadataReference> metadonnees = refMetaService.chargeFichierMeta();
 
       Assert.assertEquals("Le nombre de métadonnées attendu est incorrect",
-            143, metadonnees.size());
+            145, metadonnees.size());
    }
 
    @Test
@@ -52,7 +52,7 @@ public class RefMetaInitialisationServiceTest {
       // throw new MajLotRuntimeException(e);
       // }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2291,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 2323,
             lignes.size());
    }
 
@@ -80,7 +80,7 @@ public class RefMetaInitialisationServiceTest {
       // throw new MajLotRuntimeException(e);
       // }
 
-      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1237,
+      Assert.assertEquals("Le nombre de lignes attendu est incorrect", 1257,
             lignes.size());
 
    }
@@ -225,14 +225,14 @@ public class RefMetaInitialisationServiceTest {
             .chargerFichierIdxCompositesGNS(true);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.6) est incorrect";
-      Assert.assertEquals(message, 26, indexes.size());
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.8) est incorrect";
+      Assert.assertEquals(message, 29, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(true);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.6) est incorrect";
-      Assert.assertEquals(message, 29, indexes.size());
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.8) est incorrect";
+      Assert.assertEquals(message, 32, indexes.size());
    }
 
    @Test
@@ -244,14 +244,14 @@ public class RefMetaInitialisationServiceTest {
             .chargerFichierIdxCompositesGNS(false);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.6) est incorrect";
-      Assert.assertEquals(message, 7, indexes.size());
+      message = "Le nombre d'indexes composite attendu en GNS (fichier v3.8) est incorrect";
+      Assert.assertEquals(message, 6, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(false);
 
       // -- Test version du fichiers des indexes composites
-      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.6) est incorrect";
-      Assert.assertEquals(message, 4, indexes.size());
+      message = "Le nombre d'indexes composite attendu en GNT (fichier v3.8) est incorrect";
+      Assert.assertEquals(message, 3, indexes.size());
    }
 
    private String boolToStringForDataset(boolean value) {

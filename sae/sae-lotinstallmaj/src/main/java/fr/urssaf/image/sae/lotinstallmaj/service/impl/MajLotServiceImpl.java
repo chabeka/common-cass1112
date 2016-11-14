@@ -66,7 +66,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_160900 = "CASSANDRA_DFCE_160900";
    public static final String CASSANDRA_DFCE_160901 = "CASSANDRA_DFCE_160901";
    public static final String CASSANDRA_DFCE_161100 = "CASSANDRA_DFCE_161100";
-   public static final String CASSANDRA_DFCE_170200 = "CASSANDRA_DFCE_170200";
+   public static final String GNS_CASSANDRA_DFCE_170200 = "GNS_CASSANDRA_DFCE_170200";
+   public static final String GNT_CASSANDRA_DFCE_170200 = "GNT_CASSANDRA_DFCE_170200";
    
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -282,8 +283,14 @@ public final class MajLotServiceImpl implements MajLotService {
          updateMetaDfce("META_160901");
       } else if (CASSANDRA_DFCE_161100.equalsIgnoreCase(nomOperation)) {
          updateCassandra161100();
-      } else if (CASSANDRA_DFCE_170200.equalsIgnoreCase(nomOperation)) {
+      } else if (GNS_CASSANDRA_DFCE_170200.equalsIgnoreCase(nomOperation)) {
          updateCassandra170200();
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_170200", GED_CONCERNEE.GNS);
+      } else if (GNT_CASSANDRA_DFCE_170200.equalsIgnoreCase(nomOperation)) {
+         updateCassandra170200();
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_170200", GED_CONCERNEE.GNT);
       } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
          createGedBase();
       } else {

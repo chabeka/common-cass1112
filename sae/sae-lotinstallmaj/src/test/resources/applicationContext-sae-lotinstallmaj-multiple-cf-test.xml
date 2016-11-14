@@ -10,11 +10,9 @@
 
 
    <!--Gestion de message à partir d'un fichier -->
-   <bean id="saeConfigResource"
-      class="org.springframework.core.io.FileSystemResource">
-      
-      <constructor-arg value="c:/hawai/data/sae/sae-config.properties" />
-      
+      <!-- sae-config.properties    -->
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+     <constructor-arg value="src/test/resources/config/test-sae-config.properties" />
    </bean>
  
    <import resource="classpath*:/applicationContext-sae-lotinstallmaj.xml" />   

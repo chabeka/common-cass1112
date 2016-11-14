@@ -957,7 +957,7 @@ public class SAECassandraUpdater {
    }
    
    /**
-    * Version 21 : <li>Ajout de l'action unitaire suppression et modification pour la GNS</li>
+    * Version 22 : <li>Ajout de l'action unitaire suppression et modification pour la GNS</li>
     */
    public void updateToVersion22() {
 
@@ -981,6 +981,9 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_22);
    }
    
+   /**
+    * Version 23 : <li>Ajout de l'action unitaire copie</li>
+    */
    public void updateToVersion23() {
 
       long version = saeDao.getDatabaseVersion();
@@ -996,10 +999,10 @@ public class SAECassandraUpdater {
 
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
 
-      // Ajout de l'action unitaire suppression et modification
+      // Ajout de l'action unitaire copie
       donnees.addActionUnitaireCopie();
       
-      // On positionne la version à 22
+      // On positionne la version à 23
       saeDao.setDatabaseVersion(VERSION_23);
    }
    
