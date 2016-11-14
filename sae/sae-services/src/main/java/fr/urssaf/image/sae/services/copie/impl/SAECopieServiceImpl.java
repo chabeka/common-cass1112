@@ -126,19 +126,23 @@ public class SAECopieServiceImpl implements SAECopieService {
       }
 
       // Verification metadatas non specifiables
-      int i = 0;
-      for (UntypedMetadata md : metadata) {
-         for (String str : list) {
-            if (md.getLongCode().equals(str))
-               i = 1;
+
+      if (metadata.get(0).getLongCode() != null) {
+         int i = 0;
+         for (UntypedMetadata md : metadata) {
+            for (String str : list) {
+               if (md.getLongCode().equals(str))
+                  i = 1;
+            }
+            if (i == 0) {
+               String message = StringUtils
+                     .replace(
+                           "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
+                           "{0}", md.getLongCode());
+               throw new SAECopieServiceException(message);
+            }
+            i = 0;
          }
-         if (i == 0) {
-            String message = StringUtils.replace(
-                  "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
-                  "{0}", md.getLongCode());
-            throw new SAECopieServiceException(message);
-         }
-         i = 0;
       }
 
       // Appelle du service de consultation
