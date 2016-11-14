@@ -48,6 +48,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -281,6 +282,8 @@ public class SearchingServiceImpl extends AbstractServices implements
          // pouvoir tester les droits
          List<String> metadonneesRef = new ArrayList<String>(referentielMeta
                .keySet());
+         // On supprime les notes qui ne sont pas utilisées pour les droits
+         metadonneesRef.remove(StorageTechnicalMetadatas.NOTE.getLongCode());
          List<StorageMetadata> allMeta = null;
          // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
          if (!searchInRecycleBean) {

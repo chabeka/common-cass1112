@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -94,13 +95,17 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferences();
          for (String mapKey : listeAllMeta.keySet()) {
-            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                  .getShortCode()));
+            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                  listeAllMeta.get(mapKey).getShortCode())) {
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
+            }
          }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
-         // On récupère les métadonnées du document sur lequel on souhaite ajouter la note pour
+         // On récupère les métadonnées du document sur lequel on souhaite
+         // ajouter la note pour
          // vérifier les droits
          List<StorageMetadata> listeStorageMeta = this
                .getStorageServiceProvider().getStorageDocumentService()

@@ -51,6 +51,7 @@ import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -293,14 +294,17 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferences();
          for (String mapKey : listeAllMeta.keySet()) {
-            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                  .getShortCode()));
+            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                  listeAllMeta.get(mapKey).getShortCode())) {
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
+            }
          }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
          // On récupère le document à partir de l'UUID, avec toutes les
-         // métadonnées du référentiel
+         // métadonnées du référentiel sauf la note qui n'est pas utlisée pour les droits
          StorageDocument storageDocument = this.getStorageServiceProvider()
                .getStorageDocumentService()
                .retrieveStorageDocumentByUUID(uuidCriteria);

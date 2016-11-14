@@ -164,19 +164,22 @@ public final class BeanMapper {
                // Récupération éventuelle des notes du document
                if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
                      metadata.getShortCode())) {
-                  List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
-                  List<Note> listeNote = serviceDFCE.getNoteService().getNotes(
+                  if (document.hasNote()) {
+                     List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+                     List<Note> listeNote = serviceDFCE.getNoteService().getNotes(
                         document.getUuid());
-                  for (Note note : listeNote) {
-                     listeStorageDocNotes.add(BeanMapper
-                           .dfceNoteToStorageDocumentNote(note));
+                  
+                     for (Note note : listeNote) {
+                        listeStorageDocNotes.add(BeanMapper
+                              .dfceNoteToStorageDocumentNote(note));
+                     }
+                     // Transformation de la liste des notes en JSON
+                     ObjectMapper mapper = new ObjectMapper();
+                     String listeNotesJSON = mapper
+                           .writeValueAsString(listeStorageDocNotes);
+                     metadatas.add(new StorageMetadata(metadata.getShortCode(),
+                        listeNotesJSON));                     
                   }
-                  // Transformation de la liste des notes en JSON
-                  ObjectMapper mapper = new ObjectMapper();
-                  String listeNotesJSON = mapper
-                        .writeValueAsString(listeStorageDocNotes);
-                  metadatas.add(new StorageMetadata(metadata.getShortCode(),
-                        listeNotesJSON));
                   found = true;
                }
 

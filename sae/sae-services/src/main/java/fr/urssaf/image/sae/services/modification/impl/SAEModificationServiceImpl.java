@@ -52,6 +52,7 @@ import fr.urssaf.image.sae.services.exception.modification.ModificationException
 import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -122,20 +123,23 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
          try {
 
-            // On récupère la liste de toutes les méta du référentiel
+            // On récupère la liste de toutes les méta du référentiel sauf la
+            // Note inutile pour les droits
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
                   .getAllMetadataReferences();
             for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+               if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(listeAllMeta.get(mapKey).getShortCode())) {
+                  allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                        .getShortCode()));
+               }
             }
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
             // On récupère les métadonnées du document à partir de l'UUID, avec
             // toutes les
-            // métadonnées du référentiel
+            // métadonnées du référentiel sauf la Note inutile pour les droits
             listeStorageMeta = this.getStorageServiceProvider()
                   .getStorageDocumentService()
                   .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);

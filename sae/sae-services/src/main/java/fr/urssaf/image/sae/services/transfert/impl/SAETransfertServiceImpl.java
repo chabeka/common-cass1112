@@ -135,15 +135,18 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          storageTransfertService.openConnexion();
          traceServiceSupport.connect();
 
-
-         // On récupère les métadonnées du document à partir de l'UUID, avec toutes les
-         // métadonnées du référentiel
+         // On récupère les métadonnées du document à partir de l'UUID, avec
+         // toutes les
+         // métadonnées du référentiel sauf la note qui n'est pas utilise pour les droits
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
                .getAllMetadataReferences();
          for (String mapKey : listeAllMeta.keySet()) {
-            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                  .getShortCode()));
+            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                  listeAllMeta.get(mapKey).getShortCode())) {
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
+            }
          }
          UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 

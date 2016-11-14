@@ -51,6 +51,7 @@ import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffich
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.services.util.UntypedMetadataFinderUtils;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -151,13 +152,27 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
             LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
                   prefixeTrc, buildMessageFromList(metadatas));
 
+            boolean avecNote = false;
+            if (metadatas.contains("Note")) {
+               avecNote = true;
+            }
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
                   .getAllMetadataReferences();
+            String shortCode;
             for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+               shortCode = listeAllMeta.get(mapKey).getShortCode();
+               if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                     shortCode)) {
+                  if (avecNote) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else {
+                  allMeta.add(new StorageMetadata(shortCode));
+               }
+
             }
+
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
             // On récupère le document à partir de l'UUID, avec toutes les
@@ -243,19 +258,32 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
          this.getStorageServiceProvider().openConnexion();
 
          try {
-
-            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-            Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferences();
-            for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
-            }
-
             List<String> metadatas = manageMetaDataNames(consultParams);
 
             LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
                   prefixeTrc, buildMessageFromList(metadatas));
+
+            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+            boolean avecNote = false;
+            if (metadatas.contains("Note")) {
+               avecNote = true;
+            }
+            Map<String, MetadataReference> listeAllMeta = referenceDAO
+                  .getAllMetadataReferences();
+            String shortCode;
+            for (String mapKey : listeAllMeta.keySet()) {
+               shortCode = listeAllMeta.get(mapKey).getShortCode();
+               if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
+                     shortCode)) {
+                  if (avecNote) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else {
+                  allMeta.add(new StorageMetadata(shortCode));
+               }
+            }
+
+
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 

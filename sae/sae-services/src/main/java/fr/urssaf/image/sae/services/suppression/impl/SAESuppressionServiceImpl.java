@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -87,14 +88,17 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
             Map<String, MetadataReference> listeAllMeta = referenceDAO
                   .getAllMetadataReferences();
             for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+               if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(listeAllMeta.get(mapKey).getShortCode())) {
+                  allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                        .getShortCode()));
+               }
             }
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
             // On récupère les métadonnées du document à partir de l'UUID, avec
             // toutes les
-            // métadonnées du référentiel
+            // métadonnées du référentiel sauf la Note inutilisée pour les
+            // droits
             List<StorageMetadata> listeStorageMeta = this
                   .getStorageServiceProvider().getStorageDocumentService()
                   .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
