@@ -10,7 +10,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>16.11.0.2-SNAPSHOT</version>
+   <version>17.2.0.1</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
