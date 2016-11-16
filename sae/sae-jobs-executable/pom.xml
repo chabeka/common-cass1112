@@ -3,14 +3,14 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>16.11.0.2-SNAPSHOT</version>
+      <version>17.2.0.1</version>
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-jobs-executable</artifactId>
    <name>sae-jobs-executable</name>
-   <version>16.11.0.2-SNAPSHOT</version>
+   <version>17.2.0.1</version>
    <description>Opération sur les jobs</description>
    
    <dependencies>
@@ -19,7 +19,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>16.11.0.2-SNAPSHOT</version>
+         <version>17.2.0.1</version>
       </dependency>
       
       <!-- AspectJ -->
