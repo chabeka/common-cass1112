@@ -48,7 +48,6 @@ import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectConsultationFactory;
 import fr.urssaf.image.sae.webservices.util.CollectionUtils;
-import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 
 /**
  * Implémentation de {@link WSConsultationService}<br>
@@ -368,132 +367,109 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
 
       boolean fmtFicAjoute = ajouteSiBesoinMetadonneeFormatFichier(listeMetas);
 
-      // Regarde si l'archive a été retrouvée dans la GNS si ce n'est pas le cas
-      // appelle a la GNT via le STUB
+      // Regarde si l'archive a été retrouvée dans la GNT si ce n'est pas le cas
+      // appelle a la GNS via le STUB
 
       LOG.debug(
             "{} - L'archive demandée n'a pas été retrouvée dans la GNT ({})",
             prefixeTrc, uuid);
 
-      MessageContext msgCtx = MessageContext.getCurrentMessageContext();
+      ConsultParams param = new ConsultParams(uuid, listeMetas);
+      try {
+         // Appelle au service de consultation affichable de la GNS
+      // Le document ne se trouve pas en GNT, on consulte en GNS
+         
+         UntypedDocument untypedDocument = saeService
+               .consultation(param);
+         
+         if (untypedDocument == null) {
+   
+            // consultationMTOM si le document existe en GNT
+            MessageContext msgCtx = MessageContext.getCurrentMessageContext();
 
-      // Creation du client au web service de la GNT
-      stub = new SaeServiceStub(adresseGNT);
-      // Creation de la requete et de la reponse du client
-      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistant reqDoc = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistant();
-      reqDoc.setDocumentExistant(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantRequestType());
-      reqDoc.getDocumentExistant()
-            .setIdGed(
-                  new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.UuidType());
-      reqDoc.getDocumentExistant()
-            .getIdGed()
-            .setUuidType(
-                  request.getConsultationGNTGNS().getIdArchive().getUuidType());
-      fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantResponse respDoc = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.DocumentExistantResponse();
+            // Creation du client au web service de la GNT
+            stub = new SaeServiceStub(adresseGNT);
+            
+            // Creation de la requete pour l'appelle au web service
+            fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM reqStub = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM();
 
-      // Appelle au web service documentExistant de la GNT
-      respDoc = stub.documentExistant(reqDoc);
-      boolean isDocExist = respDoc.getDocumentExistantResponse()
-            .getIsDocExist();
+            reqStub
+                  .setConsultationMTOM(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMRequestType());
 
-      if (isDocExist) {
+            reqStub
+                  .getConsultationMTOM()
+                  .setIdArchive(
+                        new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.UuidType());
 
-         // Creation de la requete pour l'appelle au web service
-         // consultationMTOM si le document existe en GNT
-         fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM reqStub = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOM();
+            reqStub
+                  .getConsultationMTOM()
+                  .getIdArchive()
+                  .setUuidType(
+                        request.getConsultationGNTGNS().getIdArchive()
+                              .getUuidType());
 
-         reqStub
-               .setConsultationMTOM(new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMRequestType());
-
-         reqStub
-               .getConsultationMTOM()
-               .setIdArchive(
-                     new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.UuidType());
-
-         reqStub
-               .getConsultationMTOM()
-               .getIdArchive()
-               .setUuidType(
-                     request.getConsultationGNTGNS().getIdArchive()
-                           .getUuidType());
-
-         if (!org.apache.commons.collections.CollectionUtils
-               .isEmpty(listeMetas)) {
-            fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType codesMetadonnees = buildListeCodesMetadonnes(listeMetas);
-            reqStub.getConsultationMTOM().setMetadonnees(codesMetadonnees);
-         }
-
-         // On change la valeur contenant le nom du service par celui à utiliser
-         // dans l'enveloppe du message contenu dans le Message Context
-         msgCtx.getEnvelope().getBody().getFirstElement()
-               .setLocalName("consultationMTOM");
-
-         fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse resp = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse();
-         ConsultationGNTGNSResponse response = new ConsultationGNTGNSResponse();
-         try {
-            // Si le document existe sur la GNT appelle au web service
-            // consultationMTOM de la GNT
-            resp = stub.consultationMTOM(reqStub);
-
-            // Creation de la reponse ConsultationGNTGNS
-            response
-                  .setConsultationGNTGNSResponse(new ConsultationGNTGNSResponseType());
-            response.getConsultationGNTGNSResponse().setContenu(
-                  resp.getConsultationMTOMResponse().getContenu());
-            List<MetadonneeType> meta = new ArrayList<MetadonneeType>();
-
-            // Creation de la reponse consultationGNTGNS à retourner
-            for (int i = 0; i < resp.getConsultationMTOMResponse()
-                  .getMetadonnees().getMetadonnee().length; i++) {
-               meta.add(new MetadonneeType());
-               meta.get(i).setCode(new MetadonneeCodeType());
-               meta.get(i)
-                     .getCode()
-                     .setMetadonneeCodeType(
-                           resp.getConsultationMTOMResponse().getMetadonnees()
-                                 .getMetadonnee()[i].getCode()
-                                 .getMetadonneeCodeType());
-               meta.get(i).setValeur(new MetadonneeValeurType());
-               meta.get(i)
-                     .getValeur()
-                     .setMetadonneeValeurType(
-                           resp.getConsultationMTOMResponse().getMetadonnees()
-                                 .getMetadonnee()[i].getValeur()
-                                 .getMetadonneeValeurType());
-            }
-            ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
-
-            for (MetadonneeType metadonnee : meta) {
-               listeMetadonnee.addMetadonnee(metadonnee);
+            if (!org.apache.commons.collections.CollectionUtils
+                  .isEmpty(listeMetas)) {
+               fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType codesMetadonnees = buildListeCodesMetadonnes(listeMetas);
+               reqStub.getConsultationMTOM().setMetadonnees(codesMetadonnees);
             }
 
-            response.getConsultationGNTGNSResponse().setMetadonnees(
-                  listeMetadonnee);
-            return response;
-         } catch (AxisFault fault) {
-            String faultStr = fault.getFaultMessageContext().getEnvelope()
-                  .getBody().getFirstElement().getFirstElement()
-                  .getFirstElement().getText();
-            String strFinal = faultStr.substring(4);
-            throw new ConsultationAxisFault(strFinal, fault.getMessage());
-         }
-      } else {
-         // Traces debug - sortie méthode
-         LOG.debug("{} - Sortie", prefixeTrc);
+            // On change la valeur contenant le nom du service par celui à utiliser
+            // dans l'enveloppe du message contenu dans le Message Context
+            msgCtx.getEnvelope().getBody().getFirstElement()
+                  .setLocalName("consultationMTOM");
 
-         // Le document ne se trouve pas en GNT, on consulte en GNS
-         ConsultParams param = new ConsultParams(uuid, listeMetas);
+            fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse resp = new fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ConsultationMTOMResponse();
+            ConsultationGNTGNSResponse response = new ConsultationGNTGNSResponse();
+            try {
+               // Si le document existe sur la GNT appelle au web service
+               // consultationMTOM de la GNT
+               resp = stub.consultationMTOM(reqStub);
 
-         try {
-            // Appelle au service de consultation affichable de la GNS
-            UntypedDocument untypedDocument = saeService
-                  .consultationAffichable(param);
-            if (untypedDocument == null) {
-               throw new ConsultationAxisFault("ArchiveNonTrouvee",
-                     "Il n'existe aucun document pour l'identifiant d'archivage '"
-                           + uuid + "'");
+               // Creation de la reponse ConsultationGNTGNS
+               response
+                     .setConsultationGNTGNSResponse(new ConsultationGNTGNSResponseType());
+               response.getConsultationGNTGNSResponse().setContenu(
+                     resp.getConsultationMTOMResponse().getContenu());
+               List<MetadonneeType> meta = new ArrayList<MetadonneeType>();
+
+               // Creation de la reponse consultationGNTGNS à retourner
+               for (int i = 0; i < resp.getConsultationMTOMResponse()
+                     .getMetadonnees().getMetadonnee().length; i++) {
+                  meta.add(new MetadonneeType());
+                  meta.get(i).setCode(new MetadonneeCodeType());
+                  meta.get(i)
+                        .getCode()
+                        .setMetadonneeCodeType(
+                              resp.getConsultationMTOMResponse().getMetadonnees()
+                                    .getMetadonnee()[i].getCode()
+                                    .getMetadonneeCodeType());
+                  meta.get(i).setValeur(new MetadonneeValeurType());
+                  meta.get(i)
+                        .getValeur()
+                        .setMetadonneeValeurType(
+                              resp.getConsultationMTOMResponse().getMetadonnees()
+                                    .getMetadonnee()[i].getValeur()
+                                    .getMetadonneeValeurType());
+               }
+               ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+
+               for (MetadonneeType metadonnee : meta) {
+                  listeMetadonnee.addMetadonnee(metadonnee);
+               }
+
+               response.getConsultationGNTGNSResponse().setMetadonnees(
+                     listeMetadonnee);
+               return response;
+            } catch (AxisFault fault) {
+               String faultStr = fault.getFaultMessageContext().getEnvelope()
+                     .getBody().getFirstElement().getFirstElement()
+                     .getFirstElement().getText();
+               String strFinal = faultStr.substring(4);
+               throw new ConsultationAxisFault(strFinal, fault.getMessage());
             }
-
+         } else {
+        
             String typeMime = typeMimeDepuisFormatFichier(
                   untypedDocument.getUMetadatas(), fmtFicAjoute);
 
@@ -506,21 +482,21 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
                         untypedDocument.getContent(), metadatas, typeMime);
 
             return response;
-         } catch (SAEConsultationServiceException e) {
-            throw new ConsultationAxisFault(e);
-
-         } catch (UnknownDesiredMetadataEx e) {
-            throw new ConsultationAxisFault(
-                  "ConsultationMetadonneesInexistante", e.getMessage(), e);
-         } catch (MetaDataUnauthorizedToConsultEx e) {
-            throw new ConsultationAxisFault(
-                  "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
-         } catch (SAEConsultationAffichableParametrageException e) {
-            throw new ConsultationAxisFault(
-                  "ConsultationAffichableParametrageIncorrect", e.getMessage(),
-                  e);
-         }
       }
+      } catch (SAEConsultationServiceException e) {
+         throw new ConsultationAxisFault(e);
+
+      } catch (UnknownDesiredMetadataEx e) {
+         throw new ConsultationAxisFault(
+               "ConsultationMetadonneesInexistante", e.getMessage(), e);
+      } catch (MetaDataUnauthorizedToConsultEx e) {
+         throw new ConsultationAxisFault(
+               "ConsultationMetadonneesNonAutorisees", e.getMessage(), e);
+//      } catch (SAEConsultationParametrageException e) {
+//         throw new ConsultationAxisFault(
+//               "ConsultationAffichableParametrageIncorrect", e.getMessage(),
+//               e);
+      }    
    }
 
    public static fr.urssaf.image.sae.webservices.client.modele.SaeServiceStub.ListeMetadonneeCodeType buildListeCodesMetadonnes(
