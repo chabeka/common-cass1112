@@ -113,7 +113,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-lotinstallmaj</artifactId>
-         <version>16.11.0.2-SNAPSHOT</version>
+         <version>17.2.0.2-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->

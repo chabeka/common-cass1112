@@ -15,7 +15,9 @@ import fr.urssaf.image.sae.admin.dfce.exploit.executable.AdministrationSAEMain;
 import fr.urssaf.image.sae.admin.dfce.exploit.services.AdministrationDFCEService;
 import fr.urssaf.image.sae.commons.context.ContextFactory;
 import fr.urssaf.image.sae.integrationinstall.exception.IntegrationInstRuntimeException;
+import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
+import fr.urssaf.image.sae.lotinstallmaj.service.impl.MajLotServiceImpl;
 import fr.urssaf.image.sae.rnd.exception.MajRndException;
 import fr.urssaf.image.sae.rnd.service.MajRndService;
 
@@ -56,75 +58,93 @@ public final class MainIntInst {
       MajLotService majLotService = context.getBean("majLotServiceImpl",
             MajLotService.class);
 
-      DFCEConnection cnxParameter = context.getBean(DFCEConnection.class);
-      // les operations de ce services peuvent etre relativement longue
-      // on configure donc un timeout de 3h (plutot que quelques minutes)
-      cnxParameter.setTimeout(AdministrationSAEMain.TIMEOUT_DFCE);
-
-      final AdministrationDFCEService adminDFCE = context
-            .getBean(AdministrationDFCEService.class);
-      
-      final String dataBasePath = args[1];
-      final String documentsTypePath = args[2];
-      final File xmlDataBaseModel = new File(dataBasePath);
-      final File xmlDocumentsType = new File(documentsTypePath);
-      if (!xmlDataBaseModel.isFile()) {
-         // Opération inconnue => log + exception runtime
-         String message = "Erreur technique : Le modèle de la base de données SAE n'est pas valide.";
-         throw new IntegrationInstRuntimeException(message);
-      }
-      if (!xmlDocumentsType.isFile()) {
-         String message = "Erreur technique : Le fichier des types de documents SAE n'est pas valide.";
-         throw new IntegrationInstRuntimeException(message);
-      }
-
-      // Retire des arguments de la ligne de commande ceux que l'on a déjà
-      // traités.
-      // On ne laisse que les arguments spécifiques à l'opération
+      // Retire des arguments de la ligne de commande ceux que l'on a pas besoin
+      // pour le moment.
+      // On ne laisse que les arguments spécifiques à l'application concernée
       String[] argsSpecifiques = (String[]) ArrayUtils.subarray(args, 3,
             args.length);
 
-      // Démarre l'opération d'update de la base DFCE
-      majLotService.demarreUpdateDFCE(argsSpecifiques);
-
-      // Appel du service de création de la base de données admin DFCE.
-      try {
-         adminDFCE.createSAEBase(cnxParameter, xmlDataBaseModel,
-               xmlDocumentsType);
-      } catch (BaseAdministrationServiceEx e) {
-         LOG.error("Error - " + e.getMessage());
-         throw new IntegrationInstRuntimeException(e);
-      } catch (ConnectionServiceEx e) {
-         throw new IntegrationInstRuntimeException(e);
+      String applicationConcernee = argsSpecifiques.length > 0 ? argsSpecifiques[0]
+            : null;
+      if (applicationConcernee == null) {
+         String message = "Erreur technique : Le serveur GED ou DFCE n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp (GNS, GNT ou DFCE).";
+         LOG.error(message);
+         throw new MajLotRuntimeException(message);
+      }
+      
+      // Création de la base de données DFCE (Schema et CF).
+      if (MajLotServiceImpl.APPL_CONCERNEE.DFCE.getApplName().equals(applicationConcernee)) {
+         // Démarre l'opération d'update de la base DFCE
+         majLotService.demarreUpdateDFCE(applicationConcernee);
       }
 
-      // Création de la base SAE
-      majLotService.demarreCreateSAE();
+      // Création de la base de données GED (CNS ou GNT).
+      if (MajLotServiceImpl.APPL_CONCERNEE.GNS.getApplName().equals(applicationConcernee) || 
+            MajLotServiceImpl.APPL_CONCERNEE.GNT.getApplName().equals(applicationConcernee)) {
+         final AdministrationDFCEService adminDFCE = context
+               .getBean(AdministrationDFCEService.class);
 
-      // Mise à jour RND
-      try {
+         final String dataBasePath = args[1];
+         final String documentsTypePath = args[2];
+         final File xmlDataBaseModel = new File(dataBasePath);
+         final File xmlDocumentsType = new File(documentsTypePath);
+         if (!xmlDataBaseModel.isFile()) {
+            // Opération inconnue => log + exception runtime
+            String message = "Erreur technique : Le modèle de la base de données SAE n'est pas valide.";
+            throw new IntegrationInstRuntimeException(message);
+         }
+         if (!xmlDocumentsType.isFile()) {
+            String message = "Erreur technique : Le fichier des types de documents SAE n'est pas valide.";
+            throw new IntegrationInstRuntimeException(message);
+         }
+      // Création de la connexion à DFCE.
+         DFCEConnection cnxParameter = context.getBean(DFCEConnection.class);
+         // les operations de ce services peuvent etre relativement longue
+         // on configure donc un timeout de 3h (plutot que quelques minutes)
+         cnxParameter.setTimeout(AdministrationSAEMain.TIMEOUT_DFCE);
 
-         // appel du service de mise à jour du RND
-         MajRndService majRndService = context
-               .getBean(MajRndService.class);
+         // Appel du service de création de la base de données admin DFCE.
+         try {
+            adminDFCE.createSAEBase(cnxParameter, xmlDataBaseModel,
+                  xmlDocumentsType);
+         } catch (BaseAdministrationServiceEx e) {
+            LOG.error("Error - " + e.getMessage());
+            throw new IntegrationInstRuntimeException(e);
+         } catch (ConnectionServiceEx e) {
+            throw new IntegrationInstRuntimeException(e);
+         }
 
-         majRndService.lancer();
+         // Création de la base SAE
+         majLotService.demarreCreateSAE();
 
-      } catch (MajRndException e) {
-         throw new IntegrationInstRuntimeException(e);
-      } catch (Exception e) {
-         throw new IntegrationInstRuntimeException(e);
+         // Mise à jour RND
+         try {
+
+            // appel du service de mise à jour du RND
+            MajRndService majRndService = context
+                  .getBean(MajRndService.class);
+
+            majRndService.lancer();
+
+         } catch (MajRndException e) {
+            throw new IntegrationInstRuntimeException(e);
+         } catch (Exception e) {
+            throw new IntegrationInstRuntimeException(e);
+         }
+
+         // Création des metadatas, indexes composites et droits dans la base SAE.
+         majLotService
+               .demarreCreateMetadatasIndexesDroitsSAE(applicationConcernee);
       }
-
-      // Création des metadatas, indexes composites et droits dans la base SAE.
-      majLotService.demarreCreateMetadatasIndexesDroitsSAE(argsSpecifiques);
 
       // on force ici la fermeture du contexte de Spring
       // ceci a pour but de forcer la déconnexion avec Cassandra, la SGBD
       // chargé de la persistance de la pile des travaux
-      LOG.debug("execute - fermeture du contexte d'application");
-      ((AbstractApplicationContext) context).close();
-      LOG.debug("execute - fermeture du contexte d'application effectuée");
+//      LOG.debug("execute - fermeture du contexte d'application");
+//      ((AbstractApplicationContext) context).close();
+//      LOG.debug("execute - fermeture du contexte d'application effectuée");
+
+      LOG.debug("execute - fin des tâches demandées");
 
    }
 

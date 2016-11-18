@@ -94,13 +94,13 @@ public final class MajLotServiceImpl implements MajLotService {
     * Enum qui décrit les différentes GED qui sont concernées par les opérations
     * demandées.
     */
-   public static enum GED_CONCERNEE {
-      GNS("GNS"), GNT("GNT");
+   public static enum APPL_CONCERNEE {
+      GNS("GNS"), GNT("GNT"), DFCE("DFCE");
 
       /**
        * Nom de la GED.
        */
-      private String gedName;
+      private String applName;
 
       /**
        * Constructeur.
@@ -108,8 +108,8 @@ public final class MajLotServiceImpl implements MajLotService {
        * @param gedName
        *           Nom de la GED.
        */
-      private GED_CONCERNEE(final String gedName) {
-         this.gedName = gedName;
+      private APPL_CONCERNEE(final String gedName) {
+         this.applName = gedName;
       }
 
       /**
@@ -117,8 +117,8 @@ public final class MajLotServiceImpl implements MajLotService {
        * 
        * @return the gedName
        */
-      public String getGedName() {
-         return gedName;
+      public String getApplName() {
+         return applName;
       }
 
    }
@@ -226,11 +226,11 @@ public final class MajLotServiceImpl implements MajLotService {
 
       } else if (GNS_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
 
-         disableCompositeIndex(GED_CONCERNEE.GNS);
+         disableCompositeIndex(APPL_CONCERNEE.GNS);
 
       } else if (GNT_DISABLE_COMPOSITE_INDEX.equalsIgnoreCase(nomOperation)) {
 
-         disableCompositeIndex(GED_CONCERNEE.GNT);
+         disableCompositeIndex(APPL_CONCERNEE.GNT);
 
       } else if (CASSANDRA_DFCE_150600.equalsIgnoreCase(nomOperation)) {
          // -- Mise à jour cassandra
@@ -284,25 +284,25 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (GNS_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
+         addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_160600.equalsIgnoreCase(nomOperation)) {
          updateCassandra160600();
          // Création des métadonnées
          updateMetaDfce("META_160600");
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
+         addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNT);
       } else if (GNS_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation)) {
          updateCassandra160601();
          // Création des métadonnées
          updateMetaDfce("META_160601");
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNS);
+         addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_160601.equalsIgnoreCase(nomOperation)) {
          updateCassandra160601();
          // Création des métadonnées
          updateMetaDfce("META_160601");
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNT);
+         addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNT);
       } else if (CASSANDRA_DFCE_160900.equalsIgnoreCase(nomOperation)) {
          updateCassandra160900();
          // Création des métadonnées
@@ -316,11 +316,11 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (GNS_CASSANDRA_DFCE_170200.equalsIgnoreCase(nomOperation)) {
          updateCassandra170200();
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_170200", GED_CONCERNEE.GNS);
+         addIndexesCompositeToDfce("META_170200", APPL_CONCERNEE.GNS);
       } else if (GNT_CASSANDRA_DFCE_170200.equalsIgnoreCase(nomOperation)) {
          updateCassandra170200();
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_170200", GED_CONCERNEE.GNT);
+         addIndexesCompositeToDfce("META_170200", APPL_CONCERNEE.GNT);
       } else if (CASSANDRA_170201.equalsIgnoreCase(nomOperation)) {
          updateCassandra170201();
       } else {
@@ -338,34 +338,37 @@ public final class MajLotServiceImpl implements MajLotService {
     * {@inheritDoc}
     */
    @Override
-   public void demarreUpdateDFCE(String[] argSpecifiques) {
+   public void demarreUpdateDFCE(final String applicationConcernee) {
       LOG.debug("Démarrage des opérations sur la base DFCE");
-      String gedConcernee = argSpecifiques.length > 0 ? argSpecifiques[0]
+      String applConcernee = StringUtils.isNotEmpty(applicationConcernee) ? applicationConcernee
             : null;
 
-      GED_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcernee);
-
-      if (GED_CONCERNEE.GNS.equals(gedConcerneeEnum)) {
-         installGNSServeurDFCE();
-      } else if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
-         installGNTServeurDFCE();
+      if (APPL_CONCERNEE.DFCE.getApplName().equals(applConcernee)) {
+         this.installServeurDFCE();  
+         LOG.debug("Opérations terminées sur la base DFCE");
+      } else {
+         String message = String.format(
+                     "Erreur technique : L'application %s est inconnue. La modification de la base de données DFCE doit être executé avec la commande 'DFCE'.",
+               applConcernee);
+         LOG.error(message);
+         throw new MajLotRuntimeException(message);
       }
 
-      LOG.debug("Opérations terminées sur la base DFCE");
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void demarreCreateMetadatasIndexesDroitsSAE(String[] argSpecifiques) {
+   public void demarreCreateMetadatasIndexesDroitsSAE(
+         final String applicationConcernee) {
       LOG.debug("Démarrage des opérations de création des métadatas sur la base SAE");
-      String gedConcernee = argSpecifiques.length > 0 ? argSpecifiques[0]
+      String gedConcerneeStr = StringUtils.isNotEmpty(applicationConcernee) ? applicationConcernee
             : null;
 
-      GED_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcernee);
+      APPL_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcerneeStr);
 
-      if (GED_CONCERNEE.GNT.equals(gedConcerneeEnum)) {
+      if (APPL_CONCERNEE.GNT.equals(gedConcerneeEnum)) {
          // Update des droits GED
          updateCassandraDroitsGed();
       }
@@ -391,16 +394,16 @@ public final class MajLotServiceImpl implements MajLotService {
     * Methode permettant de renvoyer la GED qui est concernée par le traitement.
     * 
     * @param gedConcernee
-    *           {@link GED_CONCERNEE}
+    *           {@link APPL_CONCERNEE}
     * @return la GED qui est concernée par le traitement.
     */
-   private GED_CONCERNEE retrieveGedConcerne(String gedConcernee) {
-      GED_CONCERNEE gedConcerneeReturn;
+   private APPL_CONCERNEE retrieveGedConcerne(String gedConcernee) {
+      APPL_CONCERNEE gedConcerneeReturn;
       if (!StringUtils.isEmpty(gedConcernee)) {
-         if (GED_CONCERNEE.GNS.getGedName().equals(gedConcernee)) {
-            gedConcerneeReturn = GED_CONCERNEE.GNS;
-         } else if (GED_CONCERNEE.GNT.getGedName().equals(gedConcernee)) {
-            gedConcerneeReturn = GED_CONCERNEE.GNT;
+         if (APPL_CONCERNEE.GNS.getApplName().equals(gedConcernee)) {
+            gedConcerneeReturn = APPL_CONCERNEE.GNS;
+         } else if (APPL_CONCERNEE.GNT.getApplName().equals(gedConcernee)) {
+            gedConcerneeReturn = APPL_CONCERNEE.GNT;
          } else {
             // Serveur GED inconnue => log + exception runtime
             String message = String.format(
@@ -418,7 +421,7 @@ public final class MajLotServiceImpl implements MajLotService {
       }
 
       LOG.debug("GED concernée par l'opération : "
-            + gedConcerneeReturn.getGedName());
+            + gedConcerneeReturn.getApplName());
       return gedConcerneeReturn;
    }
 
@@ -433,7 +436,7 @@ public final class MajLotServiceImpl implements MajLotService {
    /**
     * Methode permettant de
     */
-   private void installGNSServeurDFCE() {
+   private void installServeurDFCE() {
       // Update de la base DFCE
       commonUpdateDFCE();
    }
@@ -452,9 +455,9 @@ public final class MajLotServiceImpl implements MajLotService {
     * Methode permettant de créer et updater la base SAE
     * 
     * @param gedConcernee
-    *           {@link GED_CONCERNEE}
+    *           {@link APPL_CONCERNEE}
     */
-   private void commonUpdateSAE(GED_CONCERNEE gedConcernee) {
+   private void commonUpdateSAE(APPL_CONCERNEE gedConcernee) {
       // Create data base SAE
       createGedBase();
       // META_130400
@@ -475,16 +478,16 @@ public final class MajLotServiceImpl implements MajLotService {
       updateMetaDfce("META_151200");
       // CASSANDRA_DFCE_160400
       updateMetaDfce("META_160400");
-      if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
+      if (APPL_CONCERNEE.GNT.equals(gedConcernee)) {
          // Ajout des index composites GNT_CASSANDRA_DFCE_160600
-         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
+         addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNT);
          // Ajout des index composites GNT_CASSANDRA_DFCE_160601
-         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNT);
-      } else if (GED_CONCERNEE.GNS.equals(gedConcernee)) {
+         addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNT);
+      } else if (APPL_CONCERNEE.GNS.equals(gedConcernee)) {
          // Ajout des index composites GNS_CASSANDRA_DFCE_160600
-         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
+         addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNS);
          // Ajout des index composites GNS_CASSANDRA_DFCE_160601
-         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNS);
+         addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNS);
       }
       // CASSANDRA_DFCE_160900
       updateMetaDfce("META_160900");
@@ -949,7 +952,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    private void addIndexesCompositeToDfce(String operation,
-         GED_CONCERNEE gedConcernee) {
+         APPL_CONCERNEE gedConcernee) {
 
       // -- Récupération de la liste des métadonnées
       LOG.debug("Lecture du fichier XML contenant les métadonnées à ajouter - Début");
@@ -959,9 +962,9 @@ public final class MajLotServiceImpl implements MajLotService {
             "Début de l'opération : Création des nouveaux index composite ({})",
             operation);
       // -- Crétion des indexes composites (Si ils n'existent pas déjà)
-      if (gedConcernee.equals(GED_CONCERNEE.GNS)) {
+      if (gedConcernee.equals(APPL_CONCERNEE.GNS)) {
          createIndexesCompositeIfNotExist(service.getIndexesCompositesGNS());
-      } else if (gedConcernee.equals(GED_CONCERNEE.GNT)) {
+      } else if (gedConcernee.equals(APPL_CONCERNEE.GNT)) {
          createIndexesCompositeIfNotExist(service.getIndexesCompositesGNT());
       }
 
@@ -1234,16 +1237,16 @@ public final class MajLotServiceImpl implements MajLotService {
    // LOG.info("Fin de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
    // }
 
-   private void disableCompositeIndex(GED_CONCERNEE gedConcernee) {
+   private void disableCompositeIndex(APPL_CONCERNEE gedConcernee) {
 
       RefMetaInitialisationService service = updater.getRefMetaInitService();
       LOG.info("Début de l'opération : DISABLE_COMPOSITE_INDEX - Mise à jour de DFCE");
       DFCEUpdater dfceUpdater = new DFCEUpdater(cassandraConfig);
 
-      if (GED_CONCERNEE.GNS.equals(gedConcernee)) {
+      if (APPL_CONCERNEE.GNS.equals(gedConcernee)) {
          dfceUpdater.disableCompositeIndex(service
                .getIndexesCompositesASupprimerGNS());
-      } else if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
+      } else if (APPL_CONCERNEE.GNT.equals(gedConcernee)) {
          dfceUpdater.disableCompositeIndex(service
                .getIndexesCompositesASupprimerGNT());
       }

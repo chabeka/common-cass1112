@@ -23,21 +23,19 @@ public interface MajLotService {
     * les serveurs d'integration (Tests d'integration) sur la base DFCE.
     * 
     * @param argSpecifiques
-    *           les arguments de la ligne de commande spécifiques pour la GED
-    *           concernée.
+    *           Application concernée par la modification de base de données.
     */
-   void demarreUpdateDFCE(String[] argSpecifiques);
+   void demarreUpdateDFCE(final String applicationConcernee);
 
    /**
     * Réalise toutes les opérations de création des metadatas et indexes
     * composites de la base de données pour les serveurs d'integration (Tests
     * d'integration) sur la base SAE.
     * 
-    * @param argSpecifiques
-    *           les arguments de la ligne de commande spécifiques pour la GED
-    *           concernée.
+    * @param applicationConcernee
+    *           GED concernée par la modification de base de données.
     */
-   void demarreCreateMetadatasIndexesDroitsSAE(String[] argSpecifiques);
+   void demarreCreateMetadatasIndexesDroitsSAE(final String applicationConcernee);
 
    /**
     * Réalise toutes les opérations de création de la base de données pour les
