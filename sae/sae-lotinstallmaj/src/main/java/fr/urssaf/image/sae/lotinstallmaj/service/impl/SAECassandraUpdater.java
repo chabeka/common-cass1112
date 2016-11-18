@@ -43,13 +43,14 @@ public class SAECassandraUpdater {
    private static final int VERSION_14 = 14;
    private static final int VERSION_15 = 15;
    private static final int VERSION_16 = 16;
-   private static final int VERSION_17 = 17;
+   public static final int VERSION_17 = 17;
    private static final int VERSION_18 = 18;
    private static final int VERSION_19 = 19;
    private static final int VERSION_20 = 20;
    private static final int VERSION_21 = 21;
    private static final int VERSION_22 = 22;
    private static final int VERSION_23 = 23;
+   private static final int VERSION_24 = 24;
    
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1006,4 +1007,46 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_23);
    }
    
+   public void updateToVersion24() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_24) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_24);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout des nouveaux formats à gérer
+      donnees.addReferentielFormatV6();
+
+      // Modification du format fmt/353 (extension .tiff)
+      donnees.modifyReferentielFormatFmt353();
+
+      // Modification du format fmt/44 (extension .jpeg)
+      donnees.modifyReferentielFormatFmt44();
+
+      // Ajout de la colonne "Autorisé en GED" dans le referentiel des formats
+      donnees.addColumnAutoriseGEDReferentielFormat();
+
+      // On positionne la version à 24
+      saeDao.setDatabaseVersion(VERSION_24);
+   }
+
+   /**
+    * Methode permettant de modifier la version de la base de données.
+    * 
+    * @param version
+    *           version de la base de données.
+    */
+   public void updateDatabaseVersion(int version) {
+      // On positionne la version de la base de données
+      saeDao.setDatabaseVersion(version);
+   }
+
 }

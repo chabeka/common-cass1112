@@ -21,6 +21,7 @@ import net.docubase.toolkit.service.ServiceProvider;
 import net.docubase.toolkit.service.administration.BaseAdministrationService;
 import net.docubase.toolkit.service.administration.StorageAdministrationService;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_DFCE_161100 = "CASSANDRA_DFCE_161100";
    public static final String GNS_CASSANDRA_DFCE_170200 = "GNS_CASSANDRA_DFCE_170200";
    public static final String GNT_CASSANDRA_DFCE_170200 = "GNT_CASSANDRA_DFCE_170200";
+   public static final String CASSANDRA_170201 = "CASSANDRA_170201";
    
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -82,15 +84,43 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_151000 = "CASSANDRA_151000";
    public static final String CASSANDRA_DFCE_151001 = "CASSANDRA_DFCE_151001";
    public static final String CASSANDRA_DROITS_GED = "CASSANDRA_DROITS_GED";
-   public static final String CREATION_GED = "CREATION_GED";
    public static final String GNS_DISABLE_COMPOSITE_INDEX = "GNS_DISABLE_COMPOSITE_INDEX";
    public static final String GNT_DISABLE_COMPOSITE_INDEX = "GNT_DISABLE_COMPOSITE_INDEX";
 
    public static final int DUREE_1825 = 1825;
    public static final int DUREE_1643 = 1643;
 
+   /**
+    * Enum qui décrit les différentes GED qui sont concernées par les opérations
+    * demandées.
+    */
    public static enum GED_CONCERNEE {
-      GNS, GNT;
+      GNS("GNS"), GNT("GNT");
+
+      /**
+       * Nom de la GED.
+       */
+      private String gedName;
+
+      /**
+       * Constructeur.
+       *
+       * @param gedName
+       *           Nom de la GED.
+       */
+      private GED_CONCERNEE(final String gedName) {
+         this.gedName = gedName;
+      }
+
+      /**
+       * Getter pour gedName
+       * 
+       * @return the gedName
+       */
+      public String getGedName() {
+         return gedName;
+      }
+
    }
 
    private final ServiceProvider serviceProvider = ServiceProvider
@@ -291,8 +321,8 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra170200();
          // Ajout des index composites
          addIndexesCompositeToDfce("META_170200", GED_CONCERNEE.GNT);
-      } else if (CREATION_GED.equalsIgnoreCase(nomOperation)) {
-         createGedBase();
+      } else if (CASSANDRA_170201.equalsIgnoreCase(nomOperation)) {
+         updateCassandra170201();
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -302,6 +332,164 @@ public final class MajLotServiceImpl implements MajLotService {
          throw new MajLotRuntimeException(message);
       }
 
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void demarreUpdateDFCE(String[] argSpecifiques) {
+      LOG.debug("Démarrage des opérations sur la base DFCE");
+      String gedConcernee = argSpecifiques.length > 0 ? argSpecifiques[0]
+            : null;
+
+      GED_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcernee);
+
+      if (GED_CONCERNEE.GNS.equals(gedConcerneeEnum)) {
+         installGNSServeurDFCE();
+      } else if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
+         installGNTServeurDFCE();
+      }
+
+      LOG.debug("Opérations terminées sur la base DFCE");
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void demarreCreateMetadatasIndexesDroitsSAE(String[] argSpecifiques) {
+      LOG.debug("Démarrage des opérations de création des métadatas sur la base SAE");
+      String gedConcernee = argSpecifiques.length > 0 ? argSpecifiques[0]
+            : null;
+
+      GED_CONCERNEE gedConcerneeEnum = retrieveGedConcerne(gedConcernee);
+
+      if (GED_CONCERNEE.GNT.equals(gedConcerneeEnum)) {
+         // Update des droits GED
+         updateCassandraDroitsGed();
+      }
+
+      // Update commun de la base SAE
+      commonUpdateSAE(gedConcerneeEnum);
+
+      LOG.debug("Opérations de création des métadatas terminées sur la base SAE");
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void demarreCreateSAE() {
+      LOG.debug("Démarrage des opérations de création de la base SAE");
+      this.createGedBase();
+      LOG.debug("Opérations de création terminées sur la base SAE");
+
+   }
+
+   /**
+    * Methode permettant de renvoyer la GED qui est concernée par le traitement.
+    * 
+    * @param gedConcernee
+    *           {@link GED_CONCERNEE}
+    * @return la GED qui est concernée par le traitement.
+    */
+   private GED_CONCERNEE retrieveGedConcerne(String gedConcernee) {
+      GED_CONCERNEE gedConcerneeReturn;
+      if (!StringUtils.isEmpty(gedConcernee)) {
+         if (GED_CONCERNEE.GNS.getGedName().equals(gedConcernee)) {
+            gedConcerneeReturn = GED_CONCERNEE.GNS;
+         } else if (GED_CONCERNEE.GNT.getGedName().equals(gedConcernee)) {
+            gedConcerneeReturn = GED_CONCERNEE.GNT;
+         } else {
+            // Serveur GED inconnue => log + exception runtime
+            String message = String.format(
+                  "Erreur technique : Le serveur GED %s est inconnue",
+                  gedConcernee);
+            LOG.error(message);
+            throw new MajLotRuntimeException(message);
+         }
+
+      } else {
+         // Opération inconnue => log + exception runtime
+         String message = "Erreur technique : Le serveur GED n'est pas renseigné. Veuillez indiquer le serveur sur lequel doit avoir lieu l'opération svp.";
+         LOG.error(message);
+         throw new MajLotRuntimeException(message);
+      }
+
+      LOG.debug("GED concernée par l'opération : "
+            + gedConcerneeReturn.getGedName());
+      return gedConcerneeReturn;
+   }
+
+   /**
+    * Methode permettant de
+    */
+   private void installGNTServeurDFCE() {
+      // Update de la base DFCE
+      commonUpdateDFCE();
+   }
+
+   /**
+    * Methode permettant de
+    */
+   private void installGNSServeurDFCE() {
+      // Update de la base DFCE
+      commonUpdateDFCE();
+   }
+
+   /**
+    * Methode permettant de
+    */
+   private void commonUpdateDFCE() {
+      updateDFCE130700();
+      updateDFCE150400();
+      updateDFCE150400_P5();
+      updateDFCE151000();
+   }
+
+   /**
+    * Methode permettant de créer et updater la base SAE
+    * 
+    * @param gedConcernee
+    *           {@link GED_CONCERNEE}
+    */
+   private void commonUpdateSAE(GED_CONCERNEE gedConcernee) {
+      // Create data base SAE
+      createGedBase();
+      // META_130400
+      updateMeta("meta130400.xml", "META_130400");
+      // META_150100
+      updateMeta("meta150100.xml", "META_150100");
+      // META_SEPA
+      updateMetaSepa();
+      // CASSANDRA_DFCE_150400
+      updateMetaDfce("META_150400");
+      // CASSANDRA_DFCE_150600
+      updateMetaDfce("META_150600");
+      // CASSANDRA_151000
+      updateMetaDfce("META_151000");
+      // CASSANDRA_DFCE_151001
+      updateMetaDfce("META_151001");
+      // CASSANDRA_DFCE_151200
+      updateMetaDfce("META_151200");
+      // CASSANDRA_DFCE_160400
+      updateMetaDfce("META_160400");
+      if (GED_CONCERNEE.GNT.equals(gedConcernee)) {
+         // Ajout des index composites GNT_CASSANDRA_DFCE_160600
+         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNT);
+         // Ajout des index composites GNT_CASSANDRA_DFCE_160601
+         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNT);
+      } else if (GED_CONCERNEE.GNS.equals(gedConcernee)) {
+         // Ajout des index composites GNS_CASSANDRA_DFCE_160600
+         addIndexesCompositeToDfce("META_160600", GED_CONCERNEE.GNS);
+         // Ajout des index composites GNS_CASSANDRA_DFCE_160601
+         addIndexesCompositeToDfce("META_160601", GED_CONCERNEE.GNS);
+      }
+      // CASSANDRA_DFCE_160900
+      updateMetaDfce("META_160900");
+      // CASSANDRA_DFCE_160901
+      updateMetaDfce("META_160901");
    }
 
    /**
@@ -645,6 +833,13 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
+   private void updateCassandra170201() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170201");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion24();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
    /**
     * Ajout des droits GED
     */
@@ -787,6 +982,7 @@ public final class MajLotServiceImpl implements MajLotService {
     * @deprecated : Utilier updateBaseDfce() à la place désormais
     * 
     */
+   @Deprecated
    private void updateMeta(String fichierlisteMeta, String nomOperation) {
 
       // -- connexion a DFCE
@@ -1105,7 +1301,9 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion19();
       updater.updateToVersion20();
       updater.updateToVersion21();
-
+      updater.updateToVersion22();
+      updater.updateToVersion23();
+      updater.updateToVersion24();
    }
 
 }

@@ -46,6 +46,8 @@ public class InsertionDonnees {
 
    private static final String DISPO = "dispo";
 
+   private static final String AUTORISE_GED = "autoriseGED";
+
    private final Keyspace keyspace;
 
    /**
@@ -1185,6 +1187,319 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajout des données dans le référentiel des formats en V6 : <li>migrationW2</li>
+    */
+   public void addReferentielFormatV6() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      String formatKey = "migrationW2";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier migration WAT2",
+            StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "*", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/octet-stream", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "doc";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS Word version 97/2003",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "doc", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/msword", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "docx";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS Word version 2007 et +",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "docx", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "typeMime",
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "docm";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier macro MS Word",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "docm", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.ms-word.document.macroEnabled.12",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+      
+      formatKey = "xls";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS Excel version 97/2003",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "xls", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.ms-excel",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+      
+      formatKey = "xlsx";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS Excel version 2007 et +",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "xlsx", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+      
+      formatKey = "xlsm";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier macro MS Excel",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "xlsm", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.ms-excel.sheet.macroEnabled.12",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+      
+      formatKey = "xlsb";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier binaire MS Excel",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "xlsb", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "csv";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier tableur (Comma Separated Values)",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "csv", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "text/csv", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "gif";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier image numerique",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "gif", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "image/gif", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "ppt";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS PowerPoint version 97/2003",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "ppt", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/vnd.ms-powerpoint",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "xml";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "description",
+            "Fichier à langage de balisage extensible (eXtensible Markup Language)",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "xml", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/xhtml+xml", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "zip";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier archive ZIP", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "zip", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "application/zip", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "html";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "description",
+            "Fichier à langage de balisage d'hypertexte (HyperText Markup Language)",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "html", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "text/html", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+   }
+
+   /**
     * Modification des données dans le référentiel des formats : Ajout d'un
     * convertisseur pour le format <li>fmt/354</li>
     */
@@ -1202,6 +1517,46 @@ public class InsertionDonnees {
             StringSerializer.get(), updater);
       cfTmpl.update(updater);
       LOG.info("Format modifié : fmt/354");
+   }
+
+   /**
+    * Modification des données dans le référentiel des formats : Ajout d'un
+    * convertisseur pour le format <li>fmt/353</li>
+    */
+   public void modifyReferentielFormatFmt353() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater("fmt/353");
+      addColumn("extension", "tif,tiff", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format modifié : fmt/353");
+   }
+
+   /**
+    * Modification des données dans le référentiel des formats : Ajout d'un
+    * convertisseur pour le format <li>fmt/44</li>
+    */
+   public void modifyReferentielFormatFmt44() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater("fmt/44");
+      addColumn("extension", "jpg,jpeg", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format modifié : fmt/44");
    }
 
    /**
@@ -1297,6 +1652,67 @@ public class InsertionDonnees {
          }
 
       }
+   }
+
+   public void addColumnAutoriseGEDReferentielFormat() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+      // tar.gz
+      this.addColumnAutoriseGED("crtl/1", Boolean.TRUE, cfTmpl);
+      // csv
+      this.addColumnAutoriseGED("csv", Boolean.FALSE, cfTmpl);
+      // doc
+      this.addColumnAutoriseGED("doc", Boolean.FALSE, cfTmpl);
+      // docm
+      this.addColumnAutoriseGED("docm", Boolean.FALSE, cfTmpl);
+      // docx
+      this.addColumnAutoriseGED("docx", Boolean.FALSE, cfTmpl);
+      // png
+      this.addColumnAutoriseGED("fmt/13", Boolean.TRUE, cfTmpl);
+      // tif
+      this.addColumnAutoriseGED("fmt/353", Boolean.TRUE, cfTmpl);
+      // pdf
+      this.addColumnAutoriseGED("fmt/354", Boolean.TRUE, cfTmpl);
+      // jpeg
+      this.addColumnAutoriseGED("fmt/44", Boolean.TRUE, cfTmpl);
+      // gif
+      this.addColumnAutoriseGED("gif", Boolean.FALSE, cfTmpl);
+      // html
+      this.addColumnAutoriseGED("html", Boolean.FALSE, cfTmpl);
+      // migrationW2
+      this.addColumnAutoriseGED("migrationW2", Boolean.FALSE, cfTmpl);
+      // pdf
+      this.addColumnAutoriseGED("pdf", Boolean.TRUE, cfTmpl);
+      // ppt
+      this.addColumnAutoriseGED("ppt", Boolean.FALSE, cfTmpl);
+      // xls
+      this.addColumnAutoriseGED("xls", Boolean.TRUE, cfTmpl);
+      // xlsb
+      this.addColumnAutoriseGED("xlsb", Boolean.TRUE, cfTmpl);
+      // xlsm
+      this.addColumnAutoriseGED("xlsm", Boolean.TRUE, cfTmpl);
+      // xlsx
+      this.addColumnAutoriseGED("xlsx", Boolean.TRUE, cfTmpl);
+      // xml
+      this.addColumnAutoriseGED("xml", Boolean.FALSE, cfTmpl);
+      // zip
+      this.addColumnAutoriseGED("zip", Boolean.FALSE, cfTmpl);
+
+   }
+
+   private void addColumnAutoriseGED(String identifiant, Boolean value,
+         ColumnFamilyTemplate<String, String> cfTmpl) {
+      LOG.info("Ajout colonne autoriseGED dans le référentiel des formats");
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater(identifiant);
+      HColumn<String, Boolean> column = HFactory.createColumn(AUTORISE_GED,
+            value, StringSerializer.get(), BooleanSerializer.get());
+      updater.setColumn(column);
+
+      cfTmpl.update(updater);
+
+      LOG.info("Colonne ajoutée pour le format {}", identifiant);
    }
 
 }

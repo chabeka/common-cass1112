@@ -141,8 +141,6 @@ public class MainValidation {
          return;
       if (MajLotServiceImpl.CASSANDRA_DROITS_GED.equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CREATION_GED.equalsIgnoreCase(nomOperation))
-         return;
       if (MajLotServiceImpl.CASSANDRA_131100.equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.CASSANDRA_140700.equalsIgnoreCase(nomOperation))
@@ -214,6 +212,9 @@ public class MainValidation {
             .equalsIgnoreCase(nomOperation))
          return;
       if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_170200
+            .equalsIgnoreCase(nomOperation))
+         return;
+      if (MajLotServiceImpl.CASSANDRA_170201
             .equalsIgnoreCase(nomOperation))
          return;
 
