@@ -38,6 +38,10 @@
                <name>identifieur</name>
                <value>pdfaIdentifierImpl</value>
             </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
+            </column>
          </row>
          <row>
             <key>format1</key>
@@ -64,6 +68,10 @@
             <column>
                <name>identifieur</name>
                <value>Identifier</value>
+            </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
             </column>
          </row>
       </columnFamily>

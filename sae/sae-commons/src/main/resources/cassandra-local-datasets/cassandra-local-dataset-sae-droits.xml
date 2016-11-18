@@ -116,6 +116,10 @@
                <name>visualisable</name>
                <value>bytes(01)</value>
             </column>
+             <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
+            </column>
          </row>
          <row>
             <key>crtl/1</key>
@@ -134,6 +138,10 @@
             <column>
                <name>visualisable</name>
                <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
             </column>
          </row>
          <row>
@@ -157,6 +165,10 @@
             <column>
                <name>convertisseur</name>
                <value>tiffToPdfConvertisseurImpl</value>
+            </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
             </column>
          </row>
       </columnFamily>
