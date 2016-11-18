@@ -20,6 +20,7 @@ public final class Utils {
       refFormat.setTypeMime("application/pdf");
       refFormat.setExtension("Pdf");
       refFormat.setDescription("Fichier PDF conforme PDF/A-1b");
+      refFormat.setAutoriseGED(true);
       refFormat.setVisualisable(true);
       refFormat.setValidator("PdfaValidatorImpl");
       refFormat.setIdentificateur("PdfaIdentifierImpl");
@@ -36,6 +37,7 @@ public final class Utils {
       refFormat.setTypeMime("typeMime");
       refFormat.setExtension("extension");
       // refFormat.setDescription("desc");
+      refFormat.setAutoriseGED(true);
       refFormat.setVisualisable(true);
       refFormat.setValidator("validator");
       refFormat.setIdentificateur("identificateur");
@@ -54,6 +56,7 @@ public final class Utils {
       refFormat.setTypeMime("application/lambda");
       refFormat.setExtension("Lambda");
       refFormat.setDescription("Lambda, simplement pour les tests");
+      refFormat.setAutoriseGED(true);
       refFormat.setVisualisable(true);
       refFormat.setValidator("LambdaValidatorImpl");
       refFormat.setIdentificateur("LambdaIdentifierImpl");

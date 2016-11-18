@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +107,13 @@ public final class SAEControlesCaptureFormatSupport {
       if (!referentielFormatService.exists(fileFormat)) {
          throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
                "capture.format.format.inconnnu", fileFormat));
+      }
+      
+      final String fileExtension = extraireExtensionFileName(saeDocument);
+      
+      if (!referentielFormatService.isExtensionFormatAutorisee(fileExtension, fileFormat)) {
+         throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
+               "capture.format.extension.inconnnu", fileFormat, fileExtension));
       }
 
       // On ne continue que s'il y a au moins 1 profil de contrôle dans la liste
@@ -223,6 +231,7 @@ public final class SAEControlesCaptureFormatSupport {
 
    }
 
+
    private void applyIdentification(String contexte, SAEDocument saeDocument,
          FormatProfil formatProfil, boolean isCheminFichier,
          ControleFormatSucces resultatControle) throws UnknownFormatException {
@@ -277,7 +286,7 @@ public final class SAEControlesCaptureFormatSupport {
                   validationMode)) {
                // avant de levée l'exception, on trace dans le registre
                // de surveillance technique
-               String idTraitement = (String) MDC.get("log_contexte_uuid");
+               String idTraitement = MDC.get("log_contexte_uuid");
                tracesSupport.traceErreurIdentFormatFichier(contexte,
                      formatProfil.getFileFormat(), result.getIdFormatReconnu(),
                      idTraitement);
@@ -381,7 +390,7 @@ public final class SAEControlesCaptureFormatSupport {
                validationMode)) {
             // avant de levée l'exception, on trace dans le registre
             // de surveillance technique
-            String idTraitement = (String) MDC.get("log_contexte_uuid");
+            String idTraitement = MDC.get("log_contexte_uuid");
 
             tracesSupport.traceErreurValidFormatFichier(contexte, formatProfil
                   .getFileFormat(), formatDetails(result), idTraitement);
@@ -508,6 +517,15 @@ public final class SAEControlesCaptureFormatSupport {
       }
 
       return valeur;
+   }
+   
+   /**
+    * Methode permettant d'extraire l'extension du nom du fichier.
+    * @param saeDocument Document contenant le nom du fichier.
+    * @return L'extension du fichier.
+    */
+   private String extraireExtensionFileName(final SAEDocument saeDocument) {
+      return FilenameUtils.getExtension(saeDocument.getFileName());
    }
 
    private boolean isControleSurCheminFichier(SAEDocument saeDocument,

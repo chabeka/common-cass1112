@@ -57,7 +57,7 @@ public class ReferentielFormatSupportTest {
       Assert.assertNotNull(refFormatTrouve);  
       
       Assert.assertEquals("FIND - Erreur dans l'idFormat.", "fmt/353", refFormatTrouve.getIdFormat());
-      Assert.assertEquals("FIND - Erreur dans l'extension.", "TIF", refFormatTrouve.getExtension());
+      Assert.assertEquals("FIND - Erreur dans l'extension.", "TIF,tiff", refFormatTrouve.getExtension());
       Assert.assertEquals("FIND - Erreur dans le typeMime.", "image/tiff", refFormatTrouve.getTypeMime());
       Assert.assertEquals("FIND - Erreur dans le boolean visualisable.", false, refFormatTrouve.isVisualisable());
       Assert.assertNull("FIND - Erreur dans le validateur.", refFormatTrouve.getValidator());
@@ -86,7 +86,7 @@ public class ReferentielFormatSupportTest {
       List<FormatFichier> listRefFormatTrouve = refFormatSupport.findAll();          
       Assert.assertNotNull(listRefFormatTrouve);  
      
-      Assert.assertEquals("Le nombre d'éléments est incorrect.", 2, listRefFormatTrouve.size());
+      Assert.assertEquals("Le nombre d'éléments est incorrect.", 4, listRefFormatTrouve.size());
    }
    
    

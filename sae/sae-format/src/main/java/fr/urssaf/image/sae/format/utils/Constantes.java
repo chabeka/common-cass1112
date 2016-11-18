@@ -44,6 +44,7 @@ public final class Constantes {
    public static final String COL_TYPEMIME = "typeMime";
    public static final String COL_EXTENSION = "extension";
    public static final String COL_DESCRIPTION = "description";
+   public static final String COL_AUTORISE_GED = "autoriseGED";
    public static final String COL_VISUALISABLE = "visualisable";
    public static final String COL_VALIDATOR = "validator";
    public static final String COL_IDENTIFIEUR = "identifieur";

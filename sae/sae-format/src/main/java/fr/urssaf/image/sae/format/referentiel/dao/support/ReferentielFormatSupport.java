@@ -80,6 +80,7 @@ public class ReferentielFormatSupport {
       String idFormat = referentielFormat.getIdFormat();
       String typeMime = referentielFormat.getTypeMime();
       String validator = referentielFormat.getValidator();
+      Boolean autoriseGED = referentielFormat.isAutoriseGED();
       Boolean visualisable = referentielFormat.isVisualisable();
       String convertisseur = referentielFormat.getConvertisseur();
 
@@ -92,7 +93,7 @@ public class ReferentielFormatSupport {
             .getCfTmpl().createUpdater(idFormat);
 
       referentielFormatDao.addNewFormat(updater, idFormat, typeMime, extension,
-            description, visualisable, validator, identification,
+            description, autoriseGED, visualisable, validator, identification,
             convertisseur, clock);
 
       referentielFormatDao.getCfTmpl().update(updater);
@@ -209,6 +210,9 @@ public class ReferentielFormatSupport {
             refFormat.setExtension(extension);
 
          refFormat.setDescription(result.getString(Constantes.COL_DESCRIPTION));
+
+         refFormat.setAutoriseGED(result
+               .getBoolean(Constantes.COL_AUTORISE_GED));
 
          refFormat.setVisualisable(result
                .getBoolean(Constantes.COL_VISUALISABLE));

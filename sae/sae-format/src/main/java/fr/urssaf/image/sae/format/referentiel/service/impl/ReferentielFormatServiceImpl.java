@@ -3,9 +3,11 @@
  */
 package fr.urssaf.image.sae.format.referentiel.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +16,8 @@ import org.springframework.stereotype.Service;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.cache.LoadingCache;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -33,6 +35,13 @@ import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
  */
 @Service
 public class ReferentielFormatServiceImpl implements ReferentielFormatService {
+
+   /**
+    * Separateur d'extension.
+    */
+   private final static String EXTENSION_SEPARATOR = ",";
+   
+   private final static String EXTENSION_SPECIAL_MIGRATION = "*";
 
    private final ReferentielFormatSupport refFormatSupport;
 
@@ -170,6 +179,53 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       }
 
       return found;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean isExtensionFormatAutorisee(final String fichierExtension,
+         final String idFormat) {
+      boolean autorized = false;
+
+      try {
+         // On recupere le format en fonction de son ident.
+         final FormatFichier formatFichier = this.getFormat(idFormat);
+         
+         final String extension = formatFichier.getExtension();
+         
+         if (!EXTENSION_SPECIAL_MIGRATION.equals(extension)) {
+            // Gestion de la liste d'extension (separateur virgule) ou de
+            // l'extension seul.
+            List<String> extensions = Arrays.asList(extension);
+            if (extension.contains(EXTENSION_SEPARATOR)) {
+               extensions = Arrays.asList(extension.split(EXTENSION_SEPARATOR));
+            }
+            // Boucle sur la liste des extensions pour savoir
+            // si l'extension du fichier est autorisée ou non.
+            for (final String extensionFormat : extensions) {
+               autorized = StringUtils.equalsIgnoreCase(fichierExtension,
+                     extensionFormat);
+               // Si on a l'autorisation, inutile de coninuer à boucler.
+               if (autorized) {
+                  break;
+               }
+            }
+         } else {
+            // On est sur des fichiers de migration WATI2, on autorise l'import.
+            autorized = true;
+         }
+
+      } catch (UnknownFormatException e) {
+         LOGGER.debug(SaeFormatMessageHandler.getMessage(
+               "erreur.no.format.found", idFormat));
+
+      } catch (UncheckedExecutionException e) {
+         throw new ReferentielRuntimeException(e);
+      }
+      
+      return autorized;
    }
 
 }

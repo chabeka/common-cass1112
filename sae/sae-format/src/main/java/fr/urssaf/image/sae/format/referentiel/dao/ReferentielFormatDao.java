@@ -67,7 +67,8 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
     */
    public final void addNewFormat(ColumnFamilyUpdater<String, String> updater,
          String idFormat, String typeMime, String extension,
-         String description, Boolean visualisable, String validator,
+         String description, Boolean autorisedGED, Boolean visualisable,
+         String validator,
          String identification, String conversion, Long clock) {
 
       List<String> variable = new ArrayList<String>();
@@ -77,6 +78,9 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
       }
       if (StringUtils.isBlank(description)) {
          variable.add("description");
+      }
+      if (autorisedGED == null) {
+         variable.add("autorisedGED");
       }
       if (visualisable == null) {
          variable.add("visualisable");
@@ -110,6 +114,7 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
       writeColumnTypeMime(updater, typeMime, clock);
       writeColumnExtension(updater, extension, clock);
       writeColumnDescription(updater, description, clock);
+      writeColumnAutoriseGED(updater, autorisedGED, clock);
       writeColumnVisualisable(updater, visualisable, clock);
       writeColumnValidator(updater, validator, clock);
       writeColumnIdentification(updater, identification, clock);
@@ -183,6 +188,23 @@ public class ReferentielFormatDao extends AbstractDao<String, String> {
          ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
       addColumn(updater, Constantes.COL_DESCRIPTION, value, StringSerializer
             .get(), clock);
+   }
+
+   /**
+    * ajoute une colonne {@value ReferentielFormatDao#COL_AUTORISE_GED}
+    * 
+    * @param updater
+    *           updater de
+    *           {@link fr.urssaf.image.sae.format.referentiel.model.FormatFichier}
+    * @param value
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   private void writeColumnAutoriseGED(
+         ColumnFamilyUpdater<String, String> updater, boolean value, Long clock) {
+      addColumn(updater, Constantes.COL_AUTORISE_GED, value,
+            BooleanSerializer.get(), clock);
    }
 
    /**

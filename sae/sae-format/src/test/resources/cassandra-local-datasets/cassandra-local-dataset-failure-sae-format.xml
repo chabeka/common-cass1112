@@ -27,6 +27,10 @@
                <value>Fichier PDF conforme PDF/A-1b</value>
             </column>
             <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
                <name>visualisable</name>
                <value>bytes(01)</value>
             </column>
@@ -53,6 +57,10 @@
             <column>
                <name>description</name>
                <value>Fichier TIFF</value>
+            </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>visualisable</name>

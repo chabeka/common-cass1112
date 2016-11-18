@@ -61,4 +61,17 @@ public interface ReferentielFormatService {
     */
    boolean exists(String idFormat);
 
+   /**
+    * @param fichierExtension
+    *           Extension de fichier
+    * @param idFormat
+    *           identifiant du format
+    * @return <ul>
+    *         <li><b>true</b> si l'extension passée en paramètre est autorisée
+    *         pour l'identifiant de format données</li>
+    *         <li><b>false</b> sinon</li>
+    *         </ul>
+    */
+   boolean isExtensionFormatAutorisee(String fichierExtension, String idFormat);
+
 }

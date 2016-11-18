@@ -11,6 +11,7 @@ public class FormatFichier {
    private String typeMime;
    private String extension;
    private String description;
+   private boolean autoriseGED;
    private boolean visualisable;
    private String validator;
    private String identificateur;
@@ -145,6 +146,25 @@ public class FormatFichier {
     */
    public final void setConvertisseur(String convertisseur) {
       this.convertisseur = convertisseur;
+   }
+
+   /**
+    * Getter pour autoriseGED
+    * 
+    * @return the autoriseGED
+    */
+   public boolean isAutoriseGED() {
+      return autoriseGED;
+   }
+
+   /**
+    * Setter pour autoriseGED
+    * 
+    * @param autoriseGED
+    *           the autoriseGED to set
+    */
+   public void setAutoriseGED(boolean autoriseGED) {
+      this.autoriseGED = autoriseGED;
    }
 
 }
