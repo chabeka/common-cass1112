@@ -1,0 +1,183 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+   
+   <parent>
+      <groupId>fr.urssaf.image.sae</groupId>
+      <artifactId>sae</artifactId>
+      <version>16.11.0.2-SNAPSHOT</version>
+   </parent>
+  
+  <groupId>fr.ursaaf.image.sae</groupId>
+  <artifactId>sae-integrationinstall</artifactId>
+  <version>16.11.0.2-SNAPSHOT</version>
+
+  <name>sae-integrationinstall</name>
+  
+  <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <version>${maven-shade-plugin.version}</version>
+            <executions>
+               <execution>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>shade</goal>
+                  </goals>
+                  <configuration>
+  <!--                    <minimizeJar>true</minimizeJar> -->
+                     <filters>
+                        <!--
+                        Toutes les classes de org.aspectj:aspectjrt sont reprises
+                        dans le jar org.aspectj:aspectjweaver
+                        N�anmoins, il faut inclure les 2 jar dans les d�pendances.
+                        L'exclusion des classes se fait donc au niveau de Shade. 
+                        -->
+                        <filter>
+                           <artifact>org.aspectj:aspectjrt</artifact>
+                           <excludes>
+                              <exclude>org/aspectj/**</exclude>
+                           </excludes>
+                        </filter>
+                        <!--
+                        Exclusion de 4 classes qui ont �t� copi�es/coll�es de
+                        commons-collection vers commons-beanutils
+                        https://issues.apache.org/jira/browse/BEANUTILS-278
+                        -->
+                        <filter>
+                           <artifact>commons-beanutils:commons-beanutils</artifact>
+                           <excludes>
+                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
+                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
+                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
+                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
+                           </excludes>
+                        </filter>
+                        <filter>
+                          <artifact>*:*</artifact>
+                          <excludes>
+                                <exclude>META-INF/*.SF</exclude>
+                                <exclude>META-INF/*.DSA</exclude>
+                                <exclude>META-INF/*.RSA</exclude>
+                                <exclude>META-INF/*.txt</exclude>
+                          </excludes>
+                     </filter>
+                     </filters>
+                     <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                           <mainClass>fr.urssaf.image.sae.integrationinstall.MainIntInst</mainClass>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.handlers</resource>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                     </transformers>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
+
+         <!-- COMPILATION ASPECT -->
+         <plugin>
+            <inherited>true</inherited>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+         </plugin>
+
+         <!-- SKIP TEST -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>2.5</version>
+            <configuration>
+               <skipTests>true</skipTests>
+            </configuration>
+         </plugin>
+
+      </plugins>
+
+   </build>
+   
+   
+   <properties>
+      <opencsv.version>2.3</opencsv.version>
+   </properties>
+
+  
+
+   <dependencies>
+      <!-- SAE -->
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-lotinstallmaj</artifactId>
+         <version>16.11.0.2-SNAPSHOT</version>
+      </dependency>
+
+      <!-- Spring -->
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-core</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-context</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-beans</artifactId>
+         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.springframework</groupId>
+         <artifactId>spring-test</artifactId>
+         <version>${spring.framework.version}</version>
+         <scope>test</scope>
+      </dependency>
+
+      <!-- AspectJ -->
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjrt</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.aspectj</groupId>
+         <artifactId>aspectjweaver</artifactId>
+         <version>${aspectj.version}</version>
+      </dependency>
+
+      <!-- Apache Commons -->
+      <dependency>
+         <groupId>commons-lang</groupId>
+         <artifactId>commons-lang</artifactId>
+         <version>${apache.commons-lang.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-collections</groupId>
+         <artifactId>commons-collections</artifactId>
+         <version>${apache.commons-collections.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>commons-beanutils</groupId>
+         <artifactId>commons-beanutils</artifactId>
+         <version>${apache.commons-beanutils.version}</version>
+      </dependency>
+
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-dfce-admin-exploit</artifactId>
+         <version>16.11.0.2-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-rnd</artifactId>
+         <version>16.11.0.2-SNAPSHOT</version>
+      </dependency>
+   </dependencies>
+  
+  </project>
