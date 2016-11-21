@@ -2,7 +2,7 @@
 // Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
 // Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
 // Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
-// Généré le : 2013.05.13 à 03:05:24 PM CEST 
+// Généré le : 2016.11.17 à 03:49:54 PM CET 
 //
 
 
@@ -29,6 +29,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}fichierType"/>
+ *         &lt;element name="erreurs" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeErreurType" minOccurs="0"/>
  *         &lt;element name="composants">
  *           &lt;complexType>
  *             &lt;complexContent>
@@ -60,7 +61,6 @@ public class NonIntegratedVirtualDocumentType {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
-    @XmlElement(required = false)
     protected ListeErreurType erreurs;
     @XmlElement(required = true)
     protected NonIntegratedVirtualDocumentType.Composants composants;
@@ -88,7 +88,7 @@ public class NonIntegratedVirtualDocumentType {
     public void setObjetNumerique(FichierType value) {
         this.objetNumerique = value;
     }
-    
+
     /**
      * Obtient la valeur de la propriété erreurs.
      * 
