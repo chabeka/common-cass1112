@@ -129,7 +129,7 @@
             </column>
             <column>
                <name>extension</name>
-               <value>zip</value>
+               <value>gz,tar.gz,zip</value>
             </column>
             <column>
                <name>typeMime</name>

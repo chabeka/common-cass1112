@@ -525,6 +525,13 @@ public final class SAEControlesCaptureFormatSupport {
     * @return L'extension du fichier.
     */
    private String extraireExtensionFileName(final SAEDocument saeDocument) {
+      // Dans le cas du service de capture, on a juste le path du fichier. Il
+      // faut donc recuperer le nom du fichier.
+      if (StringUtils.isEmpty(saeDocument.getFileName())
+            && StringUtils.isNotEmpty(saeDocument.getFilePath())) {
+         File fileDoc = new File(saeDocument.getFilePath());
+         return FilenameUtils.getExtension(fileDoc.getName());
+      }
       return FilenameUtils.getExtension(saeDocument.getFileName());
    }
 

@@ -38,6 +38,7 @@ public class SAEControlesCaptureFormatSupportTest {
 
    private SAEDocument buildSaeDocument() {
       SAEDocument doc = new SAEDocument();
+      doc.setFileName("fichierNonExistant.pdf");
       List<SAEMetadata> metas = new ArrayList<SAEMetadata>();
       doc.setMetadatas(metas);
       return doc;
@@ -653,7 +654,8 @@ public class SAEControlesCaptureFormatSupportTest {
          // Contrôle le message de l'exception
          Assert.assertEquals(
                "Le message de l'exception n'est pas celui attendu",
-               "Le fichier à archiver ne correspond pas au format spécifié.", e
+               "L'extension du format du fichier n'existe pas dans le référentiel : idFormat = fmt/354, extension = doc",
+               e
                      .getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
