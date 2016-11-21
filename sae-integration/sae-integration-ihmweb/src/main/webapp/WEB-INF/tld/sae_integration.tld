@@ -164,6 +164,12 @@
       <path>/WEB-INF/tags/etatTraitementMasse.tag</path>
    </tag-file>
    
+   <tag-file>
+      <name>consultationGNTGNS</name>
+      <description>Appel du service web de consultationGNTGNS</description>
+      <path>/WEB-INF/tags/consultationGNTGNS.tag</path>
+   </tag-file>
+   
 
    <function>
       <name>booleanToOuiNon</name>
