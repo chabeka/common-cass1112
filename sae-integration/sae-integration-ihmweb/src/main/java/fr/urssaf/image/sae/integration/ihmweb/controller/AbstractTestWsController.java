@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.AjoutNoteTestService
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationGNTGNSTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.EtatTraitementMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.GetDocFormatOrigineTestService;
@@ -73,6 +74,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private ConsultationTestService consultTestServ;
+   
+   @Autowired
+   private ConsultationGNTGNSTestService consultGNTGNSTestServ;
    
    @Autowired
    private GetDocFormatOrigineTestService getDocFormatOriginetTestServ;
@@ -437,6 +441,10 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    protected final TestConfig getTestConfig() {
       return testConfig;
+   }
+   
+   public final ConsultationGNTGNSTestService getConsultationGNTGNSTestService() {
+      return consultGNTGNSTestServ;
    }
    
    /**
