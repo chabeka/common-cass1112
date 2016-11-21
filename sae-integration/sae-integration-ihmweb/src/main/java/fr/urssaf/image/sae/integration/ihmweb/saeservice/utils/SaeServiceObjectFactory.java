@@ -23,6 +23,8 @@ import org.springframework.util.CollectionUtils;
 
 
 
+
+
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
@@ -44,6 +46,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.A
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Consultation;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationAffichable;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationAffichableRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationGNTGNS;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationGNTGNSRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOM;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOMRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationRequestType;
@@ -649,6 +653,33 @@ public final class SaeServiceObjectFactory {
       ConsultationMTOMRequestType consultationReqType = new ConsultationMTOMRequestType();
 
       consultation.setConsultationMTOM(consultationReqType);
+
+      // UUID
+      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+      consultationReqType.setIdArchive(uuid);
+
+      // Les codes des métadonnées souhaitées
+      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+      // demandée
+      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+               .buildListeCodesMetadonnes(codeMetadonnees);
+         consultationReqType.setMetadonnees(codesMetadonnees);
+      }
+
+      // fin
+      return consultation;
+
+   }
+   
+   public static ConsultationGNTGNS buildConsultationGNTGNSRequest(
+         String idArchivage, CodeMetadonneeList codeMetadonnees) {
+
+      ConsultationGNTGNS consultation = new ConsultationGNTGNS();
+
+      ConsultationGNTGNSRequestType consultationReqType = new ConsultationGNTGNSRequestType();
+
+      consultation.setConsultationGNTGNS(consultationReqType);
 
       // UUID
       UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);

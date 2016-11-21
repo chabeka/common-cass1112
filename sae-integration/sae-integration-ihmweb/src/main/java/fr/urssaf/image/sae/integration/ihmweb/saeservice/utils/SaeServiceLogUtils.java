@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationGNTGNSFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
@@ -1059,5 +1060,23 @@ public final class SaeServiceLogUtils {
       log.appendLogNewLine();
    }
 
+   public static void logAppelConsultationGNTGNS(ResultatTestLog log,
+         ConsultationGNTGNSFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération consultation");
+      log.appendLogLn("Mode d'appel : " + formulaire.getModeConsult());
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("Id archivage : " + formulaire.getIdArchivage());
+      log.appendLogLn("Métadonnées :");
+
+      if (CollectionUtils.isEmpty(formulaire.getCodeMetadonnees())) {
+         log.appendLogLn("non spécifiées");
+      } else {
+         log
+               .appendLogLn(StringUtils.join(formulaire.getCodeMetadonnees(),
+                     ','));
+      }
+
+      log.appendLogNewLine();
+   }
 
 }
