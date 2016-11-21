@@ -26,11 +26,11 @@ import fr.urssaf.image.sae.integration.ihmweb.signature.XmlSignature;
 public class ViGenerationTest {
 
    
-   //private static final String PKCS12 = "certificats/PNR_Application_Test.p12";
-   //private static final String KEYSTORE_PASSWORD = "QEtDiGuGuEnZ";
+   private static final String PKCS12 = "certificats/PNR_Application_Test.p12";
+   private static final String KEYSTORE_PASSWORD = "QEtDiGuGuEnZ";
    
-   private static final String PKCS12 = "certificats/gammeimage.p12";
-   private static final String KEYSTORE_PASSWORD = "gammeimage";
+//   private static final String PKCS12 = "certificats/gammeimage.p12";
+//   private static final String KEYSTORE_PASSWORD = "gammeimage";
    
    /**
     * Génération d'un vecteur d'identification valide,
@@ -69,14 +69,14 @@ public class ViGenerationTest {
          DateTime systemDate = new DateTime();
          
          String assertionId = UUID.randomUUID().toString();
-         String issuer = "CS_DEV_TOUTES_ACTIONS_NAT";
+         String issuer = "CS_DEV_TOUTES_ACTIONS";
          String recipient = "urn:URSSAF";
          String audience = "http://sae.urssaf.fr";
          String authnInstant = systemDate.toString();
          String notOnOrAfter = systemDate.plusYears(200).toString();
          String notBefore = systemDate.minusHours(2).toString();
          String methodAuthn = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
-         String[] pagm = new String[] {"PAGM_TOUTES_ACTIONS_NAT"} ;
+         String[] pagm = new String[] {"PAGM_TOUTES_ACTIONS"} ;
          
          String assertionNonSignee = getAssertionNonSignee(
                assertionId,
