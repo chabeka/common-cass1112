@@ -3232,5 +3232,79 @@
       </CasTests>
 
    </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- Copie -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Copie - 3300</Nom>
+      <Id>24</Id>
+      <CasTests>
+         <CasTest>
+            <id>3300</id>
+            <code>3300-Copie-TestLibre</code>
+            <description>
+               Test libre de la copie d'un document 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3300-Copie-Test-Libre"</luceneExemple>
+         </CasTest>      
+      </CasTests>
+       </Categorie>
+      
+       <!-- ======================================================== -->
+   <!-- Consultation GNTGNS -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Consultation GNTGNS - 3400</Nom>
+      <Id>25</Id>
+      <CasTests>
+         <CasTest>
+            <id>3400</id>
+            <code>3400-Consultation GNTGNS-TestLibre</code>
+            <description>
+               Test libre de la consultation GNTGNS 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3400-ConsultationGNTGNS-Test-Libre"</luceneExemple>
+         </CasTest> 
+         <CasTest>
+            <id>3401</id>
+            <code>3401-ConsultationGNTGNS-OK-Consultation-document-GNS</code>
+            <description>
+               Le but de ce test est de valider qu’on peut bien consulter un document provenant de la GNS. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"3401-ConsultationGNTGNS-OK-Consultation-document-GNS"</luceneExemple>
+         </CasTest>  
+         <CasTest>
+            <id>3402</id>
+            <code>3402-ConsultationGNTGNS-OK-Consultation-document-GNT</code>
+            <description>
+               Le but de ce test est de valider qu’on peut bien consulter un document provenant de la GNT. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"3402-ConsultationGNTGNS-OK-Consultation-document-GNT"</luceneExemple>
+         </CasTest>      
+         <CasTest>
+            <id>3450</id>
+            <code>3450-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationGNTGNS un document en précisant des métadonnées qui ne sont pas consultables comme StartPage et VersionNumber. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3450-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
+         </CasTest>    
+         <CasTest>
+            <id>3451</id>
+            <code>3451-ConsultationGNTGNS-KO-DocumentInexistant</code>
+            <description>
+               Le but de ce test est de valider qu’on obtient bien une soapfault lorsqu’on essaie de consulter avec l’opération consultationGNTGNS un document n'existant ni en GNS ni en GNT. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3451-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
+         </CasTest>    
+      </CasTests>
+   </Categorie>
 
 </Tests>
