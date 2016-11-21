@@ -143,22 +143,6 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for suppression method
-            * override this method for handling normal response from suppression operation
-            */
-           public void receiveResultsuppression(
-                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionResponse result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from suppression operation
-           */
-            public void receiveErrorsuppression(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for getDocFormatOrigine method
             * override this method for handling normal response from getDocFormatOrigine operation
             */
@@ -175,19 +159,19 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for stockageUnitaire method
-            * override this method for handling normal response from stockageUnitaire operation
+            * auto generated Axis2 call back method for suppression method
+            * override this method for handling normal response from suppression operation
             */
-           public void receiveResultstockageUnitaire(
-                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireResponse result
+           public void receiveResultsuppression(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionResponse result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from stockageUnitaire operation
+           * override this method for handling error response from suppression operation
            */
-            public void receiveErrorstockageUnitaire(java.lang.Exception e) {
+            public void receiveErrorsuppression(java.lang.Exception e) {
             }
                 
            /**
@@ -220,6 +204,38 @@ public abstract class SaeServiceCallbackHandler{
            * override this method for handling error response from ping operation
            */
             public void receiveErrorping(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for stockageUnitaire method
+            * override this method for handling normal response from stockageUnitaire operation
+            */
+           public void receiveResultstockageUnitaire(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.StockageUnitaireResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from stockageUnitaire operation
+           */
+            public void receiveErrorstockageUnitaire(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for documentExistant method
+            * override this method for handling normal response from documentExistant operation
+            */
+           public void receiveResultdocumentExistant(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DocumentExistantResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from documentExistant operation
+           */
+            public void receiveErrordocumentExistant(java.lang.Exception e) {
             }
                 
            /**
@@ -268,6 +284,22 @@ public abstract class SaeServiceCallbackHandler{
            * override this method for handling error response from pingSecure operation
            */
             public void receiveErrorpingSecure(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for consultationGNTGNS method
+            * override this method for handling normal response from consultationGNTGNS operation
+            */
+           public void receiveResultconsultationGNTGNS(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationGNTGNSResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from consultationGNTGNS operation
+           */
+            public void receiveErrorconsultationGNTGNS(java.lang.Exception e) {
             }
                 
            /**
@@ -351,6 +383,22 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for modification method
+            * override this method for handling normal response from modification operation
+            */
+           public void receiveResultmodification(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from modification operation
+           */
+            public void receiveErrormodification(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for suppressionMasse method
             * override this method for handling normal response from suppressionMasse operation
             */
@@ -367,19 +415,19 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for modification method
-            * override this method for handling normal response from modification operation
+            * auto generated Axis2 call back method for copie method
+            * override this method for handling normal response from copie operation
             */
-           public void receiveResultmodification(
-                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationResponse result
+           public void receiveResultcopie(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.CopieResponse result
                         ) {
            }
 
           /**
            * auto generated Axis2 Error handler
-           * override this method for handling error response from modification operation
+           * override this method for handling error response from copie operation
            */
-            public void receiveErrormodification(java.lang.Exception e) {
+            public void receiveErrorcopie(java.lang.Exception e) {
             }
                 
            /**
