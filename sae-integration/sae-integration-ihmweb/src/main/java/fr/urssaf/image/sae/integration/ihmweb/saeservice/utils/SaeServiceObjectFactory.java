@@ -14,17 +14,6 @@ import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
 import org.springframework.util.CollectionUtils;
 
-
-
-
-
-
-
-
-
-
-
-
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.IdentifiantPage;
@@ -51,6 +40,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.C
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOM;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationMTOMRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Copie;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.CopieRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DataFileType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlType;
@@ -1161,5 +1152,41 @@ public final class SaeServiceObjectFactory {
       etatTraitementsMasseRequest.setListeUuid(listeUuidType);
       
       return etatTraitementsMasse;
+   }
+
+   /**
+    * Methode permettant de construire le bean {@link Copie}
+    * 
+    * @param idGed
+    *           Identifiant de l'archive GED
+    * @param listeMetadonnees
+    *           Liste des metadonnées
+    * @return
+    */
+   public static Copie buildCopieRequest(String idGed,
+         MetadonneeValeurList listeMetadonnees) {
+
+      Copie copie = new Copie();
+
+      CopieRequestType copieReqType = new CopieRequestType();
+
+      copie.setCopie(copieReqType);
+
+      // UUID
+      UuidType uuid = SaeServiceObjectFactory.buildUuid(idGed);
+      copieReqType.setIdGed(uuid);
+
+      // Les codes des métadonnées souhaitées
+      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+      // demandée
+      if (!CollectionUtils.isEmpty(listeMetadonnees)) {
+         ListeMetadonneeType listeMetadonneesType = SaeServiceObjectFactory
+               .buildListeMetadonnes(listeMetadonnees);
+         copieReqType.setMetadonnees(listeMetadonneesType);
       }
+
+      // fin
+      return copie;
+
+   }
 }

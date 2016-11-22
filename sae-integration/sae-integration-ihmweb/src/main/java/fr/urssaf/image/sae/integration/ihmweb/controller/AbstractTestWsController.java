@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.CaptureUnitaireTestS
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichableTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationGNTGNSTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.CopieTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.EtatTraitementMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.GetDocFormatOrigineTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
@@ -32,8 +33,8 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateu
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RestoreMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
-import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionMasseTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
@@ -125,6 +126,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private EtatTraitementMasseTestService etatTraitementMasseTestServ;
+
+   @Autowired
+   private CopieTestService copieTestServ;
 
    /**
     * Service utilitaires pour les tests du service web SaeService
@@ -447,6 +451,10 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return consultGNTGNSTestServ;
    }
    
+   public final CopieTestService getCopieTestService() {
+      return copieTestServ;
+   }
+
    /**
     * Renvoie l'objet décrivant le test injecté.
     * 

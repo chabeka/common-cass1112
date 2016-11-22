@@ -26,6 +26,8 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulai
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationGNTGNSFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.CopieFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.EtatTraitementMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
@@ -34,10 +36,10 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RestoreMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionMasseFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.EtatTraitementMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.GetDocFormatOrigineResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
@@ -1079,4 +1081,47 @@ public final class SaeServiceLogUtils {
       log.appendLogNewLine();
    }
 
+   /**
+    * Methode permettant de logger l'appel du service de copie.
+    * 
+    * @param log
+    *           Bean log.
+    * @param formulaire
+    *           Formulaire de copie.
+    */
+   public static void logAppelCopie(ResultatTestLog log,
+         CopieFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération de copie");
+      log.appendLogLn("Mode d'appel : " + formulaire.getModeConsult());
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("Id archivage : " + formulaire.getIdGed());
+      log.appendLogLn("Métadonnées :");
+
+      if (CollectionUtils.isEmpty(formulaire.getListeMetadonnees())) {
+         log.appendLogLn("non spécifiées");
+      } else {
+         log.appendLogLn(StringUtils.join(formulaire.getListeMetadonnees(), ','));
+      }
+
+      log.appendLogNewLine();
+   }
+
+   /**
+    * Ajoute, dans le log du résultat du test, un résultat de l'opération
+    * "copie" ou "copieMTOM" ou "copieAffichable"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param resultat
+    *           la réponse de l'opération "copie"
+    */
+   public static void logResultatCopie(ResultatTest resultatTest,
+         CopieResultat resultat) {
+
+      // idGED
+      resultatTest.getLog().appendLogNewLine();
+      resultatTest.getLog().appendLogLn(
+            "IdGED : " + resultat.getIdGed().getUuidType());
+      resultatTest.getLog().appendLogNewLine();
+   }
 }

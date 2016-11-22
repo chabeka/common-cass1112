@@ -210,7 +210,7 @@ public class CaptureUnitaireTestService {
     * @param viParams
     *           les paramètres du VI
     */
-   public final void appelWsOpCaptureUnitaireUrlEcdeTestLibre(
+   public final CaptureUnitaireResultat appelWsOpCaptureUnitaireUrlEcdeTestLibre(
          String urlServiceWeb, CaptureUnitaireFormulaire formulaire,
          ViFormulaire viParams) {
 
@@ -219,7 +219,7 @@ public class CaptureUnitaireTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, ViStyle.VI_OK, viParams,
+      return appelWsOpCaptureUnitaire(urlServiceWeb, ViStyle.VI_OK, viParams,
             formulaire, testLibre);
 
    }

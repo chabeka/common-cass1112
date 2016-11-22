@@ -165,6 +165,12 @@
    </tag-file>
    
    <tag-file>
+      <name>copie</name>
+      <description>Appel du service web de copie</description>
+      <path>/WEB-INF/tags/copie.tag</path>
+   </tag-file>
+   
+   <tag-file>
       <name>consultationGNTGNS</name>
       <description>Appel du service web de consultationGNTGNS</description>
       <path>/WEB-INF/tags/consultationGNTGNS.tag</path>

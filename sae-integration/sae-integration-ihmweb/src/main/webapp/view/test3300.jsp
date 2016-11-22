@@ -16,13 +16,19 @@
 
 <form:form method="post" modelAttribute="formulaire">
 
+	<form:hidden id="etape" path="etape" />
+
 	<sae:casTest />
 
 	<sae:urlServiceWeb />
+	
+	<sae:captureUnitaire numeroEtape="capture_unitaire_copie" objetFormulaire="${formulaire.captureUnitaire}" pathFormulaire="captureUnitaire" />
 
-	<sae:consultation numeroEtape="unique"
-		objetFormulaire="${formulaire.copie}"
-		pathFormulaire="copie" />
+	<sae:copie numeroEtape="copie" objetFormulaire="${formulaire.copie}" pathFormulaire="copie" />
+
+	<sae:recherche numeroEtape="recherche_document_existant"  objetFormulaire="${formulaire.rechercheDocExistant}" pathFormulaire="rechercheDocExistant" />
+	
+	<sae:recherche numeroEtape="recherche_document_copie"  objetFormulaire="${formulaire.rechercheDocCopie}" pathFormulaire="rechercheDocCopie" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />
 

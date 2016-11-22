@@ -306,4 +306,35 @@ public class ReferentielMetadonneesService {
    }
    
    
+   /**
+    * Renvoie une liste de métadonnées "exemples" pour la copie<br>
+    * <br>
+    * Cela permet par exemple d'initialiser les IHM avec
+    * un modèle de liste de métadonnées. On aide ainsi
+    * l'utilisateur à la saisie des métadonnées.
+    * 
+    * @return une liste de métadonnées "exemple"
+    */
+   public static final MetadonneeValeurList getMetadonneesExemplePourCopie() {
+      
+      MetadonneeValeurList metadonnees = new MetadonneeValeurList();
+      
+      metadonnees.add(new MetadonneeValeur("ApplicationProductrice","ADELAIDE"));
+      metadonnees.add(new MetadonneeValeur("CodeOrganismeGestionnaire","CER69"));
+      metadonnees.add(new MetadonneeValeur("CodeOrganismeProprietaire","AC750"));
+      metadonnees.add(new MetadonneeValeur("CodeRND","2.3.1.1.12"));
+      metadonnees.add(new MetadonneeValeur("DateCreation","2010-09-23"));
+      metadonnees.add(new MetadonneeValeur("DateDebutConservation","2011-09-01"));
+      metadonnees.add(new MetadonneeValeur("FormatFichier","fmt/354"));
+      metadonnees.add(new MetadonneeValeur("Hash","a2f93f1f121ebba0faef2c0596f2f126eacae77b"));
+      metadonnees.add(new MetadonneeValeur("NbPages", "2"));
+      metadonnees.add(new MetadonneeValeur("Titre","Attestation de vigilance"));
+      metadonnees.add(new MetadonneeValeur("TypeHash","SHA-1"));
+      // metadonnees.add(new MetadonneeValeur("VersionRND", "5.3"));
+      
+      return metadonnees;
+      
+   }
+   
+   
 }

@@ -3247,7 +3247,8 @@
                Test libre de la copie d'un document 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"Test 3300-Copie-Test-Libre"</luceneExemple>
+            <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre-Copie"</luceneExempleList>
          </CasTest>      
       </CasTests>
        </Categorie>
