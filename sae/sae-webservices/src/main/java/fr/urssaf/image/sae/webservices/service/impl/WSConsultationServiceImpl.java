@@ -71,7 +71,7 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
    @Autowired
    private ReferentielFormatService referentielFormatService;
 
-   @Value("${sae.adresse.GNT}")
+   @Value("${url.consultationGNTGNS}")
    private String adresseGNT;
 
    /**
