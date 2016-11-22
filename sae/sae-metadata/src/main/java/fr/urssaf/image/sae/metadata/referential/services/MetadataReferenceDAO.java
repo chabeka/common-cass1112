@@ -21,6 +21,20 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
+    * Les métadonnées Note, DureeConservaion et Gel impliquent un accès
+    * supplémentaire à DFCE pour les alimenter et elles ne sont pas nécessaires
+    * à la vérification des droits. Ces métadonnées ne sont en effect jamais
+    * utilisé dans un PRMD car non métier.
+    * 
+    * @return La liste des métadonnées du référentiel des métadonnées utiles
+    *         pour la vérification des droits (PRMD)
+    * @throws ReferentialException
+    *            Exception levée lorsqu'un dysfonctionnement survient.
+    */
+   Map<String, MetadataReference> getAllMetadataReferencesPourVerifDroits()
+         throws ReferentialException;
+
+   /**
     * 
     * @return La liste des métadonnées consultables par défaut du référentiel
     *         des métadonnées.
@@ -123,7 +137,7 @@ public interface MetadataReferenceDAO {
     * @return la liste des métadonnées à trimer à droite
     */
    Map<String, MetadataReference> getRightTrimableMetadataReference();
-   
+
    /**
     * Charge les des métadonnées qui sont transférables
     * 

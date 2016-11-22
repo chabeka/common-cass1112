@@ -204,12 +204,13 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     *           un objet de type {@link MetadataReferenceDAOImpl}
     */
    @Autowired
-   public MetadataReferenceDAOImpl(@Value("${sae.metadata.cache}") int cacheDuration,
+   public MetadataReferenceDAOImpl(
+         @Value("${sae.metadata.cache}") int cacheDuration,
          @Value("${sae.metadata.initCacheOnStartup}") boolean initCacheOnStartup,
          final SaeMetadataSupport metadataSupport) {
-      metadataReference = CacheBuilder.newBuilder().refreshAfterWrite(
-            cacheDuration, TimeUnit.MINUTES).build(
-            new CacheLoader<MetaType, Map<String, MetadataReference>>() {
+      metadataReference = CacheBuilder.newBuilder()
+            .refreshAfterWrite(cacheDuration, TimeUnit.MINUTES)
+            .build(new CacheLoader<MetaType, Map<String, MetadataReference>>() {
 
                @Override
                public Map<String, MetadataReference> load(MetaType identifiant) {
@@ -228,16 +229,17 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
                }
 
             });
-      
+
       this.metadataSupport = metadataSupport;
 
       if (initCacheOnStartup) {
          // afin d'eviter de recoder ce qui est dans le load du cacheloader
-         // on va juste recuperer le seul element en cache (MetaType.ALL_METADATAS)
+         // on va juste recuperer le seul element en cache
+         // (MetaType.ALL_METADATAS)
          metadataReference.getUnchecked(MetaType.ALL_METADATAS);
       }
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -290,16 +292,16 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       }
       return archMetas;
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public final Map<String, MetadataReference> getTransferableMetadataReference() 
+   public final Map<String, MetadataReference> getTransferableMetadataReference()
          throws ReferentialException {
       final Map<String, MetadataReference> transMetas = new HashMap<String, MetadataReference>();
       final Map<String, MetadataReference> referentiel = this.metadataReference
-         .getUnchecked(MetaType.ALL_METADATAS);
+            .getUnchecked(MetaType.ALL_METADATAS);
       for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
             referentiel).entrySet()) {
          if (metaData.getValue().getTransferable()) {
@@ -307,6 +309,28 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
          }
       }
       return transMetas;
+   }
+
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public Map<String, MetadataReference> getAllMetadataReferencesPourVerifDroits()
+         throws ReferentialException {
+      final Map<String, MetadataReference> csltMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
+
+      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
+            referentiel).entrySet()) {
+
+         if (!"not".equals(metaData.getValue().getShortCode())
+               && !"gel".equals(metaData.getValue().getShortCode())
+               && !"dco".equals(metaData.getValue().getShortCode())) {
+            csltMetaDatas.put(metaData.getKey(), metaData.getValue());
+         }
+      }
+      return csltMetaDatas;
    }
 
 }

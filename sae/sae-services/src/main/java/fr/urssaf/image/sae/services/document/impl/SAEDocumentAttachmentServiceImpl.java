@@ -292,19 +292,16 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = referenceDAO
-               .getAllMetadataReferences();
+               .getAllMetadataReferencesPourVerifDroits();
          for (String mapKey : listeAllMeta.keySet()) {
-            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                  listeAllMeta.get(mapKey).getShortCode())) {
                allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
                      .getShortCode()));
-            }
          }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
          // On récupère le document à partir de l'UUID, avec toutes les
-         // métadonnées du référentiel sauf la note qui n'est pas utlisée pour les droits
+         // métadonnées du référentiel
          StorageDocument storageDocument = this.getStorageServiceProvider()
                .getStorageDocumentService()
                .retrieveStorageDocumentByUUID(uuidCriteria);

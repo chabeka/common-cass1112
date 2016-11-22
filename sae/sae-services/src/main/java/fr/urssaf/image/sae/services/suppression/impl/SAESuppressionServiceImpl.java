@@ -86,19 +86,13 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
             LOG.debug("{} - recherche du document", trcPrefix);
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferences();
+                  .getAllMetadataReferencesPourVerifDroits();
             for (String mapKey : listeAllMeta.keySet()) {
-               if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(listeAllMeta.get(mapKey).getShortCode())) {
                   allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
                         .getShortCode()));
-               }
             }
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-            // On récupère les métadonnées du document à partir de l'UUID, avec
-            // toutes les
-            // métadonnées du référentiel sauf la Note inutilisée pour les
-            // droits
             List<StorageMetadata> listeStorageMeta = this
                   .getStorageServiceProvider().getStorageDocumentService()
                   .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);

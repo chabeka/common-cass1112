@@ -140,13 +140,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          // métadonnées du référentiel sauf la note qui n'est pas utilise pour les droits
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
-               .getAllMetadataReferences();
+               .getAllMetadataReferencesPourVerifDroits();
          for (String mapKey : listeAllMeta.keySet()) {
-            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                  listeAllMeta.get(mapKey).getShortCode())) {
                allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
                      .getShortCode()));
-            }
          }
          UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 

@@ -124,22 +124,19 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          try {
 
             // On récupère la liste de toutes les méta du référentiel sauf la
-            // Note inutile pour les droits
+            // Note, le Gel et la durée de conservation inutile pour les droits
+            // et générant des accès DFCE inutiles
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferences();
+                  .getAllMetadataReferencesPourVerifDroits();
+
             for (String mapKey : listeAllMeta.keySet()) {
-               if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(listeAllMeta.get(mapKey).getShortCode())) {
-                  allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                        .getShortCode()));
-               }
+               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                     .getShortCode()));
             }
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-            // On récupère les métadonnées du document à partir de l'UUID, avec
-            // toutes les
-            // métadonnées du référentiel sauf la Note inutile pour les droits
             listeStorageMeta = this.getStorageServiceProvider()
                   .getStorageDocumentService()
                   .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);

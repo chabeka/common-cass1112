@@ -71,8 +71,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
     * 
     */
    private static final String SEPARATOR_STRING = ", ";
-   private static final String CODE_LONG_META_NOTE = "Note";
-   private static final String CODE_COURT_META_NOTE = "not";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(SAEConsultationServiceImpl.class);
@@ -152,19 +150,30 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
             LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
                   prefixeTrc, buildMessageFromList(metadatas));
 
-            boolean avecNote = false;
-            if (metadatas.contains("Note")) {
-               avecNote = true;
-            }
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
             Map<String, MetadataReference> listeAllMeta = referenceDAO
                   .getAllMetadataReferences();
             String shortCode;
             for (String mapKey : listeAllMeta.keySet()) {
                shortCode = listeAllMeta.get(mapKey).getShortCode();
+               // On ne récupère la note, le gel et la durée de conservation que si elle est demandée à la consulation (car sinon cela génère un appel à DFCE inutile)
                if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
                      shortCode)) {
-                  if (avecNote) {
+                  if (metadatas.contains(StorageTechnicalMetadatas.NOTE
+                        .getLongCode())) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
+                     shortCode)) {
+                  if (metadatas.contains(StorageTechnicalMetadatas.GEL
+                        .getLongCode())) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
+                     .getShortCode().equals(shortCode)) {
+                  if (metadatas
+                        .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
+                              .getLongCode())) {
                      allMeta.add(new StorageMetadata(shortCode));
                   }
                } else {
@@ -264,26 +273,38 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
                   prefixeTrc, buildMessageFromList(metadatas));
 
             List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-            boolean avecNote = false;
-            if (metadatas.contains("Note")) {
-               avecNote = true;
-            }
+
             Map<String, MetadataReference> listeAllMeta = referenceDAO
                   .getAllMetadataReferences();
             String shortCode;
             for (String mapKey : listeAllMeta.keySet()) {
                shortCode = listeAllMeta.get(mapKey).getShortCode();
+               // On ne récupère la note, le gel et la durée de conservation que
+               // si elle est demandée à la consulation (car sinon cela génère
+               // un appel à DFCE inutile)
                if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
                      shortCode)) {
-                  if (avecNote) {
+                  if (metadatas.contains(StorageTechnicalMetadatas.NOTE
+                        .getLongCode())) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
+                     shortCode)) {
+                  if (metadatas.contains(StorageTechnicalMetadatas.GEL
+                        .getLongCode())) {
+                     allMeta.add(new StorageMetadata(shortCode));
+                  }
+               } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
+                     .getShortCode().equals(shortCode)) {
+                  if (metadatas
+                        .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
+                              .getLongCode())) {
                      allMeta.add(new StorageMetadata(shortCode));
                   }
                } else {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             }
-
-
 
             UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 

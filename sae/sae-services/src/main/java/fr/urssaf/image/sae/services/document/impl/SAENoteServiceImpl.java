@@ -93,20 +93,16 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          // On récupère la liste de toutes les méta du référentiel
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = referenceDAO
-               .getAllMetadataReferences();
+               .getAllMetadataReferencesPourVerifDroits();
          for (String mapKey : listeAllMeta.keySet()) {
-            if (!StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                  listeAllMeta.get(mapKey).getShortCode())) {
                allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
                      .getShortCode()));
-            }
          }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
          // On récupère les métadonnées du document sur lequel on souhaite
-         // ajouter la note pour
-         // vérifier les droits
+         // ajouter la note pour vérifier les droits
          List<StorageMetadata> listeStorageMeta = this
                .getStorageServiceProvider().getStorageDocumentService()
                .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);

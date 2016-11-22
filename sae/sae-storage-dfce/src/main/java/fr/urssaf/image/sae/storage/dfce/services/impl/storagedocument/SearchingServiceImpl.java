@@ -253,7 +253,7 @@ public class SearchingServiceImpl extends AbstractServices implements
          // Récupération du référentiel des métadonnés pour les différentes
          // vérifications
          Map<String, MetadataReference> referentielMeta = referenceDAO
-               .getAllMetadataReferences();
+               .getAllMetadataReferencesPourVerifDroits();
 
          if (useChainedFilter) { 
             // Création de la chainedFilter
@@ -282,8 +282,7 @@ public class SearchingServiceImpl extends AbstractServices implements
          // pouvoir tester les droits
          List<String> metadonneesRef = new ArrayList<String>(referentielMeta
                .keySet());
-         // On supprime les notes qui ne sont pas utilisées pour les droits
-         metadonneesRef.remove(StorageTechnicalMetadatas.NOTE.getLongCode());
+         
          List<StorageMetadata> allMeta = null;
          // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
          if (!searchInRecycleBean) {

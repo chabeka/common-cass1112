@@ -166,9 +166,9 @@ public final class BeanMapper {
                      metadata.getShortCode())) {
                   if (document.hasNote()) {
                      List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
-                     List<Note> listeNote = serviceDFCE.getNoteService().getNotes(
-                        document.getUuid());
-                  
+                     List<Note> listeNote = serviceDFCE.getNoteService()
+                           .getNotes(document.getUuid());
+
                      for (Note note : listeNote) {
                         listeStorageDocNotes.add(BeanMapper
                               .dfceNoteToStorageDocumentNote(note));
@@ -178,7 +178,15 @@ public final class BeanMapper {
                      String listeNotesJSON = mapper
                            .writeValueAsString(listeStorageDocNotes);
                      metadatas.add(new StorageMetadata(metadata.getShortCode(),
-                        listeNotesJSON));                     
+                           listeNotesJSON));
+                  } else {
+                     List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+                     // Transformation de la liste des notes en JSON
+                     ObjectMapper mapper = new ObjectMapper();
+                     String listeNotesJSON = mapper
+                           .writeValueAsString(listeStorageDocNotes);
+                     metadatas.add(new StorageMetadata(metadata.getShortCode(),
+                           listeNotesJSON));
                   }
                   found = true;
                }
