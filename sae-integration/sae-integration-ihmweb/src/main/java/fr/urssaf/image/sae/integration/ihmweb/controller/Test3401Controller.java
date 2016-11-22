@@ -5,9 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationGNTGNSFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test2001Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test3450Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
@@ -16,12 +14,11 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
 @Controller
-@RequestMapping(value = "test3450")
-public class Test3450Controller extends AbstractTestWsController<Test3450Formulaire>{
-
+@RequestMapping(value = "test3401")
+public class Test3401Controller extends AbstractTestWsController<Test3450Formulaire>{
    @Override
    protected String getNumeroTest() {
-      return "3450";
+      return "3401";
    }
 
    @Override
@@ -44,7 +41,6 @@ public class Test3450Controller extends AbstractTestWsController<Test3450Formula
       metadonnees.add("CodeRND","2.3.1.1.12");
       metadonnees.add("DateCreation","2011-09-23");
       metadonnees.add("DateDebutConservation","2011-09-01");
-      metadonnees.add("Denomination","Test 2056-ConsultationAffichable-KO-MetadonneeConsultInexistante-MTOM");
       metadonnees.add("FormatFichier","fmt/353");
       metadonnees.add("Hash","76734a4ba9c1dca0ced7960bcd7cc0055c16cefb");
       metadonnees.add("NbPages","43");
@@ -107,10 +103,6 @@ public class Test3450Controller extends AbstractTestWsController<Test3450Formula
             
             // Les codes des métadonnées souhaitées
             CodeMetadonneeList codesMetas = formConsultEtp2.getCodeMetadonnees();
-            codesMetas.add("Boulga");
-            codesMetas.add("Gloubi");
-            codesMetas.add("CodeRND");
-            codesMetas.add("Siret");
             formConsultEtp2.setCodeMetadonnees(codesMetas);
             //formConsultEtp2.setNumeroPage(-1);
             //formConsultEtp2.setNombrePages(0);
@@ -131,5 +123,4 @@ public class Test3450Controller extends AbstractTestWsController<Test3450Formula
                new Object[] {"Boulga, Gloubi"});
                
       }
-
 }

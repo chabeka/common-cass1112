@@ -3270,21 +3270,21 @@
          </CasTest> 
          <CasTest>
             <id>3401</id>
-            <code>3401-ConsultationGNTGNS-OK-Consultation-document-GNS</code>
-            <description>
-               Le but de ce test est de valider qu’on peut bien consulter un document provenant de la GNS. 
-            </description>
-            <implemente>true</implemente>
-            <luceneExemple>Denomination:"3401-ConsultationGNTGNS-OK-Consultation-document-GNS"</luceneExemple>
-         </CasTest>  
-         <CasTest>
-            <id>3402</id>
-            <code>3402-ConsultationGNTGNS-OK-Consultation-document-GNT</code>
+            <code>3401-ConsultationGNTGNS-OK-Consultation-document-GNT</code>
             <description>
                Le but de ce test est de valider qu’on peut bien consulter un document provenant de la GNT. 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"3402-ConsultationGNTGNS-OK-Consultation-document-GNT"</luceneExemple>
+            <luceneExemple>Denomination:"3401-ConsultationGNTGNS-OK-Consultation-document-GNT"</luceneExemple>
+         </CasTest>  
+         <CasTest>
+            <id>3402</id>
+            <code>3402-ConsultationGNTGNS-OK-Consultation-document-GNS</code>
+            <description>
+               Le but de ce test est de valider qu’on peut bien consulter un document provenant de la GNS. 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"3402-ConsultationGNTGNS-OK-Consultation-document-GNS"</luceneExemple>
          </CasTest>      
          <CasTest>
             <id>3450</id>
