@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineForm
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.RecuperationMetadonneeFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RestoreMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
@@ -43,6 +44,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.GetDocFormatOrigineResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.RecuperationMetadonneeResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
@@ -50,7 +52,9 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsT
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.IdentifiantPageType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeDispoType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeDispoType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheNbResResponseType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurResponseType;
@@ -129,6 +133,56 @@ public final class SaeServiceLogUtils {
       }
 
    }
+   
+   public static void logMetadonneesDispo(ResultatTestLog log,
+         ListeMetadonneeDispoType metadonnees) {
+
+      if (metadonnees == null) {
+         log.appendLogLn("La liste des métadonnées est null");
+      } else {
+
+         MetadonneeDispoType[] tabMetaTypes = metadonnees.getMetadonnee();
+
+         if (tabMetaTypes == null) {
+            log.appendLogLn("La liste des métadonnées est null");
+         } else {
+
+            log.appendLogLn("Nombre de métadonnées : " + tabMetaTypes.length);
+            log.appendLogLn("Liste des métadonnées :");
+
+            String code;
+            String valeur;
+
+            // for(MetadonneeType metaType: tabMetaTypes) {
+            // code = metaType.getCode().getMetadonneeCodeType();
+            // valeur = metaType.getValeur().getMetadonneeValeurType();
+            // log.appendLogLn(code + "=" + valeur);
+            // }
+
+            List<String> listeMetas = new ArrayList<String>();
+            for (MetadonneeDispoType metaType : tabMetaTypes) {
+               code = metaType.getCodeLong();
+               valeur = metaType.getDescription();
+               //CMO : Retrait de la limite de taille des métadonnées
+               listeMetas.add(code + "=" + valeur);
+               //if (valeur.length() > 50) {
+               //   listeMetas.add(code + "="
+               //         + StringUtils.substring(valeur, 0, 50) + "...");
+               //} else {
+               //   listeMetas.add(code + "=" + valeur);
+               //}
+
+            }
+            Collections.sort(listeMetas);
+            for (String uneMeta : listeMetas) {
+               log.appendLogLn(uneMeta);
+            }
+
+         }
+
+      }
+
+   }
 
    /**
     * Ajoute, dans le log du résultat du test, une liste de métadonnées
@@ -176,6 +230,16 @@ public final class SaeServiceLogUtils {
       resultatTest.getLog().appendLogNewLine();
       resultatTest.getLog().appendLogLn("Métadonnées :");
       logMetadonnees(resultatTest.getLog(), resultat.getMetadonnees());
+
+   }
+   
+   public static void logResultatRecuperationMetadonnee(ResultatTest resultatTest,
+         RecuperationMetadonneeResultat resultat) {
+
+      // Les métadonnées
+      resultatTest.getLog().appendLogNewLine();
+      resultatTest.getLog().appendLogLn("Métadonnées :");
+      logMetadonneesDispo(resultatTest.getLog(), resultat.getMetadonnees());
 
    }
 
@@ -1080,6 +1144,15 @@ public final class SaeServiceLogUtils {
 
       log.appendLogNewLine();
    }
+   
+   public static void logAppelRecuperationMetadonnee(ResultatTestLog log,
+         RecuperationMetadonneeFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération recuperationMetadonnee");
+
+
+      log.appendLogNewLine();
+   }
+
 
    /**
     * Methode permettant de logger l'appel du service de copie.

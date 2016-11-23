@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestServ
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.RecuperationMetadonneeTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RestoreMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionMasseTestService;
@@ -129,6 +130,14 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
    @Autowired
    private CopieTestService copieTestServ;
+   
+   @Autowired
+   private RecuperationMetadonneeTestService recuperationMetadonneeTestServ;
+
+   public RecuperationMetadonneeTestService getRecuperationMetadonneeTestServ() {
+      return recuperationMetadonneeTestServ;
+   }
+
 
    /**
     * Service utilitaires pour les tests du service web SaeService

@@ -54,7 +54,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>101b</id>
             <code>101-CaptureUnitaire-OK-Standard-PJ-URL</code>
@@ -64,7 +64,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard-PJ-URL"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>101c</id>
             <code>101-CaptureUnitaire-OK-Standard-PJ-sans-MTOM</code>
@@ -74,7 +74,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 101-CaptureUnitaire-OK-Standard-PJ-sans-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>101d</id>
             <code>101-CaptureUnitaire-OK-Standard-PJ-avec-MTOM</code>
@@ -94,7 +94,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>102b</id>
             <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-URL</code>
@@ -104,7 +104,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-URL"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>102c</id>
             <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-sans-MTOM</code>
@@ -114,7 +114,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-sans-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>102d</id>
             <code>102-CaptureUnitaire-OK-EnrichissementEcrasement-PJ-avec-MTOM</code>
@@ -134,7 +134,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>103b</id>
             <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-URL</code>
@@ -144,7 +144,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-URL"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>103c</id>
             <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-sans-MTOM</code>
@@ -154,7 +154,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-sans-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>103d</id>
             <code>103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-avec-MTOM</code>
@@ -164,7 +164,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 103-CaptureUnitaire-OK-ToutesMetasSpecifiables-PJ-avec-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>104a</id>
             <code>104-CaptureUnitaire-OK-Sans-Code-Activite</code>
@@ -174,7 +174,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>104b</id>
             <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-URL</code>
@@ -184,7 +184,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-URL"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>104c</id>
             <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-sans-MTOM</code>
@@ -194,7 +194,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-sans-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>104d</id>
             <code>104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-avec-MTOM</code>
@@ -204,7 +204,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 104-CaptureUnitaire-OK-Sans-Code-Activite-PJ-avec-MTOM"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>105a</id>
             <code>105-CaptureUnitaire-OK-HashMajMin</code>
@@ -213,7 +213,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>105b</id>
             <code>105-CaptureUnitaire-OK-HashMajMin-PJ-URL</code>
@@ -222,7 +222,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>105c</id>
             <code>105-CaptureUnitaire-OK-HashMajMin-PJ-sans-MTOM</code>
@@ -231,7 +231,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>105d</id>
             <code>105-CaptureUnitaire-OK-HashMajMin-PJ-avec-MTOM</code>
@@ -375,7 +375,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>167</id>
             <code>167-CaptureUnitaire-KO-NomFichierVide</code>
@@ -439,7 +439,7 @@
    </Categorie>
 
    <!-- ======================================================== -->
-   <!-- Récupération du document d'origine                       -->
+   <!-- Récupération du document d'origine -->
    <!-- ======================================================== -->
 
    <Categorie>
@@ -556,7 +556,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 208-CaptureMasse-OK-JarLanceArret"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>209</id>
             <code>209-CaptureMasse-OK-JarArretTomCat</code>
@@ -566,7 +566,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 209-CaptureMasse-OK-JarArretTomCat"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>210</id>
             <code>210-CaptureMasse-OK-Sans-Code-Activite</code>
@@ -576,7 +576,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 210-CaptureMasse-OK-Sans-Code-Activite"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>212</id>
             <code>212-CaptureMasse-Pile-OK-ECDE-local</code>
@@ -586,7 +586,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 212-CaptureMasse-Pile-OK-ECDE-local-1"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>214</id>
             <code>214-CaptureMasse-OK-HashMajMin</code>
@@ -596,7 +596,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 214-CaptureMasse-OK-HashMajMin"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>215</id>
             <code>215-CaptureMasse-OK-Tor-100000</code>
@@ -606,7 +606,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 215-CaptureMasse-OK-Tor-100000" AND Siren:0878871891</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>216</id>
             <code>216-CaptureMasse-OK-Tor-300000</code>
@@ -616,7 +616,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 216-CaptureMasse-OK-Tor-300000"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>217</id>
             <code>217-CaptureMasse-OK-Tor-500000</code>
@@ -626,7 +626,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 217-CaptureMasse-OK-Tor-500000"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>218</id>
             <code>218-CaptureMasse-OK-RND-Mandat-SEPA</code>
@@ -636,7 +636,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 218-CaptureMasse-OK-MANDAT-SEPA"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>219</id>
             <code>219-CaptureMasseID-OK-Tor-1000</code>
@@ -646,7 +646,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 219-CaptureMasseID-OK-Tor-1000" AND Siren: 0878871891</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>220</id>
             <code>220-CaptureMasse-Avec-Hash-OK-Tor-10</code>
@@ -656,7 +656,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 220-CaptureMasse-Avec-Hash-OK-Tor-10"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>221</id>
             <code>221-CaptureMasseID-OK-Tor-50000</code>
@@ -665,9 +665,9 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 221-CaptureMasseID-OK-Tor-50000" AND NumeroRecours: 2</luceneExemple>
-         </CasTest>      
-         
-         
+         </CasTest>
+
+
          <CasTest>
             <id>224</id>
             <code>224-CaptureMasse-OK-RUM</code>
@@ -695,7 +695,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 225-CaptureMasse-OK-Virtuel-Sans-Hash"</luceneExemple>
-         </CasTest>         
+         </CasTest>
 
          <CasTest>
             <id>226</id>
@@ -705,7 +705,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 226-CaptureMasse-OK-Virtuel-Avec-Hash"</luceneExemple>
-         </CasTest>         
+         </CasTest>
 
          <CasTest>
             <id>227</id>
@@ -715,7 +715,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 227-CaptureMasse-OK-Virtuel-Gros-Volume"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>228</id>
             <code>228-CaptureMasse-OK-Virtuel-Un-Document</code>
@@ -734,8 +734,8 @@
             <implemente>true</implemente>
             <luceneExempleList>Denomination:"Test 229-CaptureMasse-OK-Virtuel-Un-Document-Complet" AND NumeroRecours:"1"</luceneExempleList>
             <luceneExempleList>Denomination:"Test 229-CaptureMasse-OK-Virtuel-Un-Document-Complet" AND NumeroRecours:"2501"</luceneExempleList>
-         </CasTest>  
-         
+         </CasTest>
+
          <CasTest>
             <id>250</id>
             <code>250-CaptureMasse-KO-SansAuthentification</code>
@@ -885,17 +885,10 @@
             <luceneExemple>Denomination:"Test 268-CaptureMasse-KO-Tor-3-meme-doc-avec-premier-en-erreur-arbo"</luceneExemple>
          </CasTest>
 
-         <!--
-         OBSOLETE depuis le lot 120511
-         <CasTest>
-            <id>269</id>
-            <code>269-CaptureMasse-KO-Deux-Lancements</code>
-            <description>
-               La Capture de masse échoue sur le deuxième lancement si on a un seul serveur d’application
-            </description>
-            <implemente>true</implemente>
-         </CasTest>
-         -->
+         <!-- OBSOLETE depuis le lot 120511 <CasTest> <id>269</id> <code>269-CaptureMasse-KO-Deux-Lancements</code> 
+            <description> La Capture de masse échoue sur le deuxième lancement si on 
+            a un seul serveur d’application </description> <implemente>true</implemente> 
+            </CasTest> -->
 
          <CasTest>
             <id>270</id>
@@ -935,7 +928,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 273-CaptureMasse-KO-JarArretTomCatSansRepriseAvecStockage"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>275</id>
             <code>275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu</code>
@@ -945,7 +938,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 275-CaptureMasse-KO-AutreModeToutOuRien-Inconnu"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>277</id>
             <code>277-CaptureMasse-Pile-KO-ExeIntrouvable</code>
@@ -955,7 +948,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 277-CaptureMasse-Pile-KO-ExeIntrouvable"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>278</id>
             <code>278-CaptureMasse-Pile-KO-CassandraKO</code>
@@ -965,7 +958,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 278-CaptureMasse-Pile-KO-CassandraKO"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>282</id>
             <code>282-CaptureMasse-Pile-KO-ArretDFCE-Lecture</code>
@@ -1008,7 +1001,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>288</id>
             <code>288-CaptureMasse-KO-Format-XML-KO</code>
@@ -1149,7 +1142,7 @@
 
       </CasTests>
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Archivage et consultation UUID -->
    <!-- ======================================================== -->
@@ -1252,8 +1245,8 @@
 
       </CasTests>
    </Categorie>
-      
-      
+
+
    <!-- ======================================================== -->
    <!-- Recherche -->
    <!-- ======================================================== -->
@@ -1373,7 +1366,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination: "Test 311-Recherche-OK-Date-Creation" AND DateCreation:[20101003 TO 20101005]</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>312</id>
             <code>312-Recherche-OK-Date-Reception</code>
@@ -1383,7 +1376,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 312-Recherche-OK-Date-Reception" AND DateReception:[20111103 TO 20111105]</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>313</id>
             <code>313-Recherche-OK-Date-Debut-Conservation</code>
@@ -1393,7 +1386,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 313-Recherche-OK-Date-Debut-Conservation" AND DateDebutConservation:[20090903000000000 TO 20090905000000000]</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>314</id>
             <code>314-Recherche-OK-ConsultationPresenceMetadonneeVide</code>
@@ -1403,7 +1396,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 314-Recherche-OK-ConsultationPresenceMetadonneeVide"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>315</id>
             <code>315-Recherche-OK-ConsultationMetadonneeEnDouble</code>
@@ -1413,7 +1406,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 315-Recherche-OK-ConsultationMetadonneeEnDouble"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>316</id>
             <code>316-Recherche-OK-ValeurMetaIdentiqueNomMeta-DateCreation</code>
@@ -1437,7 +1430,7 @@
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeFonction:2</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeOrganismeGestionnaire:CER69</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeOrganismeProprietaire:UR750</luceneExempleList>
-            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeRND:2.3.1.1.12</luceneExempleList>            
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND CodeRND:2.3.1.1.12</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NniEmployeur:148032541101648</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroCompteExterne:30148032541101600</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND NumeroCompteInterne:719900</luceneExempleList>
@@ -1452,9 +1445,9 @@
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Siren:0123456789</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Siret:12345678912345</luceneExempleList>
             <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND SiteAcquisition:CER44</luceneExempleList>
-            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Titre:"Attestation de vigilance"</luceneExempleList>            
+            <luceneExempleList>Denomination:"Test 319-Recherche-OK-Toutes-Meta-Recherchables" AND Titre:"Attestation de vigilance"</luceneExempleList>
          </CasTest>
-         
+
          <CasTest>
             <id>320</id>
             <code>320-Recherche-OK-TrimGauche</code>
@@ -1535,7 +1528,7 @@
             <implemente>true</implemente>
             <luceneExemple>CodeRND:"2.3.1.1.12" AND TailleFichier:34 AND FormatFichier:"fmt/354" AND VersionRND:"11.1"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>357</id>
             <code>357-Recherche-KO-SAESyntaxeLuceneIncorrecte</code>
@@ -1549,7 +1542,7 @@
       </CasTests>
 
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Recherche avec nombre de résultats -->
    <!-- ======================================================== -->
@@ -1592,7 +1585,7 @@
                Test simple de la recherche par itérateur 
             </description>
             <implemente>true</implemente>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2351</id>
             <code>2351-Recherche-Iterateur-KO-MetadonneeRechercheInexistante</code>
@@ -1641,10 +1634,10 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
       </CasTests>
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Isolation des données -->
    <!-- ======================================================== -->
@@ -1696,7 +1689,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2204-IsolationDonnees-CS-Avec-Domaine-RH"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2205</id>
             <code>2205-IsolationDonnees-CS-SAE</code>
@@ -1705,7 +1698,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2205-IsolationDonnees-CS-Avec-DomaineTechnique"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2206</id>
             <code>2206-IsolationDonnees-CS-SAE-CodeRND-KO</code>
@@ -1714,7 +1707,7 @@
             </description>
             <implemente>false</implemente>
             <luceneExemple>Denomination:""</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2250</id>
             <code>2250-IsolationDonnees-CS-Plusieurs-Domaines</code>
@@ -1723,7 +1716,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:""</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2251</id>
             <code>2251-IsolationDonnees-CS-Meta-DomaineCotisant</code>
@@ -1731,7 +1724,7 @@
               Teste qu’il est impossible de stocker des documents si la métadonnée DomaineCotisant est renseignée dans la liste des métadonnées
             </description>
             <implemente>true</implemente>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2252</id>
             <code>2252-IsolationDonnees-CS-Meta-DomaineComptable</code>
@@ -1740,7 +1733,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:""</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2253</id>
             <code>2253-IsolationDonnees-CS-Meta-DomaineRH</code>
@@ -1749,7 +1742,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:""</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2254</id>
             <code>2254-IsolationDonnees-CS-Meta-DomaineTechnique</code>
@@ -1758,10 +1751,10 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:""</luceneExemple>
-         </CasTest>         
+         </CasTest>
       </CasTests>
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Consultation -->
    <!-- ======================================================== -->
@@ -1789,7 +1782,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>402</id>
             <code>402-Consultation-OK-version-120150</code>
@@ -1798,7 +1791,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>403</id>
             <code>403-Consultation-OK-TouteMetadonneeConsultable</code>
@@ -1807,7 +1800,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>404</id>
             <code>404-Consultation-OK-TypeMime-MTOM-pdf</code>
@@ -1816,7 +1809,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>405</id>
             <code>405-Consultation-OK-TypeMime-MTOM-autre-pdf</code>
@@ -1843,7 +1836,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>452</id>
             <code>452-Consultation-KO-MetadonneeConsultInexistante</code>
@@ -1852,7 +1845,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>453</id>
             <code>453-Consultation-KO-MetadonneeConsultNonAutorisee</code>
@@ -1865,9 +1858,9 @@
       </CasTests>
 
    </Categorie>
-   
-      <!-- ======================================================== -->
-   <!-- Consultation affichable-->
+
+   <!-- ======================================================== -->
+   <!-- Consultation affichable -->
    <!-- ======================================================== -->
 
    <Categorie>
@@ -2045,7 +2038,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2054-ConsultationAffichable-KO-idarchivable-inconnu-MTOM"</luceneExemple>
-         </CasTest>                  
+         </CasTest>
          <CasTest>
             <id>2056</id>
             <code>2056-ConsultationAffichable-KO-MetadonneeConsultInexistante-MTOM</code>
@@ -2054,7 +2047,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 2056-ConsultationAffichable-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>2058</id>
             <code>2058-ConsultationAffichable-KO-MetadonneeNonConsultable-MTOM</code>
@@ -2073,10 +2066,10 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 4.27.	2060-ConsultationAffichable-KO-no-page-0-MTOM"</luceneExemple>
          </CasTest>
-         
+
       </CasTests>
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Droits -->
    <!-- ======================================================== -->
@@ -2096,7 +2089,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1100-Droits-TestLibre"</luceneExemple>
          </CasTest>
-         
+
          <CasTest>
             <id>1101</id>
             <code>1101-Droits-Conformite-Archivage-Unitaire-ATT-VIGI</code>
@@ -2114,7 +2107,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1102-Droits-Conformite-Archivage-Masse-ATT-VIGI"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>1103</id>
             <code>1103-Droits-Conformite-Archivage-ATT-VIGI</code>
@@ -2123,7 +2116,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1103-Droits-Conformite-Archivage-ATT-VIGI"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>1104</id>
             <code>1104-Droits-Conformite-Recherche-ATT-VIGI</code>
@@ -2141,7 +2134,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
-         
+
          <CasTest>
             <id>1105b</id>
             <code>1105-Droits-Conformite-Consultation-MTOM-ATT-VIGI</code>
@@ -2202,7 +2195,7 @@
                ce test permet de valider que la fonctionnalité de consultation est autorisée sur un PRMD précis
             </description>
             <implemente>true</implemente>
-         </CasTest>                       
+         </CasTest>
          <CasTest>
             <id>1111b</id>
             <code>1111-Droits-Conformite-Consultation-MTOM-ATT-AEPL</code>
@@ -2219,7 +2212,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1112-Droits-Conformite-All-ATT-AEPL"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>1113</id>
             <code>1113-Droits-Conformite-Archivage-Unitaire-UNE-META</code>
@@ -2246,7 +2239,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1115-Droits-Conformite-Archivage-UNE-META" AND Siren:"3090000001"</luceneExemple>
-         </CasTest>                  
+         </CasTest>
          <CasTest>
             <id>1116</id>
             <code>1116-Droits-Conformite-Recherche-UNE-META</code>
@@ -2255,7 +2248,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
-         </CasTest>                  
+         </CasTest>
          <CasTest>
             <id>1117a</id>
             <code>1117-Droits-Conformite-Consultation-UNE-META</code>
@@ -2264,7 +2257,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
-         </CasTest>                  
+         </CasTest>
          <CasTest>
             <id>1117b</id>
             <code>1117-Droits-Conformite-Consultation-MTOM-UNE-META</code>
@@ -2273,7 +2266,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1116-Droits-Conformite-Recherche-UNE-META"</luceneExemple>
-         </CasTest>                  
+         </CasTest>
          <CasTest>
             <id>1118</id>
             <code>1118-Droits-Conformite-All-UNE-META</code>
@@ -2282,7 +2275,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1118-Droits-Conformite-All-UNE-META"</luceneExemple>
-         </CasTest>  
+         </CasTest>
          <CasTest>
             <id>1119</id>
             <code>1119-Droits-Conformite-Archivage-Unitaire-PLUSIEURS-META</code>
@@ -2300,7 +2293,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1120-Droits-Conformite-Archivage-Masse-PLUSIEURS-META"</luceneExemple>
-         </CasTest>  
+         </CasTest>
          <CasTest>
             <id>1121</id>
             <code>1121-Droits-Conformite-Archivage-PLUSIEURS-META</code>
@@ -2318,7 +2311,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1122-Droits-Conformite-Recherche-PLUSIEURS-META"</luceneExemple>
-         </CasTest>           
+         </CasTest>
          <CasTest>
             <id>1123a</id>
             <code>1123-Droits-Conformite-Consultation-PLUSIEURS-META</code>
@@ -2417,7 +2410,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1130-Droits-Conformite-Recherche-PRMD-DYNA"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>1132</id>
             <code>1132-Droits-Conformite-All-PRMD-DYNA</code>
@@ -2444,7 +2437,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1134-Droits-Conformite-Archivage-Masse-PRMD-DYNA-MULTI"</luceneExemple>
-         </CasTest>         
+         </CasTest>
          <CasTest>
             <id>1150</id>
             <code>1150-Droits-Toutes-Actions-KO-CS-Inconnu</code>
@@ -2508,8 +2501,8 @@
       </CasTests>
 
    </Categorie>
-   
-   
+
+
    <!-- ======================================================== -->
    <!-- SAE - Modification -->
    <!-- ======================================================== -->
@@ -2647,7 +2640,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1758-Ged-Technique-KO-Suppression-Valeur-Meta-DFCE-KO"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1759</id>
             <code>1759-Ged-Technique-KO-AMS-Meme-Meta</code>
             <description>
@@ -2656,7 +2649,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1759-Ged-Technique-KO-AMS-Meme-Meta"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1760</id>
             <code>1760-Ged-Technique-KO-AM-Meme-Meta</code>
             <description>
@@ -2665,7 +2658,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1760-Ged-Technique-KO-AM-Meme-Meta"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1761</id>
             <code>1761-Ged-Technique-KO-AS-Meme-Meta</code>
             <description>
@@ -2674,7 +2667,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1761-Ged-Technique-KO-AS-Meme-Meta"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1762</id>
             <code>1762-Ged-Technique-KO-MS-Meme-Meta</code>
             <description>
@@ -2683,7 +2676,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1762-Ged-Technique-KO-MS-Meme-Meta"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1763</id>
             <code>1763-Ged-Technique-KO-Modification-Meta-Inexistante</code>
             <description>
@@ -2692,7 +2685,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1763-Ged-Technique-KO-Modification-Meta-Inexistante"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1764</id>
             <code>1764-Ged-Technique-KO-Modification-Meta-Doc-Inexistant</code>
             <description>
@@ -2701,7 +2694,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1764-Ged-Technique-KO-Modification-Meta-Doc-Inexistant"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1765</id>
             <code>1765-Ged-Technique-KO-Suppression-Meta-Inexistante</code>
             <description>
@@ -2710,7 +2703,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1765-Ged-Technique-KO-Suppression-Meta-Inexistante"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1766</id>
             <code>1766-Ged-Technique-KO-Ajout-Meta-Doc-Inexistant</code>
             <description>
@@ -2719,7 +2712,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1766-Ged-Technique-KO-Ajout-Meta-Doc-Inexistant"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1767</id>
             <code>1767-Ged-Technique-KO-Suppression-Meta-Doc-Inexistant</code>
             <description>
@@ -2728,7 +2721,7 @@
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 1767-Ged-Technique-KO-Suppression-Meta-Doc-Inexistant"</luceneExemple>
          </CasTest>
-        <CasTest>
+         <CasTest>
             <id>1768</id>
             <code>1768-Ged-Technique-KO-Modification-Valeur-CodeRND-Inconnu</code>
             <description>
@@ -2742,7 +2735,7 @@
       </CasTests>
 
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- SAE - Suppression -->
    <!-- ======================================================== -->
@@ -2783,7 +2776,7 @@
       </CasTests>
 
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- SAE - Transfert -->
    <!-- ======================================================== -->
@@ -2837,7 +2830,7 @@
             </description>
             <implemente>true</implemente>
          </CasTest>
- 
+
       </CasTests>
 
    </Categorie>
@@ -2859,14 +2852,14 @@
                SAE - Activation DocumentArchivable NumeroIdArchivage Present 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"Test 2401-ActivationDocumentArchivable-NumeroIdArchivage-Present"</luceneExemple>         
+            <luceneExemple>Denomination:"Test 2401-ActivationDocumentArchivable-NumeroIdArchivage-Present"</luceneExemple>
          </CasTest>
- 
+
       </CasTests>
 
    </Categorie>
 
-   
+
    <!-- ======================================================== -->
    <!-- SuppressionMasse -->
    <!-- ======================================================== -->
@@ -2882,11 +2875,11 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 3000-SuppressionMasse-Test-Libre"</luceneExemple>
-         </CasTest>		 
+         </CasTest>
       </CasTests>
    </Categorie>
 
-   
+
    <!-- ======================================================== -->
    <!-- RestoreSuppressionMasse -->
    <!-- ======================================================== -->
@@ -2902,14 +2895,14 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 3100-RestoreSuppressionMasse-Test-Libre"</luceneExemple>
-         </CasTest>      
+         </CasTest>
       </CasTests>
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Formats -->
    <!-- ======================================================== -->
-   
+
    <Categorie>
 
       <Nom>Formats - 1800</Nom>
@@ -3101,7 +3094,7 @@
       </CasTests>
 
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- PKI -->
    <!-- ======================================================== -->
@@ -3232,7 +3225,7 @@
       </CasTests>
 
    </Categorie>
-   
+
    <!-- ======================================================== -->
    <!-- Copie -->
    <!-- ======================================================== -->
@@ -3249,11 +3242,11 @@
             <implemente>true</implemente>
             <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre"</luceneExempleList>
             <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre-Copie"</luceneExempleList>
-         </CasTest>      
+         </CasTest>
       </CasTests>
-       </Categorie>
-      
-       <!-- ======================================================== -->
+   </Categorie>
+
+   <!-- ======================================================== -->
    <!-- Consultation GNTGNS -->
    <!-- ======================================================== -->
    <Categorie>
@@ -3268,7 +3261,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 3400-ConsultationGNTGNS-Test-Libre"</luceneExemple>
-         </CasTest> 
+         </CasTest>
          <CasTest>
             <id>3401</id>
             <code>3401-ConsultationGNTGNS-OK-Consultation-document-GNT</code>
@@ -3277,7 +3270,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"3401-ConsultationGNTGNS-OK-Consultation-document-GNT"</luceneExemple>
-         </CasTest>  
+         </CasTest>
          <CasTest>
             <id>3402</id>
             <code>3402-ConsultationGNTGNS-OK-Consultation-document-GNS</code>
@@ -3286,7 +3279,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"3402-ConsultationGNTGNS-OK-Consultation-document-GNS"</luceneExemple>
-         </CasTest>      
+         </CasTest>
          <CasTest>
             <id>3450</id>
             <code>3450-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM</code>
@@ -3295,7 +3288,7 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 3450-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
-         </CasTest>    
+         </CasTest>
          <CasTest>
             <id>3451</id>
             <code>3451-ConsultationGNTGNS-KO-DocumentInexistant</code>
@@ -3304,7 +3297,24 @@
             </description>
             <implemente>true</implemente>
             <luceneExemple>Denomination:"Test 3451-ConsultationGNTGNS-KO-MetadonneeConsultInexistante-MTOM"</luceneExemple>
-         </CasTest>    
+         </CasTest>
+      </CasTests>
+   </Categorie>
+
+   <Categorie>
+      <Nom>Recuperation Metadonnee - 3500</Nom>
+      <Id>26</Id>
+      <CasTests>
+         <CasTest>
+            <id>3500</id>
+            <code>3500-Recuperation Metadonnee-TestLibre</code>
+            <description>
+                  Test libre de la Recuperation des Metadonnees
+               </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3500-Recuperation
+                  Metadonnee-Test-Libre"</luceneExemple>
+         </CasTest>
       </CasTests>
    </Categorie>
 

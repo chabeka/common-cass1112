@@ -176,6 +176,12 @@
       <path>/WEB-INF/tags/consultationGNTGNS.tag</path>
    </tag-file>
    
+   <tag-file>
+      <name>recuperationMetadonnee</name>
+      <description>Appel du service web de recuperation des metadonnees</description>
+      <path>/WEB-INF/tags/recuperationMetadonnee.tag</path>
+   </tag-file>
+   
 
    <function>
       <name>booleanToOuiNon</name>
