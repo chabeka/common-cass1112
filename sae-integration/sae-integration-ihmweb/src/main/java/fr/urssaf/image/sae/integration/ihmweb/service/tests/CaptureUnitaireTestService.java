@@ -278,7 +278,7 @@ public class CaptureUnitaireTestService {
     *           les arguments pour le String.format du message de la SoapFault
     *           attendue
     */
-   public final void appelWsOpCaptureUnitaireSoapFault(String urlServiceWeb,
+   public final CaptureUnitaireResultat appelWsOpCaptureUnitaireSoapFault(String urlServiceWeb,
          CaptureUnitaireFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
          String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
 
@@ -289,7 +289,7 @@ public class CaptureUnitaireTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, viParams, formulaire,
+      return appelWsOpCaptureUnitaire(urlServiceWeb, viStyle, viParams, formulaire,
             listener);
 
    }

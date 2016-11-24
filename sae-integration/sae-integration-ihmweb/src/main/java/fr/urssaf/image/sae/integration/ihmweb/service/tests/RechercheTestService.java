@@ -97,7 +97,7 @@ public class RechercheTestService {
          // Log de la réponse obtenue
          log.appendLogNewLine();
          log
-               .appendLogLn("Détails de la réponse obtenue de l'opération \"recherche\" :");
+         .appendLogLn("Détails de la réponse obtenue de l'opération \"recherche\" :");
          SaeServiceLogUtils.logResultatRecherche(log, response
                .getRechercheResponse(), triDesResultatsDansAffichageLog);
 
@@ -158,7 +158,7 @@ public class RechercheTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
+      this.appelWsOpRecherche(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
             testLibre, null);
 
    }
@@ -236,7 +236,7 @@ public class RechercheTestService {
             resultatTest.setStatus(TestStatusEnum.Echec);
             ResultatTestLog log = resultatTest.getLog();
             log
-                  .appendLogLn("On s'attendait à une réponse sans erreur du service web, hors on a obtenu une réponse null");
+            .appendLogLn("On s'attendait à une réponse sans erreur du service web, hors on a obtenu une réponse null");
 
          } else {
 
@@ -245,7 +245,13 @@ public class RechercheTestService {
             wsVerifieRetour(resultatTest, response, nbResultatsAttendus,
                   flagResultatsTronquesAttendu, formulaire.getCodeMetadonnees());
 
+            // Si malgré toute les vérifications le test reste au status non
+            // lancé, c'est que le check est ok.
+            if (TestStatusEnum.NonLance.equals(resultatTest.getStatus())) {
+               resultatTest.setStatus(TestStatusEnum.Succes);
+            }
          }
+
 
       }
 
@@ -291,7 +297,7 @@ public class RechercheTestService {
             log.appendLog("Erreur : on s'attendait à obtenir ");
             log.appendLog(Integer.toString(nbResultatsAttendus));
             log
-                  .appendLog(" résultat(s) de recherche, alors que l'on en a obtenu ");
+            .appendLog(" résultat(s) de recherche, alors que l'on en a obtenu ");
             log.appendLog(Integer.toString(nbResultatsObtenus));
             log.appendLogLn(".");
 
@@ -300,13 +306,13 @@ public class RechercheTestService {
          // Vérifie le flag tronqué, si demandé
          if ((flagResultatsTronquesAttendu != null)
                && (resultatTronque != flagResultatsTronquesAttendu
-                     .booleanValue())) {
+               .booleanValue())) {
 
             resultatTest.setStatus(TestStatusEnum.Echec);
 
             log.appendLogNewLine();
             log
-                  .appendLog("Erreur : on s'attendait à obtenir le flag de résultat tronqué à ");
+            .appendLog("Erreur : on s'attendait à obtenir le flag de résultat tronqué à ");
             log.appendLog(Boolean.toString(flagResultatsTronquesAttendu));
             log.appendLog(" alors qu'on a obtenu ");
             log.appendLog(Boolean.toString(resultatTronque));
@@ -457,8 +463,8 @@ public class RechercheTestService {
             null);
 
    }
-   
-   
+
+
    /**
     * Test d'appel à l'opération "recherche" du service web SaeService.<br>
     * <br>

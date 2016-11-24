@@ -1,7 +1,7 @@
+/**
+ * 
+ */
 package fr.urssaf.image.sae.integration.ihmweb.controller;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CopieFormulaire;
@@ -9,49 +9,20 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureUnitaireResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
-import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViStyle;
 
-@Controller
-@RequestMapping(value = "test3300")
-public class Test3300Controller extends AbstractTest3300Controller {
-
-   @Override
-   protected String getNumeroTest() {
-      return "3300";
-   }
+/**
+ * 
+ * 
+ */
+public abstract class AbstractTest3300SoapFaultController extends AbstractTest3300Controller {
 
    /**
-    * {@inheritDoc}
+    * Nombre de resultat par defaut attendu.
     */
-   @Override
-   protected void modificationSpecifiqueFormulaireCaptureUnitaire(
-         CaptureUnitaireFormulaire formCaptureUnitaire) {
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected void modificationSpecifiqueFormulaireCopie(
-         CopieFormulaire formCopie) {
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected void modificationSpecifiqueFormulaireRechercheDocExistant(
-         RechercheFormulaire formRecherche) {
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected void modificationSpecifiqueFormulaireRechercheDocCopie(
-         RechercheFormulaire formRecherche) {
-   }
+   private final static int NB_RESULTAT_RECH_ATTENDU = 0;
 
    /**
     * {@inheritDoc}
@@ -59,7 +30,8 @@ public class Test3300Controller extends AbstractTest3300Controller {
    @Override
    protected CopieResultat appelWsOpCopieService(String urlServiceWeb,
          CopieFormulaire formulaire, ViFormulaire viFormulaire) {
-      return null;
+      return this.getCopieTestService().appelWsOpCopie(urlServiceWeb, formulaire,
+            viFormulaire);
    }
 
    /**
@@ -69,7 +41,9 @@ public class Test3300Controller extends AbstractTest3300Controller {
    protected CaptureUnitaireResultat appelWsOpCaptureUnitaireService(
          String urlServiceWeb, CaptureUnitaireFormulaire formulaire,
          ViFormulaire viFormulaire) {
-      return null;
+      return this.getCaptureUnitaireTestService().appelWsOpCaptureUnitaireSoapFault(urlServiceWeb, formulaire,
+            ViStyle.VI_OK, viFormulaire, this.getSoapFaultAttendu(),
+            this.getSoapFaultArguments());
    }
 
    /**
@@ -78,15 +52,23 @@ public class Test3300Controller extends AbstractTest3300Controller {
    @Override
    protected RechercheResponse appelWsOpRechercheService(String urlServiceWeb,
          RechercheFormulaire formulaire, ViFormulaire viFormulaire) {
-      return null;
+      return this.getRechercheTestService().appelWsOpRechercheReponseCorrecteAttendue(urlServiceWeb, formulaire, NB_RESULTAT_RECH_ATTENDU, false, TypeComparaison.DateCreation);
    }
 
    /**
-    * {@inheritDoc}
+    * 
+    * Methode permettant de recuperer la SOAP Fault attendu.
+    * 
+    * @return
     */
-   @Override
-   protected MetadonneeValeurList getMetadonneesList(TypeRechercheEtape etape) {
-      return null;
-   }
+   abstract String getSoapFaultAttendu();
 
+
+   /**
+    * 
+    * Methode permettant de recuperer les arguments de la SOAP Fault attendu.
+    * 
+    * @return
+    */
+   abstract String[] getSoapFaultArguments();
 }

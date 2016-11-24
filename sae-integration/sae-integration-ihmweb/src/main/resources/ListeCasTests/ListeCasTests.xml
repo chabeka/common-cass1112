@@ -3243,6 +3243,103 @@
             <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre"</luceneExempleList>
             <luceneExempleList>Denomination:"Test 3300-Copie-OK-Test-Libre-Copie"</luceneExempleList>
          </CasTest>
+         <CasTest>
+            <id>3301</id>
+            <code>3301-Copie-OK-CasSimple</code>
+            <description>
+              Le but de ce service est de copier un document au sein même de la GNT à partir d’un UUID et d’une liste de métadonnées.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et pas de liste de métadonnées il faut copier le document. 
+               Ensuite on vérifiera que l’on a bien les 2 documents avec les mêmes métadonnées.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3301-Copie-OK-CasSimple"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3301-Copie-OK-CasSimpleCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3302</id>
+            <code>3302-Copie-OK-FonctionActivite</code>
+            <description>
+              Pour ce test, il convient de valider le bon fonctionnement de récupération de la fonction et de l’activité à partir d’un nouveau CodeRND.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées il faut copier le document. 
+               Ensuite on vérifiera que l’on a bien les 2 documents avec les bonnes métadonnées et particulièrement avec le nouveau CodeRnd, la nouvelle Fonction et Activité.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3302-Copie-OK-FonctionActivite"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3302-Copie-OK-FonctionActiviteCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3303</id>
+            <code>3303-Copie-OK-SansCodeActivite</code>
+            <description>
+               Pour ce test, il convient de valider le bon fonctionnement de récupération de la fonction et de l’activité à partir d’un nouveau CodeRND sachant que l’activité sera vide.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées il faut copier le document. 
+               Ensuite on vérifiera que l’on a bien les 2 documents avec les bonnes métadonnées et particulièrement avec le nouveau CodeRnd, la nouvelle Fonction et Activite.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3303-Copie-OK-SansCodeActivite"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3303-Copie-OK-SansCodeActiviteCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3305</id>
+            <code>3305-Copie-OK-MetaAvecDico</code>
+            <description>
+               Pour ce test, il convient de valider le bon fonctionnement des métadonnées auxquelles on a associé un dictionnaire.
+               Il faut d’abord stocker un document avec l’archivage unitaire en affectant une première valeur à la métadonnée liée à un dictionnaire. 
+               Puis on lance la copie à partir de l’UUID du document de l’étape précédente et d’une nouvelle valeur du dictionnaire pour la métadonnée liée à un dictionnaire. 
+               Cette opération ne doit pas provoquer d’erreur.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3305-Copie-OK-MetaAvecDico"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3305-Copie-OK-MetaAvecDicoCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3306</id>
+            <code>3306-Copie-OK-MetaNonRenseignee</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une nouvelle métadonnée lors de la copie est bien pris en comtpe.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées il faut copier le document. 
+               Ensuite on vérifiera que la métadonnée qui n’était pas renseignée dans le premier document existe bien dans le document copié.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3306-Copie-OK-MetaNonRenseignee"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3306-Copie-OK-MetaNonRenseigneeCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3351</id>
+            <code>Test 3351-Copie-KO-CodeRNDInexistant</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une métadonnée inexistante dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées comportant une métadonnée inexistante, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3351-Copie-KO-CodeRNDInexistant"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3351-Copie-KO-CodeRNDInexistantCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3352</id>
+            <code>Test 3352-Copie-KO-CodeRNDNonAutorise</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner un code RND non autorisé lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une liste de métadonnées comportant un code RND non autorisé, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3352-Copie-KO-CodeRNDNonAutorise"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3352-Copie-KO-CodeRNDNonAutoriseCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3353</id>
+            <code>Test 3353-Copie-KO-MetaNonModifiable</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une métadonnée non modifiable dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées comportant une métadonnée modifié alors qu'elle est non modifiable, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3353-Copie-KO-MetaNonModifiable"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3353-Copie-KO-MetaNonModifiableCopie"</luceneExempleList>
+         </CasTest>
       </CasTests>
    </Categorie>
 

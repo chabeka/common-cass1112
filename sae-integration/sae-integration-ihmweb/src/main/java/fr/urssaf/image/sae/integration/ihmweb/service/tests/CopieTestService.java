@@ -11,6 +11,8 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
+import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Copie;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.CopieResponse;
@@ -22,13 +24,15 @@ import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMe
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielSoapFaultService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.WsTestListener;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplLibre;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplReponseAttendue;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl.WsTestListenerImplSoapFault;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 
 /**
  * Service de test de l'opération "consultation" du service web SaeService
  */
 @SuppressWarnings( { "PMD.CyclomaticComplexity", "PMD.NPathComplexity",
-      "PMD.ExcessiveMethodLength" })
+"PMD.ExcessiveMethodLength" })
 @Service
 public class CopieTestService {
 
@@ -67,16 +71,16 @@ public class CopieTestService {
       // Appel du service web et gestion de erreurs
       try {
 
-            // Nouveau service sans MTOM
+         // Nouveau service sans MTOM
 
-            // Construction du paramètre d'entrée de l'opération
+         // Construction du paramètre d'entrée de l'opération
          Copie paramsService = SaeServiceObjectFactory.buildCopieRequest(
                formulaire.getIdGed(), formulaire.getListeMetadonnees());
 
-            // Appel du service web
+         // Appel du service web
          CopieResponse response = service.copie(paramsService);
 
-            // Transtypage de l'objet de la couche ws vers l'objet du modèle
+         // Transtypage de l'objet de la couche ws vers l'objet du modèle
          result = fromCopieNouveauService(response);
 
          // Appel du listener
@@ -124,42 +128,94 @@ public class CopieTestService {
    }
 
    /**
-    * Test libre de l'appel à l'opération "consultation" du service web
-    * SaeService.<br>
+    * Test libre de l'appel à l'opération "copie" du service web SaeService.<br>
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
     * @param formulaire
     *           le formulaire
     */
-   public final void appelWsOpCopieTestLibre(String urlServiceWeb,
+   public final CopieResultat appelWsOpCopieTestLibre(String urlServiceWeb,
          CopieFormulaire formulaire) {
-
-      appelWsOpCopieTestLibre(urlServiceWeb, formulaire, null);
-
-   }
-
-   /**
-    * Test libre de l'appel à l'opération "consultation" du service web
-    * SaeService.<br>
-    * 
-    * @param urlServiceWeb
-    *           l'URL du service web SaeService
-    * @param formulaire
-    *           le formulaire
-    * @param viParams
-    *           les paramètres du VI
-    */
-   public final void appelWsOpCopieTestLibre(String urlServiceWeb,
-         CopieFormulaire formulaire, ViFormulaire viParams) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui ne s'attend pas à un quelconque résultat (test libre)
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpCopie(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,
-            testLibre);
+      return appelWsOpCopie(urlServiceWeb, ViStyle.VI_OK, null, formulaire, testLibre);
+
+   }
+
+   /**
+    * Test libre de l'appel à l'opération "copie" du service web
+    * SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    */
+   public final CopieResultat appelWsOpCopie(String urlServiceWeb, CopieFormulaire formulaire) {
+      return this.appelWsOpCopie(urlServiceWeb, formulaire, null, null, null);
+   }
+
+   /**
+    * 
+    * Test libre de l'appel à l'opération "copie" du service web SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param faultAttendue SOAP Fault attendue
+    * @param argsMsgSoapFault Argument SOAP Fault
+    */
+   public final CopieResultat appelWsOpCopie(String urlServiceWeb,
+         CopieFormulaire formulaire, SoapFault faultAttendue, Object[] argsMsgSoapFault, ViFormulaire viParams) {
+      WsTestListener testListener = null;
+      boolean isSoapFault = faultAttendue != null;
+      if (!isSoapFault) {
+         // Création de l'objet qui implémente l'interface WsTestListener
+         // et qui attend obligatoirement une réponse.
+         testListener = new WsTestListenerImplReponseAttendue();       
+      } else {
+         // Création de l'objet qui implémente l'interface WsTestListener
+         // et qui attend obligatoirement une réponse.
+         testListener = new WsTestListenerImplSoapFault(faultAttendue, argsMsgSoapFault);  
+      }
+
+      // Appel de la méthode "générique" de test
+      CopieResultat resultat = appelWsOpCopie(urlServiceWeb, ViStyle.VI_OK,
+            viParams, formulaire,
+            testListener);
+
+      ResultatTest resultatTest = formulaire.getResultats();
+
+      if ((resultat != null)
+            && (TestStatusEnum.NonLance.equals(resultatTest.getStatus()))) {
+         resultatTest.setStatus(TestStatusEnum.Succes);
+      } else {
+         resultatTest.setStatus(TestStatusEnum.Echec);
+      }
+
+      return resultat;
+   }
+
+
+   /**
+    * Test libre de l'appel à l'opération "copie" du service web SaeService.<br>
+    * 
+    * @param urlServiceWeb
+    *           l'URL du service web SaeService
+    * @param formulaire
+    *           le formulaire
+    * @param viParamsForm
+    *           les paramètres du VI
+    */
+   public final CopieResultat appelWsOpCopie(String urlServiceWeb,
+         CopieFormulaire formulaire, ViFormulaire viParamsForm) {
+      return this.appelWsOpCopie(urlServiceWeb, formulaire, null, null, viParamsForm);
 
    }
 
