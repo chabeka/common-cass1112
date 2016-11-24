@@ -26,17 +26,18 @@
    <Environment
       name="SAE_Fichier_Configuration"
       type="java.lang.String"
-      value="C:\sae\integration\ecdesources.xml" />
+      value="/appl/sae_integration/ecdesources.xml" />
    
    <Environment
       name="SAE_Fichier_Referentiel_Test"
       type="java.lang.String"
-      value="C:\sae\integration\ecdetests.xml" />
+      value="/appl/sae_integration/ecdetests.xml" />
       
    <Environment
       name="IHM_TEST_CONFIG"
       type="java.lang.String"
-      value="C:\sae\integration\ihmtests-config.properties" />
+      value="/appl/sae_integration/ihmtests-config.properties" />
+
   
   
 </Context>
