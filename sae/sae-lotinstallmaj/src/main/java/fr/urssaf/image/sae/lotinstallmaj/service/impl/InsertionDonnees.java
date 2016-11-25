@@ -1699,6 +1699,8 @@ public class InsertionDonnees {
       // zip
       this.addColumnAutoriseGED("zip", Boolean.FALSE, cfTmpl);
 
+      this.addColumnAutoriseGED("x-fmt/111", Boolean.TRUE, cfTmpl);
+
    }
 
    private void addColumnAutoriseGED(String identifiant, Boolean value,
