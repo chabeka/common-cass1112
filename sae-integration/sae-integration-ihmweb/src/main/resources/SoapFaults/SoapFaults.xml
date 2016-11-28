@@ -100,7 +100,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>ArchiveNonTrouvee</localPart>
-      <message>Il n'existe aucun document pour l'identifiant d'archivage '%s'</message>
+      <message>Il n'existe aucun document pour l'identifiant d'archivage %s</message>
    </SoapFault>
    
    <SoapFault>
@@ -428,7 +428,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>ModificationArchiveNonTrouvee</localPart>
-      <message>Il n'existe aucun document pour l'identifiant d'archivage '%s'</message>
+      <message>Il n'existe aucun document pour l'identifiant d'archivage %s</message>
    </SoapFault>
 
      <SoapFault>
@@ -484,7 +484,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>AjoutNoteArchiveNonTrouvee</localPart>
-      <message>Il n'existe aucun document pour l'identifiant d'archivage '%s'</message>      
+      <message>Il n'existe aucun document pour l'identifiant d'archivage %s</message>      
    </SoapFault>
 
    <SoapFault>
@@ -492,7 +492,7 @@
       <namespace>urn:sae:faultcodes</namespace>
       <prefixe>sae</prefixe>
       <localPart>CaptureErreurIdGedExistant</localPart>
-      <message>L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.</message>      
+      <message>L'identifiant ged spécifié %s existe déjà et ne peut être utilisé.</message>      
    </SoapFault>
                
    <SoapFault>
@@ -509,5 +509,60 @@
       <localPart>ConsultationAffichableParametrageIncorrect</localPart>
       <message>Le numéro de page doit être compris entre la 1ère et la dernière page du document.</message>      
    </SoapFault>
-               
+   <SoapFault>
+      <id>sae_CopieAxisFault</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>CopieMetadonneeInvalide</localPart>
+      <message>L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable %s</message>      
+   </SoapFault>
+   <SoapFault>
+      <id>sae_ErreurReferentialRnd</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>ErreurReferentialRnd</localPart>
+      <message>L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable %s</message>      
+   </SoapFault>
+   <SoapFault>
+      <id>sae_InvalidValueTypeAndFormatMetadata</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>InvalidValueTypeAndFormatMetadata</localPart>
+      <message>Le type ou le format des métadonnées suivantes n'est pas valide : %s</message>      
+   </SoapFault>           
+   <SoapFault>
+      <id>sae_DuplicatedMetadata</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>DuplicatedMetadata</localPart>
+      <message>La ou les métadonnées suivantes sont renseignées plusieurs fois : %s</message>      
+   </SoapFault>
+   <SoapFault>
+      <id>sae_RequiredStorageMetadata</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>RequiredStorageMetadata</localPart>
+      <message>L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable %s</message>      
+   </SoapFault>
+   <SoapFault>
+      <id>sae_UnknownCodeRnd</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>UnknownCodeRnd</localPart>
+      <message>Le code RND %s n'est pas autorisé à l'archivage (code inexistant).</message>      
+   </SoapFault> 
+      <SoapFault>
+      <id>sae_MetadataValueNotInDictionary</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>MetadataValueNotInDictionary</localPart>
+      <message>La valeur de la métadonnée %s est incorrecte: elle n'est pas comprise dans le dictionnaire de données associé</message>      
+   </SoapFault>  
+   <SoapFault>
+      <id>sae_RequiredArchivableMetadata</id>
+      <namespace>urn:sae:faultcodes</namespace>
+      <prefixe>sae</prefixe>
+      <localPart>RequiredArchivableMetadata</localPart>
+      <message>La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : %s</message>      
+   </SoapFault>       
 </SoapFaults>

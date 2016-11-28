@@ -172,14 +172,16 @@ public class CopieTestService {
     * @param argsMsgSoapFault Argument SOAP Fault
     */
    public final CopieResultat appelWsOpCopie(String urlServiceWeb,
-         CopieFormulaire formulaire, SoapFault faultAttendue, Object[] argsMsgSoapFault, ViFormulaire viParams) {
+         CopieFormulaire formulaire, String codeSoapFaultAttendue,
+         Object[] argsMsgSoapFault, ViFormulaire viParams) {
       WsTestListener testListener = null;
-      boolean isSoapFault = faultAttendue != null;
+      boolean isSoapFault = codeSoapFaultAttendue != null;
       if (!isSoapFault) {
          // Création de l'objet qui implémente l'interface WsTestListener
          // et qui attend obligatoirement une réponse.
          testListener = new WsTestListenerImplReponseAttendue();       
       } else {
+         SoapFault faultAttendue = refSoapFault.findSoapFault(codeSoapFaultAttendue);
          // Création de l'objet qui implémente l'interface WsTestListener
          // et qui attend obligatoirement une réponse.
          testListener = new WsTestListenerImplSoapFault(faultAttendue, argsMsgSoapFault);  
@@ -192,10 +194,11 @@ public class CopieTestService {
 
       ResultatTest resultatTest = formulaire.getResultats();
 
-      if ((resultat != null)
-            && (TestStatusEnum.NonLance.equals(resultatTest.getStatus()))) {
+      if ((resultat == null)
+            && (TestStatusEnum.NonLance.equals(resultatTest.getStatus()) && !TestStatusEnum.Succes
+                  .equals(resultatTest.getStatus()))) {
          resultatTest.setStatus(TestStatusEnum.Succes);
-      } else {
+      } else if (!TestStatusEnum.Succes.equals(resultatTest.getStatus())) {
          resultatTest.setStatus(TestStatusEnum.Echec);
       }
 

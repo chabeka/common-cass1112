@@ -10,12 +10,12 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.DenominationEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 @Controller
-@RequestMapping(value = "test3351")
-public class Test3351Controller extends AbstractTest3350SoapFaultController {
+@RequestMapping(value = "test3356")
+public class Test3356Controller extends AbstractTest3350SoapFaultController {
 
    @Override
    protected String getNumeroTest() {
-      return "3351";
+      return "3356";
    }
 
    /**
@@ -27,7 +27,7 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
       formCaptureUnitaire.getResultats().setStatus(TestStatusEnum.SansStatus);
       formCaptureUnitaire.getMetadonnees().modifieValeurMeta(
             DenominationEnum.DENOMINATION.toString(),
-            DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO.toString());
+            DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO.toString());
    }
 
    /**
@@ -39,9 +39,10 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
       formCopie.getResultats().setStatus(TestStatusEnum.SansStatus);
       formCopie.getListeMetadonnees().modifieValeurMeta(
             DenominationEnum.DENOMINATION.toString(),
-            DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO_COPIE.toString());
-      formCopie.getListeMetadonnees()
-      .modifieValeurMeta("CodeRND", "0.0.0.0.00");
+            DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO_COPIE
+            .toString());
+      formCopie.getListeMetadonnees().modifieValeurMeta("DateCreation",
+            "mauvaisFormat");
    }
 
    /**
@@ -50,7 +51,8 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
    @Override
    protected void modificationSpecifiqueFormulaireRechercheDocExistant(
          RechercheFormulaire formRecherche) {
-      formRecherche.setRequeteLucene(determineRequeteLucene(DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO
+      formRecherche
+      .setRequeteLucene(determineRequeteLucene(DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO
             .toString()));
 
       this.initialiseMetadonnees(formRecherche.getCodeMetadonnees(),
@@ -63,7 +65,8 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
    @Override
    protected void modificationSpecifiqueFormulaireRechercheDocCopie(
          RechercheFormulaire formRecherche) {
-      formRecherche.setRequeteLucene(determineRequeteLucene(DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO_COPIE
+      formRecherche
+      .setRequeteLucene(determineRequeteLucene(DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO_COPIE
             .toString()));
 
       this.initialiseMetadonnees(formRecherche.getCodeMetadonnees(),
@@ -75,7 +78,7 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
     */
    @Override
    String getSoapFaultAttendu() {
-      return "sae_UnknownCodeRnd";
+      return "sae_InvalidValueTypeAndFormatMetadata";
    }
 
    /**
@@ -83,7 +86,7 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
     */
    @Override
    Object[] getSoapFaultArguments() {
-      return new String[] { "0.0.0.0.00" };
+      return new String[] { "DateCreation" };
    }
 
    /**
@@ -91,7 +94,7 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
     */
    @Override
    String getDenominationDocCopie() {
-      return DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO_COPIE
+      return DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO_COPIE
             .toString();
    }
 
@@ -100,7 +103,6 @@ public class Test3351Controller extends AbstractTest3350SoapFaultController {
     */
    @Override
    String getDenominationDocExistant() {
-      return DenominationEnum.DENOMINATION_CODE_RND_INEXISTANT_KO.toString();
+      return DenominationEnum.DENOMINATION_META_FORMAT_INCORRECT_KO.toString();
    }
-
 }

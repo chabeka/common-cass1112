@@ -234,6 +234,149 @@ public enum DenominationEnum{
          return "Test 3353-Copie-KO-MetaNonModifiableCopie";
       }
 
-   }
+   },
 
+   /**
+    * Meta en double KO
+    */
+   DENOMINATION_META_EN_DOUBLE_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3354-Copie-KO-MetaEnDouble";
+      }
+
+   },
+
+   /**
+    * Meta en double KO COPIE
+    */
+   DENOMINATION_META_EN_DOUBLE_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3354-Copie-KO-MetaEnDoubleCopie";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO
+    */
+   DENOMINATION_META_OBLIGATOIRE_OMISE_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3355-Copie-KO-MetaObligatoireOmise";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO COPIE
+    */
+   DENOMINATION_META_OBLIGATOIRE_OMISE_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3355-Copie-KO-MetaObligatoireOmiseCopie";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO
+    */
+   DENOMINATION_META_FORMAT_INCORRECT_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3356-Copie-KO-MetaFormatIncorrect";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO COPIE
+    */
+   DENOMINATION_META_FORMAT_INCORRECT_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3356-Copie-KO-MetaFormatIncorrectCopie";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO
+    */
+   DENOMINATION_DROIT_INSUFFISANT_INCORRECT_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3357-Copie-KO-DroitInsuffisant";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO COPIE
+    */
+   DENOMINATION_DROIT_INSUFFISANT_INCORRECT_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3357-Copie-KO-DroitInsuffisantCopie";
+      }
+
+   },
+
+   /**
+    * PRMD ne contient pas le code RND attendu KO
+    */
+   DENOMINATION_PRMD_SANS_CODE_RND_ATTENDU_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3358-Copie-KO-PrmdSansCodeRndAttendu";
+      }
+
+   },
+
+   /**
+    * PRMD ne contient pas le code RND attendu KO COPIE
+    */
+   DENOMINATION_PRMD_SANS_CODE_RND_ATTENDU_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3358-Copie-KO-PrmdSansCodeRndAttenduCopie";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO
+    */
+   DENOMINATION_VALEUR_DICO_INEXISTANT_KO {
+
+      @Override
+      public String toString() {
+         return "Test 3359-Copie-KO-ValeurDicoInexistant";
+      }
+
+   },
+
+   /**
+    * Meta non modifible KO COPIE
+    */
+   DENOMINATION_VALEUR_DICO_INEXISTANT_KO_COPIE {
+
+      @Override
+      public String toString() {
+         return "Test 3359-Copie-KO-ValeurDicoInexistantCopie";
+      }
+
+   }
 };

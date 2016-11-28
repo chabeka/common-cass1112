@@ -89,4 +89,11 @@ public class Test3300Controller extends AbstractTest3300Controller {
       return null;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void modificationSpecifiqueFormulaireVI(ViFormulaire viFormulaire) {
+   }
+
 }

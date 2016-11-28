@@ -33,34 +33,34 @@ import fr.urssaf.image.sae.integration.ihmweb.signature.XmlSignature;
 public class ViService {
 
    private static Logger LOGGER = LoggerFactory.getLogger(ViService.class);
-   
+
    private static final String PATH_MODELE_SAML = "viModeles/modele_assertion_saml2.xml";
    private static final String PATH_MODELE_WSSE = "viModeles/modele_wsseSecurity.xml";
-   
-   private static final String DEFAULT_ID_CERTIF = "1";
-   
+
+   public static final String DEFAULT_ID_CERTIF = "1";
+
    private static final String DEFAULT_METHODAUTHN2 = "urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified";
-   
+
    private CertificatService certificatService;
-   
+
    private List<MyKeyStore> keystores;
-   
-   
+
+
    /**
     * Constructeur
     */
    @Autowired
    public ViService(CertificatService certifService) {
-      
+
       this.certificatService = certifService;
-      
+
       keystores = new ArrayList<MyKeyStore>();
-      
+
       loadAllKeyStores();
-      
+
    }
-   
-   
+
+
    /**
     * Génération d'un VI de type tel que demandé en paramètres d'entrée
     * @param viStyle le type de VI requis
@@ -69,7 +69,7 @@ public class ViService {
    public String generationVi(ViStyle viStyle) {
       return generationVi(viStyle, null);
    }
-   
+
    /**
     * Génération d'un VI de type tel que demandé en paramètres d'entrée
     * @param viStyle le type de VI requis
@@ -77,101 +77,101 @@ public class ViService {
     * @return le VI généré
     */
    public String generationVi(ViStyle viStyle, ViFormulaire viParams) {
-      
-      
+
+
       // Sans VI
       if (ViStyle.VI_SANS.equals(viStyle)) {
          return StringUtils.EMPTY;
       } 
-      
+
       // VI OK
       else if (ViStyle.VI_OK.equals(viStyle)) {
          return generationVi_Ok(viParams); 
       }
-      
+
       // VI provoquant la Soap Fault wsse:SecurityTokenUnavailable
       else if (ViStyle.VI_SF_wsse_SecurityTokenUnavailable.equals(viStyle)) {
          return generationVi_SoapFault_wsse_SecurityTokenUnavailable();
       }
-      
+
       // VI provoquant la Soap Fault wsse:InvalidSecurityToken
       else if (ViStyle.VI_SF_wsse_InvalidSecurityToken.equals(viStyle)) {
          return generationVi_SoapFault_wsse_InvalidSecurityToken();
       }
-      
+
       // VI provoquant la Soap Fault wsse:FailedCheck
       else if (ViStyle.VI_SF_wsse_FailedCheck.equals(viStyle)) {
          return generationVi_SoapFault_wsse_FailedCheck();
       }
-      
+
       // VI provoquant la Soap Fault vi:InvalidVI
       else if (ViStyle.VI_SF_vi_InvalidVI.equals(viStyle)) {
          return generationVi_SoapFault_vi_InvalidVI();
       }
-      
+
       // VI provoquant la Soap Fault vi:InvalidService
       else if (ViStyle.VI_SF_vi_InvalidService.equals(viStyle)) {
          return generationVi_SoapFault_vi_InvalidService();
       }
-      
+
       // VI provoquant la Soap Fault vi:InvalidAuthLevel
       else if (ViStyle.VI_SF_vi_InvalidAuthLevel.equals(viStyle)) {
          return generationVi_SoapFault_vi_InvalidAuthLevel();
       }
-      
+
       // VI provoquant la Soap Fault sae:DroitsInsuffisants
       else if (ViStyle.VI_SF_sae_DroitsInsuffisants.equals(viStyle)) {
          return generationVi_SoapFault_sae_DroitsInsuffisants();
       }
-      
+
       // Autres VI non implémentés (vérification technique)
       else {
          throw new IntegrationRuntimeException("Le VI de type " + viStyle + " n'est pas implémenté");
       }
    }
-   
-   
+
+
    private String generationVi_Ok(ViFormulaire viParams) {
-      
+
       DateTime systemDate = new DateTime();
-      
+
       String assertionId = UUID.randomUUID().toString();
       String authnInstant = defaultAuthnInstant(systemDate);
       String notOnOrAfter = defaultNotOnOrAfter(systemDate);
       String notBefore = defaultNotBefore(systemDate);
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
-      
+
       String issuer;
       String recipient;
       String audience;
       String[] pagm;
-      
+
       String idCertif;
-      
+
       if ((viParams==null) || (StringUtils.isBlank(viParams.getIssuer()))) {
-         
+
          issuer = SaeIntegrationConstantes.VI_DEFAULT_ISSUER;
          recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
          audience = SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE;
 
          pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
-         
+
          idCertif = DEFAULT_ID_CERTIF; 
-         
+
       } else {
-         
+
          issuer = viParams.getIssuer();
          recipient = viParams.getRecipient();
          audience = viParams.getAudience();
-         
+
          PagmList pagmList = viParams.getPagms();
-         pagm = (String[])viParams.getPagms().toArray(new String[pagmList.size()]);
-         
+         pagm = viParams.getPagms().toArray(new String[pagmList.size()]);
+
          idCertif = viParams.getIdCertif();
-         
+
       }
-      
-      
+
+
       return generationVi(
             assertionId,
             issuer,
@@ -183,22 +183,22 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-         
+
    }
-   
-   
+
+
    private String defaultAuthnInstant(DateTime systemDate) {
       return systemDate.toString();
    }
-   
+
    private String defaultNotOnOrAfter(DateTime systemDate) {
       return systemDate.plusHours(2).toString();
    }
-   
+
    private String defaultNotBefore(DateTime systemDate) {
       return systemDate.minusHours(2).toString();
    }
-   
+
    /**
     * Génération d'un vecteur d'identification valide,
     * pour le mode application à application.<br>
@@ -242,9 +242,9 @@ public class ViService {
          String[] pagm,
          String methodAuthn2,
          String idCertif) {
-      
+
       try {
-      
+
          String assertionNonSignee = getAssertionNonSignee(
                assertionId,
                issuer,
@@ -255,22 +255,22 @@ public class ViService {
                notBefore,
                pagm,
                methodAuthn2);
-         
+
          String assertionSignee = getAssertionSignee(assertionNonSignee, idCertif);
-         
+
          String enTestWsSecurity = getEnTestWsSecurity(assertionSignee,assertionId); 
-         
+
          return enTestWsSecurity;
-         
-       
+
+
       }
       catch (Exception ex) {
          throw new IntegrationRuntimeException(ex);
       }
-      
+
    }
-   
-   
+
+
    private String getAssertionNonSignee(
          String assertionId,
          String issuer,
@@ -281,13 +281,13 @@ public class ViService {
          String notBefore,
          String[] pagms,
          String methodAuthn2) throws IOException {
-      
+
       ClassPathResource resource = new ClassPathResource(PATH_MODELE_SAML); 
       List<String> lines = IOUtils.readLines(resource.getInputStream());
       String assertion = StringUtils.join(lines, "\r\n");
-      
+
       String pagmsAplat = construitListePagm(pagms);
-      
+
       assertion = StringUtils.replace(assertion, "[AssertionID]", assertionId);
       assertion = StringUtils.replace(assertion, "[Issuer]", issuer);
       assertion = StringUtils.replace(assertion, "[Recipient]", recipient);
@@ -298,78 +298,78 @@ public class ViService {
       assertion = StringUtils.replace(assertion, "[PAGM]", pagmsAplat);
       assertion = StringUtils.replace(assertion, "[MethodAuthn2]", methodAuthn2);
       assertion = StringUtils.replace(assertion, "[Login]", "Christine");
-      
+
       return assertion;
-      
+
    }
-   
-   
+
+
    private String construitListePagm(String[] pagm) {
-      
+
       List<String> pagmList = new ArrayList<String>();
-      
+
       for (String unPagm: pagm) {
          pagmList.add("<saml2:AttributeValue>" + unPagm + "</saml2:AttributeValue>");
       }
-      
+
       String result = StringUtils.join(pagmList, "\r\n");
-      
+
       return result;
-      
+
    }
-   
-   
+
+
    private String getAssertionSignee(
          String assertionNonSignee,
          String idCertif) {
-    
+
       try {
-      
+
          MyKeyStore myKeystore = findMyKeyStore(idCertif);
-         
+
          String assertionSignee = XmlSignature.signeXml(
                IOUtils.toInputStream(assertionNonSignee), 
                myKeystore.getKeystore(),
                myKeystore.getAliasClePrivee(), 
                myKeystore.getPassword());
-         
+
          return assertionSignee;
-      
-      } catch (Exception ex) {
-         throw new IntegrationRuntimeException(ex);
-      }
-      
-   }
-   
-   
-   private KeyStore chargeKeyStore(Certificat certif) {
-         
-      return chargeKeyStore(certif.getChemin(), certif.getPassword());
-      
-   }
-   
-   private KeyStore chargeKeyStore(
-         String cheminPkcs12dansRessource,
-         String password)  {
-      
-      try {
-         
-         ClassPathResource resource = new ClassPathResource(cheminPkcs12dansRessource);
-         
-         KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
-         
-         keystore.load(resource.getInputStream(), password.toCharArray());
-         
-         return keystore;
-      
+
       } catch (Exception ex) {
          throw new IntegrationRuntimeException(ex);
       }
 
    }
-   
-   
-   
+
+
+   private KeyStore chargeKeyStore(Certificat certif) {
+
+      return chargeKeyStore(certif.getChemin(), certif.getPassword());
+
+   }
+
+   private KeyStore chargeKeyStore(
+         String cheminPkcs12dansRessource,
+         String password)  {
+
+      try {
+
+         ClassPathResource resource = new ClassPathResource(cheminPkcs12dansRessource);
+
+         KeyStore keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
+
+         keystore.load(resource.getInputStream(), password.toCharArray());
+
+         return keystore;
+
+      } catch (Exception ex) {
+         throw new IntegrationRuntimeException(ex);
+      }
+
+   }
+
+
+
    /**
     * Utilisation du modèle src/test/resources/modele_vi/modele_wsseSecurity.xml<br>
     * <br>
@@ -384,26 +384,26 @@ public class ViService {
    private String getEnTestWsSecurity(
          String assertionSignee,
          String assertionId) {
-      
+
       try {
-      
+
          ClassPathResource resource = new ClassPathResource(PATH_MODELE_WSSE); 
          List<String> lines = IOUtils.readLines(resource.getInputStream());
          String enTestWsSecurity = StringUtils.join(lines, "\r\n");
-         
+
          enTestWsSecurity = StringUtils.replace(enTestWsSecurity, "[Assertion]", assertionSignee);
          enTestWsSecurity = StringUtils.replace(enTestWsSecurity, "[AssertionID]", assertionId);
-         
+
          return enTestWsSecurity; 
-      
-      
+
+
       } catch (Exception ex) {
          throw new IntegrationRuntimeException(ex);
       }
-      
+
    }
-   
-   
+
+
    /**
     * Génération du VI pour provoquer la SoapFault wsse:SecurityTokenUnavailable<br>
     * <br>
@@ -413,24 +413,24 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_wsse_SecurityTokenUnavailable() {
-      
+
       LOGGER.debug("Début de la génération d'un VI wsse:SecurityTokenUnavailable");
-      
+
       StringBuilder sBuilder = new StringBuilder();
-      
+
       sBuilder.append("<wsse:Security");
       sBuilder.append(" xmlns:wsse=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd\"");
       sBuilder.append(" xmlns:wsu=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\">");
       sBuilder.append("</wsse:Security>");
-      
+
       String vi = sBuilder.toString();
-      
+
       LOGGER.debug("Fin de la génération d'un VI wsse:SecurityTokenUnavailable");
       return vi ;
-      
+
    }
-   
-   
+
+
    /**
     * Génération du VI pour provoquer la SoapFault wsse:InvalidSecurityToken<br>
     * <br>
@@ -440,11 +440,11 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_wsse_InvalidSecurityToken() {
-      
+
       LOGGER.debug("Début de la génération d'un VI wsse:InvalidSecurityToken");
-      
+
       DateTime systemDate = new DateTime();
-      
+
       String assertionId = UUID.randomUUID().toString();
       String issuer = StringUtils.EMPTY;
       String recipient = SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT;
@@ -455,7 +455,7 @@ public class ViService {
       String[] pagm = new String[] {SaeIntegrationConstantes.VI_DEFAULT_PAGM} ;
       String methodAuthn2 = DEFAULT_METHODAUTHN2;
       String idCertif = DEFAULT_ID_CERTIF; 
-      
+
       String vi = generationVi(
             assertionId,
             issuer,
@@ -467,13 +467,13 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-      
+
       LOGGER.debug("Fin de la génération d'un VI wsse:InvalidSecurityToken");
       return vi;
-      
+
    }
-   
-   
+
+
    /**
     * Génération du VI pour provoquer la SoapFault wsse:FailedCheck<br>
     * <br>
@@ -483,13 +483,13 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_wsse_FailedCheck() {
-      
+
       // Log
       LOGGER.debug("Début de la génération d'un VI wsse:FailedCheck");
-      
+
       // Appel de la méthode générant un VI OK
       String vi = generationVi_Ok(null);
-      
+
       // Effectue un rechercher/remplacer
       // On remplace
       //   <saml2:Issuer>SaeIntegration</saml2:Issuer>
@@ -498,13 +498,13 @@ public class ViService {
       String searchString = "<saml2:Issuer>" + SaeIntegrationConstantes.VI_DEFAULT_ISSUER + "</saml2:Issuer>";
       String replacement = "<saml2:Issuer>SaeIntegration2</saml2:Issuer>";
       vi = StringUtils.replaceOnce(vi, searchString, replacement);
-      
+
       // Renvoi du VI avec la valeur de la signature truandée
       LOGGER.debug("Fin de la génération d'un VI wsse:FailedCheck");
       return vi;
-      
+
    }
-   
+
    /**
     * Génération du VI pour provoquer la SoapFault vi:InvalidVI<br>
     * <br>
@@ -513,10 +513,10 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_vi_InvalidVI() {
-      
+
       // Log
       LOGGER.debug("Début de la génération d'un VI vi:InvalidVI");
-      
+
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
@@ -540,13 +540,13 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-      
+
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidVI");
       return vi;
-      
+
    }
-   
+
    /**
     * Génération du VI pour provoquer la SoapFault vi:InvalidService<br>
     * <br>
@@ -556,10 +556,10 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_vi_InvalidService() {
-      
+
       // Log
       LOGGER.debug("Début de la génération d'un VI vi:InvalidService");
-      
+
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
@@ -583,13 +583,13 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-      
+
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidService");
       return vi;
-      
+
    }
-   
+
    /**
     * Génération du VI pour provoquer la SoapFault vi:InvalidAuthLevel<br>
     * <br>
@@ -599,10 +599,10 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_vi_InvalidAuthLevel() {
-      
+
       // Log
       LOGGER.debug("Début de la génération d'un VI vi:InvalidAuthLevel");
-      
+
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
@@ -626,13 +626,13 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-      
+
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI vi:InvalidAuthLevel");
       return vi;
-      
+
    }
-   
+
    /**
     * Génération du VI pour provoquer la SoapFault sae:DroitsInsuffisants<br>
     * <br>
@@ -642,10 +642,10 @@ public class ViService {
     * @return le VI
     */
    private String generationVi_SoapFault_sae_DroitsInsuffisants() {
-      
+
       // Log
       LOGGER.debug("Début de la génération d'un VI sae:DroitsInsuffisants");
-      
+
       // Appel de la méthode générant un VI OK
       DateTime systemDate = new DateTime();
       String assertionId = UUID.randomUUID().toString();
@@ -669,62 +669,62 @@ public class ViService {
             pagm,
             methodAuthn2,
             idCertif);
-      
+
       // Renvoi du VI
       LOGGER.debug("Fin de la génération d'un VI sae:DroitsInsuffisants");
       return vi;
-      
+
    }
-   
+
    private void loadAllKeyStores() {
-      
+
       KeyStore keystore;
       String aliasClePrivee;
       for (Certificat certif : certificatService.getCertificats().getCertificats()) {
-         
+
          keystore = chargeKeyStore(certif);
-         
+
          aliasClePrivee = trouveAliasClePrivee(keystore);
-         
+
          keystores.add(new MyKeyStore(
                certif.getId(), keystore, certif.getPassword(), aliasClePrivee));
-         
+
       }
-      
+
    }
-   
-   
+
+
    private MyKeyStore findMyKeyStore(String idCertif) {
-      
+
       for(MyKeyStore ks : keystores) {
          if (ks.getIdCertif().equals(idCertif)) {
             return ks;
          }
       }
       return null;
-      
+
    }
-   
+
    private String trouveAliasClePrivee(KeyStore keystore) {
-      
+
       List<String> aliases;
       try {
-         
+
          aliases = Collections.list(keystore.aliases());
-         
+
          for (String alias: aliases) {
             if (keystore.isKeyEntry(alias)) {
                return alias;
             }
          }
-         
+
          // Si pas trouvé, on lève une exception
          throw new IntegrationRuntimeException("");
-         
+
       } catch (KeyStoreException e) {
          throw new IntegrationRuntimeException(e);
       }
-      
+
    }
-   
+
 }

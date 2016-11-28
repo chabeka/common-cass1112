@@ -3315,7 +3315,7 @@
          </CasTest>
          <CasTest>
             <id>3351</id>
-            <code>Test 3351-Copie-KO-CodeRNDInexistant</code>
+            <code>3351-Copie-KO-CodeRNDInexistant</code>
             <description>
                Pour ce test, il convient de valider que le fait de renseigner une métadonnée inexistante dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
                Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées comportant une métadonnée inexistante, il faut copier le document. 
@@ -3327,7 +3327,7 @@
          </CasTest>
          <CasTest>
             <id>3352</id>
-            <code>Test 3352-Copie-KO-CodeRNDNonAutorise</code>
+            <code>3352-Copie-KO-CodeRNDNonAutorise</code>
             <description>
                Pour ce test, il convient de valider que le fait de renseigner un code RND non autorisé lors de la copie ne permet pas d'utiliser ce service.
                Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une liste de métadonnées comportant un code RND non autorisé, il faut copier le document. 
@@ -3339,7 +3339,7 @@
          </CasTest>
          <CasTest>
             <id>3353</id>
-            <code>Test 3353-Copie-KO-MetaNonModifiable</code>
+            <code>3353-Copie-KO-MetaNonModifiable</code>
             <description>
                Pour ce test, il convient de valider que le fait de renseigner une métadonnée non modifiable dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
                Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées comportant une métadonnée modifié alors qu'elle est non modifiable, il faut copier le document. 
@@ -3348,6 +3348,79 @@
             <implemente>true</implemente>
             <luceneExempleList>Denomination:"Test 3353-Copie-KO-MetaNonModifiable"</luceneExempleList>
             <luceneExempleList>Denomination:"Test 3353-Copie-KO-MetaNonModifiableCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3354</id>
+            <code>3354-Copie-KO-MetaEnDouble</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une métadonnée en double dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées comportant une métadonnée modifié et la même métadonné en double, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3354-Copie-KO-MetaEnDouble"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3354-Copie-KO-MetaEnDoubleCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3355</id>
+            <code>3355-Copie-KO-MetaObligatoireOmise</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une métadonnée obligatoire omise dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées ne comportant pas une métadonnée alors qu'elle est obligatoire, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3355-Copie-KO-MetaObligatoireOmise"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3355-Copie-KO-MetaObligatoireOmiseCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3356</id>
+            <code>3356-Copie-KO-MetaFormatIncorrect</code>
+            <description>
+               Pour ce test, il convient de valider que le fait de renseigner une métadonnée au format incorrect dans le referentiel lors de la copie ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et une nouvelle liste de métadonnées ayant un format incorrect, il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3356-Copie-KO-MetaFormatIncorrect"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3356-Copie-KO-MetaFormatIncorrectCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3357</id>
+            <code>3357-Copie-KO-DroitInsuffisant</code>
+            <description>
+               Pour ce test, il convient de valider que le fait d'avoir des droits insuffisant pour la copie ne permet pas d'utiliser ce service. Les droits utilisateurs ne permettent pas de faire la copie (Pas de PAGM avec action 'copie')
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et il faut copier le document. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3357-Copie-KO-DroitInsuffisant"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3357-Copie-KO-DroitInsuffisantCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3358</id>
+            <code>3358-Copie-KO-PrmdSansCodeRndAttendu</code>
+            <description>
+               Pour ce test, il convient de valider que le filtre PRMD sur les droits utilisateur ne permet pas d'utiliser ce service s'il est mal renseigné. On affecte donc un PRMD avec un code RND particulier.
+               Il faut d’abord stocker un document avec l’archivage unitaire puis à partir de l’UUID du document et il faut copier le document avec un Code RND non attendu. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3358-Copie-KO-PrmdSansCodeRndAttendu"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3358-Copie-KO-PrmdSansCodeRndAttenduCopie"</luceneExempleList>
+         </CasTest>
+         <CasTest>
+            <id>3359</id>
+            <code>3359-Copie-KO-ValeurDicoInexistant</code>
+            <description>
+               Pour ce test, il convient de valider le fait de faire appel au service de copie avec un code dictionnaire non référencé ne permet pas d'utiliser ce service.
+               Il faut d’abord stocker un document avec l’archivage unitaire en affectant une première valeur à la métadonnée liée à un dictionnaire. 
+               Puis on lance la copie à partir de l’UUID du document de l’étape précédente et d’une nouvelle valeur du dictionnaire non referencé pour la métadonnée liée à un dictionnaire. 
+               Ensuite on vérifiera que le document n'a pas été copié et qu'une SOAP Fault apparait bien.
+            </description>
+            <implemente>true</implemente>
+            <luceneExempleList>Denomination:"Test 3359-Copie-KO-ValeurDicoInexistant"</luceneExempleList>
+            <luceneExempleList>Denomination:"Test 3359-Copie-KO-ValeurDicoInexistantCopie"</luceneExempleList>
          </CasTest>
       </CasTests>
    </Categorie>

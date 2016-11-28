@@ -22,6 +22,8 @@
 
 	<sae:urlServiceWeb />
 	
+	<sae:vi objetFormulaire="${formulaire.viFormulaire}" pathFormulaire="viFormulaire" />
+	
 	<sae:captureUnitaire numeroEtape="capture_unitaire_copie" objetFormulaire="${formulaire.captureUnitaire}" pathFormulaire="captureUnitaire" />
 
 	<sae:copie numeroEtape="copie" objetFormulaire="${formulaire.copie}" pathFormulaire="copie" />

@@ -59,7 +59,7 @@ public final class SaeIntegrationConstantes {
    /**
     * Pour les VI : PAGM par défaut
     */
-   public static final String VI_DEFAULT_PAGM = "PAGM_TOUTES_ACTIONS";
+   public static final String VI_DEFAULT_PAGM = PagmCodeEnum.PAGM_TOUTES_ACTIONS.toString();
    
    
    /**
@@ -70,7 +70,7 @@ public final class SaeIntegrationConstantes {
    /**
     * Pour les VI : PAGM NAT
     */
-   public static final String VI_DEFAULT_PAGM_NAT = "PAGM_TOUTES_ACTIONS_NAT";
+   public static final String VI_DEFAULT_PAGM_NAT = PagmCodeEnum.PAGM_TOUTES_ACTIONS_NAT.toString();
 
    /**
     * Le code long de la métadonnée CodeOrganismeProprietaire

@@ -55,4 +55,11 @@ public abstract class AbstractTest3300OkController extends AbstractTest3300Contr
             urlServiceWeb, formulaire, NB_RESULTAT_RECH_ATTENDU, false,
             TypeComparaison.DateCreation, viFormulaire);
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void modificationSpecifiqueFormulaireVI(ViFormulaire viFormulaire) {
+   }
 }

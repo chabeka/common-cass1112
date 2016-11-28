@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.integration.ihmweb.controller;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
+import fr.urssaf.image.sae.integration.ihmweb.constantes.PagmCodeEnum;
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CopieFormulaire;
@@ -17,10 +19,12 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.CodeMetadonneeList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.DenominationEnum;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheResponse;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.security.ViService;
 import fr.urssaf.image.sae.integration.ihmweb.service.referentiels.ReferentielMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.LuceneUtils;
 
@@ -31,12 +35,17 @@ public abstract class AbstractTest3300Controller extends
 AbstractTestWsController<TestWsCopieFormulaire> {
 
    /**
+    * Pour les VI : issuer par défaut
+    */
+   protected static final String VI_SOAP_FAULT_ISSUER = "CS_COPIE";
+
+   /**
     * Document de copie OK cas simple dans ECDE.
     */
    private static final String DOC_TEST_3301_COPIE_OK_CAS_SIMPLE = "SAE_INTEGRATION/20110822/Copie-3301-Copie-OK-CasSimple/documents/doc1.PDF";
 
    /**
-    * Enumeration pour pouvoir diférentier les differentes meta specifiques aux
+    * Enumeration pour pouvoir différentier lla liste des metas specifiques aux
     * cas de test.
     */
    protected enum GroupMetasType {
@@ -69,6 +78,16 @@ AbstractTestWsController<TestWsCopieFormulaire> {
          @Override
          public String toString() {
             return "periode";
+         }
+      },
+      /**
+       * DEFAUT
+       */
+      DEFAUT {
+
+         @Override
+         public String toString() {
+            return "defaut";
          }
       }
    }
@@ -109,6 +128,8 @@ AbstractTestWsController<TestWsCopieFormulaire> {
    protected TestWsCopieFormulaire getFormulairePourGet() {
       // Création du formulaire de test de la copie
       TestWsCopieFormulaire formulaire = new TestWsCopieFormulaire();
+
+      this.modificationFormulaireVI(formulaire.getViFormulaire());
 
       // Modification du formulaire de capture unitaire
       this.modifierFormulaireCaptureUnitaire(formulaire.getCaptureUnitaire(),
@@ -152,7 +173,7 @@ AbstractTestWsController<TestWsCopieFormulaire> {
                formulaire.getUrlServiceWeb(),
                formulaire.getRechercheDocExistant(),
                formulaire.getViFormulaire(), isTestLibre),
-               formulaire.getRechercheDocCopie(),
+               formulaire.getRechercheDocExistant(),
                TypeRechercheEtape.RECH_ETAPE_DOC_EXISTANT, isTestLibre);
       } else {
          throw new IntegrationRuntimeException("L'étape " + etape
@@ -293,6 +314,8 @@ AbstractTestWsController<TestWsCopieFormulaire> {
          metasCodes.addAll(initialisationNvlMetaDicoMetadonnees());
       } else if (GroupMetasType.PERIODE.equals(groupTypeMetas)) {
          metasCodes.addAll(initialisationPeriodeMetadonnees());
+      } else if (GroupMetasType.DEFAUT.equals(groupTypeMetas)) {
+         metasCodes.addAll(initialisationDefaultMetadonnees());
       }
    }
 
@@ -356,6 +379,35 @@ AbstractTestWsController<TestWsCopieFormulaire> {
       formCaptureUnitaire.getMetadonnees().addAll(metas);
 
       this.modificationSpecifiqueFormulaireCaptureUnitaire(formCaptureUnitaire);
+   }
+
+   /**
+    * Methode permettant de modifier le formulaire de VI.
+    * 
+    * @param viFormulaire
+    *           Formulaire de VI.
+    */
+   private void modificationFormulaireVI(ViFormulaire viFormulaire) {
+
+      this.initialiseFormulaireVIParDefaut(viFormulaire);
+
+      this.modificationSpecifiqueFormulaireVI(viFormulaire);
+   }
+
+   /**
+    * Methode permettant d'initialiser le VI par defaut pour la copie.
+    * 
+    * @param viFormulaire
+    *           Formulaire VI.
+    */
+   private void initialiseFormulaireVIParDefaut(ViFormulaire viFormulaire) {
+      viFormulaire.setIssuer(VI_SOAP_FAULT_ISSUER);
+      viFormulaire.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
+      viFormulaire.setAudience(SaeIntegrationConstantes.VI_DEFAULT_AUDIENCE);
+      viFormulaire.setIdCertif(ViService.DEFAULT_ID_CERTIF);
+      PagmList pagms = new PagmList();
+      pagms.add(PagmCodeEnum.INT_PAGM_COPIE_ALL.toString());
+      viFormulaire.setPagms(pagms);
    }
 
    /**
@@ -594,6 +646,16 @@ AbstractTestWsController<TestWsCopieFormulaire> {
     */
    protected abstract void modificationSpecifiqueFormulaireRechercheDocCopie(
          RechercheFormulaire formRecherche);
+
+   /**
+    * 
+    * Methode permettant de récupérer le formulaire spécifique pour le VI.
+    * 
+    * @param viFormulaire
+    *           Formulaire de VI
+    */
+   protected abstract void modificationSpecifiqueFormulaireVI(
+         final ViFormulaire viFormulaire);
 
    /**
     * Methode permettant d'appeler le service nécessaire pour le copie.
