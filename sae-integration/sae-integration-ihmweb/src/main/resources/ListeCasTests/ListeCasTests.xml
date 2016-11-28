@@ -2894,7 +2894,16 @@
                Test libre de la restore de la suppression de masse 
             </description>
             <implemente>true</implemente>
-            <luceneExemple>Denomination:"Test 3100-RestoreSuppressionMasse-Test-Libre"</luceneExemple>
+            <luceneExemple>Denomination:"Test 3150-RestoreSuppressionMasse-Test-Libre"</luceneExemple>
+         </CasTest>
+         <CasTest>
+            <id>3150</id>
+            <code>3150-RestoreSuppressionMasse-KO-Droit Insuffisant</code>
+            <description>
+               Test pour vérifier le resultat dnas le cas où les droits sont insuffisants 
+            </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3150-RestoreSuppressionMasse-KO-Droit Insuffisant"</luceneExemple>
          </CasTest>
       </CasTests>
    </Categorie>
