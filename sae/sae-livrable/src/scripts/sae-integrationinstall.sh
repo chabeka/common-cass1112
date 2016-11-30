@@ -19,8 +19,6 @@ LOCK_FILE="/var/lock/subsys/$PROG_NAME"
 start() {
 	SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-integrationinstall/logback-sae-integrationinstall.xml -jar @@SAE_HOME@@/sae-integrationinstall/sae-integrationinstall.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml $GED_CONCERNEE"
 	
-    echo -n "Démarrage de l'installation de la base SAE $GED_CONCERNEE... "
-
     if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
         echo "Le programme est déja démarré."
         return 1
@@ -62,9 +60,17 @@ stop() {
 case "$1" in
     start)
         if [ -z "$2" ]; then
-		echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
-		exit 1
+			echo "Le parametre 2 est manquant. Saisir GNT ou GNS ou DFCE comme deuxieme parametre svp."
+			exit 1
 		fi
+		case "$2" in "GNT" | "GNS" | "DFCE")
+			echo -n "Démarrage de l'installation de la base SAE $GED_CONCERNEE... "
+		;;
+		*)
+			echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT ou DFCE svp."
+			exit 1
+		;;
+		esac
 		start
 		echo "Veuillez suivre les traitements sur le fichier de sortie $OUT_FILE"
         ;;
@@ -75,12 +81,24 @@ case "$1" in
         status $PROG_NAME
         ;;
     restart)
+	    if [ -z "$2" ]; then
+			echo "Le parametre 2 est manquant. Saisir GNT ou GNS ou DFCE comme deuxieme parametre svp."
+			exit 1
+		fi
+		case "$2" in "GNT" | "GNS" | "DFCE")
+			echo -n "Démarrage de l'installation de la base SAE $GED_CONCERNEE... "
+		;;
+		*)
+			echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT ou DFCE svp."
+			exit 1
+		;;
+		esac
         stop
         sleep 3
         start
         ;;
     *)
-        echo $"Usage: $0 {start GNS ou GNT|stop|status|restart GNS ou GNT}"
+        echo $"Usage: $0 {start GNS ou GNT ou DFCE|stop|status|restart GNS ou GNT ou DFCE}"
         exit 1
 esac
 
