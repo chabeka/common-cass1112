@@ -1,7 +1,7 @@
 <configuration>
 
 
-   <property name="LOGS_FOLDER" value="/hawai/logs/sae" />
+   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
    
    <property name="LOGS_FILENAME_PREFIXE" value="sae_integrationinstall" />
    
@@ -40,7 +40,7 @@
    
 
    <!-- Pour que les traces INFO du SAE apparaissent dans la console -->
-   <logger name="fr.urssaf.image.sae.lotinstallmaj" level="DEBUG" additivity="false">
+   <logger name="fr.urssaf.image.sae.lotinstallmaj" level="INFO" additivity="false">
       <appender-ref ref="log-file" />
       <appender-ref ref="consoleInfo" />
    </logger>

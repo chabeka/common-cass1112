@@ -44,7 +44,7 @@ start() {
 }
 
 stop() {
-    echo -n "Arr�t de l'installation de la base SAE... "
+    echo -n "Arret de l'installation de la base SAE... "
 
     if [ ! -e $LOCK_FILE ]; then
         echo "L'outil d' installation de la base SAE n'est pas d�marr�."
@@ -62,7 +62,7 @@ stop() {
 # The command line help #
 #########################
 display_help() {
-    echo "Usage: $0 [option...] {start|stop|status|restart|delete|install|repart|gerererreurdfceschema}" >&2
+    echo "Usage: $0 [option...] {start|stop}" >&2
     echo
     echo "   start                      Demarrage de l'application"
     echo "   stop                       Arret de l'application"
