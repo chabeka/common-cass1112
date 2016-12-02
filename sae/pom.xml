@@ -646,6 +646,8 @@
       <module>sae-documents-executable</module>
 
       <module>sae-livrable</module>
+      
+       <module>sae-integrationinstall</module>
 
    </modules>
    

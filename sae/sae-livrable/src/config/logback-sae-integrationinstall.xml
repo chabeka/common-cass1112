@@ -49,6 +49,8 @@
    <!-- Niveau de log de certains framework -->
    <logger name="org.springframework" level="WARN" /> 
    <logger name="me.prettyprint" level="WARN" />
+   <logger name="com.netflix" level="WARN" />
+   <logger name="org.apache.zookeeper" level="WARN" />
    
    
    <!-- Niveau general pour l'application -->

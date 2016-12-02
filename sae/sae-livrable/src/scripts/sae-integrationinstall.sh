@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# description: Lance ou arrête l'ordonnanceur du SAE.
+# description: Lance ou arrï¿½te l'ordonnanceur du SAE.
 
 . /etc/rc.d/init.d/functions
 
@@ -8,9 +8,9 @@ GED_CONCERNEE="$2"
 
 PROG_NAME=@@PROJECT_NAME@@-integrationinstall
 
-# Les sorties sont redirigées dans ce fichier. 
-# Ce n'est pas un fichier de log à proprement parlé
-# car les logs applicatifs sont gérés via logback.
+# Les sorties sont redirigï¿½es dans ce fichier. 
+# Ce n'est pas un fichier de log ï¿½ proprement parlï¿½
+# car les logs applicatifs sont gï¿½rï¿½s via logback.
 OUT_FILE="@@LOGS_PATH@@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
@@ -19,8 +19,10 @@ LOCK_FILE="/var/lock/subsys/$PROG_NAME"
 start() {
 	SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-integrationinstall/logback-sae-integrationinstall.xml -jar @@SAE_HOME@@/sae-integrationinstall/sae-integrationinstall.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml $GED_CONCERNEE"
 	
+    echo -n "Demarage de l'installation de la base SAE $GED_CONCERNEE... "
+
     if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
-        echo "Le programme est déja démarré."
+        echo "Le programme est dï¿½ja dï¿½marrï¿½."
         return 1
     fi
 
@@ -42,10 +44,10 @@ start() {
 }
 
 stop() {
-    echo -n "Arrêt de l'installation de la base SAE... "
+    echo -n "Arrï¿½t de l'installation de la base SAE... "
 
     if [ ! -e $LOCK_FILE ]; then
-        echo "L'outil d' installation de la base SAE n'est pas démarré."
+        echo "L'outil d' installation de la base SAE n'est pas dï¿½marrï¿½."
         return 1
     fi
 
@@ -56,21 +58,26 @@ stop() {
     return $RETVAL
 }
 
+#########################
+# The command line help #
+#########################
+display_help() {
+    echo "Usage: $0 [option...] {start|stop|status|restart|delete|install|repart|gerererreurdfceschema}" >&2
+    echo
+    echo "   start                      Demarrage de l'application"
+    echo "   stop                       Arret de l'application"
+	echo "   --help, -h                 Aide"
+    echo
+    exit 1
+}
+
 
 case "$1" in
     start)
         if [ -z "$2" ]; then
-			echo "Le parametre 2 est manquant. Saisir GNT ou GNS ou DFCE comme deuxieme parametre svp."
+			echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
 			exit 1
 		fi
-		case "$2" in "GNT" | "GNS" | "DFCE")
-			echo -n "Démarrage de l'installation de la base SAE $GED_CONCERNEE... "
-		;;
-		*)
-			echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT ou DFCE svp."
-			exit 1
-		;;
-		esac
 		start
 		echo "Veuillez suivre les traitements sur le fichier de sortie $OUT_FILE"
         ;;
@@ -81,25 +88,19 @@ case "$1" in
         status $PROG_NAME
         ;;
     restart)
-	    if [ -z "$2" ]; then
-			echo "Le parametre 2 est manquant. Saisir GNT ou GNS ou DFCE comme deuxieme parametre svp."
-			exit 1
-		fi
-		case "$2" in "GNT" | "GNS" | "DFCE")
-			echo -n "Démarrage de l'installation de la base SAE $GED_CONCERNEE... "
-		;;
-		*)
-			echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT ou DFCE svp."
-			exit 1
-		;;
-		esac
         stop
         sleep 3
         start
         ;;
-    *)
-        echo $"Usage: $0 {start GNS ou GNT ou DFCE|stop|status|restart GNS ou GNT ou DFCE}"
-        exit 1
+	-h)
+   		display_help
+   		;;
+   --help)
+   		display_help
+   		;;
+   *)
+    echo $"Usage: $0 {start GNS ou GNT|stop|status|restart GNS ou GNT|-h,--help}"
+    exit 1
 esac
 
 exit $?

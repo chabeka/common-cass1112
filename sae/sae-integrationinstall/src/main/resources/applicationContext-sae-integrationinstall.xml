@@ -11,6 +11,7 @@
    <!-- Le componant-scan -->
    <context:component-scan base-package="fr.urssaf.image.sae.lotinstallmaj" />
    <context:component-scan base-package="fr.urssaf.image.sae.admin.dfce.exploit" />
+   <context:component-scan base-package="fr.urssaf.image.sae.igc" />
    
    <import resource="applicationContext-sae-commons.xml" />
       
