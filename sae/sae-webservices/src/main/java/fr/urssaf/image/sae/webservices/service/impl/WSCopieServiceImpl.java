@@ -84,7 +84,7 @@ public class WSCopieServiceImpl implements WSCopieService {
       UUID uuid = UUID.fromString(request.getCopie().getIdGed().getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
             uuid);
-
+      
       // Lecture des métadonnées depuis l'objet de requête de la couche ws
       ListeMetadonneeType listeMeta = request.getCopie().getMetadonnees();
 
@@ -122,59 +122,59 @@ public class WSCopieServiceImpl implements WSCopieService {
          return response;
 
       } catch (SAEConsultationServiceException e) {
-         throw new CopieAxisFault("ErreurSAEConsultationService",
+         throw new CopieAxisFault("ErreurInterneConsultation",
                e.getMessage(), e);
       } catch (SAECaptureServiceEx e) {
-         throw new CopieAxisFault("ErreurSAECaptureService", e.getMessage(), e);
+         throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
       } catch (ReferentialRndException e) {
-         throw new CopieAxisFault("ErreurReferentialRnd", e.getMessage(), e);
+         throw new CopieAxisFault("ErreurInterne", e.getMessage(), e);
       } catch (UnknownCodeRndEx e) {
-         throw new CopieAxisFault("UnknownCodeRnd", e.getMessage(), e);
+         throw new CopieAxisFault("ModificationCodeRndInterdit", e.getMessage(), e);
       } catch (ReferentialException e) {
-         throw new CopieAxisFault("Referential", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
       } catch (SAECopieServiceException e) {
          throw new CopieAxisFault("CopieMetadonneInvalide", e.getMessage(), e);
       } catch (UnknownDesiredMetadataEx e) {
-         throw new CopieAxisFault("UnknownDesiredMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("ConsultationMetadonneesInconnues", e.getMessage(), e);
       } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new CopieAxisFault("MetaDataUnauthorizedToConsult",
+         throw new CopieAxisFault("ConsultationMetadonneesInterdite",
                e.getMessage(), e);
       } catch (RequiredStorageMetadataEx e) {
-         throw new CopieAxisFault("RequiredStorageMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
       } catch (InvalidValueTypeAndFormatMetadataEx e) {
-         throw new CopieAxisFault("InvalidValueTypeAndFormatMetadata",
+         throw new CopieAxisFault("CaptureMetadonneesFormatTypeNonValide",
                e.getMessage(), e);
       } catch (UnknownMetadataEx e) {
-         throw new CopieAxisFault("UnknownMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureMetadonneesInconnu", e.getMessage(), e);
       } catch (DuplicatedMetadataEx e) {
-         throw new CopieAxisFault("DuplicatedMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureMetadonneesDoublon", e.getMessage(), e);
       } catch (NotSpecifiableMetadataEx e) {
-         throw new CopieAxisFault("NotSpecifiableMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
       } catch (EmptyDocumentEx e) {
-         throw new CopieAxisFault("EmptyDocument", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureFichierVide", e.getMessage(), e);
       } catch (RequiredArchivableMetadataEx e) {
-         throw new CopieAxisFault("RequiredArchivableMetadata", e.getMessage(),
+         throw new CopieAxisFault("CaptureMetadonneesArchivageObligatoire", e.getMessage(),
                e);
       } catch (NotArchivableMetadataEx e) {
-         throw new CopieAxisFault("NotArchivableMetadata", e.getMessage(), e);
+         throw new CopieAxisFault("ErreurInterneCapture", e.getMessage(), e);
       } catch (UnknownHashCodeEx e) {
-         throw new CopieAxisFault("UnknownHashCode", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureHashErreur", e.getMessage(), e);
       } catch (EmptyFileNameEx e) {
-         throw new CopieAxisFault("EmptyFileName", e.getMessage(), e);
+         throw new CopieAxisFault("NomFichierVide", e.getMessage(), e);
       } catch (MetadataValueNotInDictionaryEx e) {
-         throw new CopieAxisFault("MetadataValueNotInDictionary",
+         throw new CopieAxisFault("CaptureMetadonneesValeurNonValide",
                e.getMessage(), e);
       } catch (UnknownFormatException e) {
-         throw new CopieAxisFault("UnknownFormat", e.getMessage(), e);
+         throw new CopieAxisFault("FormatFichierInconnu", e.getMessage(), e);
       } catch (ValidationExceptionInvalidFile e) {
-         throw new CopieAxisFault("ValidationExceptionInvalidFile",
+         throw new CopieAxisFault("FormatFichierNonConforme",
                e.getMessage(), e);
       } catch (UnexpectedDomainException e) {
-         throw new CopieAxisFault("UnexpectedDomain", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureMetadonneesInterdites", e.getMessage(), e);
       } catch (InvalidPagmsCombinaisonException e) {
-         throw new CopieAxisFault("InvalidPagmsCombinaison", e.getMessage(), e);
+         throw new CopieAxisFault("PagmIncompatibles", e.getMessage(), e);
       } catch (CaptureExistingUuuidException e) {
-         throw new CopieAxisFault("CaptureExistingUuuid", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureErreurIdGedExistant", e.getMessage(), e);
       }
    }
 
