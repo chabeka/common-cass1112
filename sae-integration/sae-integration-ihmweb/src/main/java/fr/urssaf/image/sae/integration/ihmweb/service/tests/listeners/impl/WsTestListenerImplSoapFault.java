@@ -88,13 +88,13 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
          int ind2 = messageOut
                .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
          String res = messageOut.substring(ind1 + 19, ind2);
-         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+         PrintWriter writer = new PrintWriter("/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                + "_In.xml", "UTF-8");
          writer.println(messageIn);
          writer.close();
          PrintWriter writer2 = new PrintWriter(
-               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               "/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                      + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                      + "_Out.xml", "UTF-8");
          System.out.println("2");
@@ -130,13 +130,13 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
          int ind2 = messageOut
                .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
          String res = messageOut.substring(ind1 + 19, ind2);
-         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+         PrintWriter writer = new PrintWriter("/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                + "_In.xml", "UTF-8");
          writer.println(messageIn);
          writer.close();
          PrintWriter writer2 = new PrintWriter(
-               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               "/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                      + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                      + "_Out.xml", "UTF-8");
          System.out.println("2");
@@ -171,13 +171,13 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
          int ind2 = messageOut
                .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
          String res = messageOut.substring(ind1 + 19, ind2);
-         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+         PrintWriter writer = new PrintWriter("/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                + "_In.xml", "UTF-8");
          writer.println(messageIn);
          writer.close();
          PrintWriter writer2 = new PrintWriter(
-               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               "/appl/sae_integration/ecde_cnp69dev/SAE_INTEGRATION/requete_reponse_xml/Test"
                      + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
                      + "_Out.xml", "UTF-8");
          System.out.println("2");
