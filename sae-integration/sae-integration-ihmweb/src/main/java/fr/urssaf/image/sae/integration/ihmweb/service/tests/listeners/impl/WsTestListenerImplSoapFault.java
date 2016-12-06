@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.integration.ihmweb.service.tests.listeners.impl;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.rmi.RemoteException;
 
 import org.apache.axis2.AxisFault;
@@ -80,6 +82,28 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
       testWsParentFormulaire.getSoapFormulaire().setMessageIn(messageIn);
       testWsParentFormulaire.getSoapFormulaire().setMessageOut(messageOut);
 
+      // Test recuperer messge SOAP dans XML IHM V2
+      try {
+         int ind1 = messageOut.indexOf("<soapenv:Body><ns1:");
+         int ind2 = messageOut
+               .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
+         String res = messageOut.substring(ind1 + 19, ind2);
+         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+               + "_In.xml", "UTF-8");
+         writer.println(messageIn);
+         writer.close();
+         PrintWriter writer2 = new PrintWriter(
+               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+                     + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+                     + "_Out.xml", "UTF-8");
+         System.out.println("2");
+         System.out.println(res);
+         writer2.println(messageOut);
+         writer2.close();
+      } catch (IOException e) {
+         // do something
+      }
    }
 
    @Override
@@ -99,6 +123,29 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
       SaeServiceTestService.checkSoapFault(faultObtenue, resultatTest,
             this.faultAttendue, this.argsMsgSoapFault);
 
+      // Test recuperer messge SOAP dans XML IHM V2
+      // Test recuperer messge SOAP dans XML IHM V2
+      try {
+         int ind1 = messageOut.indexOf("<soapenv:Body><ns1:");
+         int ind2 = messageOut
+               .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
+         String res = messageOut.substring(ind1 + 19, ind2);
+         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+               + "_In.xml", "UTF-8");
+         writer.println(messageIn);
+         writer.close();
+         PrintWriter writer2 = new PrintWriter(
+               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+                     + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+                     + "_Out.xml", "UTF-8");
+         System.out.println("2");
+         System.out.println(res);
+         writer2.println(messageOut);
+         writer2.close();
+      } catch (IOException e) {
+         // do something
+      }
    }
 
    @Override
@@ -118,6 +165,28 @@ public final class WsTestListenerImplSoapFault implements WsTestListener {
       // On met le statut du test à Echec, et on log l'exception
       SaeServiceTestService.exceptionNonPrevue(exception, resultatTest);
 
+      // Test recuperer messge SOAP dans XML IHM V2
+      try {
+         int ind1 = messageOut.indexOf("<soapenv:Body><ns1:");
+         int ind2 = messageOut
+               .indexOf("xmlns:ns1=\"http://www.cirtil.fr/saeService");
+         String res = messageOut.substring(ind1 + 19, ind2);
+         PrintWriter writer = new PrintWriter("Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+               + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+               + "_In.xml", "UTF-8");
+         writer.println(messageIn);
+         writer.close();
+         PrintWriter writer2 = new PrintWriter(
+               "Y:/SAE_INTEGRATION/requete_reponse_xml/Test"
+                     + testWsParentFormulaire.getNumeroTestEnCour() + "_" + res
+                     + "_Out.xml", "UTF-8");
+         System.out.println("2");
+         System.out.println(res);
+         writer2.println(messageOut);
+         writer2.close();
+      } catch (IOException e) {
+         // do something
+      }
    }
 
 }

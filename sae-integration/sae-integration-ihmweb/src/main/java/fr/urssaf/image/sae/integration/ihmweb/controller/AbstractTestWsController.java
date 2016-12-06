@@ -386,6 +386,7 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
 
       // Initialise le modèle
       TestWsParentFormulaire formulaire = getFormulairePourGet();
+      formulaire.setNumeroTestEnCour(this.getNumeroTest());
       model.addAttribute("formulaire", formulaire);
       model.addAttribute("id", id);
 
@@ -414,7 +415,7 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       modelUtils.ajouteCasTestDansModele(getNumeroTest(), model);
       
       model.addAttribute("id", id);
-      
+      formulaire.setNumeroTestEnCour(this.getNumeroTest());
       // Appel de la méthode de traitement
       doPost(formulaire);
 

@@ -9,10 +9,22 @@ public class TestWsParentFormulaire {
    private String urlServiceWeb;
 
    private String etape;
+   
+   private String numeroTestEnCour;
 
    private SoapFormulaire soapFormulaire = new SoapFormulaire();
    
    private ViFormulaire viFormulaire = new ViFormulaire(); 
+
+   
+   
+   public String getNumeroTestEnCour() {
+      return numeroTestEnCour;
+   }
+
+   public void setNumeroTestEnCour(String numeroTestEnCour) {
+      this.numeroTestEnCour = numeroTestEnCour;
+   }
 
    /**
     * URL du service web SaeService
