@@ -15,6 +15,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.PagmDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.serializer.PagmSerializer;
@@ -125,6 +126,7 @@ public class PagmSupport {
     */
    public final List<Pagm> find(String code) {
 
+      dao.getCfTmpl().setCount(AbstractDao.DEFAULT_MAX_COLS);
       ColumnFamilyResult<String, String> result = dao.getCfTmpl().queryColumns(
             code);
 
