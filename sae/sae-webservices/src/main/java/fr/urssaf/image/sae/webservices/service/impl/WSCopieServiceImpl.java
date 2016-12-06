@@ -129,7 +129,7 @@ public class WSCopieServiceImpl implements WSCopieService {
       } catch (ReferentialRndException e) {
          throw new CopieAxisFault("ErreurInterne", e.getMessage(), e);
       } catch (UnknownCodeRndEx e) {
-         throw new CopieAxisFault("ModificationCodeRndInterdit", e.getMessage(), e);
+         throw new CopieAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
       } catch (ReferentialException e) {
          throw new CopieAxisFault("CaptureCodeRndInterdit", e.getMessage(), e);
       } catch (SAECopieServiceException e) {
