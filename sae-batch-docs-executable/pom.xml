@@ -16,7 +16,7 @@
    <properties>
       <junit.version>4.8.2</junit.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-      <sae.version>17.2.0.1</sae.version>
+      <sae.version>17.2.0.2</sae.version>
       <commons.dfce.version>1.7.2-CRTL-1</commons.dfce.version>
    </properties>
    
