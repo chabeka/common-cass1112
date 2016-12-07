@@ -7,7 +7,7 @@
       <version>17.2.0.3-SNAPSHOT</version>
    </parent>
   
-  <groupId>fr.ursaaf.image.sae</groupId>
+  <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>sae-integrationinstall</artifactId>
   <version>17.2.0.3-SNAPSHOT</version>
 
