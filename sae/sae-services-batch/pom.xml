@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>17.2.0.2</version>
+      <version>17.2.0.3-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services-batch</artifactId>
-   <version>17.2.0.2</version>
+   <version>17.2.0.3-SNAPSHOT</version>
 
    <name>sae-services-batch</name>
 
@@ -176,7 +176,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>17.2.0.2</version>
+         <version>17.2.0.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>javax.xml.stream</groupId>
@@ -187,7 +187,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>17.2.0.2</version>
+         <version>17.2.0.3-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>javax.xml.stream</groupId>
