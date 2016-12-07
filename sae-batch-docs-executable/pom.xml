@@ -10,7 +10,7 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>17.2.0.2-SNAPSHOT</version>
+   <version>17.2.0.2</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
@@ -23,13 +23,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-17.2.0.2
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-17.2.0.2
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-17.2.0.2
       </connection>
    </scm>
    
