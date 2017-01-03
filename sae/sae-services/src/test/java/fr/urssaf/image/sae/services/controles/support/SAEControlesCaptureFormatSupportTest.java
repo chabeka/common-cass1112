@@ -127,9 +127,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertNull(
-                  "L'identifiant du format du profil de contrôle ne devrait pas être renseigné",
-                  resultatControle.getIdFormatDuProfilControle());
+      .assertNull(
+            "L'identifiant du format du profil de contrôle ne devrait pas être renseigné",
+            resultatControle.getIdFormatDuProfilControle());
       Assert.assertFalse("L'identification ne devrait pas être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertFalse("L'identification n'aurait pas dû être réalisée",
@@ -180,16 +180,16 @@ public class SAEControlesCaptureFormatSupportTest {
 
          // Contrôle le message de l'exception
          Assert
-               .assertEquals(
-                     "Le message de l'exception n'est pas celui attendu",
-                     "La métadonnée FormatFichier n'est pas renseignée : impossible de continuer le contrôle sur le format de fichier",
-                     e.getMessage());
+         .assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "La métadonnée FormatFichier n'est pas renseignée : impossible de continuer le contrôle sur le format de fichier",
+               e.getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -229,16 +229,16 @@ public class SAEControlesCaptureFormatSupportTest {
 
          // Contrôle le message de l'exception
          Assert
-               .assertEquals(
-                     "Le message de l'exception n'est pas celui attendu",
-                     "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant",
-                     e.getMessage());
+         .assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant",
+               e.getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -275,16 +275,16 @@ public class SAEControlesCaptureFormatSupportTest {
 
          // Contrôle le message de l'exception
          Assert
-               .assertEquals(
-                     "Le message de l'exception n'est pas celui attendu",
-                     "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant2",
-                     e.getMessage());
+         .assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "Le format du fichier n'existe pas dans le référentiel : fmt/inexistant2",
+               e.getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -313,9 +313,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertNull(
-                  "L'identifiant du format du profil de contrôle ne devrait pas être renseigné",
-                  resultatControle.getIdFormatDuProfilControle());
+      .assertNull(
+            "L'identifiant du format du profil de contrôle ne devrait pas être renseigné",
+            resultatControle.getIdFormatDuProfilControle());
       Assert.assertFalse("L'identification ne devrait pas être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertFalse("L'identification n'aurait pas dû être réalisé",
@@ -370,23 +370,23 @@ public class SAEControlesCaptureFormatSupportTest {
       } catch (UnknownFormatException e) {
 
          Assert
-               .fail("L'exception attendue était une FormatRuntimeException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une FormatRuntimeException alors qu'on a obtenu : "
+               + e);
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une FormatRuntimeException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une FormatRuntimeException alors qu'on a obtenu : "
+               + e);
 
       } catch (FormatRuntimeException e) {
 
          // Contrôle le message de l'exception
          Assert
-               .assertEquals(
-                     "Le message de l'exception n'est pas celui attendu",
-                     "Erreur technique : Plusieurs profils de contrôle (2) peuvent s'appliquer au format de fichier (fmt/354) : on ne sait pas lequel choisir.",
-                     e.getMessage());
+         .assertEquals(
+               "Le message de l'exception n'est pas celui attendu",
+               "Erreur technique : Plusieurs profils de contrôle (2) peuvent s'appliquer au format de fichier (fmt/354) : on ne sait pas lequel choisir.",
+               e.getMessage());
 
       }
 
@@ -446,9 +446,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -521,9 +521,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertFalse("L'identification ne devrait pas être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertFalse("L'identification n'aurait pas dû être réalisée",
@@ -598,9 +598,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -654,15 +654,15 @@ public class SAEControlesCaptureFormatSupportTest {
          // Contrôle le message de l'exception
          Assert.assertEquals(
                "Le message de l'exception n'est pas celui attendu",
-               "L'extension du format du fichier n'existe pas dans le référentiel : idFormat = fmt/354, extension = doc",
+               "Le fichier document_word.doc ne correspond pas au format spécifié fmt/354",
                e
-                     .getMessage());
+               .getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -704,13 +704,13 @@ public class SAEControlesCaptureFormatSupportTest {
          Assert.assertEquals(
                "Le message de l'exception n'est pas celui attendu",
                "Le fichier à archiver ne correspond pas au format spécifié.", e
-                     .getMessage());
+               .getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -754,13 +754,13 @@ public class SAEControlesCaptureFormatSupportTest {
          Assert.assertEquals(
                "Le message de l'exception n'est pas celui attendu",
                "Le fichier à archiver ne correspond pas au format spécifié.", e
-                     .getMessage());
+               .getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 
@@ -794,9 +794,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -842,9 +842,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertFalse("L'identification ne devrait pas être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertFalse("L'identification n'aurait pas dû être réalisée",
@@ -889,9 +889,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -936,9 +936,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -984,9 +984,9 @@ public class SAEControlesCaptureFormatSupportTest {
 
       // Vérification du résultat attendu
       Assert
-            .assertEquals(
-                  "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
-                  "fmt/354", resultatControle.getIdFormatDuProfilControle());
+      .assertEquals(
+            "L'identifiant du format du profil de contrôle à appliquer n'est pas juste",
+            "fmt/354", resultatControle.getIdFormatDuProfilControle());
       Assert.assertTrue("L'identification devrait être activée",
             resultatControle.isIdentificationActivee());
       Assert.assertTrue("L'identification aurait dû être réalisée",
@@ -1040,13 +1040,13 @@ public class SAEControlesCaptureFormatSupportTest {
          Assert.assertEquals(
                "Le message de l'exception n'est pas celui attendu",
                "Le fichier à archiver ne correspond pas au format spécifié.", e
-                     .getMessage());
+               .getMessage());
 
       } catch (ValidationExceptionInvalidFile e) {
 
          Assert
-               .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
-                     + e);
+         .fail("L'exception attendue était une UnknownFormatException alors qu'on a obtenu : "
+               + e);
 
       }
 

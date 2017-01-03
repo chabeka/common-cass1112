@@ -86,7 +86,7 @@ public class ReferentielFormatSupportTest {
       List<FormatFichier> listRefFormatTrouve = refFormatSupport.findAll();          
       Assert.assertNotNull(listRefFormatTrouve);  
      
-      Assert.assertEquals("Le nombre d'éléments est incorrect.", 4, listRefFormatTrouve.size());
+      Assert.assertEquals("Le nombre d'éléments est incorrect.", 5, listRefFormatTrouve.size());
    }
    
    
