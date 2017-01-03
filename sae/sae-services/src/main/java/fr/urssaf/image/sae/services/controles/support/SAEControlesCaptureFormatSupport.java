@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,12 +107,12 @@ public final class SAEControlesCaptureFormatSupport {
          throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
                "capture.format.format.inconnnu", fileFormat));
       }
-      
-      final String fileExtension = extraireExtensionFileName(saeDocument);
-      
-      if (!referentielFormatService.isExtensionFormatAutorisee(fileExtension, fileFormat)) {
+
+      final String fileName = extraireFileName(saeDocument);
+
+      if (!referentielFormatService.isExtensionFormatAutorisee(fileName, fileFormat)) {
          throw new UnknownFormatException(ResourceMessagesUtils.loadMessage(
-               "capture.format.extension.inconnnu", fileFormat, fileExtension));
+               "capture.format.extension.inconnnu", fileName, fileFormat));
       }
 
       // On ne continue que s'il y a au moins 1 profil de contrôle dans la liste
@@ -520,19 +519,19 @@ public final class SAEControlesCaptureFormatSupport {
    }
    
    /**
-    * Methode permettant d'extraire l'extension du nom du fichier.
+    * Methode permettant d'extraire le nom du fichier.
     * @param saeDocument Document contenant le nom du fichier.
-    * @return L'extension du fichier.
+    * @return Le nom du fichier.
     */
-   private String extraireExtensionFileName(final SAEDocument saeDocument) {
+   private String extraireFileName(final SAEDocument saeDocument) {
       // Dans le cas du service de capture, on a juste le path du fichier. Il
       // faut donc recuperer le nom du fichier.
       if (StringUtils.isEmpty(saeDocument.getFileName())
             && StringUtils.isNotEmpty(saeDocument.getFilePath())) {
          File fileDoc = new File(saeDocument.getFilePath());
-         return FilenameUtils.getExtension(fileDoc.getName());
+         return fileDoc.getName();
       }
-      return FilenameUtils.getExtension(saeDocument.getFileName());
+      return saeDocument.getFileName();
    }
 
    private boolean isControleSurCheminFichier(SAEDocument saeDocument,

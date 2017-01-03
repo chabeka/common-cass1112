@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,9 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
     * Separateur d'extension.
     */
    private final static String EXTENSION_SEPARATOR = ",";
-   
+
+   private final static String DOT_SEPARATOR = ".";
+
    private final static String EXTENSION_SPECIAL_MIGRATION = "*";
 
    private final ReferentielFormatSupport refFormatSupport;
@@ -88,12 +89,12 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
       formats = CacheBuilder.newBuilder().refreshAfterWrite(value,
             TimeUnit.MINUTES).build(new CacheLoader<String, FormatFichier>() {
 
-         @Override
-         public FormatFichier load(String identifiant) {
-            return refFormatSupport.find(identifiant);
-         }
-      });
-      
+               @Override
+               public FormatFichier load(String identifiant) {
+                  return refFormatSupport.find(identifiant);
+               }
+            });
+
       if (initCacheOnStartup) {
          populateCache();
       }
@@ -185,16 +186,16 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
     * {@inheritDoc}
     */
    @Override
-   public boolean isExtensionFormatAutorisee(final String fichierExtension,
+   public boolean isExtensionFormatAutorisee(final String fichierName,
          final String idFormat) {
       boolean autorized = false;
 
       try {
          // On recupere le format en fonction de son ident.
          final FormatFichier formatFichier = this.getFormat(idFormat);
-         
+
          final String extension = formatFichier.getExtension();
-         
+
          if (!EXTENSION_SPECIAL_MIGRATION.equals(extension)) {
             // Gestion de la liste d'extension (separateur virgule) ou de
             // l'extension seul.
@@ -205,15 +206,15 @@ public class ReferentielFormatServiceImpl implements ReferentielFormatService {
             // Boucle sur la liste des extensions pour savoir
             // si l'extension du fichier est autorisée ou non.
             for (final String extensionFormat : extensions) {
-               autorized = StringUtils.equalsIgnoreCase(fichierExtension,
-                     extensionFormat);
-               // Si on a l'autorisation, inutile de coninuer à boucler.
+               autorized = fichierName.toLowerCase().endsWith(DOT_SEPARATOR
+                     + extensionFormat.toLowerCase());
+               // Si on a l'autorisation, inutile de continuer à boucler.
                if (autorized) {
                   break;
                }
             }
          } else {
-            // On est sur des fichiers de migration WATI2, on autorise l'import.
+            // On est sur des fichiers de migration WATT2, on autorise l'import.
             autorized = true;
          }
 

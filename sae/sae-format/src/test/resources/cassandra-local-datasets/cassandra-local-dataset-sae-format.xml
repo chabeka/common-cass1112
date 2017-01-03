@@ -130,6 +130,33 @@
                <value></value>
             </column>
          </row>
+         <row>
+            <key>crtl/1</key>
+            <column>
+               <name>typeMime</name>
+               <value>application/x-gzip</value>
+            </column>
+            <column>
+               <name>extension</name>
+               <value>tar.gz</value>
+            </column>
+            <column>
+               <name>description</name>
+               <value>Journal SAE, XML basé sur XSD, compressé en tar.gz</value>
+            </column>
+            <column>
+               <name>autoriseGED</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>visualisable</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>convertisseur</name>
+               <value></value>
+            </column>
+         </row>
       </columnFamily>
    </columnFamilies>
 </keyspace>

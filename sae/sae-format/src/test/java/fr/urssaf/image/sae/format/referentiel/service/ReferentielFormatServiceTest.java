@@ -97,7 +97,7 @@ public class ReferentielFormatServiceTest {
       List<FormatFichier> listRefFormatTrouve = refFormatService.getAllFormat();
       Assert.assertNotNull(listRefFormatTrouve);
 
-      Assert.assertEquals("Le nombre d'éléments est incorrect.", 4,
+      Assert.assertEquals("Le nombre d'éléments est incorrect.", 5,
             listRefFormatTrouve.size());
    }
 
@@ -185,78 +185,98 @@ public class ReferentielFormatServiceTest {
    public void isExtensionFormatAutorizedSuccess() {
 
       String idFormat = "fmt/354";
-      String extension = "pdf";
+      String fileName = "test.pdf";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/354";
-      extension = "Pdf";
+      fileName = "test.Pdf";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
 
       idFormat = "fmt/353";
-      extension = "tif";
+      fileName = "test.tif";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "TIF";
+      fileName = "test.TIF";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "tiff";
+      fileName = "test.tiff";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/44";
-      extension = "jpeg";
+      fileName = "test.jpeg";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/all";
-      extension = "*";
+      fileName = "*";
 
-      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
+      idFormat = "crtl/1";
+      fileName = "test.tar.gz";
+
+      Assert.assertTrue(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
    }
-   
+
    @Test
    public void isExtensionFormatAutorizedFailed() {
 
       String idFormat = "fmt/354";
-      String extension = "tif";
+      String fileName = "test.tif";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
 
       idFormat = "fmt/353";
-      extension = "pdf";
+      fileName = "test.pdf.";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "pdf*";
+      fileName = "test.pdf*";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "tif,";
+      fileName = "test.tif ";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = ",tiff";
+      fileName = "test.tifff";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "pdf,*";
+      fileName = "test. pdf";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
-      
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
+
       idFormat = "fmt/353";
-      extension = "*,pdf";
+      fileName = "test.pdf ";
 
-      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(extension, idFormat));
+      Assert.assertFalse(refFormatService.isExtensionFormatAutorisee(fileName,
+            idFormat));
    }
-   
+
 }
