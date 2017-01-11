@@ -245,4 +245,11 @@
 		<ns1:aCreerGNS>oui</ns1:aCreerGNS>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
+	<ns1:indexReference>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-MontantRegle</ns1:nom>
+		<ns1:composition>cot:cop:mre</ns1:composition>
+		<ns1:aCreerGNT>oui</ns1:aCreerGNT>
+		<ns1:aCreerGNS>oui</ns1:aCreerGNS>
+		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
+	</ns1:indexReference>
 </ns1:indexesComposites>

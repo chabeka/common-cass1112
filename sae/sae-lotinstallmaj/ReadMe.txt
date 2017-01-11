@@ -420,6 +420,7 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 // 16) Lot 170200SAE
 // ------------------------------------------
 
+16-1) Lot 170200SAE
 Met la base Cassandra du SAE en version 23 :
 
 - Ajout de l'action unitaire copie qui n'existait pas.
@@ -429,3 +430,20 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 Pour la GNT : 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_170200
+
+16-2) Lot 170200SAE_00
+Met la base Cassandra du SAE en version 24 :
+- Ajout de nouveaux formats
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_170201
+
+16-3) Lot 170201SAE_00
+
+- Ajout index composite DomaineCotisant-CodeOrganismeProprietaire-MontantRegle (pas de changement de version de la base, car impact uniquement DFCE, pas SAE)
+
+Pour la GNS :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_170202
+
+Pour la GNT : 
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_170202
+
+

@@ -226,13 +226,13 @@ public class RefMetaInitialisationServiceTest {
 
       // -- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes composite attendu en GNS (fichier v3.8) est incorrect";
-      Assert.assertEquals(message, 29, indexes.size());
+      Assert.assertEquals(message, 30, indexes.size());
 
       indexes = refMetaService.chargerFichierIdxCompositesGNT(true);
 
       // -- Test version du fichiers des indexes composites
       message = "Le nombre d'indexes composite attendu en GNT (fichier v3.8) est incorrect";
-      Assert.assertEquals(message, 32, indexes.size());
+      Assert.assertEquals(message, 33, indexes.size());
    }
 
    @Test

@@ -70,6 +70,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNS_CASSANDRA_DFCE_170200 = "GNS_CASSANDRA_DFCE_170200";
    public static final String GNT_CASSANDRA_DFCE_170200 = "GNT_CASSANDRA_DFCE_170200";
    public static final String CASSANDRA_170201 = "CASSANDRA_170201";
+   public static final String GNS_CASSANDRA_DFCE_170202 = "GNS_CASSANDRA_DFCE_170202";
+   public static final String GNT_CASSANDRA_DFCE_170202 = "GNT_CASSANDRA_DFCE_170202";
    
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -323,6 +325,12 @@ public final class MajLotServiceImpl implements MajLotService {
          addIndexesCompositeToDfce("META_170200", APPL_CONCERNEE.GNT);
       } else if (CASSANDRA_170201.equalsIgnoreCase(nomOperation)) {
          updateCassandra170201();
+      } else if (GNS_CASSANDRA_DFCE_170202.equalsIgnoreCase(nomOperation)) {
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNS);
+      } else if (GNT_CASSANDRA_DFCE_170202.equalsIgnoreCase(nomOperation)) {
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNT);         
       } else {
 
          // Opération inconnue => log + exception runtime
