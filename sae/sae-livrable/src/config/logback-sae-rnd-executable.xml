@@ -17,7 +17,6 @@
       <encoder>
          <pattern>%msg%n</pattern>
       </encoder>
-      
    </appender>
 
 
@@ -123,7 +122,6 @@
    <root level="INFO">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
-      <appender-ref ref="consoleInfo" />
    </root>
    
    
