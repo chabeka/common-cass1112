@@ -1500,6 +1500,70 @@ public class InsertionDonnees {
    }
 
    /**
+    * Ajout des données dans le référentiel des formats en V6 : <li>migrationW2</li>
+    */
+   public void addReferentielFormatV6Bis() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      String formatKey = "pptx";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS PowerPoint version 2007 et +",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "pptx", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(
+            "typeMime",
+            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+
+      formatKey = "pptm";
+
+      LOG.info("Mise à jour du référentiel des formats");
+      updater = cfTmpl.createUpdater(formatKey);
+      addColumn("idFormat", formatKey, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier MS PowerPoint macro",
+            StringSerializer.get(), StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "pptm", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime",
+            "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
+            StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format ajouté : {}", formatKey);
+   }
+
+   /**
     * Modification des données dans le référentiel des formats : Ajout d'un
     * convertisseur pour le format <li>fmt/354</li>
     */
@@ -1557,6 +1621,29 @@ public class InsertionDonnees {
             StringSerializer.get(), updater);
       cfTmpl.update(updater);
       LOG.info("Format modifié : fmt/44");
+   }
+
+   /**
+    * Modification des données dans le référentiel des formats : Ajout d'un
+    * convertisseur pour le format <li>crtl/1</li>
+    */
+   public void modifyReferentielFormatCrtl1() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      updater = cfTmpl.createUpdater("crtl/1");
+      addColumn("extension", "tar.gz,gz", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+      LOG.info("Format modifié : crtl/1");
    }
 
    /**

@@ -328,9 +328,13 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (GNS_CASSANDRA_DFCE_170202.equalsIgnoreCase(nomOperation)) {
          // Ajout des index composites
          addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNS);
+         // Update keyspace SAE
+         updateCassandra170202();
       } else if (GNT_CASSANDRA_DFCE_170202.equalsIgnoreCase(nomOperation)) {
          // Ajout des index composites
-         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNT);         
+         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNT);
+         // Update keyspace SAE
+         updateCassandra170202();
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -356,7 +360,7 @@ public final class MajLotServiceImpl implements MajLotService {
          LOG.debug("Opérations terminées sur la base DFCE");
       } else {
          String message = String.format(
-                     "Erreur technique : L'application %s est inconnue. La modification de la base de données DFCE doit être executé avec la commande 'DFCE'.",
+               "Erreur technique : L'application %s est inconnue. La modification de la base de données DFCE doit être executé avec la commande 'DFCE'.",
                applConcernee);
          LOG.error(message);
          throw new MajLotRuntimeException(message);
@@ -491,11 +495,16 @@ public final class MajLotServiceImpl implements MajLotService {
          addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNT);
          // Ajout des index composites GNT_CASSANDRA_DFCE_160601
          addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNT);
+         // Ajout des index composites GNT_CASSANDRA_DFCE_170202
+         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNT);
+
       } else if (APPL_CONCERNEE.GNS.equals(gedConcernee)) {
          // Ajout des index composites GNS_CASSANDRA_DFCE_160600
          addIndexesCompositeToDfce("META_160600", APPL_CONCERNEE.GNS);
          // Ajout des index composites GNS_CASSANDRA_DFCE_160601
          addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNS);
+         // Ajout des index composites GNS_CASSANDRA_DFCE_170202
+         addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNS);
       }
       // CASSANDRA_DFCE_160900
       updateMetaDfce("META_160900");
@@ -848,6 +857,13 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170201");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion24();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
+   private void updateCassandra170202() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170202");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion25();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
@@ -1315,6 +1331,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion22();
       updater.updateToVersion23();
       updater.updateToVersion24();
+      updater.updateToVersion25();
    }
 
 }

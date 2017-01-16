@@ -51,7 +51,8 @@ public class SAECassandraUpdater {
    private static final int VERSION_22 = 22;
    private static final int VERSION_23 = 23;
    private static final int VERSION_24 = 24;
-   
+   private static final int VERSION_25 = 25;
+
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
    private static final String DROIT_FORMAT_CONTROL_PROFIL = "DroitFormatControlProfil";
@@ -1036,6 +1037,32 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 24
       saeDao.setDatabaseVersion(VERSION_24);
+   }
+
+   public void updateToVersion25() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_25) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_25);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout des nouveaux formats à gérer
+      donnees.addReferentielFormatV6Bis();
+
+      // Modification du format fmt/353 (extension .tiff)
+      donnees.modifyReferentielFormatCrtl1();
+
+
+      // On positionne la version à 24
+      saeDao.setDatabaseVersion(VERSION_25);
    }
 
    /**
