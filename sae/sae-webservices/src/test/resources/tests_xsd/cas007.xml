@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Id d'archivage conforme en majuscules -->
-<sae:consultation xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-	<sae:idArchive>A1B1FF04-230A-26FF-0033-23490ABC02FA</sae:idArchive>
-</sae:consultation>
