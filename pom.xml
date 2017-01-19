@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae</artifactId>
-   <version>17.2.0.4-SNAPSHOT</version>
+   <version>17.9.0.1-SNAPSHOT</version>
 
    <packaging>pom</packaging>
 
