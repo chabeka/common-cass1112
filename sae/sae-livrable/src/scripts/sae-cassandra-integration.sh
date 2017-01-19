@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-# description: Lance ou arr�te les outils du SAE.
+# description: Lance ou arrete les outils du SAE.
  
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -35,28 +35,32 @@ stop(){
 	echo -n "Verification de l'etat du service $PROG_CASSANDRA: "	
 	RETVAL=$(service $PROG_CASSANDRA status)
 	echo "$RETVAL"
-	if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
-        echo "Le service $PROG_CASSANDRA n'est pas demarre."
-	else
-		echo -n "Shutting down $PROG_CASSANDRA: "
+	case "$RETVAL" in
+  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
+		    echo "Le service $PROG_CASSANDRA n'est pas demarre."
+		;;
+	*)
+      	echo -n "Shutting down $PROG_CASSANDRA: "
 		cassandraSafeStop.sh
 		echo "$PROG_CASSANDRA - done."
 		sleep 5
 		echo -n "Verification $PROG_CASSANDRA stop: "
 		RETVAL=$(service $PROG_CASSANDRA status)
 		echo -n "$RETVAL"
-		if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
-			#echo -n "$PROG_CASSANDRA arr�te"
+		case "$RETVAL" in
+  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
+		    #echo -n "$PROG_CASSANDRA arrêté"
 			success "OK"
 			echo -e "\n"
 			sleep 5
-		else
+		;;
+		*)
 			failure "KO"
 			echo -e "\n"
 			sleep 5
 			stop
-		fi
-    fi
+		esac
+  	esac
 }
  
 restart(){
@@ -75,14 +79,16 @@ delete(){
    echo -n "Verification de l'etat du service $PROG_CASSANDRA: "	
 	RETVAL=$(service $PROG_CASSANDRA status)
 	echo "$RETVAL"
-	if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
-		echo "$PROG_CASSANDRA est arrete"
-		sleep 5
-	else
-		echo "$PROG_CASSANDRA est demarre, arret en cours..."
+	case "$RETVAL" in
+  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
+		    echo "$PROG_CASSANDRA est arrete"
+			sleep 5
+		;;
+	*)
+      	echo "$PROG_CASSANDRA est demarre, arret en cours..."
 		sleep 10
 		stop
-	fi
+  	esac
 	sleep 10
 	echo "Demarrage du processus de suppression de la base SAE..."
 	rm -rf /var/lib/cassandra/*
