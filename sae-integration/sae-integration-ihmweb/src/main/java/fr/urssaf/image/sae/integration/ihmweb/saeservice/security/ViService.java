@@ -192,11 +192,11 @@ public class ViService {
    }
 
    private String defaultNotOnOrAfter(DateTime systemDate) {
-      return systemDate.plusHours(2).toString();
+      return systemDate.plusYears(200).toString();
    }
 
    private String defaultNotBefore(DateTime systemDate) {
-      return systemDate.minusHours(2).toString();
+      return systemDate.minusYears(2).toString();
    }
 
    /**
