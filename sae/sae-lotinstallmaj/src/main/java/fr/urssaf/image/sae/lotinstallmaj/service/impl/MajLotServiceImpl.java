@@ -72,7 +72,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String CASSANDRA_170201 = "CASSANDRA_170201";
    public static final String GNS_CASSANDRA_DFCE_170202 = "GNS_CASSANDRA_DFCE_170202";
    public static final String GNT_CASSANDRA_DFCE_170202 = "GNT_CASSANDRA_DFCE_170202";
-   
+
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
    public static final String META_150100 = "META_150100";
@@ -438,15 +438,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Methode permettant de
-    */
-   private void installGNTServeurDFCE() {
-      // Update de la base DFCE
-      commonUpdateDFCE();
-   }
-
-   /**
-    * Methode permettant de
+    * Methode permettant de réaliser les updtaes pour le serveur DFCE.
     */
    private void installServeurDFCE() {
       // Update de la base DFCE
@@ -834,7 +826,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion21();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
-   
+
    /**
     * Pour lot 161100 du SAE : mise à jour du keyspace "SAE" dans cassandra, en
     * version 22
