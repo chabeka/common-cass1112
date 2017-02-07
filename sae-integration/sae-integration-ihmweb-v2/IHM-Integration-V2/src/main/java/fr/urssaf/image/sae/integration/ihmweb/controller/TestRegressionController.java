@@ -26,21 +26,40 @@ import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestProprietes;
 import fr.urssaf.image.sae.integration.ihmweb.service.regression.TestRegressionService;
 
+/**
+ * Controller de la partie pour les test de non regressions
+ * 
+ */
 @Controller
 @RequestMapping(value = "testRegression")
 public class TestRegressionController {
 
+   /**
+    * Injection de la couche service des tests de non regression
+    */
    @Autowired
    private TestRegressionService testRegressionService;
 
+   /**
+    * Injection du bean contenant toutes les informations sur la configuration de l'IHM
+    * ex : chemin vers dossiers des tests, URL des web services du SAE ...
+    */
    @Autowired
    private TestConfig testConfig;
 
    TestProprietes test;
 
+   /**
+    * Fonction requete GET renvoyant le nom des différents services pour la JSP
+    * testRegression
+    * 
+    * @param model
+    * @return
+    */
    @RequestMapping(method = RequestMethod.GET)
    public final String getDefaultView(Model model) {
 
+      // Recuperation des noms des tests pour affichage
       File repertoireXml = new File(testConfig.getTestRegression());
       File[] filesXml = repertoireXml.listFiles();
       List<String> records = new ArrayList<String>();
@@ -49,15 +68,30 @@ public class TestRegressionController {
          str = f.getName().substring(0, f.getName().indexOf("_"));
          records.add(str);
       }
+      // tri dans l'ordre alphabétique
       Set<String> set = new HashSet<String>();
       set.addAll(records);
       ArrayList<String> distinctList = new ArrayList<String>(set);
       Collections.sort(distinctList);
       model.addAttribute("isOk", true);
+      // ajout de la liste des test dans le model pour l'affichage
       model.addAttribute("listeTestXml", distinctList);
       return "testRegression";
    }
 
+   /**
+    * Fonction permettant de lancer les tests via la couche service, apres la
+    * selection dans la checkbox
+    * 
+    * @param checkboxValue
+    * @param model
+    * @return
+    * @throws IOException
+    * @throws XMLStreamException
+    * @throws SAXException
+    * @throws ParserConfigurationException
+    * @throws InterruptedException
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=lancerTest" })
    public final String lancerTest(
          @RequestParam("checkboxName") String[] checkboxValue, Model model)
@@ -65,19 +99,34 @@ public class TestRegressionController {
          ParserConfigurationException, InterruptedException {
       Map<String, Map<String, String>> resStub = new LinkedHashMap<String, Map<String, String>>();
       test = new TestProprietes();
+
+      // ajout du type de fichier pour la recherche dans le dossier des tests de
+      // non regression
       String[] checkChange = new String[checkboxValue.length];
       int i = 0;
       for (String str : checkboxValue) {
          checkChange[i] = str + ".txt";
          i++;
       }
+
+      // appelle a la couche service pour lancer les tests selectionnés dans la
+      // checkbox
       test = testRegressionService.testRegression(checkChange);
 
+      // ajout des resultats dans le modele pour affichage dans la jsp
       model.addAttribute("resRegression", test);
       return "resultatRegression";
 
    }
 
+   /**
+    * fonction permettant le tri des tests pour l'affichage dans la checkboxs
+    * 
+    * @param checkboxValue
+    * @param model
+    * @return
+    * @throws IOException
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=checkboxTest" })
    public String checkboxTest(@RequestParam("myValue") String checkboxValue,
          Model model) throws IOException {
@@ -103,25 +152,42 @@ public class TestRegressionController {
       return "checkboxRegression";
    }
 
-   //methode retour au test a faire
+   /**
+    * fonction permettant de gérer le retour au resultat des test depuis la JSP
+    * detailRegression
+    * 
+    * @param detailTest
+    * @param model
+    * @return
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=retourTest" })
    public String retourTest(@RequestParam("myValue") String detailTest,
          Model model) {
-   
+      // permet de retourner au resultat des tests depuis la JSP de détail des
+      // resultats
       model.addAttribute("resRegression", test);
       System.out.println("RETOUR TEST");
       return "resultatRegression";
    }
-   
+
+   /**
+    * fonction permettant d'afficher le contenu des messages envoyés et recus pour
+    * chaque test
+    * 
+    * @param detailTest
+    * @param model
+    * @return
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=detailTest" })
    public String detailTest(@RequestParam("myValue") String detailTest,
          Model model) {
 
-      System.out.println("DETAIL DU TEST " + detailTest);
       Map<String, String> msg = new LinkedHashMap<String, String>();
       String msgIn = "";
       String msgOut = "";
 
+      // recuperation des message envoyé et recu des tests depuis le bean
+      // TestPropriete contenant les informations des tests réalisés
       for (Map.Entry<String, Map<String, Map<String, String>>> mp : test
             .getMessageInOut().entrySet()) {
          for (Map.Entry<String, Map<String, String>> mp2 : mp.getValue()
@@ -137,6 +203,7 @@ public class TestRegressionController {
          }
       }
 
+      // Ajout des resultats dans le model
       model.addAttribute("messageOut", msgOut);
       model.addAttribute("messageIn", msgIn);
       model.addAttribute("resRegression", test);
