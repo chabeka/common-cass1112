@@ -6,9 +6,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>SAE - Intégration - Tests de Regression</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!-- Twitter boootstrap -->
+
+<!-- <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> -->
+<meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>SAE - Intégration - Tests de Regression</title>
+
+				<!-- Twitter boootstrap -->
 <link rel="stylesheet" type="text/css"
 	href="bootstrap/css/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -36,17 +43,18 @@
 	<table class="table table-bordered">
 
 		<c:forEach var="meta" items="${listeTestXml}">
-					<tr>
-					<form  method="post">
-						<input type="hidden" name="myValue" value="${meta}" />
-						<input type="hidden" name="action" id="${meta}" />
-						<td><input type="submit" class="btn btn-primary btn-md" onclick="document.getElementById('${meta}').value='checkboxTest'"
- 							value="${meta}" /> </td>
-					</form>
-				</c:forEach>
-				
-	</table> 
-	
+			<tr>
+				<form method="post">
+					<input type="hidden" name="myValue" value="${meta}" />
+					<input type="hidden" name="action" id="${meta}" />
+					<td><input type="submit" class="btn btn-primary btn-md"
+						onclick="document.getElementById('${meta}').value='checkboxTest'"
+						value="${meta}" /></td>
+				</form>
+		</c:forEach>
+
+	</table>
+
 
 </body>
 </html>
