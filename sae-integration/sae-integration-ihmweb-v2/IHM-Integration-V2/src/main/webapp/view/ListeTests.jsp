@@ -60,6 +60,10 @@
 				<td><a href="testUnitaire.do"><c:out
 							value="Créer un test libre" /></a></td>
 			</tr>
+			<tr>
+				<td><a href="gestionTestNonRegression.do"><c:out
+							value="Gestion des tests de non regression sur le serveur" /></a></td>
+			</tr>
 		</tbody>
 	</table>
 
