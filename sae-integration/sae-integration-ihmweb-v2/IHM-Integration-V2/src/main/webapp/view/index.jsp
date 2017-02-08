@@ -20,7 +20,7 @@
 			<table class="table table-bordered">
 				<tbody>
 					<tr>
-						<td><a href="listeTests.do">Liste des tests</a></td>
+						<td><a href="listeTests.do">Gestion des tests</a></td>
 					</tr>
 					<tr>
 						<td><a href="testRegression.do">Test de non regression</a></td>
