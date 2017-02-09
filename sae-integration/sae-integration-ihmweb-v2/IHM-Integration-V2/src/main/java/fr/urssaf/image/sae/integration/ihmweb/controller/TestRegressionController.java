@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,7 +96,6 @@ public class TestRegressionController {
          @RequestParam("checkboxName") String[] checkboxValue, Model model)
          throws IOException, XMLStreamException, SAXException,
          ParserConfigurationException, InterruptedException {
-      Map<String, Map<String, String>> resStub = new LinkedHashMap<String, Map<String, String>>();
       test = new TestProprietes();
 
       // ajout du type de fichier pour la recherche dans le dossier des tests de
@@ -182,7 +180,6 @@ public class TestRegressionController {
    public String detailTest(@RequestParam("myValue") String detailTest,
          Model model) {
 
-      Map<String, String> msg = new LinkedHashMap<String, String>();
       String msgIn = "";
       String msgOut = "";
 
