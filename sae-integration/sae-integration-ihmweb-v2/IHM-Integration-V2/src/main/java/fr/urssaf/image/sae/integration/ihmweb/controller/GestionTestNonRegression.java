@@ -57,7 +57,6 @@ public class GestionTestNonRegression {
       // Recupere l'ensemble des fichiers recus dans une liste de file
       List<File> listFile = new LinkedList<File>();
       for (MultipartFile f : file) {
-         System.out.println("NOM FILE : " + f.getOriginalFilename());
          File convFile = new File(f.getOriginalFilename());
          f.transferTo(convFile);
          listFile.add(convFile);
@@ -98,7 +97,6 @@ public class GestionTestNonRegression {
       // Recupere l'ensemble des fichiers recus dans une liste de file
       List<File> listFile = new LinkedList<File>();
       for (MultipartFile f : file) {
-         System.out.println("NOM FILE : " + f.getOriginalFilename());
          File convFile = new File(f.getOriginalFilename());
          f.transferTo(convFile);
          listFile.add(convFile);
@@ -139,7 +137,6 @@ public class GestionTestNonRegression {
       // Recupere l'ensemble des fichiers recus dans une liste de file
       List<File> listFile = new LinkedList<File>();
       for (MultipartFile f : file) {
-         System.out.println("NOM FILE : " + f.getOriginalFilename());
          File convFile = new File(f.getOriginalFilename());
          f.transferTo(convFile);
          listFile.add(convFile);
