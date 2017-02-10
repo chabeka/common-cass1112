@@ -1,13 +1,13 @@
 package fr.urssaf.image.sae.integration.ihmweb.saeservice.utils;
-//
-//import org.apache.commons.lang.ArrayUtils;
-//
-//import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
-//import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationResponse;
-//import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
-//import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
-//import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
-//import fr.urssaf.image.sae.integration.ihmweb.service.MetadonneeValeurListService;
+
+import org.apache.commons.lang.ArrayUtils;
+
+import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ConsultationResponse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ListeMetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ResultatRechercheType;
+import fr.urssaf.image.sae.integration.ihmweb.service.MetadonneeValeurListService;
 
 
 /**
@@ -29,20 +29,20 @@ public final class SaeServiceObjectExtractor {
     * @param consultResponse la réponse à l'opération "consultation"
     * @return la liste des métadonnées renvoyées par l'opération
     */
-//   public static MetadonneeValeurList extraitMetadonnees(ConsultationResponse consultResponse) {
-//      
-//      MetadonneeValeurList result = new MetadonneeValeurList() ; 
-//      
-//      if ((consultResponse!=null) && (consultResponse.getConsultationResponse()!=null)) { 
-//         
-//         result = extraitMetadonnees(
-//                  consultResponse.getConsultationResponse().getMetadonnees());
-//            
-//      }
-//      
-//      return result;
-//      
-//   }
+   public static MetadonneeValeurList extraitMetadonnees(ConsultationResponse consultResponse) {
+      
+      MetadonneeValeurList result = new MetadonneeValeurList() ; 
+      
+      if ((consultResponse!=null) && (consultResponse.getConsultationResponse()!=null)) { 
+         
+         result = extraitMetadonnees(
+                  consultResponse.getConsultationResponse().getMetadonnees());
+            
+      }
+      
+      return result;
+      
+   }
    
    
    
@@ -53,27 +53,27 @@ public final class SaeServiceObjectExtractor {
 //    * @param liste la liste des métadonnnées (code + valeur) de la couche web service
 //    * @return la liste des métadonnées (code + valeur) pour la couche modèle
 //    */
-//   public static MetadonneeValeurList extraitMetadonnees(
-//         ListeMetadonneeType liste) {
-//      
-//      MetadonneeValeurList result = new MetadonneeValeurList();
-//      
-//      if ((liste!=null) && (ArrayUtils.isNotEmpty(liste.getMetadonnee())))  {
-//         
-//         for (MetadonneeType meta: liste.getMetadonnee()) {
-//            
-//            MetadonneeValeurListService.ajouteMetadonnee(
-//                  result, 
-//                  meta.getCode().getMetadonneeCodeType(), 
-//                  meta.getValeur().getMetadonneeValeurType());
-//            
-//         }
-//         
-//      }
-//      
-//      return result;
-//      
-//   }
+   public static MetadonneeValeurList extraitMetadonnees(
+         ListeMetadonneeType liste) {
+      
+      MetadonneeValeurList result = new MetadonneeValeurList();
+      
+      if ((liste!=null) && (ArrayUtils.isNotEmpty(liste.getMetadonnee())))  {
+         
+         for (MetadonneeType meta: liste.getMetadonnee()) {
+            
+            MetadonneeValeurListService.ajouteMetadonnee(
+                  result, 
+                  meta.getCode().getMetadonneeCodeType(), 
+                  meta.getValeur().getMetadonneeValeurType());
+            
+         }
+         
+      }
+      
+      return result;
+      
+   }
    
    
    /**
@@ -83,19 +83,19 @@ public final class SaeServiceObjectExtractor {
     * @param resultatRecherche l'objet "résultat de recherche" de la couche web service
     * @return l'objet "liste de métadonnées" de la couche modèle
     */
-//   public static MetadonneeValeurList extraitMetadonnees(
-//         ResultatRechercheType resultatRecherche) {
-//      
-//      MetadonneeValeurList result ;
-//      
-//      if (resultatRecherche==null) {
-//         result = new MetadonneeValeurList();
-//      } else {
-//         result = extraitMetadonnees(resultatRecherche.getMetadonnees());
-//      }
-//         
-//      return result;
-//      
-//   }
+   public static MetadonneeValeurList extraitMetadonnees(
+         ResultatRechercheType resultatRecherche) {
+      
+      MetadonneeValeurList result ;
+      
+      if (resultatRecherche==null) {
+         result = new MetadonneeValeurList();
+      } else {
+         result = extraitMetadonnees(resultatRecherche.getMetadonnees());
+      }
+         
+      return result;
+      
+   }
    
 }

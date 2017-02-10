@@ -57,7 +57,7 @@
 							value="Lancer un test XML sauvegardé sur le serveur" /></a></td>
 			</tr>
 			<tr>
-				<td><a href="testUnitaire.do"><c:out
+				<td><a href="testsLibres.do"><c:out
 							value="Créer un test libre" /></a></td>
 			</tr>
 			<tr>
