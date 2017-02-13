@@ -1,0 +1,54 @@
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.cirtil.fr/saeIntegration/tests"
+   xmlns:this="http://www.cirtil.fr/saeIntegration/tests"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified">
+   
+   <!-- Elément racine -->
+   <xsd:element name="Tests" type="this:ListeCategoriesType" />
+   
+   
+   <xsd:complexType name="ListeCategoriesType">
+      <xsd:sequence>
+         <xsd:element name="Categorie" type="this:CategorieType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="CategorieType">
+      <xsd:sequence>
+         <xsd:element name="Nom" type="xsd:string" />
+         <xsd:element name="Id" type="xsd:int" />
+         <xsd:element name="CasTests" type="this:ListeCasTestsType" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+   <xsd:complexType name="ListeCasTestsType">
+      <xsd:sequence>
+         <xsd:element name="CasTest" type="this:CasTestType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+       
+   <xsd:complexType name="CasTestType">
+      <xsd:sequence>
+         <xsd:element name="id" type="xsd:string" />
+         <xsd:element name="code" type="xsd:string" />
+         <xsd:element name="description" type="xsd:string" />
+         <xsd:element name="implemente" type="xsd:boolean" />
+         <xsd:element name="luceneExemple" type="xsd:string" minOccurs="0"/>
+         <!-- xsd:element name="luceneExempleList" minOccurs="0">
+          <xsd:simpleType>
+                <xsd:list itemType="xsd:string"/>
+          </xsd:simpleType>
+         </xsd:element-->
+         <xsd:sequence>
+                <xsd:element name="luceneExempleList" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+         </xsd:sequence>         
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   
+</xsd:schema>

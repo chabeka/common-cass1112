@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certificats>
+
+   <certificat>
+      <id>1</id>
+      <chemin>certificats/PNR_Application_Test.p12</chemin>
+      <password>QEtDiGuGuEnZ</password>
+   </certificat>
+   
+   <certificat>
+      <id>2</id>
+      <chemin>certificats/PKI_VAL-AED_ApplicationTestSAE.p12</chemin>
+      <password>dKQmz8NwyO4d</password>
+   </certificat>
+   
+   <certificat>
+      <id>3</id>
+      <chemin>certificats/PKI_Test_CertifAppliCliente.p12</chemin>
+      <password>toto</password>
+   </certificat>
+   
+   
+   <certificat>
+      <id>4</id>
+      <chemin>certificats/gammeimage.p12</chemin>
+      <password>gammeimage</password>
+   </certificat>
+
+     
+</certificats>
