@@ -39,7 +39,7 @@ import fr.urssaf.image.sae.regionalisation.fond.documentaire.support.CassandraSu
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-regionalisation-cassandra-test.xml" })
-// @Ignore
+//@Ignore
 public class VentilationFondsDocProdTest {
 
    private DateFormat dateFormat = new SimpleDateFormat(
@@ -54,21 +54,23 @@ public class VentilationFondsDocProdTest {
    @Autowired
    private Properties cassandraConf;
 
+   private static String CHEMINREPGNS = "c:/sav/GNS";
+   private static String NOMFICHIERGNS = "extraction-GNS.csv";
+ 
+   private static String CHEMINREPGNT = "c:/sav/GNT";
+   private static String NOMFICHIERGNT = "extraction-GNT.csv";
+
    private static String CHEMINREP = "c:/divers";
-   // private static String NOMFICHIER =
-   // "20150611_fonds_doc_prod_pour_ventilation.csv";
-   // private static String NOMFICHIER =
-   // "20160502_fonds_doc_prod_gnt_pour_ventilation.csv";
-   private static String NOMFICHIER = "20161110_fonds_doc_cspp_gnt_pour_ventilation.csv";
-   private static String NOMFICHIERVENTIL = "20161111_ventilation_taille.csv";
-   private static String NOMFICHIER_DOC_SANS_DOMAINE = "20150716_ventilation_doc_sans_domaine.csv";
-   private static String NOMFICHIER_FORMAT_PDF = "20150331_ventilation_doc_format_pdf.csv";
-   private static String NOMFICHIER_DOC_AVEC_DATE_RECEPTION = "20150401_docs_avec_date_reception.csv";
-   private static String NOMFICHIER_DOC_AVEC_PERIODE = "20150401_docs_avec_periode.csv";
-   private static String NOMFICHIER_CPT_DOC_PAR_SIREN = "20151203_nb_doc_par_siren.csv";
-   private static String NOMFICHIER_DOC_TAILLE_SUP_1M = "20160405_doc_taille_sup_1M.csv";
-   private static String NOMFICHIER_CODE_ORGA_GEST = "20160624_code_orga_gest.csv";
-   private static String NOMFICHIER_CODE_ORGA_PROP = "20160624_code_orga_prop.csv";
+
+   private static String NOMFICHIER = "20170217-fonds_doc_prod_pour_ventilation.csv";
+   private static String NOMFICHIERID = "20170213_fonds_doc_id.csv";
+   private static String NOMFICHIERVENTILPARDATEARCHIVAGE = "20170213_ventilation_date_archivage.csv";
+   private static String NOMFICHIERVENTILPARMOISARCHIVAGE = "20170213_ventilation_mois_archivage.csv";
+   private static String NOMFICHIERVENTILPARMOISDATEMODIFICATION = "20170213_ventilation_mois_modification.csv";
+   private static String NOMFICHIERVENTILPARMOISCREATION = "20170213_ventilation_mois_creation.csv";
+   private static String NOMFICHIERVENTILPARMOISARCHIVAGEAPPPRODAPPTRAIT = "20170213_ventilation_mois_archivage_productrive_traitement.csv";
+   private static String NOMFICHIERVENTILPARDATEARCHIVAGEETAPPTRAITETAPPPROD = "20170213_ventilation_date_archivage_traitement_productrive.csv";
+   
 
    @Test
    // @Ignore
@@ -96,28 +98,17 @@ public class VentilationFondsDocProdTest {
       reqMetas.add("SM_TITLE");
       reqMetas.add("SM_SIZE");
       reqMetas.add("ffi");
-      reqMetas.add("cot");
-      reqMetas.add("cpt");
-      reqMetas.add("drh");
-      reqMetas.add("dte");
-      // Date de réception
-      reqMetas.add("dre");
-      // Période
-      reqMetas.add("per");
-      // Code produit V2
+
+      reqMetas.add("ame");
       reqMetas.add("cpr");
-      // Code traitement V2
       reqMetas.add("ctr");
-      // Domaine cotisant
+      reqMetas.add("nno");
+      
       reqMetas.add("cot");
-      // Domaine comptable
       reqMetas.add("cpt");
-      // Domaine RH
       reqMetas.add("drh");
-      // Domaine technique
       reqMetas.add("dte");
-      // Statut WATT
-      reqMetas.add("swa");
+      reqMetas.add("drs");
 
       // Création du répertoire de sortie s'il n'existe pas déjà
       File rep = new File(CHEMINREP);
@@ -163,95 +154,93 @@ public class VentilationFondsDocProdTest {
                // 0 : UUID document
                writer.write(idDoc);
                writer.write(";");
-               // 1 : Code orga gestionnaire
+
+               //1 CodeOrganismeGestionnaire
                writer.write(cog);
                writer.write(";");
-               // 2 : Code orga propriétaire
+               //2 CodeOrganismeProprietaire
                writer.write(map.get("cop"));
                writer.write(";");
-               // 3 : Numéro de compte externe
+               //3 NumeroCompteExterne
                writer.write(StringUtils.trimToEmpty(map.get("nce")));
                writer.write(";");
-               // 4 : Numéro de compte interne
+               //4 NumeroCompteInterne
                writer.write(StringUtils.trimToEmpty(map.get("nci")));
                writer.write(";");
-               // 5 : Numéro de personne
+               //5 NumeroPersonne
                writer.write(StringUtils.trimToEmpty(map.get("npe")));
                writer.write(";");
-               // 6 : Siret
+               //6 Siret
                writer.write(StringUtils.trimToEmpty(map.get("srt")));
                writer.write(";");
-               // 7 : Pseudo Siret
+               //7 PseudoSiret
                writer.write(StringUtils.trimToEmpty(map.get("psi")));
                writer.write(";");
-               // 8 : Siren
+               //8 Siren
                writer.write(StringUtils.trimToEmpty(map.get("srn")));
                writer.write(";");
-               // 9 : Application productrice
+               //9 ApplicationProductrice
                writer.write(StringUtils.trimToEmpty(map.get("apr")));
                writer.write(";");
-               // 10 : Application traitement
+               //10 ApplicationTraitement
                writer.write(StringUtils.trimToEmpty(map.get("atr")));
                writer.write(";");
-               // 11 : Contrat de service
+               //11 ContratDeService
                writer.write(StringUtils.trimToEmpty(map.get("cse")));
                writer.write(";");
-               // 12 : Date d'archivage
-               writer.write(StringUtils.trimToEmpty(map
-                     .get("SM_ARCHIVAGE_DATE")));
+               //12 DateArchivage
+               writer.write(StringUtils.trimToEmpty(map.get("SM_ARCHIVAGE_DATE")));
                writer.write(";");
-               // 13 : Date de création
+               //13 DateCreation
                writer.write(StringUtils.trimToEmpty(map.get("SM_CREATION_DATE")));
                writer.write(";");
-               // 14 : Date de modification
-               writer.write(StringUtils.trimToEmpty(map
-                     .get("SM_MODIFICATION_DATE")));
+               //14 DateModification
+               writer.write(StringUtils.trimToEmpty(map.get("SM_MODIFICATION_DATE")));
                writer.write(";");
-               // 15 : Code RND
+               //15 CodeRND
                writer.write(StringUtils.trimToEmpty(map.get("SM_DOCUMENT_TYPE")));
                writer.write(";");
-               // 16 : Titre
+               //16 Titre
                writer.write(StringUtils.trimToEmpty(map.get("SM_TITLE")));
                writer.write(";");
-               // 17 : Taille fichier
+               //17 TailleFichier
                writer.write(StringUtils.trimToEmpty(map.get("SM_SIZE")));
                writer.write(";");
-               // 18 : Format du fichier
+               //18 FormatFichier
                writer.write(StringUtils.trimToEmpty(map.get("ffi")));
                writer.write(";");
-               // 19 : Domaine cotisant
-               writer.write(StringUtils.trimToEmpty(map.get("cot")));
+               //19 ApplicationMetier
+               writer.write(StringUtils.trimToEmpty(map.get("ame")));
                writer.write(";");
-               // 20 : Domaine comptable
-               writer.write(StringUtils.trimToEmpty(map.get("cpt")));
-               writer.write(";");
-               // 21 : Domaine RH
-               writer.write(StringUtils.trimToEmpty(map.get("drh")));
-               writer.write(";");
-               // 22 : Domaine technique
-               writer.write(StringUtils.trimToEmpty(map.get("dte")));
-               writer.write(";");
-               // 23 : Date de réception
-               writer.write(StringUtils.trimToEmpty(map.get("dre")));
-               writer.write(";");
-               // 24 : Période
-               writer.write(StringUtils.trimToEmpty(map.get("pre")));
-               writer.write(";");
-               // 25 : Code produit V2
-               writer.write(StringUtils.trimToEmpty(map.get("cpr")));
-               writer.write(";");
-               // 26 : Code traitement V2
+              //20 CodeTraitementV2
                writer.write(StringUtils.trimToEmpty(map.get("ctr")));
+               writer.write(";");                              
+               //21 CodeProduitV2
+               writer.write(StringUtils.trimToEmpty(map.get("cpr")));
+               writer.write(";");               
+               //22 NumeroNotification
+               writer.write(StringUtils.trimToEmpty(map.get("nno")));
                writer.write(";");
-               // 27 : Statut WATT
-               writer.write(StringUtils.trimToEmpty(map.get("swa")));
 
-               writer.write("\n");
+               //23 DomaineCotisant                
+               writer.write(StringUtils.trimToEmpty(map.get("cot")));
+               writer.write(";");               
+               //24 DomaineComptable   
+               writer.write(StringUtils.trimToEmpty(map.get("cpt")));
+               writer.write(";");               
+               //25 DomaineRH  
+               writer.write(StringUtils.trimToEmpty(map.get("drh")));
+               writer.write(";");               
+               //26 DomaineTechnique   
+               writer.write(StringUtils.trimToEmpty(map.get("dte")));
+               writer.write(";");               
+               //27 DomaineRSI   
+               writer.write(StringUtils.trimToEmpty(map.get("drs")));
+               writer.write("\n");               
 
                nbDocsSortis++;
 
             }
-
             nbDocsTraites++;
             if ((nbDocsTraites % 1000) == 0) {
                System.out.println("Nombre de docs traités : " + nbDocsTraites);
@@ -273,7 +262,6 @@ public class VentilationFondsDocProdTest {
       }
 
    }
-
    /**
     * Récupère un nombre donné d'ID de document
     * 
@@ -465,8 +453,9 @@ public class VentilationFondsDocProdTest {
    @Test
    public void ventilation_ParCodeRND() throws IOException {
 
-      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREP,
-            NOMFICHIER)), ';');
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
 
       String[] nextLine;
       int cptDoc = 0;
@@ -505,7 +494,50 @@ public class VentilationFondsDocProdTest {
       System.out.println("Opération terminée");
 
    }
+   
+   @Test
+   public void ventilation_ParCodeRND_APR_ATR_CPR_CTR_CMO() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREP, NOMFICHIER)), ';');
 
+      String[] nextLine;
+      int cptDoc = 0;
+      String codeRnd;
+      Long cptActuel;
+     
+      Map<String, Long> mapComptages = new HashMap<String, Long>(); 
+      while ((nextLine = reader.readNext()) != null) {
+         
+         //CodeRND 15 Titre 16 AppliProductrice 9 AppliTraitement 10 Contratdeservice 11 traitementV2 18 produit V2 19 
+         codeRnd = nextLine[15] + ";" + nextLine[16]+ ";" + nextLine[9] + ";" + nextLine[10]+ ";" + nextLine[11] + ";" + nextLine[18] +  ";" + nextLine[19] + ";" + nextLine[26] +  ";" + nextLine[25];       
+         
+         cptActuel = mapComptages.get(codeRnd);
+         if (cptActuel==null) {
+            mapComptages.put(codeRnd, 1L);
+         } else {
+            mapComptages.put(codeRnd, cptActuel+1);
+         }
+         
+         cptDoc++;
+         if ((cptDoc % 30000)==0) {
+            System.out.println(printDate() + " ventilation_ParCodeRND_APR_ATR_CPR_CTR - Nombre de documents traités : " + cptDoc);
+         }
+         
+      }
+      
+      System.out.println(printDate() + " ventilation_ParCodeRND_APR_ATR_CPR_CTR - Nombre de documents traités : " + cptDoc);
+      System.out.println();
+      
+      Map<String, Long> treeMap = new TreeMap<String, Long>(mapComptages);
+      for(Map.Entry<String, Long> entry : treeMap.entrySet()) {
+         System.out.println(entry.getKey() + ";" + entry.getValue());
+      }
+      
+      System.out.println();
+      System.out.println("Opération terminée");
+      
+   }
+   
    @Test
    public void ventilation_ParApplicationProductrice() throws IOException {
 
@@ -900,7 +932,6 @@ public class VentilationFondsDocProdTest {
       System.out.println("Opération terminée");
 
    }
-
    @Test
    public void ventilation_ParApplicationTraitementEtProductrice()
          throws IOException {
@@ -968,8 +999,9 @@ public class VentilationFondsDocProdTest {
          Map<String, Long> mapAppliTraitEtProd = mapComptages
                .get(applProdEtTrait);
 
-         if (mapAppliTraitEtProd == null) {
-            Map<String, Long> map = new HashMap<String, Long>();
+   
+         if (mapAppliTraitEtProd==null) {
+            Map<String,Long> map = new HashMap<String,Long>();
             map.put(codeRnd, 1L);
             mapComptages.put(applProdEtTrait, map);
          } else {
@@ -1014,6 +1046,67 @@ public class VentilationFondsDocProdTest {
 
    }
 
+   @Test
+   public void ventilation_ParApplicationProdEtApplicationTraitEtCodeRnd_CPR_CTR_CMO() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREP, NOMFICHIER)), ';');
+
+      String[] nextLine;
+      int cptDoc = 0;
+      String applProdEtTraitCPRCTR;
+
+      String codeRnd;
+      Long cptActuel;
+      Map<String, Map<String,Long>> mapComptages = new HashMap<String, Map<String,Long>>(); 
+      while ((nextLine = reader.readNext()) != null) {
+         
+         applProdEtTraitCPRCTR = nextLine[9] + ";" + nextLine[10] + ";" + nextLine[21] + ";" + nextLine[20];
+         codeRnd = nextLine[15] ;
+         
+         Map<String, Long> mapAppliTraitEtProdCPRCTR = mapComptages.get(applProdEtTraitCPRCTR);
+
+         if (mapAppliTraitEtProdCPRCTR==null) {
+            Map<String,Long> map = new HashMap<String,Long>();
+            map.put(codeRnd, 1L);
+            mapComptages.put(applProdEtTraitCPRCTR, map);
+         } else {
+            cptActuel = mapAppliTraitEtProdCPRCTR.get(codeRnd);
+         
+            if (cptActuel==null) {
+               mapAppliTraitEtProdCPRCTR.put(codeRnd, 1L);
+            } else {
+               mapAppliTraitEtProdCPRCTR.put(codeRnd, cptActuel+1);
+            }
+            mapComptages.put(applProdEtTraitCPRCTR, mapAppliTraitEtProdCPRCTR);
+         }
+         
+        cptDoc++;
+         if ((cptDoc % 30000)==0) {
+            System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+         }
+         
+      }
+      
+      System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      System.out.println();
+      
+      Map<String, Map<String, Long>> treeMap = new TreeMap<String, Map<String, Long>>(mapComptages);
+      
+      for(Map.Entry<String,Map<String,Long>> entry : treeMap.entrySet()) {
+         System.out.println(entry.getKey());
+         
+         Map<String, Long> treeMapAppl = entry.getValue();
+         
+         for(Map.Entry<String,Long> entry2 : treeMapAppl.entrySet()) {
+            System.out.println(entry2.getKey() + ";" + entry2.getValue());
+         }
+      }
+      
+      System.out.println();
+      System.out.println("Opération terminée");
+      
+   }
+   
    @Test
    public void ventilation_ParCodeOrganismeProprietaire() throws IOException {
 
@@ -1234,7 +1327,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARDATEARCHIVAGE);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1290,7 +1383,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARMOISARCHIVAGE);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1345,7 +1438,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARMOISDATEMODIFICATION);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1400,7 +1493,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARMOISCREATION);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1455,7 +1548,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARMOISARCHIVAGEAPPPRODAPPTRAIT);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1514,7 +1607,7 @@ public class VentilationFondsDocProdTest {
       if (!rep.exists()) {
          rep.mkdir();
       }
-      File fichier = new File(CHEMINREP, NOMFICHIERVENTIL);
+      File fichier = new File(CHEMINREP, NOMFICHIERVENTILPARDATEARCHIVAGEETAPPTRAITETAPPPROD);
       Writer writer = new FileWriter(fichier);
 
       String[] nextLine;
@@ -1731,6 +1824,62 @@ public class VentilationFondsDocProdTest {
       System.out.println("Opération terminée");
 
    }
+   
+
+   @Test
+   public void ventilation_DateArchivageMin_nno() throws IOException {
+      
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+      
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      //File rep = new File(CHEMINREPGNS);
+      File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      //File fichier = new File(CHEMINREPGNS, "GNS-DateArchivageMin-nno.csv");
+      File fichier = new File(CHEMINREPGNT, "GNT-DateArchivageMin-nno.csv");
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   String dateArchivage;
+   String  dateMin;
+   Map<String, String> mapDateDebut = new HashMap<String, String>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+    RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19] +  ";" + nextLine[22];
+    dateArchivage = StringUtils.left(nextLine[12],8);
+
+      
+      dateMin = mapDateDebut.get(RNDappProdAppTraitdateArchivage);
+      if(StringUtils.isEmpty(dateMin)) {
+         mapDateDebut.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+      } else {
+         if (dateArchivage.compareTo(dateMin) < 0) {
+            mapDateDebut.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+         }
+      }
+     
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, String> treeMap = new TreeMap<String, String>(mapDateDebut);
+   for(Map.Entry<String, String> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
 
    /**
     * Ecrit dans un fichier la liste des documents dont le format de fichier est
@@ -1793,6 +1942,8 @@ public class VentilationFondsDocProdTest {
       System.out.println(printDate() + " - Nombre de documents traités : "
             + cptDoc);
       System.out.println();
+
+   closeWriter(writer);
 
       System.out.println();
       System.out.println("Opération terminée");
@@ -2332,4 +2483,305 @@ public class VentilationFondsDocProdTest {
 
    }
 
+}
+
+
+   @Test
+   public void ventilation_DateArchivageMax_nno() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      File rep = new File(CHEMINREPGNS);
+      //File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      File fichier = new File(CHEMINREPGNS, "GNS-DateArchivageMax-nno.csv");
+      //File fichier = new File(CHEMINREPGNT, "GNT-DateArchivageMax-nno.csv");      
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   String dateArchivage;
+   String  dateMax;
+   Map<String, String> mapDateFin = new HashMap<String, String>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+      RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19] +  ";" + nextLine[22];
+    dateArchivage = StringUtils.left(nextLine[12],8);
+      
+      dateMax = mapDateFin.get(RNDappProdAppTraitdateArchivage);
+      if(StringUtils.isEmpty(dateMax)) {
+         mapDateFin.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+      } else {
+         if (dateArchivage.compareTo(dateMax) > 0) {
+            mapDateFin.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+         }
+      }
+     
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, String> treeMap = new TreeMap<String, String>(mapDateFin);
+   for(Map.Entry<String, String> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
+   closeWriter(writer);
+
+   System.out.println();
+   System.out.println("Opération terminée");
+   
+}
+   
+   @Test
+   public void ventilation_CodeRND_nno() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      File rep = new File(CHEMINREPGNS);
+      //File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      File fichier = new File(CHEMINREPGNS, "GNS-CodeRND-nno.csv");
+      //File fichier = new File(CHEMINREPGNT, "GNT-CodeRND-nno.csv");
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   Long cptCodeRND;
+   Map<String, Long> mapCodeRND = new HashMap<String, Long>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+      RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19] +  ";" + nextLine[22];
+
+      cptCodeRND = mapCodeRND.get(RNDappProdAppTraitdateArchivage);
+      if (cptCodeRND==null) {
+         mapCodeRND.put(RNDappProdAppTraitdateArchivage, 1L);
+      } else {
+         mapCodeRND.put(RNDappProdAppTraitdateArchivage, cptCodeRND+1);
+      }
+      
+      
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, Long> treeMap = new TreeMap<String, Long>(mapCodeRND);
+   for(Map.Entry<String, Long> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
+   closeWriter(writer);
+
+   System.out.println();
+   System.out.println("Opération terminée");
+   
+}
+   
+
+   @Test
+   public void ventilation_DateArchivageMin() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      File rep = new File(CHEMINREPGNS);
+      //File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      File fichier = new File(CHEMINREPGNS, "GNS-DateArchivageMin.csv");
+      //File fichier = new File(CHEMINREPGNT, "GNT-DateArchivageMin.csv");
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   String dateArchivage;
+   String  dateMin;
+   Map<String, String> mapDateDebut = new HashMap<String, String>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+    RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19];
+    dateArchivage = StringUtils.left(nextLine[12],8);
+
+      
+      dateMin = mapDateDebut.get(RNDappProdAppTraitdateArchivage);
+      if(StringUtils.isEmpty(dateMin)) {
+         mapDateDebut.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+      } else {
+         if (dateArchivage.compareTo(dateMin) < 0) {
+            mapDateDebut.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+         }
+      }
+     
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, String> treeMap = new TreeMap<String, String>(mapDateDebut);
+   for(Map.Entry<String, String> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
+   closeWriter(writer);
+
+   System.out.println();
+   System.out.println("Opération terminée");
+   
+}
+
+
+   @Test
+   public void ventilation_DateArchivageMax() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      File rep = new File(CHEMINREPGNS);
+      //File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      File fichier = new File(CHEMINREPGNS, "GNS-DateArchivageMax.csv");
+      //File fichier = new File(CHEMINREPGNT, "GNT-DateArchivageMax.csv");
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   String dateArchivage;
+   String  dateMax;
+   Map<String, String> mapDateFin = new HashMap<String, String>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+      RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19];
+    dateArchivage = StringUtils.left(nextLine[12],8);
+      
+      dateMax = mapDateFin.get(RNDappProdAppTraitdateArchivage);
+      if(StringUtils.isEmpty(dateMax)) {
+         mapDateFin.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+      } else {
+         if (dateArchivage.compareTo(dateMax) > 0) {
+            mapDateFin.put(RNDappProdAppTraitdateArchivage, dateArchivage);
+         }
+      }
+     
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, String> treeMap = new TreeMap<String, String>(mapDateFin);
+   for(Map.Entry<String, String> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
+   closeWriter(writer);
+
+   System.out.println();
+   System.out.println("Opération terminée");
+   
+}
+   
+   @Test
+   public void ventilation_CodeRND() throws IOException {
+      
+      CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNS, NOMFICHIERGNS)), ';');
+      //CSVReader reader = new CSVReader(new FileReader(new File(CHEMINREPGNT, NOMFICHIERGNT)), ';');
+
+      // Création du répertoire de sortie s'il n'existe pas déjà
+      File rep = new File(CHEMINREPGNS);
+      //File rep = new File(CHEMINREPGNT);
+      if (!rep.exists()) {
+         rep.mkdir();
+      }
+      
+      File fichier = new File(CHEMINREPGNS, "GNS-CodeRND.csv");
+      //File fichier = new File(CHEMINREPGNT, "GNT-CodeRND.csv");
+      Writer writer = new FileWriter(fichier);
+      
+   String[] nextLine;
+   int cptDoc = 0;
+   String RNDappProdAppTraitdateArchivage;
+   Long cptCodeRND;
+   Map<String, Long> mapCodeRND = new HashMap<String, Long>();
+     
+   while ((nextLine = reader.readNext()) != null) {
+      
+      RNDappProdAppTraitdateArchivage = nextLine[15] + ";" + nextLine[16] + ";" + nextLine[9] + ";" + nextLine[10]  + ";" + nextLine[11] + ";" + nextLine[20] +  ";" + nextLine[21] +  ";" + nextLine[19];
+
+      cptCodeRND = mapCodeRND.get(RNDappProdAppTraitdateArchivage);
+      if (cptCodeRND==null) {
+         mapCodeRND.put(RNDappProdAppTraitdateArchivage, 1L);
+      } else {
+         mapCodeRND.put(RNDappProdAppTraitdateArchivage, cptCodeRND+1);
+      }
+      
+      
+      cptDoc++;
+      if ((cptDoc % 30000)==0) {
+         System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+      }
+      
+   }
+   
+   System.out.println(printDate() + " - Nombre de documents traités : " + cptDoc);
+   System.out.println();
+   
+   Map<String, Long> treeMap = new TreeMap<String, Long>(mapCodeRND);
+   for(Map.Entry<String, Long> entry : treeMap.entrySet()) {
+      writer.write(entry.getKey() + ";" + entry.getValue() +"\n");
+   }
+   
+   closeWriter(writer);
+
+   System.out.println();
+   System.out.println("Opération terminée");
+   
+}
+   
+   
 }
