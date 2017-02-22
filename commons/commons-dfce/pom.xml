@@ -24,11 +24,11 @@
 
       <!-- numéro de version des dépendances de DFCE -->
       <dfce.serialization>1.2.2</dfce.serialization>
-      <dfce.toolkit.client>1.7.2</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.7.2</dfce.toolkit.pojo>
-      <dfce.pojo>1.7.2</dfce.pojo>
-      <dfce.toolkit.service>1.7.2</dfce.toolkit.service>
-      <dfce.commons>1.7.2</dfce.commons>
+      <dfce.toolkit.client>1.7.3</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.7.3</dfce.toolkit.pojo>
+      <dfce.pojo>1.7.3</dfce.pojo>
+      <dfce.toolkit.service>1.7.3</dfce.toolkit.service>
+      <dfce.commons>1.7.3</dfce.commons>
 
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
