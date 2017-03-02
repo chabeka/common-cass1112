@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -19,9 +18,6 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 @Service
 public class SAEDocumentExistantServiceImpl implements
       SAEDocumentExistantService {
-
-   @Autowired
-   private MetadataReferenceDAO referenceDAO;
    
    @Autowired
    @Qualifier("storageServiceProvider")
@@ -29,7 +25,7 @@ public class SAEDocumentExistantServiceImpl implements
    
 
    @Override
-   public boolean documentExistant(UUID idGed) throws 
+   public final boolean documentExistant(UUID idGed) throws 
           SearchingServiceEx, ConnectionServiceEx {
       // TODO Auto-generated method stub
 
