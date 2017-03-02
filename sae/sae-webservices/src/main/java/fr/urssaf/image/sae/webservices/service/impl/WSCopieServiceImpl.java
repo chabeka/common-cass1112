@@ -49,7 +49,6 @@ import fr.urssaf.image.sae.services.exception.format.validation.ValidationExcept
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSCopieService;
-import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @Service
@@ -62,12 +61,9 @@ public class WSCopieServiceImpl implements WSCopieService {
    @Qualifier("saeCopieService")
    private SAECopieService saeService;
 
-   @Autowired
-   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
-
    @SuppressWarnings("unused")
    @Override
-   public CopieResponse copie(Copie request) throws CopieAxisFault,
+   public final CopieResponse copie(Copie request) throws CopieAxisFault,
          ArchiveInexistanteEx, SAEConsultationServiceException,
          SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          ReferentialException, SAECopieServiceException,
@@ -207,7 +203,7 @@ public class WSCopieServiceImpl implements WSCopieService {
 
       return new UntypedMetadata(metadonnee.getCode().getMetadonneeCodeType(),
             metadonnee.getValeur().getMetadonneeValeurType());
-   }
+   } 
 
    private <T> String buildMessageFromList(Collection<T> list) {
       final ToStringBuilder toStrBuilder = new ToStringBuilder(this,

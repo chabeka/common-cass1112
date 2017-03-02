@@ -642,7 +642,6 @@ public final class WSConsultationServiceImpl implements WSConsultationService {
       }
       if (metaFormatFichier == null) {
 
-         System.out.println("MetaFormatFichier = null");
          // Erreur technique et non fonctionnelle
          LOG.debug(
                "{} - Levée d'une ConsultationAxisFault : la métadonnée FormatFichier n'a pas été trouvée dans la liste des mtadonnées, alors qu'elle est censée être présente.",
