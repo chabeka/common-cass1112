@@ -20,7 +20,7 @@
 
    <properties>
       <axiom.version>1.2.12</axiom.version>
-      <sonar.exclusions>fr/cirtil/www/saeservice/*.java,fr/urssaf/image/sae/webservices/skeleton/SaeServiceMessageReceiverInOut.java</sonar.exclusions>
+      <sonar.exclusions>fr/cirtil/www/saeservice/*.java,fr/urssaf/image/sae/webservices/skeleton/SaeServiceMessageReceiverInOut.java,fr/urssaf/image/sae/webservices/client/modele/*</sonar.exclusions>
    </properties>
 
    <profiles>
