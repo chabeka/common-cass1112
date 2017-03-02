@@ -150,9 +150,8 @@ public class SAECopieServiceImpl implements SAECopieService {
 
       // Appelle du service de consultation
       final ConsultParams param = new ConsultParams(idCopie, list);
-      UntypedDocument untypedDocument = new UntypedDocument();
 
-      untypedDocument = consultation.consultation(param);
+      final UntypedDocument untypedDocument = consultation.consultation(param);
       if (untypedDocument == null) {
          return null;
       }
