@@ -59,7 +59,7 @@ public class InsertionDonnees {
    /**
     * Ajoute les paramètres nécéssaires à la maj du RND
     */
-   public void addRndParameters() {
+   public final void addRndParameters() {
       LOG.info("Création des paramètres de maj du RND");
 
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
@@ -74,7 +74,7 @@ public class InsertionDonnees {
    /**
     * Ajoute les paramètres nécessaires à la traçabilité SAE
     */
-   public void addTracabiliteParameters() {
+   public final void addTracabiliteParameters() {
 
       LOG.info("Création des paramètres de traçabilité");
 
@@ -139,7 +139,7 @@ public class InsertionDonnees {
    /**
     * Ajoute les paramètres nécessaires à la purge de la corbeille
     */
-   public void addCorbeilleParameters() {
+   public final void addCorbeilleParameters() {
 
       LOG.info("Création des paramètres de purge de la corbeille");
 
@@ -300,7 +300,7 @@ public class InsertionDonnees {
     * @param listeRows
     *           liste des codes long des métadonnée
     */
-   public void addColumnClientAvailableMetadata(List<String> listeRows) {
+   public final void addColumnClientAvailableMetadata(List<String> listeRows) {
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "Metadata", StringSerializer.get(),
             StringSerializer.get());
@@ -331,77 +331,77 @@ public class InsertionDonnees {
    /**
     * Methode permettant de mettre à jour le referentiel Version 3.
     */
-   public void addReferentielEvenementV3() {
+   public final void addReferentielEvenementV3() {
       ReferentielServiceUtils.addReferentielEvenementV3(keyspace);
    }
 
    /**
     * Methode permettant de mettre à jour le referentiel Version 1.
     */
-   public void addReferentielEvenementV1() {
+   public final void addReferentielEvenementV1() {
       ReferentielServiceUtils.addReferentielEvenementV1(keyspace);
    }
 
    /**
     * Methode permettant de mettre à jour le referentiel Version 2.
     */
-   public void addReferentielEvenementV2() {
+   public final void addReferentielEvenementV2() {
       ReferentielServiceUtils.addReferentielEvenementV2(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter le referentiel des formats.
     */
-   public void addReferentielFormat() {
+   public final void addReferentielFormat() {
       ReferentielServiceUtils.addReferentielFormat(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter le format control profil.
     */
-   public void addFormatControleProfil() {
+   public final void addFormatControleProfil() {
       ReferentielServiceUtils.addFormatControleProfil(keyspace);
    }
 
    /**
     * Methode permettant de mettre à jour le referentiel Version 4.
     */
-   public void addReferentielEvenementV4() {
+   public final void addReferentielEvenementV4() {
       ReferentielServiceUtils.addReferentielEvenementV4(keyspace);
    }
 
    /**
     * Methode permettant de mettre à jour le referentiel Version 5.
     */
-   public void addReferentielEvenementV5() {
+   public final void addReferentielEvenementV5() {
       ReferentielServiceUtils.addReferentielEvenementV5(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter le referentiel de format V2.
     */
-   public void addReferentielFormatV2() {
+   public final void addReferentielFormatV2() {
       ReferentielServiceUtils.addReferentielFormatV2(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter le referentiel d'evenement V6.
     */
-   public void addReferentielEvenementV6() {
+   public final void addReferentielEvenementV6() {
       ReferentielServiceUtils.addReferentielEvenementV6(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter le referentiel d'evenement V7.
     */
-   public void addReferentielEvenementV7() {
+   public final void addReferentielEvenementV7() {
       ReferentielServiceUtils.addReferentielEvenementV7(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter l'action unitaire Note.
     */
-   public void addActionUnitaireNote() {
+   public final void addActionUnitaireNote() {
       DroitsServiceUtils.addActionUnitaireNote(keyspace);
    }
 
@@ -409,42 +409,42 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter l'action unitaire pour la recherche par
     * itérateur.
     */
-   public void addActionUnitaireRechercheParIterateur() {
+   public final void addActionUnitaireRechercheParIterateur() {
       DroitsServiceUtils.addActionUnitaireRechercheParIterateur(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter l'action unitaire pour l'ajout de note.
     */
-   public void modifyActionUnitaireAjoutNote() {
+   public final void modifyActionUnitaireAjoutNote() {
       DroitsServiceUtils.modifyActionUnitaireAjoutNote(keyspace);
    }
 
    /**
     * Methode permettant de modifier le référentiel pour le format fmt 354.
     */
-   public void modifyReferentielFormatFmt354() {
+   public final void modifyReferentielFormatFmt354() {
       ReferentielServiceUtils.modifyReferentielFormatFmt354(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter une action unitaire pour les Note.
     */
-   public void addActionUnitaireNote2() {
+   public final void addActionUnitaireNote2() {
       DroitsServiceUtils.addActionUnitaireNote2(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 3 des référentiels de format.
     */
-   public void addReferentielFormatV3() {
+   public final void addReferentielFormatV3() {
       ReferentielServiceUtils.addReferentielFormatV3(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 8 des référentiels d'événement.
     */
-   public void addReferentielEvenementV8() {
+   public final void addReferentielEvenementV8() {
       ReferentielServiceUtils.addReferentielEvenementV8(keyspace);
    }
 
@@ -452,21 +452,21 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter une action unitaire pour les documents
     * attachés.
     */
-   public void addActionUnitaireAjoutDocAttache() {
+   public final void addActionUnitaireAjoutDocAttache() {
       DroitsServiceUtils.addActionUnitaireAjoutDocAttache(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 4 des référentiels de format.
     */
-   public void addReferentielFormatV4() {
+   public final void addReferentielFormatV4() {
       ReferentielServiceUtils.addReferentielFormatV4(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 9 des référentiels d'événement.
     */
-   public void addReferentielEvenementV9() {
+   public final void addReferentielEvenementV9() {
       ReferentielServiceUtils.addReferentielEvenementV9(keyspace);
    }
 
@@ -474,14 +474,14 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter une action unitaire pour les traitements de
     * masse.
     */
-   public void addActionUnitaireTraitementMasse() {
+   public final void addActionUnitaireTraitementMasse() {
       DroitsServiceUtils.addActionUnitaireTraitementMasse(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 10 des référentiels d'événement.
     */
-   public void addReferentielEvenementV10() {
+   public final void addReferentielEvenementV10() {
       ReferentielServiceUtils.addReferentielEvenementV10(keyspace);
 
    }
@@ -489,14 +489,14 @@ public class InsertionDonnees {
    /**
     * Methode permettant d'ajouter la version 11 des référentiels d'événement.
     */
-   public void addReferentielEvenementV11() {
+   public final void addReferentielEvenementV11() {
       ReferentielServiceUtils.addReferentielEvenementV11(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 5 des référentiels des formats.
     */
-   public void addReferentielFormatV5() {
+   public final void addReferentielFormatV5() {
       ReferentielServiceUtils.addReferentielFormatV5(keyspace);
    }
 
@@ -504,35 +504,35 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter une action unitaire pour la suppression et la
     * modification.
     */
-   public void addActionUnitaireSuppressionModification() {
+   public final void addActionUnitaireSuppressionModification() {
       DroitsServiceUtils.addActionUnitaireSuppressionModification(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter une action unitaire pour la copie.
     */
-   public void addActionUnitaireCopie() {
+   public final void addActionUnitaireCopie() {
       DroitsServiceUtils.addActionUnitaireCopie(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter la version 6 des référentiels des formats.
     */
-   public void addReferentielFormatV6() {
+   public final void addReferentielFormatV6() {
       ReferentielServiceUtils.addReferentielFormatV6(keyspace);
    }
 
    /**
     * Methode permettant de modifier le format fmt/353.
     */
-   public void modifyReferentielFormatFmt353() {
+   public final void modifyReferentielFormatFmt353() {
       ReferentielServiceUtils.modifyReferentielFormatFmt353(keyspace);
    }
 
    /**
     * Methode permettant de modifier le format fmt/44.
     */
-   public void modifyReferentielFormatFmt44() {
+   public final void modifyReferentielFormatFmt44() {
       ReferentielServiceUtils.modifyReferentielFormatFmt44(keyspace);
    }
 
@@ -540,14 +540,14 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter la version 6 bis des référentiels des
     * formats.
     */
-   public void addReferentielFormatV6Bis() {
+   public final void addReferentielFormatV6Bis() {
       ReferentielServiceUtils.addReferentielFormatV6Bis(keyspace);
    }
 
    /**
     * Methode permettant de
     */
-   public void modifyReferentielFormatCrtl1() {
+   public final void modifyReferentielFormatCrtl1() {
       ReferentielServiceUtils.modifyReferentielFormatCrtl1(keyspace);
    }
 
@@ -555,14 +555,14 @@ public class InsertionDonnees {
     * Methode permettant d'ajouter le colonne autorisé en GED pour le
     * référentiel des formats.
     */
-   public void addColumnAutoriseGEDReferentielFormat() {
+   public final void addColumnAutoriseGEDReferentielFormat() {
       ReferentielServiceUtils.addColumnAutoriseGEDReferentielFormat(keyspace);
    }
 
    /**
     * Methode permettant d'ajouter les droits GED.
     */
-   public void addDroitsGed() {
+   public final void addDroitsGed() {
       DroitsServiceUtils.addDroitsGed(keyspace);
    }
 
