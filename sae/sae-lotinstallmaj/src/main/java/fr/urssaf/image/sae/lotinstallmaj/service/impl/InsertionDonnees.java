@@ -3,14 +3,12 @@
  */
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
-import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -21,15 +19,11 @@ import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.urssaf.image.sae.lotinstallmaj.modele.FormatProfil;
-import fr.urssaf.image.sae.lotinstallmaj.modele.Pagm;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.FormatProfilSerializer;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.ListSerializer;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.DroitsServiceUtils;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.ReferentielServiceUtils;
 
 /**
  * 
@@ -40,13 +34,7 @@ public class InsertionDonnees {
    private static final Logger LOG = LoggerFactory
          .getLogger(InsertionDonnees.class);
 
-   private static final String DESCRIPTION = "description";
-
-   private static final int DEFAULT_CONSERVATION = 7200;
-
    private static final String DISPO = "dispo";
-
-   private static final String AUTORISE_GED = "autoriseGED";
 
    private final Keyspace keyspace;
 
@@ -64,136 +52,9 @@ public class InsertionDonnees {
     * Insertion de données de droits
     */
    public final void addDroits() {
-      addActionsUnitaires();
-      addPrmd();
-      addPagma();
-      addPagmp();
-      addPagm();
-      addContratService();
+      DroitsServiceUtils.addDroits(keyspace);
    }
 
-   private void addActionsUnitaires() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("consultation", "consultation", cfTmpl);
-      addActionUnitaire("recherche", "recherche", cfTmpl);
-      addActionUnitaire("archivage_masse", "archivage de masse", cfTmpl);
-      addActionUnitaire("archivage_unitaire", "archivage unitaire", cfTmpl);
-
-   }
-
-   /**
-    * @param string
-    * @param string2
-    * @param updater
-    */
-   @SuppressWarnings("unchecked")
-   private void addColumn(Object colName, Object value,
-         Serializer nameSerializer, Serializer valueSerializer,
-         ColumnFamilyUpdater<String, String> updater) {
-      HColumn<String, String> column = HFactory.createColumn(colName, value,
-            nameSerializer, valueSerializer);
-      updater.setColumn(column);
-
-   }
-
-   private void addPrmd() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitPrmd", StringSerializer.get(),
-            StringSerializer.get());
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("ACCES_FULL_PRMD");
-      addColumn(DESCRIPTION, "acces total", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      addColumn("bean", "permitAll", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-   }
-
-   private void addPagma() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitPagma", StringSerializer.get(),
-            StringSerializer.get());
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("ACCES_FULL_PAGMA");
-      addColumn("consultation", StringUtils.EMPTY, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      addColumn("recherche", StringUtils.EMPTY, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      addColumn("archivage_masse", StringUtils.EMPTY, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      addColumn("archivage_unitaire", StringUtils.EMPTY,
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   private void addPagmp() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitPagmp", StringSerializer.get(),
-            StringSerializer.get());
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("ACCES_FULL_PAGMP");
-      addColumn(DESCRIPTION, "acces pagmp full", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      addColumn("prmd", "ACCES_FULL_PRMD", StringSerializer.get(),
-            StringSerializer.get(), updater);
-
-      cfTmpl.update(updater);
-   }
-
-   private void addPagm() {
-      Pagm pagm = new Pagm();
-      pagm.setCode("ACCES_FULL_PAGM");
-      pagm.setDescription("Pagm accès total");
-      pagm.setPagma("ACCES_FULL_PAGMA");
-      pagm.setPagmp("ACCES_FULL_PAGMP");
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitPagm", StringSerializer.get(),
-            StringSerializer.get());
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("CS_ANCIEN_SYSTEME");
-      addColumn("ACCES_FULL_PAGM", pagm, StringSerializer.get(),
-            PagmSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   private void addContratService() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitContratService", StringSerializer.get(),
-            StringSerializer.get());
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater("CS_ANCIEN_SYSTEME");
-      addColumn("libelle", "accès ancien contrat de service",
-            StringSerializer.get(), PagmSerializer.get(), updater);
-      addColumn(DESCRIPTION, "accès ancien contrat de service",
-            StringSerializer.get(), PagmSerializer.get(), updater);
-      addColumn("viDuree", Long.valueOf(DEFAULT_CONSERVATION),
-            StringSerializer.get(), LongSerializer.get(), updater);
-      addColumn("pki", "CN=IGC/A", StringSerializer.get(),
-            StringSerializer.get(), updater);
-
-      cfTmpl.update(updater);
-
-   }
-
-   private void addActionUnitaire(String identifiant, String description,
-         ColumnFamilyTemplate<String, String> cfTmpl) {
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater(identifiant);
-      HColumn<String, String> column = HFactory.createColumn(DESCRIPTION,
-            description, StringSerializer.get(), StringSerializer.get());
-      updater.setColumn(column);
-
-      cfTmpl.update(updater);
-   }
-
-   private void deleteActionUnitaire(String identifiant,
-         ColumnFamilyTemplate<String, String> cfTmpl) {
-      cfTmpl.deleteRow(identifiant);
-   }
 
    /**
     * Ajoute les paramètres nécéssaires à la maj du RND
@@ -432,1280 +293,6 @@ public class InsertionDonnees {
 
    }
 
-   /**
-    * Initialisation du référentiel des événements en V1
-    */
-   public void addReferentielEvenementV1() {
-
-      LOG.info("Initialisation du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // WS_RECHERCHE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_RECHERCHE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_CAPTURE_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_CAPTURE_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_CAPTURE_UNITAIRE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_CAPTURE_UNITAIRE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_CONSULTATION|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_CONSULTATION|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_PING_SECURE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_PING_SECURE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // CAPTURE_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("CAPTURE_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // DFCE_DEPOT_DOC|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_DEPOT_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // DFCE_SUPPRESSION_DOC|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_SUPPRESSION_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_LOAD_CERTS_ACRACINE|OK
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_LOAD_CERTS_ACRACINE|OK");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_LOAD_CRLS|OK
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_LOAD_CRLS|OK");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V2 Ajout de l'évenement MAJ_VERSION_RND|OK
-    * (Automatisation RND)
-    */
-   public void addReferentielEvenementV2() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // MAJ_VERSION_RND|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("MAJ_VERSION_RND|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      updater = cfTmpl.createUpdater("DFCE_MODIF_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Ajout des droits spécifiques GED :
-    * <ul>
-    * <li>modification</li>
-    * <li>suppression</li>
-    * <li>transfert</li>
-    * </ul>
-    */
-   public void addDroitsGed() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("modification", "modification", cfTmpl);
-      addActionUnitaire("suppression", "suppression", cfTmpl);
-      addActionUnitaire("transfert", "transfert", cfTmpl);
-   }
-
-   /**
-    * Ajout de l'action unitaire ajoutNote
-    */
-   public void addActionUnitaireNote() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("ajoutNote", "ajoutNote", cfTmpl);
-   }
-
-   /**
-    * Ajout de l'action unitaire recherche_iterateur
-    */
-   public void addActionUnitaireRechercheParIterateur() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("recherche_iterateur", "Recherche par iterateur",
-            cfTmpl);
-   }
-
-   /**
-    * Ajout de l'action unitaire ajout_doc_attache
-    */
-   public void addActionUnitaireAjoutDocAttache() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("ajout_doc_attache", "Ajout de document attache",
-            cfTmpl);
-   }
-
-   /**
-    * On remplace l'action unitaire ajoutNote par ajout_note afin d'être
-    * homogène !!! L'AJOUT a été oublié, fait dans la méthode
-    * addActionUnitaireNote2
-    */
-   public void modifyActionUnitaireAjoutNote() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      deleteActionUnitaire("ajoutNote", cfTmpl);
-   }
-
-   /**
-    * Ajout de l'action unitaire ajout_note car oublé dans
-    * modifyActionUnitaireAjoutNote
-    */
-   public void addActionUnitaireNote2() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("ajout_note", "Ajout de notes", cfTmpl);
-   }
-
-   /**
-    * Ajout de l'action unitaire suppression_masse et restore_masse
-    */
-   public void addActionUnitaireTraitementMasse() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("suppression_masse", "Suppression de masse", cfTmpl);
-      addActionUnitaire("restore_masse", "Restore de masse", cfTmpl);
-
-   }
-
-   public void addActionUnitaireCopie() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("copie", "copie d'un document", cfTmpl);
-
-   }
-
-   /**
-    * Ajout de l'action unitaire suppression et modification
-    */
-   public void addActionUnitaireSuppressionModification() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitActionUnitaire", StringSerializer.get(),
-            StringSerializer.get());
-      addActionUnitaire("suppression", "Suppression unitaire", cfTmpl);
-      addActionUnitaire("modification", "Modification unitaire", cfTmpl);
-
-   }
-
-   /**
-    * Référentiel des événements en V3 Ajout de l'évenement ORDO_ECDE_DISPO|KO
-    */
-   public void addReferentielEvenementV3() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // ORDO_ECDE_DISPO|KO
-      // dans le registre de surveillance technique avec all_infos
-      // dans le registre d'exploitation avec all_infos
-      updater = cfTmpl.createUpdater("ORDO_ECDE_DISPO|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      addColumn("REG_EXPLOITATION", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V4 Ajout des évenements IGC_LOAD_CRLS|KO,
-    * WS_LOAD_CRLS|KO, ERREUR_IDENT_FORMAT_FICHIER|INFO et
-    * ERREUR_VALID_FORMAT_FICHIER |INFO
-    */
-   public void addReferentielEvenementV4() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // IGC_LOAD_CRLS|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("IGC_LOAD_CRLS|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_LOAD_CRLS|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_LOAD_CRLS|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // ERREUR_IDENT_FORMAT_FICHIER|INFO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("ERREUR_IDENT_FORMAT_FICHIER|INFO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // ERREUR_VALID_FORMAT_FICHIER|INFO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("ERREUR_VALID_FORMAT_FICHIER|INFO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // META_VAL_ESPACE|INFO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("META_VAL_ESPACE|INFO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V5 Ajout des évenements : <li>
-    * DFCE_TRANSFERT_DOC|OK</li> <li>WS_TRANSFERT|KO</li>
-    * 
-    * @since 06/10/2014
-    * @author Michael PAMBO OGNANA
-    */
-   public void addReferentielEvenementV5() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // -- DFCE_TRANSFERT_DOC|OK
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_TRANSFERT_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // -- WS_TRANSFERT|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_TRANSFERT|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-   }
-
-   /**
-    * Référentiel des événements en V6 Ajout des évenements : <li>
-    * WS_SUPPRESSION|KO</li> <li>WS_MODIFICATION|KO</li> <li>
-    * WS_RECUPERATION_METAS|KO</li>
-    */
-   public void addReferentielEvenementV6() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // -- WS_SUPPRESSION|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_SUPPRESSION|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // -- WS_MODIFICATION|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_MODIFICATION|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // -- WS_RECUPERATION_METAS|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_RECUPERATION_METAS|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-   }
-
-   /**
-    * Référentiel des événements en V7 Ajout des évenements : <li>
-    * WS_AJOUT_NOTE|KO</li>
-    */
-   public void addReferentielEvenementV7() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // -- WS_AJOUT_NOTE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_AJOUT_NOTE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V8 Ajout des évenements : <li>
-    * WS_GET_DOC_FORMAT_ORIGINE|KO</li>
-    */
-   public void addReferentielEvenementV8() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // -- WS_GET_DOC_FORMAT_ORIGINE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_GET_DOC_FORMAT_ORIGINE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V9 Ajout des évenements : <li>
-    * DFCE_DEPOT_ATTACHC|OK</li>
-    */
-   public void addReferentielEvenementV9() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // DFCE_DEPOT_ATTACH|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_DEPOT_ATTACH|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V10 Ajout des évenements : <li>
-    * WS_SUPPRESSION_MASSE|KO</li> <li>WS_RESTORE_MASSE|KO</li> <li>
-    * SUPPRESSION_MASSE|KO</li> <li>RESTORE_MASSE_KO</li> <li>
-    * DFCE_CORBEILLE_DOC|OK</li> <li>DFCE_RESTORE_DOC|OK</li>
-    */
-   public void addReferentielEvenementV10() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // WS_SUPPRESSION_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_SUPPRESSION_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // WS_RESTORE_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_RESTORE_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // SUPPRESSION_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("SUPPRESSION_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // RESTORE_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("RESTORE_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // DFCE_CORBEILLE_DOC|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_CORBEILLE_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      // DFCE_RESTORE_DOC|OK
-      // dans le journal des événements SAE avec all_infos
-      updater = cfTmpl.createUpdater("DFCE_RESTORE_DOC|OK");
-      addColumn("JOURN_EVT", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Référentiel des événements en V11 Ajout des évenements : <li>
-    * WS_ETAT_TRAITEMENTS_MASSE|KO</li>
-    */
-   public void addReferentielEvenementV11() {
-
-      LOG.info("Mise à jour du référentiel des événements");
-
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "TraceDestinataire", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      List<String> allInfos = Arrays.asList("all_infos");
-
-      // WS_ETAT_TRAITEMENTS_MASSE|KO
-      // dans le registre de surveillance technique avec all_infos
-      updater = cfTmpl.createUpdater("WS_ETAT_TRAITEMENTS_MASSE|KO");
-      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
-            ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats : <li>fmt/354</li> <li>
-    * crtl/1</li>
-    */
-   public void addReferentielFormat() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      updater = cfTmpl.createUpdater("fmt/354");
-      addColumn("idFormat", "fmt/354", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "PDF/A 1b", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "pdf", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("identifieur", "pdfaIdentifierImpl", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/pdf", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("validator", "pdfaValidatorImpl", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      updater = cfTmpl.createUpdater("crtl/1");
-      addColumn("idFormat", "crtl/1", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description",
-            "Journal SAE, XML basé sur XSD, compressé en tar.gz",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "tar.gz", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/x-gzip", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V2 : <li>fmt/353</li>
-    */
-   public void addReferentielFormatV2() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater("fmt/353");
-      addColumn("idFormat", "fmt/353", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier TIFF", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "tif", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "image/tiff", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("convertisseur", "tiffToPdfConvertisseurImpl",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : fmt/353");
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V3 : <li>x-fmt/111</li>
-    */
-   public void addReferentielFormatV3() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      String nouveauFormat = "x-fmt/111";
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater(nouveauFormat);
-      addColumn("idFormat", nouveauFormat, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier TXT (par exemple cold)",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "txt", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "text/plain", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", nouveauFormat);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V4 : <li>pdf</li>
-    */
-   public void addReferentielFormatV4() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      String nouveauFormat = "pdf";
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater(nouveauFormat);
-      addColumn("idFormat", nouveauFormat, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Tous fichiers PDF sans précision de version",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "pdf", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/pdf", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("convertisseur", "pdfSplitterImpl", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", nouveauFormat);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V5 : <li>fmt/13</li>
-    * <li>fmt/44</li>
-    */
-   public void addReferentielFormatV5() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      String formatPNG = "fmt/13";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatPNG);
-      addColumn("idFormat", formatPNG, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier PNG", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "png", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "image/png", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatPNG);
-
-      String formatJPG = "fmt/44";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatJPG);
-      addColumn("idFormat", formatJPG, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier JPG", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "jpg", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "image/jpeg", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatJPG);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V6 : <li>migrationW2</li>
-    */
-   public void addReferentielFormatV6() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      String formatKey = "migrationW2";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier migration WAT2",
-            StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "*", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/octet-stream", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "doc";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS Word version 97/2003",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "doc", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/msword", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "docx";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS Word version 2007 et +",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "docx", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(
-            "typeMime",
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "docm";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier macro MS Word",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "docm", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.ms-word.document.macroEnabled.12",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-      
-      formatKey = "xls";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS Excel version 97/2003",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "xls", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.ms-excel",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-      
-      formatKey = "xlsx";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS Excel version 2007 et +",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "xlsx", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-      
-      formatKey = "xlsm";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier macro MS Excel",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "xlsm", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.ms-excel.sheet.macroEnabled.12",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-      
-      formatKey = "xlsb";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier binaire MS Excel",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "xlsb", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.ms-excel.sheet.binary.macroEnabled.12",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "csv";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier tableur (Comma Separated Values)",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "csv", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "text/csv", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "gif";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier image numerique",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "gif", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "image/gif", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "ppt";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS PowerPoint version 97/2003",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "ppt", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/vnd.ms-powerpoint",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "xml";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(
-            "description",
-            "Fichier à langage de balisage extensible (eXtensible Markup Language)",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "xml", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/xhtml+xml", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "zip";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier archive ZIP", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "zip", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "application/zip", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "html";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(
-            "description",
-            "Fichier à langage de balisage d'hypertexte (HyperText Markup Language)",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "html", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime", "text/html", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-   }
-
-   /**
-    * Ajout des données dans le référentiel des formats en V6 : <li>migrationW2</li>
-    */
-   public void addReferentielFormatV6Bis() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      String formatKey = "pptx";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS PowerPoint version 2007 et +",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "pptx", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(
-            "typeMime",
-            "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-            StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-
-      formatKey = "pptm";
-
-      LOG.info("Mise à jour du référentiel des formats");
-      updater = cfTmpl.createUpdater(formatKey);
-      addColumn("idFormat", formatKey, StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("description", "Fichier MS PowerPoint macro",
-            StringSerializer.get(), StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("extension", "pptm", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("typeMime",
-            "application/vnd.ms-powerpoint.presentation.macroEnabled.12",
-            StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn("visualisable", Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format ajouté : {}", formatKey);
-   }
-
-   /**
-    * Modification des données dans le référentiel des formats : Ajout d'un
-    * convertisseur pour le format <li>fmt/354</li>
-    */
-   public void modifyReferentielFormatFmt354() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater("fmt/354");
-      addColumn("convertisseur", "pdfSplitterImpl", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format modifié : fmt/354");
-   }
-
-   /**
-    * Modification des données dans le référentiel des formats : Ajout d'un
-    * convertisseur pour le format <li>fmt/353</li>
-    */
-   public void modifyReferentielFormatFmt353() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater("fmt/353");
-      addColumn("extension", "tif,tiff", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format modifié : fmt/353");
-   }
-
-   /**
-    * Modification des données dans le référentiel des formats : Ajout d'un
-    * convertisseur pour le format <li>fmt/44</li>
-    */
-   public void modifyReferentielFormatFmt44() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater("fmt/44");
-      addColumn("extension", "jpg,jpeg", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format modifié : fmt/44");
-   }
-
-   /**
-    * Modification des données dans le référentiel des formats : Ajout d'un
-    * convertisseur pour le format <li>crtl/1</li>
-    */
-   public void modifyReferentielFormatCrtl1() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      LOG.info("Mise à jour du référentiel des formats");
-
-      updater = cfTmpl.createUpdater("crtl/1");
-      addColumn("extension", "tar.gz,gz", StringSerializer.get(),
-            StringSerializer.get(), updater);
-      cfTmpl.update(updater);
-      addColumn(AUTORISE_GED, Boolean.FALSE, StringSerializer.get(),
-            BooleanSerializer.get(), updater);
-      cfTmpl.update(updater);
-      LOG.info("Format modifié : crtl/1");
-   }
-
-   /**
-    * Les profils de controle pour les formats.<br/>
-    * Ajout de 3 éléments pour le format fmt/354:
-    * <ul>
-    * <li>Identification seule</li>
-    * <li>Validation seule</li>
-    * <li>Identification et validation</li>
-    * </ul>
-    */
-   public void addFormatControleProfil() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "DroitFormatControlProfil", StringSerializer.get(),
-            StringSerializer.get());
-
-      ColumnFamilyUpdater<String, String> updater;
-
-      updater = cfTmpl.createUpdater("IDENT_FMT_354");
-      addColumn(
-            "description",
-            "format de controle gérant exclusivement l'identification du fmt/354",
-            StringSerializer.get(), StringSerializer.get(), updater);
-
-      FormatProfil profil = new FormatProfil();
-      profil.setFileFormat("fmt/354");
-      profil.setFormatIdentification(true);
-      profil.setFormatValidation(false);
-      profil.setFormatValidationMode("STRICT");
-      addColumn("controlProfil", profil, StringSerializer.get(),
-            FormatProfilSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      updater = cfTmpl.createUpdater("VALID_FMT_354");
-      addColumn("description",
-            "format de controle gérant exclusivement la validation du fmt/354",
-            StringSerializer.get(), StringSerializer.get(), updater);
-
-      profil = new FormatProfil();
-      profil.setFileFormat("fmt/354");
-      profil.setFormatIdentification(false);
-      profil.setFormatValidation(true);
-      profil.setFormatValidationMode("STRICT");
-      addColumn("controlProfil", profil, StringSerializer.get(),
-            FormatProfilSerializer.get(), updater);
-      cfTmpl.update(updater);
-
-      updater = cfTmpl.createUpdater("VALID_FMT_354");
-      addColumn("description",
-            "format de controle gérant exclusivement la validation du fmt/354",
-            StringSerializer.get(), StringSerializer.get(), updater);
-
-      updater = cfTmpl.createUpdater("IDENT_VALID_FMT_354");
-      profil = new FormatProfil();
-      profil.setFileFormat("fmt/354");
-      profil.setFormatIdentification(true);
-      profil.setFormatValidation(true);
-      profil.setFormatValidationMode("STRICT");
-      addColumn("controlProfil", profil, StringSerializer.get(),
-            FormatProfilSerializer.get(), updater);
-      cfTmpl.update(updater);
-   }
 
    /**
     * Ajout de la colonne 'dispo' pour chaque metadonnée fournit en paramètre.
@@ -1741,67 +328,242 @@ public class InsertionDonnees {
       }
    }
 
-   public void addColumnAutoriseGEDReferentielFormat() {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, "ReferentielFormat", StringSerializer.get(),
-            StringSerializer.get());
-      // tar.gz
-      this.addColumnAutoriseGED("crtl/1", Boolean.TRUE, cfTmpl);
-      // csv
-      this.addColumnAutoriseGED("csv", Boolean.FALSE, cfTmpl);
-      // doc
-      this.addColumnAutoriseGED("doc", Boolean.FALSE, cfTmpl);
-      // docm
-      this.addColumnAutoriseGED("docm", Boolean.FALSE, cfTmpl);
-      // docx
-      this.addColumnAutoriseGED("docx", Boolean.FALSE, cfTmpl);
-      // png
-      this.addColumnAutoriseGED("fmt/13", Boolean.TRUE, cfTmpl);
-      // tif
-      this.addColumnAutoriseGED("fmt/353", Boolean.TRUE, cfTmpl);
-      // pdf
-      this.addColumnAutoriseGED("fmt/354", Boolean.TRUE, cfTmpl);
-      // jpeg
-      this.addColumnAutoriseGED("fmt/44", Boolean.TRUE, cfTmpl);
-      // gif
-      this.addColumnAutoriseGED("gif", Boolean.FALSE, cfTmpl);
-      // html
-      this.addColumnAutoriseGED("html", Boolean.FALSE, cfTmpl);
-      // migrationW2
-      this.addColumnAutoriseGED("migrationW2", Boolean.FALSE, cfTmpl);
-      // pdf
-      this.addColumnAutoriseGED("pdf", Boolean.TRUE, cfTmpl);
-      // ppt
-      this.addColumnAutoriseGED("ppt", Boolean.FALSE, cfTmpl);
-      // xls
-      this.addColumnAutoriseGED("xls", Boolean.TRUE, cfTmpl);
-      // xlsb
-      this.addColumnAutoriseGED("xlsb", Boolean.TRUE, cfTmpl);
-      // xlsm
-      this.addColumnAutoriseGED("xlsm", Boolean.TRUE, cfTmpl);
-      // xlsx
-      this.addColumnAutoriseGED("xlsx", Boolean.TRUE, cfTmpl);
-      // xml
-      this.addColumnAutoriseGED("xml", Boolean.FALSE, cfTmpl);
-      // zip
-      this.addColumnAutoriseGED("zip", Boolean.FALSE, cfTmpl);
+   /**
+    * Methode permettant de mettre à jour le referentiel Version 3.
+    */
+   public void addReferentielEvenementV3() {
+      ReferentielServiceUtils.addReferentielEvenementV3(keyspace);
+   }
 
-      this.addColumnAutoriseGED("x-fmt/111", Boolean.TRUE, cfTmpl);
+   /**
+    * Methode permettant de mettre à jour le referentiel Version 1.
+    */
+   public void addReferentielEvenementV1() {
+      ReferentielServiceUtils.addReferentielEvenementV1(keyspace);
+   }
+
+   /**
+    * Methode permettant de mettre à jour le referentiel Version 2.
+    */
+   public void addReferentielEvenementV2() {
+      ReferentielServiceUtils.addReferentielEvenementV2(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le referentiel des formats.
+    */
+   public void addReferentielFormat() {
+      ReferentielServiceUtils.addReferentielFormat(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le format control profil.
+    */
+   public void addFormatControleProfil() {
+      ReferentielServiceUtils.addFormatControleProfil(keyspace);
+   }
+
+   /**
+    * Methode permettant de mettre à jour le referentiel Version 4.
+    */
+   public void addReferentielEvenementV4() {
+      ReferentielServiceUtils.addReferentielEvenementV4(keyspace);
+   }
+
+   /**
+    * Methode permettant de mettre à jour le referentiel Version 5.
+    */
+   public void addReferentielEvenementV5() {
+      ReferentielServiceUtils.addReferentielEvenementV5(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le referentiel de format V2.
+    */
+   public void addReferentielFormatV2() {
+      ReferentielServiceUtils.addReferentielFormatV2(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le referentiel d'evenement V6.
+    */
+   public void addReferentielEvenementV6() {
+      ReferentielServiceUtils.addReferentielEvenementV6(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le referentiel d'evenement V7.
+    */
+   public void addReferentielEvenementV7() {
+      ReferentielServiceUtils.addReferentielEvenementV7(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter l'action unitaire Note.
+    */
+   public void addActionUnitaireNote() {
+      DroitsServiceUtils.addActionUnitaireNote(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter l'action unitaire pour la recherche par
+    * itérateur.
+    */
+   public void addActionUnitaireRechercheParIterateur() {
+      DroitsServiceUtils.addActionUnitaireRechercheParIterateur(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter l'action unitaire pour l'ajout de note.
+    */
+   public void modifyActionUnitaireAjoutNote() {
+      DroitsServiceUtils.modifyActionUnitaireAjoutNote(keyspace);
+   }
+
+   /**
+    * Methode permettant de modifier le référentiel pour le format fmt 354.
+    */
+   public void modifyReferentielFormatFmt354() {
+      ReferentielServiceUtils.modifyReferentielFormatFmt354(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter une action unitaire pour les Note.
+    */
+   public void addActionUnitaireNote2() {
+      DroitsServiceUtils.addActionUnitaireNote2(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 3 des référentiels de format.
+    */
+   public void addReferentielFormatV3() {
+      ReferentielServiceUtils.addReferentielFormatV3(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 8 des référentiels d'événement.
+    */
+   public void addReferentielEvenementV8() {
+      ReferentielServiceUtils.addReferentielEvenementV8(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter une action unitaire pour les documents
+    * attachés.
+    */
+   public void addActionUnitaireAjoutDocAttache() {
+      DroitsServiceUtils.addActionUnitaireAjoutDocAttache(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 4 des référentiels de format.
+    */
+   public void addReferentielFormatV4() {
+      ReferentielServiceUtils.addReferentielFormatV4(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 9 des référentiels d'événement.
+    */
+   public void addReferentielEvenementV9() {
+      ReferentielServiceUtils.addReferentielEvenementV9(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter une action unitaire pour les traitements de
+    * masse.
+    */
+   public void addActionUnitaireTraitementMasse() {
+      DroitsServiceUtils.addActionUnitaireTraitementMasse(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 10 des référentiels d'événement.
+    */
+   public void addReferentielEvenementV10() {
+      ReferentielServiceUtils.addReferentielEvenementV10(keyspace);
 
    }
 
-   private void addColumnAutoriseGED(String identifiant, Boolean value,
-         ColumnFamilyTemplate<String, String> cfTmpl) {
-      LOG.info("Ajout colonne autoriseGED dans le référentiel des formats");
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater(identifiant);
-      HColumn<String, Boolean> column = HFactory.createColumn(AUTORISE_GED,
-            value, StringSerializer.get(), BooleanSerializer.get());
-      updater.setColumn(column);
+   /**
+    * Methode permettant d'ajouter la version 11 des référentiels d'événement.
+    */
+   public void addReferentielEvenementV11() {
+      ReferentielServiceUtils.addReferentielEvenementV11(keyspace);
+   }
 
-      cfTmpl.update(updater);
+   /**
+    * Methode permettant d'ajouter la version 5 des référentiels des formats.
+    */
+   public void addReferentielFormatV5() {
+      ReferentielServiceUtils.addReferentielFormatV5(keyspace);
+   }
 
-      LOG.info("Colonne ajoutée pour le format {}", identifiant);
+   /**
+    * Methode permettant d'ajouter une action unitaire pour la suppression et la
+    * modification.
+    */
+   public void addActionUnitaireSuppressionModification() {
+      DroitsServiceUtils.addActionUnitaireSuppressionModification(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter une action unitaire pour la copie.
+    */
+   public void addActionUnitaireCopie() {
+      DroitsServiceUtils.addActionUnitaireCopie(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 6 des référentiels des formats.
+    */
+   public void addReferentielFormatV6() {
+      ReferentielServiceUtils.addReferentielFormatV6(keyspace);
+   }
+
+   /**
+    * Methode permettant de modifier le format fmt/353.
+    */
+   public void modifyReferentielFormatFmt353() {
+      ReferentielServiceUtils.modifyReferentielFormatFmt353(keyspace);
+   }
+
+   /**
+    * Methode permettant de modifier le format fmt/44.
+    */
+   public void modifyReferentielFormatFmt44() {
+      ReferentielServiceUtils.modifyReferentielFormatFmt44(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter la version 6 bis des référentiels des
+    * formats.
+    */
+   public void addReferentielFormatV6Bis() {
+      ReferentielServiceUtils.addReferentielFormatV6Bis(keyspace);
+   }
+
+   /**
+    * Methode permettant de
+    */
+   public void modifyReferentielFormatCrtl1() {
+      ReferentielServiceUtils.modifyReferentielFormatCrtl1(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter le colonne autorisé en GED pour le
+    * référentiel des formats.
+    */
+   public void addColumnAutoriseGEDReferentielFormat() {
+      ReferentielServiceUtils.addColumnAutoriseGEDReferentielFormat(keyspace);
+   }
+
+   /**
+    * Methode permettant d'ajouter les droits GED.
+    */
+   public void addDroitsGed() {
+      DroitsServiceUtils.addDroitsGed(keyspace);
    }
 
 }
