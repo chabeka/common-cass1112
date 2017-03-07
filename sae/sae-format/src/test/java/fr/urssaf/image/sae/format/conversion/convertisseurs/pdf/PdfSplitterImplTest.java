@@ -98,7 +98,7 @@ public class PdfSplitterImplTest {
       Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
-   @Test
+   @Test(expected = ConversionException.class)
    public void convertirFichierFile_erreurConversion()
          throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException, ConversionException {
 
@@ -118,7 +118,7 @@ public class PdfSplitterImplTest {
       byte[] result = convertisseur.convertirFichier(ressource.getFile(), null,
             null);
 
-      Assert.assertNull("Le fichier n'aurait pas dû être converti", result);
+      Assert.fail("Une erreur de conversion aurait du apparaitre");
       
       EasyMock.reset(serviceConversion);
    }
@@ -198,7 +198,7 @@ public class PdfSplitterImplTest {
       Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
-   @Test
+   @Test(expected = ConversionException.class)
    public void convertirFichierByte_erreurConversion()
          throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException, ConversionException {
 
@@ -221,7 +221,7 @@ public class PdfSplitterImplTest {
       byte[] result = convertisseur.convertirFichier(fichier, null,
             null);
 
-      Assert.assertNull("Le fichier n'aurait pas dû être converti", result);
+      Assert.fail("Une erreur de conversion aurait du apparaitre");
       
       EasyMock.reset(serviceConversion);
    }
