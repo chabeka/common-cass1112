@@ -12,6 +12,7 @@ import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageExcept
 import fr.urssaf.image.commons.itext.exception.FormatConversionRuntimeException;
 import fr.urssaf.image.commons.itext.service.FormatConversionService;
 import fr.urssaf.image.sae.format.conversion.convertisseurs.Convertisseur;
+import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
 
@@ -53,7 +54,7 @@ public class PdfSplitterImpl implements Convertisseur {
     */
    @Override
    public final byte[] convertirFichier(File fichier, Integer numeroPage,
-         Integer nombrePages) throws ConversionParametrageException {
+         Integer nombrePages) throws ConversionParametrageException, ConversionException {
       byte[] resultat = null;
 
       // Traces debug - entrée méthode
@@ -69,6 +70,7 @@ public class PdfSplitterImpl implements Convertisseur {
       } catch (FormatConversionException e) {
          LOGGER.error("Une erreur de conversion s'est produite : {}", e
                .getMessage());
+         throw new ConversionException(e.getMessage(), e);
       } catch (FormatConversionParametrageException e) {
          throw new ConversionParametrageException(
                e.getMessage(), e);
@@ -85,7 +87,7 @@ public class PdfSplitterImpl implements Convertisseur {
     */
    @Override
    public final byte[] convertirFichier(byte[] fichier, Integer numeroPage,
-         Integer nombrePages) throws ConversionParametrageException {
+         Integer nombrePages) throws ConversionParametrageException, ConversionException {
       byte[] resultat = null;
 
       // Traces debug - entrée méthode
@@ -98,6 +100,7 @@ public class PdfSplitterImpl implements Convertisseur {
       } catch (FormatConversionException e) {
          LOGGER.error("Une erreur de conversion s'est produite : {}", e
                .getMessage());
+         throw new ConversionException(e.getMessage(), e);
       } catch (FormatConversionParametrageException e) {
          throw new ConversionParametrageException(
                e.getMessage(), e);

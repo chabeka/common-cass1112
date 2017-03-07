@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.format.conversion.service;
 
 import java.io.File;
 
+import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -30,10 +31,11 @@ public interface ConversionService {
     *            Impossible d’instancier le convertisseur
     * @throws ConversionParametrageException
     *            Erreur de paramètrage de la conversion
+    * @throws ConversionException erreur lors de la conversion
     */
    byte[] convertirFichier(String idFormat, File fichier, Integer numeroPage,
          Integer nombrePages) throws ConvertisseurInitialisationException,
-         UnknownFormatException, ConversionParametrageException;
+         UnknownFormatException, ConversionParametrageException, ConversionException;
 
    /**
     * Méthode permettant de convertir un fichier (à partir du flux) dans un
@@ -54,8 +56,9 @@ public interface ConversionService {
     *            Impossible d’instancier le convertisseur
     * @throws ConversionParametrageException
     *            Erreur de paramètrage de la conversion
+    * @throws ConversionException erreur lors de la conversion
     */
    byte[] convertirFichier(String idFormat, byte[] fichier, Integer numeroPage,
          Integer nombrePages) throws ConvertisseurInitialisationException,
-         UnknownFormatException, ConversionParametrageException;
+         UnknownFormatException, ConversionParametrageException, ConversionException;
 }

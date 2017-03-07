@@ -23,6 +23,7 @@ import com.google.common.util.concurrent.UncheckedExecutionException;
 
 import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.format.conversion.convertisseurs.Convertisseur;
+import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
@@ -126,7 +127,7 @@ public class ConversionServiceImpl implements ConversionService {
    public final byte[] convertirFichier(String idFormat, File fichier,
          Integer numeroPage, Integer nombrePages)
          throws ConvertisseurInitialisationException, UnknownFormatException,
-         ConversionParametrageException {
+         ConversionParametrageException, ConversionException {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "convertirFichier()";
@@ -179,7 +180,7 @@ public class ConversionServiceImpl implements ConversionService {
    public final byte[] convertirFichier(String idFormat, byte[] fichier,
          Integer numeroPage, Integer nombrePages)
          throws ConvertisseurInitialisationException, UnknownFormatException,
-         ConversionParametrageException {
+         ConversionParametrageException, ConversionException {
 
       // Traces debug - entrée méthode
       String prefixeTrc = "convertirFichier()";
