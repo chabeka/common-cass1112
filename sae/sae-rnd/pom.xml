@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-rnd</artifactId>
-   <version>17.6.0.1</version>
+   <version>17.6.0.2-SNAPSHOT</version>
    <packaging>jar</packaging>
    <description>Module de la gestion des mises à jour du RND</description>
 
@@ -13,7 +13,7 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>17.6.0.1</version>
+      <version>17.6.0.2-SNAPSHOT</version>
    </parent>
 
    <properties>
@@ -50,14 +50,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>17.6.0.1</version>
+         <version>17.6.0.2-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE - Commons -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>17.6.0.1</version>
+         <version>17.6.0.2-SNAPSHOT</version>
       </dependency>
 
       <dependency>

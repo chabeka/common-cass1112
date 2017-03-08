@@ -2,13 +2,13 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>17.6.0.1</version>
+      <version>17.6.0.2-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-ordonnanceur</artifactId>
    <name>sae-ordonnanceur</name>
-   <version>17.6.0.1</version>
+   <version>17.6.0.2-SNAPSHOT</version>
    <description>Gestion de la pile d'exécution des traitements asynchrones</description>
 
    <build>
@@ -112,7 +112,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>17.6.0.1</version>
+         <version>17.6.0.2-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>com.thoughtworks.xstream</groupId>
@@ -123,12 +123,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>17.6.0.1</version>
+         <version>17.6.0.2-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>17.6.0.1</version>
+         <version>17.6.0.2-SNAPSHOT</version>
       </dependency>
       
        <!-- Pont entre Log4J et SLF4J -->
