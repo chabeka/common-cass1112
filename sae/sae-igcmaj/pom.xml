@@ -3,14 +3,14 @@
    <parent>
       <artifactId>sae</artifactId>
       <groupId>fr.urssaf.image.sae</groupId>
-      <version>17.2.0.4-SNAPSHOT</version>
+      <version>17.6.0.1</version>
    </parent>
 
    <modelVersion>4.0.0</modelVersion>
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-igcmaj</artifactId>
    <name>sae-igcmaj</name>
-   <version>17.2.0.4-SNAPSHOT</version>
+   <version>17.6.0.1</version>
    <description>Programme exécutable en mode console permettant le téléchargement des CRL.
 
 Le programme est compatible Windows et Linux.
@@ -26,7 +26,7 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
-         <version>17.2.0.4-SNAPSHOT</version>
+         <version>17.6.0.1</version>
       </dependency>
 
       <!-- Spring -->
