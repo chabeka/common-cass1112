@@ -1,1 +1,0 @@
-java -jar G:\lbaadj\eclipse_workspace\commons-jarexecutable-spring\target\jarexecutable.jar G:\lbaadj\eclipse_workspace\commons-jarexecutable-spring\src\main\resources\jarBean.properties 
