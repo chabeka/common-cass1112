@@ -83,6 +83,14 @@ public class InsertionDonnees {
 
    }
 
+   public void addActionUnitaireTraitementMasse2() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("modification_masse", "modification en masse", cfTmpl);
+
+   }
+
    /**
     * @param string
     * @param string2
@@ -966,6 +974,38 @@ public class InsertionDonnees {
       // WS_ETAT_TRAITEMENTS_MASSE|KO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("WS_ETAT_TRAITEMENTS_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+
+   /**
+    * Référentiel des événements en V12 Ajout des évenements : <li>
+    * WS_MODIFICATION_MASSE|KO</li> <li>MODIFICATION_MASSE|KO</li>
+    */
+   public void addReferentielEvenementV12() {
+
+      LOG.info("Mise à jour du référentiel des événements");
+
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // WS_MODIFICATION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_MODIFICATION_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // MODIFICATION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("MODIFICATION_MASSE|KO");
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);
