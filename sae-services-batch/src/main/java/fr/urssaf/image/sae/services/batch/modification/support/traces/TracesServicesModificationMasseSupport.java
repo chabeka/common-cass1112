@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
- * Classe de support pour écrire les traces via la brique de traçabilité.
+ * Classe de support pour écrire les traces via la brique de traçabilité
  */
 @Component
 public class TracesServicesModificationMasseSupport {
@@ -33,6 +33,9 @@ public class TracesServicesModificationMasseSupport {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TracesServicesModificationMasseSupport.class);
 
+   /**
+    * Services du dispatcheur de la trace
+    */
    @Autowired
    private DispatcheurService dispatcheurService;
 

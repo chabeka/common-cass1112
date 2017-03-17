@@ -93,4 +93,9 @@ public final class TracesConstantes {
     * Le code de l'événement échec de récupération des états des traitements de masse
     */
    public static final String CODE_EVT_WS_ETAT_TRAIT_MASSE = "WS_ETAT_TRAITEMENTS_MASSE|KO";
+
+   /**
+    * Le code de l'événement échec de modification en masse de documents
+    */
+   public static final String CODE_EVT_WS_MODIFICATION_MASSE_KO = "WS_MODIFICATION_MASSE|KO";
 }

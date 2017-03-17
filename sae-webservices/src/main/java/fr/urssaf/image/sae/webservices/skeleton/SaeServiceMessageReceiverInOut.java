@@ -501,8 +501,7 @@ public class SaeServiceMessageReceiverInOut extends
                envelope = toEnvelope(getSOAPFactory(msgContext), consultationGNTGNSResponse,
                      false, new javax.xml.namespace.QName(
                            "http://www.cirtil.fr/saeService", "copieResponse"));
-            }
-            if ("modificationMasse".equals(methodName)) {
+            } else if ("modificationMasse".equals(methodName)) {
 
                fr.cirtil.www.saeservice.ModificationMasseResponse modificationMasseResponse31 = null;
                fr.cirtil.www.saeservice.ModificationMasse wrappedParam = (fr.cirtil.www.saeservice.ModificationMasse) fromOM(

@@ -16,12 +16,15 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.traces.TracesServicesModificationMasseSupport;
 
 /**
- * Listener du job capture de masse
+ * Listener du job modification en masse
  * 
  */
 @Component
 public class ModificationMasseJobListener {
 
+   /**
+    * Support de tracabilité
+    */
    @Autowired
    private TracesServicesModificationMasseSupport tracesSupport;
 
