@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.FinTraitementFlagSupport;
@@ -68,8 +70,9 @@ public class VerificationSupportImpl implements VerificationSupport {
    @SuppressWarnings(CATCH)
    @Override
    public final void checkFinTraitement(URI urlEcde, Integer nbreDocs,
-         Integer nbreStockes, boolean logPresent, List<Throwable> erreurs,
-         UUID idTraitement) {
+         Integer nbreStockes, String batchModeTraitement, boolean logPresent,
+         List<Throwable> erreurs, UUID idTraitement,
+         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeDocsIntegres) {
 
       LOGGER.debug("{} - debut", CHECK);
 
@@ -81,7 +84,8 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          checkDebutTraitement(repTravail, idTraitement);
 
-         checkResultats(repTravail, nbreDocs, nbreStockes, erreurs, sommaire);
+         checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
+               erreurs, sommaire, listeDocsIntegres);
 
          checkFinTraitement(repTravail);
 
@@ -92,9 +96,9 @@ public class VerificationSupportImpl implements VerificationSupport {
          /* erreurs de vérification du fichier sommaire */
       } catch (Throwable e) {
          LOGGER
-               .warn(
-                     "une erreur est survenue lors de la vérification de fin de traitement",
-                     CHECK, e);
+.warn(
+               "une erreur est survenue lors de la vérification de fin de traitement",
+               CHECK, e);
       }
    }
 
@@ -140,12 +144,24 @@ public class VerificationSupportImpl implements VerificationSupport {
    }
 
    /**
+    * Controle si le fichier resultat est existant, sinon il le cree avec les
+    * informations necessaires.
+    * 
     * @param repTravail
+    *           Dossier du fichier resultat.xml
     * @param nbreDocs
+    *           Nombre de documents total
     * @param nbreStockes
+    *           Nombre de documents intégrés
+    * @param batchModeTraitement
+    *           Mode de traitement du batch
+    * @param listeDocsIntegres
+    *           Liste des documents intégrés
     */
    private void checkResultats(File repTravail, Integer nbreDocs,
-         Integer nbreStockes, List<Throwable> listeErreurs, File sommaire) {
+         Integer nbreStockes, String batchModeTraitement,
+         List<Throwable> listeErreurs, File sommaire,
+         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeDocsIntegres) {
 
       File resultats = new File(repTravail, "resultats.xml");
 
@@ -158,7 +174,7 @@ public class VerificationSupportImpl implements VerificationSupport {
                nbreIntegres);
 
          resultatsSupport.writeResultatsFile(repTravail, sommaire, erreur,
-               nbreTotal);
+               nbreTotal, nbreIntegres, batchModeTraitement, listeDocsIntegres);
       }
 
    }
@@ -283,10 +299,10 @@ public class VerificationSupportImpl implements VerificationSupport {
                + "car il n'a pas été généré par le job de capture de masse");
 
          LOGGER
-               .error(
+.error(
 
-                     "Le traitement de masse n°{} doit éventuellement être rollbacké "
-                           + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
+               "Le traitement de masse n°{} doit éventuellement être rollbacké "
+                     + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
                      idTraitement);
       }
 

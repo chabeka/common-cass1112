@@ -10,7 +10,5 @@
    <!-- mock pour le service de mock de la pile des travaux -->
    <bean id="jobServiceImpl" factory-bean="serviceMockFactory"
       factory-method="createJobService" />
-
-  
-
+      
 </beans>

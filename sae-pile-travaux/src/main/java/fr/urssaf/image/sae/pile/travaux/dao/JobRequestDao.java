@@ -623,4 +623,11 @@ public class JobRequestDao {
       return jobRequest;
    }
 
+   /**
+    * @return the keyspace
+    */
+   public Keyspace getKeyspace() {
+      return keyspace;
+   }
+
 }

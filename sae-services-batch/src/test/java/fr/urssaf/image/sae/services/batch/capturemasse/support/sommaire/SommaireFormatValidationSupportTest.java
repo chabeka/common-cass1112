@@ -155,7 +155,7 @@ public class SommaireFormatValidationSupportTest {
       File sommaire = new File(
             "src/test/resources/sommaire/sommaire_uuid_failure.xml");
 
-      support.validerUniciteUuid(sommaire);
+      support.validerUniciteIdGed(sommaire);
    }
 
    @Test
@@ -165,7 +165,7 @@ public class SommaireFormatValidationSupportTest {
             "src/test/resources/sommaire/sommaire_uuid_succes.xml");
 
       try {
-         support.validerUniciteUuid(sommaire);
+         support.validerUniciteIdGed(sommaire);
       } catch (CaptureMasseSommaireFormatValidationException e) {
          Assert.fail("on attend un retour valide");
       }

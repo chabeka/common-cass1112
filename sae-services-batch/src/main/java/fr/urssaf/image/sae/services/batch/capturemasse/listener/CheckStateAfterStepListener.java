@@ -25,7 +25,8 @@ public class CheckStateAfterStepListener extends AbstractListener {
    protected final ExitStatus specificAfterStepOperations() {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
-      if (CollectionUtils.isEmpty(getExceptionErreurListe())) {
+      if (CollectionUtils.isEmpty(getExceptionErreurListe())
+            || isModePartielBatch()) {
          exitStatus = ExitStatus.COMPLETED;
       }
 

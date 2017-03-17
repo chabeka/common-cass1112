@@ -4,11 +4,12 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 
 import java.io.File;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 
 /**
- * Suppoprt pour l'écriture des fichiers resultats.xml en cs d'échec lors du
+ * Support pour l'écriture des fichiers resultats.xml en cs d'échec lors du
  * traitement de capture de masse
  * 
  */
@@ -25,10 +26,18 @@ public interface ResultatsFileEchecSupport {
     * @param erreur
     *           objet contenant toutes les erreurs
     * @param totalDocuments
-    *           nombre de documents traités au total
+    *           nombre de documents total
+    * @param nbDocumentsIntegres
+    *           nombre de documents intégréslors du traitement
+    * @param batchModeTraitement
+    *           Mode de traitement du batch
+    * @param listIntDocs
+    *           Liste des documents intégrés
     */
    void writeResultatsFile(File ecdeDirectory, File sommaireFile,
-         CaptureMasseErreur erreur, int totalDocuments);
+         CaptureMasseErreur erreur, int totalDocuments,
+         int nbDocumentsIntegres, String batchModeTraitement,
+         ConcurrentLinkedQueue<?> listIntDocs);
 
    /**
     * Service permettant l'écriture d'un fichier resultats.xml dans l'ECDE pour
@@ -42,9 +51,17 @@ public interface ResultatsFileEchecSupport {
     * @param erreur
     *           objet contenant toutes les erreurs
     * @param totalDocuments
-    *           nombre de documents traités au total
+    *           nombre de documents au total
+    * @param nbDocumentsIntegres
+    *           nombre de documents intégréslors du traitement
+    * @param batchModeTraitement
+    *           Mode de traitement du batch
+    * @param listIntDocs
+    *           Liste des documents intégrés
     */
    void writeVirtualResultatsFile(File ecdeDirectory, File sommaireFile,
-         CaptureMasseErreur erreur, int totalDocuments);
+         CaptureMasseErreur erreur, int totalDocuments,
+         int nbDocumentsIntegres, String batchModeTraitement,
+         ConcurrentLinkedQueue<?> listIntDocs);
 
 }

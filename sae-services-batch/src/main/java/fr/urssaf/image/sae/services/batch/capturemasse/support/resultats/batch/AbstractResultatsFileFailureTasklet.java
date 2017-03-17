@@ -25,10 +25,14 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
  * 
  */
 public abstract class AbstractResultatsFileFailureTasklet extends
-      AbstractCaptureMasseTasklet {
+AbstractCaptureMasseTasklet {
 
    private static final String LIBELLE_BUL003 = "La capture de masse en mode "
          + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
+         + "initialisée pour supprimer les données qui auraient pu être stockées.";
+
+   private static final String LIBELLE_BUL004 = "La capture de masse en mode "
+         + "\"Partiel\" a été interrompue. Une procédure d'exploitation a été "
          + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
    /**
@@ -67,7 +71,7 @@ public abstract class AbstractResultatsFileFailureTasklet extends
       boolean isModeToutOuRien = true;
       try {
          getSommaireFormatValidationSupport().validerModeBatch(sommaireFile,
-               "TOUT_OU_RIEN");
+               Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom());
       } catch (Exception e) {
          isModeToutOuRien = false;
       }
@@ -77,18 +81,37 @@ public abstract class AbstractResultatsFileFailureTasklet extends
       if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
          erreur.getListCodes().set(0, Constantes.ERR_BUL003);
          erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
+      } else if (!isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
+         erreur.getListCodes().set(0, Constantes.ERR_BUL004);
+         erreur.getListException().set(0, new Exception(LIBELLE_BUL004));
       }
 
       final File ecdeDirectory = sommaireFile.getParentFile();
 
       int nbreDocs = (Integer) map.get(Constantes.DOC_COUNT);
+      int nbDocsIntegres = 0;
+      String batchModeTraitement = null;
+      Object value = map.get(Constantes.NB_INTEG_DOCS);
+      if (value != null) {
+         nbDocsIntegres = (Integer) value;
+      }
+      value = map.get(Constantes.BATCH_MODE_NOM);
+      if (value != null) {
+         batchModeTraitement = (String) value;
+      } else if (isModeToutOuRien) {
+         batchModeTraitement = Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom();
+      } else {
+         batchModeTraitement = Constantes.BATCH_MODE.PARTIEL.getModeNom();
+      }
 
       if (isVirtual()) {
          getResultatsFileEchecSupport().writeVirtualResultatsFile(
-               ecdeDirectory, sommaireFile, erreur, nbreDocs);
+               ecdeDirectory, sommaireFile, erreur, nbreDocs, nbDocsIntegres,
+               batchModeTraitement, listIntDocs);
       } else {
          getResultatsFileEchecSupport().writeResultatsFile(ecdeDirectory,
-               sommaireFile, erreur, nbreDocs);
+               sommaireFile, erreur, nbreDocs, nbDocsIntegres,
+               batchModeTraitement, listIntDocs);
       }
       File resultats = new File(ecdeDirectory, "resultats.xml");
 

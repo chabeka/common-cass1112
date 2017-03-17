@@ -51,6 +51,8 @@ import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationMasse;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
@@ -126,6 +128,7 @@ import fr.urssaf.image.sae.webservices.service.WSDocumentAttacheService;
 import fr.urssaf.image.sae.webservices.service.WSDocumentExistantService;
 import fr.urssaf.image.sae.webservices.service.WSEtatJobMasseService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
+import fr.urssaf.image.sae.webservices.service.WSModificationMasseService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
@@ -204,6 +207,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    WSDocumentExistantService documentExistantService;
+
+   @Autowired
+   private WSModificationMasseService modificationMasse;
 
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
@@ -1249,6 +1255,41 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      }
+   }
+
+   @Override
+   public ModificationMasseResponse modificationMasseSecure(
+         ModificationMasse request, String callerIP) throws AxisFault {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         // l'opération web service n'interagit pas avec DFCE
+         // il n'est pas nécessaire de vérifier si DFCE est Up
+         ModificationMasseResponse response = modificationMasse
+               .modificationMasse(request, callerIP);
+
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
+
+         return response;
+
+      } catch (ModificationAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
       }
    }
 }

@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.commons.exception.ParameterRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
+import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -44,6 +46,8 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    private final OrdonnanceurConfiguration ordonnanceurConfiguration;
 
+   private final DFCESupport dfceSuppport;
+
    private static final String FORMAT = "dd/MM/yyyy HH'h'mm ss's' SSS'ms'";
 
    /**
@@ -59,11 +63,13 @@ public class CoordinationServiceImpl implements CoordinationService {
     */
    @Autowired
    public CoordinationServiceImpl(DecisionService decisionService,
-         JobService jobService, OrdonnanceurConfiguration config) {
+         JobService jobService, OrdonnanceurConfiguration config,
+         DFCESupport dfceSuppport) {
 
       this.decisionService = decisionService;
       this.jobService = jobService;
       this.ordonnanceurConfiguration = config;
+      this.dfceSuppport = dfceSuppport;
 
    }
 
@@ -92,10 +98,16 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    }
 
+   /**
+    * Trouver le job qui doit être lancé.
+    * 
+    * @return Le Job à lancer.
+    * @throws AucunJobALancerException
+    *            @{@link AucunJobALancerException}
+    */
    private JobQueue trouverJobALancer() throws AucunJobALancerException {
 
-      // etape 1 : Récupération de la liste des traitements
-
+      // Etape 1 : Récupération de la liste des traitements
       List<JobRequest> jobsEnCours = this.jobService.recupJobEnCours();
       LOG.debug("{} - nombre de traitements en cours ou réservés: {}",
             PREFIX_LOG, CollectionUtils.size(jobsEnCours));
@@ -109,12 +121,46 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       // Etape 3: Décision du traitement à lancer
 
-      JobQueue traitement = this.decisionService.trouverJobALancer(
-            jobsEnAttente, jobsEnCours);
+      List<JobQueue> listeTraitement = this.decisionService
+            .trouverListeJobALancer(jobsEnAttente, jobsEnCours);
+
+      // Etape 4 : vérification que le serveur DFCE est Up!
+      if (!dfceSuppport.isDfceUp()) {
+         LOG.debug("{} - DFCE n'est pas accessible avec la configuration",
+               PREFIX_LOG);
+         throw new AucunJobALancerException();
+
+      }
+
+      // Etape 5 : Réservation du traitement
+      JobQueue traitement = null;
+      for (JobQueue jobQueue : listeTraitement) {
+         if (isJobSelectionnableALancer(jobQueue)) {
+            try {
+               traitement = this.jobService.confirmerJobALancer(jobQueue);
+               break;
+            } catch (ParameterRuntimeException e) {
+               // le job est déjà en cours de traitement, on cherche un nouveau
+               // job à traiter
+               LOG.warn(
+                     "{} - échec lors de la confirmation de disponibilité du job à lancer - il est déjà en cours de traitement - Traitement d'un nouveau job en cours...",
+                     new Object[] { PREFIX_LOG });
+            }
+         }
+      }
+
+      // Si on ne trouve aucun job de disponible, on mets en attente
+      // l'ordonnanceur.
+      if (traitement == null) {
+         throw new JobRuntimeException(traitement, new Exception(
+               "Aucun job n'est disponible pour réservation"));
+      }
+
+      // Etape 6 : Vérification que l'URL ECDE est toujours actif
+      this.decisionService.controleDispoEcdeTraitementMasse(traitement);
+
+      // Etape 7 : Réservation du Job
       LOG.debug("{} - traitement à lancer {}", PREFIX_LOG, toString(traitement));
-
-      // Etape 4 : Réservation du traitement
-
       try {
 
          LOG.debug("{} - réservation du traitement {}", PREFIX_LOG,
@@ -153,6 +199,18 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       // renvoie le traitement
       return traitement;
+   }
+
+   /**
+    * Détermine si le job est selectionnable pour les traitements suivants.
+    * 
+    * @param jobQueue
+    *           job {@link jobQueue}
+    * @return True si le job est selectionnable pour les traitements suivants,
+    *         false sinon.
+    */
+   private boolean isJobSelectionnableALancer(JobQueue jobQueue) {
+      return !jobService.isJobCodeTraitementEnCoursOuFailure(jobQueue);
    }
 
    /**

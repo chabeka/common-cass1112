@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -30,6 +31,7 @@ import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -84,6 +86,13 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
    }
 
+   @Override
+   public UUID launchTraitement(AbstractStorageDocument storageDocument) throws Exception {
+      StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
+         UUID uuid = document != null ? document.getUuid() : null;
+      return uuid;
+   }
+   
    /**
     * Persistance du document
     * 

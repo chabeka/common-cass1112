@@ -1,7 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?><!-- This file was auto-generated from 
-   WSDL --><!-- by the Apache Axis2 version: 1.5.4 
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from 
+   WSDL -->
+<!-- by the Apache Axis2 version: 1.5.4 
    Built on : Dec 19, 2010 (08:18:42 CET) Le fichier est ensuite mis à jour 
-   MANUELLEMENT pour l'ajout de nouvelles opérations --><serviceGroup>
+   MANUELLEMENT pour l'ajout de nouvelles opérations -->
+<serviceGroup>
     <!-- <service name="SpringInit" class="fr.urssaf.image.sae.webservices.component.Axis2SpringContext"> 
       <description>This web service initializes Spring.</description> <parameter 
       name="ServiceClass">fr.urssaf.image.sae.webservices.component.Axis2SpringContext 
@@ -146,6 +149,16 @@
             <parameter name="enableMTOM">true</parameter>
             <actionMapping>consultationGNTGNS</actionMapping>
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/consultationGNTGNSResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="modificationMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>modificationMasse</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/modificationMasseResponse
+         </outputActionMapping>
+        </operation>
+        <operation name="transfertMasse" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>transfertMasse</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/transfertMasseResponse
          </outputActionMapping>
         </operation>
     </service>

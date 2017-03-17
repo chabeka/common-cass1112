@@ -31,6 +31,8 @@ import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationMasse;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
@@ -227,6 +229,21 @@ public interface SaeServiceSkeletonInterface {
     *            exception levée dans la consommation du web service
     */
    ModificationResponse modificationSecure(Modification request)
+         throws AxisFault;
+
+   /**
+    * endpoint de la modification en masse de document
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   ModificationMasseResponse modificationMasseSecure(ModificationMasse request,
+         String callerIP)
          throws AxisFault;
 
    /**

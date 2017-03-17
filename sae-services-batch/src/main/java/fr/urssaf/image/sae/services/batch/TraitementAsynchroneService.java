@@ -58,6 +58,18 @@ public interface TraitementAsynchroneService {
    void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres);
 
    /**
+    * Ajoute un traitement de modification de masse dans la pile des traitements de
+    * masse en attente
+    * 
+    * @param parametres
+    *           ensemble des paramètres nécessaires à l'enregistrement d'un
+    *           traitement de masse
+    * 
+    */
+   @PreAuthorize("hasRole('modification_masse')")
+   void ajouterJobModificationMasse(TraitemetMasseParametres parametres);
+   
+   /**
     * Exécute un traitement de masse stocké dans la pile des traitements en
     * attente
     * 

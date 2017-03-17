@@ -30,14 +30,40 @@ public interface SommaireFormatValidationSupport {
     * paramètre
     * 
     * @param sommaireFile
-    *           le fichier soammire.xml
-    * @param batchMode
-    *           mode de capture attendue
+    *           le fichier sommaire.xml
+    * @param batchModes
+    *           liste de mode de capture attendue
     * @throws CaptureMasseSommaireFormatValidationException
     *            Le fichier sommaire.xml est invalide
     */
-   void validerModeBatch(File sommaireFile, String batchMode)
+   void validerModeBatch(File sommaireFile, String... batchModes)
          throws CaptureMasseSommaireFormatValidationException;
+
+   /**
+    * validation de l'unicité de chaque IdGed si présence dans le fichier
+    * sommaire
+    * 
+    * @param sommaireFile
+    *           le fichier soammire.xml
+    * @throws CaptureMasseSommaireFormatValidationException
+    *            Le fichier sommaire.xml est invalide
+    */
+   void validerUniciteIdGed(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException;
+
+   /**
+    * Validation de la presence de la balise "baliseRequired" dans la partie
+    * "document" du fichier sommaire.
+    * 
+    * @param sommaireFile
+    *           Fichier sommaire.xml
+    * @param baliseRequired
+    *           Balise obligatoire
+    * @throws CaptureMasseSommaireFormatValidationException
+    *            Le fichier sommaire.xml est invalide
+    */
+   void validationDocumentBaliseRequisSommaire(File sommaireFile, String baliseRequired) 
+         throws CaptureMasseSommaireFormatValidationException ;
 
    /**
     * validation de l'unicité de chaque UUID si présence dans le fichier

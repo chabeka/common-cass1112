@@ -65,6 +65,12 @@ public class TraitementAsynchroneServiceValidationTest {
             // Aucune implémentation
             return null;
          }
+
+         @Override
+         public void ajouterJobModificationMasse(
+               TraitemetMasseParametres parametres) {
+            
+         }
       };
    }
 

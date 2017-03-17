@@ -79,11 +79,12 @@ public class SommaireFormatValidationSupportImpl implements
     * {@inheritDoc}
     */
    @Override
-   public final void validerModeBatch(File sommaireFile, String batchMode)
+   public final void validerModeBatch(File sommaireFile, String... batchModes)
          throws CaptureMasseSommaireFormatValidationException {
 
       FileInputStream sommaireStream = null;
       XMLEventReader reader = null;
+      boolean containValue = false;
 
       try {
          sommaireStream = new FileInputStream(sommaireFile);
@@ -100,12 +101,19 @@ public class SommaireFormatValidationSupportImpl implements
                mode = event.asCharacters().getData();
             }
          }
+         for (String batchMode : batchModes) {
+            containValue = batchMode.equals(mode);
+            if (containValue) {
+               break;
+            }
+         }
 
-         if (!batchMode.equals(mode)) {
+         if (!containValue) {
             throw new CaptureMasseSommaireFormatValidationException("mode "
                   + mode + " non accepté", new Exception("Mode non accepté : "
                   + mode));
          }
+
 
       } catch (FileNotFoundException e) {
          throw new CaptureMasseRuntimeException(e);
@@ -159,7 +167,7 @@ public class SommaireFormatValidationSupportImpl implements
     * @throws CaptureMasseSommaireFormatValidationException
     */
    @Override
-   public void validerUniciteUuid(File sommaireFile)
+   public void validerUniciteIdGed(File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException {
       FileInputStream sommaireStream = null;
       XMLEventReader reader = null;
@@ -252,4 +260,152 @@ public class SommaireFormatValidationSupportImpl implements
       }
    }
 
+   @Override
+   public void validationDocumentBaliseRequisSommaire(File sommaireFile,
+         String baliseRequired) throws CaptureMasseSommaireFormatValidationException {
+
+      FileInputStream sommaireStream = null;
+      XMLEventReader reader = null;
+
+      try {
+         sommaireStream = new FileInputStream(sommaireFile);
+         reader = openSommaire(sommaireStream);
+         String valeurBalise = null;
+         XMLEvent event;
+
+         while (reader.hasNext()) {
+
+            // On parcourt le sommaire pour tomber sur un document
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && "document".equals(event.asStartElement().getName()
+                        .getLocalPart())) {
+
+               // On continue le parcourt pour trouver la métadonnée IdGed
+               while (reader.hasNext()) {
+                  event = reader.nextEvent();
+
+                  if (event.isStartElement()
+                        && event.asStartElement().getName()
+                        .getLocalPart().equals(baliseRequired)) {
+                     event = reader.nextEvent();
+                     valeurBalise = event.asCharacters().getData();
+
+                     if (valeurBalise.isEmpty()) { 
+                        throw new CaptureMasseSommaireFormatValidationException(
+                           "La balise " + baliseRequired+" 'est vide",
+                        new Exception("La balise " + baliseRequired + " est obligatoire"));}
+                  }
+               }
+            }
+         }
+
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
+         if (sommaireStream != null) {
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+      }
+   
+      
+   }
+
+   @Override
+   public void validerUniciteUuid(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException {
+      FileInputStream sommaireStream = null;
+      XMLEventReader reader = null;
+
+      try {
+         sommaireStream = new FileInputStream(sommaireFile);
+         reader = openSommaire(sommaireStream);
+         String uuid = null;
+         List<String> listUuid = new ArrayList<String>();
+         XMLEvent event;
+
+         while (reader.hasNext()) {
+
+            // On parcourt le sommaire pour tomber sur un document
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && "document".equals(event.asStartElement().getName()
+                        .getLocalPart())) {
+
+               // On continue le parcourt pour trouver la métadonnée IdGed
+               while (reader.hasNext()) {
+                  event = reader.nextEvent();
+
+                  if (event.isStartElement()
+                        && "UUID".equalsIgnoreCase(event.asStartElement().getName()
+                              .getLocalPart())) {
+                     event = reader.nextEvent();
+                     uuid = event.asCharacters().getData();
+
+                     if (listUuid.contains(uuid)) {
+                        // UUID déjà présent, on renvoie une exception
+                        throw new CaptureMasseSommaireFormatValidationException(
+                              "UUID du document " + uuid
+                                    + " présent plusieurs fois",
+                              new Exception(
+                                    "UUID présent plusieurs fois : "
+                                          + uuid));
+
+                     } else {
+                        // UUID inconnu, on l'ajoute à la liste
+                        listUuid.add(uuid);
+                        break;
+                     }
+                  }
+               }
+            }
+         }
+
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
+         if (sommaireStream != null) {
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+      }
+   }
+   
 }

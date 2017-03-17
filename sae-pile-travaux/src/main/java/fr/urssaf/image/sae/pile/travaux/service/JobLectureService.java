@@ -94,9 +94,28 @@ public interface JobLectureService {
    List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax);
    
    /**
-    * Teste si le job peut être réinitialisé
-    * (ie : si le job est à l'état RESERVED ou STARTING) 
-    * @param job le job à tester
+    * Récupère l'ensemble des jobs en echecs présents dans la pile des travaux
+    * qui contiennent les valeurs de parametres de la liste "parametersValues".
+    * Si la liste "parametersValues" est vide, on remonte tous les jobs en
+    * erreurs. Attention au performance dans ce cas.
+    * 
+    * @param keyspace
+    *           Keyspace
+    * @param parametersValues
+    *           Liste de valeur de parametres
+    * @return liste des traitements en echecs présents dans la pile des travaux
+    *         qui contiennent les valeurs de parametres de la liste
+    *         "parametersValues"
+    */
+   List<JobRequest> getJobsFailureWithParameters(Keyspace keyspace,
+         String... parametersValues);
+
+   /**
+    * Teste si le job peut être réinitialisé (ie : si le job est à l'état
+    * RESERVED ou STARTING)
+    * 
+    * @param job
+    *           le job à tester
     * @return true si le job peut être réinitialisé
     */
    boolean isJobResettable(JobRequest job);

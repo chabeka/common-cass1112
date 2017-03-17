@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.pile.travaux.service.impl;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -112,15 +113,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.ajouterJobDansJobRequest(jobToCreate, clock);
 
       // Ecriture dans la CF "JobQueues"
-      if (StringUtils.isNotBlank(jobToCreate.getParameters())) {
-         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
-               .getIdJob(), jobToCreate.getType(), jobToCreate.getParameters(),
-               clock);
-      } else {
-         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
-               .getIdJob(), jobToCreate.getType(), jobToCreate
-               .getJobParameters(), clock);
-      }
+      this.addJobQueue(jobToCreate, clock);
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "CREATION DU JOB";
@@ -128,6 +121,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobHistorySupport.ajouterTrace(jobToCreate.getIdJob(),
             timestampTrace, messageTrace, clock);
    }
+
 
    /**
     * {@inheritDoc}
@@ -239,9 +233,10 @@ public class JobQueueServiceImpl implements JobQueueService {
          this.jobRequestSupport.reserverJobDansJobRequest(idJob, hostname,
                dateReservation, clock);
 
+
          // Ecriture dans la CF "JobQueues"
          if (parameters == null) {
-            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
+            this.reserverJobDansJobQueues(idJob, hostname,
                   type, jobRequest.getJobParameters(), clock);
          } else {
             this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
@@ -261,6 +256,28 @@ public class JobQueueServiceImpl implements JobQueueService {
       } finally {
          mutex.release();
       }
+   }
+
+   /**
+    * 
+    * Réserver un traitement de type JobsQueue dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param hostname
+    *           nom du serveur
+    * @param type
+    *           type du job
+    * @param jobParameters
+    *           Parametres du job
+    * @param clock
+    *           horloge
+    */
+
+   private void reserverJobDansJobQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters, Long clock) {
+      this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname, type,
+            jobParameters, clock);
    }
 
    /**
@@ -620,5 +637,49 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public List<String> getHosts() {
       return this.jobsQueueSupport.getHosts();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addJobsQueue(JobToCreate jobToCreate) {
+      this.addJobQueue(jobToCreate, null);
+   }
+
+   /**
+    * Ajouter un job de type JobsQueue dans la pile des travaux.
+    * 
+    * @param jobToCreate
+    *           Job à créer.
+    * @param clock
+    *           horloge.
+    */
+   private void addJobQueue(JobToCreate jobToCreate, Long clock) {
+
+      if (clock == null) {
+         // Timestamp de l'opération
+         // Pas besoin de gérer le décalage ici : on ne fait que la création
+         clock = jobClockSupport.currentCLock();
+      }
+
+      if (StringUtils.isNotBlank(jobToCreate.getParameters())) {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(
+               jobToCreate.getIdJob(), jobToCreate.getType(),
+               jobToCreate.getParameters(), clock);
+      } else {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(
+               jobToCreate.getIdJob(), jobToCreate.getType(),
+               jobToCreate.getJobParameters(), clock);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void reserverJobDansJobsQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters) {
+      this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, null);
    }
 }

@@ -2,7 +2,9 @@ package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
@@ -17,6 +19,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.netflix.curator.framework.CuratorFramework;
+
+import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.commons.utils.ZookeeperUtils;
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -35,6 +41,16 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class JobServiceTest {
+   
+   /**
+    * Le code du traitement
+    */
+   private static final String CODE_TRAITEMENT = "codeTraitement";
+
+   /**
+    * Prefixe pour la clef zookeeper.
+    */
+   private static final String PREFIXE_SEMAPHORE = "/Semaphore/";
 
    @Autowired
    private JobService jobService;
@@ -44,6 +60,12 @@ public class JobServiceTest {
 
    @Autowired
    private JobLectureService jobLectureService;
+
+   /**
+    * Zookeeper curator.
+    */
+   @Autowired
+   private CuratorFramework curator;
 
    private JobToCreate job;
 
@@ -55,7 +77,9 @@ public class JobServiceTest {
       job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("jobTest");
-      job.setParameters("");
+      Map<String, String> jobParameters = new HashMap<String, String>();
+      jobParameters.put(CODE_TRAITEMENT, CODE_TRAITEMENT);
+      job.setJobParameters(jobParameters);;
 
       jobQueueService.addJob(job);
 
@@ -198,4 +222,51 @@ public class JobServiceTest {
             "le champ description doit être rensigné correctement", "test",
             jobRequest.getToCheckFlagRaison());
    }
+
+   @Test
+   public void isJobCodeTraitementEnCoursOuFailure_success_true() {
+      // récupération des traitements à lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+      
+      Assert.assertTrue(jobService
+            .isJobCodeTraitementEnCoursOuFailure(jobsAlancer.get(0)));
+   }
+
+   @Test
+   public void isJobCodeTraitementEnCoursOuFailure_success_false() {
+      // récupération des traitements à lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+
+      JobQueue job = jobsAlancer.get(0);
+
+      Map<String, String> jobParams = new HashMap<String, String>(
+            job.getJobParameters());
+
+      job.setJobParameters(new HashMap<String, String>());
+
+      Assert.assertFalse(jobService.isJobCodeTraitementEnCoursOuFailure(job));
+
+      job.setJobParameters(jobParams);
+
+      String semaphore = PREFIXE_SEMAPHORE + CODE_TRAITEMENT;
+
+      // Création du mutex
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, semaphore);
+
+      try {
+         ZookeeperUtils.acquire(mutex, semaphore);
+
+         Assert.assertFalse(jobService.isJobCodeTraitementEnCoursOuFailure(job));
+      } finally {
+         mutex.release();
+      }
+
+   }
+
 }

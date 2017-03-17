@@ -20,6 +20,8 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 public abstract class AbstractListener {
 
    private StepExecution stepExecution;
+   private String batchMode;
+
    private static final ExitStatus FAILED_FIN_BLOQUANT = new ExitStatus(
          "FAILED_FIN_BLOQUANT");
 
@@ -32,6 +34,8 @@ public abstract class AbstractListener {
    @BeforeStep
    public final void beforeStep(final StepExecution stepExecution) {
       this.stepExecution = stepExecution;
+      batchMode = (String) getStepExecution().getJobExecution()
+            .getExecutionContext().get(Constantes.BATCH_MODE_NOM_REDIRECT);
       specificInitOperations();
    }
 
@@ -120,5 +124,27 @@ public abstract class AbstractListener {
     */
    protected final StepExecution getStepExecution() {
       return stepExecution;
+   }
+
+   /**
+    * 
+    * Methode permettant de savoir si le mode de traitement du batch est
+    * PARTIEL.
+    * 
+    * @return True si mode PARTIEL, false sinon.
+    */
+   protected boolean isModePartielBatch() {
+      return batchMode != null
+            && Constantes.BATCH_MODE.PARTIEL.getModeNomCourt()
+                  .equals(batchMode);
+   }
+
+   /**
+    * Getter pour batchMode
+    * 
+    * @return the batchMode
+    */
+   public String getBatchMode() {
+      return batchMode;
    }
 }

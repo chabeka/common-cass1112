@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
@@ -169,4 +170,26 @@ public interface JobQueueService {
     * @return List<String>
     */
    List<String> getHosts();
+   
+   /**
+    * Ajouter un job de type JobsQueue dans la pile des travaux
+    * @param jobToCreate Job à créer.
+    */
+   public void addJobsQueue(JobToCreate jobToCreate);
+
+   /**
+    * Réserver un traitement de type JobsQueue dans la pile des travaux
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param hostname
+    *           nom du serveur
+    * @param type
+    *           type du job
+    * @param jobParameters
+    *           Parametres du job
+    */
+   public void reserverJobDansJobsQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters);
+
 }

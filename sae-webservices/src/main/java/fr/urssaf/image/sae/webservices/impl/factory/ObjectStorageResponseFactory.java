@@ -4,6 +4,8 @@ import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponseType;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
+import fr.cirtil.www.saeservice.ModificationMasseResponseType;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.RestoreMasseResponseType;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
@@ -103,5 +105,27 @@ public final class ObjectStorageResponseFactory {
       responseType.setUuid(uuid);
       response.setRestoreMasseResponse(responseType);
       return response;
+   }
+
+   /**
+    * instanciation de {@link ModificationMasseResponse}.<br>
+    * implémentation de {@link ModificationMasseResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="modificationMasseResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link ModificationMasseResponse}
+    */
+   public static ModificationMasseResponse createModificationMasseResponse(
+         String uuid) {
+
+      ModificationMasseResponse modification = new ModificationMasseResponse();
+      ModificationMasseResponseType modificationType = new ModificationMasseResponseType();
+      modificationType.setUuid(uuid);
+      modification.setModificationMasseResponse(modificationType);
+      return modification;
    }
 }

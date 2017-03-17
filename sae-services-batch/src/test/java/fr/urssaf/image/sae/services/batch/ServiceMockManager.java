@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.batch;
 import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.batch.modification.SAEModificationMasseService;
 import fr.urssaf.image.sae.services.batch.restore.SAERestoreMasseService;
 import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
 
@@ -40,5 +41,13 @@ public final class ServiceMockManager {
    public static SAERestoreMasseService createSAERestoreMasseService() {
       return EasyMock.createMock(SAERestoreMasseService.class);
    }
-
+   
+   /**
+    * 
+    * @return instance de {@link SAERestoreMasseService}
+    */
+   public static SAEModificationMasseService createSAEModificationMasseService() {
+      return EasyMock.createMock(SAEModificationMasseService.class);
+   }
+   
 }

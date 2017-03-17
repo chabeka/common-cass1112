@@ -9,6 +9,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -32,7 +33,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
@@ -123,7 +124,9 @@ public class NfsResultatsFileEchecSupportTest {
       erreur.setListRefIndex(refIndex);
 
       try {
-         support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21);
+         support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21, 0,
+               Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
 
          Assert.fail("une exception doit être levée");
       } catch (Exception exception) {
@@ -175,7 +178,9 @@ public class NfsResultatsFileEchecSupportTest {
       erreur.setListRefIndex(refIndex);
 
       try {
-         support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3);
+         support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3,
+               0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
          Assert.fail("une exception doit être levée");
       } catch (Exception exception) {
 

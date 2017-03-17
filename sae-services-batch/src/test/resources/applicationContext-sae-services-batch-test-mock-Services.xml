@@ -19,5 +19,10 @@
       class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
       factory-method="createSAERestoreMasseService">
    </bean>
+   
+   <bean id="modificationMasseService"
+      class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
+      factory-method="createSAEModificationMasseService">
+   </bean>
 
 </beans>

@@ -4,11 +4,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,6 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
-import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraceOrdoSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementMasseSupport;
 import fr.urssaf.image.sae.ordonnanceur.util.ListeUtils;
@@ -33,8 +29,6 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 public class DecisionServiceImpl implements DecisionService {
 
    private final TraitementMasseSupport traitementMasseSupport;
-
-   private final DFCESupport dfceSuppport;
 
    private final JobFailureService jobFailureService;
 
@@ -71,11 +65,10 @@ public class DecisionServiceImpl implements DecisionService {
     */
    @Autowired
    public DecisionServiceImpl(TraitementMasseSupport traitementMasseSupport,
-         DFCESupport dfceSuppport, JobFailureService jobFailureService,
+         JobFailureService jobFailureService,
          TraceOrdoSupport traceOrdoSupport) {
 
       this.traitementMasseSupport = traitementMasseSupport;
-      this.dfceSuppport = dfceSuppport;
       this.jobFailureService = jobFailureService;
       this.traceOrdoSupport = traceOrdoSupport;
    }
@@ -84,10 +77,11 @@ public class DecisionServiceImpl implements DecisionService {
     * {@inheritDoc}
     */
    @Override
-   public final JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
+   public List<JobQueue> trouverListeJobALancer(List<JobQueue> jobsEnAttente,
          List<JobRequest> jobsEnCours) throws AucunJobALancerException {
 
-       // vérification que des traitements de masse sont à lancer
+
+      // vérification que des traitements de masse sont à lancer
       if (CollectionUtils.isEmpty(jobsEnAttente)) {
          throw new AucunJobALancerException();
       }
@@ -125,57 +119,24 @@ public class DecisionServiceImpl implements DecisionService {
          throw new AucunJobALancerException();
       }
 
-      // vérification que le serveur DFCE est Up!
-      if (!dfceSuppport.isDfceUp()) {
-         LOG.debug("{} - DFCE n'est pas accessible avec la configuration",
-               PREFIX_LOG);
-         throw new AucunJobALancerException();
-      }
-
-      // Si on arrive jusque là, on sélectionne le job à lancer,
-      // c'est à dire le plus ancien dans la pile
-      JobQueue jobAlancer = jobInstances.get(0);
-
-      // Si le job à lancer est une capture de masse, on
-      // vérifie que l'ECDE est accessible
-      controleDispoEcdeCaptureMasse(jobAlancer);
 
       // renvoie du job à lancer
-      return jobAlancer;
+      return jobInstances;
 
    }
 
    private List<JobQueue> filtrerTraitementMasseFailure(
          Collection<JobQueue> jobRequests) {
 
-      final Set<UUID> jobsFailure = jobFailureService.findJobEchec();
-
-      @SuppressWarnings("unchecked")
-      List<JobQueue> jobMasse = (List<JobQueue>) CollectionUtils.select(
-            jobRequests, new Predicate() {
-
-               @Override
-               public boolean evaluate(Object object) {
-
-                  JobQueue jobRequest = (JobQueue) object;
-
-                  // on filtre les traitements ayant trop d'échec
-                  boolean isJobFailure = !jobsFailure.contains(jobRequest
-                        .getIdJob());
-
-                  return isJobFailure;
-               }
-
-            });
-
-      return jobMasse;
+      return traitementMasseSupport.filtrerTraitementMasseFailure(
+            jobFailureService.findJobEchec(), jobRequests);
    }
 
-   private void controleDispoEcdeCaptureMasse(JobQueue jobAlancer)
+   @Override
+   public void controleDispoEcdeTraitementMasse(JobQueue jobAlancer)
          throws AucunJobALancerException {
 
-      if ((traitementMasseSupport.isCaptureMasse(jobAlancer))
-            && (!traitementMasseSupport.isEcdeUpJobCaptureMasse(jobAlancer))) {
+      if (!traitementMasseSupport.isEcdeUpJobTraitementMasse(jobAlancer)) {
 
          URI urlEcde = traitementMasseSupport.extractUrlEcde(jobAlancer);
 

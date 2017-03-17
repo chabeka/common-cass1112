@@ -326,7 +326,7 @@
       <wsdl:part name="output" element="sae:documentExistantResponse" />
    </wsdl:message>
 
-<wsdl:message name="consultationGNTGNSRequestMessage">
+   <wsdl:message name="consultationGNTGNSRequestMessage">
       <wsdl:documentation>Message contenant la demande de
          consultation GNT vers GNS de documents
       </wsdl:documentation>
@@ -339,6 +339,36 @@
       <wsdl:part name="output" element="sae:consultationGNTGNSResponse" />
    </wsdl:message>
 
+   <wsdl:message name="modificationMasseRequestMessage">
+      <wsdl:documentation>Message de demande pour modification en masse
+      de documents
+      </wsdl:documentation>
+      <wsdl:part name="input" element="sae:modificationMasse" />
+   </wsdl:message>
+   <wsdl:message name="modificationMasseResponseMessage">
+      <wsdl:documentation>Message de réponse à une demande
+      de modification en masse de document
+      </wsdl:documentation>
+      <wsdl:part name="output" element="sae:modificationMasseResponse" />
+   </wsdl:message>
+   <wsdl:message name="transfertMasseResponseMessage">
+<wsdl:documentation>Message de réponse à une demande
+         de transfert
+         de
+         documents multiples avec le hash du
+         sommaire.xml
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:transfertMasseResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="transfertMasseRequestMessage">
+<wsdl:documentation>Message de demande pour transférer des
+         documents
+         multiples avec le hash du sommaire.xml
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:transfertMasse">
+    </wsdl:part>
+  </wsdl:message>
    <wsdl:portType name="SaeServicePortType">
       <wsdl:operation name="Ping" parameterOrder="input">
          <wsdl:documentation>Opération de test de la disponibilité
@@ -554,7 +584,23 @@
          <wsdl:input message="tns:consultationGNTGNSRequestMessage" />
          <wsdl:output message="tns:consultationGNTGNSResponseMessage" />
       </wsdl:operation>
-
+      
+      <wsdl:operation name="modificationMasse" parameterOrder="input">
+         <wsdl:documentation>Opération de modification de masse de 
+         documents
+         </wsdl:documentation>
+         <wsdl:input message="tns:modificationMasseRequestMessage" />
+         <wsdl:output message="tns:modificationMasseResponseMessage" />
+      </wsdl:operation>
+      <wsdl:operation name="transfertMasse" parameterOrder="input">
+<wsdl:documentation>Opération de transfert de documents
+            multiples avec un hash pour le sommaire.xml
+         </wsdl:documentation>
+      <wsdl:input message="tns:transfertMasseRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:transfertMasseResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
    </wsdl:portType>
    <wsdl:binding name="SaeServiceSoapBinding" type="sae:SaeServicePortType">
       <soap:binding style="document"
@@ -865,7 +911,32 @@
             <soap:body use="literal" />
          </wsdl:output>
       </wsdl:operation>
-
+      
+      <wsdl:operation name="modificationMasse">
+         <wsdl:documentation>Service de modification en masse de
+            documents
+         </wsdl:documentation>
+         <soap:operation soapAction="modificationMasse" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation>
+      
+    <wsdl:operation name="transfertMasse">
+         <wsdl:documentation>Service de transfert de documents
+            multiples
+         </wsdl:documentation>
+         <soap:operation soapAction="transfertMasse" />
+         <wsdl:input>
+            <soap:body use="literal" />
+         </wsdl:input>
+         <wsdl:output>
+            <soap:body use="literal" />
+         </wsdl:output>
+      </wsdl:operation> 
    </wsdl:binding>
    <wsdl:service name="SaeService">
       <wsdl:port name="SaeServicePort" binding="tns:SaeServiceSoapBinding">

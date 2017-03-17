@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+   <!--
+   Sous-ensemble du fichier principal de l'artéfact.
+   
+   Il contient la définition des beans pour le job Spring Batch de capture de masse. 
+   -->
+
+
+   <bean id="Jaxb2UnMarshmaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+      <property name="schemas">
+         <array>
+            <value>classpath:xsd_som_res/document.xsd</value>
+         </array>
+      </property>
+      <property name="contextPath"
+         value="fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat" />
+   </bean>
+
+   <bean id="modificationMasseFactory"
+      class="fr.urssaf.image.sae.services.batch.modification.factory.ModificationMasseFactory" />
+
+   <bean id="sommaireReader" scope="step"
+      class="org.springframework.batch.item.xml.StaxEventItemReader"
+      factory-bean="modificationMasseFactory" factory-method="getSommaireReader">
+      <constructor-arg value="#{jobParameters['modification.masse.sommaire']}" />
+   </bean>
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="compositeControlProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertMetaDocumentModificationProcessor" />
+            <ref bean="controleMetaDocumentModificationProcessor" />
+         </list>
+      </property>
+   </bean>
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="compositeProcessorModification">
+      <property name="delegates">
+         <list>
+            <ref bean="convertMetaDocumentModificationProcessor" />
+            <ref bean="controleModificationDocumentProcessor" />
+         </list>
+      </property>
+   </bean>
+   
+</beans>

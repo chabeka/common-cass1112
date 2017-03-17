@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
+import fr.urssaf.image.sae.ordonnanceur.support.TraitementMasseSupport;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 
@@ -32,6 +33,19 @@ public class ServiceMockFactory {
 
       return service;
    }
+
+   /**
+    * 
+    * @return instance de {@link TraitementMasseSupport}
+    */
+   public final TraitementMasseSupport createTraitementMasseSupport() {
+
+      TraitementMasseSupport support = EasyMock
+            .createMock(TraitementMasseSupport.class);
+
+      return support;
+   }
+
 
    /**
     * 
