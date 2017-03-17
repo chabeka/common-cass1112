@@ -84,6 +84,7 @@ public class InsertionDonnees {
    }
 
    public void addActionUnitaireTraitementMasse2() {
+      LOG.info("Mise à jour des actions unitaires");
       ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "DroitActionUnitaire", StringSerializer.get(),
             StringSerializer.get());
