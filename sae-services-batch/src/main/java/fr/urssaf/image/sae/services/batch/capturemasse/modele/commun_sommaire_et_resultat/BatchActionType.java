@@ -13,32 +13,32 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for batchModeType.
+ * <p>Java class for batchActionType.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
- * &lt;simpleType name="batchModeType">
+ * &lt;simpleType name="batchActionType">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *     &lt;enumeration value="TOUT_OU_RIEN"/>
- *     &lt;enumeration value="PARTIEL"/>
+ *     &lt;enumeration value="TRANSFERT"/>
+ *     &lt;enumeration value="SUPPRESSION"/>
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
  * 
  */
-@XmlType(name = "batchModeType")
+@XmlType(name = "batchActionType")
 @XmlEnum
-public enum BatchModeType {
+public enum BatchActionType {
 
-    TOUT_OU_RIEN,
-    PARTIEL;
+    TRANSFERT,
+    SUPPRESSION;
 
     public String value() {
         return name();
     }
 
-    public static BatchModeType fromValue(String v) {
+    public static BatchActionType fromValue(String v) {
         return valueOf(v);
     }
 

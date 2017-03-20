@@ -15,19 +15,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Définition d'un document non archivé
+ * Définition d'un document à archiver
  * 
- * <p>Java class for nonIntegratedDocumentType complex type.
+ * <p>Java class for documentTypeMultiAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="nonIntegratedDocumentType">
+ * &lt;complexType name="documentTypeMultiAction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}fichierType"/>
- *         &lt;element name="erreurs" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeErreurType"/>
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
+ *         &lt;element name="typeAction" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}batchActionType"/>
  *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *       &lt;/sequence>
@@ -39,18 +40,21 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "nonIntegratedDocumentType", propOrder = {
+@XmlType(name = "documentTypeMultiAction", propOrder = {
     "objetNumerique",
-    "erreurs",
+    "metadonnees",
+    "typeAction",
     "numeroPageDebut",
     "nombreDePages"
 })
-public class NonIntegratedDocumentType {
+public class DocumentTypeMultiAction {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
     @XmlElement(required = true)
-    protected ListeErreurType erreurs;
+    protected ListeMetadonneeType metadonnees;
+    @XmlElement(required = true)
+    protected BatchActionType typeAction;
     protected Integer numeroPageDebut;
     protected Integer nombreDePages;
 
@@ -79,27 +83,51 @@ public class NonIntegratedDocumentType {
     }
 
     /**
-     * Gets the value of the erreurs property.
+     * Gets the value of the metadonnees property.
      * 
      * @return
      *     possible object is
-     *     {@link ListeErreurType }
+     *     {@link ListeMetadonneeType }
      *     
      */
-    public ListeErreurType getErreurs() {
-        return erreurs;
+    public ListeMetadonneeType getMetadonnees() {
+        return metadonnees;
     }
 
     /**
-     * Sets the value of the erreurs property.
+     * Sets the value of the metadonnees property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ListeErreurType }
+     *     {@link ListeMetadonneeType }
      *     
      */
-    public void setErreurs(ListeErreurType value) {
-        this.erreurs = value;
+    public void setMetadonnees(ListeMetadonneeType value) {
+        this.metadonnees = value;
+    }
+
+    /**
+     * Gets the value of the typeAction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BatchActionType }
+     *     
+     */
+    public BatchActionType getTypeAction() {
+        return typeAction;
+    }
+
+    /**
+     * Sets the value of the typeAction property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BatchActionType }
+     *     
+     */
+    public void setTypeAction(BatchActionType value) {
+        this.typeAction = value;
     }
 
     /**

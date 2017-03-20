@@ -16,18 +16,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste de documents non archivés
+ * Une liste de documents
  * 
- * <p>Java class for listeNonIntegratedVirtualDocumentsType complex type.
+ * <p>Java class for listeDocumentsTypeMultiAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="listeNonIntegratedVirtualDocumentsType">
+ * &lt;complexType name="listeDocumentsTypeMultiAction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="nonIntegratedVirtualDocument" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}nonIntegratedVirtualDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="document" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}documentTypeMultiAction" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,40 +37,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "listeNonIntegratedVirtualDocumentsType", propOrder = {
-    "nonIntegratedVirtualDocument"
+@XmlType(name = "listeDocumentsTypeMultiAction", propOrder = {
+    "document"
 })
-public class ListeNonIntegratedVirtualDocumentsType {
+public class ListeDocumentsTypeMultiAction {
 
-    protected List<NonIntegratedVirtualDocumentType> nonIntegratedVirtualDocument;
+    protected List<DocumentTypeMultiAction> document;
 
     /**
-     * Gets the value of the nonIntegratedVirtualDocument property.
+     * Gets the value of the document property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the nonIntegratedVirtualDocument property.
+     * This is why there is not a <CODE>set</CODE> method for the document property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getNonIntegratedVirtualDocument().add(newItem);
+     *    getDocument().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link NonIntegratedVirtualDocumentType }
+     * {@link DocumentTypeMultiAction }
      * 
      * 
      */
-    public List<NonIntegratedVirtualDocumentType> getNonIntegratedVirtualDocument() {
-        if (nonIntegratedVirtualDocument == null) {
-            nonIntegratedVirtualDocument = new ArrayList<NonIntegratedVirtualDocumentType>();
+    public List<DocumentTypeMultiAction> getDocument() {
+        if (document == null) {
+            document = new ArrayList<DocumentTypeMultiAction>();
         }
-        return this.nonIntegratedVirtualDocument;
+        return this.document;
     }
 
 }
