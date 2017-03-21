@@ -1302,23 +1302,20 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    /**
     * {@inheritDoc}
     * 
-    * @throws CaptureAxisFault
+    * @throws TransfertAxisFault
     * @throws SaeAccessDeniedAxisFault
     */
    @Override
    public final TransfertMasseResponse transfertMasseSecure(
          TransfertMasse request, String callerIP)
-         throws TransfertAxisFault, SaeAccessDeniedAxisFault {
+               throws TransfertAxisFault, SaeAccessDeniedAxisFault {
       try {
-
-         // Traces debug - entrée méthode
          String prefixeTrc = "Opération transfertMasseSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          TransfertMasseResponse response = transfertMasse.transfertEnMasse(request, callerIP);
          // Traces debug - sortie méthode
          LOG.debug("{} - Sortie", prefixeTrc);
          return response;
-
       } catch (TransfertAxisFault ex) {
          logSoapFault(ex);
          throw ex;
