@@ -75,6 +75,8 @@ import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
+import fr.cirtil.www.saeservice.TransfertMasse;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -135,6 +137,7 @@ import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSRestoreMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
+import fr.urssaf.image.sae.webservices.service.WSTransfertMasseService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
@@ -207,6 +210,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    WSDocumentExistantService documentExistantService;
+   
+   @Autowired
+   private WSTransfertMasseService transfertMasse;
 
    @Autowired
    private WSModificationMasseService modificationMasse;
@@ -1257,7 +1263,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       }
    }
-
+   
    @Override
    public ModificationMasseResponse modificationMasseSecure(
          ModificationMasse request, String callerIP) throws AxisFault {
@@ -1292,4 +1298,39 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
                ex);
       }
    }
+   
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws CaptureAxisFault
+    * @throws SaeAccessDeniedAxisFault
+    */
+   @Override
+   public final TransfertMasseResponse transfertMasseSecure(
+         TransfertMasse request, String callerIP)
+         throws TransfertAxisFault, SaeAccessDeniedAxisFault {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération transfertMasseSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         TransfertMasseResponse response = transfertMasse.transfertEnMasse(request, callerIP);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         return response;
+
+      } catch (TransfertAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new TransfertAxisFault(
+               "ErreurInterneTransfert",
+               "Une erreur interne à l'application est survenue lors de transfert en masse.",
+               ex);
+      }
+   }
+   
 }

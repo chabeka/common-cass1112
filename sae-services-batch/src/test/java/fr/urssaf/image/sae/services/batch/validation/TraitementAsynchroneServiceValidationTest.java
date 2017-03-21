@@ -11,9 +11,11 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
@@ -34,6 +36,9 @@ public class TraitementAsynchroneServiceValidationTest {
    private static final String EXCEPTION_MESSAGE = "Le message de l'exception est inattendu";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
+   
+   @Autowired
+   private EcdeServices ecdeServices;
 
    @Before
    public void before() {
@@ -67,10 +72,15 @@ public class TraitementAsynchroneServiceValidationTest {
          }
 
          @Override
-         public void ajouterJobModificationMasse(
-               TraitemetMasseParametres parametres) {
+         public void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) {
+            // Aucune implémentation
+         }
+
+         @Override
+         public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
             
          }
+
       };
    }
 
@@ -258,9 +268,55 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "listeUuid"), e.getMessage());
       }
    }
+   
+   @Test
+   public void ajouterJobTransfertMasse_success() {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.transfert_masse, null, null,
+            null, null);
+      service.ajouterJobTransfertMasse(parametres);
+   }
+   
+   @Test
+   public void ajouterJobTransfertMasse_failure_empty_urlEcde() {
+      assertAjouterJobTransfertMasse_urlEcde(null);
+      assertAjouterJobTransfertMasse_urlEcde("");
+      assertAjouterJobTransfertMasse_urlEcde(" ");
+   }
+
+   @Test
+   public void ajouterJobTransfertMasse_failure_empty_uuid() {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, null, TYPES_JOB.transfert_masse, null, null, null, null);
+      try {
+         service.ajouterJobTransfertMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      }
+   }
+
+   @Test
+   public void ajouterJobTransfertMasse_failure_empty_type() {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, null, null, null, null, null);
+      try {
+         service.ajouterJobTransfertMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      }
+   }
 
    private void assertAjouterJobRestoreMasse_idTraitement(String idTraitement) {
-
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
@@ -276,7 +332,6 @@ public class TraitementAsynchroneServiceValidationTest {
    }
 
    private void assertAjouterJobCaptureMasse_urlEcde(String urlECDE) {
-
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, urlECDE);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
@@ -292,7 +347,6 @@ public class TraitementAsynchroneServiceValidationTest {
    }
 
    private void assertAjouterJobSuppressionMasse_requete(String requete) {
-
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, requete);
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
@@ -304,6 +358,21 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "requete"), e.getMessage());
+      }
+   }   
+     
+   private void assertAjouterJobTransfertMasse_urlEcde(String urlECDE) {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, urlECDE);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.transfert_masse, null, null,
+            null, null);
+      try {
+         service.ajouterJobTransfertMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
       }
    }
 

@@ -283,7 +283,7 @@ public final class Constantes {
     * Types de traitements
     */
    public static enum TYPES_JOB {
-      capture_masse, suppression_masse, restore_masse, modification_masse;
+      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse;
    }
 
    /**

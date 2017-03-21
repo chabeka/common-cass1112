@@ -232,6 +232,15 @@ public class TraitementAsynchroneServiceImpl implements
     * <br>
     */
    @Override
+   public void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);
+   }
+   
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    */
+   @Override
    public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
       ajouterJob(parametres); 
    }

@@ -89,6 +89,7 @@ public class InsertionDonnees {
             keyspace, "DroitActionUnitaire", StringSerializer.get(),
             StringSerializer.get());
       addActionUnitaire("modification_masse", "modification en masse", cfTmpl);
+      addActionUnitaire("transfert_masse", "transfert de masse", cfTmpl);
 
    }
 
@@ -1007,6 +1008,18 @@ public class InsertionDonnees {
       // MODIFICATION_MASSE|KO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("MODIFICATION_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // WS_TRANSFERT_MASSE|KO      
+      updater = cfTmpl.createUpdater("WS_TRANSFERT_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // TRANSFERT_MASSE|KO     
+      updater = cfTmpl.createUpdater("TRANSFERT_MASSE|KO");
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);

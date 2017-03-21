@@ -10,6 +10,8 @@ import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.RestoreMasseResponseType;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponseType;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
+import fr.cirtil.www.saeservice.TransfertMasseResponseType;
 
 /**
  * Classe d'instanciation des réponses pour l'implémentation
@@ -106,7 +108,7 @@ public final class ObjectStorageResponseFactory {
       response.setRestoreMasseResponse(responseType);
       return response;
    }
-
+   
    /**
     * instanciation de {@link ModificationMasseResponse}.<br>
     * implémentation de {@link ModificationMasseResponseType}
@@ -128,4 +130,26 @@ public final class ObjectStorageResponseFactory {
       modification.setModificationMasseResponse(modificationType);
       return modification;
    }
+   
+   /**
+    * instanciation de {@link TransfertMasseResponse}.<br>
+    * implémentation de {@link TransfertMasseResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="transfertMasseResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link TransfertMasseResponse}
+    */
+   public static TransfertMasseResponse createTransfertMasseResponse(String uuid) {
+
+      TransfertMasseResponse response = new TransfertMasseResponse();
+      TransfertMasseResponseType responseType = new TransfertMasseResponseType();
+      responseType.setUuid(uuid);
+      response.setTransfertMasseResponse(responseType);
+      return response;
+   }
+   
 }

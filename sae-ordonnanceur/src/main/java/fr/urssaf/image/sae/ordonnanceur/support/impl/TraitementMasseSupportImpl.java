@@ -47,6 +47,11 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
     * Nom du job d'un traitement de modification en masse
     */
    public static final String MODIFICATION_MASSE_JN = "modification_masse";
+   
+   /**
+    * Nom du job d'un traitement de transfert en masse
+    */
+   public static final String TRANSFERT_MASSE_JN = "transfert_masse";
 
    private final EcdeSupport ecdeSupport;
 
@@ -91,11 +96,13 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
                   boolean isRestoreMasse = isRestoreMasse(jobRequest);
 
                   boolean isModificationMasse = isModificationMasse(jobRequest);
+                  
+                  boolean isTransfertMasse = isTransfertMasse(jobRequest);
 
                   boolean isLocal = isLocal(jobRequest);
 
                   return isRestoreMasse || isSuppressionMasse
-                        || (isCaptureMasse && isLocal) || isModificationMasse;
+                        || (isCaptureMasse && isLocal) || isModificationMasse || isTransfertMasse;
                }
 
             });
@@ -125,8 +132,10 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
                   boolean isRestoreMasse = isRestoreMasseJobRequest(jobRequest);
                   
                   boolean isModificationMasse = isModificationMasseJobRequest(jobRequest);
+                  
+                  boolean isTransfertMasse = isTransfertMasseJobRequest(jobRequest);
 
-                  return isCaptureMasse || isSuppressionMasse || isRestoreMasse || isModificationMasse;
+                  return isCaptureMasse || isSuppressionMasse || isRestoreMasse || isModificationMasse || isTransfertMasse;
                }
 
             });
@@ -223,6 +232,28 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
             .getType());
 
       return isCaptureMasse;
+   }
+   
+   /**
+    * Indique si le job passé en paramètre est un job de type "transfert de masse"
+    * 
+    * @param jobRequest
+    *           le job
+    * @return true si le job est un transfert de masse, false dans le cas
+    *         contraire
+    */
+   public final boolean isTransfertMasse(JobQueue jobRequest) {
+
+      boolean isTransfertMasse = TRANSFERT_MASSE_JN.equals(jobRequest.getType());
+
+      return isTransfertMasse;
+   }
+   
+   private boolean isTransfertMasseJobRequest(JobRequest jobRequest) {
+
+      boolean isTransfertMasse = TRANSFERT_MASSE_JN.equals(jobRequest.getType());
+
+      return isTransfertMasse;
    }
 
    private boolean isLocal(JobQueue jobQueue) {

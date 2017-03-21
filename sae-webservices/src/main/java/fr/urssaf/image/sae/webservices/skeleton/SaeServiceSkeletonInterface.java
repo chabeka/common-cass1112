@@ -55,6 +55,8 @@ import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
+import fr.cirtil.www.saeservice.TransfertMasse;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -389,4 +391,20 @@ public interface SaeServiceSkeletonInterface {
          throws  DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
    
    ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, AxisFault, SAEConsultationAffichableParametrageException, RemoteException;
+
+   /**
+    * endpoint de transfert de masse
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   TransfertMasseResponse transfertMasseSecure(
+         TransfertMasse request, String callerIP) throws AxisFault;
+
+
 }
