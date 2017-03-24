@@ -291,6 +291,7 @@ public class HomeController implements ApplicationContextAware, InitializingBean
 	 * (even though technically it would respond to POST as well).
 	 * 
 	 * @param request the current servlet request (used to extract a page
+	 * @param model a completer
 	 * attribute "sevletPath")
 	 * 
 	 * @return a map of URI pattern to request methods accepted

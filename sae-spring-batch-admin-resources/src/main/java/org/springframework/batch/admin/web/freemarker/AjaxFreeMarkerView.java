@@ -32,7 +32,7 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerView;
  * Javascript Ajax requests.
  * 
  * <p>
- * This implementation uses the {@link SpringJavascriptAjaxHandler} by default
+ * This implementation uses the LINK by default
  * to determine whether the current request is an Ajax request. On an Ajax
  * request, a "fragments" parameter will be extracted from the request in order
  * to determine which attributes to render from the current view.
