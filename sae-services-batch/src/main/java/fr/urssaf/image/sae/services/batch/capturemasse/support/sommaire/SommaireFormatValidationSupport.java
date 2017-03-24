@@ -77,4 +77,8 @@ public interface SommaireFormatValidationSupport {
    void validerUniciteUuid(File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException;
 
+   void validationDocumentTypeMultiActionSommaire(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException;
+
+
 }

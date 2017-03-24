@@ -114,7 +114,6 @@ public class SommaireFormatValidationSupportImpl implements
                   + mode));
          }
 
-
       } catch (FileNotFoundException e) {
          throw new CaptureMasseRuntimeException(e);
 
@@ -262,7 +261,8 @@ public class SommaireFormatValidationSupportImpl implements
 
    @Override
    public void validationDocumentBaliseRequisSommaire(File sommaireFile,
-         String baliseRequired) throws CaptureMasseSommaireFormatValidationException {
+         String baliseRequired)
+         throws CaptureMasseSommaireFormatValidationException {
 
       FileInputStream sommaireStream = null;
       XMLEventReader reader = null;
@@ -286,15 +286,17 @@ public class SommaireFormatValidationSupportImpl implements
                   event = reader.nextEvent();
 
                   if (event.isStartElement()
-                        && event.asStartElement().getName()
-                        .getLocalPart().equals(baliseRequired)) {
+                        && event.asStartElement().getName().getLocalPart()
+                              .equals(baliseRequired)) {
                      event = reader.nextEvent();
                      valeurBalise = event.asCharacters().getData();
 
-                     if (valeurBalise.isEmpty()) { 
+                     if (valeurBalise.isEmpty()) {
                         throw new CaptureMasseSommaireFormatValidationException(
-                           "La balise " + baliseRequired+" 'est vide",
-                        new Exception("La balise " + baliseRequired + " est obligatoire"));}
+                              "La balise " + baliseRequired + " 'est vide",
+                              new Exception("La balise " + baliseRequired
+                                    + " est obligatoire"));
+                     }
                   }
                }
             }
@@ -326,8 +328,7 @@ public class SommaireFormatValidationSupportImpl implements
             }
          }
       }
-   
-      
+
    }
 
    @Override
@@ -356,8 +357,8 @@ public class SommaireFormatValidationSupportImpl implements
                   event = reader.nextEvent();
 
                   if (event.isStartElement()
-                        && "UUID".equalsIgnoreCase(event.asStartElement().getName()
-                              .getLocalPart())) {
+                        && "UUID".equalsIgnoreCase(event.asStartElement()
+                              .getName().getLocalPart())) {
                      event = reader.nextEvent();
                      uuid = event.asCharacters().getData();
 
@@ -365,10 +366,8 @@ public class SommaireFormatValidationSupportImpl implements
                         // UUID déjà présent, on renvoie une exception
                         throw new CaptureMasseSommaireFormatValidationException(
                               "UUID du document " + uuid
-                                    + " présent plusieurs fois",
-                              new Exception(
-                                    "UUID présent plusieurs fois : "
-                                          + uuid));
+                                    + " présent plusieurs fois", new Exception(
+                                    "UUID présent plusieurs fois : " + uuid));
 
                      } else {
                         // UUID inconnu, on l'ajoute à la liste
@@ -407,5 +406,61 @@ public class SommaireFormatValidationSupportImpl implements
          }
       }
    }
-   
+
+   @Override
+   public void validationDocumentTypeMultiActionSommaire(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException {
+
+      FileInputStream sommaireStream = null;
+      XMLEventReader reader = null;
+
+      try {
+         sommaireStream = new FileInputStream(sommaireFile);
+         reader = openSommaire(sommaireStream);
+         String baliseRequired = "documentsMultiAction";
+         boolean isPresent = false;
+         XMLEvent event;
+
+         while (reader.hasNext()) {
+            // On parcourt le sommaire pour tomber sur un document
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && "documentsMultiAction".equals(event.asStartElement()
+                        .getName().getLocalPart())) {
+               isPresent = true;
+            }
+         }
+         if (!isPresent)
+            throw new CaptureMasseSommaireFormatValidationException(
+                  "La balise " + baliseRequired + " 'est vide", new Exception(
+                        "La balise " + baliseRequired + " est obligatoire"));
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
+         if (sommaireStream != null) {
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+      }
+
+   }
+
 }

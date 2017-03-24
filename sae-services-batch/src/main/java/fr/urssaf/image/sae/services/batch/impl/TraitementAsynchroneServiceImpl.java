@@ -67,6 +67,10 @@ public class TraitementAsynchroneServiceImpl implements
    @Qualifier("modificationMasseTraitement")
    private TraitementExecutionSupport modificationMasse;
    
+   @Autowired
+   @Qualifier("transfertMasseTraitement")
+   private TraitementExecutionSupport transfertMasse;
+   
 
    /**
     * 
@@ -170,6 +174,8 @@ public class TraitementAsynchroneServiceImpl implements
             exitTraitement = restoreMasse.execute(job);
          else if (job.getType().equals(TYPES_JOB.modification_masse.name()))
             exitTraitement = modificationMasse.execute(job);
+         else if (job.getType().equals(TYPES_JOB.transfert_masse.name()))
+            exitTraitement = transfertMasse.execute(job);
          else {
             LOG.warn(
                   "Impossible d'executer le traitement ID={0}, de type {1}.",
@@ -244,7 +250,7 @@ public class TraitementAsynchroneServiceImpl implements
    public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
       ajouterJob(parametres); 
    }
-
+   
    /**
     * {@inheritDoc}<br>
     * <br>

@@ -7,6 +7,7 @@
    <xsd:include schemaLocation="commun_sommaire_et_resultat.xsd" />
 
    <xsd:element name="document" type="somres:documentType" />
+   <xsd:element name="documentMultiAction" type="somres:documentTypeMultiAction" />
    <xsd:element name="objetNumerique" type="somres:fichierType" />
    <xsd:element name="composant" type="somres:composantDocumentVirtuelType" />
 

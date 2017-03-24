@@ -30,6 +30,17 @@ public class StorageDocument extends AbstractStorageDocument {
    private String title;
    private String processId;
    private String fileName;
+   private String batchTypeAction;
+   
+   
+
+   public String getBatchTypeAction() {
+      return batchTypeAction;
+   }
+
+   public void setBatchTypeAction(String batchTypeAction) {
+      this.batchTypeAction = batchTypeAction;
+   }
 
    /**
     * @return L'identifiant du traitement.

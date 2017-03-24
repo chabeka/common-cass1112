@@ -45,7 +45,7 @@ public class ConvertMetaDocumentModificationProcessor implements
             + "le document vers un objet métier UntypedDocument", PREFIXE_TRC);
 
       final UntypedDocument untypedDoc = new UntypedDocument();
-
+      
       final List<MetadonneeType> metaDataType = item.getValue()
             .getMetadonnees().getMetadonnee();
       final List<UntypedMetadata> listUM = new ArrayList<UntypedMetadata>();

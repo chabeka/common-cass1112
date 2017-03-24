@@ -40,6 +40,7 @@ public class DecisionServiceTest {
    private static final String SUPPRESSION_MASSE_JN = "suppression_masse";
    private static final String RESTORE_MASSE_JN = "restore_masse";
    private static final String MODIFICATION_MASSE_JN = "modification_masse";
+   private static final String TRANSFERT_MASSE_JN = "transfert_masse";
 
    private static final String CER44_SOMMAIRE = "ecde://ecde.cer44.recouv/CS/20130916/02/sommaire.xml";
 
@@ -109,6 +110,12 @@ public class DecisionServiceTest {
             .getUrlEcde().toString());
       JobQueue job7 = createJob(MODIFICATION_MASSE_JN, ecdeTestSommaire
             .getUrlEcde().toString());
+      JobQueue job8 = createJob(TRANSFERT_MASSE_JN, CER44_SOMMAIRE);
+      JobQueue job9 = createJob(TRANSFERT_MASSE_JN, ecdeTestSommaire
+            .getUrlEcde().toString());
+      JobQueue job10 = createJob(TRANSFERT_MASSE_JN, ecdeTestSommaire
+            .getUrlEcde().toString());
+
 
       // ajout de deux échecs pour le job 2
       jobFailureService.ajouterEchec(job2.getIdJob(), new NestableException(
@@ -124,6 +131,15 @@ public class DecisionServiceTest {
             "echec n°3"));
       jobFailureService.ajouterEchec(job7.getIdJob(), new NestableException(
             "echec n°4"));
+      
+      jobFailureService.ajouterEchec(job10.getIdJob(), new NestableException(
+            "echec n°1"));
+      jobFailureService.ajouterEchec(job10.getIdJob(), new NestableException(
+            "echec n°2"));
+      jobFailureService.ajouterEchec(job10.getIdJob(), new NestableException(
+            "echec n°3"));
+      jobFailureService.ajouterEchec(job10.getIdJob(), new NestableException(
+            "echec n°4"));
 
       jobsEnAttente.add(job1);
       jobsEnAttente.add(job2);
@@ -132,12 +148,15 @@ public class DecisionServiceTest {
       jobsEnAttente.add(job5);
       jobsEnAttente.add(job6);
       jobsEnAttente.add(job7);
+      jobsEnAttente.add(job8);
+      jobsEnAttente.add(job9);
+      jobsEnAttente.add(job10);
 
       List<JobQueue> jobs = decisionService.trouverListeJobALancer(
             jobsEnAttente, jobsEnCours);
 
       Assert.assertNotNull(jobs);
-      Assert.assertEquals(4, jobs.size());
+      Assert.assertEquals(7, jobs.size());
 
       Assert.assertTrue("le traitement attendu est le job2",
             jobs.contains(job2));
@@ -150,6 +169,10 @@ public class DecisionServiceTest {
 
       Assert.assertTrue("le traitement attendu est le job7",
             jobs.contains(job7));
+      
+      Assert.assertTrue("le traitement attendu est le job9",
+            jobs.contains(job9));
+      
 
    }
 
@@ -204,12 +227,22 @@ public class DecisionServiceTest {
       param7.put(ECDE_URL, ecdeTestSommaire.getUrlEcde().toString());
       JobQueue job7 = createJobWithJobParam(MODIFICATION_MASSE_JN, param7);
       jobsEnAttente.add(job7);
+      
+      Map<String, String> param8 = new HashMap<String, String>();
+      param8.put(AUTRE_PARAM, "code");
+      JobQueue job8 = createJobWithJobParam(TRANSFERT_MASSE_JN, param8);
+      jobsEnAttente.add(job8);
+
+      Map<String, String> param9 = new HashMap<String, String>();
+      param9.put(ECDE_URL, ecdeTestSommaire.getUrlEcde().toString());
+      JobQueue job9 = createJobWithJobParam(TRANSFERT_MASSE_JN, param9);
+      jobsEnAttente.add(job9);
 
       List<JobQueue> jobs = decisionService.trouverListeJobALancer(
             jobsEnAttente, jobsEnCours);
 
       Assert.assertNotNull(jobs);
-      Assert.assertEquals(5, jobs.size());
+      Assert.assertEquals(8, jobs.size());
 
       Assert.assertTrue("le traitement attendu est le job2",
             jobs.contains(job2));
@@ -221,12 +254,16 @@ public class DecisionServiceTest {
             jobs.contains(job5));
       Assert.assertTrue("le traitement attendu est le job7",
             jobs.contains(job7));
+      Assert.assertTrue("le traitement attendu est le job8",
+            jobs.contains(job8));
+      Assert.assertTrue("le traitement attendu est le job9",
+            jobs.contains(job9));
 
       jobsEnAttente.remove(1);
       jobs = decisionService.trouverListeJobALancer(jobsEnAttente, jobsEnCours);
 
       Assert.assertNotNull(jobs);
-      Assert.assertEquals(4, jobs.size());
+      Assert.assertEquals(7, jobs.size());
 
       Assert.assertTrue("le traitement attendu est le job3",
             jobs.contains(job3));
@@ -236,12 +273,16 @@ public class DecisionServiceTest {
             jobs.contains(job5));
       Assert.assertTrue("le traitement attendu est le job7",
             jobs.contains(job7));
+      Assert.assertTrue("le traitement attendu est le job8",
+            jobs.contains(job8));
+      Assert.assertTrue("le traitement attendu est le job9",
+            jobs.contains(job9));
       
       jobsEnAttente.remove(1);
       jobs = decisionService.trouverListeJobALancer(jobsEnAttente, jobsEnCours);
 
       Assert.assertNotNull(jobs);
-      Assert.assertEquals(3, jobs.size());
+      Assert.assertEquals(6, jobs.size());
 
       Assert.assertTrue("le traitement attendu est le job4",
             jobs.contains(job4));
@@ -249,6 +290,10 @@ public class DecisionServiceTest {
             jobs.contains(job5));
       Assert.assertTrue("le traitement attendu est le job7",
             jobs.contains(job7));
+      Assert.assertTrue("le traitement attendu est le job8",
+            jobs.contains(job8));
+      Assert.assertTrue("le traitement attendu est le job9",
+            jobs.contains(job9));
    }
 
    /**

@@ -203,7 +203,7 @@ public class WSTransfertMasseServiceImpl implements WSTransfertMasseService {
       int nombreComposants = 0;
 
       try {
-         nombreDocuments = XmlReadUtils.compterElements(sommaire, "document");
+         nombreDocuments = XmlReadUtils.compterElements(sommaire, "documentMultiAction");
          nombreComposants = XmlReadUtils.compterElements(sommaire, "composant");
 
          if ((nombreDocuments + nombreComposants == 0)

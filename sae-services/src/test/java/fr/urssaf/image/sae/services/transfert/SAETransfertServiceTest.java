@@ -324,7 +324,7 @@ public class SAETransfertServiceTest {
             document = saeTransfertService.updateMetaDocumentForTransfertMasse(
                   document, listeMeta);
 
-            saeTransfertService.transfertDocument(document, idArchive);
+            saeTransfertService.transfertDocument(document);
          } else {
             // -- Le document existe sur la GNS et sur la GNT
             String uuid = idArchive.toString();

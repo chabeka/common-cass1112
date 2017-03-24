@@ -42,6 +42,7 @@ public class TraitementMasseSupportTest {
    private static final String SUPPRESSION_MASSE_JN = "suppression_masse";
    private static final String RESTORE_MASSE_JN = "restore_masse";
    private static final String MODIFICATION_MASSE_JN = "modification_masse";
+   private static final String TRANSFERT_MASSE_JN = "transfert_masse";
    
    private static final String ECDE_URL = "ecdeUrl";
    private static final String REQUETE_SUPPRESSION = "requeteSuppression";
@@ -141,6 +142,20 @@ public class TraitementMasseSupportTest {
       jobParametersModif5.put(ECDE_URL, "ecde://ecde.cer78.recouv/sommaire.xml");
       jobs.add(createJob(MODIFICATION_MASSE_JN, jobParametersModif5));
       
+      // traitement de transfert de masse non local
+      Map<String, String> jobParametersModif6 = new HashMap<String, String>();
+      jobParametersModif6.put(ECDE_URL, "ecde://ecde.cer34.recouv/sommaire.xml");
+      jobs.add(createJob(TRANSFERT_MASSE_JN, jobParametersModif6));
+
+      Map<String, String> jobParametersModif7 = new HashMap<String, String>();
+      jobParametersModif7.put(ECDE_URL, "ecde://ecde.cer34.recouv/sommaire.xml");
+      jobs.add(createJob(TRANSFERT_MASSE_JN, jobParametersModif7));
+
+      // traitement de transfert de masse avec une URL ECDE non configurée
+      Map<String, String> jobParametersModif8 = new HashMap<String, String>();
+      jobParametersModif8.put(ECDE_URL, "ecde://ecde.cer78.recouv/sommaire.xml");
+      jobs.add(createJob(TRANSFERT_MASSE_JN, jobParametersModif8));
+      
       // autre traitement de masse
       Map<String, String> jobParametersAutre = new HashMap<String, String>();
       jobParametersAutre.put(AUTRE_PARAM, "autre");
@@ -148,7 +163,7 @@ public class TraitementMasseSupportTest {
 
       List<JobQueue> traitements = traitementMasseSupport.filtrerTraitementMasse(jobs);
 
-      Assert.assertEquals("le nombre de traitements filtrés est inattendu", 9,
+      Assert.assertEquals("le nombre de traitements filtrés est inattendu", 12,
             traitements.size());
 
       Assert.assertEquals("le traitement de capture est inattendu", jobs.get(0),
@@ -169,14 +184,16 @@ public class TraitementMasseSupportTest {
             jobs.get(10), traitements.get(7));
       Assert.assertEquals("le traitement de modification est inattendu",
             jobs.get(11), traitements.get(8));
+      Assert.assertEquals("le traitement de transfert est inattendu",
+            jobs.get(12), traitements.get(9));
+      Assert.assertEquals("le traitement de transfert est inattendu",
+            jobs.get(13), traitements.get(10));
       Assert.assertFalse("le traitement de capture est inattendu",
             traitements.contains(jobs.get(2)));
       Assert.assertFalse("le traitement de capture est inattendu",
             traitements.contains(jobs.get(3)));
       Assert.assertFalse("le traitement de modification est inattendu",
             traitements.contains(jobs.get(4)));
-      Assert.assertFalse("le traitement de modification est inattendu",
-            traitements.contains(jobs.get(12)));
    }
 
    @Test
@@ -200,10 +217,13 @@ public class TraitementMasseSupportTest {
 
       // traitement de modification en masse
       jobs.add(createJobRequest(MODIFICATION_MASSE_JN));
+      
+      // traitement de transfert de masse
+      jobs.add(createJobRequest(TRANSFERT_MASSE_JN));
 
       List<JobRequest> traitements = traitementMasseSupport.filtrerTraitementMasse(jobs);
 
-      Assert.assertEquals("le nombre de traitements filtrés est inattendu", 5,
+      Assert.assertEquals("le nombre de traitements filtrés est inattendu", 6,
             traitements.size());
 
       Assert.assertEquals("le job de capture en masse est inattendu", jobs
@@ -216,6 +236,8 @@ public class TraitementMasseSupportTest {
             .get(5), traitements.get(3));
       Assert.assertEquals("le job de suppression en masse est inattendu",
             jobs.get(6), traitements.get(4));
+      Assert.assertEquals("le job de transfert de masse est inattendu",
+            jobs.get(7), traitements.get(5));
    }
 
    private JobQueue createJob(String type, Map<String,String> jobParameters) {
@@ -306,6 +328,10 @@ public class TraitementMasseSupportTest {
       Map<String, String> jobParametersJob4 = new HashMap<String, String>();
       jobParametersJob4.put(ECDE_URL, ecdeTestSommaire.getUrlEcde().toString());
       JobQueue job4 = createJob(RESTORE_MASSE_JN, jobParametersJob4);
+      Map<String, String> jobParametersJob5 = new HashMap<String, String>();
+      jobParametersJob5.put(ECDE_URL, ecdeTestSommaire.getUrlEcde().toString());
+      JobQueue job5 = createJob(TRANSFERT_MASSE_JN, jobParametersJob5);
+      
       
       Set<UUID> jobsFailure = new HashSet<UUID>();
 
@@ -313,12 +339,13 @@ public class TraitementMasseSupportTest {
       jobsEnAttente.add(job2);
       jobsEnAttente.add(job3);
       jobsEnAttente.add(job4);
+      jobsEnAttente.add(job5);
 
       List<JobQueue> jobs = traitementMasseSupport
             .filtrerTraitementMasseFailure(jobsFailure, jobsEnAttente);
 
       Assert.assertNotNull(jobs);
-      Assert.assertEquals(4, jobs.size());
+      Assert.assertEquals(5, jobs.size());
 
       // Liste job failure non vide
       jobsFailure.add(job1.getIdJob());
@@ -333,10 +360,14 @@ public class TraitementMasseSupportTest {
 
       Assert.assertTrue("le traitement attendu est le job4",
             jobs.contains(job4));
+      
+      Assert.assertTrue("le traitement attendu est le job5",
+            jobs.contains(job5));
 
       Assert.assertFalse("le job1 non attendu", jobs.contains(job1));
 
       Assert.assertFalse("le job3 non attendu", jobs.contains(job3));
+      
 
    }
 

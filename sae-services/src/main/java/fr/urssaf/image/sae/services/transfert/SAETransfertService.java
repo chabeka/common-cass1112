@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -40,8 +41,7 @@ public interface SAETransfertService {
    void transfertDoc(UUID idArchive) throws TransfertException,
       ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
    
-   @PreAuthorize("hasRole('transfert')")
-   void transfertDocMasse(UUID idArchive, List<StorageMetadata> listeMeta) throws TransfertException,
+   void transfertDocMasse(StorageDocument document) throws TransfertException,
       ArchiveAlreadyTransferedException, ArchiveInexistanteEx, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException;
 
    public void controleDroitTransfert(UUID idArchive)
@@ -51,9 +51,9 @@ public interface SAETransfertService {
    public StorageDocument transfertControlePlateforme(
          StorageDocument document, UUID idArchive)
          throws ArchiveAlreadyTransferedException, SearchingServiceEx,
-         ReferentialException, ArchiveInexistanteEx;
+         ReferentialException, ArchiveInexistanteEx, TransfertException, ConnectionServiceEx;
    
-   public  void transfertDocument(StorageDocument document, UUID idArchive)
+   public  void transfertDocument(StorageDocument document)
          throws TransfertException;
    
    public void deleteDocApresTransfert(UUID idArchive)
@@ -65,5 +65,9 @@ public interface SAETransfertService {
    public StorageDocument updateMetaDocumentForTransfertMasse(
          StorageDocument document, List<StorageMetadata> listeMeta)
          throws ReferentialException, TransfertException;
+   
+   public StorageDocument controleDocumentTransfertMasse(UUID idArchive,
+         List<StorageMetadata> StorageMetas) throws TransfertException,
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
 
 }

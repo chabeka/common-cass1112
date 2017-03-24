@@ -272,6 +272,21 @@ public final class Constantes {
     * Nom balise dans sommaire/résultat pour le batch mode.
     */
    public static final String BATCH_MODE_ELEMENT_NAME = "batchMode";
+   
+   /**
+    * Nombre de docs transférés.
+    */
+   public static final String NB_DOCS_TRANSFERES = "nbDocsTransferes";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'un transfert de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_TM = "TRANSFERT_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la modification de masse
+    */
+   public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
 
    /**
     * Constructeur

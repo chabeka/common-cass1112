@@ -180,6 +180,19 @@
       </xsd:sequence>
    </xsd:complexType>
    
+    <!-- 
+   =======================================
+   Liste de documents multi-services
+   =======================================
+   -->
+   <xsd:complexType name="listeDocumentsTypeMultiAction">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de documents</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="documentMultiAction" type="somres:documentTypeMultiAction" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
    
    <!-- 
    =======================================
@@ -195,19 +208,6 @@
       </xsd:sequence>
    </xsd:complexType>
    
-   <!-- 
-   =======================================
-   Liste de documents multi-services
-   =======================================
-   -->
-   <xsd:complexType name="listeDocumentsTypeMultiAction">
-      <xsd:annotation>
-         <xsd:documentation>Une liste de documents</xsd:documentation>
-      </xsd:annotation>
-      <xsd:sequence>
-         <xsd:element name="document" type="somres:documentTypeMultiAction" minOccurs="0" maxOccurs="unbounded" />
-      </xsd:sequence>
-   </xsd:complexType>
    
    <!-- 
    =======================================
