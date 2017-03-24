@@ -340,6 +340,7 @@
             <version>${maven-javadoc-plugin.version}</version>
             <configuration>
               <quiet>true</quiet>            
+			  <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
          </plugin>
 
