@@ -22,10 +22,10 @@ public interface JobClockSupport {
     * <br>
     * L'horloge actuel est calculé à partir du Keyspace.<br>
     * Si la différence n'est pas trop importante alors c'est à dire inférieure à
-    * {@value JobClockSupportFactory#MAX_TIME_SYNCHRO_WARN} alors on renvoie le nouveau timestamp de
+    * {@value MAX_TIME_SYNCHRO_WARN} alors on renvoie le nouveau timestamp de
     * la mise à jour de la colonne.<br>
     * Si par contre la différence est supérieure à
-    * {@value #MAX_TIME_SYNCHRO_ERROR} alors une exception est levée
+    * {@value MAX_TIME_SYNCHRO_ERROR} alors une exception est levée
     * 
     * @param column
     *           colonne dont on va extraire l'horloge de la dernière mise à jour
