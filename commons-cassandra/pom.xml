@@ -342,7 +342,7 @@
               <quiet>true</quiet>            
 			  <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
-         </plugin-->
+         </plugin>
 
          <!--plugin>
             <groupId>org.codehaus.mojo</groupId>
