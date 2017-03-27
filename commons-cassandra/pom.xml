@@ -12,7 +12,6 @@
 <groupId>fr.pnr.altair</groupId>
 <artifactId>parent</artifactId>
 <version>1.1.3</version>
-<description>POM Parent pour les projets altair</description>
 </parent>
 
    <properties>
