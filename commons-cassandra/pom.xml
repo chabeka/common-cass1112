@@ -403,7 +403,7 @@
 	  <site>
             <id>websites</id>
             <name>Altair Websites Repository</name>
-            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects</url>;
+            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects</url>
       </site>
    </distributionManagement>
 </project>
