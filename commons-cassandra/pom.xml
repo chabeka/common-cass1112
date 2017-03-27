@@ -393,17 +393,17 @@
       <repository>
          <id>releases</id>
 		 <name>Altair Releases Maven Repository</name>
-		 <url>http://nexus.altair.recouv/nexus/content/repositories/releases/&lt;/url>
+		 <url>http://nexus.altair.recouv/nexus/content/repositories/releases</url>
 	  </repository>
 	  <snapshotRepository>
             <id>snapshots</id>
             <name>Altair Snapshots Maven Repository</name>
-            <url>http://nexus.altair.recouv/nexus/content/repositories/snapshots/&lt;/url>
+            <url>http://nexus.altair.recouv/nexus/content/repositories/snapshots</url>
 	  </snapshotRepository>
 	  <site>
             <id>websites</id>
             <name>Altair Websites Repository</name>
-            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects/.......</url>;
+            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects</url>;
       </site>
    </distributionManagement>
 </project>
