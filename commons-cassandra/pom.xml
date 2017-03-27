@@ -311,6 +311,7 @@
             </configuration>
          </plugin>
 
+		 <!-- Construction d'un JAR avec les sources -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
@@ -334,6 +335,7 @@
             </configuration>
          </plugin>
 
+		 <!-- Construction d'un JAR avec la javadoc -->
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
@@ -386,18 +388,22 @@
       </plugins>
    </reporting>
 
+   <!-- Configuration du déploiement vers le Nexus national -->
    <distributionManagement>
       <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>http://nexus.altair.recouv/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>http://nexus.altair.recouv/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
+         <id>releases</id>
+		 <name>Altair Releases Maven Repository</name>
+		 <url>http://nexus.altair.recouv/nexus/content/repositories/releases/&lt;/url>
+	  </repository>
+	  <snapshotRepository>
+            <id>snapshots</id>
+            <name>Altair Snapshots Maven Repository</name>
+            <url>http://nexus.altair.recouv/nexus/content/repositories/snapshots/&lt;/url>
+	  </snapshotRepository>
+	  <site>
+            <id>websites</id>
+            <name>Altair Websites Repository</name>
+            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects/.......</url>;
+      </site>
    </distributionManagement>
-
 </project>
