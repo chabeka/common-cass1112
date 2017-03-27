@@ -23,7 +23,7 @@
       <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
       
       <!-- Version de commons-cassandra -->
-      <commons-cassandra.version>0.0.6</commons-cassandra.version>
+      <commons-cassandra.version>0.0.10</commons-cassandra.version>
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
@@ -270,18 +270,22 @@
       </plugins>
    </reporting>
 
+   <!-- Configuration du déploiement vers le Nexus national -->
    <distributionManagement>
       <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-   </distributionManagement>
-   
+         <id>releases</id>
+		 <name>Altair Releases Maven Repository</name>
+		 <url>http://nexus.altair.recouv/nexus/content/repositories/releases</url>
+	  </repository>
+	  <snapshotRepository>
+            <id>snapshots</id>
+            <name>Altair Snapshots Maven Repository</name>
+            <url>http://nexus.altair.recouv/nexus/content/repositories/snapshots</url>
+	  </snapshotRepository>
+	  <site>
+            <id>websites</id>
+            <name>Altair Websites Repository</name>
+            <url>dav:http://nexus.altair.recouv/nexus/content/sites/projects</url>
+      </site>
+   </distributionManagement>   
 </project>
