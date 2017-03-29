@@ -378,6 +378,7 @@
                         </manifestEntries>
                     </archive>
                     <quiet>true</quiet>
+					<additionalparam>-Xdoclint:none</additionalparam>
                 </configuration>
                 <executions>
                     <execution>
