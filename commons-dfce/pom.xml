@@ -70,7 +70,7 @@
       </dependency>
 
       <dependency>
-         <groupId>com.docubase</groupId>
+         <groupId>net.docubase</groupId>
          <artifactId>dfce-pojo</artifactId>
          <version>${dfce.pojo}</version>
       </dependency>
