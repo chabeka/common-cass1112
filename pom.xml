@@ -8,9 +8,24 @@
 
 	<properties>
 		<pdfbox.version>1.5.0</pdfbox.version>
-		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+		 <!-- DEFINI DANS LE POM PERE Encodage de caractères
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
+      
  	</properties>
 
+	 <!-- Utilisation du fichier POM parent ALTAIR -->
+   <parent>
+      <groupId>fr.pnr.altair</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.1.3</version>
+      <!-- Les balise ci-dessous ne sont pas disponible sous Maven 3.1.1 
+      <packaging>pom</packaging>
+      <name>POM Parent Altair</name>
+      <description>POM Parent pour les projets altair</description>
+      -->
+   </parent>
+
+   
 	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
@@ -158,19 +173,6 @@
 			<version>${pdfbox.version}</version>
 		</dependency>
 	</dependencies>
-	
-	<distributionManagement>
-      <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-   </distributionManagement>
+
 </project>
 
