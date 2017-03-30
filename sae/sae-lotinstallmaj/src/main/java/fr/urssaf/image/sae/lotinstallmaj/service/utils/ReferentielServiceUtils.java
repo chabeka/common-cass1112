@@ -732,12 +732,12 @@ public class ReferentielServiceUtils {
             "Fichier binaire MS Excel", "xlsb",
             "application/vnd.ms-excel.sheet.binary.macroEnabled.12", Boolean.FALSE);
 
-      formatKey = "csv";     
+      formatKey = "gif";
       addNewColumnToReferentielFormat(cfTmpl, formatKey,
             "Fichier image numerique", "gif",
             "image/gif", Boolean.TRUE);
 
-      formatKey = "gif";
+      formatKey = "csv";
       addNewColumnToReferentielFormat(cfTmpl, formatKey,
             "Fichier tableur (Comma Separated Values)", "csv",
             "text/csv", Boolean.TRUE);
