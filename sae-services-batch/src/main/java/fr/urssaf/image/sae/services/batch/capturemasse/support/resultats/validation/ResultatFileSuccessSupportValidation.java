@@ -10,7 +10,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
 
 /**
@@ -51,7 +51,7 @@ public class ResultatFileSuccessSupportValidation {
     */
    @Before(CHECK_METHOD)
    public final void checkWriteResultats(final File ecdeDirectory,
-         final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs,
+         final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
          final int documentsCount, final boolean restitutionUuids,
          final File sommaireFile) {
 

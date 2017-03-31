@@ -357,4 +357,34 @@ public class JobsQueueSupport {
       
       return hosts;
    }
+
+   /**
+    * Suppression du job portant le code traitement (sémaphore) de la file
+    * d'exécution/réservation du job.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param succes
+    *           True si job en succes, false sinon
+    * @param codeTraitement
+    *           Code traitement
+    * @param clock
+    *           horloge de suppression du job de la file d'exécution/réservation
+    */
+   public void supprimerCodeTraitementDeJobsQueues(UUID idJob, boolean succes,
+         String codeTraitement, long clock) {
+      // Si le traitement du job est en succès, on supprime la colonne avec code traitement.
+      // Si le traitement du job est en erreur, on laisse la colonne avec code traitement.
+      if (succes && (codeTraitement != null && !codeTraitement.isEmpty())) {
+         // Création du Mutator
+         Mutator<String> mutator = this.jobsQueueDao.createMutator();
+
+         // Opération 1 : Suppression du job de la liste de la file d'attente
+         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+               codeTraitement, idJob, clock);
+
+         // Exécution de l'opération
+         mutator.execute();
+      }
+   }
 }

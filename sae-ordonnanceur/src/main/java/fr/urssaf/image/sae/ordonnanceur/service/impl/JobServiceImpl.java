@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
@@ -166,36 +168,47 @@ public class JobServiceImpl implements JobService {
          String codeTraitement = jobQueue.getJobParameters().get(
                CODE_TRAITEMENT);
 
-         String semaphore = PREFIXE_SEMAPHORE + codeTraitement;
-
-         // Création du mutex
-         ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, semaphore);
-
-         LOGGER.debug("{} - Vérification que le Job avec le code traitement "
+         LOGGER.debug("{} - Vérification que le code traitement "
                + codeTraitement + " est libre", traceMethod);
-         if (!ZookeeperUtils.isLock(mutex)) {
-            List<JobRequest> jobRequests = jobLectureService
-                  .getNonTerminatedJobs(codeTraitement);
+         List<JobRequest> jobRequests = jobLectureService
+               .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + codeTraitement);
 
-            isJobCodeTraitementEnCoursOuFailure = jobRequests != null
-                  && !jobRequests.isEmpty();
+         if (jobRequests != null && !jobRequests.isEmpty()) {
+            if (jobRequests.size() > 1) {
+               throw new OrdonnanceurRuntimeException(
+                     "Le nombre de jobs en erreur pour le code traitement "
+                           + codeTraitement + " est de " + jobRequests.size()
+                           + " - Traitement abandonné");
+            }
+            JobRequest jobRequest = jobRequests.get(0);
+            List<String> jobStateValues = Arrays.asList(
+                  JobState.FAILURE.name(), JobState.STARTING.name(),
+                  JobState.RESERVED.name());
 
-            jobRequests = jobLectureService.getJobsFailureWithParameters(null,
-                  codeTraitement);
+            String jobFindStatus = jobRequest.getState().name();
+            if (jobStateValues.contains(jobFindStatus)) {
+               LOGGER.debug("{} - Un job existant (UUID = "
+                     + jobRequest.getIdJob().toString()
+                     + ") avec le code traitement " + codeTraitement
+                     + " est dans l'état " + jobRequest.getState().name());
 
-            isJobCodeTraitementEnCoursOuFailure = isJobCodeTraitementEnCoursOuFailure
-                  && jobRequests != null && !jobRequests.isEmpty();
-
-         } else {
-            isJobCodeTraitementEnCoursOuFailure = true;
+               LOGGER.info("{} - Le code traitement " + codeTraitement
+                     + " est déjà réservé", traceMethod);
+               isJobCodeTraitementEnCoursOuFailure = true;
+            } else if (JobState.SUCCESS.name().equals(jobFindStatus)) {
+               LOGGER.error("{} - Le code traitement " + codeTraitement
+                     + " est déjà réservé par un job en état SUCCESS", traceMethod);
+               isJobCodeTraitementEnCoursOuFailure = true;
+            }
          }
+
       }
 
       return isJobCodeTraitementEnCoursOuFailure;
    }
 
    @Override
-   public JobQueue confirmerJobALancer(JobQueue jobQueue) {
+   public JobQueue reserverCodeTraitementJobALancer(JobQueue jobQueue) {
       String traceMethod = "confirmerJobALancer";
 
       if (jobQueue.getJobParameters() != null
@@ -205,17 +218,22 @@ public class JobServiceImpl implements JobService {
 
          String semaphore = PREFIXE_SEMAPHORE + codeTraitement;
 
+         LOGGER.debug("{} - Lancment de la réservation du code traitement "
+               + codeTraitement + " pour le job" + jobQueue.getIdJob(),
+               traceMethod);
+
          // Création du mutex
          ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, semaphore);
 
          try {
-            LOGGER.debug(
-                  "{} - Vérification que le Job avec le code traitement "
-                        + codeTraitement + " est disponible", traceMethod);
-            if (!ZookeeperUtils.isLock(mutex)) {
-               LOGGER.debug("{} - Lock Zookeeper", traceMethod);
-               ZookeeperUtils.acquire(mutex, semaphore);
+            LOGGER.debug("{} - Vérification que le code traitement "
+                  + codeTraitement + " est disponible", traceMethod);
+            LOGGER.debug("{} - Lock Zookeeper", traceMethod);
+            ZookeeperUtils.acquire(mutex, semaphore);
 
+            // On vérifie qu'un job n'a pas été reservé avant l'acquisition du
+            // lock.
+            if (!this.isJobCodeTraitementEnCoursOuFailure(jobQueue)) {
                // Job à créer.
                JobToCreate job = new JobToCreate();
                job.setIdJob(jobQueue.getIdJob());
@@ -226,11 +244,17 @@ public class JobServiceImpl implements JobService {
                // Ajouter un job en waiting
                jobQueueService.addJobsQueue(job);
 
-               // Reserver le job avec le semaphore.
+               // Reserver le job avec le semaphore
                jobQueueService.reserverJobDansJobsQueues(jobQueue.getIdJob(),
                      PREFIXE_SEMAPHORE_JOB + codeTraitement,
-                     jobQueue.getType(),
-                     jobQueue.getJobParameters());
+                     jobQueue.getType(), jobQueue.getJobParameters());
+
+               LOGGER.info(
+                     "{} - Le code traitement "
+                           + codeTraitement
+                     + " est réservé par le job " + jobQueue.getIdJob()
+                     + " et ne peut plus être réserver par un autre Job",
+                     traceMethod);
 
             }
 

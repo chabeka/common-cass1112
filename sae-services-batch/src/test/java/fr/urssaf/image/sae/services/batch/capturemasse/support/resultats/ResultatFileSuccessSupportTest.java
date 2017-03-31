@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatFileSuccessSupport;
 
@@ -62,7 +62,7 @@ public class ResultatFileSuccessSupportTest {
    @Test(expected = IllegalArgumentException.class)
    public void testEcdeDirectoryObligatoire() {
       support.writeResultatsFile(null,
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>(), 0,
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 0,
             false, null);
       Assert.fail("Vérification aspect doit se déclencher");
    }
@@ -71,7 +71,7 @@ public class ResultatFileSuccessSupportTest {
    @Test(expected = IllegalArgumentException.class)
    public void testDocumentsCountObligatoire() {
       support.writeResultatsFile(new File("fichier"),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>(), -1,
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), -1,
             false, null);
       Assert.fail("Vérification aspect doit se déclencher");
    }
@@ -80,7 +80,7 @@ public class ResultatFileSuccessSupportTest {
    @Test(expected = IllegalArgumentException.class)
    public void testSommaireFileObligatorie() {
       support.writeResultatsFile(new File("fichier"),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>(), 10,
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 10,
             true, null);
       Assert.fail("Vérification aspect doit se déclencher");
 
@@ -92,7 +92,7 @@ public class ResultatFileSuccessSupportTest {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
 
       support.writeResultatsFile(ecdeDirectory,
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>(), 10,
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 10,
             false, null);
 
       File resultatsFile = new File(ecdeDirectory, "resultats.xml");
@@ -117,18 +117,18 @@ public class ResultatFileSuccessSupportTest {
          IOUtils.copy(resSommaire.getInputStream(), fos);
 
          // Liste des documents intégrés
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> clq = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
-         CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> clq = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
+         TraitementMasseIntegratedDocument doc1 = new TraitementMasseIntegratedDocument();
          doc1.setDocumentFile(null);
          doc1.setIdentifiant(UUID.randomUUID());
          doc1.setIndex(0);
          clq.add(doc1);
-         CaptureMasseIntegratedDocument doc2 = new CaptureMasseIntegratedDocument();
+         TraitementMasseIntegratedDocument doc2 = new TraitementMasseIntegratedDocument();
          doc2.setDocumentFile(null);
          doc2.setIdentifiant(UUID.randomUUID());
          doc2.setIndex(1);
          clq.add(doc2);
-         CaptureMasseIntegratedDocument doc3 = new CaptureMasseIntegratedDocument();
+         TraitementMasseIntegratedDocument doc3 = new TraitementMasseIntegratedDocument();
          doc3.setDocumentFile(null);
          doc3.setIdentifiant(UUID.randomUUID());
          doc3.setIndex(2);

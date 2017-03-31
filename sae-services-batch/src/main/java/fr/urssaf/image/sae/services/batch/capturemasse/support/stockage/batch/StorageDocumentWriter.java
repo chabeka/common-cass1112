@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import de.schlichtherle.io.File;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
@@ -48,7 +48,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          .getLogger(StorageDocumentWriter.class);
 
    @Autowired
-   private InsertionPoolThreadExecutor poolExecutor;
+   private InsertionCapturePoolThreadExecutor poolExecutor;
 
    @Autowired
    @Qualifier("storageServiceProvider")

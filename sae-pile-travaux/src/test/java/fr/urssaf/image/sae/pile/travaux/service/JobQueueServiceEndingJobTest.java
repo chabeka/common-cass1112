@@ -77,7 +77,7 @@ public class JobQueueServiceEndingJobTest {
 
       Date dateFinTraitement = new Date();
       jobQueueService.endingJob(idJob, true, dateFinTraitement,
-            "traitement a réussi");
+            "traitement a réussi", null);
 
       // vérification de JobRequest
       JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
@@ -130,7 +130,7 @@ public class JobQueueServiceEndingJobTest {
 
       Date dateFinTraitement = new Date();
       jobQueueService.endingJob(idJob, false, dateFinTraitement,
-            "traitement en échec");
+            "traitement en échec", null);
 
       // vérification de JobRequest
       JobRequest jobRequest = jobLectureService.getJobRequest(idJob);

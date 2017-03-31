@@ -86,6 +86,7 @@ public class TraitementAsynchroneServiceValidationTest {
 
    private static final UUID UUID_TRAITEMENT = UUID.randomUUID();
    private static final String URL_ECDE = "sommaire.xml";
+   private static final String CODE_TRAITEMENT = "UXXX";
    private static final String REQ_LUCENE = "cot:123456798";
 
    @Test
@@ -238,6 +239,66 @@ public class TraitementAsynchroneServiceValidationTest {
    }
 
    @Test
+   public void ajouterJobModificationMasse_success() {
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      jobParams.put(Constantes.CODE_TRAITEMENT, CODE_TRAITEMENT);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.modification_masse, null, null,
+            null, null);
+      service.ajouterJobModificationMasse(parametres);
+   }
+
+   @Test
+   public void ajouterJobModificationMasse_failure_empty_urlEcde() {
+      assertAjouterJobModificationMasse_urlEcde(null);
+      assertAjouterJobModificationMasse_urlEcde("");
+      assertAjouterJobModificationMasse_urlEcde(" ");
+   }
+
+   @Test
+   public void ajouterJobModificationMasse_failure_empty_codeTraitement() {
+      assertAjouterJobModificationMasse_codeTraitement(null);
+      assertAjouterJobModificationMasse_codeTraitement("");
+      assertAjouterJobModificationMasse_codeTraitement(" ");
+   }
+
+   @Test
+   public void ajouterJobModificationMasse_failure_empty_uuid() {
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      jobParams.put(Constantes.CODE_TRAITEMENT, CODE_TRAITEMENT);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, null, TYPES_JOB.capture_masse, null, null, null, null);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      }
+   }
+
+   @Test
+   public void ajouterJobModificationMasse_failure_empty_type() {
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      jobParams.put(Constantes.CODE_TRAITEMENT, CODE_TRAITEMENT);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, null, null, null, null, null);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      }
+   }
+
+   @Test
    public void lancerJob_failure_empty_idJob() throws JobInexistantException,
          JobNonReserveException {
 
@@ -359,7 +420,39 @@ public class TraitementAsynchroneServiceValidationTest {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "requete"), e.getMessage());
       }
-   }   
+   }
+
+   private void assertAjouterJobModificationMasse_urlEcde(String urlECDE) {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, urlECDE);
+      jobParams.put(Constantes.CODE_TRAITEMENT, CODE_TRAITEMENT);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.modification_masse, null,
+            null, null, null);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
+      }
+   }
+   
+   private void assertAjouterJobModificationMasse_codeTraitement(String codeTraitement) {
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, URL_ECDE);
+      jobParams.put(Constantes.CODE_TRAITEMENT,codeTraitement);
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, UUID_TRAITEMENT, TYPES_JOB.modification_masse, null,
+            null, null, null);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+         Assert.fail(FAIL_MESSAGE);
+      } catch (IllegalArgumentException e) {
+         Assert.assertEquals(EXCEPTION_MESSAGE,
+               MessageFormat.format(ARG_EMPTY, "codeTraitement"), e.getMessage());
+      }
+   }
      
    private void assertAjouterJobTransfertMasse_urlEcde(String urlECDE) {
       Map<String, String> jobParams = new HashMap<String, String>();

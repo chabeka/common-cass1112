@@ -4,8 +4,6 @@
 package fr.urssaf.image.sae.services.batch.modification.support.controle.batch;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.bind.JAXBElement;
 
@@ -22,7 +20,6 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.ModificationMasseControleSupport;
-import fr.urssaf.image.sae.services.batch.modification.support.controle.model.ModificationMasseControlResult;
 
 /**
  * Item processor pour le contrôle des documents du fichier sommaire.xml pour le
@@ -42,7 +39,6 @@ public class ControleMetaDocumentModificationProcessor extends AbstractListener
    /**
     * {@inheritDoc}
     */
-   @SuppressWarnings("unchecked")
    @Override
    public final UntypedDocument process(final UntypedDocument item)
          throws Exception {
@@ -53,15 +49,10 @@ public class ControleMetaDocumentModificationProcessor extends AbstractListener
             .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
 
       final File sommaire = new File(path);
-
       final File ecdeDirectory = sommaire.getParentFile();
 
-      String uuidString = item.getUuid().toString();
-
-      ModificationMasseControlResult resultat = null;
-
       try {
-         resultat = support.controleSAEDocumentMetadatas(item, ecdeDirectory);
+         support.controleSAEDocumentMetadatas(item, ecdeDirectory);
       } catch (Exception e) {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
@@ -70,33 +61,12 @@ public class ControleMetaDocumentModificationProcessor extends AbstractListener
                         Constantes.CTRL_INDEX));
             final String message = e.getMessage();
             getExceptionErreurListe().add(new Exception(message));
+            LOGGER.error(message, e);
          } else {
             throw e;
          }
       }
       
-
-      if (resultat != null && resultat.getStorageMetadatasList() != null) {
-         LOGGER
-               .debug(
-                     "{} - Récupération de la map des résultat de controle pour la modification",
-                     trcPrefix);
-         Map<String, ModificationMasseControlResult> map = (Map<String, ModificationMasseControlResult>) getStepExecution()
-               .getJobExecution().getExecutionContext().get(
-                     "mapModificationControlResult");
-         if (map == null) {
-            LOGGER.debug("{} - Pas de map de résultat de controle, on la créé",
-                  trcPrefix);
-            map = new HashMap<String, ModificationMasseControlResult>();
-         }
-         LOGGER.debug(
-               "{} - Ajout du résultat de controle dans la map avec la key : {}",
-               trcPrefix, uuidString);
-         map.put(uuidString, resultat);
-         getStepExecution().getJobExecution().getExecutionContext().put(
-               "mapModificationControlResult", map);
-      }
-
       LOGGER.debug("{} - fin", trcPrefix);
 
       return item;

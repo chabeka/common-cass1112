@@ -6,39 +6,44 @@ package fr.urssaf.image.sae.services.batch.modificationmasse.support;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.job.flow.FlowJob;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlValidationUtils;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.modification.SAEModificationMasseService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
@@ -47,7 +52,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
+@ContextConfiguration(locations = {
+      "/applicationContext-sae-services-batch-test.xml",
+      "/applicationContext-sae-services-modificationmasse-test-mock.xml" })
 public class SAEModificationMasseTest {
 
    @Autowired
@@ -58,6 +65,15 @@ public class SAEModificationMasseTest {
 
    @Autowired
    private EcdeTestTools tools;
+
+   @Autowired
+   private JobLauncher jobLauncher;
+
+   /**
+    * Service de gestion de la pile des travaux.
+    */
+   @Autowired
+   private JobQueueService jobQueueService;
 
    private EcdeTestSommaire testSommaire;
    
@@ -94,6 +110,7 @@ public class SAEModificationMasseTest {
    @After
    public void end() {
       try {
+         EasyMock.reset(jobLauncher, jobQueueService);
          tools.cleanEcdeTestSommaire(testSommaire);
       } catch (IOException e) {
          // rien a faire
@@ -113,21 +130,28 @@ public class SAEModificationMasseTest {
    }
 
    @Test
-   @Ignore
-   public void testLancementService() {
+   public void testLancementService_sucess() {
+
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.COMPLETED);
 
       try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class)))
+               .andReturn(jobEx).once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
          File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
          ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
-
-         File repertoireEcdeDocuments = new File(testSommaire.getRepEcde(),
-               "documents");
-         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-         File fileAttestation1 = new File(repertoireEcdeDocuments, "doc1.PDF");
-         fos = new FileOutputStream(fileAttestation1);
-         IOUtils.copy(resAttestation1.getInputStream(), fos);
          
          String hash = getHashSommaireFile(sommaire);
 
@@ -137,64 +161,346 @@ public class SAEModificationMasseTest {
          Assert.assertTrue("l'opération doit etre ok", exitTraitement
                .isSucces());
 
-      } catch (Exception e) {
+      } catch (Throwable e) {
          Assert.fail("pas d'erreur attendue");
       }
 
    }
 
    @Test
-   public void testLancementSommaireErroneHashCodeErrone() throws IOException {
-
-      File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
-            "sommaire/sommaire_failure_HashIncorrect.xml");
-      FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
-
-      File repDocuments = new File(testSommaire.getRepEcde(), "documents");
-      ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-      File fileAttestation1 = new File(repDocuments, "doc1.PDF");
-      FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
-
-      String hash = getHashSommaireFile(sommaire);
-      
-      ExitTraitement exitTraitement = service.modificationMasse(testSommaire
-            .getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
-
-      Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
-            .isSucces());
-
-      File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
-
-      Assert.assertTrue("le fichier résultats.xml doit exister", resultats
-            .exists());
-
-      Resource sommaireXSD = applicationContext
-            .getResource("xsd_som_res/resultats.xsd");
+   public void testLancementService_exitStatus_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.FAILED);
 
       try {
-         URL xsdSchema = sommaireXSD.getURL();
-         XmlValidationUtils.parse(resultats, xsdSchema);
-      } catch (ParserConfigurationException e) {
-         e.printStackTrace();
-         Assert.fail("le fichier resultats.xml doit etre valide");
-      } catch (SAXException e) {
-         e.printStackTrace();
-         Assert.fail("le fichier resultats.xml doit etre valide");
-      } catch (IOException e) {
-         e.printStackTrace();
-         Assert.fail("le fichier resultats.xml doit etre valide");
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class))).andReturn(jobEx)
+               .once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_fin_bloquant_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.COMPLETED);
+      jobEx.addStepExecutions(Arrays.asList(new StepExecution("finBloquant",
+            jobEx)));
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class))).andReturn(jobEx)
+               .once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_exitStatus_fin_erreur_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.COMPLETED);
+      jobEx.addStepExecutions(Arrays.asList(new StepExecution("finErreur",
+            jobEx)));
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class))).andReturn(jobEx)
+               .once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_exitStatus_fin_erreur_virtuelle_failed() {
+
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.COMPLETED);
+      jobEx.addStepExecutions(Arrays.asList(new StepExecution(
+            "finErreurVirtuel", jobEx)));
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class))).andReturn(jobEx)
+               .once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_exitStatus_autre_success() {
+
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.COMPLETED);
+      jobEx.addStepExecutions(Arrays.asList(new StepExecution("autre", jobEx)));
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class))).andReturn(jobEx)
+               .once();
+
+         jobQueueService.renseignerDocCountJob(EasyMock.isA(UUID.class),
+               EasyMock.isA(Integer.class));
+         EasyMock.expectLastCall();
+
+         EasyMock.replay(jobLauncher, jobQueueService);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertTrue("l'opération doit etre ok",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_JobExecutionAlreadyRunningException_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.FAILED);
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class)))
+               .andThrow(new JobExecutionAlreadyRunningException("Error"))
+               .once();
+
+         EasyMock.replay(jobLauncher);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_JobRestartException_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.FAILED);
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class)))
+               .andThrow(new JobRestartException("Error")).once();
+
+         EasyMock.replay(jobLauncher);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_JobInstanceAlreadyCompleteException_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.FAILED);
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class)))
+               .andThrow(new JobInstanceAlreadyCompleteException("Error"))
+               .once();
+
+         EasyMock.replay(jobLauncher);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
+      }
+
+   }
+
+   @Test
+   public void testLancementService_JobParametersInvalidException_failed() {
+      JobExecution jobEx = new JobExecution(1L);
+      jobEx.setExitStatus(ExitStatus.FAILED);
+
+      try {
+         EasyMock
+               .expect(
+                     jobLauncher.run(EasyMock.isA(FlowJob.class),
+                           EasyMock.isA(JobParameters.class)))
+               .andThrow(new JobParametersInvalidException("Error"))
+               .once();
+
+         EasyMock.replay(jobLauncher);
+
+         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
+         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         String hash = getHashSommaireFile(sommaire);
+
+         ExitTraitement exitTraitement = service.modificationMasse(
+               testSommaire.getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+
+         Assert.assertFalse("l'opération doit etre ko",
+               exitTraitement.isSucces());
+
+      } catch (Throwable e) {
+         Assert.fail("pas d'erreur attendue");
       }
 
    }
 
    @Test
    public void testLancementSommaireInexistant() {
-
-      String hash = getHashSommaireFile(new File(testSommaire.getRepEcde(), "sommaire.xml"));
   
       ExitTraitement exitTraitement = service.modificationMasse(testSommaire
-            .getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
+            .getUrlEcde(), UUID.randomUUID(), HASH_TYPE, HASH_TYPE);
 
       Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
             .isSucces());
@@ -203,55 +509,6 @@ public class SAEModificationMasseTest {
 
       Assert.assertFalse("le fichier résultats.xml ne doit pas exister",
             resultats.exists());
-   }
-
-   @Test
-   public void testLancementSommaireFormatErrone() {
-
-      try {
-         File sommaire = new File(testSommaire.getRepEcde(), "sommaire.xml");
-         ClassPathResource resSommaire = new ClassPathResource(
-               "sommaire/sommaire_format_failure.xml");
-         FileOutputStream fos = new FileOutputStream(sommaire);
-         IOUtils.copy(resSommaire.getInputStream(), fos);
-
-         File repDocuments = new File(testSommaire.getRepEcde(), "documents");
-         ClassPathResource resAttestation1 = new ClassPathResource("doc1.PDF");
-         File fileAttestation1 = new File(repDocuments, "doc1.PDF");
-         fos = new FileOutputStream(fileAttestation1);
-         IOUtils.copy(resAttestation1.getInputStream(), fos);
-
-         String hash = getHashSommaireFile(sommaire);
-         
-         ExitTraitement exitTraitement = service.modificationMasse(testSommaire
-               .getUrlEcde(), UUID.randomUUID(), hash, HASH_TYPE);
-
-         Assert.assertFalse("l'opération doit etre en erreur", exitTraitement
-               .isSucces());
-
-         File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
-
-         Assert.assertTrue("le fichier résultats.xml doit exister", resultats
-               .exists());
-
-         Resource sommaireXSD = applicationContext
-               .getResource("xsd_som_res/resultats.xsd");
-         URL xsdSchema = sommaireXSD.getURL();
-
-         try {
-            XmlValidationUtils.parse(resultats, xsdSchema);
-         } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            Assert.fail("le fichier resultats.xml doit etre valide");
-         } catch (SAXException e) {
-            e.printStackTrace();
-            Assert.fail("le fichier resultats.xml doit etre valide");
-         }
-
-      } catch (Exception e) {
-         Assert.fail("pas d'erreur attendue");
-      }
-
    }
    
    /**

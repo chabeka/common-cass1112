@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.EcdeConnexionConfiguration;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReader;
@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport {
 
    private static final String CHEMIN_FICHIER = "cheminEtNomDuFichier";
+   private static final String UUID_FICHIER = "UUID";
    private static final String OBJET_NUMERIQUE = "objetNumerique";
    private static final String NUMERO_PAGE_DEBUT = "numeroPageDebut";
    private static final String NOMBRE_PAGES = "nombreDePages";
@@ -154,13 +155,13 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             batchModeTraitement)) {
 
          this.ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual,
-               erreur);
+               erreur, false);
 
       } else if (Constantes.BATCH_MODE.PARTIEL.getModeNom().equals(
             batchModeTraitement)) {
          // Lecture du sommaire pour la gestion des documents non intégrés.
          this.ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual,
-               erreur, listIntDocs);
+               erreur, listIntDocs, true);
 
          if (listIntDocs != null && !listIntDocs.isEmpty()) {
             // Réinitialisation du reader
@@ -199,9 +200,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       EndElement endElement;
       String name;
       IndexReference indexReference = new IndexReference(0, 0);
-      ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocTemp = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
+      ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listIntDocTemp = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
       listIntDocTemp
-            .addAll((Collection<? extends CaptureMasseIntegratedDocument>) listIntDocs);
+            .addAll((Collection<? extends TraitementMasseIntegratedDocument>) listIntDocs);
 
       if (isVirtual) {
          staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, PX_SOMRES);
@@ -246,16 +247,21 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
-    * Methode permettant de
+    * Methode permettant d'ecrire le fichier resultat pour les documents non
+    * intégrés.
     * 
     * @param reader
+    *           Reader
     * @param isVirtual
-    * @param erreur2
+    *           Trus si Document virtuel, false sinon.
+    * @param erreur
+    *           Erreur du document
     * @param listIntDocs
+    *           Liste des documents intégrés
     */
    private void ecrireFichierResultatDocumentsNonIntegres(XmlReader reader,
          boolean isVirtual, CaptureMasseErreur erreur,
-         ConcurrentLinkedQueue<?> listIntDocs) {
+         ConcurrentLinkedQueue<?> listIntDocs, boolean addmetadatas) {
       XMLEvent xmlEvent = null;
       StartElement startElement;
       EndElement endElement;
@@ -283,7 +289,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                         NS_RES);
                } else {
                   indexReference = startTagDocsNonIntegres(name, reader,
-                        erreur, indexReference, listIntDocs);
+                        erreur, indexReference, listIntDocs, addmetadatas);
                }
             }
             // s'il n'y a pas de nouvelle index de reference, c'est que l'on a
@@ -308,15 +314,20 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
-    * Methode permettant de
+    * Methode permettant d'ecrire le fichier resultat pour les documents non
+    * intégrés.
     * 
     * @param reader
-    * @param erreur2
+    *           Reader
+    * @param erreur
+    *           Erreur sur le document
     * @param isVirtual
+    *           True si document virtuel, false sinon
     */
    private void ecrireFichierResultatDocumentsNonIntegres(XmlReader reader,
-         boolean isVirtual, CaptureMasseErreur erreur) {
-      ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual, erreur, null);
+         boolean isVirtual, CaptureMasseErreur erreur, boolean addmetadatas) {
+      ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual, erreur,
+            null, addmetadatas);
    }
 
    /**
@@ -388,40 +399,97 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param indexReference
     *           L'index de référence.
     * @param listIntDocs
+    * @param addmetadatas
     * @return L'index de reference ajouté au fichier resultat.xml.
     */
    private IndexReference startTagDocsNonIntegres(final String name,
          final XmlReader reader, final CaptureMasseErreur erreur,
          final IndexReference indexReference,
-         ConcurrentLinkedQueue<?> listIntDocs) {
+         ConcurrentLinkedQueue<?> listIntDocs, boolean addmetadatas) {
 
       IndexReference reference = indexReference;
 
       if (CHEMIN_FICHIER.equals(name)) {
          final XMLEvent xmlEvent = reader.peek();
-         boolean isDocumentDansListe = false;
-         int value = indexReference.getDocIndex() + 1;
-         if (listIntDocs != null && !listIntDocs.isEmpty()) {
-            CaptureMasseIntegratedDocument document = this
-                  .getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
-                        indexReference);
-            isDocumentDansListe = (document != null);
+         if (!isDocumentDansListe(listIntDocs, indexReference, xmlEvent)) {
+            reference = this.addTagsNonIntegratedDocumentByTagName(CHEMIN_FICHIER,
+ xmlEvent, erreur, indexReference, reader,
+                  addmetadatas);
          }
-         if (!isDocumentDansListe) {
-            staxUtils
-                  .addStartTag(NON_INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
-            staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-            staxUtils.addStartTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
-            gestionValeur(xmlEvent);
-            staxUtils.addEndElement(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
-            staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-            addErreur(erreur, indexReference.getDocIndex(), xmlEvent);
-            staxUtils.addEndTag(NON_INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
+      } else if (UUID_FICHIER.equals(name)) {
+         final XMLEvent xmlEvent = reader.peek();
+         if (!isDocumentDansListe(listIntDocs, indexReference, xmlEvent)) {
+            // On passe volontairement un reader null pour ne pas ajouter les
+            // balises métadatas
+            // qui sont uniquement pour la visualisation de l'idGed dans le
+            // fichier resultat.
+            reference = this.addTagsNonIntegratedDocumentByTagName(UUID_FICHIER,
+ xmlEvent, erreur, indexReference, reader,
+                  addmetadatas);
          }
-         reference = new IndexReference(value, indexReference.getRefIndex());
       }
 
       return reference;
+   }
+
+   /**
+    * True si le document existe dans la liste passée en paramètre, false sinon.
+    * 
+    * @param listIntDocs
+    *           Liste de documents
+    * @param indexReference
+    *           Index de référence
+    * @param xmlEvent
+    *           Event
+    * @return True si le document existe dans la liste passée en paramètre,
+    *         false sinon.
+    */
+   private boolean isDocumentDansListe(ConcurrentLinkedQueue<?> listIntDocs, IndexReference indexReference, XMLEvent xmlEvent) {
+      TraitementMasseIntegratedDocument document = null;
+      if (listIntDocs != null && !listIntDocs.isEmpty()) {
+         document = this.getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
+               indexReference);
+      }
+         
+      return document != null;
+   }
+
+   /**
+    * Méthode permettant d'ajouter les balises du tag documents non intégrés.
+    * 
+    * @param baliseName
+    *           Non de la balise dedéfinition du document
+    * @param xmlEvent
+    *           Event
+    * @param erreur
+    *           Erreur sur le document
+    * @param indexReference
+    *           index de référence
+    * @param reader
+    *           Reader
+    * @param addmetadatas
+    *           True s'il faut ajouter les metadonnéesn false sinon.
+    * @return Le nouvelle index de référence
+    */
+   private IndexReference addTagsNonIntegratedDocumentByTagName(String baliseName,
+         XMLEvent xmlEvent, CaptureMasseErreur erreur,
+         IndexReference indexReference, XmlReader reader, boolean addmetadatas) {
+      int value = indexReference.getDocIndex() + 1;
+
+      staxUtils.addStartTag(NON_INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(baliseName, PX_SOMRES, NS_SOMRES);
+      gestionValeur(xmlEvent);
+      staxUtils.addEndElement(baliseName, PX_SOMRES, NS_SOMRES);
+      staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
+      if (addmetadatas) {
+         addMetadatas(reader);
+      }
+      addErreur(erreur, indexReference.getDocIndex(), xmlEvent);
+      staxUtils.addEndTag(NON_INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
+
+      return new IndexReference(value, indexReference.getRefIndex());
+
    }
 
    /**
@@ -446,27 +514,65 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       // Gestion des documents non intégrés
       if (CHEMIN_FICHIER.equals(name)) {
-         final XMLEvent xmlEvent = reader.peek();
-         CaptureMasseIntegratedDocument document = this
-               .getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
-                     indexReference);
-         boolean isDocumentDansListe = document != null;
-         if (isDocumentDansListe) {
-            staxUtils.addStartTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
-            staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-            staxUtils.addStartTag(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
-            gestionValeur(xmlEvent);
-            staxUtils.addEndElement(CHEMIN_FICHIER, PX_SOMRES, NS_SOMRES);
-            staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
-
-            addMetadatas(reader);
-            addUUID(document);
-            addNumeroPageDebut(reader);
-            addNombrePages(reader);
-            staxUtils.addEndTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
-
-         }
+         this.addIntegratedDocumentByTagName(CHEMIN_FICHIER, reader, listIntDocs,
+               indexReference);
+      } else if (UUID_FICHIER.equals(name)) {
+         this.addIntegratedDocumentByTagName(UUID_FICHIER, reader, listIntDocs,
+               indexReference);
       }
+
+   }
+
+   /**
+    * Méthode d'ajout des tags permettant d'indiquer les documents intégrés.
+    * 
+    * @param tagName
+    *           Nom tag
+    * @param reader
+    *           Reader
+    * @param listIntDocs
+    *           Liste de documents
+    * @param indexReference
+    *           Index de référence
+    */
+   private void addIntegratedDocumentByTagName(String tagName, XmlReader reader,
+         ConcurrentLinkedQueue<?> listIntDocs, IndexReference indexReference) {
+      final XMLEvent xmlEvent = reader.peek();
+      TraitementMasseIntegratedDocument document = this
+            .getDocumentInListByXmlEvent(xmlEvent, listIntDocs, indexReference);
+      if (document != null) {
+         this.addTagIntegratedDocumentByTagName(tagName, xmlEvent, document,
+               reader);
+      }
+   }
+
+   /**
+    * Méthode commune d'ajout des tags pour les documents intégrés.
+    * 
+    * @param tagName
+    *           Nom tag
+    * @param xmlEvent
+    *           Event xml
+    * @param document
+    *           Document intégré
+    * @param reader
+    *           Reader
+    */
+   private void addTagIntegratedDocumentByTagName(String tagName,
+         XMLEvent xmlEvent,
+         TraitementMasseIntegratedDocument document, XmlReader reader) {
+      staxUtils.addStartTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
+      staxUtils.addStartTag(tagName, PX_SOMRES, NS_SOMRES);
+      gestionValeur(xmlEvent);
+      staxUtils.addEndElement(tagName, PX_SOMRES, NS_SOMRES);
+      staxUtils.addEndElement(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
+
+      addMetadatas(reader);
+      addUUID(document);
+      addNumeroPageDebut(reader);
+      addNombrePages(reader);
+      staxUtils.addEndTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
 
    }
 
@@ -566,7 +672,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       if (CHEMIN_FICHIER.equals(name)) {
          final XMLEvent xmlEvent = reader.peek();
-         CaptureMasseIntegratedDocument document = this
+         TraitementMasseIntegratedDocument document = this
                .getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
                      indexReference);
          boolean isDocumentIntegrated = document != null;
@@ -697,7 +803,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param document
     *           Document integré
     */
-   private void addUUID(CaptureMasseIntegratedDocument document) {
+   private void addUUID(TraitementMasseIntegratedDocument document) {
       staxUtils.addStartTag(UUID, PX_SOMRES, NS_SOMRES);
       staxUtils.addValue(document.getIdentifiant().toString());
       staxUtils.addEndTag(UUID, PX_SOMRES, NS_SOMRES);
@@ -802,19 +908,22 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param indexReference
     * @return Le document qui a été trouvé dans la liste de documents.
     */
-   private CaptureMasseIntegratedDocument getDocumentInListByXmlEvent(
+   private TraitementMasseIntegratedDocument getDocumentInListByXmlEvent(
          XMLEvent xmlEvent, ConcurrentLinkedQueue<?> listDocs,
          IndexReference indexReference) {
-      CaptureMasseIntegratedDocument document = null;
+      TraitementMasseIntegratedDocument document = null;
       Object objFind = null;
       // Valeur de la balise chemin
       String value = xmlEvent.asCharacters().getData();
       if (value != null) {
          // On recherche si le document existe dans les documents
          for (Object obj : listDocs) {
-            document = (CaptureMasseIntegratedDocument) obj;
+            document = (TraitementMasseIntegratedDocument) obj;
             if (document.getIndex() == indexReference.getDocIndex()
-                  && value.equals(document.getDocumentFile().getName())) {
+                  && (document.getDocumentFile() != null && value
+                        .equals(document.getDocumentFile().getName()))
+                  || (document.getIdentifiant() != null && value
+                        .equals(document.getIdentifiant().toString()))) {
                // Document trouvé dans la liste des documents
                objFind = obj;
                break;

@@ -8,6 +8,7 @@ import java.util.List;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.model.ModificationMasseControlResult;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
@@ -23,6 +24,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
@@ -67,7 +69,6 @@ public interface ModificationMasseControleSupport {
     * <br>Service permettant de contrôler les métadonnées d'un
     * document à modifier dans un traitement de modification de masse.</br>
     * @param item Document à modifier.
-    * @param listeMetadataDocument La liste des metadonnées à modifier.
     * @return Le document modifié.
     * @throws UnknownCodeRndEx @{@link UnknownCodeRndEx}
     * @throws ReferentialRndException @{@link ReferentialRndException}
@@ -80,10 +81,12 @@ public interface ModificationMasseControleSupport {
     * @throws NotModifiableMetadataEx @{@link NotModifiableMetadataEx}
     * @throws MetadataValueNotInDictionaryEx @{@link MetadataValueNotInDictionaryEx}
     * @throws ModificationException @{@link ModificationException}
+    * @throws RetrievalServiceEx @{@link RetrievalServiceEx}
+    * @throws ReferentialException @{@link ReferentialException}
     */
-   StorageDocument controleSAEDocumentModification(UntypedDocument item, List<StorageMetadata> listeMetadataDocument) 
+   StorageDocument controleSAEDocumentModification(UntypedDocument item) 
          throws UnknownCodeRndEx, ReferentialRndException, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, 
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, 
-         MetadataValueNotInDictionaryEx, ModificationException;
+         MetadataValueNotInDictionaryEx, ModificationException, RetrievalServiceEx, ReferentialException;
 
 }

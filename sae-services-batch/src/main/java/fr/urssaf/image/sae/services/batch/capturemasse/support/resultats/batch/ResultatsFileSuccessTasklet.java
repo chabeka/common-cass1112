@@ -14,9 +14,9 @@ import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatFileSuccessSupport;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
@@ -38,7 +38,7 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}
@@ -55,7 +55,7 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
       final File sommaireFile = new File(path);
       final File ecdeDirectory = sommaireFile.getParentFile();
 
-      final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listIntDocs = executor
+      final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listIntDocs = executor
             .getIntegratedDocuments();
 
       int initCount = (Integer) map.get(Constantes.DOC_COUNT);

@@ -68,7 +68,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       // pour l'instant nous avons fait le choix de propager l'erreur
       // pour ne pas la cacher et attérir dans un état en erreur
 
-      String trcPrefix = "afterStep()";
+      String trcPrefix = "specificAfterStepOperations()";
       ExitStatus exitStatus = getStepExecution().getExitStatus();
 
       try {

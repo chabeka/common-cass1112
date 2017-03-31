@@ -85,11 +85,13 @@ public interface JobQueueService {
     *           date de fin du traitement
     * @param message
     *           message de compte-rendu du traitement (ex : message d'erreur)
+    * @param codeTraitement
+    *           Code traitement
     * @throws JobInexistantException
     *            le traitement n'existe pas
     */
    void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
-         String message) throws JobInexistantException;
+         String message, String codeTraitement) throws JobInexistantException;
 
    /**
     * Ajoute une trace d'execution dans l'historique du job

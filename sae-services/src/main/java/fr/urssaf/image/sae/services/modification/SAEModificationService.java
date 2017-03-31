@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -21,6 +22,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -129,4 +131,18 @@ public interface SAEModificationService {
          List<StorageMetadata> listeStorageMetaDocument, List<UntypedMetadata> metadonnees, String trcPrefix) throws UnknownCodeRndEx, 
          ReferentialRndException, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
          RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx, ModificationException;
+
+   /**
+    * Methode permettant de générer la liste des metadonnées storage.
+    * 
+    * @param idArchive
+    *           Identifiant document
+    * @return la liste des metadonnées storage
+    * @throws ReferentialException
+    * @{@link ReferentialException}
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    */
+   public List<StorageMetadata> getListeStorageMetadatas(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx;
 }

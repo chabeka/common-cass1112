@@ -10,19 +10,7 @@
    Sous-ensemble du fichier principal de l'artéfact.
    
    Il contient la définition des beans pour le job Spring Batch de capture de masse. 
-   -->
-
-
-   <bean id="Jaxb2UnMarshmaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-      <property name="schemas">
-         <array>
-            <value>classpath:xsd_som_res/documentTypeMultiAction.xsd</value>
-         </array>
-      </property>
-      <property name="contextPath"
-         value="fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat" />
-   </bean>
-   
+   -->  
    <bean id="transfertMasseFactory"
       class="fr.urssaf.image.sae.services.batch.transfert.factory.TransfertMasseFactory" />
 

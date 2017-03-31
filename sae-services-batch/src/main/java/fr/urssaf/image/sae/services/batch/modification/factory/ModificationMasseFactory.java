@@ -33,7 +33,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 public class ModificationMasseFactory {
 
    @Autowired
-   // @Qualifier("mappingService")
    private MappingDocumentService mappingService;
 
    @Autowired

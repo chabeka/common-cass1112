@@ -79,5 +79,5 @@ public interface JobService {
     *           {@link JobQueue}
     * @return Le job à lancer.
     */
-   JobQueue confirmerJobALancer(JobQueue jobQueue);
+   JobQueue reserverCodeTraitementJobALancer(JobQueue jobQueue);
 }

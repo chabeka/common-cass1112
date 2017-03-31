@@ -14,7 +14,7 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
@@ -27,9 +27,9 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  */
 @Component
-public class InsertionPoolThreadExecutor
+public class InsertionCapturePoolThreadExecutor
       extends
-      AbstractPoolThreadExecutor<StorageDocument, CaptureMasseIntegratedDocument>
+      AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
       implements Serializable, DisposableBean {
 
    // FIXME - Trouver une solution plus propre afin de ne pas partager les
@@ -38,9 +38,9 @@ public class InsertionPoolThreadExecutor
    private static final long serialVersionUID = 1L;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(InsertionPoolThreadExecutor.class);
+         .getLogger(InsertionCapturePoolThreadExecutor.class);
 
-   private final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs;
+   private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
 
    private InsertionMasseRuntimeException exception;
 
@@ -77,7 +77,7 @@ public class InsertionPoolThreadExecutor
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
    @Autowired
-   public InsertionPoolThreadExecutor(
+   public InsertionCapturePoolThreadExecutor(
          InsertionPoolConfiguration poolConfiguration,
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {
@@ -89,7 +89,7 @@ public class InsertionPoolThreadExecutor
                   "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
                   new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
-      this.integDocs = new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>();
+      this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
 
    }
 
@@ -105,7 +105,7 @@ public class InsertionPoolThreadExecutor
     * 
     * @return liste des documents persistés dans DFCE
     */
-   public final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> getIntegratedDocuments() {
+   public final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> getIntegratedDocuments() {
       return this.integDocs;
    }
 
@@ -163,7 +163,7 @@ public class InsertionPoolThreadExecutor
    protected final void addDocumentToIntegratedList(
          StorageDocument storageDocument, int indexDocument) {
 
-      CaptureMasseIntegratedDocument document = new CaptureMasseIntegratedDocument();
+      TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
       File file = new File(storageDocument.getFilePath());
       document.setDocumentFile(file);
       document.setIdentifiant(storageDocument.getUuid());

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 
 /**
  * Ce service permet de réaliser les vérifications finales, une fois le job fini
@@ -42,6 +42,6 @@ public interface VerificationSupport {
    void checkFinTraitement(URI sommaireURL, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement, boolean logPresent,
          List<Throwable> erreurs, UUID idTraitement,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeDocsIntegres);
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres);
 
 }

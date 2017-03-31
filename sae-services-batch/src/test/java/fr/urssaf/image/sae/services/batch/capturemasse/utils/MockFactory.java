@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.services.batch.capturemasse.utils;
 import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 
 /**
  * Factory de mocks pour les test

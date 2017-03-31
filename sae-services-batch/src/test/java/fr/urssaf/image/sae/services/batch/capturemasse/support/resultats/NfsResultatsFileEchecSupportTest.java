@@ -33,7 +33,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
@@ -126,7 +126,7 @@ public class NfsResultatsFileEchecSupportTest {
       try {
          support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21, 0,
                Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
 
          Assert.fail("une exception doit être levée");
       } catch (Exception exception) {
@@ -180,7 +180,7 @@ public class NfsResultatsFileEchecSupportTest {
       try {
          support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3,
                0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("une exception doit être levée");
       } catch (Exception exception) {
 

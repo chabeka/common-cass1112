@@ -16,7 +16,7 @@
    <!-- Configuration du pool d'insertion des documents dans DFCE --> 
    <bean id="transfertPoolConfiguration"
       class="fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolConfiguration">
-      <property name="corePoolSize" value="${sae.archivagemasse.pool.size}" />
+      <property name="corePoolSize" value="${sae.transfertmasse.pool.size}" />
    </bean> 
    
    <!-- Configuration de l'interruption du traitement -->

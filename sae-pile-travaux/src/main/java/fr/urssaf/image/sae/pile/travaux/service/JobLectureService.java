@@ -47,11 +47,11 @@ public interface JobLectureService {
     * Récupère la liste des traitements réservés ou en cours d'exécution sur un
     * serveur donné.
     * 
-    * @param hostname
-    *           nom du serveur concerné
+    * @param key
+    *           clef de la CF
     * @return liste des traitements réservés ou en cours d'exécution
     */
-   List<JobRequest> getNonTerminatedJobs(String hostname);
+   List<JobRequest> getNonTerminatedJobs(String key);
 
    /**
     * Récupère l'historique d'un traitement
@@ -92,23 +92,6 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax);
-   
-   /**
-    * Récupère l'ensemble des jobs en echecs présents dans la pile des travaux
-    * qui contiennent les valeurs de parametres de la liste "parametersValues".
-    * Si la liste "parametersValues" est vide, on remonte tous les jobs en
-    * erreurs. Attention au performance dans ce cas.
-    * 
-    * @param keyspace
-    *           Keyspace
-    * @param parametersValues
-    *           Liste de valeur de parametres
-    * @return liste des traitements en echecs présents dans la pile des travaux
-    *         qui contiennent les valeurs de parametres de la liste
-    *         "parametersValues"
-    */
-   List<JobRequest> getJobsFailureWithParameters(Keyspace keyspace,
-         String... parametersValues);
 
    /**
     * Teste si le job peut être réinitialisé (ie : si le job est à l'état

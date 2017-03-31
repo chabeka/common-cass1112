@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
 
 /**
@@ -35,7 +35,7 @@ public class ResultatsFileFailureTasklet extends
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}

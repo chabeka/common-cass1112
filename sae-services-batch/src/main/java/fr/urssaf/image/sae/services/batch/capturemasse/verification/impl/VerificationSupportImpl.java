@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.FinTraitementFlagSupport;
@@ -72,7 +72,7 @@ public class VerificationSupportImpl implements VerificationSupport {
    public final void checkFinTraitement(URI urlEcde, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement, boolean logPresent,
          List<Throwable> erreurs, UUID idTraitement,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeDocsIntegres) {
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres) {
 
       LOGGER.debug("{} - debut", CHECK);
 
@@ -161,7 +161,7 @@ public class VerificationSupportImpl implements VerificationSupport {
    private void checkResultats(File repTravail, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement,
          List<Throwable> listeErreurs, File sommaire,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> listeDocsIntegres) {
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres) {
 
       File resultats = new File(repTravail, "resultats.xml");
 

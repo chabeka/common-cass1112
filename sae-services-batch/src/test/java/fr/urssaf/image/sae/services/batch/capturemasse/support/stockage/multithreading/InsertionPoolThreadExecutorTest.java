@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -33,7 +33,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class InsertionPoolThreadExecutorTest {
 
-   private InsertionPoolThreadExecutor poolExecutor;
+   private InsertionCapturePoolThreadExecutor poolExecutor;
 
    @Autowired
    private InterruptionTraitementMasseSupport interruptionSupport;
@@ -69,7 +69,7 @@ public class InsertionPoolThreadExecutorTest {
       InsertionPoolConfiguration poolConfiguration = new InsertionPoolConfiguration();
       poolConfiguration.setCorePoolSize(20);
 
-      poolExecutor = new InsertionPoolThreadExecutor(poolConfiguration,
+      poolExecutor = new InsertionCapturePoolThreadExecutor(poolConfiguration,
             interruptionSupport, interruptionConfig);
 
       insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer);

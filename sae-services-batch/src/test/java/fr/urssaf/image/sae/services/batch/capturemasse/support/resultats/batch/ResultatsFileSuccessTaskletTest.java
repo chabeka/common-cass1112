@@ -33,8 +33,8 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,7 +54,7 @@ public class ResultatsFileSuccessTaskletTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    @Before
    public void init() {
@@ -137,15 +137,15 @@ public class ResultatsFileSuccessTaskletTest {
             .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
       // Liste des documents intégrés
-      CaptureMasseIntegratedDocument doc1 = new CaptureMasseIntegratedDocument();
+      TraitementMasseIntegratedDocument doc1 = new TraitementMasseIntegratedDocument();
       doc1.setDocumentFile(null);
       doc1.setIdentifiant(UUID.randomUUID());
       doc1.setIndex(0);
-      CaptureMasseIntegratedDocument doc2 = new CaptureMasseIntegratedDocument();
+      TraitementMasseIntegratedDocument doc2 = new TraitementMasseIntegratedDocument();
       doc2.setDocumentFile(null);
       doc2.setIdentifiant(UUID.randomUUID());
       doc2.setIndex(1);
-      CaptureMasseIntegratedDocument doc3 = new CaptureMasseIntegratedDocument();
+      TraitementMasseIntegratedDocument doc3 = new TraitementMasseIntegratedDocument();
       doc3.setDocumentFile(null);
       doc3.setIdentifiant(UUID.randomUUID());
       doc3.setIndex(2);

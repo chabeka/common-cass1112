@@ -6,7 +6,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
 
 /**
@@ -33,7 +33,7 @@ public interface ResultatFileSuccessSupport {
     *           fichier sommaire.xml
     */
    void writeResultatsFile(File ecdeDirectory,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> integDocs,
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
          int initDocCount, boolean restitutionUuids, File sommaireFile);
 
    /**

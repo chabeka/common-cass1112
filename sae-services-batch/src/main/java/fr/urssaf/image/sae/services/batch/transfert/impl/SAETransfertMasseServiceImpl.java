@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -68,7 +68,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * Job de transfert de documents

@@ -30,6 +30,6 @@
    <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />
    <import resource="applicationContext-sae-services-restoremasse-main.xml" />
    <import resource="applicationContext-sae-services-modificationmasse-main.xml" />
-<import resource="applicationContext-sae-services-transfertmasse-main.xml" />
+   <import resource="applicationContext-sae-services-transfertmasse-main.xml" />
    
 </beans>

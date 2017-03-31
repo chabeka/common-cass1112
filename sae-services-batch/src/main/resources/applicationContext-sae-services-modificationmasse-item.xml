@@ -10,29 +10,17 @@
    
    Il contient la définition des beans pour le job Spring Batch de capture de masse. 
    -->
-
-
-   <bean id="Jaxb2UnMarshmaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-      <property name="schemas">
-         <array>
-            <value>classpath:xsd_som_res/document.xsd</value>
-         </array>
-      </property>
-      <property name="contextPath"
-         value="fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat" />
-   </bean>
-
    <bean id="modificationMasseFactory"
       class="fr.urssaf.image.sae.services.batch.modification.factory.ModificationMasseFactory" />
 
    <bean id="sommaireReader" scope="step"
       class="org.springframework.batch.item.xml.StaxEventItemReader"
       factory-bean="modificationMasseFactory" factory-method="getSommaireReader">
-      <constructor-arg value="#{jobParameters['modification.masse.sommaire']}" />
+      <constructor-arg value="#{jobParameters['capture.masse.sommaire']}" />
    </bean>
 
    <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
-      id="compositeControlProcessor">
+      id="compositeControlModificationProcessor">
       <property name="delegates">
          <list>
             <ref bean="convertMetaDocumentModificationProcessor" />

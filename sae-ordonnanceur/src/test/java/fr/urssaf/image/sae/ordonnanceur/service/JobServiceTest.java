@@ -22,7 +22,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.commons.exception.ParameterRuntimeException;
 import fr.urssaf.image.sae.commons.utils.ZookeeperUtils;
+import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.util.HostUtils;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -52,6 +54,11 @@ public class JobServiceTest {
     */
    private static final String PREFIXE_SEMAPHORE = "/Semaphore/";
 
+   /**
+    * Prefixe pour la clef cassandra.
+    */
+   private static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
+
    @Autowired
    private JobService jobService;
 
@@ -69,9 +76,13 @@ public class JobServiceTest {
 
    private JobToCreate job;
 
-   @Before
-   public void before() throws UnknownHostException {
+   private JobToCreate jobEncours;
 
+   @Before
+   public void before() throws UnknownHostException, JobDejaReserveException,
+         JobInexistantException, LockTimeoutException {
+
+      // Job
       UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
       job = new JobToCreate();
@@ -83,6 +94,17 @@ public class JobServiceTest {
 
       jobQueueService.addJob(job);
 
+      // Job en cours de traitement
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      jobEncours = new JobToCreate();
+      jobEncours.setIdJob(idJob);
+      jobEncours.setType("jobTest");
+      Map<String, String> jobParameters2 = new HashMap<String, String>();
+      jobParameters2.put(CODE_TRAITEMENT, CODE_TRAITEMENT);
+      jobEncours.setJobParameters(jobParameters2);
+
+      jobQueueService.addJob(jobEncours);
    }
 
    @After
@@ -93,6 +115,14 @@ public class JobServiceTest {
 
          jobQueueService.deleteJob(job.getIdJob());
       }
+
+      if (jobEncours != null) {
+
+         jobQueueService.deleteJob(jobEncours.getIdJob());
+         // jobsQueueSupport.supprimerJobDeJobsAllQueues(jobEncours.getIdJob(),
+         // PREFIXE_SEMAPHORE + CODE_TRAITEMENT, new Date().getTime());
+      }
+
    }
 
    @Test
@@ -224,19 +254,31 @@ public class JobServiceTest {
    }
 
    @Test
-   public void isJobCodeTraitementEnCoursOuFailure_success_true() {
+   public void isJobCodeTraitementEnCoursOuFailure_true() {
       // récupération des traitements à lancer
       List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
 
       Assert.assertTrue("la liste des job à lancer doit être non vide",
             !jobsAlancer.isEmpty());
       
-      Assert.assertTrue(jobService
-            .isJobCodeTraitementEnCoursOuFailure(jobsAlancer.get(0)));
+      JobQueue job = jobsAlancer.get(0);
+
+      try {
+         jobQueueService.reserveJob(jobEncours.getIdJob(),
+               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+               new Date());
+
+         jobQueueService.startingJob(jobEncours.getIdJob(), new Date());
+      } catch (Exception e) {
+         Assert.fail("Erreur non permise : " + e.getMessage());
+      }
+
+      Assert.assertTrue(jobService.isJobCodeTraitementEnCoursOuFailure(job));
+
    }
 
    @Test
-   public void isJobCodeTraitementEnCoursOuFailure_success_false() {
+   public void isJobCodeTraitementEnCoursOuFailure_false() {
       // récupération des traitements à lancer
       List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
 
@@ -254,6 +296,99 @@ public class JobServiceTest {
 
       job.setJobParameters(jobParams);
 
+      Assert.assertFalse(jobService.isJobCodeTraitementEnCoursOuFailure(job));
+   }
+
+   @Test(expected = OrdonnanceurRuntimeException.class)
+   public void isJobCodeTraitementEnCoursOuFailure_OrdonnanceurRuntimeException() {
+      // récupération des traitements à lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+
+      JobQueue job = jobsAlancer.get(0);
+
+      try {
+         jobQueueService.reserveJob(jobEncours.getIdJob(),
+               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+               new Date());
+      } catch (Exception e) {
+         Assert.fail("Erreur non permise : " + e.getMessage());
+      }
+
+      jobService.isJobCodeTraitementEnCoursOuFailure(job);
+   }
+
+   @Test
+   public void confirmerJobALancer_success() {// récupération des traitements à
+                                              // lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+
+      JobQueue job = jobsAlancer.get(0);
+
+      jobService.reserverCodeTraitementJobALancer(job);
+
+      List<JobRequest> jobRequestList = jobLectureService
+            .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT);
+
+      Assert.assertNotNull(jobRequestList);
+      Assert.assertFalse(jobRequestList.isEmpty());
+      Assert.assertTrue(jobRequestList.size() == 1);
+
+      JobRequest jobTrouve = jobRequestList.get(0);
+
+      Assert.assertEquals(job.getIdJob(), jobTrouve.getIdJob());
+   }
+
+   @Test
+   public void confirmerJobALancer_failed() {// récupération des traitements à
+                                             // lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+
+      JobQueue job = jobsAlancer.get(0);
+
+      try {
+         jobQueueService.reserveJob(jobEncours.getIdJob(),
+               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+               new Date());
+
+         jobQueueService.startingJob(jobEncours.getIdJob(), new Date());
+      } catch (Exception e) {
+         Assert.fail("Erreur non permise : " + e.getMessage());
+      }
+
+      jobService.reserverCodeTraitementJobALancer(job);
+
+      List<JobRequest> jobRequestList = jobLectureService
+            .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT);
+
+      Assert.assertNotNull(jobRequestList);
+      Assert.assertFalse(jobRequestList.isEmpty());
+      Assert.assertTrue(jobRequestList.size() == 1);
+
+      JobRequest jobTrouve = jobRequestList.get(0);
+
+      Assert.assertFalse(job.getIdJob().toString()
+            .equals(jobTrouve.getIdJob().toString()));
+   }
+
+   @Test(expected = ParameterRuntimeException.class)
+   public void confirmerJobALancer_ParameterRuntimeException() {
+      // Récupération des traitements à lancer
+      List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
+
+      Assert.assertTrue("la liste des job à lancer doit être non vide",
+            !jobsAlancer.isEmpty());
+
+      JobQueue job = jobsAlancer.get(0);
+
       String semaphore = PREFIXE_SEMAPHORE + CODE_TRAITEMENT;
 
       // Création du mutex
@@ -262,7 +397,8 @@ public class JobServiceTest {
       try {
          ZookeeperUtils.acquire(mutex, semaphore);
 
-         Assert.assertFalse(jobService.isJobCodeTraitementEnCoursOuFailure(job));
+         jobService.reserverCodeTraitementJobALancer(job);
+
       } finally {
          mutex.release();
       }

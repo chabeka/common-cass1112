@@ -120,6 +120,13 @@
                <xsd:documentation>Le fichier représentant le contenu du document à archiver</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
+         
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
 
          <!-- Les erreurs -->
          <xsd:element name="erreurs" type="somres:listeErreurType" minOccurs="1" maxOccurs="1">

@@ -21,7 +21,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -94,6 +93,28 @@ public class SommaireFormatValidationSupportTest {
          File sommaire = new File(ecdeDirectory, "sommaire.xml");
 
          ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         support.validationSommaire(sommaire);
+      } catch (IOException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      }
+
+   }
+
+   @Test
+   public void testSommaireValideNico() {
+
+      try {
+
+         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+
+         ClassPathResource resSommaire = new ClassPathResource(
+               "sommaire_transf.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
 

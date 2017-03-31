@@ -36,6 +36,12 @@ import fr.urssaf.image.sae.pile.travaux.model.JobState;
 @Service
 public class CoordinationServiceImpl implements CoordinationService {
 
+   /**
+    * Logger.
+    */
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(CoordinationServiceImpl.class);
+
    private final DecisionService decisionService;
 
    private final JobService jobService;
@@ -137,7 +143,8 @@ public class CoordinationServiceImpl implements CoordinationService {
       for (JobQueue jobQueue : listeTraitement) {
          if (isJobSelectionnableALancer(jobQueue)) {
             try {
-               traitement = this.jobService.confirmerJobALancer(jobQueue);
+               traitement = this.jobService
+                     .reserverCodeTraitementJobALancer(jobQueue);
                break;
             } catch (ParameterRuntimeException e) {
                // le job est déjà en cours de traitement, on cherche un nouveau
@@ -146,6 +153,9 @@ public class CoordinationServiceImpl implements CoordinationService {
                      "{} - échec lors de la confirmation de disponibilité du job à lancer - il est déjà en cours de traitement - Traitement d'un nouveau job en cours...",
                      new Object[] { PREFIX_LOG });
             }
+         } else {
+            LOGGER.info("{} - Le job " + jobQueue.getIdJob().toString()
+                  + " n'est pas sélectionné - Passage au job suivant");
          }
       }
 

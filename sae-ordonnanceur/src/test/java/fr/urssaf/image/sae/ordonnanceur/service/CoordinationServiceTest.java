@@ -88,7 +88,7 @@ public class CoordinationServiceTest {
             .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
             .andReturn(false).once();
 
-      EasyMock.expect(jobService.confirmerJobALancer(traitement))
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
             .andReturn(traitement).once();
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).once();
@@ -130,7 +130,7 @@ public class CoordinationServiceTest {
             .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
             .andReturn(false).once();
 
-      EasyMock.expect(jobService.confirmerJobALancer(traitement))
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
             .andReturn(traitement).once();
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
@@ -196,7 +196,7 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement)).andReturn(false)
       .once();
            
-       EasyMock.expect(jobService.confirmerJobALancer(traitement)).andReturn(traitement).once();
+       EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement)).andReturn(traitement).once();
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
 
@@ -364,7 +364,7 @@ public class CoordinationServiceTest {
             .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
             .andReturn(false).once();
 
-      EasyMock.expect(jobService.confirmerJobALancer(traitement))
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
             .andReturn(traitement).once();
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(false).once();
@@ -405,7 +405,7 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement)).andReturn(false)
       .once();
            
-      EasyMock.expect(jobService.confirmerJobALancer(traitement)).andThrow(
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement)).andThrow(
             new ParameterRuntimeException("error"));
 
       EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);

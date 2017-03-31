@@ -38,7 +38,7 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxReadUtils;
 import fr.urssaf.image.sae.commons.xml.StaxWriteUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
@@ -98,7 +98,7 @@ public class ResultatFileSuccessSupportImpl implements
    @Override
    public final void writeResultatsFile(
          final File ecdeDirectory,
-         final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> intDocuments,
+         final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
          final int documentsCount, boolean restitutionUuids, File sommaireFile) {
 
       LOGGER.debug(
@@ -129,7 +129,7 @@ public class ResultatFileSuccessSupportImpl implements
     * @return le résultat sous forme d'objet
     */
    private ResultatsType creerResultat(final int documentsCount,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> intDocuments,
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
          boolean restitutionsUuids, File sommaireFile) {
 
       final ResultatsType resultatsType = new ResultatsType();
@@ -149,7 +149,7 @@ public class ResultatFileSuccessSupportImpl implements
       // Si on attend la liste des documents intégrés avec l'UUID associé
       if (restitutionsUuids) {
          // Tri des documents intégrés par index
-         List<CaptureMasseIntegratedDocument> listeDocs = new ArrayList<CaptureMasseIntegratedDocument>(
+         List<TraitementMasseIntegratedDocument> listeDocs = new ArrayList<TraitementMasseIntegratedDocument>(
                intDocuments);
          Collections.sort(listeDocs,
                new CaptureMasseIntegratedDocumentComparateur());

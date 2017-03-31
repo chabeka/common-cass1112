@@ -283,7 +283,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     * 
     */
    @Override
-   protected final void afterExecute(final Runnable runnable,
+   protected void afterExecute(final Runnable runnable,
          final Throwable throwable) {
 
       String trcPrefix = "afterExecute()";
@@ -295,17 +295,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       if (throwable == null) {
 
-         if (StringUtils.isBlank(getPathName(document))) {
-            throw new CaptureMasseRuntimeException(
-                  "le nom de fichier est vide.");
-         }
-
-         addDocumentToIntegratedList(document, indexDocument);
-
-         getLogger().debug(
-               "{} - Stockage du document #{} ({}) uuid:{}",
-               new Object[] { trcPrefix, (indexDocument + 1),
-                     getPathName(document), getUuid(document) });
+         traitementAfterExecute(trcPrefix, document, indexDocument);
 
       } else {
 
@@ -316,6 +306,30 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       }
 
+   }
+
+   /**
+    * Traitement lors de la fin d'execution du thread.
+    * 
+    * @param trcPrefix
+    *           Trace préfixe
+    * @param document
+    *           Document
+    * @param indexDocument
+    *           Index du document
+    */
+   protected void traitementAfterExecute(String trcPrefix, BOT document,
+         int indexDocument) {
+      if (StringUtils.isBlank(getPathName(document))) {
+         throw new CaptureMasseRuntimeException("le nom de fichier est vide.");
+      }
+
+      addDocumentToIntegratedList(document, indexDocument);
+
+      getLogger().debug(
+            "{} - Stockage du document #{} ({}) uuid:{}",
+            new Object[] { trcPrefix, (indexDocument + 1),
+                  getPathName(document), getUuid(document) });
    }
 
    /**

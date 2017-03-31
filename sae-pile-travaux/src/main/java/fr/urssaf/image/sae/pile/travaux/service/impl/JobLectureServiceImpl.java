@@ -20,7 +20,6 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,7 +35,6 @@ import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 
 /**
@@ -132,14 +130,13 @@ public class JobLectureServiceImpl implements JobLectureService {
     * {@inheritDoc}
     */
    @Override
-   public final List<JobRequest> getNonTerminatedJobs(String hostname) {
+   public final List<JobRequest> getNonTerminatedJobs(String key) {
 
-      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(hostname);
+      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(key);
 
       List<JobRequest> jobRequests = new ArrayList<JobRequest>();
 
       for (JobQueue jobQueue : jobQueues) {
-
          JobRequest jobRequest = this.getJobRequest(jobQueue.getIdJob());
          jobRequests.add(jobRequest);
       }
@@ -249,57 +246,6 @@ public class JobLectureServiceImpl implements JobLectureService {
          }
       }
       
-      return list;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public List<JobRequest> getJobsFailureWithParameters(Keyspace keyspace,
-         String... parametersValues) {
-
-      List<JobRequest> list = new ArrayList<JobRequest>();
-      // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
-      // en requêtant directement dans la CF JobRequest
-      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(
-                  keyspace != null ? keyspace : jobRequestDao.getKeyspace(),
-                  UUIDSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
-      rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
-      rangeSlicesQuery.setRange(StringUtils.EMPTY, StringUtils.EMPTY, false,
-            MAX_JOB_ATTIBUTS);
-
-      JobRequestRowsIterator iterator = new JobRequestRowsIterator(
-            rangeSlicesQuery, 1000, jobRequestDao);
-      while (iterator.hasNext()) {
-         JobRequest jobRequest = iterator.next();
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
-         // effacé
-         if (jobRequest != null
-               && (JobState.FAILURE.name().equals(jobRequest.getState()))) {
-            // Si la liste des valeurs de parametres est renseignée, on recherche la valeur de parametre dans la liste du JobRequest.
-            if (jobRequest.getJobParameters() != null
-                  && !jobRequest.getJobParameters().isEmpty()
-                  && parametersValues != null && parametersValues.length > 0) {
-               for (String parametreVal : parametersValues) {
-                  if (jobRequest.getJobParameters().values()
-                        .contains(parametreVal)) {
-                     list.add(jobRequest);
-                  }
-               }
-            // Sinon, on ajoute le job à la liste de job en failure.
-            } else {
-               if (parametersValues == null
-                     || (parametersValues != null && parametersValues.length == 0)) {
-                  list.add(jobRequest);
-               }
-            }
-         }
-      }
-
       return list;
    }
 

@@ -11,7 +11,7 @@ import java.util.UUID;
  * Modèle objet pour les documents persistés dans DFCE
  * 
  */
-public class CaptureMasseIntegratedDocument implements Serializable {
+public class TraitementMasseIntegratedDocument implements Serializable {
 
    private static final long serialVersionUID = 1L;
 

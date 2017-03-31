@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -62,21 +62,21 @@ public class ResultatsFileEchecSupportTest {
    public void testEcdeDirectoryObligatoire() {
       support.writeResultatsFile(null, new File(""), new CaptureMasseErreur(),
             0, 0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testSommaireObligatoire() {
       support.writeResultatsFile(new File(""), null, new CaptureMasseErreur(),
             0, 0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testErreurObligatoire() {
       support.writeResultatsFile(new File(""), new File(""), null, 0, 0,
             Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test
@@ -110,7 +110,7 @@ public class ResultatsFileEchecSupportTest {
 
       support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21, 0,
             Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 
@@ -128,7 +128,7 @@ public class ResultatsFileEchecSupportTest {
          support.writeVirtualResultatsFile(null, new File(""),
                new CaptureMasseErreur(), 0, 0,
                Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -148,7 +148,7 @@ public class ResultatsFileEchecSupportTest {
          support.writeVirtualResultatsFile(new File(""), null,
                new CaptureMasseErreur(), 0, 0,
                Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -166,7 +166,7 @@ public class ResultatsFileEchecSupportTest {
       try {
          support.writeVirtualResultatsFile(new File(""), new File(""), null, 0,
                0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-               new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -212,7 +212,7 @@ public class ResultatsFileEchecSupportTest {
 
       support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3, 0,
             Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
-            new ConcurrentLinkedQueue<CaptureMasseIntegratedDocument>());
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 

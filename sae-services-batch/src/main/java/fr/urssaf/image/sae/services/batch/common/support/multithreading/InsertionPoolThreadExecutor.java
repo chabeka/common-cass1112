@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
+package fr.urssaf.image.sae.services.batch.common.support.multithreading;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -13,38 +13,40 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.InsertionMasseVirtualRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.AbstractPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
  * Pool de thread pour l'insertion en masse dans DFCE
  * 
  */
 @Component
-public class InsertionPoolThreadVirtualExecutor
+public class InsertionPoolThreadExecutor
       extends
-      AbstractPoolThreadExecutor<VirtualStorageDocument, CaptureMasseVirtualDocument>
+      AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
       implements Serializable, DisposableBean {
 
    private static final long serialVersionUID = 1L;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(InsertionCapturePoolThreadExecutor.class);
+         .getLogger(InsertionPoolThreadExecutor.class);
 
-   private final ConcurrentLinkedQueue<CaptureMasseVirtualDocument> integDocs;
+   private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
 
-   private InsertionMasseVirtualRuntimeException exception;
+   private InsertionMasseRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "InsertionPoolThreadExecutor()";
+   private static final String PREFIX_TRACE = "InsertionPoolModificationThreadExecutor()";
 
    /**
-    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
-    * : <br>
+    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments : <br>
     * <ul>
     * <li>
     * <code>corePoolSize</code> :
@@ -74,7 +76,7 @@ public class InsertionPoolThreadVirtualExecutor
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
    @Autowired
-   public InsertionPoolThreadVirtualExecutor(
+   public InsertionPoolThreadExecutor(
          InsertionPoolConfiguration poolConfiguration,
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {
@@ -83,10 +85,10 @@ public class InsertionPoolThreadVirtualExecutor
 
       LOGGER
             .debug(
-                  "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
+            "{} - Taille du pool de threads pour la modification en masse dans DFCE: {}",
                   new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
-      this.integDocs = new ConcurrentLinkedQueue<CaptureMasseVirtualDocument>();
+      this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
 
    }
 
@@ -94,7 +96,7 @@ public class InsertionPoolThreadVirtualExecutor
     * 
     * @return l'insertion levée lors du traitement de capture en masse
     */
-   public final InsertionMasseVirtualRuntimeException getInsertionMasseException() {
+   public final InsertionMasseRuntimeException getInsertionMasseException() {
       return this.exception;
    }
 
@@ -102,7 +104,7 @@ public class InsertionPoolThreadVirtualExecutor
     * 
     * @return liste des documents persistés dans DFCE
     */
-   public final ConcurrentLinkedQueue<CaptureMasseVirtualDocument> getIntegratedDocuments() {
+   public final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> getIntegratedDocuments() {
       return this.integDocs;
    }
 
@@ -112,20 +114,6 @@ public class InsertionPoolThreadVirtualExecutor
    @Override
    public final void destroy() throws Exception {
       this.shutdownNow();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void addDocumentToIntegratedList(
-         VirtualStorageDocument storageDocument, int indexDocument) {
-      CaptureMasseVirtualDocument document = new CaptureMasseVirtualDocument();
-      document.setIndex(indexDocument);
-      document.setUuid(storageDocument.getUuid());
-      document.setReferenceUUID(storageDocument.getReferenceFile().getUuid());
-
-      integDocs.add(document);
 
    }
 
@@ -133,21 +121,29 @@ public class InsertionPoolThreadVirtualExecutor
     * {@inheritDoc}
     */
    @Override
-   protected final InsertionMasseVirtualRuntimeException createError(int index,
-         VirtualStorageDocument document,
+   protected final void setInsertionMasseRuntimeException(
+         AbstractInsertionMasseRuntimeException exception) {
+      this.exception = (InsertionMasseRuntimeException) exception;
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final AbstractInsertionMasseRuntimeException createError(
+         int index, StorageDocument document,
          InterruptionTraitementException exception) {
-      return new InsertionMasseVirtualRuntimeException(index, document,
-            exception);
+      return new InsertionMasseRuntimeException(index, document, exception);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final VirtualStorageDocument getDocumentFromRunnable(
-         Runnable runnable) {
-      InsertionVirtualRunnable virtualRunnable = (InsertionVirtualRunnable) runnable;
-      return virtualRunnable.getStorageDocument();
+   protected final StorageDocument getDocumentFromRunnable(Runnable runnable) {
+      InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
+      return insertionRunnable.getStorageDocument();
    }
 
    /**
@@ -155,9 +151,35 @@ public class InsertionPoolThreadVirtualExecutor
     */
    @Override
    protected final int getIndexFromRunnable(Runnable runnable) {
-      InsertionVirtualRunnable virtualRunnable = (InsertionVirtualRunnable) runnable;
-      return virtualRunnable.getIndexDocument();
+      InsertionRunnable insertionRunnable = (InsertionRunnable) runnable;
+      return insertionRunnable.getIndexDocument();
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected final void addDocumentToIntegratedList(
+         StorageDocument storageDocument, int indexDocument) {
+
+      TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
+      document.setIdentifiant(storageDocument.getUuid());
+      document.setIndex(indexDocument);
+      integDocs.add(document);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void traitementAfterExecute(String trcPrefix,
+         StorageDocument document, int indexDocument) {
+      addDocumentToIntegratedList(document, indexDocument);
+
+      getLogger().debug("{} - Modification du document #{} uuid:{}",
+            new Object[] { trcPrefix, (indexDocument + 1), getUuid(document) });
+   }
+
 
    /**
     * {@inheritDoc}
@@ -171,25 +193,16 @@ public class InsertionPoolThreadVirtualExecutor
     * {@inheritDoc}
     */
    @Override
-   protected final String getPathName(VirtualStorageDocument document) {
-      return document.getFileName();
+   protected final String getPathName(StorageDocument document) {
+      return null;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final UUID getUuid(VirtualStorageDocument document) {
+   protected final UUID getUuid(StorageDocument document) {
       return document.getUuid();
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void setInsertionMasseRuntimeException(
-         AbstractInsertionMasseRuntimeException exception) {
-      this.exception = (InsertionMasseVirtualRuntimeException) exception;
-
-   }
 }

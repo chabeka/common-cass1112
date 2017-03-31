@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.batch;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -31,7 +32,7 @@ AbstractCaptureMasseTasklet {
          + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
          + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
-   private static final String LIBELLE_BUL004 = "La capture de masse en mode "
+   private static final String LIBELLE_BUL004 = "Le job {0} en mode "
          + "\"Partiel\" a été interrompue. Une procédure d'exploitation a été "
          + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
@@ -63,6 +64,8 @@ AbstractCaptureMasseTasklet {
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);
 
+      String jobName = chunkContext.getStepContext().getStepExecution()
+            .getJobExecution().getJobInstance().getJobName();
       /*
        * On vérifie qu'on est mode tout ou rien et qu'il reste des rollback à
        * effectuer. Si c'est le cas on change le code possible fonctionnel en
@@ -83,7 +86,8 @@ AbstractCaptureMasseTasklet {
          erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
       } else if (!isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
          erreur.getListCodes().set(0, Constantes.ERR_BUL004);
-         erreur.getListException().set(0, new Exception(LIBELLE_BUL004));
+         erreur.getListException().set(0,
+               new Exception(MessageFormat.format(LIBELLE_BUL004, jobName)));
       }
 
       final File ecdeDirectory = sommaireFile.getParentFile();

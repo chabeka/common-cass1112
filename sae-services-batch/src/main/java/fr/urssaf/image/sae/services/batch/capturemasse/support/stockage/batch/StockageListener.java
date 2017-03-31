@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -26,13 +26,13 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  */
 @Component
 public class StockageListener extends
-      AbstractStockageListener<StorageDocument, CaptureMasseIntegratedDocument> {
+      AbstractStockageListener<StorageDocument, TraitementMasseIntegratedDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StockageListener.class);
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * Action exécutée avant chaque process
@@ -53,12 +53,12 @@ public class StockageListener extends
    @Override
    protected final ConcurrentLinkedQueue<UUID> getIntegratedDocuments() {
 
-      final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> list = executor
+      final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> list = executor
             .getIntegratedDocuments();
 
       final ConcurrentLinkedQueue<UUID> listUuid = new ConcurrentLinkedQueue<UUID>();
       if (CollectionUtils.isNotEmpty(list)) {
-         for (CaptureMasseIntegratedDocument document : list) {
+         for (TraitementMasseIntegratedDocument document : list) {
             listUuid.add(document.getIdentifiant());
          }
       }
@@ -78,7 +78,7 @@ public class StockageListener extends
     * {@inheritDoc}
     */
    @Override
-   protected final InsertionPoolThreadExecutor getExecutor() {
+   protected final InsertionCapturePoolThreadExecutor getExecutor() {
       return executor;
    }
 }

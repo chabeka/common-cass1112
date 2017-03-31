@@ -24,11 +24,12 @@ public interface SAEModificationMasseService {
     * @param idTraitement
     *           identifiant unique du traitement
     * @param hash
-    *            Le hash du fichier sommaire.xml
-    * @param typeHash 
-    *            algorithme de hash utilisé                     
+    *           Le hash du fichier sommaire.xml
+    * @param typeHash
+    *           algorithme de hash utilisé
     * @return le status du traitement
     */
    @PreAuthorize("hasRole('modification_masse')")
-   ExitTraitement modificationMasse(URI sommaireURI, UUID idTraitement, String hash, String typeHash);
+   ExitTraitement modificationMasse(URI sommaireURI, UUID idTraitement,
+         String hash, String typeHash);
 }

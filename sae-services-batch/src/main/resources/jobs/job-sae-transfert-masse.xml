@@ -35,11 +35,11 @@
 
          <next on="FAILED" to="finBloquant" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="*" to="controleFormatSommaireStep" />
+         <next on="*" to="controleFormatSommaireTransfertStep" />
 
       </step>
 
-      <step id="controleFormatSommaireStep">
+      <step id="controleFormatSommaireTransfertStep">
          <tasklet ref="checkFormatFileSommaireTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
@@ -50,10 +50,10 @@
 
          <next on="FAILED" to="finBloquant" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="*" to="compteElements" />
+         <next on="*" to="compteElementsTransfert" />
       </step>
 
-      <step id="compteElements">
+      <step id="compteElementsTransfert">
          <tasklet ref="countSommaireDocumentsTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />

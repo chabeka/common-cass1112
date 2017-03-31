@@ -200,10 +200,16 @@ public class TraitementAsynchroneServiceImpl implements
                         "avec succès", "sur un échec"),
                   exitTraitement.getExitMessage() });
 
+      String codeTraitement = null;
+      if (job.getJobParameters() != null) {
+         codeTraitement = job.getJobParameters()
+               .get(Constantes.CODE_TRAITEMENT);
+      }
+
       // le traitement est terminé
       // on met à jour la pile des travaux
       jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
-            exitTraitement.getExitMessage());
+            exitTraitement.getExitMessage(), codeTraitement);
    }
 
    /**

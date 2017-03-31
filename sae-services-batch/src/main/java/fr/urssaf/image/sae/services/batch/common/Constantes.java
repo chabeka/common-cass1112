@@ -97,7 +97,8 @@ public final class Constantes {
    public static final String ERR_BUL003 = "SAE-CA-BUL003";
 
    /**
-    * Code Erreur pour la capture en masse en mode partiel qui a été interrompue
+    * Code Erreur pour la modification en masse en mode partiel qui a été
+    * interrompue
     */
    public static final String ERR_BUL004 = "SAE-CA-BUL004";
 

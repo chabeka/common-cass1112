@@ -253,23 +253,8 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       
       try {
 
-         // On récupère la liste de toutes les méta du référentiel sauf la
-         // Note, le Gel et la durée de conservation inutile pour les droits
-         // et générant des accès DFCE inutiles
-         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-         Map<String, MetadataReference> listeAllMeta = referenceDAO
-               .getAllMetadataReferencesPourVerifDroits();
-
-         for (String mapKey : listeAllMeta.keySet()) {
-            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                  .getShortCode()));
-         }
-
-         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-
-         listeStorageMeta = this.getStorageServiceProvider()
-               .getStorageDocumentService()
-               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+         listeStorageMeta = this.getListeStorageMetadatas(idArchive);
+         
          if (listeStorageMeta.size() == 0) {
             String message = StringUtils
                   .replace(
@@ -315,6 +300,31 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          
    }
 
+   /**
+    * {@inheritDoc}
+    * 
+    */
+   @Override
+   public List<StorageMetadata> getListeStorageMetadatas(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx {
+      // On récupère la liste de toutes les méta du référentiel sauf la
+      // Note, le Gel et la durée de conservation inutile pour les droits
+      // et générant des accès DFCE inutiles
+      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      Map<String, MetadataReference> listeAllMeta = referenceDAO
+            .getAllMetadataReferencesPourVerifDroits();
+
+      for (String mapKey : listeAllMeta.keySet()) {
+         allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+               .getShortCode()));
+      }
+
+      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+      return this.getStorageServiceProvider()
+            .getStorageDocumentService()
+            .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+   }
 
    /**
     * {@inheritDoc}
@@ -409,6 +419,5 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       
       return storageDocument;
    }
-   
 
 }

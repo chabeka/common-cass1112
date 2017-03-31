@@ -129,7 +129,8 @@ public class JobQueueServiceImpl implements JobQueueService {
     */
    @Override
    public final void endingJob(UUID idJob, boolean succes,
-         Date dateFinTraitement, String message) throws JobInexistantException {
+         Date dateFinTraitement, String message, String codeTraitement)
+         throws JobInexistantException {
 
       JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
       // Vérifier que le job existe
@@ -158,8 +159,12 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
             dateFinTraitement, succes, message, clock);
 
-      // Ecriture dans la CF "JobQueues"
+      // Ecriture dans la CF "JobQueues" pour hostname
       this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
+
+      // Ecriture dans la CF "JobQueues" pour semaphore code traitement
+      this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJob, succes,
+            codeTraitement, clock);
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "FIN DU JOB";
@@ -175,7 +180,7 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public final void endingJob(UUID idJob, boolean succes,
          Date dateFinTraitement) throws JobInexistantException {
-      endingJob(idJob, succes, dateFinTraitement, null);
+      endingJob(idJob, succes, dateFinTraitement, null, null);
    }
 
    /**
@@ -680,6 +685,7 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public void reserverJobDansJobsQueues(UUID idJob, String hostname,
          String type, Map<String, String> jobParameters) {
-      this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, null);
+      long clock = jobClockSupport.currentCLock();
+      this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, clock);
    }
 }

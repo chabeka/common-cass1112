@@ -201,18 +201,6 @@ public class TracesServicesModificationMasseSupport {
          LOGGER.debug("{} - Aucune exception sur les documents", prefix);
       }
 
-      // Les exceptions survenues lors du rollback
-      LOGGER.debug("{} - Traitement des exceptions du rollback", prefix);
-      ConcurrentLinkedQueue<Exception> exceptionsRoll = getRollbackExceptions(jobExecution);
-      nbEx = sizeCollection(exceptionsRoll);
-      sBuilder.append(String.format("Exception(s) du rollback : %s\r\n", nbEx));
-      if (nbEx > 0) {
-         LOGGER.debug("{} - {} exception(s) du rollback", prefix, nbEx);
-         addExceptions2(exceptionsRoll, sBuilder);
-      } else {
-         LOGGER.debug("{} - Aucune exception du rollback", prefix);
-      }
-
       // Traces
       LOGGER.debug("{} - Fin", prefix);
 
