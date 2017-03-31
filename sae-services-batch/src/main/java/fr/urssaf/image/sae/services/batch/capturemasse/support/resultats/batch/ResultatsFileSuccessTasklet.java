@@ -51,6 +51,7 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
             .getJobExecutionContext();
 
       final String path = (String) map.get(Constantes.SOMMAIRE_FILE);
+      final String modeBatch = (String) map.get(Constantes.BATCH_MODE_NOM);
 
       final File sommaireFile = new File(path);
       final File ecdeDirectory = sommaireFile.getParentFile();
@@ -68,7 +69,7 @@ public class ResultatsFileSuccessTasklet implements Tasklet {
                .get(Constantes.RESTITUTION_UUIDS));
       }
       successSupport.writeResultatsFile(ecdeDirectory, listIntDocs, initCount,
-            restitutionUuid, sommaireFile);
+            restitutionUuid, sommaireFile, modeBatch);
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 

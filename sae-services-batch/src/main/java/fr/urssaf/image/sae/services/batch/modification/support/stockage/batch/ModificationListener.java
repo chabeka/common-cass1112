@@ -27,8 +27,8 @@ import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 
 /**
  * Ecouteur pour la partie persistance des documents du fichier sommaire.xml
@@ -43,7 +43,7 @@ public class ModificationListener extends AbstractListener {
    private static final int THREAD_SLEEP = 30000;
 
    @Autowired
-   private InsertionCapturePoolThreadExecutor executor;
+   private InsertionPoolThreadExecutor executor;
 
    /**
     * Action exécutée avant chaque process

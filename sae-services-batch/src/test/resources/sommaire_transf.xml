@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<som:sommaire
+   xmlns:som="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <!-- Type de traitement de masse - Le transfert de masse fonctionne uniquement en mode PARTIEL -->
+   <som:batchMode>PARTIEL</som:batchMode>
+   
+   <!-- Liste des documents a archiver -->
+   <som:documentsMultiAction>
+      
+      <!-- Transfert d'un document + modification de metadonnees au moment du transfert en GNS -->
+      <somres:document>
+         <somres:objetNumerique>
+            <somres:UUID>5A06E1C2-048A-4E46-B7F2-9A93D48300AB</somres:UUID>
+         </somres:objetNumerique>
+         <somres:metadonnees>
+            <somres:metadonnee>
+                  <somres:code>CodeRND</somres:code>
+                  <somres:valeur>2.3.1.1.12</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+                  <somres:code>Siren</somres:code>
+                  <somres:valeur>123456789</somres:valeur>
+            </somres:metadonnee>
+         </somres:metadonnees>
+         <somres:typeAction>TRANSFERT</somres:typeAction>
+      </somres:document>
+
+      <!-- Transfert de document dans modification de metadonnees -->
+      <somres:document>
+         <somres:objetNumerique>
+            <somres:UUID>5B06E4C2-04YA-4E46-B7F2-9A93D48300CD</somres:UUID>
+         </somres:objetNumerique>
+		 <somres:metadonnees/>
+         <somres:typeAction>TRANSFERT</somres:typeAction>
+      </somres:document>
+      
+      <!-- Suppression de document -->
+      <somres:document>
+         <somres:objetNumerique>
+            <somres:UUID>7d2887c8-1a03-40f5-981b-1e7c06e1f52d</somres:UUID>
+         </somres:objetNumerique>
+         <somres:metadonnees/>
+         <somres:typeAction>SUPPRESSION</somres:typeAction>
+      </somres:document>
+
+
+   </som:documentsMultiAction>
+
+   <!-- Liste des documents virtuels a transferer - Non prise en charge pour le transfert de masse -->
+   <som:documentsVirtuels />
+
+</som:sommaire>

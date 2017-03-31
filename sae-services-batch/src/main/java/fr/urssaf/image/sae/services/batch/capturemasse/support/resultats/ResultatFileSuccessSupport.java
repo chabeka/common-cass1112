@@ -6,8 +6,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 import java.io.File;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 
 /**
  * Support pour l'écriture des fichiers resultats.xml pour les traitements de
@@ -31,10 +31,13 @@ public interface ResultatFileSuccessSupport {
     *           leur UUID dans le resultat.xml
     * @param sommaireFile
     *           fichier sommaire.xml
+    * @param modeBatch
+    *           le mode d'execution du batch (TOUT_OU_RIEN ou PARTIEL)
     */
    void writeResultatsFile(File ecdeDirectory,
          ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
-         int initDocCount, boolean restitutionUuids, File sommaireFile);
+         int initDocCount, boolean restitutionUuids, File sommaireFile,
+         String modeBatch);
 
    /**
     * Service permettant l'écriture d'un fichier resultats.xml dans l'ECDE pour

@@ -38,8 +38,8 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxReadUtils;
 import fr.urssaf.image.sae.commons.xml.StaxWriteUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.IntegratedDocumentType;
@@ -92,21 +92,19 @@ public class ResultatFileSuccessSupportImpl implements
    private static final String NUM_PAGE_DEBUT = "numeroPageDebut";
    private static final String NUM_PAGE = "nombreDePages";
 
-   /**
-    * {@inheritDoc}
-    */
+
    @Override
-   public final void writeResultatsFile(
-         final File ecdeDirectory,
-         final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
-         final int documentsCount, boolean restitutionUuids, File sommaireFile) {
+   public void writeResultatsFile(File ecdeDirectory,
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
+         int initDocCount, boolean restitutionUuids, File sommaireFile,
+         String modeBatch) {
 
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en réussite)",
             PREFIX_TRC);
 
-      final ResultatsType resultatsType = creerResultat(documentsCount,
-            intDocuments, restitutionUuids, sommaireFile);
+      final ResultatsType resultatsType = creerResultat(initDocCount,
+            integDocs, restitutionUuids, sommaireFile, modeBatch);
 
       final ObjectFactory factory = new ObjectFactory();
       final JAXBElement<ResultatsType> resultat = factory
@@ -124,16 +122,17 @@ public class ResultatFileSuccessSupportImpl implements
     * 
     * @param documentsCount
     *           nombre de documents initial
+    * @param modeBatch
     * @param intDocCount
     *           nombre de documents intégrés
     * @return le résultat sous forme d'objet
     */
    private ResultatsType creerResultat(final int documentsCount,
          ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
-         boolean restitutionsUuids, File sommaireFile) {
+         boolean restitutionsUuids, File sommaireFile, String modeBatch) {
 
       final ResultatsType resultatsType = new ResultatsType();
-      resultatsType.setBatchMode(BatchModeType.TOUT_OU_RIEN);
+      resultatsType.setBatchMode(BatchModeType.fromValue(modeBatch));
       resultatsType.setInitialDocumentsCount(documentsCount);
       resultatsType.setInitialVirtualDocumentsCount(0);
       resultatsType.setIntegratedDocumentsCount(intDocuments.size());
@@ -618,4 +617,5 @@ public class ResultatFileSuccessSupportImpl implements
       staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES, NS_RES);
       staxUtils.addEndTag("nonIntegratedVirtualDocuments", PX_RES, NS_RES);
    }
+
 }
