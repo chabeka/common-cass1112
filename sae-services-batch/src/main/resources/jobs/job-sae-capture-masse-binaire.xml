@@ -169,7 +169,7 @@
       </step>
 
       <step id="finSucces">
-         <tasklet ref="resultatsFileSuccessTasklet">
+         <tasklet ref="resultatsFileCaptureSuccessTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileSuccessListener" />

@@ -688,4 +688,5 @@ public class JobQueueServiceImpl implements JobQueueService {
       long clock = jobClockSupport.currentCLock();
       this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, clock);
    }
+
 }

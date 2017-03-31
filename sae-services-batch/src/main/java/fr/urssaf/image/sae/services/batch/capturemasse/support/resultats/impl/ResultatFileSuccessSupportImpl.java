@@ -86,6 +86,7 @@ public class ResultatFileSuccessSupportImpl implements
    }
 
    private static final String CHEMIN_FICHIER = "cheminEtNomDuFichier";
+   private static final String UUID = "UUID";
    private static final String METADONNEE = "metadonnee";
    private static final String CODE = "code";
    private static final String VALEUR = "valeur";
@@ -210,6 +211,15 @@ public class ResultatFileSuccessSupportImpl implements
                               ERREUR_VALEUR_VIDE);
                      }
                      objetNumerique.setCheminEtNomDuFichier(xmlEventTmp
+                           .asCharacters().getData());
+                     integratedDocumentType.setObjetNumerique(objetNumerique);
+                  } else if (UUID.equals(name)) {
+                     final XMLEvent xmlEventTmp = reader.peek();
+                     if (!xmlEventTmp.isCharacters()) {
+                        throw new CaptureMasseRuntimeException(
+                              ERREUR_VALEUR_VIDE);
+                     }
+                     objetNumerique.setUUID(xmlEventTmp
                            .asCharacters().getData());
                      integratedDocumentType.setObjetNumerique(objetNumerique);
                   } else if (METADONNEE.equals(name)) {

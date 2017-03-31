@@ -83,7 +83,7 @@
          <next on="*" to="finBloquant" />
       </step>
 
-<!--       controle et transfert ou suppression pour document a ajouter ici -->
+      <!-- controle et transfert ou suppression pour document a ajouter ici -->
       <step id="transfertDocuments">
          <tasklet>
             <chunk reader="sommaireReaderTransfert" processor="compositeProcessorTransfert"

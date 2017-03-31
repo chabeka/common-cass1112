@@ -381,7 +381,7 @@ public class JobsQueueSupport {
 
          // Opération 1 : Suppression du job de la liste de la file d'attente
          this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-               codeTraitement, idJob, clock);
+               "semaphore_" + codeTraitement, idJob, clock);
 
          // Exécution de l'opération
          mutator.execute();
