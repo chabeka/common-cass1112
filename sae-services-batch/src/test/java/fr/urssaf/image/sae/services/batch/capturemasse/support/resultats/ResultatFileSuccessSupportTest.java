@@ -28,9 +28,9 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatFileSuccessSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.common.Constantes.BATCH_MODE;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -63,7 +63,7 @@ public class ResultatFileSuccessSupportTest {
    public void testEcdeDirectoryObligatoire() {
       support.writeResultatsFile(null,
             new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 0,
-            false, null);
+            false, null, BATCH_MODE.TOUT_OU_RIEN.name());
       Assert.fail("Vérification aspect doit se déclencher");
    }
 
@@ -72,7 +72,7 @@ public class ResultatFileSuccessSupportTest {
    public void testDocumentsCountObligatoire() {
       support.writeResultatsFile(new File("fichier"),
             new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), -1,
-            false, null);
+            false, null, BATCH_MODE.TOUT_OU_RIEN.name());
       Assert.fail("Vérification aspect doit se déclencher");
    }
 
@@ -81,7 +81,7 @@ public class ResultatFileSuccessSupportTest {
    public void testSommaireFileObligatorie() {
       support.writeResultatsFile(new File("fichier"),
             new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 10,
-            true, null);
+            true, null, BATCH_MODE.TOUT_OU_RIEN.name());
       Assert.fail("Vérification aspect doit se déclencher");
 
    }
@@ -93,7 +93,7 @@ public class ResultatFileSuccessSupportTest {
 
       support.writeResultatsFile(ecdeDirectory,
             new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 10,
-            false, null);
+            false, null, BATCH_MODE.TOUT_OU_RIEN.name());
 
       File resultatsFile = new File(ecdeDirectory, "resultats.xml");
 
@@ -134,7 +134,8 @@ public class ResultatFileSuccessSupportTest {
          doc3.setIndex(2);
          clq.add(doc3);
 
-         support.writeResultatsFile(ecdeDirectory, clq, 10, true, sommaire);
+         support.writeResultatsFile(ecdeDirectory, clq, 10, true, sommaire,
+               BATCH_MODE.TOUT_OU_RIEN.name());
 
          File resultatsFile = new File(ecdeDirectory, "resultats.xml");
 
