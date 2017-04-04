@@ -1,12 +1,7 @@
-/**
- * 
- */
-package fr.urssaf.image.sae.services.batch.modification.support.stockage.batch;
+package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -15,14 +10,11 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.annotation.AfterChunk;
 import org.springframework.batch.core.annotation.BeforeChunk;
-import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
@@ -30,33 +22,17 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 
-/**
- * Ecouteur pour la partie persistance des documents du fichier sommaire.xml
- * 
- */
 @Component
-public class ModificationListener extends AbstractListener {
+public class TransfertListener extends AbstractListener {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(ModificationListener.class);
+         .getLogger(TransfertListener.class);
 
    private static final int THREAD_SLEEP = 30000;
 
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
-   /**
-    * Action exécutée avant chaque process
-    * 
-    * @param untypedType
-    *           le document
-    */
-   @BeforeProcess
-   public final void beforeProcess(
-         final JAXBElement<UntypedDocument> untypedType) {
-
-      incrementCount();
-   }
 
    /**
     * @return la liste identifiants des documents traités
@@ -81,6 +57,7 @@ public class ModificationListener extends AbstractListener {
     */
    @Override
    protected final void specificInitOperations() {
+      System.out.println("SPECIFICINITOP");
       getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
    }
 
@@ -92,7 +69,7 @@ public class ModificationListener extends AbstractListener {
     */
    @OnReadError
    public final void logReadError(final Exception exception) {
-
+      System.out.println("LOG READ ERREUR");
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
       getExceptionErreurListe().add(new Exception(exception.getMessage()));
@@ -113,7 +90,7 @@ public class ModificationListener extends AbstractListener {
          final Exception exception) {
 
       LOGGER.warn("erreur lors du traitement de transfert", exception);
-
+      
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
@@ -126,6 +103,7 @@ public class ModificationListener extends AbstractListener {
     */
    @BeforeChunk
    protected final void beforeChunk() {
+      System.out.println("BEFORE CHUNK !");
       while (Boolean.TRUE.equals(executor.getIsInterrupted())) {
          try {
             LOGGER.debug("en attente de reprise de travail");
@@ -141,25 +119,13 @@ public class ModificationListener extends AbstractListener {
     */
    @AfterChunk
    public final void afterChunk() {
-
+      System.out.println("AFTER CHUNK !");
       AbstractInsertionMasseRuntimeException exception = executor
             .getInsertionMasseException();
 
       if (exception != null) {
          throw exception;
       }
-   }
-
-   /**
-    * Incrémente le nombre de document traité de 1
-    */
-   protected final void incrementCount() {
-      ExecutionContext context = getStepExecution().getExecutionContext();
-
-      int valeur = context.getInt(Constantes.CTRL_INDEX);
-      valeur++;
-
-      context.put(Constantes.CTRL_INDEX, valeur);
    }
 
    /**
@@ -171,6 +137,7 @@ public class ModificationListener extends AbstractListener {
     */
    @Override
    protected final ExitStatus specificAfterStepOperations() {
+      System.out.println("SPECIFICAFTEROP");
       ExitStatus status = getStepExecution().getExitStatus();
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
@@ -227,15 +194,6 @@ public class ModificationListener extends AbstractListener {
 
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix);
 
-         String idTraitement = (String) getStepExecution().getJobParameters()
-               .getString(Constantes.ID_TRAITEMENT);
-         String codeTraitement = (String) getStepExecution().getJobParameters()
-               .getString(Constantes.CODE_TRAITEMENT);
-         LOGGER.error(
-
-               "Le sémaphore du code traitement {} du traitement de masse n°{} doit être libéré par une procédure d'exploitation",
-               codeTraitement, idTraitement);
-
          getStepExecution().getJobExecution().getExecutionContext()
                .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
@@ -269,4 +227,5 @@ public class ModificationListener extends AbstractListener {
 
       return status;
    }
+
 }

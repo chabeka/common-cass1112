@@ -149,6 +149,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          System.out.println("WRITER WRITE ");
          if (!isdocumentInError) {
+            System.out.println("DOCUMENT PAS EN ERREUR");
             command = new InsertionRunnable(getStepExecution().getReadCount()
                   + index, storageDocument, this);
 
