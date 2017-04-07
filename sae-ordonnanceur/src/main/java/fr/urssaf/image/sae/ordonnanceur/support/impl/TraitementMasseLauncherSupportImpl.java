@@ -33,9 +33,11 @@ public class TraitementMasseLauncherSupportImpl implements
 
    private final File saeConfigResource;
 
-   private static final String XMX = "500m";
+   private final String xmx_value;
 
-   private static final String XMS = "500m";
+   private final String xms_value;
+
+   private static final String MEMORY_VALUE = "500m";
 
    /***
     * 
@@ -45,12 +47,15 @@ public class TraitementMasseLauncherSupportImpl implements
     *           fichier de configuration générale du SAE
     */
    public TraitementMasseLauncherSupportImpl(String executable,
+         String xms_value, String xmx_value,
          Resource saeConfigResource) {
 
       Assert.notNull(executable, "'executable' is required");
       Assert.notNull(saeConfigResource, "'saeConfigResource' is required");
 
       this.executable = executable;
+      this.xms_value = StringUtils.isBlank(xms_value) ? MEMORY_VALUE : xms_value;
+      this.xmx_value = StringUtils.isBlank(xmx_value) ? MEMORY_VALUE : xmx_value;
       try {
          this.saeConfigResource = saeConfigResource.getFile();
       } catch (IOException e) {
@@ -85,10 +90,10 @@ public class TraitementMasseLauncherSupportImpl implements
             idTraitement);
 
       // remplacement de _XMX_TO_REPLACE_
-      command = StringUtils.replace(command, "_XMX_TO_REPLACE_", XMX);
+      command = StringUtils.replace(command, "_XMX_TO_REPLACE_", xmx_value);
 
       // remplacement de _XMS_TO_REPLACE_
-      command = StringUtils.replace(command, "_XMS_TO_REPLACE_", XMS);
+      command = StringUtils.replace(command, "_XMS_TO_REPLACE_", xms_value);
 
       // les trois arguments sont dans l'ordre
       // 1 - le nom de l'opération : traitementMasse

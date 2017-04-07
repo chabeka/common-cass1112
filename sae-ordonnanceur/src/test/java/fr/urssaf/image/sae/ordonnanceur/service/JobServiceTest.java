@@ -99,7 +99,7 @@ public class JobServiceTest {
 
       jobEncours = new JobToCreate();
       jobEncours.setIdJob(idJob);
-      jobEncours.setType("jobTest");
+      jobEncours.setType("jobTestEnCours");
       Map<String, String> jobParameters2 = new HashMap<String, String>();
       jobParameters2.put(CODE_TRAITEMENT, CODE_TRAITEMENT);
       jobEncours.setJobParameters(jobParameters2);
@@ -112,15 +112,11 @@ public class JobServiceTest {
 
       // suppression du traitement
       if (job != null) {
-
          jobQueueService.deleteJob(job.getIdJob());
       }
 
       if (jobEncours != null) {
-
          jobQueueService.deleteJob(jobEncours.getIdJob());
-         // jobsQueueSupport.supprimerJobDeJobsAllQueues(jobEncours.getIdJob(),
-         // PREFIXE_SEMAPHORE + CODE_TRAITEMENT, new Date().getTime());
       }
 
    }
@@ -311,6 +307,9 @@ public class JobServiceTest {
 
       try {
          jobQueueService.reserveJob(jobEncours.getIdJob(),
+               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+               new Date());
+         jobQueueService.reserveJob(job.getIdJob(),
                PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
                new Date());
       } catch (Exception e) {

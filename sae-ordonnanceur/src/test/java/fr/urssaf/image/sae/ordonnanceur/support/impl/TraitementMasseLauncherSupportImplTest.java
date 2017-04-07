@@ -18,6 +18,8 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class TraitementMasseLauncherSupportImplTest {
 
+   private static final String MEMORY_VALUE = "500m";
+
    @Test
    public void constructeur_failure_saeconfig_notfound() {
 
@@ -25,7 +27,8 @@ public class TraitementMasseLauncherSupportImplTest {
             "/sae-config.properties");
 
       try {
-         new TraitementMasseLauncherSupportImpl("executable", saeConfigResource);
+         new TraitementMasseLauncherSupportImpl("executable", MEMORY_VALUE,
+               MEMORY_VALUE, saeConfigResource);
 
          Assert
                .fail("une exception de type OrdonnanceurRuntimeException doit être levée");
@@ -51,7 +54,7 @@ public class TraitementMasseLauncherSupportImplTest {
             .getProperty("sae.traitementmasse.executable");
 
       TraitementMasseLauncherSupportImpl launcher = new TraitementMasseLauncherSupportImpl(
-            executable, saeConfigResource);
+            executable, MEMORY_VALUE, MEMORY_VALUE, saeConfigResource);
 
       String parameters = "ecde://ecde.cer69.recouv/sommaire.xml";
       UUID idJob = UUID.randomUUID();
