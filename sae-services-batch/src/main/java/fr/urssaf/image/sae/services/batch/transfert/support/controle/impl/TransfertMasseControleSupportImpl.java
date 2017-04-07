@@ -15,9 +15,16 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
+import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
@@ -52,6 +59,9 @@ public class TransfertMasseControleSupportImpl implements
    @Autowired
    private MappingDocumentService mappingDocumentService;
 
+   @Autowired
+   private SaeControleMetadataService controleMetadataService;
+
    /**
     * Provider de service pour la connexion DFCE de la GNS
     */
@@ -78,22 +88,38 @@ public class TransfertMasseControleSupportImpl implements
     * @throws TransfertException
     * @throws MappingFromReferentialException
     * @throws InvalidSAETypeException
+    * @throws MetadataValueNotInDictionaryEx
+    * @throws RequiredArchivableMetadataEx
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    * @throws DuplicatedMetadataEx
+    * @throws UnknownMetadataEx
     */
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
          throws ReferentialException, SearchingServiceEx,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
          TransfertException, InvalidSAETypeException,
-         MappingFromReferentialException {
+         MappingFromReferentialException, UnknownMetadataEx,
+         DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
 
       String trcPrefix = "controleSAEDocumentTransfert()";
       LOGGER.debug("{} - début", trcPrefix);
 
       List<StorageMetadata> StorageMetas = new ArrayList<StorageMetadata>();
       if (!CollectionUtils.isEmpty(item.getUMetadatas())) {
-         List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
-               .untypedMetadatasToSaeMetadatas(item.getUMetadatas());
-         StorageMetas = mappingDocumentService
-               .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
+
+         controleMetadataService.checkUntypedMetadatas(item.getUMetadatas());
+
+         try {
+            List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
+                  .untypedMetadatasToSaeMetadatas(item.getUMetadatas());
+            StorageMetas = mappingDocumentService
+                  .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
+         } catch (InvalidSAETypeException e) {
+            throw new InvalidSAETypeException(e);
+         } catch (MappingFromReferentialException e) {
+            throw new MappingFromReferentialException(e);
+         }
       }
 
       StorageDocument document = transfertService

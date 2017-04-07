@@ -3,6 +3,11 @@ package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+
+
+
+import javax.xml.bind.JAXBElement;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +15,7 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.annotation.AfterChunk;
 import org.springframework.batch.core.annotation.BeforeChunk;
+import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +27,9 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exceptio
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+
+import org.springframework.batch.item.ExecutionContext;
 
 @Component
 public class TransfertListener extends AbstractListener {
@@ -33,7 +42,32 @@ public class TransfertListener extends AbstractListener {
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
+   /**
+    * Action exécutée avant chaque process
+    * 
+    * @param untypedType
+    *           le document
+    */
+   @BeforeProcess
+   public final void beforeProcess(
+         final JAXBElement<UntypedDocument> untypedType) {
 
+      incrementCount();
+   }
+
+   /**
+    * Incrémente le nombre de document traité de 1
+    */
+   protected final void incrementCount() {
+      ExecutionContext context = getStepExecution().getExecutionContext();
+
+      int valeur = context.getInt(Constantes.CTRL_INDEX);
+      valeur++;
+
+      context.put(Constantes.CTRL_INDEX, valeur);
+   }
+
+   
    /**
     * @return la liste identifiants des documents traités
     */
@@ -57,7 +91,6 @@ public class TransfertListener extends AbstractListener {
     */
    @Override
    protected final void specificInitOperations() {
-      System.out.println("SPECIFICINITOP");
       getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
    }
 
@@ -69,7 +102,6 @@ public class TransfertListener extends AbstractListener {
     */
    @OnReadError
    public final void logReadError(final Exception exception) {
-      System.out.println("LOG READ ERREUR");
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
       getExceptionErreurListe().add(new Exception(exception.getMessage()));
@@ -103,7 +135,6 @@ public class TransfertListener extends AbstractListener {
     */
    @BeforeChunk
    protected final void beforeChunk() {
-      System.out.println("BEFORE CHUNK !");
       while (Boolean.TRUE.equals(executor.getIsInterrupted())) {
          try {
             LOGGER.debug("en attente de reprise de travail");
@@ -119,7 +150,6 @@ public class TransfertListener extends AbstractListener {
     */
    @AfterChunk
    public final void afterChunk() {
-      System.out.println("AFTER CHUNK !");
       AbstractInsertionMasseRuntimeException exception = executor
             .getInsertionMasseException();
 
@@ -137,7 +167,6 @@ public class TransfertListener extends AbstractListener {
     */
    @Override
    protected final ExitStatus specificAfterStepOperations() {
-      System.out.println("SPECIFICAFTEROP");
       ExitStatus status = getStepExecution().getExitStatus();
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
@@ -155,6 +184,8 @@ public class TransfertListener extends AbstractListener {
       executor.waitFinishInsertion();
 
       final ConcurrentLinkedQueue<UUID> list = this.getIntegratedDocuments();
+      
+      System.out.println("INTEGRATED DOCUMENT : " + executor.getIntegratedDocuments().size());
 
       jobExecution.getExecutionContext().put(Constantes.NB_INTEG_DOCS,
             executor.getIntegratedDocuments().size());
@@ -200,7 +231,7 @@ public class TransfertListener extends AbstractListener {
          String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-         codes.add(Constantes.ERR_BUL004);
+         codes.add(Constantes.ERR_BUL005);
          index.add(exception.getIndex());
          exceptions.add(new Exception(messageError));
 

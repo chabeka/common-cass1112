@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
@@ -153,8 +154,20 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
             command = new InsertionRunnable(getStepExecution().getReadCount()
                   + index, storageDocument, this);
 
+            try {
             poolExecutor.execute(command);
-
+            } catch (Exception e) {
+               if (isModePartielBatch()) {
+                  getCodesErreurListe().add(Constantes.ERR_BUL002);
+                  getIndexErreurListe().add(
+                        getStepExecution().getExecutionContext().getInt(
+                              Constantes.CTRL_INDEX));
+                  final String message = e.getMessage();
+                  getExceptionErreurListe().add(new Exception(message));
+                  LOGGER.error(message, e);
+               }
+       
+            }
             LOGGER.debug(
                   "{} - nombre de documents en attente dans le pool : {}",
                   TRC_INSERT, poolExecutor.getQueue().size());

@@ -42,7 +42,6 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
-
          getLogger().warn("{} - erreur de connexion à DFCE", trcPrefix, e);
 
          getCodesErreurListe().add(Constantes.ERR_BUL001);
@@ -76,7 +75,6 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
-
          getLogger().warn(
                "{} - erreur lors de la fermeture de la base de données",
                trcPrefix, e);
@@ -94,6 +92,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          // En mode PARTIEL, on regarde s'il y a une erreur de déclarer dans la
          // liste des erreurs. Si c'est le cas, on est en echec et non en
          // success. Il faut donc remonter cette état.
+         System.out.println("SpecificAfterOperation catch ! :( ");
          if (!getIndexErreurListe().isEmpty()) {
             exitStatus = ExitStatus.FAILED;
          }

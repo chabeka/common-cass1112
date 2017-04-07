@@ -5,6 +5,11 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
@@ -15,9 +20,12 @@ public interface TransfertMasseControleSupport {
 
    public boolean controleSAEDocumentSuppression(UntypedDocument item)
          throws SearchingServiceEx, ConnectionServiceEx;
-   
+
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
          throws ReferentialException, SearchingServiceEx,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         TransfertException, InvalidSAETypeException, MappingFromReferentialException;
+         TransfertException, InvalidSAETypeException,
+         MappingFromReferentialException, UnknownMetadataEx,
+         DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx;
 }

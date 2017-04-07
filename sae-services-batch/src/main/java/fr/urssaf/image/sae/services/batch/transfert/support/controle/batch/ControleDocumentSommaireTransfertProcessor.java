@@ -25,60 +25,54 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  */
 @Component
-public class ControleDocumentSommaireTransfertProcessor extends AbstractListener
-implements ItemProcessor<UntypedDocument, StorageDocument>{
+public class ControleDocumentSommaireTransfertProcessor extends
+      AbstractListener implements
+      ItemProcessor<UntypedDocument, StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ControleDocumentSommaireTransfertProcessor.class);
-   
+
    @Autowired
    private TransfertMasseControleSupport support;
 
    private StorageDocument document;
 
-   
    /**
     * {@inheritDoc}
     */
    @Override
    public StorageDocument process(final UntypedDocument item) throws Exception {
-      
+
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
       document = new StorageDocument();
 
       String uuidString = item.getUuid().toString();
 
-      if (item.getBatchActionType().equals("SUPPRESSION"))
-      {
-         System.out.println("COUCOU SUP " + item.getBatchActionType());
-        boolean isExiste = support.controleSAEDocumentSuppression(item);
-        document.setUuid(item.getUuid());
-        document.setBatchTypeAction(item.getBatchActionType());
-        System.out.println("COUCOU SUP " + isExiste);
-        if (!isExiste){
-           if (isModePartielBatch()) {
-              getCodesErreurListe().add(Constantes.ERR_BUL002);
-              getIndexErreurListe().add(
-                    getStepExecution().getExecutionContext().getInt(
-                          Constantes.CTRL_INDEX));
-              final String message = "Le document {0} n'existe pas. Suppression impossible.";
-              System.out.println("COUCOU SUP partiel" + message);
-              getExceptionErreurListe().add(new Exception(StringUtils.replace(
-                    message, "{0}", uuidString)));
-           } else {
-              String message = "Le document {0} n'existe pas. Suppression impossible.";
-              System.out.println("COUCOU SUP " + message);
-              throw new ArchiveInexistanteEx(StringUtils.replace(message, "{0}",
-                    uuidString));
-           }
-        }
-         
-      }else if (item.getBatchActionType().equals("TRANSFERT")){
-         try{
-            System.out.println("COUCOU TRAN " + item.getBatchActionType());
-         document = support.controleSAEDocumentTransfert(item);
-         }catch (Exception e){
+      if (item.getBatchActionType().equals("SUPPRESSION")) {
+         boolean isExiste = support.controleSAEDocumentSuppression(item);
+         document.setUuid(item.getUuid());
+         document.setBatchTypeAction(item.getBatchActionType());
+         if (!isExiste) {
+            if (isModePartielBatch()) {
+               getCodesErreurListe().add(Constantes.ERR_BUL002);
+               getIndexErreurListe().add(
+                     getStepExecution().getExecutionContext().getInt(
+                           Constantes.CTRL_INDEX));
+               final String message = "Le document {0} n'existe pas. Suppression impossible.";
+               getExceptionErreurListe().add(
+                     new Exception(StringUtils.replace(message, "{0}",
+                           uuidString)));
+            } else {
+               String message = "Le document {0} n'existe pas. Suppression impossible.";
+               throw new ArchiveInexistanteEx(StringUtils.replace(message,
+                     "{0}", uuidString));
+            }
+         }
+      } else if (item.getBatchActionType().equals("TRANSFERT")) {
+         try {
+            document = support.controleSAEDocumentTransfert(item);
+         } catch (Exception e) {
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
                getIndexErreurListe().add(
@@ -86,13 +80,11 @@ implements ItemProcessor<UntypedDocument, StorageDocument>{
                            Constantes.CTRL_INDEX));
                final String message = e.getMessage();
                getExceptionErreurListe().add(new Exception(message));
-               System.out.println("COUCOU SUP " + e.getMessage());
             } else {
                throw e;
             }
          }
-            
-      }else{
+      } else {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
@@ -106,19 +98,15 @@ implements ItemProcessor<UntypedDocument, StorageDocument>{
             throw new ArchiveInexistanteEx(message);
          }
       }
-    
-      
+
       return document;
    }
-   
-   
 
    /**
     * {@inheritDoc}
     */
    @Override
    protected void specificInitOperations() {
-      getStepExecution().getExecutionContext().put(Constantes.CTRL_INDEX, -1);
    }
 
    /**
@@ -128,23 +116,7 @@ implements ItemProcessor<UntypedDocument, StorageDocument>{
    protected ExitStatus specificAfterStepOperations() {
       return getStepExecution().getExitStatus();
    }
+
    
-   /**
-    * Action exécutée avant chaque process
-    * 
-    * @param untypedType
-    *           le document
-    */
-   @BeforeProcess
-   public final void beforeProcess(final JAXBElement<Object> untypedType) {
-
-      ExecutionContext context = getStepExecution().getExecutionContext();
-
-      int valeur = context.getInt(Constantes.CTRL_INDEX);
-      valeur++;
-
-      context.put(Constantes.CTRL_INDEX, valeur);
-
-   }
 
 }

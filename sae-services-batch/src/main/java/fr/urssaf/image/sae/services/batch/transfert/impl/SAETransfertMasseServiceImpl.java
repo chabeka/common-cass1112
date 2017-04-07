@@ -86,10 +86,18 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
          String typeHash) {
       
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
-      mapParam.put(Constantes.SOMMAIRE,
-            new JobParameter(sommaireURI.toString()));
-      mapParam.put(Constantes.ID_TRAITEMENT, new JobParameter(idTraitement
-            .toString()));
+      if (sommaireURI != null) {
+         mapParam.put(Constantes.SOMMAIRE,
+               new JobParameter(sommaireURI.toString()));  
+      } else {
+         throw new IllegalArgumentException("Le fichier sommaire n'est pas renseigné");
+      }
+      if (idTraitement != null) {
+         mapParam.put(Constantes.ID_TRAITEMENT, new JobParameter(idTraitement
+               .toString()));  
+      } else {
+         throw new IllegalArgumentException("L'identifiant du job n'est pas renseigné");
+      }
       mapParam.put(Constantes.HASH, new JobParameter(hash));
       mapParam.put(Constantes.TYPE_HASH, new JobParameter(typeHash));
 

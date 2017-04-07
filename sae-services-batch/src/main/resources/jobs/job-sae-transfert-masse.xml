@@ -114,7 +114,7 @@
       </step>
 
       <step id="finErreur">
-         <tasklet ref="resultatsFileFailureTasklet">
+         <tasklet ref="resultatsFileFailureTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileFailureListener" />
@@ -127,7 +127,7 @@
       </step>
 
       <step id="finSucces">
-         <tasklet ref="resultatsFileSuccessTasklet">
+         <tasklet ref="resultatsFileSuccessTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileSuccessListener" />
