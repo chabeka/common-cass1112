@@ -107,9 +107,25 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
    @Override
    public UUID launchTraitement(AbstractStorageDocument storageDocument)
          throws Exception {
-      StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
-      UUID uuid = document != null ? document.getUuid() : null;
-   return uuid;
+      StorageDocument document = null;
+      try {
+         document = insertStorageDocument((StorageDocument) storageDocument);
+      } catch (Throwable except) {
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            final String message = "Erreur DFCE : " + except.getMessage();
+            getExceptionErreurListe().add(new Exception(message));
+            LOGGER.error(message, except);
+         } else {
+            throw new UpdateServiceEx(new Exception("Erreur DFCE : "
+                  + except.getMessage()));
+         }
+      }
+
+      return document != null ? document.getUuid() : null;
    }
    
    /**
@@ -125,13 +141,9 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
    public final StorageDocument insertStorageDocument(
          final StorageDocument storageDocument) throws UpdateServiceEx {
 
-      try {
          serviceProvider.getStorageDocumentService().updateStorageDocument(
                storageDocument.getUuid(), storageDocument.getMetadatas(), storageDocument.getMetadatasToDelete());
-      } catch (Throwable except) {
-         throw new UpdateServiceEx(new Exception("Erreur DFCE : " + except.getMessage()));
-      }
-      
+
       return storageDocument;
    }
 

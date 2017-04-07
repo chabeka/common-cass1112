@@ -143,6 +143,11 @@ public class CoordinationServiceImpl implements CoordinationService {
       for (JobQueue jobQueue : listeTraitement) {
          if (isJobSelectionnableALancer(jobQueue)) {
             try {
+               // Etape 6 : Vérification que l'URL ECDE est toujours actif
+               this.decisionService.controleDispoEcdeTraitementMasse(jobQueue);
+               
+               // Etape 7 : Positionne le sémaphore pour le traitement
+               // sélectionné
                traitement = this.jobService
                      .reserverCodeTraitementJobALancer(jobQueue);
                break;
@@ -150,7 +155,13 @@ public class CoordinationServiceImpl implements CoordinationService {
                // le job est déjà en cours de traitement, on cherche un nouveau
                // job à traiter
                LOG.warn(
-                     "{} - échec lors de la confirmation de disponibilité du job à lancer - il est déjà en cours de traitement - Traitement d'un nouveau job en cours...",
+                     "{} - échec lors de la confirmation de disponibilité du job à lancer - il est déjà en cours de traitement - Recherche d'un nouveau job en cours...",
+                     new Object[] { PREFIX_LOG });
+            } catch (AucunJobALancerException e) {
+               // L'URL ECDE du job est éronné. Le job n'est donc pas
+               // séléectionné.
+               LOG.warn(
+                     "{} - échec lors de la confirmation de disponibilité du job à lancer - l'URL ECDE du job est erroné - Recherche d'un nouveau job en cours...",
                      new Object[] { PREFIX_LOG });
             }
          } else {
@@ -162,14 +173,10 @@ public class CoordinationServiceImpl implements CoordinationService {
       // Si on ne trouve aucun job de disponible, on mets en attente
       // l'ordonnanceur.
       if (traitement == null) {
-         throw new JobRuntimeException(traitement, new Exception(
-               "Aucun job n'est disponible pour réservation"));
+         throw new AucunJobALancerException();
       }
 
-      // Etape 6 : Vérification que l'URL ECDE est toujours actif
-      this.decisionService.controleDispoEcdeTraitementMasse(traitement);
-
-      // Etape 7 : Réservation du Job
+      // Etape 8 : Réservation du Job
       LOG.debug("{} - traitement à lancer {}", PREFIX_LOG, toString(traitement));
       try {
 

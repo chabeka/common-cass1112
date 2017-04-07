@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.batch;
+package fr.urssaf.image.sae.services.batch.common.support.resultat;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.batch.AbstractResultatsFileFailureTasklet;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
+import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 
 /**
  * Tasklet pour l'écriture du fichier resultats.xml lors d'un échec de
@@ -35,7 +36,7 @@ public class ResultatsFileFailureTasklet extends
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionCapturePoolThreadExecutor executor;
+   private InsertionPoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}

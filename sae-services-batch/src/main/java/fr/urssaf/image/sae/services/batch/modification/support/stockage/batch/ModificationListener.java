@@ -112,7 +112,7 @@ public class ModificationListener extends AbstractListener {
    public final void logProcessError(final Object documentType,
          final Exception exception) {
 
-      LOGGER.warn("erreur lors du traitement de transfert", exception);
+      LOGGER.warn("erreur lors du traitement de modification", exception);
 
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
@@ -239,7 +239,7 @@ public class ModificationListener extends AbstractListener {
          getStepExecution().getJobExecution().getExecutionContext()
                .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
-         String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
+         String messageError = "La modification de masse en mode 'Partiel' a été interrompue. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
          codes.add(Constantes.ERR_BUL004);

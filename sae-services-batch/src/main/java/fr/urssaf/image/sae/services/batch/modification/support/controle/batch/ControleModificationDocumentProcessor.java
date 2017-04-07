@@ -53,6 +53,12 @@ public class ControleModificationDocumentProcessor extends AbstractListener
          }
       }
 
+      // Si le document est en erreur, on le créer avec les informations
+      // minimums pour son traitement dans le writer.
+      if (document == null) {
+         document = new StorageDocument();
+         document.setUuid(item.getUuid());
+      }
       return document;
    }
 
