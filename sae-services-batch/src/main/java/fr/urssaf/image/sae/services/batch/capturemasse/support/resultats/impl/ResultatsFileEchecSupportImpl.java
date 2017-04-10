@@ -1030,7 +1030,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                   && (document.getDocumentFile() != null && value
                         .equals(document.getDocumentFile().getName()))
                   || (document.getIdentifiant() != null && value
-                        .equals(document.getIdentifiant().toString()))) {
+                        .equalsIgnoreCase(document.getIdentifiant().toString()))) {
                // Document trouvé dans la liste des documents
                objFind = obj;
                break;
@@ -1058,14 +1058,16 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       String countVirtual, countStandard, countIntegrated, countIntegratedVirtual, countNonIntegrated, countNonIntegratedVirtual;
 
-      int nombreNonIntegrated = 0;
-      if (Constantes.BATCH_MODE.PARTIEL.getModeNom()
-            .equals(batchModeTraitement)) {
-         // Dans le mode PARTIEL, on compte le nombre de document non intégré.
-         // Dans le mode TOUT_OU_RIEN, le rollback permet de ne plus avoir de
-         // documents intégrés normalement.
-         nombreNonIntegrated = nombreDocs - nombreDocsIntegres;
+      // Dans le mode PARTIEL, on compte le nombre de document non intégré.
+      // Dans le mode TOUT_OU_RIEN, le rollback permet de ne plus avoir de
+      // documents intégrés mais le compteur n'est pas remis à zéro si le
+      // rollback plante.
+      if (Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom().equals(
+            batchModeTraitement)) {
+         nombreDocsIntegres = 0;
       }
+
+      int nombreNonIntegrated = nombreDocs - nombreDocsIntegres;
 
       if (isVirtual) {
          countStandard = "0";
@@ -1098,16 +1100,13 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       staxUtils.createTag("integratedDocumentsCount", countIntegrated, PX_RES,
             NS_RES);
       staxUtils.createTag("nonIntegratedDocumentsCount", countNonIntegrated,
-            PX_RES,
-            NS_RES);
+            PX_RES, NS_RES);
       staxUtils.createTag("initialVirtualDocumentsCount", countVirtual, PX_RES,
             NS_RES);
       staxUtils.createTag("integratedVirtualDocumentsCount",
-            countIntegratedVirtual, PX_RES,
-            NS_RES);
+            countIntegratedVirtual, PX_RES, NS_RES);
       staxUtils.createTag("nonIntegratedVirtualDocumentsCount",
-            countNonIntegratedVirtual,
-            PX_RES, NS_RES);
+            countNonIntegratedVirtual, PX_RES, NS_RES);
 
    }
 

@@ -86,7 +86,7 @@
             </listeners>
          </tasklet>
 
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurCapture" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="compressionDocuments" />
       </step>
@@ -105,7 +105,7 @@
             </listeners>
          </tasklet>
 
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurCapture" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="persistanceDocuments" />
       </step>
@@ -131,8 +131,8 @@
 
          <next on="FAILED" to="rollback" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="FAILED_NO_ROLLBACK" to="finErreur" />
-         <next on="*" to="finSucces" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurCapture" />
+         <next on="*" to="finSuccesCapture" />
       </step>
 
       <step id="rollback">
@@ -143,7 +143,7 @@
             </listeners>
          </tasklet>
 
-         <next on="*" to="finErreur" />
+         <next on="*" to="finErreurCapture" />
       </step>
 
       <step id="finBloquant">
@@ -155,7 +155,7 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finErreur">
+      <step id="finErreurCapture">
          <tasklet ref="resultatsFileCaptureFailureTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
@@ -168,7 +168,7 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finSucces">
+      <step id="finSuccesCapture">
          <tasklet ref="resultatsFileCaptureSuccessTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />

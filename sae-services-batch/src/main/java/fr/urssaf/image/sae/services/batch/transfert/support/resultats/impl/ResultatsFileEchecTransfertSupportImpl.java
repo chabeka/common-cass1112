@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.services.batch.common.model.XMLEventReference;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatsFileEchecTransfertSupport;
 
 /**
- * Implémentation du support {@link ResultatsFileEchecSupport}
+ * Implémentation du support {@link ResultatsFileEchecTransfertSupport}
  * 
  */
 @Component

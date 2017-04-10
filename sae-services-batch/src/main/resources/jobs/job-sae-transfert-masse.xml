@@ -98,10 +98,10 @@
          </tasklet>
 
 
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurTransfert" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="FAILED_NO_ROLLBACK" to="finErreur" />
-         <next on="*" to="finSucces" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurTransfert" />
+         <next on="*" to="finSuccesTransfert" />
       </step>
 
       <step id="finBloquant">
@@ -113,7 +113,7 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finErreur">
+      <step id="finErreurTransfert">
          <tasklet ref="resultatsFileFailureTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
@@ -126,7 +126,7 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finSucces">
+      <step id="finSuccesTransfert">
          <tasklet ref="resultatsFileSuccessTransfertTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
