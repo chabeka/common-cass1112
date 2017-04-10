@@ -74,14 +74,14 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends Abstr
       }
 
       ConcurrentLinkedQueue<?> listIntDocs = getIntegratedDocuments();
-//      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
-//         erreur.getListCodes().set(0, Constantes.ERR_BUL003);
-//         erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
-//      } else if (!isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
-//         erreur.getListCodes().set(0, Constantes.ERR_BUL005);
-//         erreur.getListException().set(0,
-//               new Exception(MessageFormat.format(LIBELLE_BUL004, jobName)));
-//      }
+      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
+         erreur.getListCodes().set(0, Constantes.ERR_BUL003);
+         erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
+      } else if (!isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
+         erreur.getListCodes().set(0, Constantes.ERR_BUL005);
+         erreur.getListException().set(0,
+               new Exception(MessageFormat.format(LIBELLE_BUL004, jobName)));
+      }
 
       final File ecdeDirectory = sommaireFile.getParentFile();
 

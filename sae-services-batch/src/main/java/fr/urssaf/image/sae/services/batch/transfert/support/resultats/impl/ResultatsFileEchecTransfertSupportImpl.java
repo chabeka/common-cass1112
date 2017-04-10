@@ -595,6 +595,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
          LOGGER.warn("Une erreur est survenue : " + e.getMessage());
          reader = this.trouverXmlEventReaderParReference(reader, xmlEventRef);
       }
+
+      
       staxUtils.addEndTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
 
    }
@@ -949,6 +951,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       return reader;
    }
 
+
    /**
     * Methode permettant de trouver dans le reader {@link XmlReader}, l'element
     * {@link XMLEventReference} défini comme attribut.
@@ -1033,17 +1036,17 @@ public class ResultatsFileEchecTransfertSupportImpl implements
          // On recherche si le document existe dans les documents
          for (Object obj : listDocs) {
             document = (TraitementMasseIntegratedDocument) obj;
-            System.out.println("VALUE OBJ DOC : " + document.getIdentifiant());
-            System.out.println("VALUE OBJ VAL : " + value);
-            System.out.println("VALUE DOC IND : " + document.getIndex());
-            System.out.println("VALUE INDEX IND : " + indexReference.getDocIndex());
-//            if (document.getIndex() == indexReference.getDocIndex()
-//                  && (document.getDocumentFile() != null && value
-//                        .equalsIgnoreCase((document.getDocumentFile().getName()))
-//                  || (document.getIdentifiant() != null && value
-//                        .equalsIgnoreCase((document.getIdentifiant().toString()))))) {
-            if (document.getIdentifiant() != null && value
-                        .equalsIgnoreCase(document.getIdentifiant().toString())){
+//            System.out.println("VALUE OBJ DOC : " + document.getIdentifiant());
+//            System.out.println("VALUE OBJ VAL : " + value);
+//            System.out.println("VALUE DOC IND : " + document.getIndex());
+//            System.out.println("VALUE INDEX IND : " + indexReference.getDocIndex());
+            if (document.getIndex() == indexReference.getDocIndex()
+                  && (document.getDocumentFile() != null && value
+                        .equals((document.getDocumentFile().getName()))
+                  || (document.getIdentifiant() != null && value
+                        .equals((document.getIdentifiant().toString()))))) {
+//            if (document.getIdentifiant() != null && value
+//                        .equalsIgnoreCase(document.getIdentifiant().toString())){
 //                Document trouvé dans la liste des documents
                System.out.println("---getDocumentInListByXmlEvent---");
                objFind = obj;
@@ -1156,13 +1159,14 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
                      .getMessage();
+               System.out.println("ERREUR : " + messageErreur);
                String message;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
                   message = "Le document " + chemin
-                        + " n'a pas été archivé. Détails : " + messageErreur;
+                        + " n'a pas été traité. Détails : " + messageErreur;
                } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
-                  message = "Une erreur interne à l'application est survenue lors de la capture du document "
+                  message = "Une erreur interne à l'application est survenue lors du traitement du document "
                         + chemin + ". Détails : " + messageErreur;
                } else {
                   message = messageErreur;
@@ -1201,10 +1205,10 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                String message;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
-                  message = "Le document virtuel n'a pas été archivé. Détails : "
+                  message = "Le document virtuel n'a pas été traité. Détails : "
                         + messageErreur;
                } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
-                  message = "Une erreur interne à l'application est survenue lors de la capture "
+                  message = "Une erreur interne à l'application est survenue lors du traitement "
                         + "du document virtuel. Détails : " + messageErreur;
                } else {
                   message = messageErreur;
@@ -1241,12 +1245,13 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                String messageErreur = erreur.getListException().get(i)
                      .getMessage();
                String message;
+               System.out.println("ERREUR REF : " + messageErreur);
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
-                  message = "Le document virtuel n'a pas été archivé. Détails : "
+                  message = "Le document virtuel n'a pas été traité. Détails : "
                         + messageErreur;
                } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
-                  message = "Une erreur interne à l'application est survenue lors de la capture "
+                  message = "Une erreur interne à l'application est survenue lors du traitement "
                         + "du document virtuel. Détails : " + messageErreur;
                } else {
                   message = messageErreur;
