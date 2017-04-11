@@ -125,7 +125,10 @@
    <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
    
    <!-- Component-scan -->
-   <context:component-scan base-package="fr.urssaf.image.sae.services.batch.common" />
+   <context:component-scan base-package="fr.urssaf.image.sae.services.batch.common" use-default-filters="true">
+      <context:exclude-filter type="regex" expression="fr.urssaf.image.sae.services.batch.common.support.multithreading.*InsertionPoolThreadExecutor*.*"/>
+      <context:exclude-filter type="regex" expression="fr.urssaf.image.sae.services.batch.common.support.resultat.*.*"/>
+   </context:component-scan>
    <context:component-scan base-package="fr.urssaf.image.sae.services.batch.restore" />
   
    <!-- Reprise du fichier applicationContext de la partie main -->
