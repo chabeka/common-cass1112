@@ -353,29 +353,18 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
-         // -- Ouverture des connections DFCE
-         storageServiceProvider.openConnexion();
-         storageTransfertService.openConnexion();
-         traceServiceSupport.connect();
+         this.transfertDocument(document);
 
-         
+         this.deleteDocApresTransfert(document.getUuid());
 
-            transfertDocument(document);
-
-         deleteDocApresTransfert(document.getUuid());
 
          LOG.debug("{} - Fin de transfert du document {}", new Object[] {
                trcPrefix, document.getUuid().toString() });
 
-      } catch (ConnectionServiceEx ex) {
-         throw new TransfertException(erreur, ex);
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {
          throw new TransfertException(erreur, ex);
-      }finally{
-         storageServiceProvider.closeConnexion();
-         storageTransfertService.closeConnexion();
       }
    }
 
@@ -631,12 +620,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       StorageDocument document = new StorageDocument();
       
       try {
-         System.out.println("controleDocumentTransfertMasse 1");
-      // -- Ouverture des connections DFCE
-      storageServiceProvider.openConnexion();
-      storageTransfertService.openConnexion();
-     traceServiceSupport.connect();
-      
       document = recupererDocMetaTransferable(idArchive);
       
       System.out.println("controleDocumentTransfertMasse 1");
@@ -659,15 +642,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       }
       return document;
       
-      }catch (ConnectionServiceEx ex) {
-         throw new TransfertException(erreur, ex);
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {
          throw new TransfertException(erreur, ex);
-      } finally {
-        // storageServiceProvider.closeConnexion();
-         storageTransfertService.closeConnexion();
       }
    }
    

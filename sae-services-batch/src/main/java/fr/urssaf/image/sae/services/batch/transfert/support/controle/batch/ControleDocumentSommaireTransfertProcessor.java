@@ -1,13 +1,9 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.controle.batch;
 
-import javax.xml.bind.JAXBElement;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.annotation.BeforeProcess;
-import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

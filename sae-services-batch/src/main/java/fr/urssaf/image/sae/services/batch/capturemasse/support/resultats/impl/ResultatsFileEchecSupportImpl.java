@@ -1026,8 +1026,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          // On recherche si le document existe dans les documents
          for (Object obj : listDocs) {
             document = (TraitementMasseIntegratedDocument) obj;
-            if (document.getIndex() == indexReference.getDocIndex()
-                  && (document.getDocumentFile() != null && value
+            if ((document.getDocumentFile() != null && value
                         .equals(document.getDocumentFile().getName()))
                   || (document.getIdentifiant() != null && value
                         .equalsIgnoreCase(document.getIdentifiant().toString()))) {

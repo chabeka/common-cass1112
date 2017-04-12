@@ -33,7 +33,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * </ul>
     */
    @Override
-   protected final void specificInitOperations() {
+   protected void specificInitOperations() {
 
       String trcPrefix = "specificInitOperations()";
 
@@ -63,7 +63,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * </ul>
     */
    @Override
-   protected final ExitStatus specificAfterStepOperations() {
+   protected ExitStatus specificAfterStepOperations() {
       // pour l'instant nous avons fait le choix de propager l'erreur
       // pour ne pas la cacher et attérir dans un état en erreur
 
@@ -88,11 +88,12 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          }
       }
 
+      getLogger().debug("{} - fermeture de la connexion DFCE", trcPrefix);
+
       if (isModePartielBatch()) {
          // En mode PARTIEL, on regarde s'il y a une erreur de déclarer dans la
          // liste des erreurs. Si c'est le cas, on est en echec et non en
          // success. Il faut donc remonter cette état.
-         System.out.println("SpecificAfterOperation catch ! :( ");
          if (!getIndexErreurListe().isEmpty()) {
             exitStatus = ExitStatus.FAILED;
          }

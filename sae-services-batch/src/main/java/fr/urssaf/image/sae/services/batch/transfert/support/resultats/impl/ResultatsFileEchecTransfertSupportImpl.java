@@ -1031,24 +1031,14 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       Object objFind = null;
       // Valeur de la balise chemin
       String value = xmlEvent.asCharacters().getData();
-      System.out.println("VALUE : " + value);
       if (value != null) {
          // On recherche si le document existe dans les documents
          for (Object obj : listDocs) {
             document = (TraitementMasseIntegratedDocument) obj;
-//            System.out.println("VALUE OBJ DOC : " + document.getIdentifiant());
-//            System.out.println("VALUE OBJ VAL : " + value);
-//            System.out.println("VALUE DOC IND : " + document.getIndex());
-//            System.out.println("VALUE INDEX IND : " + indexReference.getDocIndex());
-            if (document.getIndex() == indexReference.getDocIndex()
-                  && (document.getDocumentFile() != null && value
-                        .equals((document.getDocumentFile().getName()))
+            if ((document.getDocumentFile() != null && value.equals((document
+                  .getDocumentFile().getName())))
                   || (document.getIdentifiant() != null && value
-                        .equals((document.getIdentifiant().toString()))))) {
-//            if (document.getIdentifiant() != null && value
-//                        .equalsIgnoreCase(document.getIdentifiant().toString())){
-//                Document trouvé dans la liste des documents
-               System.out.println("---getDocumentInListByXmlEvent---");
+                        .equals((document.getIdentifiant().toString())))) {
                objFind = obj;
                break;
             }

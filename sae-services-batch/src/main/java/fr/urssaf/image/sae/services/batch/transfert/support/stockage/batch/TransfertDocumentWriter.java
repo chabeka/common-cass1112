@@ -5,11 +5,13 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -23,6 +25,8 @@ import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
+import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 
 /**
  * Item writer du transfert des documents dans la GNS
@@ -47,9 +51,24 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    @Autowired
    private SAETransfertService transfertService;
 
+   /**
+    * Provider pour la suppression.
+    */
    @Autowired
    private SAESuppressionService suppressionService;
    
+   /**
+    * Provider pour les traces.
+    */
+   @Autowired
+   private ServiceProviderSupport traceServiceSupport;
+
+   /**
+    * Provider de service pour la connexion DFCE de la GNS
+    */
+   @Autowired
+   private StorageTransfertService storageTransfertService;
+
    /**
     * Provider pour le transfert.
     */
@@ -87,8 +106,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * Transfert du document
     * 
     * @param document
-    * @return
+    * @return Le document transféré
     * @throws TransfertException
+    *            @{@link TransfertException}
     */
    @SuppressWarnings(CATCH)
    public final StorageDocument transfertDocument(final StorageDocument document)
@@ -106,8 +126,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * suppression du document
     * 
     * @param document
-    * @return
+    * @return le document supprimé
     * @throws SuppressionException
+    *            @{@link SuppressionException}
     */
    @SuppressWarnings(CATCH)
    public final StorageDocument deleteDocument(final StorageDocument document)
@@ -176,6 +197,68 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          index++;
       }
       System.out.println("Fin WRITEr index : " +index);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void specificInitOperations() {
+      String trcPrefix = "specificInitOperations()";
+
+      super.specificInitOperations();
+
+      try {
+         storageTransfertService.openConnexion();
+         traceServiceSupport.connect();
+
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
+      } catch (Throwable e) {
+         getLogger().warn("{} - erreur d'ouverture des services de transfert",
+               trcPrefix, e);
+
+         getCodesErreurListe().add(Constantes.ERR_BUL001);
+         getIndexErreurListe().add(0);
+         getExceptionErreurListe().add(new Exception(e.getMessage()));
+
+         getStepExecution().setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
+
+         throw new CaptureMasseRuntimeException(e);
+      }
+
+      getLogger().debug("{} - ouverture du service de trace", trcPrefix);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected ExitStatus specificAfterStepOperations() {
+      String trcPrefix = "specificAfterStepOperations()";
+      ExitStatus exitStatus = super.specificAfterStepOperations();
+
+      try {
+         storageTransfertService.closeConnexion();
+         traceServiceSupport.disconnect();
+         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
+      } catch (Throwable e) {
+         getLogger().warn(
+               "{} - erreur lors de la fermeture des services de transfert",
+               trcPrefix, e);
+
+         getCodesErreurListe().add(Constantes.ERR_BUL001);
+         getIndexErreurListe().add(0);
+         getExceptionErreurListe().add(new Exception(e.getMessage()));
+
+         if (!isModePartielBatch()) {
+            exitStatus = ExitStatus.FAILED;
+         }
+      }
+
+      getLogger().debug("{} - fermeture du service de trace", trcPrefix);
+
+      return exitStatus;
    }
 
 }
