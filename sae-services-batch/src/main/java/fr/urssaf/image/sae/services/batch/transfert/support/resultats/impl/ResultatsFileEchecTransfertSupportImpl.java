@@ -189,11 +189,16 @@ public class ResultatsFileEchecTransfertSupportImpl implements
 
    /**
     * Methode permettant d'ecrire le fichier resultat pour les documents
+    * intégrés.
     * 
     * @param reader
+    *           Reader
     * @param isVirtual
+    *           True si document virtuel, false sinon
+    * @param erreur
+    *           Erreur sur le document
     * @param listIntDocs
-    * @param erreur2
+    *           Liste des documents intégrés
     */
    @SuppressWarnings("unchecked")
    private void ecrireFichierResultatDocumentsIntegres(XmlReader reader,
@@ -228,8 +233,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                if ("documentsMultiAction".equals(name)) {
                   staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
                } else {
-                  startTagDocsIntegres(name, reader, listIntDocTemp,
-                        indexReference);
+                  startTagDocsIntegres(name, reader, listIntDocTemp);
                }
             }
          } else if (xmlEvent.isEndElement()) {
@@ -429,6 +433,10 @@ public class ResultatsFileEchecTransfertSupportImpl implements
             reference = this.addTagsNonIntegratedDocumentByTagName(
                   UUID_FICHIER, xmlEvent, erreur, indexReference, reader,
                   addmetadatas);
+         } else {
+            // Incrémente l'index de reference pour la gestion des erreurs
+            reference = new IndexReference(reference.getDocIndex() + 1,
+                  indexReference.getRefIndex());
          }
       }
 
@@ -451,8 +459,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
          IndexReference indexReference, XMLEvent xmlEvent) {
       TraitementMasseIntegratedDocument document = null;
       if (listIntDocs != null && !listIntDocs.isEmpty()) {
-         document = this.getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
-               indexReference);
+         document = this.getDocumentInListByXmlEvent(xmlEvent, listIntDocs);
       }
 
       return document != null;
@@ -509,20 +516,18 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param indexReference
     *           L'index de référence.
     * @param listIntDocs
-    * @param indexReference
+    *           Liste des documents intégrés
     * @return L'index de reference ajouté au fichier resultat.xml.
     */
    private void startTagDocsIntegres(final String name, final XmlReader reader,
-         final ConcurrentLinkedQueue<?> listIntDocs,
-         IndexReference indexReference) {
+         final ConcurrentLinkedQueue<?> listIntDocs) {
 
       // Gestion des documents non intégrés
       if (CHEMIN_FICHIER.equals(name)) {
          this.addIntegratedDocumentByTagName(CHEMIN_FICHIER, reader,
-               listIntDocs, indexReference);
+               listIntDocs);
       } else if (UUID_FICHIER.equals(name)) {
-         this.addIntegratedDocumentByTagName(UUID_FICHIER, reader, listIntDocs,
-               indexReference);
+         this.addIntegratedDocumentByTagName(UUID_FICHIER, reader, listIntDocs);
       }
 
    }
@@ -536,15 +541,12 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     *           Reader
     * @param listIntDocs
     *           Liste de documents
-    * @param indexReference
-    *           Index de référence
     */
    private void addIntegratedDocumentByTagName(String tagName,
-         XmlReader reader, ConcurrentLinkedQueue<?> listIntDocs,
-         IndexReference indexReference) {
+         XmlReader reader, ConcurrentLinkedQueue<?> listIntDocs) {
       final XMLEvent xmlEvent = reader.peek();
       TraitementMasseIntegratedDocument document = this
-            .getDocumentInListByXmlEvent(xmlEvent, listIntDocs, indexReference);
+            .getDocumentInListByXmlEvent(xmlEvent, listIntDocs);
       System.out.println("!!!addTagIntegratedDocumentByTagName!!!");
       if (document != null) {
          this.addTagIntegratedDocumentByTagName(tagName, xmlEvent, document,
@@ -713,8 +715,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       if (CHEMIN_FICHIER.equals(name)) {
          final XMLEvent xmlEvent = reader.peek();
          TraitementMasseIntegratedDocument document = this
-               .getDocumentInListByXmlEvent(xmlEvent, listIntDocs,
-                     indexReference);
+               .getDocumentInListByXmlEvent(xmlEvent, listIntDocs);
          boolean isDocumentIntegrated = document != null;
 
          if (isDocumentIntegrated) {
@@ -1025,8 +1026,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @return Le document qui a été trouvé dans la liste de documents.
     */
    private TraitementMasseIntegratedDocument getDocumentInListByXmlEvent(
-         XMLEvent xmlEvent, ConcurrentLinkedQueue<?> listDocs,
-         IndexReference indexReference) {
+         XMLEvent xmlEvent, ConcurrentLinkedQueue<?> listDocs) {
       TraitementMasseIntegratedDocument document = null;
       Object objFind = null;
       // Valeur de la balise chemin

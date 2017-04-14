@@ -428,6 +428,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             reference = this.addTagsNonIntegratedDocumentByTagName(
                   UUID_FICHIER, xmlEvent, erreur, indexReference, reader,
                   addmetadatas);
+         } else {
+            // Incrémente l'index de reference pour la gestion des erreurs
+            reference = new IndexReference(reference.getDocIndex() + 1,
+                  indexReference.getRefIndex());
          }
       }
 
