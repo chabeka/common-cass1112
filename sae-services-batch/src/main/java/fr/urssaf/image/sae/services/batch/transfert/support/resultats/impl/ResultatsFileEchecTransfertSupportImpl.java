@@ -1038,7 +1038,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
             if ((document.getDocumentFile() != null && value.equals((document
                   .getDocumentFile().getName())))
                   || (document.getIdentifiant() != null && value
-                        .equals((document.getIdentifiant().toString())))) {
+                        .equalsIgnoreCase((document.getIdentifiant().toString())))) {
                objFind = obj;
                break;
             }

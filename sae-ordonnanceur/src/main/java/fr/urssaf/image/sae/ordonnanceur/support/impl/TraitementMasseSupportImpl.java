@@ -317,7 +317,8 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
    public final boolean isEcdeUpJobTraitementMasse(JobQueue jobQueue) {
 
       // Vérifie que le job est bien un job de capture de masse
-      if (!isCaptureMasse(jobQueue) && !isModificationMasse(jobQueue)) {
+      if (!isCaptureMasse(jobQueue) && !isModificationMasse(jobQueue)
+            && !isTransfertMasse(jobQueue)) {
          throw new OrdonnanceurRuntimeException(
                "Mauvaise utilisation du contrôle de la disponibilité de l'ECDE: le job contrôlé n'est pas un job de traitement de masse devant utilisé l'ecde (id: "
                      + jobQueue.getIdJob() + ")");

@@ -1,12 +1,10 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.resultats.batch;
 
 import java.io.File;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.repeat.RepeatStatus;
@@ -19,14 +17,6 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatsFileEchecTransfertSupport;
 
 public abstract class AbstractResultatsFileFailureTransfertTasklet extends AbstractCaptureMasseTasklet{
-   
-   private static final String LIBELLE_BUL003 = "Le transfert de masse en mode "
-         + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
-
-   private static final String LIBELLE_BUL004 = "Le job {0} en mode "
-         + "\"Partiel\" a été interrompue. Une procédure d'exploitation a été "
-         + "initialisée pour supprimer les données qui auraient pu être stockées.";
    
    /**
     * {@inheritDoc}
@@ -58,8 +48,6 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends Abstr
       final String pathSommaire = (String) map.get(Constantes.SOMMAIRE_FILE);
       File sommaireFile = new File(pathSommaire);
 
-      String jobName = chunkContext.getStepContext().getStepExecution()
-            .getJobExecution().getJobInstance().getJobName();
       /*
        * On vérifie qu'on est mode tout ou rien et qu'il reste des rollback à
        * effectuer. Si c'est le cas on change le code possible fonctionnel en
@@ -74,15 +62,6 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends Abstr
       }
 
       ConcurrentLinkedQueue<?> listIntDocs = getIntegratedDocuments();
-      if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
-         erreur.getListCodes().set(0, Constantes.ERR_BUL003);
-         erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
-      } else if (!isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
-         erreur.getListCodes().set(0, Constantes.ERR_BUL005);
-         erreur.getListException().set(0,
-               new Exception(MessageFormat.format(LIBELLE_BUL004, jobName)));
-      }
-
       final File ecdeDirectory = sommaireFile.getParentFile();
 
       int nbreDocs = (Integer) map.get(Constantes.DOC_COUNT);
