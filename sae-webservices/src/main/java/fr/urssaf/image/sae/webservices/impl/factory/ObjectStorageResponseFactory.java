@@ -4,6 +4,8 @@ import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponseType;
+import fr.cirtil.www.saeservice.DeblocageResponse;
+import fr.cirtil.www.saeservice.DeblocageResponseType;
 import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationMasseResponseType;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
@@ -144,11 +146,31 @@ public final class ObjectStorageResponseFactory {
     * @return instance de {@link TransfertMasseResponse}
     */
    public static TransfertMasseResponse createTransfertMasseResponse(String uuid) {
-
       TransfertMasseResponse response = new TransfertMasseResponse();
       TransfertMasseResponseType responseType = new TransfertMasseResponseType();
       responseType.setUuid(uuid);
       response.setTransfertMasseResponse(responseType);
+      return response;
+   }
+   
+   /**
+    * instanciation de {@link DeblocageResponse}.<br>
+    * implémentation de {@link DeblocageResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="deblocageResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link DeblocageResponse}
+    */
+   public static DeblocageResponse createDeblocageResponse(String uuid, String etat) {
+      DeblocageResponse response = new DeblocageResponse();
+      DeblocageResponseType responseType = new DeblocageResponseType();
+      responseType.setUuid(uuid);
+      responseType.setEtat(etat);
+      response.setDeblocageResponse(responseType);
       return response;
    }
    

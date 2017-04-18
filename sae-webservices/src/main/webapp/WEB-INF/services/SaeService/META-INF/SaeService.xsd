@@ -1468,6 +1468,43 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:complexType name="deblocageRequestType">
+        <xsd:annotation>
+            <xsd:documentation>Paramètres d'entrées de l'opération
+            'deblocage'
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>L'UUID du job à débloquer
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="deblocageResponseType">
+        <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+            'deblocage'. Le type est un UUID, il sert à
+            identifier la tâche dans la pile des travaux
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>identifiant du job à débloquer
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="etat" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>l'état du job
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType"/>
     <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType"/>
     <xsd:element name="archivageUnitairePJ" type="sae:archivageUnitairePJRequestType"/>
@@ -1517,4 +1554,6 @@
     <xsd:element name="modificationMasseResponse" type="sae:modificationMasseResponseType"/>
     <xsd:element name="transfertMasse" type="sae:transfertMasseRequestType"/>
     <xsd:element name="transfertMasseResponse" type="sae:transfertMasseResponseType"/>
+    <xsd:element name="deblocage" type="sae:deblocageRequestType"/>
+    <xsd:element name="deblocageResponse" type="sae:deblocageResponseType"/>
 </xsd:schema>

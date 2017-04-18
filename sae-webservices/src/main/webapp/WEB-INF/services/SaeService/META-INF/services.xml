@@ -161,5 +161,10 @@
             <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/transfertMasseResponse
          </outputActionMapping>
         </operation>
+        <operation name="deblocage" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.cirtil.fr/saeService">
+            <actionMapping>deblocage</actionMapping>
+            <outputActionMapping>http://www.cirtil.fr/saeService/SaeServicePortType/deblocageResponse
+         </outputActionMapping>
+        </operation>
     </service>
 </serviceGroup>

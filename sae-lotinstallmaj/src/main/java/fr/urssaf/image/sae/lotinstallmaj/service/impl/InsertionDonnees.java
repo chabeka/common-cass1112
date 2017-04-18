@@ -90,6 +90,7 @@ public class InsertionDonnees {
             StringSerializer.get());
       addActionUnitaire("modification_masse", "modification en masse", cfTmpl);
       addActionUnitaire("transfert_masse", "transfert de masse", cfTmpl);
+      addActionUnitaire("deblocage", "deblocage de traitement de masse", cfTmpl);
 
    }
 
@@ -1020,6 +1021,18 @@ public class InsertionDonnees {
 
       // TRANSFERT_MASSE|KO     
       updater = cfTmpl.createUpdater("TRANSFERT_MASSE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+      
+      // WS_DEBLOCAGE|KO      
+      updater = cfTmpl.createUpdater("WS_DEBLOCAGE|KO");
+      addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // DEBLOCAGE|KO
+      updater = cfTmpl.createUpdater("DEBLOCAGE|KO");
       addColumn("REG_TECHNIQUE", allInfos, StringSerializer.get(),
             ListSerializer.get(), updater);
       cfTmpl.update(updater);

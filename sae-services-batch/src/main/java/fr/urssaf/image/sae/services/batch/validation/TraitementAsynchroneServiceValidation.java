@@ -227,7 +227,7 @@ public class TraitementAsynchroneServiceValidation {
     * 
     * @param parametres
     *           paramètres nécessaires à la création de l'enregistrement de
-    *           transfert de masse
+    *           modification de masse
     */
    @Before(METHOD_MODIFICATION_MASSE)
    public final void ajouterJobModificationMasse(

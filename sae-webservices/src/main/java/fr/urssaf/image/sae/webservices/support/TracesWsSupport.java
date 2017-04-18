@@ -119,6 +119,8 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_TRANSFERT_MASSE_KO;
       } else if ("modificationMasse".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_MODIFICATION_MASSE_KO;
+      } else if ("deblocage".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_DEBLOCAGE_KO;
       }
 
       return result;

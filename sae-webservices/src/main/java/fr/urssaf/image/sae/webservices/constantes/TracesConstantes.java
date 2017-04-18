@@ -103,4 +103,9 @@ public final class TracesConstantes {
     * Le code de l'événement de l'échec du WS de transfert de masse
     */
    public static final String CODE_EVT_WS_TRANSFERT_MASSE_KO = "WS_TRANSFERT_MASSE|KO";
+   
+   /**
+    * Le code de l'événement de l'échec du WS de déblocage
+    */
+   public static final String CODE_EVT_WS_DEBLOCAGE_KO = "WS_DEBLOCAGE|KO";
 }

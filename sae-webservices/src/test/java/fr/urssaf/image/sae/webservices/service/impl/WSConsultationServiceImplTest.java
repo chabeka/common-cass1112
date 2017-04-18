@@ -8,7 +8,6 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.rmi.RemoteException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +30,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.cirtil.www.saeservice.ConsultationAffichable;
 import fr.cirtil.www.saeservice.ConsultationAffichableRequestType;
 import fr.cirtil.www.saeservice.ConsultationAffichableResponse;
-import fr.cirtil.www.saeservice.ConsultationGNTGNS;
-import fr.cirtil.www.saeservice.ConsultationGNTGNSRequestType;
-import fr.cirtil.www.saeservice.ConsultationGNTGNSResponse;
 import fr.cirtil.www.saeservice.ListeMetadonneeCodeType;
 import fr.cirtil.www.saeservice.MetadonneeCodeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
@@ -48,8 +44,6 @@ import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedT
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationAffichableParametrageException;
 import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServiceException;
 import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 
 /**

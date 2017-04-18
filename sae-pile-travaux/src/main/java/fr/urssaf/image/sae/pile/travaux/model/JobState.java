@@ -8,12 +8,13 @@ package fr.urssaf.image.sae.pile.travaux.model;
  * <li>{@link #STARTING} : en cours d'exécution</li>
  * <li>{@link #SUCCESS} : terminé avec succès</li>
  * <li>{@link #FAILURE} : terminé avec échec</li>
+ * <li>{@link #ABORT} : abandonné</li>
  * </ul>
  * 
  * 
  */
 public enum JobState {
 
-   CREATED, RESERVED, STARTING, SUCCESS, FAILURE;
+   CREATED, RESERVED, STARTING, SUCCESS, FAILURE, ABORT;
 
 }

@@ -24,6 +24,8 @@ import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
 import fr.cirtil.www.saeservice.Copie;
 import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.Deblocage;
+import fr.cirtil.www.saeservice.DeblocageResponse;
 import fr.cirtil.www.saeservice.DocumentExistant;
 import fr.cirtil.www.saeservice.DocumentExistantResponse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasse;
@@ -62,6 +64,7 @@ import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -405,6 +408,20 @@ public interface SaeServiceSkeletonInterface {
     */
    TransfertMasseResponse transfertMasseSecure(
          TransfertMasse request, String callerIP) throws AxisFault;
-
+   
+   /**
+    * endpoint de déblocage de job
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    * @throws JobInexistantException 
+    */
+   DeblocageResponse deblocageSecure(
+         Deblocage request, String callerIP) throws AxisFault, JobInexistantException;
 
 }

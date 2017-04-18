@@ -260,6 +260,25 @@ public class JobsQueueSupport {
    }
 
    /**
+    * Suppression du job de la liste des jobs reservés
+    * @param idJob
+    * @param reservedBy
+    * @param clock
+    */
+   public final void deleteJobFromJobsReserved(UUID idJob, String reservedBy,
+         long clock){
+      // Création du Mutator
+      Mutator<String> mutator = this.jobsQueueDao.createMutator();
+
+      // Opération 1: Suppression du job de la liste de la file d'attente
+      if (StringUtils.isNotEmpty(reservedBy)) {
+         this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
+               reservedBy, idJob, clock);
+      }
+   }
+   
+   
+   /**
     * Met à jour le travail afin qu’il soit à nouveau éligible au lancement par
     * l’ordonnanceur en le replaçant dans la liste des jobs en attente
     * 
