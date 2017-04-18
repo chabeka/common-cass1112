@@ -165,12 +165,10 @@ public class ResultatsFileEchecTransfertSupportImpl implements
          // Lecture du sommaire pour la gestion des documents non intégrés.
          this.ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual,
                erreur, listIntDocs, true);
-         System.out.println("MODE PARTIEL RESULTAT ERREUR !!!!!!!!!!!!!!!");
 
          if (listIntDocs != null && !listIntDocs.isEmpty()) {
             // Réinitialisation du reader
             reader.initStream();
-            System.out.println("MODE PARTIEL RESULTAT ERREUR DOC INTEG!!!!!!!!!!!!!!!");
             // Lecture du sommaire pour la gestion des documents intégrés.
             this.ecrireFichierResultatDocumentsIntegres(reader, isVirtual,
                   erreur, listIntDocs);
@@ -547,7 +545,6 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       final XMLEvent xmlEvent = reader.peek();
       TraitementMasseIntegratedDocument document = this
             .getDocumentInListByXmlEvent(xmlEvent, listIntDocs);
-      System.out.println("!!!addTagIntegratedDocumentByTagName!!!");
       if (document != null) {
          this.addTagIntegratedDocumentByTagName(tagName, xmlEvent, document,
                reader);
@@ -579,8 +576,6 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       addMetadatas(reader);
       addUUID(document);
       XMLEventReference xmlEventRef = this.saveReaderEvent(reader.peek());
-
-      System.out.println("---addTagIntegratedDocumentByTagName---");
       
       try {
          addNumeroPageDebut(reader);
@@ -1149,7 +1144,6 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
                      .getMessage();
-               System.out.println("ERREUR : " + messageErreur);
                String message;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
@@ -1235,7 +1229,6 @@ public class ResultatsFileEchecTransfertSupportImpl implements
                String messageErreur = erreur.getListException().get(i)
                      .getMessage();
                String message;
-               System.out.println("ERREUR REF : " + messageErreur);
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
                   message = "Le document virtuel n'a pas été traité. Détails : "

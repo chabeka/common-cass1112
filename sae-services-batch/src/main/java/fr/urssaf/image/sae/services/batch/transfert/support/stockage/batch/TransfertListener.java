@@ -184,8 +184,6 @@ public class TransfertListener extends AbstractListener {
       executor.waitFinishInsertion();
 
       final ConcurrentLinkedQueue<UUID> list = this.getIntegratedDocuments();
-      
-      System.out.println("INTEGRATED DOCUMENT : " + executor.getIntegratedDocuments().size());
 
       jobExecution.getExecutionContext().put(Constantes.NB_INTEG_DOCS,
             executor.getIntegratedDocuments().size());

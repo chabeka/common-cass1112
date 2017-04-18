@@ -39,9 +39,6 @@ public class ResultatsFileFailureTransfertTasklet extends AbstractResultatsFileF
     */
    @Override
    protected final ConcurrentLinkedQueue<?> getIntegratedDocuments() {
-      for (TraitementMasseIntegratedDocument t : executor.getIntegratedDocuments()){
-         System.out.println("INTEGRATED DOCUMENT NOM " + t.getIdentifiant());
-      }
       return executor.getIntegratedDocuments();
    }
 

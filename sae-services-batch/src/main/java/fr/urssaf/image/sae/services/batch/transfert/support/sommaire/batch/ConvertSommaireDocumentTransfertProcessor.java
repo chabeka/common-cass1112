@@ -35,9 +35,6 @@ public class ConvertSommaireDocumentTransfertProcessor implements
 
       final UntypedDocument untypedDoc = new UntypedDocument();
       
-      System.out.println("COUCOU " + itemTransfert.getValue().getObjetNumerique()
-            .getUUID());
-
       untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue().getObjetNumerique()
             .getUUID()));
       

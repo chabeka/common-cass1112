@@ -36,7 +36,7 @@ public class FinTraitementFlagTasklet implements Tasklet {
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
-
+      
       ExecutionContext context = chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext();
 

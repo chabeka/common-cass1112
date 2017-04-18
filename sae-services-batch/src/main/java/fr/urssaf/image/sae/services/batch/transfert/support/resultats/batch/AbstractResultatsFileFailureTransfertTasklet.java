@@ -29,8 +29,6 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends Abstr
     */
    public final RepeatStatus execute(StepContribution contribution,
          ChunkContext chunkContext) throws Exception {
-      
-      System.out.println("FIN ERREUR");
 
       CaptureMasseErreur erreur = new CaptureMasseErreur();
       erreur.setListCodes(new ArrayList<String>(

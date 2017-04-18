@@ -92,10 +92,8 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       StorageDocument document = new StorageDocument();
       String actionType = checkActionType((StorageDocument) storageDocument);
       if (actionType.equals("SUPPRESSION")) {
-         System.out.println("WRITER SUPP");
          document = deleteDocument((StorageDocument) storageDocument);
       } else {
-         System.out.println("WRITER TRAN");
          document = transfertDocument((StorageDocument) storageDocument);
       }
       UUID uuid = document != null ? document.getUuid() : null;
@@ -169,9 +167,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          boolean isdocumentInError = isDocumentInError(index);
          // Si le document n'est pas en erreur, on traite, sinon on passe au
          // suivant.
-         System.out.println("WRITER WRITE ");
          if (!isdocumentInError) {
-            System.out.println("DOCUMENT PAS EN ERREUR");
             command = new InsertionRunnable(getStepExecution().getReadCount()
                   + index, storageDocument, this);
 
@@ -196,7 +192,6 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          }
          index++;
       }
-      System.out.println("Fin WRITEr index : " +index);
    }
 
    /**
