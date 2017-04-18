@@ -189,10 +189,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       // -- Le document n'existe pas sur la GNT
       if (document == null) {
          // -- On recherche le document sur la GNS
-         System.out.println("transfertControle 1");
          document = storageTransfertService
                .searchStorageDocumentByUUIDCriteria(uuidCriteria);
-         System.out.println("transfertControle 2");
 
          String uuid = idArchive.toString();
 
@@ -209,7 +207,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                   message, "{0}", uuid));
          }
       } else {
-         System.out.println("transfertControle 3");
          // -- Le document existe en GNT
          // -- On recherche le document sur la GNS
          StorageDocument documentGNS = storageTransfertService
@@ -230,9 +227,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
+         
          document = storageTransfertService
                .insertBinaryStorageDocument(document);
 
+      
+         
          // -- Récupération des notes associées au document transféré
          List<StorageDocumentNote> listeNotes = storageDocumentService
                .getDocumentsNotes(document.getUuid());
@@ -489,12 +489,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          }
       }
 
-      // Pour les test
-      for (StorageMetadata meta : document.getMetadatas()) {
-         System.out.println("META AVANT MODIF CODE COURT : "
-               + meta.getShortCode() + " = " + meta.getValue());
-      }
-
       // modification des métadonnées avant transfert
       if (!CollectionUtils.isEmpty(listeMeta)) {
          List<StorageMetadata> metadataMasse = new ArrayList<StorageMetadata>();
@@ -519,12 +513,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String shortCode = StorageTechnicalMetadatas.TRACABILITE_PRE_ARCHIVAGE
             .getShortCode();
       document.getMetadatas().add(new StorageMetadata(shortCode, traces));
-
-      // Pour les test
-      for (StorageMetadata meta : document.getMetadatas()) {
-         System.out.println("META APRES MODIF CODE COURT : "
-               + meta.getShortCode() + " = " + meta.getValue());
-      }
 
       return document;
    }
@@ -621,18 +609,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       
       try {
       document = recupererDocMetaTransferable(idArchive);
-      
-      System.out.println("controleDocumentTransfertMasse 1");
 
       StorageDocument documentGNS = transfertControlePlateforme(document, idArchive);
-      
-      System.out.println("controleDocumentTransfertMasse 2");
 
       if (documentGNS == null) {
          document = updateMetaDocumentForTransfertMasse(
                document, StorageMetas);
          document.setBatchTypeAction("TRANSFERT");
-         System.out.println("controleDocumentTransfertMasse 3");
       } else {
          // -- Le document existe sur la GNS et sur la GNT
          String uuid = idArchive.toString();
