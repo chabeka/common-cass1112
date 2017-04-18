@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobRequestRowsIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -95,6 +96,18 @@ public class JobLectureServiceImpl implements JobLectureService {
       return jobRequest;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final JobRequest getJobRequestNotNull(UUID uuidJob) throws JobInexistantException {
+      JobRequest jobRequest = this.getJobRequest(uuidJob);
+      if(jobRequest == null){
+         throw new JobInexistantException(uuidJob);
+      }      
+      return jobRequest;      
+   }
+   
    /**
     * {@inheritDoc}
     */

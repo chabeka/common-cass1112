@@ -22,6 +22,7 @@ import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
@@ -688,5 +689,76 @@ public class JobQueueServiceImpl implements JobQueueService {
       long clock = jobClockSupport.currentCLock();
       this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, clock);
    }
+   
+   @Override
+   public final void deleteJobFromJobsQueues(UUID idJob) {
 
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      // Il faut vérifier le décalage de temps
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Suppression de la CF "JobQueues"
+      String reservedBy = jobRequest.getReservedBy();
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(idJob, reservedBy, clock);
+   }
+   
+   @Override
+   public final void deleteJobAndSemaphoreFromJobsQueues(UUID uuidJob, String codeTraitement) {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(uuidJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(uuidJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Suppression de la CF "JobQueues"
+      String reservedBy = jobRequest.getReservedBy();
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, reservedBy, clock);
+      
+      String SemaphoreReserved =  Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, SemaphoreReserved, clock);
+      
+   }
+   
+   @Override
+   public final void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
+         String message) {
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      long clock = jobClockSupport.currentCLock(columnState);      
+      this.jobRequestSupport.changerEtatJobRequest(idJob, stateJob, endingDate, message, clock);
+   }
+   
 }

@@ -194,4 +194,35 @@ public interface JobQueueService {
    public void reserverJobDansJobsQueues(UUID idJob, String hostname,
          String type, Map<String, String> jobParameters);
 
-}
+   
+   /**
+    * Supprimer le job de la pile des jobsQueue
+    * @param idJob
+    */
+   void deleteJobFromJobsQueues(UUID idJob);   
+
+   /**
+    * Passer le jobRequest à l'état stateJob passé en paramètre
+    * @param idJob
+    *           identifiant du job
+    * @param stateJob
+    *           l'état cible du job
+    * @param endingDate
+    *           date de fin du job
+    * @param message
+    *           message de conclusion du job
+    */
+   void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
+         String message);
+
+   
+   /**
+    * Supprime le job et le sémaphore associé si il existe de la pile des jobsQueue
+    * @param idJob
+    *          identifiant du job
+    * @param codeTraitement
+    *          le code traitement du sémaphore
+    */
+   public void deleteJobAndSemaphoreFromJobsQueues(UUID idJob, String codeTraitement);
+
+  }

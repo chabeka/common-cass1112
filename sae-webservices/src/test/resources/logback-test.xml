@@ -20,15 +20,15 @@
    <logger name="org.apache.pdfbox" level="WARN" />
    
    
-   <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
-   <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
+   <logger name="fr.urssaf.image.commons.cassandra" level="DEBUG" />
+   <logger name="fr.urssaf.image.commons.zookeeper" level="DEBUG" />
    
-   <logger name="fr.urssaf.image.sae.webservices" level="WARN" />
+   <logger name="fr.urssaf.image.sae.webservices" level="DEBUG" />
    <logger name="fr.urssaf.image.sae.trace" level="WARN" />
    <logger name="fr.urssaf.image.sae.igc" level="WARN" />
    <logger name="fr.urssaf.image.sae.vi" level="WARN" />
    <logger name="fr.urssaf.image.sae.droit" level="WARN" />
-   <logger name="fr.urssaf.image.sae.services.batch" level="WARN" />
+   <logger name="fr.urssaf.image.sae.services.batch" level="DEBUG" />
    
    
    <root level="debug">
