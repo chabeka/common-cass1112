@@ -53,33 +53,13 @@ public class ResultatsFileEchecTransfertSupportTest {
       }
    }
    
-   @Test(expected = IllegalArgumentException.class)
-   public void testEcdeDirectoryObligatoire() {
-      support.writeResultatsFile(null, new File(""), new CaptureMasseErreur(),
-            0, 0, Constantes.BATCH_MODE.PARTIEL.getModeNom(),
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testSommaireObligatoire() {
-      support.writeResultatsFile(new File(""), null, new CaptureMasseErreur(),
-            0, 0, Constantes.BATCH_MODE.PARTIEL.getModeNom(),
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
-   }
-
-   @Test(expected = IllegalArgumentException.class)
-   public void testErreurObligatoire() {
-      support.writeResultatsFile(new File(""), new File(""), null, 0, 0,
-            Constantes.BATCH_MODE.PARTIEL.getModeNom(),
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
-   }
    
    @Test
    public void testEcritureSommaire() throws IOException, JAXBException {
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
 
       File sommaire = new File(ecdeDirectory, "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      ClassPathResource resSommaire = new ClassPathResource("sommaire_transf.xml");
       FileOutputStream fos = new FileOutputStream(sommaire);
 
       IOUtils.copy(resSommaire.getInputStream(), fos);

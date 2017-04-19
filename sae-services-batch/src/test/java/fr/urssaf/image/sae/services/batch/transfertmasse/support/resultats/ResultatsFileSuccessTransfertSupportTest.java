@@ -50,34 +50,6 @@ public class ResultatsFileSuccessTransfertSupportTest {
       }
    }
 
-   // Vérification Ecde non null
-   @Test(expected = IllegalArgumentException.class)
-   public void testEcdeDirectoryObligatoire() {
-      support.writeResultatsFile(null,
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 0,
-            false, null, BATCH_MODE.PARTIEL.name());
-      Assert.fail("Vérification aspect doit se déclencher");
-   }
-
-   // Vérification nombre de documents positif
-   @Test(expected = IllegalArgumentException.class)
-   public void testDocumentsCountObligatoire() {
-      support.writeResultatsFile(new File("fichier"),
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), -1,
-            false, null, BATCH_MODE.PARTIEL.name());
-      Assert.fail("Vérification aspect doit se déclencher");
-   }
-
-   // Vérifie que sommaireFile est renseigné si restitutionUuids est à true
-   @Test(expected = IllegalArgumentException.class)
-   public void testSommaireFileObligatorie() {
-      support.writeResultatsFile(new File("fichier"),
-            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(), 10,
-            true, null, BATCH_MODE.PARTIEL.name());
-      Assert.fail("Vérification aspect doit se déclencher");
-
-   }
-
    @Test
    public void testWriteFileSuccess() {
 
@@ -104,7 +76,7 @@ public class ResultatsFileSuccessTransfertSupportTest {
          // Fichier sommaire.xml
          File sommaire = new File(ecdeDirectory, "sommaire.xml");
          ClassPathResource resSommaire = new ClassPathResource(
-               "sommaire/sommaire_success.xml");
+               "sommaire/sommaire_success_transfert.xml");
          FileOutputStream fos = new FileOutputStream(sommaire);
          IOUtils.copy(resSommaire.getInputStream(), fos);
 
