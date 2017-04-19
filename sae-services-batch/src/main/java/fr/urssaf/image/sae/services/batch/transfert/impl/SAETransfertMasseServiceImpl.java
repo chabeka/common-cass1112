@@ -33,6 +33,9 @@ import fr.urssaf.image.sae.services.batch.transfert.SAETransfertMasseService;
 @Service
 public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
    
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEModificationMasseServiceImpl.class);
 
@@ -82,7 +85,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
     */
    @SuppressWarnings(CATCH)
    @Override
-   public ExitTraitement transfertMasse(URI sommaireURI, UUID idTraitement, String hash,
+   public ExitTraitement transfertMasse(final URI sommaireURI, final UUID idTraitement, final String hash,
          String typeHash) {
       
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
@@ -155,8 +158,8 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
     * @param idTraitement
     * @param sommaireURL
     */
-   private void checkFinal(JobExecution jobExecution, URI sommaireURL,
-         UUID idTraitement, List<Throwable> listeExceptions) {
+   private void checkFinal(final JobExecution jobExecution, final URI sommaireURL,
+         final UUID idTraitement, final List<Throwable> listeExceptions) {
 
       Integer nbreDocs = null;
       Integer nbDocsIntegres = null;

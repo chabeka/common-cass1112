@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 public class CheckFormatFileSommaireTransfertTasklet extends CheckFormatFileSommaireTasklet{
    
    @Override
-   protected void validationSpecifiqueSommaire(File sommaireFile)
+   protected void validationSpecifiqueSommaire(final File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException {
       LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml",
             TRC_EXEC);

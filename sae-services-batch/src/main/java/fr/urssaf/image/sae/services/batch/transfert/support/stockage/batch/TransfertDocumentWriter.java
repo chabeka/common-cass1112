@@ -56,7 +56,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     */
    @Autowired
    private SAESuppressionService suppressionService;
-   
+
    /**
     * Provider pour les traces.
     */
@@ -86,7 +86,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument)
          throws Exception {
 
       StorageDocument document = new StorageDocument();
@@ -106,7 +106,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * @param document
     * @return Le document transféré
     * @throws TransfertException
-    *            @{@link TransfertException}
+    * @{@link TransfertException}
     */
    @SuppressWarnings(CATCH)
    public final StorageDocument transfertDocument(final StorageDocument document)
@@ -126,7 +126,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * @param document
     * @return le document supprimé
     * @throws SuppressionException
-    *            @{@link SuppressionException}
+    * @{@link SuppressionException}
     */
    @SuppressWarnings(CATCH)
    public final StorageDocument deleteDocument(final StorageDocument document)
@@ -152,7 +152,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       return LOGGER;
    }
 
-   public String checkActionType(StorageDocument storageDocument) {
+   public String checkActionType(final StorageDocument storageDocument) {
       return storageDocument.getBatchTypeAction();
    }
 
@@ -172,7 +172,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
                   + index, storageDocument, this);
 
             try {
-            poolExecutor.execute(command);
+               poolExecutor.execute(command);
             } catch (Exception e) {
                if (isModePartielBatch()) {
                   getCodesErreurListe().add(Constantes.ERR_BUL002);
@@ -183,7 +183,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
                   getExceptionErreurListe().add(new Exception(message));
                   LOGGER.error(message, e);
                }
-       
+
             }
             LOGGER.debug(
                   "{} - nombre de documents en attente dans le pool : {}",

@@ -16,8 +16,13 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRun
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
+/**
+ * Tasklet permettant de compter le nombre de document à traiter
+ * 
+ *
+ */
 @Component
-public class CountSommaireDocumentsTransfertTasklet implements Tasklet{
+public class CountSommaireDocumentsTransfertTasklet implements Tasklet {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(CountSommaireDocumentsTransfertTasklet.class);
 
@@ -27,8 +32,8 @@ public class CountSommaireDocumentsTransfertTasklet implements Tasklet{
     * {@inheritDoc}
     */
    @Override
-   public final RepeatStatus execute(StepContribution contribution,
-         ChunkContext chunkContext) throws Exception {
+   public final RepeatStatus execute(final StepContribution contribution,
+         final ChunkContext chunkContext) throws Exception {
 
       LOGGER.debug("{} - Debut de méthode", TRC_EXEC);
 

@@ -5,6 +5,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 
+/**
+ * Interface de support en cas d'echec durant le transfert de masse
+ * 
+ *
+ */
 public interface ResultatsFileEchecTransfertSupport {
 
    /**

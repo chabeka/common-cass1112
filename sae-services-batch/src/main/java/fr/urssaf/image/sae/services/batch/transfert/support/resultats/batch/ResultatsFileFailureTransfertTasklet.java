@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
@@ -17,23 +16,33 @@ import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatsF
  * 
  */
 @Component
-public class ResultatsFileFailureTransfertTasklet extends AbstractResultatsFileFailureTransfertTasklet{
+public class ResultatsFileFailureTransfertTasklet extends
+      AbstractResultatsFileFailureTransfertTasklet {
 
+   /**
+    * Support en cas d'echec du transfert de masse
+    */
    @Autowired
    private ResultatsFileEchecTransfertSupport support;
 
+   /**
+    * Support pour la validation du sommaire
+    */
    @Autowired
    private SommaireFormatValidationSupport validationSupport;
 
+   /**
+    * Support pour la validation des xsd
+    */
    @Autowired
    private XsdValidationSupport xsdValidationSupport;
-   
+
    /**
     * Pool d'execution des insertions de documents
     */
    @Autowired
    private InsertionPoolThreadExecutor executor;
-   
+
    /**
     * {@inheritDoc}
     */

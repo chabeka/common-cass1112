@@ -563,8 +563,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param reader
     *           Reader
     */
-   private void addTagIntegratedDocumentByTagName(String tagName,
-         XMLEvent xmlEvent, TraitementMasseIntegratedDocument document,
+   private void addTagIntegratedDocumentByTagName(final String tagName,
+         final XMLEvent xmlEvent, final TraitementMasseIntegratedDocument document,
          XmlReader reader) {
       staxUtils.addStartTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
       staxUtils.addStartTag(OBJET_NUMERIQUE, PX_SOMRES, NS_SOMRES);
@@ -605,7 +605,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     *           Event à sauvegarder.
     * @return Le bean de sauvegarde de l'event.
     */
-   private XMLEventReference saveReaderEvent(XMLEvent xmlEventToSaved) {
+   private XMLEventReference saveReaderEvent(final XMLEvent xmlEventToSaved) {
       return new XMLEventReference(xmlEventToSaved.getLocation()
             .getColumnNumber(), xmlEventToSaved.getLocation().getLineNumber(),
             xmlEventToSaved.getLocation().getCharacterOffset(), xmlEventToSaved
@@ -765,8 +765,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param reader
     * @throws XMLStreamException
     */
-   private void addMetadatas(CaptureMasseErreur erreur, int index,
-         XmlReader reader) {
+   private void addMetadatas(final CaptureMasseErreur erreur, int index,
+         final XmlReader reader) {
 
       if (erreur.getListIndex().contains(index)) {
          staxUtils.addStartTag(METADONNEES, PX_SOMRES, NS_SOMRES);
@@ -802,7 +802,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param reader
     *           Reader du fichier référence.
     */
-   private void addMetadatas(XmlReader reader) {
+   private void addMetadatas(final XmlReader reader) {
       try {
          this.copieXmlEventReaderParNom(
                this.trouverXmlEventReaderParNom(reader, METADONNEES),
@@ -821,7 +821,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @throws ResultatEchecLectureXMLException
     * @{@link ResultatEchecLectureXMLException}
     */
-   private void addNombrePages(XmlReader reader)
+   private void addNombrePages(final XmlReader reader)
          throws ResultatEchecLectureXMLException {
       this.copieXmlEventReaderParNom(
             this.trouverXmlEventReaderParNom(reader, NOMBRE_PAGES),
@@ -837,7 +837,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @throws ResultatEchecLectureXMLException
     * @{@link ResultatEchecLectureXMLException}
     */
-   private void addNumeroPageDebut(XmlReader reader)
+   private void addNumeroPageDebut(final XmlReader reader)
          throws ResultatEchecLectureXMLException {
       this.copieXmlEventReaderParNom(
             this.trouverXmlEventReaderParNom(reader, NUMERO_PAGE_DEBUT),
@@ -850,7 +850,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param document
     *           Document integré
     */
-   private void addUUID(TraitementMasseIntegratedDocument document) {
+   private void addUUID(final TraitementMasseIntegratedDocument document) {
       staxUtils.addStartTag(UUID, PX_SOMRES, NS_SOMRES);
       staxUtils.addValue(document.getIdentifiant().toString());
       staxUtils.addEndTag(UUID, PX_SOMRES, NS_SOMRES);
@@ -865,7 +865,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param nomEvent
     *           Nom de l'evenement
     */
-   private void copieXmlEventReaderParNom(XmlReader reader, String nomXmlEvent) {
+   private void copieXmlEventReaderParNom(final XmlReader reader, final String nomXmlEvent) {
       // On copie toutes les données de entre l'evenement définit par son nom.
       XMLEvent xmlEvent = reader.peek();
       boolean end = xmlEvent.isEndElement()
@@ -899,8 +899,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @throws ResultatEchecLectureXMLException
     * @{@link ResultatEchecLectureXMLException}
     */
-   private XmlReader trouverXmlEventReaderParNom(XmlReader reader,
-         String nomXmlEvent) throws ResultatEchecLectureXMLException {
+   private XmlReader trouverXmlEventReaderParNom(final XmlReader reader,
+         final String nomXmlEvent) throws ResultatEchecLectureXMLException {
       // Parcours le sommaire.xml
       XMLEvent xmlEvent = reader.peek();
       // On se positionne sur la balise Metadonnées
@@ -958,8 +958,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     *           Reference de l'evenement
     * @return Le reader positionné sur l'evenement de référence.
     */
-   private XmlReader trouverXmlEventReaderParReference(XmlReader reader,
-         XMLEventReference xmlEventReference) {
+   private XmlReader trouverXmlEventReaderParReference(final XmlReader reader,
+         final XMLEventReference xmlEventReference) {
       reader.initStream();
       boolean baliseFind = false;
       XMLEvent xmlEvent = null;
@@ -991,7 +991,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @param xmlEvent
     * @throws XMLStreamException
     */
-   private void gestionElement(XMLEvent xmlEvent) {
+   private void gestionElement(final XMLEvent xmlEvent) {
 
       if (xmlEvent.isStartElement()) {
          String name = xmlEvent.asStartElement().getName().getLocalPart();
@@ -1021,7 +1021,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @return Le document qui a été trouvé dans la liste de documents.
     */
    private TraitementMasseIntegratedDocument getDocumentInListByXmlEvent(
-         XMLEvent xmlEvent, ConcurrentLinkedQueue<?> listDocs) {
+         final XMLEvent xmlEvent, final ConcurrentLinkedQueue<?> listDocs) {
       TraitementMasseIntegratedDocument document = null;
       Object objFind = null;
       // Valeur de la balise chemin
@@ -1056,7 +1056,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     *           True = traitement virtuel, false sinon
     */
    private void ecrireEntete(int nombreDocs, int nombreDocsIntegres,
-         String batchModeTraitement, boolean isVirtual) {
+         final String batchModeTraitement, boolean isVirtual) {
 
       String countVirtual, countStandard, countIntegrated, countIntegratedVirtual, countNonIntegrated, countNonIntegratedVirtual;
 
@@ -1110,7 +1110,7 @@ public class ResultatsFileEchecTransfertSupportImpl implements
 
    }
 
-   private void gestionValeur(XMLEvent xmlEvent) {
+   private void gestionValeur(final XMLEvent xmlEvent) {
 
       if (!xmlEvent.isCharacters()) {
          throw new CaptureMasseRuntimeException(

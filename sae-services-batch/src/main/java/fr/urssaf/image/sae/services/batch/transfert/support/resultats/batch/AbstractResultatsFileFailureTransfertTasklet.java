@@ -16,8 +16,15 @@ import fr.urssaf.image.sae.services.batch.capturemasse.tasklet.AbstractCaptureMa
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatsFileEchecTransfertSupport;
 
-public abstract class AbstractResultatsFileFailureTransfertTasklet extends AbstractCaptureMasseTasklet{
-   
+/**
+ * Classe abstraite pour ecriture du resultat en cas d'echec du transfert de
+ * masse
+ * 
+ *
+ */
+public abstract class AbstractResultatsFileFailureTransfertTasklet extends
+      AbstractCaptureMasseTasklet {
+
    /**
     * {@inheritDoc}
     */
@@ -27,8 +34,8 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends Abstr
     * Alerte PMD car nous avons obligation de caster l'erreur afin de pouvoir
     * l'exploiter plus tard
     */
-   public final RepeatStatus execute(StepContribution contribution,
-         ChunkContext chunkContext) throws Exception {
+   public final RepeatStatus execute(final StepContribution contribution,
+         final ChunkContext chunkContext) throws Exception {
 
       CaptureMasseErreur erreur = new CaptureMasseErreur();
       erreur.setListCodes(new ArrayList<String>(

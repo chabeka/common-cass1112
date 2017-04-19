@@ -16,11 +16,23 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
+/**
+ * Interface de controle pour le transfert de masse
+ * 
+ */
 public interface TransfertMasseControleSupport {
 
+   /**
+    * Controle document pour la suppression
+    * 
+    */
    public boolean controleSAEDocumentSuppression(UntypedDocument item)
          throws SearchingServiceEx, ConnectionServiceEx;
 
+   /**
+    * Controle document pour le transfert
+    * 
+    */
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
          throws ReferentialException, SearchingServiceEx,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,

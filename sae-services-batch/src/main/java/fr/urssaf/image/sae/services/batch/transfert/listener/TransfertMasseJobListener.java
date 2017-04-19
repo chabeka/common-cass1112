@@ -33,7 +33,7 @@ public class TransfertMasseJobListener {
     *           le jobExecution
     */
    @BeforeJob
-   public final void init(JobExecution jobExecution) {
+   public final void init(final JobExecution jobExecution) {
 
       ExecutionContext context = jobExecution.getExecutionContext();
 
@@ -59,7 +59,7 @@ public class TransfertMasseJobListener {
     *           le jobExecution
     */
    @AfterJob
-   public final void afterJob(JobExecution jobExecution) {
+   public final void afterJob(final JobExecution jobExecution) {
 
       // Ecriture d'une trace d'échec de capture de masse, le cas échéant
       tracesSupport.traceEchecTransfertMasse(jobExecution);

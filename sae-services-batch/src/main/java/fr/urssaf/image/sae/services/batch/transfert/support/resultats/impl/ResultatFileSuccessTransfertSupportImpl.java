@@ -52,8 +52,14 @@ import fr.urssaf.image.sae.services.batch.capturemasse.utils.CaptureMasseVirtual
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.JAXBUtils;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatFileSuccessTransfertSupport;
 
+/**
+ * Class permettant la création du fichier resultat en cas de success
+ * 
+ *
+ */
 @Component
-public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSuccessTransfertSupport{
+public class ResultatFileSuccessTransfertSupportImpl implements
+      ResultatFileSuccessTransfertSupport {
 
    private static final String ERREUR_VALEUR_VIDE = "Valeur vide non autorisée dans la valeur de la balise";
 
@@ -84,13 +90,13 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
    private static final String VALEUR = "valeur";
    private static final String NUM_PAGE_DEBUT = "numeroPageDebut";
    private static final String NUM_PAGE = "nombreDePages";
-   
+
    @Override
    public void writeResultatsFile(File ecdeDirectory,
          ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
          int initDocCount, boolean restitutionUuids, File sommaireFile,
          String modeBatch) {
-      
+
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en réussite)",
             PREFIX_TRC);
@@ -108,7 +114,7 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
             "{} - Fin de création du fichier (resultats.xml en réussite)",
             PREFIX_TRC);
    }
-   
+
    /**
     * Création du résultat
     * 
@@ -178,7 +184,7 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
                if (xmlEvent.isStartElement()) {
                   startElement = xmlEvent.asStartElement();
                   name = startElement.getName().getLocalPart();
-               if ("documentMultiAction".equals(name)) {
+                  if ("documentMultiAction".equals(name)) {
                      index++;
                      integratedDocumentType = new IntegratedDocumentType();
                      objetNumerique = new FichierType();
@@ -210,8 +216,8 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
                         throw new CaptureMasseRuntimeException(
                               ERREUR_VALEUR_VIDE);
                      }
-                     objetNumerique.setUUID(xmlEventTmp
-                           .asCharacters().getData());
+                     objetNumerique.setUUID(xmlEventTmp.asCharacters()
+                           .getData());
                      integratedDocumentType.setObjetNumerique(objetNumerique);
                   } else if (METADONNEE.equals(name)) {
                      metadonnee = new MetadonneeType();
@@ -324,7 +330,7 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
       }
 
    }
-   
+
    /**
     * Ouvre le fichier sommaire et renvoie le reader
     * 
@@ -341,7 +347,7 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
          throw new CaptureMasseRuntimeException(e);
       }
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -394,18 +400,16 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
             try {
                stream.close();
             } catch (Exception exception) {
-               LOGGER
-                     .info(
-                           "{} - impossible de fermer le flux de sortie du fichier {}",
-                           new Object[] { trcPrefix,
-                                 resultats.getAbsolutePath() });
+               LOGGER.info(
+                     "{} - impossible de fermer le flux de sortie du fichier {}",
+                     new Object[] { trcPrefix, resultats.getAbsolutePath() });
             }
          }
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
    }
-   
+
    /**
     * @param reader
     * @param staxUtils
@@ -446,11 +450,9 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
             try {
                reader.close();
             } catch (Exception exception) {
-               LOGGER
-                     .info(
-                           "{} - impossible de fermer l'écriture du fichier {}",
-                           new Object[] { trcPrefix,
-                                 sommaireFile.getAbsolutePath() });
+               LOGGER.info(
+                     "{} - impossible de fermer l'écriture du fichier {}",
+                     new Object[] { trcPrefix, sommaireFile.getAbsolutePath() });
             }
          }
 
@@ -458,18 +460,16 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
             try {
                somStream.close();
             } catch (Exception exception) {
-               LOGGER
-                     .info(
-                           "{} - impossible de fermer le flux de sortie du fichier {}",
-                           new Object[] { trcPrefix,
-                                 sommaireFile.getAbsolutePath() });
+               LOGGER.info(
+                     "{} - impossible de fermer le flux de sortie du fichier {}",
+                     new Object[] { trcPrefix, sommaireFile.getAbsolutePath() });
             }
          }
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
    }
-   
+
    /**
     * @param event
     * @param isVirtual
@@ -544,7 +544,6 @@ public class ResultatFileSuccessTransfertSupportImpl implements ResultatFileSucc
       }
    }
 
-   
    /**
     * @param reader
     * @param tag

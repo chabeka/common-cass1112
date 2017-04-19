@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import org.springframework.batch.item.adapter.ItemProcessorAdapter;
 import org.springframework.batch.item.xml.StaxEventItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
@@ -22,6 +21,10 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et
 import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
+/**
+ * Design Pattern Factory pour le transfert de masse
+ * 
+ */
 public class TransfertMasseFactory {
    
    @Autowired
@@ -29,7 +32,7 @@ public class TransfertMasseFactory {
    private MappingDocumentService mappingService;
 
    @Autowired
-   private Jaxb2Marshaller Jaxb2UnMarshmaller;
+   private Jaxb2Marshaller jaxb2UnMarshmaller;
 
    @Autowired
    private EcdeSommaireFileSupport fileSupport;
@@ -74,7 +77,7 @@ public class TransfertMasseFactory {
          CaptureMasseSommaireFileNotFoundException {
       final StaxEventItemReader<DocumentTypeMultiAction> reader = new StaxEventItemReader<DocumentTypeMultiAction>();
       reader.setFragmentRootElementName("documentMultiAction");
-      reader.setUnmarshaller(Jaxb2UnMarshmaller);
+      reader.setUnmarshaller(jaxb2UnMarshmaller);
 
       final URI ecdeURL = new URI(ecde);
       final File sommaire = fileSupport.convertURLtoFile(ecdeURL);

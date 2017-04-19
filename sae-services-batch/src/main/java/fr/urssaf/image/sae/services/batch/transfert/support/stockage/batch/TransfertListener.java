@@ -3,9 +3,6 @@ package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-
-
-
 import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -31,14 +28,25 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 
 import org.springframework.batch.item.ExecutionContext;
 
+/**
+ * Classe d'écoute du transfert de masse
+ * 
+ *
+ */
 @Component
 public class TransfertListener extends AbstractListener {
 
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TransfertListener.class);
 
    private static final int THREAD_SLEEP = 30000;
 
+   /**
+    * classe d'execution des threads
+    */
    @Autowired
    private InsertionPoolThreadExecutor executor;
 
@@ -67,7 +75,6 @@ public class TransfertListener extends AbstractListener {
       context.put(Constantes.CTRL_INDEX, valeur);
    }
 
-   
    /**
     * @return la liste identifiants des documents traités
     */
@@ -122,7 +129,7 @@ public class TransfertListener extends AbstractListener {
          final Exception exception) {
 
       LOGGER.warn("erreur lors du traitement de transfert", exception);
-      
+
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
@@ -205,7 +212,7 @@ public class TransfertListener extends AbstractListener {
    }
 
    private ExitStatus gestionException(
-         AbstractInsertionMasseRuntimeException exception) {
+         final AbstractInsertionMasseRuntimeException exception) {
 
       String trcPrefix = "gestionException()";
 

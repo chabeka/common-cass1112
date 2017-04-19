@@ -44,21 +44,39 @@ import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 public class TransfertMasseControleSupportImpl implements
       TransfertMasseControleSupport {
 
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TransfertMasseControleSupportImpl.class);
 
+   /**
+    * SAETransfertService
+    */
    @Autowired
    private SAETransfertService transfertService;
 
+   /**
+    * SAEDocumentExistantService
+    */
    @Autowired
    private SAEDocumentExistantService docExistant;
 
+   /**
+    * ServiceProviderSupport
+    */
    @Autowired
    private ServiceProviderSupport traceServiceSupport;
 
+   /**
+    * MappingDocumentService
+    */
    @Autowired
    private MappingDocumentService mappingDocumentService;
 
+   /**
+    * ControleMetadataService
+    */
    @Autowired
    private SaeControleMetadataService controleMetadataService;
 
@@ -84,7 +102,6 @@ public class TransfertMasseControleSupportImpl implements
 
    /**
     * {@inheritDoc}
-    * 
     * @throws TransfertException
     * @throws MappingFromReferentialException
     * @throws InvalidSAETypeException
@@ -105,7 +122,7 @@ public class TransfertMasseControleSupportImpl implements
       String trcPrefix = "controleSAEDocumentTransfert()";
       LOGGER.debug("{} - début", trcPrefix);
 
-      List<StorageMetadata> StorageMetas = new ArrayList<StorageMetadata>();
+      List<StorageMetadata> storageMetas = new ArrayList<StorageMetadata>();
       if (!CollectionUtils.isEmpty(item.getUMetadatas())) {
 
          controleMetadataService.checkUntypedMetadatas(item.getUMetadatas());
@@ -113,7 +130,7 @@ public class TransfertMasseControleSupportImpl implements
          try {
             List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
                   .untypedMetadatasToSaeMetadatas(item.getUMetadatas());
-            StorageMetas = mappingDocumentService
+            storageMetas = mappingDocumentService
                   .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
          } catch (InvalidSAETypeException e) {
             throw new InvalidSAETypeException(e);
@@ -123,7 +140,7 @@ public class TransfertMasseControleSupportImpl implements
       }
 
       StorageDocument document = transfertService
-            .controleDocumentTransfertMasse(item.getUuid(), StorageMetas);
+            .controleDocumentTransfertMasse(item.getUuid(), storageMetas);
       return document;
 
    }

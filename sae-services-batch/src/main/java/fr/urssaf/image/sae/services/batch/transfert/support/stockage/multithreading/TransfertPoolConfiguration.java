@@ -25,7 +25,7 @@ public class TransfertPoolConfiguration {
    /**
     * @param corePoolSize
     */
-   public void setCorePoolSize(int corePoolSize) {
+   public void setCorePoolSize(final int corePoolSize) {
       this.corePoolSize = corePoolSize;
    }
    

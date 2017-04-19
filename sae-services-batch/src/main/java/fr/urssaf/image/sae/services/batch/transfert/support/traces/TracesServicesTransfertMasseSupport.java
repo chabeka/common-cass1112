@@ -24,16 +24,18 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
-
 /**
  * Classe de support pour écrire les traces via la brique de traçabilité
  */
 @Component
 public class TracesServicesTransfertMasseSupport {
-   
+
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TracesServicesTransfertMasseSupport.class);
-   
+
    /**
     * Services du dispatcheur de la trace
     */
@@ -47,7 +49,7 @@ public class TracesServicesTransfertMasseSupport {
     *           le jobExecution de SpringBatch
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceEchecTransfertMasse(JobExecution jobExecution) {
+   public final void traceEchecTransfertMasse(final JobExecution jobExecution) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
       // planter cette méthode
@@ -59,18 +61,16 @@ public class TracesServicesTransfertMasseSupport {
 
          if (ExitStatus.COMPLETED.equals(jobExecution.getExitStatus())) {
 
-            LOGGER
-                  .debug(
-                        "{} - On ne va pas tracer d'événement d'échec du transfert de masse",
-                        prefix);
+            LOGGER.debug(
+                  "{} - On ne va pas tracer d'événement d'échec du transfert de masse",
+                  prefix);
 
          } else {
 
             // Traces
-            LOGGER
-                  .debug(
-                        "{} - On va tracer l'événement d'échec du transfert de masse",
-                        prefix);
+            LOGGER.debug(
+                  "{} - On va tracer l'événement d'échec du transfert de masse",
+                  prefix);
 
             // Récupère le status du job
             BatchStatus batchStatus = jobExecution.getStatus();
@@ -114,21 +114,23 @@ public class TracesServicesTransfertMasseSupport {
          LOGGER.debug("{} - Fin", prefix);
 
       } catch (Throwable ex) {
-         LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace d'erreur de suppression de masse",
-                     ex);
+         LOGGER.error(
+               "Une erreur s'est produite lors de l'écriture de la trace d'erreur de suppression de masse",
+               ex);
       }
 
    }
 
    /**
     * Ajout des paramètres du job dans la map infos
-    * @param jobExecution Job execution object
-    * @param infos Map infos
+    * 
+    * @param jobExecution
+    *           Job execution object
+    * @param infos
+    *           Map infos
     */
-   private void addJobParametersDansInfos(JobExecution jobExecution,
-         Map<String, Object> infos) {
+   private void addJobParametersDansInfos(final JobExecution jobExecution,
+         final Map<String, Object> infos) {
 
       // On ajoute les paramètres du job sous la forme :
       // - clé de la map = jobParams.nom
@@ -163,10 +165,12 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Construction de la stack trace
-    * @param jobExecution Job execution object
+    * 
+    * @param jobExecution
+    *           Job execution object
     * @return Stack trace
     */
-   private String buildStackTrace(JobExecution jobExecution) {
+   private String buildStackTrace(final JobExecution jobExecution) {
 
       // Traces
       String prefix = "buildStackTrace()";
@@ -212,17 +216,19 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Retourne la liste des exceptions sur les documents
-    * @param jobExecution Job execution object
+    * 
+    * @param jobExecution
+    *           Job execution object
     * @return les exceptions sur les documents
     */
    private ConcurrentLinkedQueue<Exception> getDocumentExceptions(
-         JobExecution jobExecution) {
+         final JobExecution jobExecution) {
       return getListeExceptions(jobExecution, Constantes.DOC_EXCEPTION);
    }
 
    @SuppressWarnings("unchecked")
    private ConcurrentLinkedQueue<Exception> getListeExceptions(
-         JobExecution jobExecution, String cle) {
+         final JobExecution jobExecution, final String cle) {
       ConcurrentLinkedQueue<Exception> listExceptions = null;
       if ((jobExecution.getExecutionContext() != null)
             && (jobExecution.getExecutionContext().get(cle) != null)) {
@@ -234,11 +240,14 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Ajout des exceptions dans la trace.
-    * @param exceptions Exceptions
-    * @param sBuilder builder de trace
+    * 
+    * @param exceptions
+    *           Exceptions
+    * @param sBuilder
+    *           builder de trace
     */
-   private void addExceptions2(Iterable<Exception> exceptions,
-         StringBuilder sBuilder) {
+   private void addExceptions2(final Iterable<Exception> exceptions,
+         final StringBuilder sBuilder) {
 
       String stackTrace;
 
@@ -256,11 +265,14 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Ajout des exceptions dans la trace.
-    * @param exceptions Exceptions
-    * @param sBuilder builder de trace
+    * 
+    * @param exceptions
+    *           Exceptions
+    * @param sBuilder
+    *           builder de trace
     */
-   private void addExceptions1(Iterable<Throwable> exceptions,
-         StringBuilder sBuilder) {
+   private void addExceptions1(final Iterable<Throwable> exceptions,
+         final StringBuilder sBuilder) {
 
       String stackTrace;
 
@@ -278,9 +290,11 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Ajout des informations d'authentification dans le trace.
-    * @param traceToCreate Objet trace.
+    * 
+    * @param traceToCreate
+    *           Objet trace.
     */
-   private void setInfosAuth(TraceToCreate traceToCreate) {
+   private void setInfosAuth(final TraceToCreate traceToCreate) {
 
       if ((SecurityContextHolder.getContext() != null)
             && (SecurityContextHolder.getContext().getAuthentication() != null)
@@ -307,10 +321,12 @@ public class TracesServicesTransfertMasseSupport {
 
    /**
     * Taille d'une collection.
-    * @param liste liste d'objet
-    * @return La taille d'une collection 
+    * 
+    * @param liste
+    *           liste d'objet
+    * @return La taille d'une collection
     */
-   private int sizeCollection(Collection<?> liste) {
+   private int sizeCollection(final Collection<?> liste) {
       int result;
       if (liste == null) {
          result = 0;

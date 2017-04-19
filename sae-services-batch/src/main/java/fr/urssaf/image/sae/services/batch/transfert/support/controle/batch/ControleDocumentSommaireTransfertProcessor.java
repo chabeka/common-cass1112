@@ -25,12 +25,21 @@ public class ControleDocumentSommaireTransfertProcessor extends
       AbstractListener implements
       ItemProcessor<UntypedDocument, StorageDocument> {
 
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ControleDocumentSommaireTransfertProcessor.class);
 
+   /**
+    * Class de controle pour le transfert de masse
+    */
    @Autowired
    private TransfertMasseControleSupport support;
 
+   /**
+    * bean StorageDocument
+    */
    private StorageDocument document;
 
    /**
