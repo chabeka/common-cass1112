@@ -107,6 +107,10 @@
    <bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
       <property name="job" ref="capture_masse" />
    </bean>
+   
+    <bean id="launcherTransfert" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="transfert_masse" />
+   </bean>
 
 
    <!-- Bean pour vérifier les traces -->
