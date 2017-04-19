@@ -72,6 +72,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
+import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -105,6 +106,9 @@ public class SAETransfertMasseServiceTest {
    @Autowired
    @Qualifier("SAEServiceTestProvider")
    private SAEServiceTestProvider testProviderGNT;
+   
+   @Autowired
+   private ServiceProviderSupport traceServiceSupport;
 
    @Autowired
    @Qualifier("saeServiceTestProviderTransfert")
@@ -123,6 +127,7 @@ public class SAETransfertMasseServiceTest {
 
       provider.closeConnexion();
       transfertService.closeConnexion();
+      traceServiceSupport.disconnect();
 
       server.resetData();
 
@@ -142,6 +147,7 @@ public class SAETransfertMasseServiceTest {
       server.resetData();
       provider.openConnexion();
       transfertService.openConnexion();
+      traceServiceSupport.connect();
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
@@ -186,23 +192,9 @@ public class SAETransfertMasseServiceTest {
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
    
-//   @Test
-//   public void testUuidMasseObligatoire() {
-//      try {
-//         saeTransfertService.transfertDocMasse(null, null);
-//         Assert.fail("une IllegalArgumentException est attendue");
-//
-//      } catch (IllegalArgumentException e) {
-//         Assert.assertTrue("le message doit etre correct", e.getMessage()
-//               .contains("identifiant de l'archive"));
-//
-//      } catch (Exception e) {
-//         Assert.fail("une IllegalArgumentException est attendue");
-//      }
-//   }
 
    @Test
-   //@Ignore("Mis en commentaire le temps de la release")
+   @Ignore("Mis en commentaire le temps de la release")
    public void testSuccess() throws ConnectionServiceEx, IOException,
          ParseException, TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx, SAECaptureServiceEx, ReferentialRndException,
@@ -227,7 +219,6 @@ public class SAETransfertMasseServiceTest {
       StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta);
       
       saeTransfertService.transfertDocMasse(document);
-      System.out.println("Document transféré : " + uidDocGNT);
 
       // -- Vérification présence fichier transféré
       Document doc = testProviderGNS.searchDocument(uidDocGNT);
@@ -247,7 +238,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   //@Ignore("Mis en commentaire le temps de la release")
+   @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveInexistante() throws TransfertException,
          ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
@@ -269,7 +260,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   //@Ignore("Mis en commentaire le temps de la release")
+   @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveDejaTransferee() throws ConnectionServiceEx,
          IOException, ParseException {
 
@@ -300,7 +291,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   //@Ignore("Mis en commentaire le temps de la release")
+   @Ignore("Mis en commentaire le temps de la release")
    public void testTransfertNoteSuccess() throws ConnectionServiceEx,
          IOException, ParseException, TransfertException,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
@@ -325,7 +316,6 @@ public class SAETransfertMasseServiceTest {
       // -- Transfert du document vers la GNS
       StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, null);
       saeTransfertService.transfertDocMasse(document);
-      System.out.println("Document transféré : " + uidDocGNT);
 
       // -- Vérification présence fichier transféré
       Document doc = testProviderGNS.searchDocument(uidDocGNT);

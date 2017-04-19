@@ -66,14 +66,19 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * l'annotation @Autowired
  * 
  */
-
 @Service
 public class SAETransfertServiceImpl extends AbstractSAEServices implements
       SAETransfertService {
 
+   /**
+    * Logger
+    */
    private static final Logger LOG = LoggerFactory
          .getLogger(SAETransfertServiceImpl.class);
 
+   /**
+    * Provider de service pour l'archivage de document
+    */
    @Autowired
    private StorageDocumentService storageDocumentService;
 
@@ -101,6 +106,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
    @Autowired
    private CycleVieService cycleVieService;
 
+   /**
+    * Provider pour les traces
+    */
    @Autowired
    private ServiceProviderSupport traceServiceSupport;
 
@@ -110,9 +118,15 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
    @Autowired
    private JournalEvtServiceImpl journalEvtService;
 
+   /**
+    * Service pour le mapping de document
+    */
    @Autowired
    private MappingDocumentService mappingService;
 
+   /**
+    * Service pour la verifications des PRMD
+    */
    @Autowired
    private PrmdService prmdService;
 
@@ -124,7 +138,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * @throws MappingFromReferentialException
     *            Permet de vérifier les droits avant le transfert
     */
-   public final void controleDroitTransfert(UUID idArchive)
+   public final void controleDroitTransfert(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException {
 
@@ -175,10 +189,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * 
     *            Permet plusieurs controles avant le transfert : Document en GNT
     *            ? Document en GNS ?
-    * @throws ConnectionServiceEx 
+    * @throws ConnectionServiceEx
     */
    public final StorageDocument transfertControlePlateforme(
-         StorageDocument document, UUID idArchive)
+         StorageDocument document, final UUID idArchive)
          throws ArchiveAlreadyTransferedException, SearchingServiceEx,
          ReferentialException, ArchiveInexistanteEx {
 
@@ -200,7 +214,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             throw new ArchiveInexistanteEx(StringUtils.replace(message, "{0}",
                   uuid));
          } else {
-           
+
             // -- Le document existe sur la GNS
             String message = "Le document {0} a déjà été transféré.";
             throw new ArchiveAlreadyTransferedException(StringUtils.replace(
@@ -227,12 +241,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
-         
+
          document = storageTransfertService
                .insertBinaryStorageDocument(document);
 
-      
-         
          // -- Récupération des notes associées au document transféré
          List<StorageDocumentNote> listeNotes = storageDocumentService
                .getDocumentsNotes(document.getUuid());
@@ -246,7 +258,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                // Les notes n'ont pas pu être transférées, on annule le
                // transfert (suppression du document en GNS)
                try {
-                  storageTransfertService.deleteStorageDocument(document.getUuid());
+                  storageTransfertService.deleteStorageDocument(document
+                        .getUuid());
                } catch (DeletionServiceEx erreurSupprGNS) {
                   throw new TransfertException(erreurSupprGNS);
                }
@@ -270,7 +283,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             // Le document attaché n'a pas pu être transféré, on annule
             // le transfert (suppression du document en GNS)
             try {
-               storageTransfertService.deleteStorageDocument(document.getUuid());
+               storageTransfertService
+                     .deleteStorageDocument(document.getUuid());
             } catch (DeletionServiceEx erreurSupprGNS) {
                throw new TransfertException(erreurSupprGNS);
             }
@@ -292,7 +306,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * 
     *            Fonction permet suppression doc sur GNT apres le transfert
     */
-   public final void deleteDocApresTransfert(UUID idArchive)
+   public final void deleteDocApresTransfert(final UUID idArchive)
          throws SearchingServiceEx, ReferentialException, TransfertException {
       // -- Suppression du document transféré de la GNT
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
@@ -327,8 +341,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     *            Permet de récupérer le document avec les metadonnées
     *            transférables
     */
-   public final StorageDocument recupererDocMetaTransferable(UUID idArchive)
-         throws ReferentialException, SearchingServiceEx {
+   public final StorageDocument recupererDocMetaTransferable(
+         final UUID idArchive) throws ReferentialException, SearchingServiceEx {
       // On récupère le document avec uniquement les méta transférables
       List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
       UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
@@ -339,10 +353,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       return document;
    }
 
-   public final void transfertDocMasse(StorageDocument document) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         ReferentialException, RetrievalServiceEx, InvalidSAETypeException,
-         MappingFromReferentialException {
+   public final void transfertDocMasse(final StorageDocument document)
+         throws TransfertException, ArchiveAlreadyTransferedException,
+         ArchiveInexistanteEx, ReferentialException, RetrievalServiceEx,
+         InvalidSAETypeException, MappingFromReferentialException {
 
       // -- On trace le début du transfert
       String trcPrefix = "transfertDoc";
@@ -357,7 +371,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
          this.deleteDocApresTransfert(document.getUuid());
 
-
          LOG.debug("{} - Fin de transfert du document {}", new Object[] {
                trcPrefix, document.getUuid().toString() });
 
@@ -367,7 +380,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       }
    }
-
 
    /**
     * Récupération de la liste des métadonnées transférables, depuis le
@@ -413,7 +425,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * @throws TransfertException
     *            En cas d'erreur de création des traces json
     */
-   private void updateMetaDocumentForTransfert(StorageDocument document)
+   private void updateMetaDocumentForTransfert(final StorageDocument document)
          throws ReferentialException, TransfertException {
 
       // -- Ajout métadonnée "DateArchivageGNT"
@@ -460,7 +472,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     *            transfert pour le traitement de transfert de masse
     */
    public final StorageDocument updateMetaDocumentForTransfertMasse(
-         StorageDocument document, List<StorageMetadata> listeMeta)
+         final StorageDocument document, final List<StorageMetadata> listeMeta)
          throws ReferentialException, TransfertException {
 
       // -- Ajout métadonnée "DateArchivageGNT"
@@ -517,7 +529,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       return document;
    }
 
-   private String getTracePreArchivageAsJson(StorageDocument document)
+   private String getTracePreArchivageAsJson(final StorageDocument document)
          throws TransfertException {
       Map<String, String> mapTraces = new HashMap<String, String>();
 
@@ -600,43 +612,46 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(e);
       }
    }
-   
-   public final StorageDocument controleDocumentTransfertMasse(UUID idArchive,
-         List<StorageMetadata> StorageMetas) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
+
+   public final StorageDocument controleDocumentTransfertMasse(
+         final UUID idArchive, final List<StorageMetadata> storageMetas)
+         throws TransfertException, ArchiveAlreadyTransferedException,
+         ArchiveInexistanteEx {
       String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
       StorageDocument document = new StorageDocument();
-      
+
       try {
-      document = recupererDocMetaTransferable(idArchive);
+         document = recupererDocMetaTransferable(idArchive);
 
-      StorageDocument documentGNS = transfertControlePlateforme(document, idArchive);
+         StorageDocument documentGNS = transfertControlePlateforme(document,
+               idArchive);
 
-      if (documentGNS == null) {
-         document = updateMetaDocumentForTransfertMasse(
-               document, StorageMetas);
-         document.setBatchTypeAction("TRANSFERT");
-      } else {
-         // -- Le document existe sur la GNS et sur la GNT
-         String uuid = idArchive.toString();
-         String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
-         throw new ArchiveAlreadyTransferedException(StringUtils.replace(
-               message, "{0}", uuid));
-      }
-      return document;
-      
+         if (documentGNS == null) {
+            document = updateMetaDocumentForTransfertMasse(document,
+                  storageMetas);
+            document.setBatchTypeAction("TRANSFERT");
+         } else {
+            // -- Le document existe sur la GNS et sur la GNT
+            String uuid = idArchive.toString();
+            String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
+            throw new ArchiveAlreadyTransferedException(StringUtils.replace(
+                  message, "{0}", uuid));
+         }
+         return document;
+
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {
          throw new TransfertException(erreur, ex);
       }
    }
-   
+
    /**
     * {@inheritDoc}
     */
-   public final void transfertDoc(UUID idArchive) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
+   public final void transfertDoc(final UUID idArchive)
+         throws TransfertException, ArchiveAlreadyTransferedException,
+         ArchiveInexistanteEx {
 
       // -- On trace le début du transfert
       String trcPrefix = "transfertDoc";
@@ -654,13 +669,14 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
          // On récupère les métadonnées du document à partir de l'UUID, avec
          // toutes les
-         // métadonnées du référentiel sauf la note qui n'est pas utilise pour les droits
+         // métadonnées du référentiel sauf la note qui n'est pas utilise pour
+         // les droits
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
                .getAllMetadataReferencesPourVerifDroits();
          for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                  .getShortCode()));
          }
          UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 

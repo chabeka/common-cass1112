@@ -377,7 +377,6 @@ public class SAETransfertServiceTest {
 
       // -- Transfert du document vers la GNS
       saeTransfertService.transfertDoc(uidDocGNT);
-      System.out.println("Document transféré : " + uidDocGNT);
 
       // -- Vérification présence fichier transféré
       Document doc = testProviderGNS.searchDocument(uidDocGNT);
@@ -499,7 +498,6 @@ public class SAETransfertServiceTest {
 
       // -- Transfert du document vers la GNS
       saeTransfertService.transfertDoc(uidDocGNT);
-      System.out.println("Document transféré : " + uidDocGNT);
 
       // -- Vérification présence fichier transféré
       Document doc = testProviderGNS.searchDocument(uidDocGNT);

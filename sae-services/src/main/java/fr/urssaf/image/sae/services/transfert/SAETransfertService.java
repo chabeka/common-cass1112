@@ -17,21 +17,21 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
-
 /**
  * 
  * Service permettant de réaliser le transfert de documents
  * 
  */
 public interface SAETransfertService {
-   
+
    /**
     * Supprime le document donné
     * 
     * @param idArchive
     *           identifiant unique du document à transférer
     * @throws TransfertException
-    *            Erreur levée lorsqu'un erreur survient pendant le transfert du doc
+    *            Erreur levée lorsqu'un erreur survient pendant le transfert du
+    *            doc
     * @throws ArchiveAlreadyTransferedException
     *            Erreur levée lorsque le document a déjà été transféré
     * @throws ArchiveInexistanteEx
@@ -39,35 +39,36 @@ public interface SAETransfertService {
     */
    @PreAuthorize("hasRole('transfert')")
    void transfertDoc(UUID idArchive) throws TransfertException,
-      ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
-   
-   void transfertDocMasse(StorageDocument document) throws TransfertException,
-      ArchiveAlreadyTransferedException, ArchiveInexistanteEx, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException;
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
 
-   public void controleDroitTransfert(UUID idArchive)
+   void transfertDocMasse(StorageDocument document) throws TransfertException,
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
+         ReferentialException, RetrievalServiceEx, InvalidSAETypeException,
+         MappingFromReferentialException;
+
+   void controleDroitTransfert(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException;
-   
-   public StorageDocument transfertControlePlateforme(
-         StorageDocument document, UUID idArchive)
-         throws ArchiveAlreadyTransferedException, SearchingServiceEx,
-         ReferentialException, ArchiveInexistanteEx, TransfertException, ConnectionServiceEx;
-   
-   public  void transfertDocument(StorageDocument document)
-         throws TransfertException;
-   
-   public void deleteDocApresTransfert(UUID idArchive)
+
+   StorageDocument transfertControlePlateforme(StorageDocument document,
+         final UUID idArchive) throws ArchiveAlreadyTransferedException,
+         SearchingServiceEx, ReferentialException, ArchiveInexistanteEx,
+         TransfertException, ConnectionServiceEx;
+
+   void transfertDocument(StorageDocument document) throws TransfertException;
+
+   void deleteDocApresTransfert(final UUID idArchive)
          throws SearchingServiceEx, ReferentialException, TransfertException;
-   
-   public StorageDocument recupererDocMetaTransferable(UUID idArchive)
+
+   StorageDocument recupererDocMetaTransferable(final UUID idArchive)
          throws ReferentialException, SearchingServiceEx;
-   
-   public StorageDocument updateMetaDocumentForTransfertMasse(
-         StorageDocument document, List<StorageMetadata> listeMeta)
+
+   StorageDocument updateMetaDocumentForTransfertMasse(
+         StorageDocument document, final List<StorageMetadata> listeMeta)
          throws ReferentialException, TransfertException;
-   
-   public StorageDocument controleDocumentTransfertMasse(UUID idArchive,
-         List<StorageMetadata> StorageMetas) throws TransfertException,
+
+   StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
+         final List<StorageMetadata> storageMetas) throws TransfertException,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
 
 }
