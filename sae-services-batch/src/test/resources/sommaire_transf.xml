@@ -28,7 +28,7 @@
          <somres:typeAction>TRANSFERT</somres:typeAction>
       </somres:document>
 
-      <!-- Transfert de document dans modification de metadonnees -->
+      <!-- Transfert de document sans modification de metadonnees -->
       <somres:document>
          <somres:objetNumerique>
             <somres:UUID>5B06E4C2-04YA-4E46-B7F2-9A93D48300CD</somres:UUID>

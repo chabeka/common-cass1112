@@ -46,7 +46,8 @@ public class InsertionPoolThreadExecutor
    private static final String PREFIX_TRACE = "InsertionPoolModificationThreadExecutor()";
 
    /**
-    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments : <br>
+    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
+    * : <br>
     * <ul>
     * <li>
     * <code>corePoolSize</code> :
@@ -83,10 +84,9 @@ public class InsertionPoolThreadExecutor
 
       super(poolConfiguration, support, config);
 
-      LOGGER
-            .debug(
+      LOGGER.debug(
             "{} - Taille du pool de threads pour la modification en masse dans DFCE: {}",
-                  new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
+            new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
 
@@ -161,7 +161,6 @@ public class InsertionPoolThreadExecutor
    @Override
    protected final void addDocumentToIntegratedList(
          StorageDocument storageDocument, int indexDocument) {
-
       TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
       document.setIdentifiant(storageDocument.getUuid());
       document.setIndex(indexDocument);
@@ -174,12 +173,18 @@ public class InsertionPoolThreadExecutor
    @Override
    protected void traitementAfterExecute(String trcPrefix,
          StorageDocument document, int indexDocument) {
-      addDocumentToIntegratedList(document, indexDocument);
-
-      getLogger().debug("{} - Modification du document #{} uuid:{}",
-            new Object[] { trcPrefix, (indexDocument + 1), getUuid(document) });
+      // On test si le document a été modifié ou non (en mode PARTIEL, si erreur
+      // lors de la modification, l'exception est catchée et on renvoie un UUID
+      // null)
+      if (document.getUuid() != null) {
+         addDocumentToIntegratedList(document, indexDocument);
+         getLogger()
+               .debug(
+                     "{} - Modification du document #{} uuid:{}",
+                     new Object[] { trcPrefix, (indexDocument + 1),
+                           getUuid(document) });
+      }
    }
-
 
    /**
     * {@inheritDoc}

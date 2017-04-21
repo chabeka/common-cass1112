@@ -33,6 +33,7 @@ public class ConvertSommaireDocumentProcessor implements
 
    private static final String PREFIXE_TRC = "ConvertSommaireDocumentProcessor.process()";
 
+
    /**
     * {@inheritDoc}
     */
@@ -46,29 +47,31 @@ public class ConvertSommaireDocumentProcessor implements
 
       final UntypedDocument untypedDoc = new UntypedDocument();
 
-      final List<MetadonneeType> metaDataType = item.getValue()
-            .getMetadonnees().getMetadonnee();
-      final List<UntypedMetadata> listUM = new ArrayList<UntypedMetadata>();
+         final List<MetadonneeType> metaDataType = item.getValue()
+               .getMetadonnees().getMetadonnee();
+         final List<UntypedMetadata> listUM = new ArrayList<UntypedMetadata>();
 
-      UntypedMetadata untypedMetadata;
-      for (MetadonneeType metadonneeType : metaDataType) {
-         untypedMetadata = new UntypedMetadata();
-         untypedMetadata.setLongCode(metadonneeType.getCode());
-         untypedMetadata.setValue(metadonneeType.getValeur());
-         listUM.add(untypedMetadata);
-      }
-      untypedDoc.setUMetadatas(listUM);
+         UntypedMetadata untypedMetadata;
+         for (MetadonneeType metadonneeType : metaDataType) {
+            untypedMetadata = new UntypedMetadata();
+            untypedMetadata.setLongCode(metadonneeType.getCode());
+            untypedMetadata.setValue(metadonneeType.getValeur());
+            listUM.add(untypedMetadata);
+         }
+         untypedDoc.setUMetadatas(listUM);
 
-      String filePath = item.getValue().getObjetNumerique()
-            .getCheminEtNomDuFichier();
-      filePath = FilenameUtils.separatorsToSystem(filePath);
+         String filePath = item.getValue().getObjetNumerique()
+               .getCheminEtNomDuFichier();
+         filePath = FilenameUtils.separatorsToSystem(filePath);
 
-      untypedDoc.setFilePath(filePath);
+         untypedDoc.setFilePath(filePath);
 
-      LOGGER
-            .debug(
-                  "{} - Fin du mapping de l'objet Jaxb représentant le sommaire.xml vers un objet métier Sommaire",
-                  PREFIXE_TRC);
-      return untypedDoc;
+         LOGGER.debug(
+               "{} - Fin du mapping de l'objet Jaxb représentant le sommaire.xml vers un objet métier Sommaire",
+               PREFIXE_TRC);
+         return untypedDoc;
+
+
    }
+
 }

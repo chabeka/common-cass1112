@@ -47,7 +47,8 @@ public class InsertionCapturePoolThreadExecutor
    private static final String PREFIX_TRACE = "InsertionPoolThreadExecutor()";
 
    /**
-    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments : <br>
+    * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
+    * : <br>
     * <ul>
     * <li>
     * <code>corePoolSize</code> :
@@ -84,10 +85,9 @@ public class InsertionCapturePoolThreadExecutor
 
       super(poolConfiguration, support, config);
 
-      LOGGER
-            .debug(
-                  "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
-                  new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
+      LOGGER.debug(
+            "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
+            new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
 
@@ -169,6 +169,7 @@ public class InsertionCapturePoolThreadExecutor
       document.setIdentifiant(storageDocument.getUuid());
       document.setIndex(indexDocument);
       integDocs.add(document);
+
    }
 
    /**

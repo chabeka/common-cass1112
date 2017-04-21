@@ -83,10 +83,12 @@
       </property>
    </bean>
 
+<!-- 
    <bean id="processorConvertMetier"
       class="org.springframework.batch.item.adapter.ItemProcessorAdapter"
       factory-bean="captureMasseFactory" factory-method="getItemProcessor" />
-
+ -->
+ 
    <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
       id="compositeProcessorControlePersistance">
       <property name="delegates">
@@ -94,7 +96,7 @@
             <ref bean="convertSommaireDocumentProcessor" />
             <ref bean="enrichissementMetadonneeProcessor" />
             <ref bean="controleStorageDocumentProcessor" />
-            <ref bean="processorConvertMetier" />
+            <ref bean="processorConvertMetier2" />
             <ref bean="enrichissementStorageDocumentProcessor" />
             <ref bean="replacementDocumentProcessor" />
          </list>

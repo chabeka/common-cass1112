@@ -22,7 +22,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
- * Item processor pour remplacer le document d'origine par le document compressé si le document a été compressé.
+ * Item processor pour remplacer le document d'origine par le document compressé
+ * si le document a été compressé.
  *
  */
 @Component
@@ -31,7 +32,7 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ReplacementDocumentProcessor.class);
-   
+
    /**
     * {@inheritDoc}
     */
@@ -40,58 +41,97 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
    public StorageDocument process(StorageDocument item) throws Exception {
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
-      
-      final String path = (String) getStepExecution().getJobExecution()
-            .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
 
-      final File sommaire = new File(path);
+      try {
 
-      final File ecdeDirectory = sommaire.getParentFile();
+         // Si il y a déjà eu une erreur sur un document en mode partiel, on ne
+         // cherche pas à continuer sur ce document
+         if (!(isModePartielBatch() && getIndexErreurListe().contains(
+               getStepExecution().getExecutionContext().getInt(
+                     Constantes.CTRL_INDEX)))) {
 
-      String cheminDocOnEcde;
-      if (!item.getFilePath().contains(ecdeDirectory.getAbsolutePath())) {
-         cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
-               + "documents" + File.separator + item.getFilePath();
-      } else {
-         cheminDocOnEcde = item.getFilePath();
-      }
-      LOGGER.debug("{} - chemin on ecde: {}", trcPrefix, cheminDocOnEcde);
+            final String path = (String) getStepExecution().getJobExecution()
+                  .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
 
-      // recupere la map des documents compressés
-      Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
-            .getJobExecution().getExecutionContext().get("documentsCompressed");
-      if (documentsCompressed == null) {
-         LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring", trcPrefix);
-      } else {
-         LOGGER.debug("{} - Clé de la map des documents compresses : {}", trcPrefix, documentsCompressed.keySet());
-      }
-      
-      // test si le document courant a ete compressé
-      if (documentsCompressed != null && documentsCompressed.containsKey(cheminDocOnEcde)) {
-         // le document courant fait bien parti de la liste des documents compressés
-         // on va donc remplacer les informations 
-         final CompressedDocument compressedDoc = documentsCompressed.get(cheminDocOnEcde);
-         // le nom
-         LOGGER.debug("remplacement du nom du fichier {} par {}", new String[] { item.getFileName(), compressedDoc.getFileName()});
-         item.setFileName(compressedDoc.getFileName());
-         LOGGER.debug("remplacement du chemin du fichier {} par {}", new String[] { item.getFilePath(), compressedDoc.getFilePath()});
-         item.setFilePath(compressedDoc.getFilePath());
-         // le contenu du fichier
-         LOGGER.debug("remplacement du contenu du fichier par {}", new String[] { compressedDoc.getFilePath()});
-         InputStreamSource streamSource = new InputStreamSource(new FileInputStream(compressedDoc.getFilePath()));
-         item.setContent(new DataHandler(streamSource));
-         // le hash
-         final StorageMetadata metaHash = findStorageMetadata(item.getMetadatas(), StorageTechnicalMetadatas.HASH.getShortCode());
-         if (metaHash != null) {
-            LOGGER.debug("remplacement du hash {} par {}", new Object[] { metaHash.getValue(), compressedDoc.getHash()});
-            metaHash.setValue(compressedDoc.getHash());
+            final File sommaire = new File(path);
+
+            final File ecdeDirectory = sommaire.getParentFile();
+
+            String cheminDocOnEcde;
+            if (!item.getFilePath().contains(ecdeDirectory.getAbsolutePath())) {
+               cheminDocOnEcde = ecdeDirectory.getAbsolutePath()
+                     + File.separator + "documents" + File.separator
+                     + item.getFilePath();
+            } else {
+               cheminDocOnEcde = item.getFilePath();
+            }
+            LOGGER.debug("{} - chemin on ecde: {}", trcPrefix, cheminDocOnEcde);
+
+            // recupere la map des documents compressés
+            Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
+                  .getJobExecution().getExecutionContext()
+                  .get("documentsCompressed");
+            if (documentsCompressed == null) {
+               LOGGER.debug(
+                     "{} - La map des documents compresses n'existe pas dans le contexte spring",
+                     trcPrefix);
+            } else {
+               LOGGER.debug("{} - Clé de la map des documents compresses : {}",
+                     trcPrefix, documentsCompressed.keySet());
+            }
+
+            // test si le document courant a ete compressé
+            if (documentsCompressed != null
+                  && documentsCompressed.containsKey(cheminDocOnEcde)) {
+               // le document courant fait bien parti de la liste des documents
+               // compressés
+               // on va donc remplacer les informations
+               final CompressedDocument compressedDoc = documentsCompressed
+                     .get(cheminDocOnEcde);
+               // le nom
+               LOGGER.debug(
+                     "remplacement du nom du fichier {} par {}",
+                     new String[] { item.getFileName(),
+                           compressedDoc.getFileName() });
+               item.setFileName(compressedDoc.getFileName());
+               LOGGER.debug(
+                     "remplacement du chemin du fichier {} par {}",
+                     new String[] { item.getFilePath(),
+                           compressedDoc.getFilePath() });
+               item.setFilePath(compressedDoc.getFilePath());
+               // le contenu du fichier
+               LOGGER.debug("remplacement du contenu du fichier par {}",
+                     new String[] { compressedDoc.getFilePath() });
+               InputStreamSource streamSource = new InputStreamSource(
+                     new FileInputStream(compressedDoc.getFilePath()));
+               item.setContent(new DataHandler(streamSource));
+               // le hash
+               final StorageMetadata metaHash = findStorageMetadata(
+                     item.getMetadatas(),
+                     StorageTechnicalMetadatas.HASH.getShortCode());
+               if (metaHash != null) {
+                  LOGGER.debug("remplacement du hash {} par {}", new Object[] {
+                        metaHash.getValue(), compressedDoc.getHash() });
+                  metaHash.setValue(compressedDoc.getHash());
+               }
+            }
          }
+      } catch (Exception e) {
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+         } else {
+            throw e;
+         }
+
       }
-      
       LOGGER.debug("{} - fin", trcPrefix);
       return item;
    }
-   
+
    /**
     * Methode de recherche de l'objet storageMetadata a partir du code court.
     * 
@@ -114,7 +154,7 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
       }
       return retour;
    }
-   
+
    /**
     * {@inheritDoc}
     */

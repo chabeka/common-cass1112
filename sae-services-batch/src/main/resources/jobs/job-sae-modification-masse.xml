@@ -100,7 +100,7 @@
          <next on="*" to="finBloquant" />
      </step>
            
-     <!-- persistance des documents du fichier sommaire.xml en mode PARTIEL -->
+     <!-- modifications des métadonnées des documents du fichier sommaire.xml en mode PARTIEL -->
       <step id="modificationDocuments">
          <tasklet>
             <chunk reader="sommaireReader" processor="compositeProcessorModification"

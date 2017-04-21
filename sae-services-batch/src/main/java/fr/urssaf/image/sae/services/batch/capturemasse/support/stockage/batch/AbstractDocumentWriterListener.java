@@ -91,7 +91,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       getLogger().debug("{} - fermeture de la connexion DFCE", trcPrefix);
 
       if (isModePartielBatch()) {
-         // En mode PARTIEL, on regarde s'il y a une erreur de déclarer dans la
+         // En mode PARTIEL, on regarde s'il y a une erreur déclarée dans la
          // liste des erreurs. Si c'est le cas, on est en echec et non en
          // success. Il faut donc remonter cette état.
          if (!getIndexErreurListe().isEmpty()) {

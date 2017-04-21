@@ -106,7 +106,7 @@ public class SommaireFormatValidationSupportTest {
    }
 
    @Test
-   public void testSommaireValideNico() {
+   public void testSommaireValideTransfer() {
 
       try {
 

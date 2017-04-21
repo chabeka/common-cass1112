@@ -52,7 +52,7 @@ public class ControleModeBatchTasklet implements Tasklet {
       File file = new File(path);
 
       LOGGER.debug(
-            "{} - Début du controle du mode de traitement du batch présents dans le fichier sommaire.xml",
+            "{} - Début du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
             TRC_EXEC);
 
       String batchMode = XmlReadUtils.getElementValue(file,
@@ -62,13 +62,13 @@ public class ControleModeBatchTasklet implements Tasklet {
       if (batchModeActif == null || (batchModeActif!= null && !batchMode.equals(batchModeActif))) {
          ExecutionContext jobExecution = chunkContext.getStepContext()
                .getStepExecution().getJobExecution().getExecutionContext();
-         final Exception exception = new Exception("Le mode de traitement du batch à changer. Traitement impossible.");
+         final Exception exception = new Exception("Le mode de traitement du batch a changé dans le sommaire.xml. Traitement impossible.");
 
          ((ConcurrentLinkedQueue<Exception>) jobExecution.get(Constantes.DOC_EXCEPTION)).add(exception);
       }
 
       LOGGER.debug(
-            "{} - Fin du controle du mode de traitement du batch présents dans le fichier sommaire.xml",
+            "{} - Fin du controle du mode de traitement du batch présent dans le fichier sommaire.xml",
             TRC_EXEC);
 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);

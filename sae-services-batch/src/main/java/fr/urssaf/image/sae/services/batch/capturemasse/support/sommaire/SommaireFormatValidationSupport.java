@@ -32,7 +32,7 @@ public interface SommaireFormatValidationSupport {
     * @param sommaireFile
     *           le fichier sommaire.xml
     * @param batchModes
-    *           liste de mode de capture attendue
+    *           liste de mode de capture attendu
     * @throws CaptureMasseSommaireFormatValidationException
     *            Le fichier sommaire.xml est invalide
     */
@@ -44,7 +44,7 @@ public interface SommaireFormatValidationSupport {
     * sommaire
     * 
     * @param sommaireFile
-    *           le fichier soammire.xml
+    *           le fichier sommaire.xml
     * @throws CaptureMasseSommaireFormatValidationException
     *            Le fichier sommaire.xml est invalide
     */
