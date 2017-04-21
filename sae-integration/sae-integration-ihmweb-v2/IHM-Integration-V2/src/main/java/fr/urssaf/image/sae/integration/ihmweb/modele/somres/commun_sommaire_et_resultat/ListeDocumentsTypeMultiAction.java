@@ -16,18 +16,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste de documents virtuels
+ * Une liste de documents
  * 
- * <p>Java class for listeDocumentsVirtuelsType complex type.
+ * <p>Java class for listeDocumentsTypeMultiAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="listeDocumentsVirtuelsType">
+ * &lt;complexType name="listeDocumentsTypeMultiAction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="documentVirtuel" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}documentVirtuelType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="documentMultiAction" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}documentTypeMultiAction" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,40 +37,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "listeDocumentsVirtuelsType", propOrder = {
-    "documentVirtuel"
+@XmlType(name = "listeDocumentsTypeMultiAction", propOrder = {
+    "documentMultiAction"
 })
-public class ListeDocumentsVirtuelsType {
+public class ListeDocumentsTypeMultiAction {
 
-    protected List<DocumentVirtuelType> documentVirtuel;
+    protected List<DocumentTypeMultiAction> documentMultiAction;
 
     /**
-     * Gets the value of the documentVirtuel property.
+     * Gets the value of the documentMultiAction property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the documentVirtuel property.
+     * This is why there is not a <CODE>set</CODE> method for the documentMultiAction property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDocumentVirtuel().add(newItem);
+     *    getDocumentMultiAction().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link DocumentVirtuelType }
+     * {@link DocumentTypeMultiAction }
      * 
      * 
      */
-    public List<DocumentVirtuelType> getDocumentVirtuel() {
-        if (documentVirtuel == null) {
-            documentVirtuel = new ArrayList<DocumentVirtuelType>();
+    public List<DocumentTypeMultiAction> getDocumentMultiAction() {
+        if (documentMultiAction == null) {
+            documentMultiAction = new ArrayList<DocumentTypeMultiAction>();
         }
-        return this.documentVirtuel;
+        return this.documentMultiAction;
     }
 
 }

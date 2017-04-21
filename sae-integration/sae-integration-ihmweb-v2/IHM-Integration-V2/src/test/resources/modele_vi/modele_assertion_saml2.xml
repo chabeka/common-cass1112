@@ -1,0 +1,41 @@
+<saml2:Assertion
+   xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion"
+   ID="[AssertionID]"
+   IssueInstant="[AuthnInstant]"
+   Version="2.0">
+   
+   <saml2:Issuer>[Issuer]</saml2:Issuer>
+   
+   <saml2:Subject>
+      <saml2:NameID 
+         Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">NON_RENSEIGNE</saml2:NameID>
+      <saml2:SubjectConfirmation
+         Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
+         <saml2:SubjectConfirmationData
+            NotOnOrAfter="[NotOnOrAfter]" Recipient="[Recipient]" />
+      </saml2:SubjectConfirmation>
+   </saml2:Subject>
+   
+   <saml2:Conditions
+      NotBefore="[NotBefore]"
+      NotOnOrAfter="[NotOnOrAfter]">
+      <saml2:AudienceRestriction>
+         <saml2:Audience>[Audience]</saml2:Audience>
+      </saml2:AudienceRestriction>
+   </saml2:Conditions>
+   
+   <saml2:AuthnStatement
+      AuthnInstant="[AuthnInstant]"
+      SessionIndex="[AssertionID]">
+      <saml2:AuthnContext>
+         <saml2:AuthnContextClassRef>[MethodAuthn2]</saml2:AuthnContextClassRef>
+      </saml2:AuthnContext>
+   </saml2:AuthnStatement>
+   
+   <saml2:AttributeStatement>
+      <saml2:Attribute Name="PAGM">
+         [PAGM]
+      </saml2:Attribute>
+   </saml2:AttributeStatement>
+   
+</saml2:Assertion>

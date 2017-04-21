@@ -111,6 +111,22 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for deblocage method
+            * override this method for handling normal response from deblocage operation
+            */
+           public void receiveResultdeblocage(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DeblocageResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from deblocage operation
+           */
+            public void receiveErrordeblocage(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for rechercheNbRes method
             * override this method for handling normal response from rechercheNbRes operation
             */
@@ -156,6 +172,22 @@ public abstract class SaeServiceCallbackHandler{
            * override this method for handling error response from getDocFormatOrigine operation
            */
             public void receiveErrorgetDocFormatOrigine(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for transfertMasse method
+            * override this method for handling normal response from transfertMasse operation
+            */
+           public void receiveResulttransfertMasse(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from transfertMasse operation
+           */
+            public void receiveErrortransfertMasse(java.lang.Exception e) {
             }
                 
            /**
@@ -316,6 +348,22 @@ public abstract class SaeServiceCallbackHandler{
            * override this method for handling error response from consultation operation
            */
             public void receiveErrorconsultation(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for modificationMasse method
+            * override this method for handling normal response from modificationMasse operation
+            */
+           public void receiveResultmodificationMasse(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from modificationMasse operation
+           */
+            public void receiveErrormodificationMasse(java.lang.Exception e) {
             }
                 
            /**

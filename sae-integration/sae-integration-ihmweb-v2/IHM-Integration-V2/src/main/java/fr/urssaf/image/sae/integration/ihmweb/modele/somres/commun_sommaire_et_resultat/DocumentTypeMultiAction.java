@@ -17,17 +17,18 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Définition d'un document à archiver
  * 
- * <p>Java class for documentType complex type.
+ * <p>Java class for documentTypeMultiAction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="documentType">
+ * &lt;complexType name="documentTypeMultiAction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}fichierType"/>
  *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}listeMetadonneeType"/>
+ *         &lt;element name="typeAction" type="{http://www.cirtil.fr/sae/commun_sommaire_et_resultat}batchActionType"/>
  *         &lt;element name="numeroPageDebut" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *         &lt;element name="nombreDePages" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0"/>
  *       &lt;/sequence>
@@ -39,18 +40,21 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "documentType", propOrder = {
+@XmlType(name = "documentTypeMultiAction", propOrder = {
     "objetNumerique",
     "metadonnees",
+    "typeAction",
     "numeroPageDebut",
     "nombreDePages"
 })
-public class DocumentType {
+public class DocumentTypeMultiAction {
 
     @XmlElement(required = true)
     protected FichierType objetNumerique;
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
+    @XmlElement(required = true)
+    protected BatchActionType typeAction;
     protected Integer numeroPageDebut;
     protected Integer nombreDePages;
 
@@ -100,6 +104,30 @@ public class DocumentType {
      */
     public void setMetadonnees(ListeMetadonneeType value) {
         this.metadonnees = value;
+    }
+
+    /**
+     * Gets the value of the typeAction property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BatchActionType }
+     *     
+     */
+    public BatchActionType getTypeAction() {
+        return typeAction;
+    }
+
+    /**
+     * Sets the value of the typeAction property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BatchActionType }
+     *     
+     */
+    public void setTypeAction(BatchActionType value) {
+        this.typeAction = value;
     }
 
     /**
