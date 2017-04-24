@@ -249,7 +249,7 @@ public class ResultatFileSuccessSupportTest {
 
       } catch (IllegalArgumentException exception) {
          Assert.assertTrue("le message doit être correct", exception
-               .getMessage().contains("documentsCount"));
+               .getMessage().contains("initDocCount"));
 
       } catch (Exception exception) {
          Assert.fail("exception IllegalArgumentException attendue");

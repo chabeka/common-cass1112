@@ -246,6 +246,7 @@ public class TraitementAsynchroneServiceTest {
 
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, "url_ecde");
+      jobParams.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
 
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, idJob, TYPES_JOB.modification_masse, null, null, null,
@@ -261,11 +262,15 @@ public class TraitementAsynchroneServiceTest {
             idJob, job.getIdJob());
 
       Assert.assertEquals(
-            "La paramètre de la capture en masse doit être une URL ECDE",
+            "La paramètre de la modification en masse doit contenir une URL ECDE",
             "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
+      
+      Assert.assertEquals(
+            "La paramètre de la modification en masse doit contenir un CODE_TRAITEMENT",
+            "cdTraitement", job.getJobParameters().get(Constantes.CODE_TRAITEMENT));
 
       Assert.assertEquals(
-            "Le type de traitement doit correspondre à la capture de masse",
+            "Le type de traitement doit correspondre à la modification en masse",
             TYPES_JOB.modification_masse.name(), job.getType());
    }
 
@@ -519,6 +524,7 @@ public class TraitementAsynchroneServiceTest {
             .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
+      jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
 
       String codeVi = "TEST_LANCER_JOB_CAPTURE";
       VIContenuExtrait viExtrait = createTestVi("modification_masse", codeVi);
@@ -664,6 +670,7 @@ public class TraitementAsynchroneServiceTest {
             .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
+      jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
 
       String codeVi = "TEST_LANCER_JOB_CAPTURE_FAILURE";
       VIContenuExtrait viExtrait = createTestVi("modification_masse", codeVi);
@@ -836,7 +843,7 @@ public class TraitementAsynchroneServiceTest {
       } catch (JobInexistantException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°" + idJob
+               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob,

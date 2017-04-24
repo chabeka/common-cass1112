@@ -98,7 +98,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
                Constantes.NB_INTEG_DOCS);
 
          batchModeTraitement = (String) jobExecution.getExecutionContext().get(
-               Constantes.BATCH_MODE_NOM_REDIRECT);
+               Constantes.BATCH_MODE_NOM);
 
          logPresent = jobExecution.getExecutionContext().containsKey(
                Constantes.FLAG_BUL003);

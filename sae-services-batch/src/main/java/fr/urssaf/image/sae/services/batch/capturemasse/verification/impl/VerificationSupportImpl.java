@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,6 +170,11 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          int nbreTotal = checkCountDocs(nbreDocs, sommaire);
          int nbreIntegres = checkIntegratedDocs(nbreStockes);
+         // Récupération du mode du batch si non renseigné.
+         if (StringUtils.isBlank(batchModeTraitement)) {
+            batchModeTraitement = XmlReadUtils.getElementValue(sommaire,
+                  Constantes.BATCH_MODE_ELEMENT_NAME);
+         }
 
          CaptureMasseErreur erreur = convertListToErreur(listeErreurs,
                nbreIntegres);

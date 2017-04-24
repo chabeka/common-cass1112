@@ -258,7 +258,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
          throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
          IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
       initSaveSansRollback();
-      initComposantsSansRollback("finSucces");
+      initComposantsSansRollback("finSuccesCapture");
       initDatas();
 
       UUID uuid = UUID.randomUUID();
@@ -283,7 +283,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
          throws ConnectionServiceEx, DeletionServiceEx, InsertionServiceEx,
          IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
 
-      initComposantsAvecRollback("finErreur");
+      initComposantsAvecRollback("finErreurCapture");
       initDatas();
 
       UUID uuid = UUID.randomUUID();
