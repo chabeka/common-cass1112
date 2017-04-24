@@ -74,12 +74,6 @@ public class WSDeblocageServiceImplTest {
       }
    }
 
-   @Test(expected = JobInexistantException.class)
-   public void testDeblocage_jobInexistant() throws DeblocageAxisFault,
-         JobInexistantException {
-      mockDeblocageJob(UUID.randomUUID().toString());
-   }
-
    /**
     * Teste si le job passe bien à l'état Failure après son déblocage
     * 
