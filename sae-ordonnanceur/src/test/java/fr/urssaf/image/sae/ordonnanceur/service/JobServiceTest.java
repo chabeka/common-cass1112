@@ -59,6 +59,18 @@ public class JobServiceTest {
     */
    private static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
 
+   /**
+    * Tag semaphore Job
+    */
+   private static final String SEMAPHORE_JOB_TAG = PREFIXE_SEMAPHORE_JOB
+         + CODE_TRAITEMENT;
+
+   /**
+    * Tag semaphore Zookeeper
+    */
+   private static final String SEMAPHORE_ZOOKEEPER_TAG = PREFIXE_SEMAPHORE
+         + CODE_TRAITEMENT;
+
    @Autowired
    private JobService jobService;
 
@@ -112,11 +124,13 @@ public class JobServiceTest {
 
       // suppression du traitement
       if (job != null) {
-         jobQueueService.deleteJob(job.getIdJob());
+         jobQueueService.deleteJobAndSemaphoreFromJobsQueues(job.getIdJob(),
+               CODE_TRAITEMENT);
       }
 
       if (jobEncours != null) {
-         jobQueueService.deleteJob(jobEncours.getIdJob());
+         jobQueueService.deleteJobAndSemaphoreFromJobsQueues(
+               jobEncours.getIdJob(), CODE_TRAITEMENT);
       }
 
    }
@@ -187,7 +201,7 @@ public class JobServiceTest {
       } catch (JobInexistantException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°" + idJob
+               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob, e
@@ -261,7 +275,7 @@ public class JobServiceTest {
 
       try {
          jobQueueService.reserveJob(jobEncours.getIdJob(),
-               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+ SEMAPHORE_JOB_TAG,
                new Date());
 
          jobQueueService.startingJob(jobEncours.getIdJob(), new Date());
@@ -307,10 +321,10 @@ public class JobServiceTest {
 
       try {
          jobQueueService.reserveJob(jobEncours.getIdJob(),
-               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+ SEMAPHORE_JOB_TAG,
                new Date());
          jobQueueService.reserveJob(job.getIdJob(),
-               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+ SEMAPHORE_JOB_TAG,
                new Date());
       } catch (Exception e) {
          Assert.fail("Erreur non permise : " + e.getMessage());
@@ -332,7 +346,7 @@ public class JobServiceTest {
       jobService.reserverCodeTraitementJobALancer(job);
 
       List<JobRequest> jobRequestList = jobLectureService
-            .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT);
+            .getNonTerminatedJobs(SEMAPHORE_JOB_TAG);
 
       Assert.assertNotNull(jobRequestList);
       Assert.assertFalse(jobRequestList.isEmpty());
@@ -351,22 +365,29 @@ public class JobServiceTest {
       Assert.assertTrue("la liste des job à lancer doit être non vide",
             !jobsAlancer.isEmpty());
 
-      JobQueue job = jobsAlancer.get(0);
+      Assert.assertEquals(2, jobsAlancer.size());
 
+      // 2 jobs peuvent etre lancés
+      JobQueue job = jobsAlancer.get(0);
+      JobQueue jobEnCours = jobsAlancer.get(1);
+
+      // On reserve 1 job en positionnant le semaphore manuellement
       try {
-         jobQueueService.reserveJob(jobEncours.getIdJob(),
-               PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT,
+         jobQueueService.reserveJob(job.getIdJob(), SEMAPHORE_JOB_TAG,
                new Date());
 
-         jobQueueService.startingJob(jobEncours.getIdJob(), new Date());
+         jobQueueService.startingJob(job.getIdJob(), new Date());
       } catch (Exception e) {
          Assert.fail("Erreur non permise : " + e.getMessage());
       }
 
-      jobService.reserverCodeTraitementJobALancer(job);
+      // On essaie de reserver l'autre job et il n'y a pas d'erreur si la
+      // reservation n'est pas possible.
+      jobService.reserverCodeTraitementJobALancer(jobsAlancer.get(1));
 
+      // Récupération des job en cours pour le semaphore
       List<JobRequest> jobRequestList = jobLectureService
-            .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + CODE_TRAITEMENT);
+            .getNonTerminatedJobs(SEMAPHORE_JOB_TAG);
 
       Assert.assertNotNull(jobRequestList);
       Assert.assertFalse(jobRequestList.isEmpty());
@@ -374,7 +395,8 @@ public class JobServiceTest {
 
       JobRequest jobTrouve = jobRequestList.get(0);
 
-      Assert.assertFalse(job.getIdJob().toString()
+      // Job en cours est bien le premier job reservé.
+      Assert.assertFalse(jobEnCours.getIdJob().toString()
             .equals(jobTrouve.getIdJob().toString()));
    }
 
@@ -388,13 +410,14 @@ public class JobServiceTest {
 
       JobQueue job = jobsAlancer.get(0);
 
-      String semaphore = PREFIXE_SEMAPHORE + CODE_TRAITEMENT;
+
 
       // Création du mutex
-      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator, semaphore);
+      ZookeeperMutex mutex = ZookeeperUtils.createMutex(curator,
+            SEMAPHORE_ZOOKEEPER_TAG);
 
       try {
-         ZookeeperUtils.acquire(mutex, semaphore);
+         ZookeeperUtils.acquire(mutex, SEMAPHORE_ZOOKEEPER_TAG);
 
          jobService.reserverCodeTraitementJobALancer(job);
 

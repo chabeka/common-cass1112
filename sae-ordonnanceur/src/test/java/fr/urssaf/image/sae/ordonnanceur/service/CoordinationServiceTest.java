@@ -426,12 +426,9 @@ public class CoordinationServiceTest {
 
          Assert.fail("Une exception JobRuntimeException doit être levée");
 
-      } catch (JobRuntimeException e) {
-         Assert.assertNull("Le job doit être Null", e.getJob());
-
+      } catch (AucunJobALancerException e) {
          Assert.assertEquals("Le traitement doit être déjà réservé",
-               "Aucun job n'est disponible pour réservation", e.getCause()
-                     .getMessage());
+               "Il n'y a aucun traitement à lancer", e.getMessage());
       }
 
    }
