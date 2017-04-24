@@ -130,7 +130,7 @@ public class JobQueueServiceRenseignerDocCountJobTest {
          Assert.assertEquals("l'identifiant du job est inattendu", idJob, e
                .getInstanceId());
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°" + idJob
+               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
       }
    }
