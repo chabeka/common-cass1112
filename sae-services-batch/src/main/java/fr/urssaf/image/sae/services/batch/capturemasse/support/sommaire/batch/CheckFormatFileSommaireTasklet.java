@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
@@ -139,6 +140,10 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
       } catch (CaptureMasseSommaireTypeHashException e) {
          final Exception exception = new Exception(e.getMessage());
          getExceptionErreurListe(chunkContext).add(exception);
+
+      } catch (CaptureMasseSommaireFileNotFoundException e) {
+         final Exception exception = new Exception(e.getMessage());
+         getExceptionErreurListe(chunkContext).add(exception);
       }
 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
@@ -152,10 +157,12 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
     * @param sommaireFile
     *           Fichier sommaire.
     * @throws CaptureMasseSommaireFormatValidationException
-    *            @{@link CaptureMasseSommaireFormatValidationException}
+    * @throws CaptureMasseSommaireFileNotFoundException
+    * @{@link CaptureMasseSommaireFormatValidationException}
     */
    protected void validationSpecifiqueSommaire(File sommaireFile)
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
       LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml",
             TRC_EXEC);
 

@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.batch.CheckFormatFileSommaireTasklet;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -17,7 +18,8 @@ public class CheckFormatFileSommaireTransfertTasklet extends CheckFormatFileSomm
    
    @Override
    protected void validationSpecifiqueSommaire(final File sommaireFile)
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
       LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml",
             TRC_EXEC);
 

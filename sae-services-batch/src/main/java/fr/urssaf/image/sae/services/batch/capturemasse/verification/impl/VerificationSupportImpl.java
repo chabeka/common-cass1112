@@ -23,9 +23,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeSommaireFileSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.DebutTraitementFlagSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.FinTraitementFlagSupport;
@@ -96,8 +98,7 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          /* erreurs de vérification du fichier sommaire */
       } catch (Throwable e) {
-         LOGGER
-.warn(
+         LOGGER.warn(
                "une erreur est survenue lors de la vérification de fin de traitement",
                CHECK, e);
       }
@@ -174,6 +175,11 @@ public class VerificationSupportImpl implements VerificationSupport {
          if (StringUtils.isBlank(batchModeTraitement)) {
             batchModeTraitement = XmlReadUtils.getElementValue(sommaire,
                   Constantes.BATCH_MODE_ELEMENT_NAME);
+
+            if (BatchModeType.fromValue(batchModeTraitement) == null) {
+               throw new CaptureMasseRuntimeException(String.format(
+                     "Le mode du batch %s est inconnu.", batchModeTraitement));
+            }
          }
 
          CaptureMasseErreur erreur = convertListToErreur(listeErreurs,

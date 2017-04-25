@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -129,16 +130,18 @@ public class SommaireFormatValidationSupportTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void testFichierSommaireBatchFichierNull()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       support.validerModeBatch(null, "RR");
 
       Assert.fail("exception attendue");
    }
 
-   @Test(expected = IllegalArgumentException.class)
+   @Test(expected = CaptureMasseSommaireFileNotFoundException.class)
    public void testFichierSommaireBatchModeBatchVide()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       support.validerModeBatch(new File(""), "");
 
@@ -147,12 +150,15 @@ public class SommaireFormatValidationSupportTest {
 
    @Test(expected = CaptureMasseSommaireFormatValidationException.class)
    public void testBatchModeNonAttendu()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       File sommaire = new File(
             "src/test/resources/sommaire/sommaire_success.xml");
 
       support.validerModeBatch(sommaire, "RR");
+
+      Assert.fail("exception attendue");
 
    }
 
@@ -165,6 +171,8 @@ public class SommaireFormatValidationSupportTest {
       try {
          support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
       } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("on attend un retour valide");
+      } catch (CaptureMasseSommaireFileNotFoundException e) {
          Assert.fail("on attend un retour valide");
       }
 

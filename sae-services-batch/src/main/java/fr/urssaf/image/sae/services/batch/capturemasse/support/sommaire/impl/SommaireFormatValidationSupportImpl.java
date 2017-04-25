@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlValidationUtils;
@@ -80,7 +81,14 @@ public class SommaireFormatValidationSupportImpl implements
     */
    @Override
    public final void validerModeBatch(File sommaireFile, String... batchModes)
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
+
+      if (sommaireFile == null || batchModes == null
+            || (batchModes != null && batchModes.length == 0)) {
+         throw new IllegalArgumentException(
+               "Le fichier sommaire ou le mode du batch es null. La validation du sommaire.xml à échouée.");
+      }
 
       FileInputStream sommaireStream = null;
       XMLEventReader reader = null;
@@ -115,7 +123,8 @@ public class SommaireFormatValidationSupportImpl implements
          }
 
       } catch (FileNotFoundException e) {
-         throw new CaptureMasseRuntimeException(e);
+         throw new CaptureMasseSommaireFileNotFoundException(
+               sommaireFile.getAbsolutePath());
 
       } catch (XMLStreamException e) {
          throw new CaptureMasseRuntimeException(e);

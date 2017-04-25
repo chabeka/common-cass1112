@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire;
 
 import java.io.File;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 /**
@@ -35,9 +36,12 @@ public interface SommaireFormatValidationSupport {
     *           liste de mode de capture attendu
     * @throws CaptureMasseSommaireFormatValidationException
     *            Le fichier sommaire.xml est invalide
+    * @throws CaptureMasseSommaireFileNotFoundException
+    *            Le fichier sommaire.xml n'existe pas
     */
    void validerModeBatch(File sommaireFile, String... batchModes)
-         throws CaptureMasseSommaireFormatValidationException;
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException;
 
    /**
     * validation de l'unicité de chaque IdGed si présence dans le fichier

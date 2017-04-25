@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
@@ -76,6 +77,7 @@ public class ResultatsFileSuccessTaskletTest {
 
       ExecutionContext context = new ExecutionContext();
 
+      context.put(Constantes.BATCH_MODE_NOM, BatchModeType.TOUT_OU_RIEN.name());
       context.put(Constantes.DOC_COUNT, 10);
       context.put(Constantes.RESTITUTION_UUIDS, false);
 
@@ -89,7 +91,7 @@ public class ResultatsFileSuccessTaskletTest {
       context
             .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
 
-      JobExecution execution = launcher.launchStep("finSucces", context);
+      JobExecution execution = launcher.launchStep("finSuccesCapture", context);
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");
@@ -123,6 +125,7 @@ public class ResultatsFileSuccessTaskletTest {
 
       ExecutionContext context = new ExecutionContext();
 
+      context.put(Constantes.BATCH_MODE_NOM, BatchModeType.TOUT_OU_RIEN.name());
       context.put(Constantes.DOC_COUNT, 10);
       context.put(Constantes.RESTITUTION_UUIDS, true);
 
@@ -153,7 +156,7 @@ public class ResultatsFileSuccessTaskletTest {
       executor.getIntegratedDocuments().add(doc2);
       executor.getIntegratedDocuments().add(doc3);
 
-      JobExecution execution = launcher.launchStep("finSucces", context);
+      JobExecution execution = launcher.launchStep("finSuccesCapture", context);
 
       File resultatsFile = new File(ecdeTestSommaire.getRepEcde(),
             "resultats.xml");

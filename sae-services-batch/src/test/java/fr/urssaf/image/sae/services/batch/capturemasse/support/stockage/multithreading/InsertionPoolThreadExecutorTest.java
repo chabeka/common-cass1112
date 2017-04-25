@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
 
+import java.util.UUID;
+
 import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -17,9 +19,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exceptio
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -55,6 +54,7 @@ public class InsertionPoolThreadExecutorTest {
 
       DOCUMENT = new StorageDocument();
       DOCUMENT.setFilePath("path");
+      DOCUMENT.setUuid(UUID.randomUUID());
 
    }
 
@@ -157,6 +157,8 @@ public class InsertionPoolThreadExecutorTest {
 
       for (int i = 0; i < count; i++) {
          poolExecutor.execute(insertionRunnable);
+         // Recalcul l'UUID du document
+         DOCUMENT.setUuid(UUID.randomUUID());
       }
 
       // nécessaire pour le bon déroulement du test

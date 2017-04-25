@@ -88,7 +88,7 @@ public class ResultatsFileFailureTaskletTest {
 
       context.put(Constantes.DOC_COUNT, 21);
 
-      launcher.launchStep("finErreur", context);
+      launcher.launchStep("finErreurCapture", context);
 
       File resultats = new File(testSommaire.getRepEcde(), "resultats.xml");
 

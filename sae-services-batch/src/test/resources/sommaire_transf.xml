@@ -11,7 +11,7 @@
    <som:documentsMultiAction>
       
       <!-- Transfert d'un document + modification de metadonnees au moment du transfert en GNS -->
-      <somres:document>
+      <somres:documentMultiAction>
          <somres:objetNumerique>
             <somres:UUID>5A06E1C2-048A-4E46-B7F2-9A93D48300AB</somres:UUID>
          </somres:objetNumerique>
@@ -26,25 +26,25 @@
             </somres:metadonnee>
          </somres:metadonnees>
          <somres:typeAction>TRANSFERT</somres:typeAction>
-      </somres:document>
+      </somres:documentMultiAction>
 
       <!-- Transfert de document sans modification de metadonnees -->
-      <somres:document>
+      <somres:documentMultiAction>
          <somres:objetNumerique>
             <somres:UUID>5B06E4C2-04YA-4E46-B7F2-9A93D48300CD</somres:UUID>
          </somres:objetNumerique>
 		 <somres:metadonnees/>
          <somres:typeAction>TRANSFERT</somres:typeAction>
-      </somres:document>
+      </somres:documentMultiAction>
       
       <!-- Suppression de document -->
-      <somres:document>
+      <somres:documentMultiAction>
          <somres:objetNumerique>
             <somres:UUID>7d2887c8-1a03-40f5-981b-1e7c06e1f52d</somres:UUID>
          </somres:objetNumerique>
          <somres:metadonnees/>
          <somres:typeAction>SUPPRESSION</somres:typeAction>
-      </somres:document>
+      </somres:documentMultiAction>
 
 
    </som:documentsMultiAction>

@@ -3,7 +3,7 @@
    xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-   <som:batchMode>INCONNU</som:batchMode>
+   <som:batchMode>TOUT_OU_RIEN</som:batchMode>
 
    <som:documents>
 
