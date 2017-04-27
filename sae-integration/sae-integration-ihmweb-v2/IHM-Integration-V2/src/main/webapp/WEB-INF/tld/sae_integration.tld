@@ -182,6 +182,36 @@
       <path>/WEB-INF/tags/recuperationMetadonnee.tag</path>
    </tag-file>
    
+   <tag-file>
+      <name>transfertMasse</name>
+      <description>Appel du service web de transfert de masse</description>
+      <path>/WEB-INF/tags/transfertMasse.tag</path>
+   </tag-file>
+   
+   <tag-file>
+      <name>transfertMasseResultat</name>
+      <description>Appel du service web de transfert de masse</description>
+      <path>/WEB-INF/tags/transfertMasseResultat.tag</path>
+   </tag-file>
+   
+    <tag-file>
+      <name>modificationMasse</name>
+      <description>Appel du service web de modification de masse</description>
+      <path>/WEB-INF/tags/modificationMasse.tag</path>
+   </tag-file>
+   
+   <tag-file>
+      <name>modificationMasseResultat</name>
+      <description>Appel du service web de modification de masse</description>
+      <path>/WEB-INF/tags/modificationMasseResultat.tag</path>
+   </tag-file>
+   
+    <tag-file>
+      <name>deblocage</name>
+      <description>Appel du service web de deblocage de job</description>
+      <path>/WEB-INF/tags/deblocage.tag</path>
+   </tag-file>
+   
 
    <function>
       <name>booleanToOuiNon</name>

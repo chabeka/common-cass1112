@@ -452,5 +452,62 @@
          </CasTest>
       </CasTests>
    </Categorie>
+   
+    <!-- ======================================================== -->
+   <!-- Transfert de masse -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Transfert de masse</Nom>
+      <Id>3600</Id>
+      <CasTests>
+         <CasTest>
+            <id>3600</id>
+            <code>Test Libre</code>
+            <description>
+                  Test libre du transfert de masse
+               </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3600-Transfert de Masse-Test-Libre"</luceneExemple>
+         </CasTest>
+      </CasTests>
+   </Categorie>
+
+  <!-- ======================================================== -->
+   <!-- Modification de masse -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>modification de masse</Nom>
+      <Id>3700</Id>
+      <CasTests>
+         <CasTest>
+            <id>3700</id>
+            <code>Test Libre</code>
+            <description>
+                  Test libre de la modification de masse
+               </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3700-Modification de Masse-Test-Libre"</luceneExemple>
+         </CasTest>
+      </CasTests>
+   </Categorie>
+   
+   <!-- ======================================================== -->
+   <!-- Modification de masse -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Deblocage de Job</Nom>
+      <Id>3800</Id>
+      <CasTests>
+         <CasTest>
+            <id>3800</id>
+            <code>Test Libre</code>
+            <description>
+                  Test libre du deblocage de job
+               </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3800-Deblocage de Job-Test-Libre"</luceneExemple>
+         </CasTest>
+      </CasTests>
+   </Categorie>
 
 </Tests>

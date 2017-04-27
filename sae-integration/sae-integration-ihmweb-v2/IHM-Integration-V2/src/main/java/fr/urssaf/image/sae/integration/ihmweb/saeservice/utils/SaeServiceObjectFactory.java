@@ -43,6 +43,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.C
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Copie;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.CopieRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DataFileType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Deblocage;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.DeblocageRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EcdeUrlType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.EtatTraitementsMasse;
@@ -59,6 +61,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.M
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.MetadonneeValeurType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Modification;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.ModificationRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.NoteTxtType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RangeMetadonneeType;
@@ -82,6 +86,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.S
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.SuppressionRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Transfert;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertMasse;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertMasseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.TransfertRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.UuidType;
 
@@ -570,6 +576,77 @@ public final class SaeServiceObjectFactory {
       return archivageMasseAvecHash;
 
    }
+   
+   /**
+    * Renvoie un objet de requête pour le service web transfertMasse
+    * 
+    * @param urlSommaire
+    *           l'URL du fichier sommaire.xml
+    * @return l'objet pour la couche WebService
+    */
+   public static TransfertMasse buildTransfertMasseRequest(String urlSommaire, String hash, String typeHash) {
+      
+      TransfertMasse transfertMasse = new TransfertMasse();
+
+      TransfertMasseRequestType transfertMasseReqType = new TransfertMasseRequestType();
+
+      transfertMasse
+            .setTransfertMasse(transfertMasseReqType);
+
+      // URL de sommaire.xml
+      EcdeUrlSommaireType urlEcdeSommaire;
+      try {
+         urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
+      } catch (MalformedURIException e) {
+         throw new IntegrationRuntimeException(e);
+      }
+      transfertMasseReqType.setUrlSommaire(urlEcdeSommaire);
+
+      // Le hash
+      transfertMasseReqType.setHash(hash);
+
+      // Le type de hash
+      transfertMasseReqType.setTypeHash(typeHash);
+
+      // fin
+      return transfertMasse;
+   }
+   
+   /**
+    * Renvoie un objet de requête pour le service web modificationMasse
+    * 
+    * @param urlSommaire
+    *           l'URL du fichier sommaire.xml
+    * @return l'objet pour la couche WebService
+    */
+   public static ModificationMasse buildModificationMasseRequest(String urlSommaire, String hash, String typeHash, String codeTraitement) {
+      
+      ModificationMasse modificationMasse = new ModificationMasse();
+      
+      ModificationMasseRequestType modificationMasseRequestType = new ModificationMasseRequestType();
+      
+      modificationMasse.setModificationMasse(modificationMasseRequestType);
+      
+   // URL de sommaire.xml
+      EcdeUrlSommaireType urlEcdeSommaire;
+      try {
+         urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
+      } catch (MalformedURIException e) {
+         throw new IntegrationRuntimeException(e);
+      }
+      
+      modificationMasseRequestType.setUrlSommaire(urlEcdeSommaire);
+      
+      modificationMasseRequestType.setHash(hash);
+      
+      modificationMasseRequestType.setTypeHash(typeHash);
+      
+      modificationMasseRequestType.setCodeTraitement(codeTraitement);
+      
+      return modificationMasse;
+      
+   }
+   
 
    /**
     * Construit un objet de requête pour le service web "consultation"
@@ -1152,6 +1229,18 @@ public final class SaeServiceObjectFactory {
       etatTraitementsMasseRequest.setListeUuid(listeUuidType);
       
       return etatTraitementsMasse;
+   }
+   
+   public static Deblocage buildDeblocageRequest(String uuid){
+      
+      Deblocage deblocage = new Deblocage();
+      DeblocageRequestType deblocageRequestType = new DeblocageRequestType();
+      deblocage.setDeblocage(deblocageRequestType);
+      
+      deblocageRequestType.setUuid(uuid);
+      
+      return deblocage;
+      
    }
 
    /**

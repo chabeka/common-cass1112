@@ -25,8 +25,10 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationAffichab
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationGNTGNSTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ConsultationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.CopieTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.DeblocageTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.EtatTraitementMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.GetDocFormatOrigineTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.ModificationTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
@@ -36,6 +38,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.RestoreMasseTestServ
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.TransfertTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.utils.TestsMetadonneesService;
 import fr.urssaf.image.sae.integration.ihmweb.utils.ControllerUtils;
@@ -133,6 +136,15 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private RecuperationMetadonneeTestService recuperationMetadonneeTestServ;
+   
+   @Autowired
+   private TransfertMasseTestService transfertMasseTestServ;
+   
+   @Autowired
+   private ModificationMasseTestService modificationMasseTestServ;
+   
+   @Autowired
+   private DeblocageTestService deblocageTestServ;
 
    public RecuperationMetadonneeTestService getRecuperationMetadonneeTestServ() {
       return recuperationMetadonneeTestServ;
@@ -486,4 +498,34 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
       return retour;
    }
 
+   /**
+    * Service des tests de l'opération "transfertMasse" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "transfertMasse" du service web
+    *         SaeService
+    */
+   public final TransfertMasseTestService getTransfertMasseTestService() {
+      return this.transfertMasseTestServ;
+   }
+   
+   /**
+    * Service des tests de l'opération "modificationMasse" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "modificationMasse" du service web
+    *         SaeService
+    */
+   public final ModificationMasseTestService getModificationMasseTestService() {
+      return this.modificationMasseTestServ;
+   }
+   
+   /**
+    * Service des tests de l'opération "deblocage" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "deblocage" du service web
+    *         SaeService
+    */
+   public final DeblocageTestService getDeblocageTestService(){
+      return this.deblocageTestServ;
+   }
+   
 }

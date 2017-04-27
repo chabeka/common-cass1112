@@ -27,9 +27,11 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationAffichableF
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ConsultationGNTGNSFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.CopieFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.DeblocageFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.EtatTraitementMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.GetDocFormatOrigineFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RecuperationMetadonneeFormulaire;
@@ -38,16 +40,20 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormula
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.TransfertMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ConsultationResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.CopieResultat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.DeblocageResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.GetDocFormatOrigineResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
+import fr.urssaf.image.sae.integration.ihmweb.modele.ModificationMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.RecuperationMetadonneeResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TransfertMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.comparator.ResultatRechercheComparator.TypeComparaison;
@@ -610,6 +616,41 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("URL du sommaire :" + formulaire.getUrlSommaire());
       log.appendLogNewLine();
    }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "transfertMasse"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelTransfertMasse(ResultatTestLog log,
+         TransfertMasseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération transfertMasse");
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("URL du sommaire :" + formulaire.getUrlSommaire());
+      log.appendLogNewLine();
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, les paramètres d'appel à
+    * l'opération "transfertMasse"
+    * 
+    * @param log
+    *           le log
+    * @param formulaire
+    *           l'objet formulaire contenant les propriétés d'appel
+    */
+   public static void logAppelModificationMasse(ResultatTestLog log,
+         ModificationMasseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération modificationMasse");
+      log.appendLogLn("Paramètres :");
+      log.appendLogLn("URL du sommaire :" + formulaire.getUrlSommaire());
+      log.appendLogNewLine();
+   }
+
 
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
@@ -968,6 +1009,29 @@ public final class SaeServiceLogUtils {
       }
 
    }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, un résultat de l'opération
+    * "archivageMasse" ou "archivageMasseAvecHash"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param resultat
+    *           la réponse de l'opération "consultation"
+    */
+   public static void logResultatTransfertMasse(ResultatTest resultatTest,
+         TransfertMasseResultat resultat) {
+
+      ResultatTestLog log = resultatTest.getLog();
+
+      if (resultat.isAppelAvecHashSommaire()) {
+         log.appendLogLn("Identifiant du traitement : "
+               + resultat.getIdTraitement());
+      } else {
+         log.appendLogLn("Le service n'a pas renvoyé d'erreur");
+      }
+
+   }
 
    /**
     * Ajoute, dans le log du résultat du test, les paramètres d'appel à
@@ -985,6 +1049,29 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("Métadonnées :");
       logMetadonnees(log, formulaire.getMetadonnees());
       log.appendLogNewLine();
+   }
+   
+   /**
+    * Ajoute, dans le log du résultat du test, un résultat de l'opération
+    * "archivageMasse" ou "archivageMasseAvecHash"
+    * 
+    * @param resultatTest
+    *           les résultats du test à mettre à jour
+    * @param resultat
+    *           la réponse de l'opération "consultation"
+    */
+   public static void logResultatModificationMasse(ResultatTest resultatTest,
+         ModificationMasseResultat resultat) {
+
+      ResultatTestLog log = resultatTest.getLog();
+
+      if (resultat.isAppelAvecHashSommaire()) {
+         log.appendLogLn("Identifiant du traitement : "
+               + resultat.getIdTraitement());
+      } else {
+         log.appendLogLn("Le service n'a pas renvoyé d'erreur");
+      }
+
    }
 
    /**
@@ -1112,6 +1199,12 @@ public final class SaeServiceLogUtils {
             
    }
    
+   public static void logAppelDeblocage(ResultatTestLog log,
+         DeblocageFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération Deblocage");
+            
+   }
+   
    /**
     * Ajoute, dans le log du résultat du test cf l'id du job
     * 
@@ -1123,6 +1216,14 @@ public final class SaeServiceLogUtils {
 
    public static void logResultatEtatTraitementMasse(ResultatTestLog log) {
       log.appendLogLn("Fin de récupération du contenu de la pile suite à l'appel de l'opération EtatTraitementMasse");      
+      log.appendLogNewLine();
+   }
+   
+   public static void logResultatDeblocage(ResultatTest resultatTest, DeblocageResultat res) {
+      ResultatTestLog log = resultatTest.getLog();
+      log.appendLogLn("ID du Job : " + res.getIdTraitement());
+      log.appendLogLn("Etat du Job : " + res.getEtat());
+      log.appendLogLn("Fin du deblocage du job");      
       log.appendLogNewLine();
    }
 
