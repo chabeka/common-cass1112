@@ -32,18 +32,38 @@ public class ControleStorageDocumentProcessor extends AbstractListener
    @Override
    public final SAEDocument process(final SAEDocument item) throws Exception {
 
-      support.controleSAEDocumentStockage(item);
+      try {
+         // Si il y a déjà eu une erreur sur un document en mode partiel, on ne
+         // cherche pas à continuer sur ce document
+         if (!(isModePartielBatch()
+               && getIndexErreurListe().contains(getStepExecution().getExecutionContext().getInt(
+                     Constantes.CTRL_INDEX)))) {
+            support.controleSAEDocumentStockage(item);
 
-      String pathSommaire = getStepExecution().getJobExecution()
-            .getExecutionContext().getString(Constantes.SOMMAIRE_FILE);
+            String pathSommaire = getStepExecution().getJobExecution()
+                  .getExecutionContext().getString(Constantes.SOMMAIRE_FILE);
 
-      File sommaireFile = new File(pathSommaire);
-      File ecdeDirectory = sommaireFile.getParentFile();
+            File sommaireFile = new File(pathSommaire);
+            File ecdeDirectory = sommaireFile.getParentFile();
 
-      String path = ecdeDirectory.getAbsolutePath() + File.separator
-            + "documents" + File.separator + item.getFilePath();
-      item.setFilePath(path);
+            String path = ecdeDirectory.getAbsolutePath() + File.separator
+                  + "documents" + File.separator + item.getFilePath();
+            item.setFilePath(path);
+         }
+      } catch (Exception e) {
+         if (isModePartielBatch()) {
 
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+
+         } else {
+            throw e;
+         }
+
+      }
       return item;
    }
 

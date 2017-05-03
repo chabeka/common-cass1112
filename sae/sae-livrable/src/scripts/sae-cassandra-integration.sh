@@ -1,29 +1,12 @@
 #!/bin/bash
 # 
-# description: Lance ou arrete les outils du SAE.
+# description: Lance ou arr�te les outils du SAE.
  
 # Source function library
 . /etc/rc.d/init.d/functions
  
 PROG_CASSANDRA="cassandra"
 PID_FILE_CASSANDRA="/var/run/$PROG_CASSANDRA/$PROG_CASSANDRA.pid"
-
-# System directory
-_LOG_DIR=/var/log/cassandra
-_DATA_DIR=/var/lib/cassandra/donnees/data/
-_COMMITLOG_DIR=/var/lib/cassandra/commitlog
-
-# Keyspaces directory
-KEYSPACE_SAE_NAME=SAE
-KEYSPACE_DOCUBASE_NAME=Docubase
-KEYSPACE_SYST_NAME=system
-KEYSPACE_SYST_AUTH_NAME=system_auth
-KEYSPACE_SYST_TRC_NAME=system_traces
-_DATA_KP_SAE_DIR=$_DATA_DIR$KEYSPACE_SAE_NAME
-_DATA_KP_DOCUBASE_DIR=$_DATA_DIR$KEYSPACE_DOCUBASE_NAME
-_DATA_KP_SYST_DIR=$_DATA_DIR$KEYSPACE_SYST_NAME
-_DATA_KP_SYST_AUTH_DIR=$_DATA_DIR$KEYSPACE_SYST_AUTH_NAME
-_DATA_KP_SYST_TRC_DIR=$_DATA_DIR$KEYSPACE_SYST_TRC_NAME
  
 start(){
     echo "Verification de l'etat du service $PROG_CASSANDRA: "
@@ -47,37 +30,33 @@ start(){
 		fi
 	fi
 }
-
+ 
 stop(){
 	echo -n "Verification de l'etat du service $PROG_CASSANDRA: "	
 	RETVAL=$(service $PROG_CASSANDRA status)
 	echo "$RETVAL"
-	case "$RETVAL" in
-  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
-		    echo "Le service $PROG_CASSANDRA n'est pas demarre."
-		;;
-	*)
-      	echo -n "Shutting down $PROG_CASSANDRA: "
+	if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
+        echo "Le service $PROG_CASSANDRA n'est pas demarre."
+	else
+		echo -n "Shutting down $PROG_CASSANDRA: "
 		cassandraSafeStop.sh
 		echo "$PROG_CASSANDRA - done."
 		sleep 5
 		echo -n "Verification $PROG_CASSANDRA stop: "
 		RETVAL=$(service $PROG_CASSANDRA status)
 		echo -n "$RETVAL"
-		case "$RETVAL" in
-  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
-		    #echo -n "$PROG_CASSANDRA arrêté"
+		if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
+			#echo -n "$PROG_CASSANDRA arr�te"
 			success "OK"
 			echo -e "\n"
 			sleep 5
-		;;
-		*)
+		else
 			failure "KO"
 			echo -e "\n"
 			sleep 5
 			stop
-		esac
-  	esac
+		fi
+    fi
 }
  
 restart(){
@@ -96,111 +75,29 @@ delete(){
    echo -n "Verification de l'etat du service $PROG_CASSANDRA: "	
 	RETVAL=$(service $PROG_CASSANDRA status)
 	echo "$RETVAL"
-	case "$RETVAL" in
-  		"$PROG_CASSANDRA is stopped" | "$PROG_CASSANDRA est arrêté")
-		    echo "$PROG_CASSANDRA est arrete"
-			sleep 5
-		;;
-	*)
-      	echo "$PROG_CASSANDRA est demarre, arret en cours..."
+	if [ "$RETVAL" = "$PROG_CASSANDRA is stopped" ]; then
+		echo "$PROG_CASSANDRA est arrete"
+		sleep 5
+	else
+		echo "$PROG_CASSANDRA est demarre, arret en cours..."
 		sleep 10
 		stop
-  	esac
-	sleep 10
-	echo "Demarrage du processus de suppression de la base GED..."
-	echo "Demarrage du processus de suppression du keyspace SAE"
-	ls -d $_DATA_KP_SAE_DIR/* |awk '{gsub("'$_DATA_KP_SAE_DIR/'", "");print}' > sae_dir_list
-	for SAE_TABLE_DIR in `cat sae_dir_list`
-	do
-		find $_DATA_KP_SAE_DIR/$SAE_TABLE_DIR/  \( -not -regex ".*snapshots.*" \) -a \( -not -regex ".*backups.*" \) -type f -delete
-		if [ $? -eq 0 ]; then
-			echo "Le contenu du dossier $_DATA_KP_SAE_DIR/$SAE_TABLE_DIR a ete supprime"
-		else
-			echo "La supression des fichiers du dossier $_DATA_KP_SAE_DIR/$SAE_TABLE_DIR a echoue"
-			exit 1
-		fi
-	done
-	#Suppression sae_dir_list
-	rm -rf sae_dir_list
-	
-	echo "Demarrage du processus de suppression du keyspace Docubase"
-	ls -d $_DATA_KP_DOCUBASE_DIR/* |awk '{gsub("'$_DATA_KP_DOCUBASE_DIR/'", "");print}' > docubase_dir_list
-	for DOCUBASE_TABLE_DIR in `cat docubase_dir_list`
-	do
-		find $_DATA_KP_DOCUBASE_DIR/$DOCUBASE_TABLE_DIR/ \( -not -regex ".*snapshots.*" \) -a \( -not -regex ".*backups.*" \) -type f -delete
-		if [ $? -eq 0 ]; then
-			echo "Le contenu du dossier $_DATA_KP_DOCUBASE_DIR/$DOCUBASE_TABLE_DIR a ete supprime"
-		else
-			echo "La supression des fichiers du dossier $_DATA_KP_DOCUBASE_DIR/$DOCUBASE_TABLE_DIR a echoue"
-			exit 1
-		fi
-	done
-	#Suppression docubase_dir_list
-	rm -rf docubase_dir_list
-	
-	echo "Demarrage du processus de suppression du keyspace system_auth"
-	ls -d $_DATA_KP_SYST_DIR/* |awk '{gsub("'$_DATA_KP_SYST_DIR/'", "");print}' > syst_dir_list
-	for SYST_TABLE_DIR in `cat syst_dir_list`
-	do
-		find $_DATA_KP_SYST_DIR/$SYST_TABLE_DIR/ \( -not -regex ".*snapshots.*" \) -a \( -not -regex ".*backups.*" \) -type f -delete
-		if [ $? -eq 0 ]; then
-			echo "Le contenu du dossier $_DATA_KP_SYST_DIR/$SYST_TABLE_DIR a ete supprime"
-		else
-			echo "La supression des fichiers du dossier $_DATA_KP_SYST_DIR/$SYST_TABLE_DIR a echoue"
-			exit 1
-		fi
-	done
-	#Suppression syst_dir_list
-	rm -rf syst_dir_list
-	
-	echo "Demarrage du processus de suppression du keyspace system_auth"
-	ls -d $_DATA_KP_SYST_AUTH_DIR/* |awk '{gsub("'$_DATA_KP_SYST_AUTH_DIR/'", "");print}' > syst_auth_dir_list
-	for SYST_AUTH_TABLE_DIR in `cat syst_auth_dir_list`
-	do
-		find $_DATA_KP_SYST_AUTH_DIR/$SYST_AUTH_TABLE_DIR/ \( -not -regex ".*snapshots.*" \) -a \( -not -regex ".*backups.*" \) -type f -delete
-		if [ $? -eq 0 ]; then
-			echo "Le contenu du dossier $_DATA_KP_SYST_AUTH_DIR/$SYST_AUTH_TABLE_DIR a ete supprime"
-		else
-			echo "La supression des fichiers du dossier $_DATA_KP_SYST_AUTH_DIR/$SYST_AUTH_TABLE_DIR a echoue"
-			exit 1
-		fi
-	done
-	#Suppression syst_auth_dir_list
-	rm -rf syst_auth_dir_list
-	
-	echo "Demarrage du processus de suppression du keyspace system_traces"
-	ls -d $_DATA_KP_SYST_TRC_DIR/* |awk '{gsub("'$_DATA_KP_SYST_TRC_DIR/'", "");print}' > syst_traces_dir_list
-	for SYST_TRC_TABLE_DIR in `cat syst_traces_dir_list`
-	do
-		find $_DATA_KP_SYST_TRC_DIR/$SYST_TRC_TABLE_DIR/ \( -not -regex ".*snapshots.*" \) -a \( -not -regex ".*backups.*" \) -type f -delete
-		if [ $? -eq 0 ]; then
-			echo "Le contenu du dossier $_DATA_KP_SYST_TRC_DIR/$SYST_TRC_TABLE_DIR a ete supprime"
-		else
-			echo "La supression des fichiers du dossier $_DATA_KP_SYST_TRC_DIR/$SYST_TRC_TABLE_DIR a echoue"
-			exit 1
-		fi
-	done
-	#Suppression syst_traces_dir_list
-	rm -rf syst_traces_dir_list
-	
-	echo "Demarrage du processus de suppression des fichiers de log Cassandra"
-	rm -f $_LOG_DIR/*
-	RETVAL=$(ls -lR $_LOG_DIR | grep ^- | wc -l)
-	if [ $RETVAL -eq 0 ]; then
-		echo "Le contenu du dossier $_LOG_DIR a ete supprime"
-	else
-		echo "La supression des fichiers du dossier $_LOG_DIR a echoue"
-		exit 1
 	fi
-	
-	echo "Demarrage du processus de suppression des archives logs Cassandra"
-	rm -f $_COMMITLOG_DIR/*
-	RETVAL=$(ls -lR $_COMMITLOG_DIR | grep ^- | wc -l)
+	sleep 10
+	echo "Demarrage du processus de suppression de la base SAE..."
+	rm -rf /var/lib/cassandra/*
+	RETVAL=$(ls -lR /var/lib/cassandra/ | grep ^- | wc -l)
 	if [ $RETVAL -eq 0 ]; then
-		echo "Le contenu du dossier $_COMMITLOG_DIR a ete supprime"
+		echo "Le contenu du dossier /var/lib/cassandra ont �t� supprim�"
 	else
-		echo "La supression des fichiers du dossier $_COMMITLOG_DIR a echoue"
-		exit 1
+		echo "La supression des fichiers du dossier /var/lib/cassandra a echoue"
+	fi
+	rm -f /var/log/cassandra/*
+	RETVAL=$(ls -lR /var/log/cassandra/ | grep ^- | wc -l)
+	if [ $RETVAL -eq 0 ]; then
+		echo "Le contenu du dossier /var/log/cassandra ont �t� supprim�"
+	else
+		echo "La supression des fichiers du dossier /var/log/cassandra a echoue"
 	fi
 }
  
@@ -253,7 +150,7 @@ delete(){
 repart() {
 	echo "Lancement du processus de repartition entre les 2 serveurs Cassandra: "	
 	#R�cup�ration des IP et Token des serveurs du cluster.
-	IPSERVEUR1=$(ifconfig | awk '{ if (/inet ad/) { print substr($2,5,15); exit; } }' | sed 's/:/ /g'  | sed 's/ //g')
+	IPSERVEUR1=$(ifconfig | awk '{ if (/inet addr:/) { print substr($2,6,15); exit; } }')
 	echo "IP serveur 1 = $IPSERVEUR1"
 	IPSERVEUR2=$(nodetool -h $(hostname) -u root -pw regina4932 ring | awk -v var=$IPSERVEUR1 '{ if ($1 != var && /Up/) { print $1 } }')
 	echo "IP serveur 2 = $IPSERVEUR2"

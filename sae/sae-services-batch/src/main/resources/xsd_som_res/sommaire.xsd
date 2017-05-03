@@ -63,12 +63,20 @@
             </xsd:annotation>
          </xsd:element>
          
-         <!-- Liste des documents à archiver -->
-         <xsd:element name="documents" type="somres:listeDocumentsType" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-               <xsd:documentation>La liste des documents à archiver</xsd:documentation>
-            </xsd:annotation>
-         </xsd:element>
+         <xsd:choice minOccurs="1" maxOccurs="1">
+            <!-- Liste des documents à archiver -->
+            <xsd:element name="documents" type="somres:listeDocumentsType" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>La liste des documents à archiver</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+             <!-- Liste des documents à archiver multi-services -->
+            <xsd:element name="documentsMultiAction" type="somres:listeDocumentsTypeMultiAction" minOccurs="1" maxOccurs="1">
+               <xsd:annotation>
+                  <xsd:documentation>La liste des documents à archiver en mode multi-action</xsd:documentation>
+               </xsd:annotation>
+            </xsd:element>
+         </xsd:choice>
          
          <!-- Liste des documents virtuels à archiver -->
          <xsd:element name="documentsVirtuels" type="somres:listeDocumentsVirtuelsType" minOccurs="1" maxOccurs="1">

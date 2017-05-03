@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import de.schlichtherle.io.FileInputStream;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
 import fr.urssaf.image.sae.format.conversion.service.impl.ConversionServiceImpl;
@@ -48,7 +47,7 @@ public class ConversionServiceImplTest {
    
    @Test
    public void convertirFichierFile_success()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -65,7 +64,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=ConversionParametrageException.class)
    public void convertirFichierFile_erreur_parametres()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -78,7 +77,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=UnknownFormatException.class)
    public void convertirFichierFile_format_inconnu()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -91,7 +90,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=ConvertisseurInitialisationException.class)
    public void convertirFichierFile_format_bean_inexistant()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // 1 - CREATION DU FORMAT LAMBDA
       FormatFichier refFormat = Utils.genererRefFormatLambda();
@@ -113,7 +112,7 @@ public class ConversionServiceImplTest {
    
    @Test
    public void convertirFichierByte_success()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -132,7 +131,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=ConversionParametrageException.class)
    public void convertirFichierByte_erreur_parametres()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -147,7 +146,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=UnknownFormatException.class)
    public void convertirFichierByte_format_inconnu()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -162,7 +161,7 @@ public class ConversionServiceImplTest {
    
    @Test(expected=ConvertisseurInitialisationException.class)
    public void convertirFichierByte_format_bean_inexistant()
-         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException, ConversionException {
+         throws ConversionParametrageException, UnknownFormatException, ConvertisseurInitialisationException, IOException {
 
       // 1 - CREATION DU FORMAT LAMBDA
       FormatFichier refFormat = Utils.genererRefFormatLambda();

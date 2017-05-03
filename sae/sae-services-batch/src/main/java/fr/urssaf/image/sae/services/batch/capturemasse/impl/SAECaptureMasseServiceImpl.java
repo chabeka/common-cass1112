@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -42,6 +43,12 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
    @Autowired
    private VerificationSupport verifSupport;
+   
+   /**
+    * Pool d'execution des insertions de documents
+    */
+   @Autowired
+   private InsertionCapturePoolThreadExecutor executor;
 
    private static final String CATCH = "AvoidCatchingThrowable";
 
@@ -80,6 +87,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
       Integer nbreDocs = null;
       Integer nbDocsIntegres = null;
+      String batchModeTraitement = null;
       boolean logPresent = false;
 
       if (jobExecution != null) {
@@ -88,12 +96,16 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
          nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
                Constantes.NB_INTEG_DOCS);
+
+         batchModeTraitement = (String) jobExecution.getExecutionContext().get(
+               Constantes.BATCH_MODE_NOM);
+
          logPresent = jobExecution.getExecutionContext().containsKey(
                Constantes.FLAG_BUL003);
       }
-
-      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres,
-            logPresent, listeExceptions, idTraitement);
+      
+      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
+            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments());
 
    }
 

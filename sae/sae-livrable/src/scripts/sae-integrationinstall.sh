@@ -17,7 +17,7 @@ PID_FILE="/var/run/$PROG_NAME.pid"
 LOCK_FILE="/var/lock/subsys/$PROG_NAME"
 
 start() {
-	SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-integrationinstall/logback-sae-integrationinstall.xml -jar @@SAE_HOME@@/sae-integrationinstall/sae-integrationinstall.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml @@SAE_HOME@@/sae-igc-config.xml $GED_CONCERNEE"
+	SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-integrationinstall/logback-sae-integrationinstall.xml -jar @@SAE_HOME@@/sae-integrationinstall/sae-integrationinstall.jar @@SAE_HOME@@/sae-config.properties @@SAE_HOME@@/sae-dfce-admin-exploit/saeBase.xml @@SAE_HOME@@/sae-dfce-admin-exploit/LifeCycleRule.xml $GED_CONCERNEE"
 	
     echo -n "Demarage de l'installation de la base SAE $GED_CONCERNEE... "
 

@@ -61,4 +61,23 @@ public interface JobService {
     */
    void updateToCheckFlag(UUID idJob, Boolean flag, String description)
          throws JobInexistantException;
+      
+   /**
+    * Renvoie true si des travaux avec le même code traitement 
+    * sont actuellement en cours ou en failure tous serveurs confondus, false sinon.
+    * 
+    * @return True si les travaux avec le même code traitement sont actuellement 
+    * en cours ou en failure tous serveurs confondus, false sinon.
+    */
+   boolean isJobCodeTraitementEnCoursOuFailure(JobQueue jobQueue);
+
+   /**
+    * Confirme que le job trouvé est bien lancable et on créer le sémaphore pour
+    * ce job.
+    * 
+    * @param jobQueue
+    *           {@link JobQueue}
+    * @return Le job à lancer.
+    */
+   JobQueue reserverCodeTraitementJobALancer(JobQueue jobQueue);
 }

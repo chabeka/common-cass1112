@@ -12,6 +12,5 @@
    <!-- mock pour le service de mock de prise de décision -->
    <bean id="decisionServiceImpl" factory-bean="serviceMockFactory"
       factory-method="createDecisionService" />
-
-
+             
 </beans>

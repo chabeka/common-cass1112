@@ -38,8 +38,8 @@ import org.xml.sax.SAXException;
 import fr.urssaf.image.sae.commons.xml.StaxReadUtils;
 import fr.urssaf.image.sae.commons.xml.StaxWriteUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseVirtualDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.FichierType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.IntegratedDocumentType;
@@ -86,27 +86,26 @@ public class ResultatFileSuccessSupportImpl implements
    }
 
    private static final String CHEMIN_FICHIER = "cheminEtNomDuFichier";
+   private static final String UUID = "UUID";
    private static final String METADONNEE = "metadonnee";
    private static final String CODE = "code";
    private static final String VALEUR = "valeur";
    private static final String NUM_PAGE_DEBUT = "numeroPageDebut";
    private static final String NUM_PAGE = "nombreDePages";
 
-   /**
-    * {@inheritDoc}
-    */
+
    @Override
-   public final void writeResultatsFile(
-         final File ecdeDirectory,
-         final ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> intDocuments,
-         final int documentsCount, boolean restitutionUuids, File sommaireFile) {
+   public void writeResultatsFile(File ecdeDirectory,
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs,
+         int initDocCount, boolean restitutionUuids, File sommaireFile,
+         String modeBatch) {
 
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en réussite)",
             PREFIX_TRC);
 
-      final ResultatsType resultatsType = creerResultat(documentsCount,
-            intDocuments, restitutionUuids, sommaireFile);
+      final ResultatsType resultatsType = creerResultat(initDocCount,
+            integDocs, restitutionUuids, sommaireFile, modeBatch);
 
       final ObjectFactory factory = new ObjectFactory();
       final JAXBElement<ResultatsType> resultat = factory
@@ -124,16 +123,17 @@ public class ResultatFileSuccessSupportImpl implements
     * 
     * @param documentsCount
     *           nombre de documents initial
+    * @param modeBatch
     * @param intDocCount
     *           nombre de documents intégrés
     * @return le résultat sous forme d'objet
     */
    private ResultatsType creerResultat(final int documentsCount,
-         ConcurrentLinkedQueue<CaptureMasseIntegratedDocument> intDocuments,
-         boolean restitutionsUuids, File sommaireFile) {
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
+         boolean restitutionsUuids, File sommaireFile, String modeBatch) {
 
       final ResultatsType resultatsType = new ResultatsType();
-      resultatsType.setBatchMode(BatchModeType.TOUT_OU_RIEN);
+      resultatsType.setBatchMode(BatchModeType.fromValue(modeBatch));
       resultatsType.setInitialDocumentsCount(documentsCount);
       resultatsType.setInitialVirtualDocumentsCount(0);
       resultatsType.setIntegratedDocumentsCount(intDocuments.size());
@@ -149,7 +149,7 @@ public class ResultatFileSuccessSupportImpl implements
       // Si on attend la liste des documents intégrés avec l'UUID associé
       if (restitutionsUuids) {
          // Tri des documents intégrés par index
-         List<CaptureMasseIntegratedDocument> listeDocs = new ArrayList<CaptureMasseIntegratedDocument>(
+         List<TraitementMasseIntegratedDocument> listeDocs = new ArrayList<TraitementMasseIntegratedDocument>(
                intDocuments);
          Collections.sort(listeDocs,
                new CaptureMasseIntegratedDocumentComparateur());
@@ -211,6 +211,15 @@ public class ResultatFileSuccessSupportImpl implements
                               ERREUR_VALEUR_VIDE);
                      }
                      objetNumerique.setCheminEtNomDuFichier(xmlEventTmp
+                           .asCharacters().getData());
+                     integratedDocumentType.setObjetNumerique(objetNumerique);
+                  } else if (UUID.equals(name)) {
+                     final XMLEvent xmlEventTmp = reader.peek();
+                     if (!xmlEventTmp.isCharacters()) {
+                        throw new CaptureMasseRuntimeException(
+                              ERREUR_VALEUR_VIDE);
+                     }
+                     objetNumerique.setUUID(xmlEventTmp
                            .asCharacters().getData());
                      integratedDocumentType.setObjetNumerique(objetNumerique);
                   } else if (METADONNEE.equals(name)) {
@@ -618,4 +627,5 @@ public class ResultatFileSuccessSupportImpl implements
       staxUtils.addStartTag("nonIntegratedVirtualDocuments", PX_RES, NS_RES);
       staxUtils.addEndTag("nonIntegratedVirtualDocuments", PX_RES, NS_RES);
    }
+
 }

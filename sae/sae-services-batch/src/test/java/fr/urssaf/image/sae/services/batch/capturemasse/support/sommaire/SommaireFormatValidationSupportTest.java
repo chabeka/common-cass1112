@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -106,18 +106,42 @@ public class SommaireFormatValidationSupportTest {
 
    }
 
+   @Test
+   public void testSommaireValideTransfer() {
+
+      try {
+
+         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+
+         ClassPathResource resSommaire = new ClassPathResource(
+               "sommaire_transf.xml");
+         FileOutputStream fos = new FileOutputStream(sommaire);
+         IOUtils.copy(resSommaire.getInputStream(), fos);
+
+         support.validationSommaire(sommaire);
+      } catch (IOException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      } catch (CaptureMasseSommaireFormatValidationException e) {
+         Assert.fail("le fichier sommaire.xml doit être valide");
+      }
+
+   }
+
    @Test(expected = IllegalArgumentException.class)
    public void testFichierSommaireBatchFichierNull()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       support.validerModeBatch(null, "RR");
 
       Assert.fail("exception attendue");
    }
 
-   @Test(expected = IllegalArgumentException.class)
+   @Test(expected = CaptureMasseSommaireFileNotFoundException.class)
    public void testFichierSommaireBatchModeBatchVide()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       support.validerModeBatch(new File(""), "");
 
@@ -126,12 +150,15 @@ public class SommaireFormatValidationSupportTest {
 
    @Test(expected = CaptureMasseSommaireFormatValidationException.class)
    public void testBatchModeNonAttendu()
-         throws CaptureMasseSommaireFormatValidationException {
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
 
       File sommaire = new File(
             "src/test/resources/sommaire/sommaire_success.xml");
 
       support.validerModeBatch(sommaire, "RR");
+
+      Assert.fail("exception attendue");
 
    }
 
@@ -145,6 +172,8 @@ public class SommaireFormatValidationSupportTest {
          support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
       } catch (CaptureMasseSommaireFormatValidationException e) {
          Assert.fail("on attend un retour valide");
+      } catch (CaptureMasseSommaireFileNotFoundException e) {
+         Assert.fail("on attend un retour valide");
       }
 
    }
@@ -155,7 +184,7 @@ public class SommaireFormatValidationSupportTest {
       File sommaire = new File(
             "src/test/resources/sommaire/sommaire_uuid_failure.xml");
 
-      support.validerUniciteUuid(sommaire);
+      support.validerUniciteIdGed(sommaire);
    }
 
    @Test
@@ -165,7 +194,7 @@ public class SommaireFormatValidationSupportTest {
             "src/test/resources/sommaire/sommaire_uuid_succes.xml");
 
       try {
-         support.validerUniciteUuid(sommaire);
+         support.validerUniciteIdGed(sommaire);
       } catch (CaptureMasseSommaireFormatValidationException e) {
          Assert.fail("on attend un retour valide");
       }

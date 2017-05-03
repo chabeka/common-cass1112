@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobRequestRowsIterator;
 import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -99,6 +100,18 @@ public class JobLectureServiceImpl implements JobLectureService {
     * {@inheritDoc}
     */
    @Override
+   public final JobRequest getJobRequestNotNull(UUID uuidJob) throws JobInexistantException {
+      JobRequest jobRequest = this.getJobRequest(uuidJob);
+      if(jobRequest == null){
+         throw new JobInexistantException(uuidJob);
+      }      
+      return jobRequest;      
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
    public final Iterator<JobQueue> getUnreservedJobRequestIterator() {
 
       SliceQuery<String, UUID, String> sliceQuery = jobsQueueDao
@@ -130,14 +143,13 @@ public class JobLectureServiceImpl implements JobLectureService {
     * {@inheritDoc}
     */
    @Override
-   public final List<JobRequest> getNonTerminatedJobs(String hostname) {
+   public final List<JobRequest> getNonTerminatedJobs(String key) {
 
-      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(hostname);
+      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(key);
 
       List<JobRequest> jobRequests = new ArrayList<JobRequest>();
 
       for (JobQueue jobQueue : jobQueues) {
-
          JobRequest jobRequest = this.getJobRequest(jobQueue.getIdJob());
          jobRequests.add(jobRequest);
       }

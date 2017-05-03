@@ -192,7 +192,7 @@ public class JobQueueServiceProcessParamAndJobParamTest {
                idJobWithParam, e.getInstanceId());
          Assert
                .assertEquals("le message de l'exception est inattendu",
-                     "Impossible de lancer ou de réserver le traitement n°"
+                     "Impossible de lancer, de modifier ou de réserver le traitement n°"
                            + idJobWithParam + " car il n'existe pas.", e
                            .getMessage());
       }
@@ -214,7 +214,7 @@ public class JobQueueServiceProcessParamAndJobParamTest {
          Assert.assertEquals("l'identifiant du job est inattendu",
                idJobWithJobParam, e.getInstanceId());
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°"
+               "Impossible de lancer, de modifier ou de réserver le traitement n°"
                      + idJobWithJobParam + " car il n'existe pas.", e
                      .getMessage());
       }

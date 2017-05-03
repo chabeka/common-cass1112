@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFileNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
@@ -26,6 +27,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.Sommaire
 import fr.urssaf.image.sae.services.batch.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.BATCH_MODE;
 
 /**
  * Tasklet de vérification du format de fichier sommaire.xml
@@ -35,12 +37,12 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
    @Autowired
-   private SommaireFormatValidationSupport validationSupport;
+   protected SommaireFormatValidationSupport validationSupport;
 
-   private static final Logger LOGGER = LoggerFactory
+   protected static final Logger LOGGER = LoggerFactory
          .getLogger(CheckFormatFileSommaireTasklet.class);
 
-   private static final String TRC_EXEC = "execute()";
+   protected static final String TRC_EXEC = "execute()";
 
    @Autowired
    private SAEControleSupportService controleSupport;
@@ -81,22 +83,10 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
 
          LOGGER.debug("{} - Fin de validation du fichier sommaire.xml",
                TRC_EXEC);
-         LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml",
-               TRC_EXEC);
 
-         validationSupport.validerModeBatch(sommaireFile, "TOUT_OU_RIEN");
 
-         LOGGER.debug("{} - Fin de validation du BATCH_MODE du sommaire.xml",
-               TRC_EXEC);
+         this.validationSpecifiqueSommaire(sommaireFile);
 
-         LOGGER.debug("{} - Début de validation unicité IdGed des documents",
-               TRC_EXEC);
-         
-         validationSupport.validerUniciteUuid(sommaireFile);
-         
-         LOGGER.debug("{} - Fin de validation unicité IdGed des documents",
-               TRC_EXEC);
-         
          boolean restitutionUuids = false;
          String valeur = XmlReadUtils.getElementValue(sommaireFile,
                "restitutionUuids");
@@ -105,6 +95,36 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
             context.put(Constantes.RESTITUTION_UUIDS, restitutionUuids);
          }
 
+         String batchModeSommaire = XmlReadUtils.getElementValue(sommaireFile,
+               Constantes.BATCH_MODE_ELEMENT_NAME);
+         String batchmodeRedirection = null;
+         String batchmode = null;
+
+         LOGGER.debug("{} - Fin du dénombrement", TRC_EXEC);
+
+         if (batchModeSommaire == null
+               || (batchModeSommaire != null && batchModeSommaire.isEmpty())) {
+            throw new CaptureMasseRuntimeException(
+                  "le fichier sommaire.xml n'est pas valide car la balise "
+                        + Constantes.BATCH_MODE_ELEMENT_NAME
+                        + "n'est pas correctement renseigné");
+         } else if (batchModeSommaire.equalsIgnoreCase(BATCH_MODE.TOUT_OU_RIEN
+               .getModeNom())) {
+            batchmodeRedirection = BATCH_MODE.TOUT_OU_RIEN.getModeNomCourt();
+            batchmode = BATCH_MODE.TOUT_OU_RIEN.getModeNom();
+         } else if (batchModeSommaire.equalsIgnoreCase(BATCH_MODE.PARTIEL
+               .getModeNom())) {
+            batchmodeRedirection = BATCH_MODE.PARTIEL.getModeNomCourt();
+            batchmode = BATCH_MODE.PARTIEL.getModeNom();
+         } else {
+            throw new CaptureMasseRuntimeException(
+                  "Le mode de traitement du batch n'est pas reconnu : "
+                        + batchModeSommaire);
+         }
+
+         context.put(Constantes.BATCH_MODE_NOM, batchmode);
+         context.put(Constantes.BATCH_MODE_NOM_REDIRECT, batchmodeRedirection);
+
       } catch (CaptureMasseSommaireFormatValidationException e) {
          final Exception exception = new Exception(e.getMessage());
          getExceptionErreurListe(chunkContext).add(exception);
@@ -112,12 +132,16 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
       } catch (CaptureMasseRuntimeException e) {
          final Exception exception = new Exception(e.getMessage());
          getExceptionErreurListe(chunkContext).add(exception);
-      
+
       } catch (CaptureMasseSommaireHashException e) {
          final Exception exception = new Exception(e.getMessage());
          getExceptionErreurListe(chunkContext).add(exception);
-      
+
       } catch (CaptureMasseSommaireTypeHashException e) {
+         final Exception exception = new Exception(e.getMessage());
+         getExceptionErreurListe(chunkContext).add(exception);
+
+      } catch (CaptureMasseSommaireFileNotFoundException e) {
          final Exception exception = new Exception(e.getMessage());
          getExceptionErreurListe(chunkContext).add(exception);
       }
@@ -125,5 +149,44 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
 
       return RepeatStatus.FINISHED;
+   }
+
+   /**
+    * Validation spécifique du sommaire.
+    * 
+    * @param sommaireFile
+    *           Fichier sommaire.
+    * @throws CaptureMasseSommaireFormatValidationException
+    * @throws CaptureMasseSommaireFileNotFoundException
+    * @{@link CaptureMasseSommaireFormatValidationException}
+    */
+   protected void validationSpecifiqueSommaire(File sommaireFile)
+         throws CaptureMasseSommaireFormatValidationException,
+         CaptureMasseSommaireFileNotFoundException {
+      LOGGER.debug("{} - Début de validation du BATCH_MODE du sommaire.xml",
+            TRC_EXEC);
+
+      validationSupport.validerModeBatch(sommaireFile,
+            Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            Constantes.BATCH_MODE.PARTIEL.getModeNom());
+
+      LOGGER.debug("{} - Fin de validation du BATCH_MODE du sommaire.xml",
+            TRC_EXEC);
+      LOGGER.debug(
+            "{} - Début de validation spécifique de la présence du chemin/nom du fichier",
+            TRC_EXEC);
+      validationSupport.validationDocumentBaliseRequisSommaire(sommaireFile,
+            "cheminEtNomDuFichier");
+      LOGGER.debug(
+            "{} - Fin de validation spécifique de la présence du chemin/nom du fichier",
+            TRC_EXEC);
+
+      LOGGER.debug("{} - Début de validation unicité IdGed des documents",
+            TRC_EXEC);
+
+      validationSupport.validerUniciteIdGed(sommaireFile);
+
+      LOGGER.debug("{} - Fin de validation unicité IdGed des documents",
+            TRC_EXEC);
    }
 }

@@ -41,44 +41,61 @@ public class CompressionDocumentProcessor extends AbstractListener implements
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
 
-      final String path = (String) getStepExecution().getJobExecution()
-            .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
+      try {
+         final String path = (String) getStepExecution().getJobExecution()
+               .getExecutionContext().get(Constantes.SOMMAIRE_FILE);
 
-      final File sommaire = new File(path);
+         final File sommaire = new File(path);
 
-      final File ecdeDirectory = sommaire.getParentFile();
+         final File ecdeDirectory = sommaire.getParentFile();
 
-      String cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
-            + "documents" + File.separator + item.getFilePath();
+         String cheminDocOnEcde = ecdeDirectory.getAbsolutePath()
+               + File.separator + "documents" + File.separator
+               + item.getFilePath();
 
-      List<String> documentsToCompress = (List<String>) getStepExecution()
-            .getJobExecution().getExecutionContext().get("documentsToCompress");
+         List<String> documentsToCompress = (List<String>) getStepExecution()
+               .getJobExecution().getExecutionContext()
+               .get("documentsToCompress");
 
-      Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
-            .getJobExecution().getExecutionContext().get("documentsCompressed");
+         Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
+               .getJobExecution().getExecutionContext()
+               .get("documentsCompressed");
 
-      // on verifie que le document courant est a compresser ou non
-      // et s'il n'a pas deja ete compresse
-      if (documentsToCompress != null
-            && documentsToCompress.contains(cheminDocOnEcde)
-            && (documentsCompressed == null || !documentsCompressed
-                  .containsKey(cheminDocOnEcde))) {
+         // on verifie que le document courant est a compresser ou non
+         // et s'il n'a pas deja ete compresse
+         if (documentsToCompress != null
+               && documentsToCompress.contains(cheminDocOnEcde)
+               && (documentsCompressed == null || !documentsCompressed
+                     .containsKey(cheminDocOnEcde))) {
 
-         // dans ce cas, on compresse le document
-         CompressedDocument compressedDoc = captureMasseCompressionSupport
-               .compresserDocument(item, ecdeDirectory);
+            // dans ce cas, on compresse le document
+            CompressedDocument compressedDoc = captureMasseCompressionSupport
+                  .compresserDocument(item, ecdeDirectory);
 
-         if (documentsCompressed == null) {
-            LOGGER.debug("{} - Pas de map de documents compresses, on la créé",
-                  trcPrefix);
-            documentsCompressed = new HashMap<String, CompressedDocument>();
+            if (documentsCompressed == null) {
+               LOGGER.debug(
+                     "{} - Pas de map de documents compresses, on la créé",
+                     trcPrefix);
+               documentsCompressed = new HashMap<String, CompressedDocument>();
+            }
+            LOGGER.debug(
+                  "{} - Ajout du document {} dans la map des documents compresses",
+                  trcPrefix, cheminDocOnEcde);
+            documentsCompressed.put(cheminDocOnEcde, compressedDoc);
+            getStepExecution().getJobExecution().getExecutionContext()
+                  .put("documentsCompressed", documentsCompressed);
          }
-         LOGGER.debug(
-               "{} - Ajout du document {} dans la map des documents compresses",
-               trcPrefix, cheminDocOnEcde);
-         documentsCompressed.put(cheminDocOnEcde, compressedDoc);
-         getStepExecution().getJobExecution().getExecutionContext()
-               .put("documentsCompressed", documentsCompressed);
+      } catch (Exception e) {
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+         } else {
+            throw e;
+         }
+
       }
 
       LOGGER.debug("{} - fin", trcPrefix);

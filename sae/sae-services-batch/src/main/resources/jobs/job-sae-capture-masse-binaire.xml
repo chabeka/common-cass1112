@@ -86,7 +86,7 @@
             </listeners>
          </tasklet>
 
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurCapture" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
          <next on="*" to="compressionDocuments" />
       </step>
@@ -105,13 +105,31 @@
             </listeners>
          </tasklet>
 
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurCapture" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="*" to="persistanceDocuments" />
+         <next on="*" to="controleModeBatch" />
       </step>
       
+      <!-- controle du mode de traitement pour redirection -->
+      <step id="controleModeBatch">
+         <tasklet ref="controleModeBatchTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="controleModeBatchListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
 
-      <!-- persistance des documents du fichier sommaire.xml -->
+         <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="TOR" to="persistanceDocuments" />
+         <next on="PAR" to="persistanceDocumentsPartiel" />
+      </step>
+     
+
+      
+
+      <!-- persistance des documents du fichier sommaire.xml pour le mode TOUT OU RIEN -->
 
       <step id="persistanceDocuments">
          <tasklet>
@@ -121,6 +139,7 @@
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="storageDocumentWriter" />
                <listener ref="controleStorageDocumentProcessor" />
+               <listener ref="processorConvertMetier2" />
                <listener ref="stockageListener" />
                <listener ref="enrichissementStorageDocumentProcessor" />
                <listener ref="replacementDocumentProcessor" />
@@ -131,9 +150,36 @@
 
          <next on="FAILED" to="rollback" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="FAILED_NO_ROLLBACK" to="finErreur" />
-         <next on="*" to="finSucces" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurCapture" />
+         <next on="*" to="finSuccesCapture" />
       </step>
+      
+      <!-- persistance des documents du fichier sommaire.xml pour le mode PARTIEL -->
+
+      <step id="persistanceDocumentsPartiel">
+         <tasklet>
+            <chunk reader="sommaireReader" processor="compositeProcessorControlePersistance"
+               writer="storageDocumentWriter" commit-interval="5" />
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="storageDocumentWriter" />
+               <listener ref="enrichissementMetadonneeProcessor" />               
+               <listener ref="controleStorageDocumentProcessor" />
+               <listener ref="processorConvertMetier2" />
+               <listener ref="stockageListener" />
+               <listener ref="enrichissementStorageDocumentProcessor" />
+               <listener ref="replacementDocumentProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+
+         <next on="FAILED" to="finErreurCapture" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="FAILED_NO_ROLLBACK" to="finErreurCapture" />
+         <next on="*" to="finSuccesCapture" />
+      </step>
+      
 
       <step id="rollback">
          <tasklet ref="rollbackTasklet">
@@ -143,7 +189,7 @@
             </listeners>
          </tasklet>
 
-         <next on="*" to="finErreur" />
+         <next on="*" to="finErreurCapture" />
       </step>
 
       <step id="finBloquant">
@@ -155,8 +201,8 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finErreur">
-         <tasklet ref="resultatsFileFailureTasklet">
+      <step id="finErreurCapture">
+         <tasklet ref="resultatsFileCaptureFailureTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileFailureListener" />
@@ -168,8 +214,8 @@
          <next on="*" to="finTraitement" />
       </step>
 
-      <step id="finSucces">
-         <tasklet ref="resultatsFileSuccessTasklet">
+      <step id="finSuccesCapture">
+         <tasklet ref="resultatsFileCaptureSuccessTasklet">
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="resultatsFileSuccessListener" />

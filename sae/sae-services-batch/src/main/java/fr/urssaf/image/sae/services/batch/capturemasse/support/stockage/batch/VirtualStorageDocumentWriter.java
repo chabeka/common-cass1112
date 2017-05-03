@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithr
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionVirtualRunnable;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -72,6 +73,16 @@ public class VirtualStorageDocumentWriter extends
 
       LOGGER.debug("{} - fin", trcPrefix);
 
+   }
+   
+   @Override
+   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+         throws Exception {
+      // Non utilisé pour les documents virtuels. A mettre en place si besoin pour rendre le code plus générique.
+      // VirtualStorageDocument document = insertStorageDocument((VirtualStorageDocument) storageDocument);
+      // UUID uuid = document != null ? document.getUuid() : null;
+      
+      return null;
    }
 
    /**

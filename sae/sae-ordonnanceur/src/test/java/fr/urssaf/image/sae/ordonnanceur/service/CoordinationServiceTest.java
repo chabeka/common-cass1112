@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -16,9 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.commons.exception.ParameterRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
+import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
@@ -37,6 +40,9 @@ public class CoordinationServiceTest {
 
    @Autowired
    private JobService jobService;
+
+   @Autowired
+   private DFCESupport dfceSuppport;
 
    @Autowired
    private DecisionService decisionService;
@@ -61,6 +67,7 @@ public class CoordinationServiceTest {
    public void after() {
       EasyMock.reset(jobService);
       EasyMock.reset(decisionService);
+      EasyMock.reset(dfceSuppport);
    }
 
    @Test
@@ -77,13 +84,25 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
 
+      EasyMock
+            .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
+            .andReturn(false).once();
+
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
+            .andReturn(traitement).once();
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).once();
+
       jobService.reserveJob(traitement.getIdJob());
 
       EasyMock.expect(
-            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andReturn(traitement).once();
+                  decisionService.trouverListeJobALancer(jobsEnAttente,
+                        jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
 
-      EasyMock.replay(jobService, decisionService);
+      decisionService.controleDispoEcdeTraitementMasse(traitement);
+      EasyMock.expectLastCall();
+
+      EasyMock.replay(jobService, decisionService, dfceSuppport);
 
       Assert.assertEquals("identifiant du traitement lancé inattendu",
             traitement.getIdJob(), coordinationService.lancerTraitement());
@@ -107,16 +126,28 @@ public class CoordinationServiceTest {
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
 
+      EasyMock
+            .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
+            .andReturn(false).once();
+
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
+            .andReturn(traitement).once();
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
+
       jobService.reserveJob(traitement.getIdJob());
 
       EasyMock.expectLastCall().andThrow(
             new JobDejaReserveException(traitement.getIdJob(), "serveur"));
 
       EasyMock.expect(
-            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andReturn(traitement).once();
+            decisionService.trouverListeJobALancer(jobsEnAttente,
+                  jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
 
-      EasyMock.replay(jobService, decisionService);
+      decisionService.controleDispoEcdeTraitementMasse(traitement);
+      EasyMock.expectLastCall();
+
+      EasyMock.replay(jobService, decisionService, dfceSuppport);
 
       try {
          coordinationService.lancerTraitement();
@@ -161,6 +192,13 @@ public class CoordinationServiceTest {
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
             .once();
+      
+      EasyMock.expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement)).andReturn(false)
+      .once();
+           
+       EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement)).andReturn(traitement).once();
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
 
       jobService.reserveJob(traitement.getIdJob());
 
@@ -168,10 +206,13 @@ public class CoordinationServiceTest {
             new JobInexistantException(traitement.getIdJob()));
 
       EasyMock.expect(
-            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andReturn(traitement).once();
+            decisionService.trouverListeJobALancer(jobsEnAttente,
+                  jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
 
-      EasyMock.replay(jobService, decisionService);
+      decisionService.controleDispoEcdeTraitementMasse(traitement);
+      EasyMock.expectLastCall();
+
+      EasyMock.replay(jobService, decisionService, dfceSuppport);
 
       try {
          coordinationService.lancerTraitement();
@@ -228,9 +269,11 @@ public class CoordinationServiceTest {
             .anyBoolean(), EasyMock.anyObject(String.class));
       EasyMock.expectLastCall();
 
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
+
       EasyMock.expect(
-            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andThrow(new AucunJobALancerException()).once();
+            decisionService.trouverListeJobALancer(jobsEnAttente,
+                  jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
 
       EasyMock.replay(jobService, decisionService);
 
@@ -276,9 +319,11 @@ public class CoordinationServiceTest {
             .anyBoolean(), EasyMock.anyObject(String.class));
       EasyMock.expectLastCall();
 
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
+
       EasyMock.expect(
-            decisionService.trouverJobALancer(jobsEnAttente, jobsEnCours))
-            .andThrow(new AucunJobALancerException()).once();
+            decisionService.trouverListeJobALancer(jobsEnAttente,
+                  jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
 
       EasyMock.replay(jobService, decisionService);
 
@@ -290,6 +335,100 @@ public class CoordinationServiceTest {
 
          EasyMock.verify(jobService, decisionService);
 
+      }
+
+   }
+
+   /**
+    * DFCE est down
+    * 
+    * @throws JobInexistantException
+    * @throws JobDejaReserveException
+    * 
+    */
+   @Test(expected = AucunJobALancerException.class)
+   public void decisionService_failure_dfceIsDown()
+         throws AucunJobALancerException, JobDejaReserveException,
+         JobInexistantException {
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+
+      EasyMock
+            .expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement))
+            .andReturn(false).once();
+
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement))
+            .andReturn(traitement).once();
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(false).once();
+
+      jobService.reserveJob(traitement.getIdJob());
+      EasyMock.expectLastCall();
+
+      EasyMock
+            .expect(
+                  decisionService.trouverListeJobALancer(jobsEnAttente,
+                        jobsEnCours)).andReturn(Arrays.asList(traitement))
+            .once();
+
+      decisionService.controleDispoEcdeTraitementMasse(traitement);
+      EasyMock.expectLastCall();
+
+      EasyMock.replay(jobService, decisionService, dfceSuppport);
+
+      coordinationService.lancerTraitement();
+
+   }
+   
+   @Test
+   public void lancerTraitement_failure_Aucun_Job_dispo()
+         throws AucunJobALancerException, JobInexistantException,
+         JobDejaReserveException {
+
+      List<JobQueue> jobsEnAttente = new ArrayList<JobQueue>();
+
+      EasyMock.expect(jobService.recupJobsALancer()).andReturn(jobsEnAttente)
+            .once();
+
+      List<JobRequest> jobsEnCours = new ArrayList<JobRequest>();
+
+      EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
+            .once();
+      
+      EasyMock.expect(jobService.isJobCodeTraitementEnCoursOuFailure(traitement)).andReturn(false)
+      .once();
+           
+      EasyMock.expect(jobService.reserverCodeTraitementJobALancer(traitement)).andThrow(
+            new ParameterRuntimeException("error"));
+
+      EasyMock.expect(dfceSuppport.isDfceUp()).andReturn(true).times(2);
+
+      EasyMock.expect(
+            decisionService.trouverListeJobALancer(jobsEnAttente,
+                  jobsEnCours)).andReturn(Arrays.asList(traitement)).once();
+
+      decisionService.controleDispoEcdeTraitementMasse(traitement);
+      EasyMock.expectLastCall();
+
+      EasyMock.replay(jobService, decisionService, dfceSuppport);
+
+      try {
+         coordinationService.lancerTraitement();
+
+         EasyMock.verify(jobService, decisionService);
+
+         Assert.fail("Une exception JobRuntimeException doit être levée");
+
+      } catch (AucunJobALancerException e) {
+         Assert.assertEquals("Le traitement doit être déjà réservé",
+               "Il n'y a aucun traitement à lancer", e.getMessage());
       }
 
    }

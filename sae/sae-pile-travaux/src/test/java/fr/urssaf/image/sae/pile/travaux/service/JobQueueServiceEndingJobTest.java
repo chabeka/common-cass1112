@@ -77,7 +77,7 @@ public class JobQueueServiceEndingJobTest {
 
       Date dateFinTraitement = new Date();
       jobQueueService.endingJob(idJob, true, dateFinTraitement,
-            "traitement a réussi");
+            "traitement a réussi", null);
 
       // vérification de JobRequest
       JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
@@ -130,7 +130,7 @@ public class JobQueueServiceEndingJobTest {
 
       Date dateFinTraitement = new Date();
       jobQueueService.endingJob(idJob, false, dateFinTraitement,
-            "traitement en échec");
+            "traitement en échec", null);
 
       // vérification de JobRequest
       JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
@@ -203,7 +203,7 @@ public class JobQueueServiceEndingJobTest {
          Assert.assertEquals("l'identifiant du job est inattendu", idJob, e
                .getInstanceId());
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°" + idJob
+               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
       }
    }

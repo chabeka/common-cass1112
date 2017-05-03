@@ -350,4 +350,36 @@ public class JobRequestSupport {
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
 
    }
+   
+   /**
+    * Permet de changer l'état du statut dans la jobRequest
+    * @param idJob
+    *           identifiant du job
+    * @param state
+    *           l'état cible du job
+    * @param endingDate
+    *           date de fin du job
+    * @param message
+    *           message de conclusion du job
+    * @param clock
+    *           horloge de conclusion du job
+    */
+   public final void changerEtatJobRequest(UUID idJob, String state, Date endingDate, String message, long clock){
+      // On utilise un ColumnFamilyUpdater, et on renseigne
+      // la valeur de la clé dans la construction de l'updater
+      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+
+      // Ecriture des colonnes
+      jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
+      jobRequestDao.ecritColonneEndingDate(updaterJobRequest, endingDate, clock);
+
+      if (message != null) {
+         jobRequestDao.ecritColonneMessage(updaterJobRequest, message, clock);
+      }
+
+      // Ecrit en base
+      jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+   }   
+   
 }

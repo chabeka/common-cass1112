@@ -32,7 +32,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -54,7 +53,6 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
-import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -188,8 +186,6 @@ public class Integration266Test {
 
       checkFiles();
 
-      checkLogs();
-
       checkTracabilite(idTdm, urlSommaire);
 
    }
@@ -244,7 +240,7 @@ public class Integration266Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "ed259b22d49647c7a81555b124053e963b783a93";
+      String sha1Attendu = "e6b07bae564a4bbbb63fe6f280efa65deaecb1f4";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -267,23 +263,6 @@ public class Integration266Test {
 
    }
 
-   private void checkLogs() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
-
-      Assert.assertNotNull("liste des messages non null", loggingEvents);
-
-      Assert.assertEquals("un message attendu", 1, loggingEvents.size());
-
-      ILoggingEvent event = loggingEvents.get(0);
-
-      Assert.assertEquals("le log doit être de niveau ERROR", Level.ERROR,
-            event.getLevel());
-
-      boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);
-      Assert.assertTrue("le message d'erreur attendu doit être correct",
-            messageFound);
-   }
-
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
@@ -291,7 +270,7 @@ public class Integration266Test {
                   idTdm,
                   urlSommaire,
                   Arrays
-                        .asList("java.lang.Exception: Aucun document du sommaire ne sera intégré dans le SAE (mode PARTIEL non accepté)."));
+                        .asList("Exception(s) sur les documents : 2", "java.lang.Exception: Le fichier document doc70.PDF est introuvable"));
 
    }
 

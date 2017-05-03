@@ -75,7 +75,7 @@ public class ControleStepsNFSTest {
 
    @Test
    public void finSuccesTest() {
-      nfsConnexionTest("finSucces");
+      nfsConnexionTest("finSuccesCapture");
    }
 
    @Test
@@ -100,7 +100,7 @@ public class ControleStepsNFSTest {
 
    @Test
    public void finErreurTest() {
-      nfsConnexionTest("finErreur");
+      nfsConnexionTest("finErreurCapture");
    }
 
    @Test

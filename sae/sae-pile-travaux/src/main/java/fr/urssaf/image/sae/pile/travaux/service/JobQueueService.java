@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
@@ -84,11 +85,13 @@ public interface JobQueueService {
     *           date de fin du traitement
     * @param message
     *           message de compte-rendu du traitement (ex : message d'erreur)
+    * @param codeTraitement
+    *           Code traitement
     * @throws JobInexistantException
     *            le traitement n'existe pas
     */
    void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
-         String message) throws JobInexistantException;
+         String message, String codeTraitement) throws JobInexistantException;
 
    /**
     * Ajoute une trace d'execution dans l'historique du job
@@ -169,4 +172,57 @@ public interface JobQueueService {
     * @return List<String>
     */
    List<String> getHosts();
-}
+   
+   /**
+    * Ajouter un job de type JobsQueue dans la pile des travaux
+    * @param jobToCreate Job à créer.
+    */
+   public void addJobsQueue(JobToCreate jobToCreate);
+
+   /**
+    * Réserver un traitement de type JobsQueue dans la pile des travaux
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param hostname
+    *           nom du serveur
+    * @param type
+    *           type du job
+    * @param jobParameters
+    *           Parametres du job
+    */
+   public void reserverJobDansJobsQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters);
+
+   
+   /**
+    * Supprimer le job de la pile des jobsQueue
+    * @param idJob
+    */
+   void deleteJobFromJobsQueues(UUID idJob);   
+
+   /**
+    * Passer le jobRequest à l'état stateJob passé en paramètre
+    * @param idJob
+    *           identifiant du job
+    * @param stateJob
+    *           l'état cible du job
+    * @param endingDate
+    *           date de fin du job
+    * @param message
+    *           message de conclusion du job
+    */
+   void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
+         String message);
+
+   
+   /**
+    * Supprime le job et le sémaphore associé si il existe de la pile des jobsQueue
+    * @param idJob
+    *          identifiant du job
+    * @param codeTraitement
+    *          le code traitement du sémaphore
+    */
+   public void deleteJobAndSemaphoreFromJobsQueues(UUID idJob, String codeTraitement);
+
+  }

@@ -9,9 +9,7 @@ import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -28,21 +26,19 @@ import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupp
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
-import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeUrlFileNotFoundEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureEcdeWriteFileEx;
+import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
-import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
-import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
+import fr.urssaf.image.sae.webservices.util.WsTraitementMasseCommonsUtils;
 
 /**
  * Implémentation de {@link WSCaptureMasseService}<br>
@@ -56,10 +52,6 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
          .getLogger(WSCaptureMasseServiceImpl.class);
 
    @Autowired
-   @Qualifier("saeControlesCaptureService")
-   private SAEControlesCaptureService controlesService;
-
-   @Autowired
    private TraitementAsynchroneService traitementService;
 
    @Autowired
@@ -69,7 +61,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    private SAEControleSupportService controleSupport;
 
    @Autowired
-   private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+   private WsTraitementMasseCommonsUtils wsTraitementMasseCommonsUtils;
 
    /**
     * {@inheritDoc}
@@ -89,9 +81,34 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       String hName = HostnameUtil.getHostname();
 
-      UUID identifiant = checkEcdeUrl(ecdeUrl);
+      UUID identifiant;
+      Integer nbDoc;
+      try {
+         identifiant = wsTraitementMasseCommonsUtils.checkEcdeUrl(ecdeUrl);
 
-      Integer nbDoc = getNombreDoc(ecdeUrl);
+         nbDoc = wsTraitementMasseCommonsUtils.getNombreDoc(ecdeUrl);
+      } catch (EcdeBadURLException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (EcdeBadURLFormatException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (URISyntaxException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (CaptureBadEcdeUrlEx e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
+      } catch (CaptureEcdeWriteFileEx e) {
+         throw new CaptureAxisFault("CaptureEcdeDroitEcriture", e.getMessage(),
+               e);
+      } catch (ValidationExceptionInvalidFile e) {
+         throw new CaptureAxisFault("FormatSommaireIncorrect", e.getMessage(),
+               e);
+      }
 
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
@@ -166,9 +183,35 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
 
       String hName = HostnameUtil.getHostname();
 
-      UUID uuid = checkEcdeUrl(ecdeUrl);
+      UUID uuid;
+      Integer nbDoc;
+      try {
+         uuid = wsTraitementMasseCommonsUtils.checkEcdeUrl(ecdeUrl);
+         
+         nbDoc = wsTraitementMasseCommonsUtils.getNombreDoc(ecdeUrl);
+      } catch (EcdeBadURLException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (EcdeBadURLFormatException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (URISyntaxException e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (CaptureBadEcdeUrlEx e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
+               e);
+      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
+               e.getMessage(), e);
+      } catch (CaptureEcdeWriteFileEx e) {
+         throw new CaptureAxisFault("CaptureEcdeDroitEcriture", e.getMessage(),
+               e);
+      } catch (ValidationExceptionInvalidFile e) {
+         throw new CaptureAxisFault("FormatSommaireIncorrect", e.getMessage(),
+               e);
+      }
 
-      Integer nbDoc = getNombreDoc(ecdeUrl);
 
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
@@ -186,71 +229,4 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             .createArchivageMasseAvecHashResponse(uuid.toString());
    }
 
-   private UUID checkEcdeUrl(String ecdeUrl) throws CaptureAxisFault {
-      // vérification de l'URL ECDE du sommaire contenu dans la requête SOAP
-      try {
-
-         controlesService.checkBulkCaptureEcdeUrl(ecdeUrl);
-
-      } catch (CaptureBadEcdeUrlEx e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
-               e);
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeFichierIntrouvable",
-               e.getMessage(), e);
-      } catch (CaptureEcdeWriteFileEx e) {
-         throw new CaptureAxisFault("CaptureEcdeDroitEcriture", e.getMessage(),
-               e);
-      }
-
-      // Appel du service, celui-ci doit rendre la main rapidement d'un
-      // processus
-      String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
-      // récupération de l'UUID du traitement
-      UUID uuid = UUID.fromString(contextLog);
-
-      return uuid;
-
-   }
-
-   private Integer getNombreDoc(String ecdeUrl) throws CaptureAxisFault {
-      File sommaire;
-      try {
-         URI uri = new URI(ecdeUrl);
-         sommaire = ecdeServices.convertSommaireToFile(uri);
-      } catch (EcdeBadURLException e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
-               e);
-      } catch (EcdeBadURLFormatException e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
-               e);
-      } catch (URISyntaxException e) {
-         throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
-               e);
-      }
-
-      Integer nombreDoc = null;
-      int nombreDocuments = 0;
-      int nombreComposants = 0;
-
-      try {
-         nombreDocuments = XmlReadUtils.compterElements(sommaire, "document");
-         nombreComposants = XmlReadUtils.compterElements(sommaire, "composant");
-
-         if ((nombreDocuments + nombreComposants == 0)
-               || (nombreComposants > 0 && nombreDocuments > 0)) {
-            String message = wsMessageRessourcesUtils.recupererMessage(
-                  "capture.masse.sommaire.format.incorrect", null);
-            throw new CaptureAxisFault("FormatSommaireIncorrect", message);
-         } else if (nombreDocuments > 0) {
-            nombreDoc = nombreDocuments;
-         } else {
-            nombreDoc = nombreComposants;
-         }
-
-      } catch (CaptureMasseRuntimeException e) {
-         LOG.warn("impossible d'ouvrir le fichier attendu", e);
-      }
-      return nombreDoc;
-   }
 }

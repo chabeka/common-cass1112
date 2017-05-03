@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -21,6 +22,10 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
+import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Service permettant de réaliser des modifications sur les documents
@@ -80,4 +85,64 @@ public interface SAEModificationService {
          ModificationException, ArchiveInexistanteEx,
          MetadataValueNotInDictionaryEx;
 
+   /**
+    * Controle des metadatas à modifier pour un identifiant de document donné.
+    * @param idArchive Identifiant du document
+    * @param metadonnees Metadonnées à controler
+    * @param trcPrefix Trace prefixe
+    * @return La liste des metadonnées devant être modifiées.
+    * @throws ArchiveInexistanteEx @{@link ArchiveInexistanteEx}
+    * @throws ModificationException @{@link ModificationException}
+    * @throws DuplicatedMetadataEx @{@link DuplicatedMetadataEx}
+    */
+   public List<StorageMetadata> controlerMetaDocumentModifie(UUID idArchive,
+         List<UntypedMetadata> metadonnees, String trcPrefix) throws ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx;
+   
+   /**
+    * Modification des metadonnées d'un document.
+    * @param document Le documents à modifier (Metas modifiées et metas supprimées)
+    * @param metadonnees Metadonnées à modifier
+    * @param trcPrefix Trace prefixe
+    * @throws ModificationException @{@link ModificationException}
+    * @throws UpdateServiceEx @{@link UpdateServiceEx}
+    */
+   public void modificationMetaDocument(StorageDocument document, String trcPrefix) throws ModificationException, UpdateServiceEx;
+   
+   /**
+    * Permet la séparation des metadonnées en 2 listes de metadonnées (metas à supprimer et metas à modifier)
+    * @param idArchive Identifiant du document
+    * @param listeStorageMetaDocument Liste des metadonnées du document
+    * @param metadonnees Liste de metadonnées à modifier ou supprimer
+    * @param trcPrefix Prefix de trace
+    * @return Le storage document à modifier
+    * @throws UnknownCodeRndEx @{@link UnknownCodeRndEx}
+    * @throws ReferentialRndException @{@link ReferentialRndException}
+    * @throws InvalidValueTypeAndFormatMetadataEx @{@link InvalidValueTypeAndFormatMetadataEx}
+    * @throws UnknownMetadataEx @{@link UnknownMetadataEx}
+    * @throws DuplicatedMetadataEx @{@link DuplicatedMetadataEx}
+    * @throws NotSpecifiableMetadataEx @{@link NotSpecifiableMetadataEx}
+    * @throws RequiredArchivableMetadataEx @{@link RequiredArchivableMetadataEx}
+    * @throws UnknownHashCodeEx @{@link UnknownHashCodeEx}
+    * @throws NotModifiableMetadataEx @{@link NotModifiableMetadataEx}
+    * @throws MetadataValueNotInDictionaryEx @{@link MetadataValueNotInDictionaryEx}
+    * @throws ModificationException @{@link ModificationException}
+    */
+   public StorageDocument separationMetaDocumentModifie(UUID idArchive,
+         List<StorageMetadata> listeStorageMetaDocument, List<UntypedMetadata> metadonnees, String trcPrefix) throws UnknownCodeRndEx, 
+         ReferentialRndException, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
+         RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx, ModificationException;
+
+   /**
+    * Methode permettant de générer la liste des metadonnées storage.
+    * 
+    * @param idArchive
+    *           Identifiant document
+    * @return la liste des metadonnées storage
+    * @throws ReferentialException
+    * @{@link ReferentialException}
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    */
+   public List<StorageMetadata> getListeStorageMetadatas(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx;
 }

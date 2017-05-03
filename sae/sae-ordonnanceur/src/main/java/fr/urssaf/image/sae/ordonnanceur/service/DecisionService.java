@@ -14,18 +14,30 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 public interface DecisionService {
 
    /**
-    * Choisit un des jobs à lancer à partir de la liste fournie, et renvoie son
-    * identifiant
+    * Selectionne la liste des jobs à lancer à partir de la liste fournie.
     * 
     * @param jobsEnAttente
     *           liste des travaux en attente, en clé le nom du job et en valeur
     *           la liste des travaux associés
     * @param jobsEnCours
     *           liste des travaux en cours
-    * @return job à lancer
+    * @return liste de job à lancer
     * @throws AucunJobALancerException
     *            Exception levée si aucun job n'est à lancer
     */
-   JobQueue trouverJobALancer(List<JobQueue> jobsEnAttente,
+   List<JobQueue> trouverListeJobALancer(List<JobQueue> jobsEnAttente,
          List<JobRequest> jobsEnCours) throws AucunJobALancerException;
+
+   /**
+    * Controle la disponibilité de l'ECDE pour les opérations de traitement de
+    * masse devant utilisé l'ECDE.
+    * 
+    * @param jobAlancer
+    *           Job qui doit être lancé
+    * @throws AucunJobALancerException
+    *            @{@link AucunJobALancerException}
+    */
+   void controleDispoEcdeTraitementMasse(JobQueue jobAlancer)
+         throws AucunJobALancerException;
+         
 }

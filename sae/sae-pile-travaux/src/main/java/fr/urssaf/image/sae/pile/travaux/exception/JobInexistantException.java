@@ -4,7 +4,8 @@ import java.text.MessageFormat;
 import java.util.UUID;
 
 /**
- * Erreur levée lorsqu'on essaie de lancer ou de réserver un jobRequest qui n'existe pas
+ * Erreur levée lorsqu'on essaie de lancer ou de réserver un jobRequest qui
+ * n'existe pas
  * 
  * 
  */
@@ -15,7 +16,7 @@ public class JobInexistantException extends Exception {
    /**
     * Format du message de l'exception
     */
-   protected static final String EXCEPTION_MESSAGE = "Impossible de lancer ou de réserver le traitement n°{0} car il n''existe pas.";
+   protected static final String EXCEPTION_MESSAGE = "Impossible de lancer, de modifier ou de réserver le traitement n°{0} car il n''existe pas.";
 
    private final UUID jobRequestId;
 

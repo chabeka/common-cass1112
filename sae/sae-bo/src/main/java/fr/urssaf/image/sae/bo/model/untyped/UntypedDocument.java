@@ -20,6 +20,16 @@ import fr.urssaf.image.sae.bo.model.AbstractDocument;
  */
 public class UntypedDocument extends AbstractDocument {
    private List<UntypedMetadata> uMetadatas;
+private String batchActionType;
+
+
+   public String getBatchActionType() {
+   return batchActionType;
+}
+
+public void setBatchActionType(String batchActionType) {
+   this.batchActionType = batchActionType;
+}
 
    /**
     * @return La liste des métadonnées métiers.

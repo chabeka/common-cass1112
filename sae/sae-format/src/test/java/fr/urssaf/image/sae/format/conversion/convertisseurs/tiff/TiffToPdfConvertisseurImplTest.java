@@ -18,7 +18,6 @@ import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.commons.itext.exception.FormatConversionException;
 import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageException;
 import fr.urssaf.image.commons.itext.service.FormatConversionService;
-import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
 
@@ -38,7 +37,7 @@ public class TiffToPdfConvertisseurImplTest {
 
    @Test
    public void convertirFichierFile_success()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -55,7 +54,7 @@ public class TiffToPdfConvertisseurImplTest {
 
    @Test(expected = ConversionParametrageException.class)
    public void convertirFichierFile_erreurParametrage()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -70,7 +69,7 @@ public class TiffToPdfConvertisseurImplTest {
 
    @Test(expected = ConversionRuntimeException.class)
    public void convertirFichierFile_erreurRuntime()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -83,9 +82,9 @@ public class TiffToPdfConvertisseurImplTest {
       Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
-   @Test(expected = ConversionException.class)
+   @Test
    public void convertirFichierFile_erreurConversion()
-         throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException, ConversionException {
+         throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -103,14 +102,14 @@ public class TiffToPdfConvertisseurImplTest {
       byte[] result = convertisseur.convertirFichier(ressource.getFile(), null,
             null);
 
-      Assert.fail("Une erreur de conversion aurait du apparaitre");
+      Assert.assertNull("Le fichier n'aurait pas dû être converti", result);
       
       EasyMock.reset(serviceConversion);
    }
 
    @Test
    public void convertirFichierByte_success()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -130,7 +129,7 @@ public class TiffToPdfConvertisseurImplTest {
 
    @Test(expected = ConversionParametrageException.class)
    public void convertirFichierByte_erreurParametrage()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -148,7 +147,7 @@ public class TiffToPdfConvertisseurImplTest {
 
    @Test(expected = ConversionRuntimeException.class)
    public void convertirFichierByte_erreurRuntime()
-         throws ConversionParametrageException, IOException, ConversionException {
+         throws ConversionParametrageException, IOException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -164,9 +163,9 @@ public class TiffToPdfConvertisseurImplTest {
       Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
-   @Test(expected = ConversionException.class)
+   @Test
    public void convertirFichierByte_erreurConversion()
-         throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException, ConversionException {
+         throws ConversionParametrageException, IOException, FormatConversionParametrageException, FormatConversionException {
 
       // Récupération du fichier de test depuis les ressources
       ClassPathResource ressource = new ClassPathResource(
@@ -187,7 +186,7 @@ public class TiffToPdfConvertisseurImplTest {
       byte[] result = convertisseur.convertirFichier(fichier, null,
             null);
 
-      Assert.fail("Une erreur de converstion aurait du apparaitre");
+      Assert.assertNull("Le fichier n'aurait pas dû être converti", result);
       
       EasyMock.reset(serviceConversion);
    }

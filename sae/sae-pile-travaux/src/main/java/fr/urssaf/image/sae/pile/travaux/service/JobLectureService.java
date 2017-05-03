@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import me.prettyprint.hector.api.Keyspace;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -47,11 +48,11 @@ public interface JobLectureService {
     * Récupère la liste des traitements réservés ou en cours d'exécution sur un
     * serveur donné.
     * 
-    * @param hostname
-    *           nom du serveur concerné
+    * @param key
+    *           clef de la CF
     * @return liste des traitements réservés ou en cours d'exécution
     */
-   List<JobRequest> getNonTerminatedJobs(String hostname);
+   List<JobRequest> getNonTerminatedJobs(String key);
 
    /**
     * Récupère l'historique d'un traitement
@@ -92,11 +93,13 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax);
-   
+
    /**
-    * Teste si le job peut être réinitialisé
-    * (ie : si le job est à l'état RESERVED ou STARTING) 
-    * @param job le job à tester
+    * Teste si le job peut être réinitialisé (ie : si le job est à l'état
+    * RESERVED ou STARTING)
+    * 
+    * @param job
+    *           le job à tester
     * @return true si le job peut être réinitialisé
     */
    boolean isJobResettable(JobRequest job);
@@ -108,4 +111,17 @@ public interface JobLectureService {
     * @return true si le job peut être supprimé
     */
    boolean isJobRemovable(JobRequest job);
+
+   /**
+    * Retourne le job à partir de son uuid 
+    * @param jobRequestUUID
+    *             l'identifiant du job
+    * @return
+    *             Le job associé de l'uuidJob passé en paramètre
+    * @throws JobInexistantException
+    *             si job non existant
+    */
+   JobRequest getJobRequestNotNull(UUID uuidJob)
+         throws JobInexistantException;
+   
 }

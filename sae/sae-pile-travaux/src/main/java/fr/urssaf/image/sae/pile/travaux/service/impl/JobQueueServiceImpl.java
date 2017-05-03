@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.pile.travaux.service.impl;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +22,7 @@ import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
@@ -112,15 +114,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.ajouterJobDansJobRequest(jobToCreate, clock);
 
       // Ecriture dans la CF "JobQueues"
-      if (StringUtils.isNotBlank(jobToCreate.getParameters())) {
-         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
-               .getIdJob(), jobToCreate.getType(), jobToCreate.getParameters(),
-               clock);
-      } else {
-         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(jobToCreate
-               .getIdJob(), jobToCreate.getType(), jobToCreate
-               .getJobParameters(), clock);
-      }
+      this.addJobQueue(jobToCreate, clock);
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "CREATION DU JOB";
@@ -129,13 +123,15 @@ public class JobQueueServiceImpl implements JobQueueService {
             timestampTrace, messageTrace, clock);
    }
 
+
    /**
     * {@inheritDoc}
     * 
     */
    @Override
    public final void endingJob(UUID idJob, boolean succes,
-         Date dateFinTraitement, String message) throws JobInexistantException {
+         Date dateFinTraitement, String message, String codeTraitement)
+         throws JobInexistantException {
 
       JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
       // Vérifier que le job existe
@@ -164,8 +160,12 @@ public class JobQueueServiceImpl implements JobQueueService {
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
             dateFinTraitement, succes, message, clock);
 
-      // Ecriture dans la CF "JobQueues"
+      // Ecriture dans la CF "JobQueues" pour hostname
       this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
+
+      // Ecriture dans la CF "JobQueues" pour semaphore code traitement
+      this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJob, succes,
+            codeTraitement, clock);
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "FIN DU JOB";
@@ -181,7 +181,7 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public final void endingJob(UUID idJob, boolean succes,
          Date dateFinTraitement) throws JobInexistantException {
-      endingJob(idJob, succes, dateFinTraitement, null);
+      endingJob(idJob, succes, dateFinTraitement, null, null);
    }
 
    /**
@@ -239,9 +239,10 @@ public class JobQueueServiceImpl implements JobQueueService {
          this.jobRequestSupport.reserverJobDansJobRequest(idJob, hostname,
                dateReservation, clock);
 
+
          // Ecriture dans la CF "JobQueues"
          if (parameters == null) {
-            this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
+            this.reserverJobDansJobQueues(idJob, hostname,
                   type, jobRequest.getJobParameters(), clock);
          } else {
             this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname,
@@ -261,6 +262,28 @@ public class JobQueueServiceImpl implements JobQueueService {
       } finally {
          mutex.release();
       }
+   }
+
+   /**
+    * 
+    * Réserver un traitement de type JobsQueue dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param hostname
+    *           nom du serveur
+    * @param type
+    *           type du job
+    * @param jobParameters
+    *           Parametres du job
+    * @param clock
+    *           horloge
+    */
+
+   private void reserverJobDansJobQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters, Long clock) {
+      this.jobsQueueSupport.reserverJobDansJobQueues(idJob, hostname, type,
+            jobParameters, clock);
    }
 
    /**
@@ -621,4 +644,121 @@ public class JobQueueServiceImpl implements JobQueueService {
    public List<String> getHosts() {
       return this.jobsQueueSupport.getHosts();
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void addJobsQueue(JobToCreate jobToCreate) {
+      this.addJobQueue(jobToCreate, null);
+   }
+
+   /**
+    * Ajouter un job de type JobsQueue dans la pile des travaux.
+    * 
+    * @param jobToCreate
+    *           Job à créer.
+    * @param clock
+    *           horloge.
+    */
+   private void addJobQueue(JobToCreate jobToCreate, Long clock) {
+
+      if (clock == null) {
+         // Timestamp de l'opération
+         // Pas besoin de gérer le décalage ici : on ne fait que la création
+         clock = jobClockSupport.currentCLock();
+      }
+
+      if (StringUtils.isNotBlank(jobToCreate.getParameters())) {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(
+               jobToCreate.getIdJob(), jobToCreate.getType(),
+               jobToCreate.getParameters(), clock);
+      } else {
+         this.jobsQueueSupport.ajouterJobDansJobQueuesEnWaiting(
+               jobToCreate.getIdJob(), jobToCreate.getType(),
+               jobToCreate.getJobParameters(), clock);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void reserverJobDansJobsQueues(UUID idJob, String hostname,
+         String type, Map<String, String> jobParameters) {
+      long clock = jobClockSupport.currentCLock();
+      this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, clock);
+   }
+   
+   @Override
+   public final void deleteJobFromJobsQueues(UUID idJob) {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      // Il faut vérifier le décalage de temps
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Suppression de la CF "JobQueues"
+      String reservedBy = jobRequest.getReservedBy();
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(idJob, reservedBy, clock);
+   }
+   
+   @Override
+   public final void deleteJobAndSemaphoreFromJobsQueues(UUID uuidJob, String codeTraitement) {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(uuidJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         return;
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(uuidJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      long clock = jobClockSupport.currentCLock(columnState);
+
+      // Suppression de la CF "JobQueues"
+      String reservedBy = jobRequest.getReservedBy();
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, reservedBy, clock);
+      
+      String SemaphoreReserved =  Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
+      this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, SemaphoreReserved, clock);
+      
+   }
+   
+   @Override
+   public final void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
+         String message) {
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération de la colonne "state"
+      HColumn<?, ?> columnState = result
+            .getColumn(JobRequestDao.JR_STATE_COLUMN);
+
+      // Timestamp de l'opération
+      long clock = jobClockSupport.currentCLock(columnState);      
+      this.jobRequestSupport.changerEtatJobRequest(idJob, stateJob, endingDate, message, clock);
+   }
+   
 }

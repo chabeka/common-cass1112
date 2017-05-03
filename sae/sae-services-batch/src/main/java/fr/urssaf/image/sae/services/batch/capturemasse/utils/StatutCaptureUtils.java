@@ -36,6 +36,7 @@ public final class StatutCaptureUtils {
       int index = 0;
       String stepName;
       List<String> failedSteps = Arrays.asList("finBloquant", "finErreur",
+            "finErreurCapture", "finErreurTransfert",
             "finErreurVirtuel");
       while (traitementOK && index < list.size()) {
          stepName = list.get(index).getStepName();

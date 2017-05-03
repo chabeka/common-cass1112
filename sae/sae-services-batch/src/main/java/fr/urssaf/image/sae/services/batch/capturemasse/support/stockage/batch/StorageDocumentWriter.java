@@ -4,9 +4,11 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
@@ -23,13 +25,14 @@ import org.springframework.stereotype.Component;
 import de.schlichtherle.io.File;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -46,7 +49,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          .getLogger(StorageDocumentWriter.class);
 
    @Autowired
-   private InsertionPoolThreadExecutor poolExecutor;
+   private InsertionCapturePoolThreadExecutor poolExecutor;
 
    @Autowired
    @Qualifier("storageServiceProvider")
@@ -57,7 +60,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
    private static final String TRC_INSERT = "StorageDocumentWriter()";
    private static final String CATCH = "AvoidCatchingThrowable";
-   
+
    /**
     * {@inheritDoc}
     */
@@ -70,18 +73,60 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
 
-         command = new InsertionRunnable(getStepExecution().getReadCount()
-               + index, storageDocument, this);
+         boolean isdocumentInError = false;
+         if (isModePartielBatch()) {
+            // En mode PARTIEL, on regarde s'il y a une erreur déclarée pour
+            // l'item. Si c'est le cas, on ne le traite pas.
+            List<Integer> listIndex = new ArrayList<Integer>(
+                  getIndexErreurListe());
 
-         poolExecutor.execute(command);
+            for (Integer indexDocError : listIndex) {
+               if (indexDocError == (getStepExecution().getReadCount() + index)) {
+                  isdocumentInError = true;
+               }
+            }
+         }
+         // Si le document n'est pas en erreur, on traite, sinon on passe au
+         // suivant.
+         if (!isdocumentInError) {
+            command = new InsertionRunnable(getStepExecution().getReadCount()
+                  + index, storageDocument, this);
 
-         LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-               TRC_INSERT, poolExecutor.getQueue().size());
+            poolExecutor.execute(command);
+
+            LOGGER.debug(
+                  "{} - nombre de documents en attente dans le pool : {}",
+                  TRC_INSERT, poolExecutor.getQueue().size());
+         }
 
          index++;
 
       }
 
+   }
+
+   @Override
+   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+         throws Exception {
+      
+      try {
+         StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
+         UUID uuid = document != null ? document.getUuid() : null;
+         return uuid;
+      } catch (Exception e) {
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            return null;
+         } else {
+            throw e;
+         }
+
+      }
+      
    }
 
    /**
@@ -104,10 +149,10 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
          // trace les éventuelles erreurs d'identification ou de validation
          traceErreurIdentOrValid(storageDocument, retour);
-         
+
          // ajout le fichier d'origine en pièce jointe
          // si le document a été compressé
-         ajoutFichierOrigineSiNecessaire(storageDocument, retour);         
+         ajoutFichierOrigineSiNecessaire(storageDocument, retour);
 
          return retour;
       } catch (Exception except) {
@@ -147,11 +192,14 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
       if (getStepExecution() != null) {
          // recupere la map des documents compressés
          Map<String, CompressedDocument> documentsCompressed = (Map<String, CompressedDocument>) getStepExecution()
-               .getJobExecution().getExecutionContext().get("documentsCompressed");
-         
+               .getJobExecution().getExecutionContext()
+               .get("documentsCompressed");
+
          if (documentsCompressed != null) {
-            LOGGER.debug("{} - Clé de la map des documents compresses : {}", trcPrefix, documentsCompressed.keySet());
-            LOGGER.debug("{} - Recherche du document : {}", trcPrefix, storageDocument.getFilePath());
+            LOGGER.debug("{} - Clé de la map des documents compresses : {}",
+                  trcPrefix, documentsCompressed.keySet());
+            LOGGER.debug("{} - Recherche du document : {}", trcPrefix,
+                  storageDocument.getFilePath());
             String pathOriginalFile = null;
             String originalName = null;
             // on parcours la liste des documents compressés pour savoir si le
@@ -162,7 +210,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             for (Entry<String, CompressedDocument> entry : documentsCompressed
                   .entrySet()) {
                CompressedDocument doc = entry.getValue();
-               LOGGER.debug("{} - Analyse du document : {}", trcPrefix, doc.getFilePath());
+               LOGGER.debug("{} - Analyse du document : {}", trcPrefix,
+                     doc.getFilePath());
                if (doc.getFilePath().equals(storageDocument.getFilePath())) {
                   // on a trouvé le nom du fichier dans les listes des fichiers
                   // compressés
@@ -175,20 +224,24 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                }
             }
             if (pathOriginalFile != null) {
-               LOGGER.debug("{} - Document original trouvé : {}", trcPrefix, pathOriginalFile);
+               LOGGER.debug("{} - Document original trouvé : {}", trcPrefix,
+                     pathOriginalFile);
                // calcul du nom du fichier et de l'extension
                String docName = FilenameUtils.getBaseName(originalName);
                String extension = FilenameUtils.getExtension(originalName);
-               DataHandler contenu = new DataHandler(new FileDataSource(new File(pathOriginalFile)));
+               DataHandler contenu = new DataHandler(new FileDataSource(
+                     new File(pathOriginalFile)));
                // on a un doc original qu'on va mettre en piece jointe
-               serviceProvider.getStorageDocumentService().addDocumentAttachment(
-                     retour.getUuid(), docName, extension,
-                     contenu);
+               serviceProvider.getStorageDocumentService()
+                     .addDocumentAttachment(retour.getUuid(), docName,
+                           extension, contenu);
             } else {
                LOGGER.debug("{} - Document original non trouvé", trcPrefix);
             }
          } else {
-            LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring", trcPrefix);
+            LOGGER.debug(
+                  "{} - La map des documents compresses n'existe pas dans le contexte spring",
+                  trcPrefix);
          }
       }
    }
@@ -202,13 +255,12 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
       if (getStepExecution() != null) {
          // récupére la map de resultat de controle de capture de masse
          Map<String, CaptureMasseControlResult> map = (Map<String, CaptureMasseControlResult>) getStepExecution()
-               .getJobExecution().getExecutionContext().get(
-                     "mapCaptureControlResult");
+               .getJobExecution().getExecutionContext()
+               .get("mapCaptureControlResult");
          if (map == null) {
-            LOGGER
-                  .debug(
-                        "{} - Map des résultat de controle non présente dans le contexte d'éxécution",
-                        trcPrefix);
+            LOGGER.debug(
+                  "{} - Map des résultat de controle non présente dans le contexte d'éxécution",
+                  trcPrefix);
          } else {
             LOGGER.debug("{} - Map des résultat de controle récupéré",
                   trcPrefix);
@@ -217,29 +269,27 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             CaptureMasseControlResult resultat = map.get(storageDocument
                   .getFilePath());
             if (resultat == null) {
-               LOGGER
-                     .debug(
-                           "{} - Résultat de controle non présent dans la map pour la key {}",
-                           trcPrefix, storageDocument.getFilePath());
+               LOGGER.debug(
+                     "{} - Résultat de controle non présent dans la map pour la key {}",
+                     trcPrefix, storageDocument.getFilePath());
             } else {
-               LOGGER
-                     .debug(
-                           "{} - Récupération OK du résultat de controle pour le document",
-                           trcPrefix);
+               LOGGER.debug(
+                     "{} - Récupération OK du résultat de controle pour le document",
+                     trcPrefix);
 
                // Récupère le nom de l'opération du WS
                String contexte = Constantes.CONTEXTE_CAPTURE_MASSE;
 
                // Récupère le format du fichier
-               String formatFichier = findMetadataValue("ffi", storageDocument
-                     .getMetadatas());
+               String formatFichier = findMetadataValue("ffi",
+                     storageDocument.getMetadatas());
 
                LOGGER.debug("{} - Format de fichier : {}", trcPrefix,
                      formatFichier);
 
                // Récupère l'identifiant de traitement unitaire
-               String idTraitement = findMetadataValue("iti", storageDocument
-                     .getMetadatas());
+               String idTraitement = findMetadataValue("iti",
+                     storageDocument.getMetadatas());
 
                LOGGER.debug("{} - Identifiant du traitement : {}", trcPrefix,
                      idTraitement);

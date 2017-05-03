@@ -25,12 +25,18 @@ public class TraitementAsynchroneServiceValidation {
 
    private static final String METHOD_AJOUT_CAPTURE = "execution(void " + CLASS
          + "ajouterJobCaptureMasse(*))" + "&& args(parametres)";
+   
+   private static final String METHOD_TRANSFERT_MASSE = "execution(void " + CLASS
+         + "ajouterJobTransfertMasse(*))" + "&& args(parametres)";
 
    private static final String METHOD_AJOUT_SUPPRESSION = "execution(void "
          + CLASS + "ajouterJobSuppressionMasse(*))" + "&& args(parametres)";
 
    private static final String METHOD_AJOUT_RESTORE = "execution(void " + CLASS
          + "ajouterJobRestoreMasse(*))" + "&& args(parametres)";
+
+   private static final String METHOD_MODIFICATION_MASSE = "execution(void "
+         + CLASS + "ajouterJobModificationMasse(*))" + "&& args(parametres)";
 
    private static final String METHOD_RECUPERER_JOB = "execution(List<fr.urssaf.image.sae.pile.travaux.model.JobRequest> "
          + CLASS + "recupererJobs(*))" + "&& args(listeUuid)";
@@ -178,6 +184,81 @@ public class TraitementAsynchroneServiceValidation {
 
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                "idJob"));
+      }
+   }
+   
+   /**
+    * Validation des arguments d'entrée de la méthode
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobTransfertMasse}
+    * 
+    * @param parametres
+    *           paramètres nécessaires à la création de
+    *           l'enregistrement de transfert de masse
+    */
+   @Before(METHOD_TRANSFERT_MASSE)
+   public final void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) {
+
+      if (parametres == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "parametres"));
+      }
+
+      if (parametres.getType() == null) {
+
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "type"));
+      }
+
+      if (StringUtils.isBlank(parametres.getJobParameters().get(
+            Constantes.ECDE_URL))) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "urlEcde"));
+      }
+
+      if (parametres.getUuid() == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "uuid"));
+      }
+   }
+
+   /**
+    * Validation des arguments d'entrée de la méthode
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobModificationMasse}
+    * 
+    * @param parametres
+    *           paramètres nécessaires à la création de l'enregistrement de
+    *           modification de masse
+    */
+   @Before(METHOD_MODIFICATION_MASSE)
+   public final void ajouterJobModificationMasse(
+         TraitemetMasseParametres parametres) {
+
+      if (parametres == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "parametres"));
+      }
+
+      if (parametres.getType() == null) {
+
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "type"));
+      }
+
+      if (StringUtils.isBlank(parametres.getJobParameters().get(
+            Constantes.ECDE_URL))) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "urlEcde"));
+      }
+
+      if (StringUtils.isBlank(parametres.getJobParameters().get(
+            Constantes.CODE_TRAITEMENT))) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "codeTraitement"));
+      }
+
+      if (parametres.getUuid() == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "uuid"));
       }
    }
 

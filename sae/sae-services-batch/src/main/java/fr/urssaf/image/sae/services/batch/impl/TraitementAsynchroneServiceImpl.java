@@ -62,6 +62,15 @@ public class TraitementAsynchroneServiceImpl implements
    @Autowired
    @Qualifier("restoreMasseTraitement")
    private TraitementExecutionSupport restoreMasse;
+   
+   @Autowired
+   @Qualifier("modificationMasseTraitement")
+   private TraitementExecutionSupport modificationMasse;
+   
+   @Autowired
+   @Qualifier("transfertMasseTraitement")
+   private TraitementExecutionSupport transfertMasse;
+   
 
    /**
     * 
@@ -163,6 +172,10 @@ public class TraitementAsynchroneServiceImpl implements
             exitTraitement = suppressionMasse.execute(job);
          else if (job.getType().equals(TYPES_JOB.restore_masse.name()))
             exitTraitement = restoreMasse.execute(job);
+         else if (job.getType().equals(TYPES_JOB.modification_masse.name()))
+            exitTraitement = modificationMasse.execute(job);
+         else if (job.getType().equals(TYPES_JOB.transfert_masse.name()))
+            exitTraitement = transfertMasse.execute(job);
          else {
             LOG.warn(
                   "Impossible d'executer le traitement ID={0}, de type {1}.",
@@ -187,10 +200,16 @@ public class TraitementAsynchroneServiceImpl implements
                         "avec succès", "sur un échec"),
                   exitTraitement.getExitMessage() });
 
+      String codeTraitement = null;
+      if (job.getJobParameters() != null) {
+         codeTraitement = job.getJobParameters()
+               .get(Constantes.CODE_TRAITEMENT);
+      }
+
       // le traitement est terminé
       // on met à jour la pile des travaux
       jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
-            exitTraitement.getExitMessage());
+            exitTraitement.getExitMessage(), codeTraitement);
    }
 
    /**
@@ -219,7 +238,25 @@ public class TraitementAsynchroneServiceImpl implements
    public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
       ajouterJob(parametres);
    }
-
+   
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    */
+   @Override
+   public void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);
+   }
+   
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    */
+   @Override
+   public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres); 
+   }
+   
    /**
     * {@inheritDoc}<br>
     * <br>
@@ -248,4 +285,5 @@ public class TraitementAsynchroneServiceImpl implements
 
       return listJobs;
    }
+
 }

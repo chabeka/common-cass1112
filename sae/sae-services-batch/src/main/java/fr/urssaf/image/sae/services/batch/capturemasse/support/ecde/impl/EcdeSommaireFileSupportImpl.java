@@ -46,7 +46,7 @@ public class EcdeSommaireFileSupportImpl implements EcdeSommaireFileSupport {
 
       LOGGER.debug("{} - Début", PREFIXE_TRC);
       LOGGER.debug("{} - Début des vérifications sur "
-            + "l'URL ECDE envoyée au service de capture de masse", PREFIXE_TRC);
+            + "l'URL ECDE envoyée au service de traitement de masse", PREFIXE_TRC);
       // Fin des traces debug - entrée méthode
 
       File fileEcde = null;

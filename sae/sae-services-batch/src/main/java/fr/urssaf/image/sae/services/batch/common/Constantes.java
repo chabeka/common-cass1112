@@ -97,6 +97,18 @@ public final class Constantes {
    public static final String ERR_BUL003 = "SAE-CA-BUL003";
 
    /**
+    * Code Erreur pour la modification en masse en mode partiel qui a été
+    * interrompue
+    */
+   public static final String ERR_BUL004 = "SAE-CA-BUL004";
+   
+   /**
+    * Code Erreur pour le transfert de masse en mode partiel qui a été
+    * interrompue
+    */
+   public static final String ERR_BUL005 = "SAE-CA-BUL005";
+
+   /**
     * Recherche réalisée pour le rollback
     */
    public static final String SEARCH_ROLLBACK = "SEARCH_ROLLBACK";
@@ -128,6 +140,16 @@ public final class Constantes {
    public static final String RESTITUTION_UUIDS = "RESTITUTION_UUIDS";
 
    /**
+    * Mode de traitement du batch pour la redirection.
+    */
+   public static final String BATCH_MODE_NOM_REDIRECT = "BATCH_MODE_NOM_REDIRECT";
+
+   /**
+    * Mode de traitement du batch.
+    */
+   public static final String BATCH_MODE_NOM = "BATCH_MODE_NOM";
+
+   /**
     * l'Url ECDE
     */
    public static final String ECDE_URL = "ecdeUrl";
@@ -146,42 +168,42 @@ public final class Constantes {
     * Traçabilité : contexte pour la capture de masse
     */
    public static final String CONTEXTE_CAPTURE_MASSE = "captureMasse";
-   
+
    /**
     * Liste des erreurs de suppression
     */
    public static final String SUPPRESSION_EXCEPTION = "SUPPRESSION_EXCEPTION";
-   
+
    /**
     * Traçabilité : le code de l'événement pour l'échec d'une suppression de masse
     */
    public static final String TRACE_CODE_EVT_ECHEC_SM = "SUPPRESSION_MASSE|KO";
-   
+
    /**
     * Traçabilité : contexte pour la suppression de masse
     */
    public static final String CONTEXTE_SUPPRESSION_MASSE = "suppressionMasse";
-   
+
    /**
     * Requête utilisée par le service de suppression de masse
     */
    public static final String REQ_LUCENE_SUPPRESSION = "requeteSuppression";
-   
+
    /**
     * Requête finale de suppression de masse  ou de restore de masse
     */
    public static final String REQ_FINALE_TRT_MASSE = "requeteFinale";
-   
+
    /**
     * UUID du traitement de suppression de masse.
     */
    public static final String ID_TRAITEMENT_SUPPRESSION = "idTraitementSuppression";
-   
+
    /**
     * Code court de la métadonnée 'identifiant de suppression de masse'
     */
    public static final String CODE_COURT_META_ID_SUPPRESSION = "isi";
-   
+
    /**
     * Code court de la métadonnée 'date de mise en corbeille'
     */
@@ -192,46 +214,86 @@ public final class Constantes {
     * restore de masse
     */
    public static final String ID_TRAITEMENT_A_RESTORER = "idTraitementARestorer";
-   
+
    /**
     * UUID du traitement de restore de masse.
     */
    public static final String ID_TRAITEMENT_RESTORE = "idTraitementRestore";
-   
+
    /**
     * Nombre de docs supprimés.
     */
    public static final String NB_DOCS_SUPPRIMES = "nbDocsSupprimes";
-   
+
    /**
     * Liste des erreurs de restore
     */
    public static final String RESTORE_EXCEPTION = "RESTORE_EXCEPTION";
-   
+
    /**
     * Code court de la métadonnée 'identifiant de restore de masse'
     */
    public static final String CODE_COURT_META_ID_RESTORE = "iri";
-   
+
    /**
     * Nombre de docs restorés.
     */
    public static final String NB_DOCS_RESTORES = "nbDocsRestores";
-   
+
    /**
     * Traçabilité : le code de l'événement pour l'échec d'une restore de masse
     */
    public static final String TRACE_CODE_EVT_ECHEC_RM = "RESTORE_MASSE|KO";
-   
+
    /**
     * Traçabilité : contexte pour la restore de masse
     */
    public static final String CONTEXTE_RESTORE_MASSE = "restoreMasse";
    
    /**
+    * Nombre de docs modifiés.
+    */
+   public static final String NB_DOCS_MODIFIES = "nbDocsRestores";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'une modification de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_MM = "MODIFICATION_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la modification de masse
+    */
+   public static final String CONTEXTE_MODIFICATION_MASSE = "modificationMasse";
+ 
+   /**
     * Seuil de compression par défaut : 2 Mo
     */
    public static final Integer SEUIL_COMPRESSION_DEFAUT = 2097152; 
+
+   /**
+    * Le code du traitement
+    */
+   public static final String CODE_TRAITEMENT = "codeTraitement";
+
+   /**
+    * Nom balise dans sommaire/résultat pour le batch mode.
+    */
+   public static final String BATCH_MODE_ELEMENT_NAME = "batchMode";
+   
+   /**
+    * Nombre de docs transférés.
+    */
+   public static final String NB_DOCS_TRANSFERES = "nbDocsTransferes";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'un transfert de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_TM = "TRANSFERT_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la modification de masse
+    */
+   public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
 
    /**
     * Constructeur
@@ -243,7 +305,61 @@ public final class Constantes {
     * Types de traitements
     */
    public static enum TYPES_JOB {
-      capture_masse, suppression_masse, restore_masse;
+      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse;
+   }
+
+   /**
+    * Enumération pour le mode du batch.
+    */
+   public static enum BATCH_MODE {
+      /**
+       * Tout ou rien
+       */
+      TOUT_OU_RIEN("TOUT_OU_RIEN", "TOR"),
+      /**
+       * Partiel
+       */
+      PARTIEL("PARTIEL", "PAR");
+
+      /**
+       * Mode du batch
+       */
+      private final String modeNom;
+
+      /**
+       * Mode du batch
+       */
+      private final String modeNomCourt;
+
+      /**
+       * Constructeur
+       *
+       * @param mode
+       *           Mode du batch
+       */
+      private BATCH_MODE(String modeNom, String modeNomCourt) {
+         this.modeNom = modeNom;
+         this.modeNomCourt = modeNomCourt;
+      }
+
+      /**
+       * Getter pour modeNom
+       * 
+       * @return the modeNom
+       */
+      public String getModeNom() {
+         return modeNom;
+      }
+
+      /**
+       * Getter pour modeNomCourt
+       * 
+       * @return the modeNomCourt
+       */
+      public String getModeNomCourt() {
+         return modeNomCourt;
+      }
+
    }
 
    /**

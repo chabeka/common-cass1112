@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
    xmlns:security="http://www.springframework.org/schema/security"
    xsi:schemaLocation="
 		http://www.springframework.org/schema/beans	
@@ -11,9 +10,9 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
-   
+
    <!-- Chargement des fichiers Properties de la partie test -->
-   <bean 
+   <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
          <list>
@@ -23,7 +22,7 @@
          </list>
       </property>
    </bean>
-   
+
    <!-- Configuration d'accès à Cassandra -->
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/test-sae-config.properties" />
@@ -40,7 +39,7 @@
          <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
       </constructor-arg>
    </bean>
-   
+
    <!-- Configuration d'accès à DFCE -->
    <bean id="dfceConnection"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
@@ -52,30 +51,27 @@
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />
    </bean>
-   
+
    <bean id="dfceConnectionTransfert" autowire-candidate="false"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionTransfertBySAEConf">
       <constructor-arg value="saeConfigResource" />
    </bean>
-   
-   
+
+
    <!-- Configuration des ECDE -->
-   
-   <bean id="ecdeTestConfig"
-      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestConfig" />
-   
-   <bean id="ecdeSources"
-         factory-bean="ecdeTestConfig"
-         factory-method="load">
+
+   <bean id="ecdeTestConfig" class="fr.urssaf.image.sae.ecde.util.test.EcdeTestConfig" />
+
+   <bean id="ecdeSources" factory-bean="ecdeTestConfig"
+      factory-method="load">
    </bean>
-   
-   <bean id="ecdeTestTools"
-      class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
-   
-   
+
+   <bean id="ecdeTestTools" class="fr.urssaf.image.sae.ecde.util.test.EcdeTestTools" />
+
+
    <!-- Les beans pour SpringBatch sur Cassandra -->
-   
+
    <bean id="jobInstanceDao"
       class="org.springframework.batch.core.repository.dao.MapJobInstanceDao">
    </bean>
@@ -91,7 +87,7 @@
    <bean id="executionContextDao"
       class="org.springframework.batch.core.repository.dao.MapExecutionContextDao">
    </bean>
-   
+
    <bean id="jobRepository"
       class="org.springframework.batch.core.repository.support.SimpleJobRepository">
       <constructor-arg ref="jobInstanceDao" />
@@ -99,34 +95,39 @@
       <constructor-arg ref="jobExecutionDao" />
       <constructor-arg ref="executionContextDao" />
    </bean>
-   
+
    <bean id="jobLauncher"
       class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
       <property name="jobRepository" ref="jobRepository" />
    </bean>
-   
+
    <bean id="transactionManager"
       class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
-      
+
    <bean id="launcher" class="org.springframework.batch.test.JobLauncherTestUtils">
       <property name="job" ref="capture_masse" />
    </bean>
    
-   
+    <bean id="launcherTransfert" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="transfert_masse" />
+   </bean>
+
+
    <!-- Bean pour vérifier les traces -->
-   <bean
-      id="traceAssertUtils"
+   <bean id="traceAssertUtils"
       class="fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils" />
 
 
-   <!-- Bean de factory pour les mocks (pour les autres fichiers applicationContext de test) -->
+   <!-- Bean de factory pour les mocks (pour les autres fichiers applicationContext 
+      de test) -->
    <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
-   
-  
+
+
    <!-- Reprise du fichier applicationContext de la partie main -->
    <import resource="applicationContext-sae-services-capturemasse-main.xml" />
    <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />
    <import resource="applicationContext-sae-services-restoremasse-main.xml" />
-   
-   
+   <import resource="applicationContext-sae-services-modificationmasse-main.xml" />
+   <import resource="applicationContext-sae-services-transfertmasse-main.xml" />
+
 </beans>

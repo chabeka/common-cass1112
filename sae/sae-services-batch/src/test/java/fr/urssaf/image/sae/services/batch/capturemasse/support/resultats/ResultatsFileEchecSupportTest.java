@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
@@ -28,7 +29,7 @@ import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -60,18 +61,22 @@ public class ResultatsFileEchecSupportTest {
    @Test(expected = IllegalArgumentException.class)
    public void testEcdeDirectoryObligatoire() {
       support.writeResultatsFile(null, new File(""), new CaptureMasseErreur(),
-            0);
+            0, 0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testSommaireObligatoire() {
       support.writeResultatsFile(new File(""), null, new CaptureMasseErreur(),
-            0);
+            0, 0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test(expected = IllegalArgumentException.class)
    public void testErreurObligatoire() {
-      support.writeResultatsFile(new File(""), new File(""), null, 0);
+      support.writeResultatsFile(new File(""), new File(""), null, 0, 0,
+            Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
    }
 
    @Test
@@ -103,7 +108,9 @@ public class ResultatsFileEchecSupportTest {
       erreur.setListIndex(index);
       erreur.setListRefIndex(refIndex);
 
-      support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21);
+      support.writeResultatsFile(ecdeDirectory, sommaire, erreur, 21, 0,
+            Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 
@@ -119,7 +126,9 @@ public class ResultatsFileEchecSupportTest {
 
       try {
          support.writeVirtualResultatsFile(null, new File(""),
-               new CaptureMasseErreur(), 0);
+               new CaptureMasseErreur(), 0, 0,
+               Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -137,7 +146,9 @@ public class ResultatsFileEchecSupportTest {
 
       try {
          support.writeVirtualResultatsFile(new File(""), null,
-               new CaptureMasseErreur(), 0);
+               new CaptureMasseErreur(), 0, 0,
+               Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -153,7 +164,9 @@ public class ResultatsFileEchecSupportTest {
    public void testVirtualErreurObligatoire() {
 
       try {
-         support.writeVirtualResultatsFile(new File(""), new File(""), null, 0);
+         support.writeVirtualResultatsFile(new File(""), new File(""), null, 0,
+               0, Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+               new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
          Assert.fail("exception IllegalArgumentException attendue");
 
       } catch (IllegalArgumentException exception) {
@@ -197,7 +210,9 @@ public class ResultatsFileEchecSupportTest {
       erreur.setListIndex(index);
       erreur.setListRefIndex(refIndex);
 
-      support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3);
+      support.writeVirtualResultatsFile(ecdeDirectory, sommaire, erreur, 3, 0,
+            Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
+            new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
 
       File resultats = new File(ecdeDirectory, "resultats.xml");
 

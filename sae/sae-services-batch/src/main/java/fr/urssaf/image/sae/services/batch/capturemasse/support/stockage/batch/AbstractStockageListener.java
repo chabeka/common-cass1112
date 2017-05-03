@@ -74,11 +74,15 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       getLogger().warn("erreur lors du traitement de persistance", exception);
 
-      getCodesErreurListe().add(Constantes.ERR_BUL002);
-      getIndexErreurListe().add(
+      if (!(isModePartielBatch() && getIndexErreurListe().contains(
             getStepExecution().getExecutionContext().getInt(
-                  Constantes.CTRL_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
+                  Constantes.CTRL_INDEX)))) {
+         getCodesErreurListe().add(Constantes.ERR_BUL002);
+         getIndexErreurListe().add(
+               getStepExecution().getExecutionContext().getInt(
+                     Constantes.CTRL_INDEX));
+         getExceptionErreurListe().add(new Exception(exception.getMessage()));
+      }
    }
 
    /**
@@ -147,7 +151,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
 
-      if (CollectionUtils.isNotEmpty(exceptions)) {
+      if (CollectionUtils.isNotEmpty(exceptions) && !this.isModePartielBatch()) {
          // on peut être en cas d'erreur sans rollback : exemple erreur de
          // connexion à la base
          if (!FAILED_NO_RB.equals(status.getExitCode())) {
@@ -211,8 +215,8 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
                      "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
                      idTraitement);
 
-         getStepExecution().getJobExecution().getExecutionContext().put(
-               Constantes.FLAG_BUL003, Boolean.TRUE);
+         getStepExecution().getJobExecution().getExecutionContext()
+               .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
          String messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
                + "Une procédure d'exploitation a été initialisée pour supprimer les données "
@@ -222,7 +226,11 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          index.add(exception.getIndex());
          exceptions.add(new Exception(messageError));
 
-         status = new ExitStatus("FAILED_NO_ROLLBACK");
+         if (this.isModePartielBatch()) {
+            status = new ExitStatus("COMPLETED");
+         } else {
+            status = new ExitStatus("FAILED_NO_ROLLBACK");
+         }
 
       } catch (Exception e) {
 
@@ -239,7 +247,11 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          index.add(exception.getIndex());
          exceptions.add(new Exception(message, e));
 
-         status = ExitStatus.FAILED;
+         if (this.isModePartielBatch()) {
+            status = new ExitStatus("COMPLETED");
+         } else {
+            status = ExitStatus.FAILED;
+         }
 
       }
 

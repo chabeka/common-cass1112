@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
-import fr.urssaf.image.sae.format.conversion.exceptions.ConversionException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConvertisseurInitialisationException;
@@ -395,8 +394,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
             throw new SAEConsultationAffichableParametrageException(
                   ex.getMessage(), ex);
          } catch (ConversionRuntimeException ex) {
-            throw new SAEConsultationServiceException(ex);
-         } catch (ConversionException ex) {
             throw new SAEConsultationServiceException(ex);
          }
       } catch (ConnectionServiceEx e) {

@@ -4,10 +4,16 @@ import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseAvecHashResponseType;
 import fr.cirtil.www.saeservice.ArchivageMasseResponse;
 import fr.cirtil.www.saeservice.ArchivageMasseResponseType;
+import fr.cirtil.www.saeservice.DeblocageResponse;
+import fr.cirtil.www.saeservice.DeblocageResponseType;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
+import fr.cirtil.www.saeservice.ModificationMasseResponseType;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.RestoreMasseResponseType;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponseType;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
+import fr.cirtil.www.saeservice.TransfertMasseResponseType;
 
 /**
  * Classe d'instanciation des réponses pour l'implémentation
@@ -104,4 +110,68 @@ public final class ObjectStorageResponseFactory {
       response.setRestoreMasseResponse(responseType);
       return response;
    }
+   
+   /**
+    * instanciation de {@link ModificationMasseResponse}.<br>
+    * implémentation de {@link ModificationMasseResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="modificationMasseResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link ModificationMasseResponse}
+    */
+   public static ModificationMasseResponse createModificationMasseResponse(
+         String uuid) {
+
+      ModificationMasseResponse modification = new ModificationMasseResponse();
+      ModificationMasseResponseType modificationType = new ModificationMasseResponseType();
+      modificationType.setUuid(uuid);
+      modification.setModificationMasseResponse(modificationType);
+      return modification;
+   }
+   
+   /**
+    * instanciation de {@link TransfertMasseResponse}.<br>
+    * implémentation de {@link TransfertMasseResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="transfertMasseResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link TransfertMasseResponse}
+    */
+   public static TransfertMasseResponse createTransfertMasseResponse(String uuid) {
+      TransfertMasseResponse response = new TransfertMasseResponse();
+      TransfertMasseResponseType responseType = new TransfertMasseResponseType();
+      responseType.setUuid(uuid);
+      response.setTransfertMasseResponse(responseType);
+      return response;
+   }
+   
+   /**
+    * instanciation de {@link DeblocageResponse}.<br>
+    * implémentation de {@link DeblocageResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="deblocageResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link DeblocageResponse}
+    */
+   public static DeblocageResponse createDeblocageResponse(String uuid, String etat) {
+      DeblocageResponse response = new DeblocageResponse();
+      DeblocageResponseType responseType = new DeblocageResponseType();
+      responseType.setUuid(uuid);
+      responseType.setEtat(etat);
+      response.setDeblocageResponse(responseType);
+      return response;
+   }
+   
 }

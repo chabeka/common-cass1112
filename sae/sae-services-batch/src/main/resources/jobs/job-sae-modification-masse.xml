@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/batch"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+
+
+   <job id="modification_masse">
+      <listeners>
+         <listener ref="modificationMasseJobListener" />
+      </listeners>
+
+      <!-- Controle du fichier sommaire.xml -->
+      <step id="controleSommaireStep">
+
+         <tasklet ref="checkFileSommaireTasklet">
+            <listeners>
+               <listener ref="checkStateAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="*" to="debutTraitement" />
+      </step>
+
+      <step id="debutTraitement">
+         <tasklet ref="debutTraitementFlagTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="debutTraitementFlagListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="controleFormatSommaireModificationStep" />
+
+      </step>
+
+      <step id="controleFormatSommaireModificationStep">
+         <tasklet ref="checkFormatFileSommaireModificationTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="checkStateAfterStepListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="compteElements" />
+      </step>
+
+      <step id="compteElements">
+         <tasklet ref="countSommaireDocumentsTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="countSommaireDocumentsListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="DOCS" to="controleMetasDocuments" />
+         <next on="VDOCS" to="finBloquant" />
+
+      </step>
+
+      <!-- contrôle des documents du fichier sommaire.xml -->
+      <step id="controleMetasDocuments">
+         <tasklet>
+            <chunk reader="sommaireReader" processor="compositeControlModificationProcessor"
+               writer="emptyWriter" commit-interval="1000" />
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="controleListener" />
+               <listener ref="controleMetaDocumentModificationProcessor" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finErreur" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="controleModeBatch" />
+      </step>
+      
+      <!-- controle du mode de traitement pour redirection -->
+      <step id="controleModeBatch">
+         <tasklet ref="controleModeBatchTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="controleModeBatchListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="PAR" to="modificationDocuments" />
+         <next on="*" to="finBloquant" />
+     </step>
+           
+     <!-- modifications des métadonnées des documents du fichier sommaire.xml en mode PARTIEL -->
+      <step id="modificationDocuments">
+         <tasklet>
+            <chunk reader="sommaireReader" processor="compositeProcessorModification"
+               writer="modificationDocumentWriter" commit-interval="5" />
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="modificationDocumentWriter" />
+               <listener ref="controleModificationDocumentProcessor" />
+               <listener ref="modificationListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+
+         <next on="FAILED" to="finErreur" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="finSucces" />
+      </step>
+
+      <step id="finBloquant">
+         <tasklet ref="resultatsFileFailureErrorTasklet">
+            <listeners>
+               <listener ref="resultatsFileFailureErrorListener" />
+            </listeners>
+         </tasklet>
+         <next on="*" to="finTraitement" />
+      </step>
+
+      <step id="finErreur">
+         <tasklet ref="resultatsFileFailureTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="resultatsFileFailureListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="finTraitement" />
+      </step>
+
+      <step id="finSucces">
+         <tasklet ref="resultatsFileSuccessTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="resultatsFileSuccessListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="finTraitement" />
+      </step>
+
+      <step id="finTraitement">
+         <tasklet ref="finTraitementFlagTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="finTraitementFlagListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+      </step>
+      
+   </job>
+
+</beans:beans>

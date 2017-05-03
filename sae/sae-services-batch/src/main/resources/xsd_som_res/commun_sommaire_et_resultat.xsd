@@ -9,7 +9,7 @@
    
    <!-- 
    =======================================
-   Type de traitement de masse
+   Mode du traitement de masse
    =======================================
    -->
    <xsd:simpleType name="batchModeType">
@@ -22,6 +22,20 @@
       </xsd:restriction>
    </xsd:simpleType>
    
+   <!-- 
+   =======================================
+   Type d'action à appliquer sur le document
+   =======================================
+   -->
+   <xsd:simpleType name="batchActionType">
+      <xsd:annotation>
+         <xsd:documentation>Le type d'action à appliquer sur le document</xsd:documentation>
+      </xsd:annotation>
+      <xsd:restriction base="xsd:string">
+         <xsd:enumeration value="TRANSFERT" />
+         <xsd:enumeration value="SUPPRESSION"/>
+      </xsd:restriction>
+   </xsd:simpleType>
    
    <!-- 
    =======================================
@@ -55,6 +69,40 @@
       </xsd:sequence>
    </xsd:complexType>
    
+   <!-- 
+   =======================================
+   Document multi-services
+   =======================================
+   -->
+   <xsd:complexType name="documentTypeMultiAction">
+      <xsd:annotation>
+         <xsd:documentation>Définition d'un document à archiver</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         
+         <!-- L'objet numérique (fichier) -->
+         <xsd:element name="objetNumerique" type="somres:fichierType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>Le fichier représentant le contenu du document à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="1" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <xsd:element name="typeAction" type="somres:batchActionType" minOccurs="1" maxOccurs="1" />
+         
+         <xsd:element name="numeroPageDebut" type="xsd:int" minOccurs="0" maxOccurs="1" />
+         
+         <xsd:element name="nombreDePages" type="xsd:int" minOccurs="0" maxOccurs="1" />
+                  
+      </xsd:sequence>
+   </xsd:complexType>
+   
     <!-- 
    =======================================
    Document  non archivé
@@ -70,6 +118,13 @@
          <xsd:element name="objetNumerique" type="somres:fichierType" minOccurs="1" maxOccurs="1">
             <xsd:annotation>
                <xsd:documentation>Le fichier représentant le contenu du document à archiver</xsd:documentation>
+            </xsd:annotation>
+         </xsd:element>
+         
+         <!-- Les métadonnées -->
+         <xsd:element name="metadonnees" type="somres:listeMetadonneeType" minOccurs="0" maxOccurs="1">
+            <xsd:annotation>
+               <xsd:documentation>La liste des métadonnées associées au document, sous la forme d'une liste de paire clé/valeur</xsd:documentation>
             </xsd:annotation>
          </xsd:element>
 
@@ -132,6 +187,19 @@
       </xsd:sequence>
    </xsd:complexType>
    
+    <!-- 
+   =======================================
+   Liste de documents multi-services
+   =======================================
+   -->
+   <xsd:complexType name="listeDocumentsTypeMultiAction">
+      <xsd:annotation>
+         <xsd:documentation>Une liste de documents</xsd:documentation>
+      </xsd:annotation>
+      <xsd:sequence>
+         <xsd:element name="documentMultiAction" type="somres:documentTypeMultiAction" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
    
    <!-- 
    =======================================
@@ -146,6 +214,7 @@
          <xsd:element name="document" type="somres:documentType" minOccurs="0" maxOccurs="unbounded" />
       </xsd:sequence>
    </xsd:complexType>
+   
    
    <!-- 
    =======================================
@@ -342,26 +411,41 @@
       <xsd:annotation>
          <xsd:documentation>Définition d'un fichier</xsd:documentation>
       </xsd:annotation>
-      <xsd:sequence>
-      
-         <!-- Le chemin et le nom du fichier, relatif au répertoire de l'ECDE -->
-         <xsd:element name="cheminEtNomDuFichier" minOccurs="1" maxOccurs="1">
-            <xsd:annotation>
-               <xsd:documentation>
-                  Le chemin et le nom du fichier, relatif au répertoire de traitement de l'ECDE.
-                  Par exemple, soit le fichier physique suivant : 
-                     /ecde_lyon/DCL/20110712/1/documents/partie1/toto.pdf
-                  Le chemin relatif de ce fichier est "partie1/toto.pdf"
-               </xsd:documentation>
-            </xsd:annotation>
-            <xsd:simpleType>
-               <xsd:restriction base="xsd:string">
-                  <xsd:minLength value="1"/>
-               </xsd:restriction>
-            </xsd:simpleType>
-         </xsd:element>
-         
-      </xsd:sequence>
+          <xsd:choice minOccurs="1" maxOccurs="1">
+              <xsd:sequence>
+                  <!-- Le chemin et le nom du fichier, relatif au répertoire de l'ECDE -->
+                  <xsd:element name="cheminEtNomDuFichier" minOccurs="1" maxOccurs="1">
+                     <xsd:annotation>
+                        <xsd:documentation>
+                           Le chemin et le nom du fichier, relatif au répertoire de traitement de l'ECDE.
+                           Par exemple, soit le fichier physique suivant : 
+                              /ecde_lyon/DCL/20110712/1/documents/partie1/toto.pdf
+                           Le chemin relatif de ce fichier est "partie1/toto.pdf"
+                        </xsd:documentation>
+                     </xsd:annotation>
+                     <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                           <xsd:minLength value="1"/>
+                        </xsd:restriction>
+                     </xsd:simpleType>
+                  </xsd:element>
+              </xsd:sequence>
+              <xsd:sequence>
+                  <!-- L'UUID du document permettant la modification -->    
+                  <xsd:element name="UUID" minOccurs="1" maxOccurs="1">
+                     <xsd:annotation>
+                        <xsd:documentation>
+                           Identifiant unique d'un document (UUID)
+                        </xsd:documentation>
+                     </xsd:annotation>
+                     <xsd:simpleType>
+                        <xsd:restriction base="xsd:string">
+                           <xsd:minLength value="1"/>
+                        </xsd:restriction>
+                     </xsd:simpleType>
+                  </xsd:element>
+            </xsd:sequence>
+         </xsd:choice>
    </xsd:complexType>
    
 
@@ -536,6 +620,5 @@
          <xsd:element name="uuid" type="xsd:string" minOccurs="1" maxOccurs="1" />
          
       </xsd:sequence>
-   </xsd:complexType>
-   
+   </xsd:complexType>   
 </xsd:schema>

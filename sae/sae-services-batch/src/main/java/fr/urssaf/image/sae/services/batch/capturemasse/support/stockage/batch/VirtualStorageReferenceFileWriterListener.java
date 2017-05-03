@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -58,6 +60,12 @@ public class VirtualStorageReferenceFileWriterListener extends
       getExceptionErreurListe().add(new Exception(exception.getMessage()));
    }
 
+   @Override
+   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+         throws Exception {
+      return null;
+   }
+   
    /**
     * {@inheritDoc}
     */

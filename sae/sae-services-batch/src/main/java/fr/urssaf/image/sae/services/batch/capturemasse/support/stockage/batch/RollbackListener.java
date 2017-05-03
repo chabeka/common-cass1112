@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -20,7 +20,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class RollbackListener extends
-      AbstractRollbackListener<StorageDocument, CaptureMasseIntegratedDocument> {
+      AbstractRollbackListener<StorageDocument, TraitementMasseIntegratedDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RollbackListener.class);
@@ -30,13 +30,13 @@ public class RollbackListener extends
    private StorageServiceProvider serviceProvider;
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected final InsertionPoolThreadExecutor getExecutor() {
+   protected final InsertionCapturePoolThreadExecutor getExecutor() {
       return executor;
    }
 

@@ -52,6 +52,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_23 = 23;
    private static final int VERSION_24 = 24;
    private static final int VERSION_25 = 25;
+   private static final int VERSION_26 = 26;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1063,6 +1064,31 @@ public class SAECassandraUpdater {
 
       // On positionne la version à 24
       saeDao.setDatabaseVersion(VERSION_25);
+   }
+
+   public void updateToVersion26() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_26) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_26);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout droits unitaires nouveaux traitements de masse.
+      donnees.addActionUnitaireTraitementMasse2();
+
+      // Ajout des évenements WS_MODIFICATION_MASSE|MODIFICATION_MASSE
+      donnees.addReferentielEvenementV12();
+
+      // On positionne la version à 24
+      saeDao.setDatabaseVersion(VERSION_26);
    }
 
    /**

@@ -54,35 +54,51 @@ public class ControleSommaireDocumentProcessor extends AbstractListener
       String cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
             + "documents" + File.separator + item.getFilePath();
 
-      CaptureMasseControlResult resultat = support.controleSAEDocument(item,
-            ecdeDirectory);
-
-      if (resultat.isIdentificationActivee() || resultat.isValidationActivee()) {
-         // on essaye de récupérer la map contenant tous les résultats de controle
-         // des documents
-         // si cette map n'existe pas, on la cree et on ajout le résultat du
-         // controle pour ce document
-         // ensuite, on met la map dans le contexte d'execution spring batch pour
-         // pouvoir récupérer le résultat
-         // du controle lors de l'archivage
-         LOGGER
-               .debug(
-                     "{} - Récupération de la map des résultat de controle pour la capture",
-                     trcPrefix);
-         Map<String, CaptureMasseControlResult> map = (Map<String, CaptureMasseControlResult>) getStepExecution()
-               .getJobExecution().getExecutionContext().get(
-                     "mapCaptureControlResult");
-         if (map == null) {
-            LOGGER.debug("{} - Pas de map de résultat de controle, on la créé",
+      try {
+         CaptureMasseControlResult resultat = support.controleSAEDocument(item,
+               ecdeDirectory);
+         if (resultat.isIdentificationActivee()
+               || resultat.isValidationActivee()) {
+            // on essaye de récupérer la map contenant tous les résultats de
+            // controle
+            // des documents
+            // si cette map n'existe pas, on la cree et on ajout le résultat du
+            // controle pour ce document
+            // ensuite, on met la map dans le contexte d'execution spring batch
+            // pour
+            // pouvoir récupérer le résultat
+            // du controle lors de l'archivage
+            LOGGER.debug(
+                  "{} - Récupération de la map des résultat de controle pour la capture",
                   trcPrefix);
-            map = new HashMap<String, CaptureMasseControlResult>();
+            Map<String, CaptureMasseControlResult> map = (Map<String, CaptureMasseControlResult>) getStepExecution()
+                  .getJobExecution().getExecutionContext()
+                  .get("mapCaptureControlResult");
+            if (map == null) {
+               LOGGER.debug(
+                     "{} - Pas de map de résultat de controle, on la créé",
+                     trcPrefix);
+               map = new HashMap<String, CaptureMasseControlResult>();
+            }
+            LOGGER.debug(
+                  "{} - Ajout du résultat de controle dans la map avec la key : {}",
+                  trcPrefix, cheminDocOnEcde);
+            map.put(cheminDocOnEcde, resultat);
+            getStepExecution().getJobExecution().getExecutionContext()
+                  .put("mapCaptureControlResult", map);
          }
-         LOGGER.debug(
-               "{} - Ajout du résultat de controle dans la map avec la key : {}",
-               trcPrefix, cheminDocOnEcde);
-         map.put(cheminDocOnEcde, resultat);
-         getStepExecution().getJobExecution().getExecutionContext().put(
-               "mapCaptureControlResult", map);
+      } catch (Exception e) {
+
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+         } else {
+            throw e;
+         }
+
       }
 
       LOGGER.debug("{} - fin", trcPrefix);

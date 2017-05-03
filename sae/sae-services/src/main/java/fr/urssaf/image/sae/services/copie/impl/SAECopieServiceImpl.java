@@ -72,11 +72,8 @@ public class SAECopieServiceImpl implements SAECopieService {
    @Autowired
    private SAECaptureService capture;
 
-   public SAECopieServiceImpl() {
-   }
-
    @Override
-   final public UUID copie(UUID idCopie, List<UntypedMetadata> metadata)
+   public UUID copie(UUID idCopie, List<UntypedMetadata> metadata)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx, SAECaptureServiceEx,
          ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
@@ -104,14 +101,14 @@ public class SAECopieServiceImpl implements SAECopieService {
 
       String[] roles = new String[token.getAuthorities().size() + 2];
       int index = 0;
-      for (final GrantedAuthority authory : token.getAuthorities()) {
+      for (GrantedAuthority authory : token.getAuthorities()) {
          roles[index] = authory.getAuthority();
          index++;
       }
       roles[index] = "archivage_unitaire";
       roles[++index] = "consultation";
 
-      final AuthenticationToken authentication = AuthenticationFactory
+      AuthenticationToken authentication = AuthenticationFactory
             .createAuthentication(
                   ((VIContenuExtrait) token.getPrincipal()).getIdUtilisateur(),
                   (VIContenuExtrait) token.getPrincipal(), roles);
@@ -119,48 +116,49 @@ public class SAECopieServiceImpl implements SAECopieService {
       AuthenticationContext.setAuthenticationToken(authentication);
 
       // Consultation du document depuis l'ID copie
-      final Map<String, MetadataReference> map = referenceDAO
+      Map<String, MetadataReference> map = referenceDAO
             .getArchivableMetadataReferences();
 
       // Construire List<String> comprenant toutes les keys de la maps
-      final List<String> list = new ArrayList<String>();
-      for (final Map.Entry<String, MetadataReference> e : map.entrySet()) {
+      List<String> list = new ArrayList<String>();
+      for (Map.Entry<String, MetadataReference> e : map.entrySet()) {
          list.add(e.getValue().getLongCode());
       }
 
       // Verification metadatas non specifiables
 
       if (metadata.get(0).getLongCode() != null) {
-         int ite = 0;
+         int i = 0;
          for (UntypedMetadata md : metadata) {
             for (String str : list) {
                if (md.getLongCode().equals(str))
-                  ite = 1;
+                  i = 1;
             }
-            if (ite == 0) {
+            if (i == 0) {
                String message = StringUtils
                      .replace(
                            "L'une des métadonnées passées en paramètre n'existe pas ou n'est pas spécifiable '{0}'",
                            "{0}", md.getLongCode());
                throw new SAECopieServiceException(message);
             }
-            ite = 0;
+            i = 0;
          }
       }
 
       // Appelle du service de consultation
-      final ConsultParams param = new ConsultParams(idCopie, list);
+      ConsultParams param = new ConsultParams(idCopie, list);
+      UntypedDocument untypedDocument = new UntypedDocument();
 
-      final UntypedDocument untypedDocument = consultation.consultation(param);
+      untypedDocument = consultation.consultation(param);
       if (untypedDocument == null) {
          return null;
       }
 
       // Modification et remplissage des nouvelles métadonnées
-      final List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
+      List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
       Boolean bool = false;
-      for (final UntypedMetadata md : untypedDocument.getUMetadatas()) {
-         for (final UntypedMetadata md2 : metadata) {
+      for (UntypedMetadata md : untypedDocument.getUMetadatas()) {
+         for (UntypedMetadata md2 : metadata) {
             if (md.getLongCode().equals(md2.getLongCode())) {
                fin.add(md2);
                bool = true;
@@ -173,14 +171,14 @@ public class SAECopieServiceImpl implements SAECopieService {
       }
 
       // suppression des meta vide dans la liste
-      final Iterator<UntypedMetadata> ite = fin.iterator();
-      while (ite.hasNext()) {
-        final UntypedMetadata name = ite.next();
+      Iterator<UntypedMetadata> it = fin.iterator();
+      while (it.hasNext()) {
+         UntypedMetadata name = it.next();
          // Do something
          if (StringUtils.isEmpty(name.getValue())
                || name.getLongCode().startsWith("Domaine")
                || name.getLongCode().startsWith("IdGed"))
-            ite.remove();
+            it.remove();
       }
 
       byte[] data = null;
@@ -188,7 +186,7 @@ public class SAECopieServiceImpl implements SAECopieService {
          data = IOUtils.toByteArray(untypedDocument.getContent()
                .getInputStream());
       } catch (IOException e) {
-         // e.printStackTrace();
+         e.printStackTrace();
       }
 
       ByteArrayDataSource bads = null;
@@ -197,12 +195,12 @@ public class SAECopieServiceImpl implements SAECopieService {
 
       } catch (IOException e1) {
          // TODO Auto-generated catch block
-         // e1.printStackTrace();
+         e1.printStackTrace();
       }
 
-      final DataHandler dataHandler = new DataHandler(bads);
+      DataHandler dataHandler = new DataHandler(bads);
       // Appelle au service d'archivageBinaire
-      final CaptureResult res = capture.captureBinaire(fin, dataHandler,
+      CaptureResult res = capture.captureBinaire(fin, dataHandler,
             untypedDocument.getFileName());
 
       // Retourne l'ID du document copié

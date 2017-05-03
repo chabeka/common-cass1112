@@ -271,7 +271,9 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     * <ol>
     * <li>l'insertion a réussi : on ajoute le résultat à liste des documents
     * persistés</li>
-    * <li>l'insertion a échouée : on shutdown le pool d'insertion</li>
+    * <li>l'insertion a échouée : 
+    * MODE TOUT OU RIEN : on shutdown le pool d'insertion</li>
+    * MODE PARTIEL : l'exception a été catchée en amont, et on continue sur les autres documents
     * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à
     * liste des documents persistés et on shutdown le pool d'insertion</li>
     * </ol>
@@ -283,7 +285,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     * 
     */
    @Override
-   protected final void afterExecute(final Runnable runnable,
+   protected void afterExecute(final Runnable runnable,
          final Throwable throwable) {
 
       String trcPrefix = "afterExecute()";
@@ -295,17 +297,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       if (throwable == null) {
 
-         if (StringUtils.isBlank(getPathName(document))) {
-            throw new CaptureMasseRuntimeException(
-                  "le nom de fichier est vide.");
-         }
-
-         addDocumentToIntegratedList(document, indexDocument);
-
-         getLogger().debug(
-               "{} - Stockage du document #{} ({}) uuid:{}",
-               new Object[] { trcPrefix, (indexDocument + 1),
-                     getPathName(document), getUuid(document) });
+         traitementAfterExecute(trcPrefix, document, indexDocument);
 
       } else {
 
@@ -316,6 +308,34 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       }
 
+   }
+
+   /**
+    * Traitement lors de la fin d'execution du thread.
+    * 
+    * @param trcPrefix
+    *           Trace préfixe
+    * @param document
+    *           Document
+    * @param indexDocument
+    *           Index du document
+    */
+   protected void traitementAfterExecute(String trcPrefix, BOT document,
+         int indexDocument) {
+      if (StringUtils.isBlank(getPathName(document))) {
+         throw new CaptureMasseRuntimeException("le nom de fichier est vide.");
+      }
+
+      // On test si le document a été intégré ou non (en mode PARTIEL, si erreur
+      // lors du stockage, l'exception est catchée et on renvoie un UUID null)
+      if (getUuid(document) != null) {
+         addDocumentToIntegratedList(document, indexDocument);
+
+         getLogger().debug(
+               "{} - Stockage du document #{} ({}) uuid:{}",
+               new Object[] { trcPrefix, (indexDocument + 1),
+                     getPathName(document), getUuid(document) });
+      }
    }
 
    /**

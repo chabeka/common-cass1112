@@ -40,8 +40,10 @@ import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
 import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
+import fr.urssaf.image.sae.services.batch.modification.SAEModificationMasseService;
 import fr.urssaf.image.sae.services.batch.restore.SAERestoreMasseService;
 import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
+import fr.urssaf.image.sae.services.batch.transfert.SAETransfertMasseService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -67,18 +69,28 @@ public class TraitementAsynchroneServiceTest {
    @Autowired
    @Qualifier("captureMasseService")
    private SAECaptureMasseService captureMasseServiceAvecSpringSecurity;
-   
+
    @Autowired
    @Qualifier("suppressionMasseService")
    private SAESuppressionMasseService suppressionMasseServiceAvecSpringSecurity;
-   
+
    @Autowired
    @Qualifier("restoreMasseService")
    private SAERestoreMasseService restoreMasseServiceAvecSpringSecurity;
 
+   @Autowired
+   @Qualifier("modificationMasseService")
+   private SAEModificationMasseService modificationMasseServiceAvecSpringSecurity;
+
+   @Autowired
+   @Qualifier("transfertMasseService")
+   private SAETransfertMasseService transfertMasseServiceAvecSpringSecurity;
+
    private SAECaptureMasseService captureMasseServiceSansSpringSecurity;
    private SAESuppressionMasseService suppressionMasseServiceSansSpringSecurity;
    private SAERestoreMasseService restoreMasseServiceSansSpringSecurity;
+   private SAEModificationMasseService modificationMasseServiceSansSpringSecurity;
+   private SAETransfertMasseService transfertMasseServiceSansSpringSecurity;
 
    private UUID idJob;
 
@@ -94,7 +106,7 @@ public class TraitementAsynchroneServiceTest {
       Advised advisedCapture = (Advised) captureMasseServiceAvecSpringSecurity;
       captureMasseServiceSansSpringSecurity = (SAECaptureMasseService) advisedCapture
             .getTargetSource().getTarget();
-      
+
       Advised advisedSuppress = (Advised) suppressionMasseServiceAvecSpringSecurity;
       suppressionMasseServiceSansSpringSecurity = (SAESuppressionMasseService) advisedSuppress
             .getTargetSource().getTarget();
@@ -102,7 +114,15 @@ public class TraitementAsynchroneServiceTest {
       Advised advisedRestore = (Advised) restoreMasseServiceAvecSpringSecurity;
       restoreMasseServiceSansSpringSecurity = (SAERestoreMasseService) advisedRestore
             .getTargetSource().getTarget();
-      
+
+      Advised advisedModification = (Advised) modificationMasseServiceAvecSpringSecurity;
+      modificationMasseServiceSansSpringSecurity = (SAEModificationMasseService) advisedModification
+            .getTargetSource().getTarget();
+
+      Advised advisedTransfert = (Advised) transfertMasseServiceAvecSpringSecurity;
+      transfertMasseServiceSansSpringSecurity = (SAETransfertMasseService) advisedTransfert
+            .getTargetSource().getTarget();
+
       setJob(null);
    }
 
@@ -112,8 +132,10 @@ public class TraitementAsynchroneServiceTest {
       EasyMock.reset(captureMasseServiceSansSpringSecurity);
       EasyMock.reset(captureMasseServiceSansSpringSecurity);
       EasyMock.reset(restoreMasseServiceSansSpringSecurity);
+      EasyMock.reset(modificationMasseServiceSansSpringSecurity);
+      EasyMock.reset(transfertMasseServiceSansSpringSecurity);
 
-      //-- Suppression du traitement de masse
+      // -- Suppression du traitement de masse
       if (idJob != null) {
          jobQueueService.deleteJob(idJob);
       }
@@ -128,13 +150,12 @@ public class TraitementAsynchroneServiceTest {
       AuthenticationContext.setAuthenticationToken(token);
 
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      
+
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, "url_ecde");
-      
+
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-            jobParams, idJob, TYPES_JOB.capture_masse, 
-            null, null, null, null);
+            jobParams, idJob, TYPES_JOB.capture_masse, null, null, null, null);
 
       service.ajouterJobCaptureMasse(parametres);
 
@@ -142,87 +163,154 @@ public class TraitementAsynchroneServiceTest {
 
       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
 
-      Assert
-            .assertEquals(
-                  "L'identifiant unique du traitement est invalide",
-                  idJob, job.getIdJob());
+      Assert.assertEquals("L'identifiant unique du traitement est invalide",
+            idJob, job.getIdJob());
 
       Assert.assertEquals(
             "La paramètre de la capture en masse doit être une URL ECDE",
             "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
-      
+
       Assert.assertEquals(
             "Le type de traitement doit correspondre à la capture de masse",
             TYPES_JOB.capture_masse.name(), job.getType());
    }
-   
+
    @Test
    public void ajouterJobSuppressionMasse_success() {
-   
-       String[] roles = new String[] { "suppression_masse" };
-       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-             "cle", "valeur", roles);
-       AuthenticationContext.setAuthenticationToken(token);
-   
-       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-       
-       Map<String, String> jobParams = new HashMap<String, String>();
-       jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, "req_lucene");
-       
-       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-             jobParams, idJob, TYPES_JOB.suppression_masse, 
-             null, null, null, null);
-       
-       service.ajouterJobSuppressionMasse(parametres);
-   
-       JobRequest job = jobLectureService.getJobRequest(idJob);
-   
-       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
-   
-       Assert.assertEquals(
-                   "L'identifiant unique du traitement est invalide",
-                   idJob, job.getIdJob());
-       
-       Assert.assertEquals(
-             "Le type de traitement est incorrect",
-             TYPES_JOB.suppression_masse.name(), job.getType());
-   }  
-   
+
+      String[] roles = new String[] { "suppression_masse" };
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            "cle", "valeur", roles);
+      AuthenticationContext.setAuthenticationToken(token);
+
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.REQ_LUCENE_SUPPRESSION, "req_lucene");
+
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, idJob, TYPES_JOB.suppression_masse, null, null, null,
+            null);
+
+      service.ajouterJobSuppressionMasse(parametres);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+
+      Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+
+      Assert.assertEquals("L'identifiant unique du traitement est invalide",
+            idJob, job.getIdJob());
+
+      Assert.assertEquals("Le type de traitement est incorrect",
+            TYPES_JOB.suppression_masse.name(), job.getType());
+   }
+
    @Test
    public void ajouterJobRestoreMasse_success() {
-   
-       String[] roles = new String[] { "restore_masse" };
-       AuthenticationToken token = AuthenticationFactory.createAuthentication(
-             "cle", "valeur", roles);
-       AuthenticationContext.setAuthenticationToken(token);
-   
-       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-       
-       Map<String, String> jobParams = new HashMap<String, String>();
-       jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "id_traitement");
-       
-       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
-             jobParams, idJob, TYPES_JOB.restore_masse, 
-             null, null, null, null);
-       
-       service.ajouterJobRestoreMasse(parametres);
-   
-       JobRequest job = jobLectureService.getJobRequest(idJob);
-   
-       Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
-   
-       Assert.assertEquals(
-                   "L'identifiant unique du traitement est invalide",
-                   idJob, job.getIdJob());
-       
-       Assert.assertEquals(
-             "Le type de traitement est incorrect",
-             Constantes.TYPES_JOB.restore_masse.name(), job.getType());
-   }  
- 
+
+      String[] roles = new String[] { "restore_masse" };
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            "cle", "valeur", roles);
+      AuthenticationContext.setAuthenticationToken(token);
+
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ID_TRAITEMENT_A_RESTORER, "id_traitement");
+
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, idJob, TYPES_JOB.restore_masse, null, null, null, null);
+
+      service.ajouterJobRestoreMasse(parametres);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+
+      Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+
+      Assert.assertEquals("L'identifiant unique du traitement est invalide",
+            idJob, job.getIdJob());
+
+      Assert.assertEquals("Le type de traitement est incorrect",
+            Constantes.TYPES_JOB.restore_masse.name(), job.getType());
+   }
+
+   @Test
+   public void ajouterJobModificationMasse_success() {
+
+      String[] roles = new String[] { "modification_masse" };
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            "cle", "valeur", roles);
+      AuthenticationContext.setAuthenticationToken(token);
+
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, "url_ecde");
+      jobParams.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
+
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, idJob, TYPES_JOB.modification_masse, null, null, null,
+            null);
+
+      service.ajouterJobModificationMasse(parametres);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+
+      Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+
+      Assert.assertEquals("L'identifiant unique du traitement est invalide",
+            idJob, job.getIdJob());
+
+      Assert.assertEquals(
+            "La paramètre de la modification en masse doit contenir une URL ECDE",
+            "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
+      
+      Assert.assertEquals(
+            "La paramètre de la modification en masse doit contenir un CODE_TRAITEMENT",
+            "cdTraitement", job.getJobParameters().get(Constantes.CODE_TRAITEMENT));
+
+      Assert.assertEquals(
+            "Le type de traitement doit correspondre à la modification en masse",
+            TYPES_JOB.modification_masse.name(), job.getType());
+   }
+
+   @Test
+   public void ajouterJobTransfertMasse_succes() {
+
+      String[] roles = new String[] { "transfert_masse" };
+      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+            "clé", "valeur", roles);
+      AuthenticationContext.setAuthenticationToken(token);
+
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
+      Map<String, String> jobParams = new HashMap<String, String>();
+      jobParams.put(Constantes.ECDE_URL, "url_ecde");
+
+      TraitemetMasseParametres parametres = new TraitemetMasseParametres(
+            jobParams, idJob, TYPES_JOB.transfert_masse, null, null, null, null);
+
+      service.ajouterJobTransfertMasse(parametres);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+
+      Assert.assertNotNull("le traitement " + idJob + " doit être créé", job);
+
+      Assert.assertEquals("L'identifiant unique du traitement est invalide",
+            idJob, job.getIdJob());
+
+      Assert.assertEquals(
+            "Le paramètre du transfert de masse doit être une URL ECDE",
+            "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
+
+      Assert.assertEquals(
+            "Le type de traitement doit correspondre au transfert de masse",
+            TYPES_JOB.transfert_masse.name(), job.getType());
+   }
 
    /**
     * helper de création d'un VI basic
+    * 
     * @param droit
     * @param code
     * @return VIContenuExtrait
@@ -231,13 +319,13 @@ public class TraitementAsynchroneServiceTest {
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli(code);
       viExtrait.setIdUtilisateur(code);
-        
+
       SaeDroits saeDroits = new SaeDroits();
       List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
       saeDroits.put(droit, saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       return viExtrait;
-   } 
+   }
 
    @Test
    public void lancerJobCaptureMasse_success() throws Exception {
@@ -245,10 +333,11 @@ public class TraitementAsynchroneServiceTest {
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam
+            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
-      
+
       String codeVi = "TEST_LANCER_JOB_CAPTURE";
       VIContenuExtrait viExtrait = createTestVi("archivage_masse", codeVi);
 
@@ -265,10 +354,11 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setSucces(true);
       exitTraitement.setExitMessage("message de sortie en succès");
       EasyMock.expect(
-            captureMasseServiceSansSpringSecurity.captureMasse(URI
-                  .create(jobToCreate.getJobParameters().get(
-                        Constantes.ECDE_URL)), idJob, jobParam
-                  .get(Constantes.HASH), jobParam.get(Constantes.TYPE_HASH)))
+            captureMasseServiceSansSpringSecurity.captureMasse(
+                  URI.create(jobToCreate.getJobParameters().get(
+                        Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
             .andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseServiceSansSpringSecurity);
@@ -279,22 +369,21 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.SUCCESS, job.getState());
-      Assert
-            .assertEquals(
-                  "le message de sortie du job dans la pile des travaux est inattendu",
-                  exitTraitement.getExitMessage(), job.getMessage());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
 
       EasyMock.verify(captureMasseServiceSansSpringSecurity);
    }
-   
+
    @Test
    public void lancerJobSuppressionMasse_success() throws Exception {
-      
-      //-- création d'un traitement de masse
+
+      // -- création d'un traitement de masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam.put(Constantes.REQ_LUCENE_SUPPRESSION, "req_lucene");
-      
+
       String codeVi = "TEST_LANCER_JOB_SUPPR";
       VIContenuExtrait viExtrait = createTestVi("suppression_masse", codeVi);
 
@@ -310,9 +399,10 @@ public class TraitementAsynchroneServiceTest {
       ExitTraitement exitTraitement = new ExitTraitement();
       exitTraitement.setSucces(true);
       exitTraitement.setExitMessage("message de sortie en succès");
-      EasyMock.expect(suppressionMasseServiceSansSpringSecurity.suppressionMasse(
-            idJob, jobParam.get(Constantes.REQ_LUCENE_SUPPRESSION))
-      ).andReturn(exitTraitement);
+      EasyMock.expect(
+            suppressionMasseServiceSansSpringSecurity.suppressionMasse(idJob,
+                  jobParam.get(Constantes.REQ_LUCENE_SUPPRESSION))).andReturn(
+            exitTraitement);
 
       EasyMock.replay(suppressionMasseServiceSansSpringSecurity);
 
@@ -322,23 +412,24 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.SUCCESS, job.getState());
-      
+
       Assert.assertEquals(
-                  "le message de sortie du job dans la pile des travaux est inattendu",
-                  exitTraitement.getExitMessage(), job.getMessage());
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
 
       EasyMock.verify(suppressionMasseServiceSansSpringSecurity);
    }
-   
+
    @Test
    public void lancerJobRestoreMasse_success() throws Exception {
-      
-      //-- création d'un traitement de masse
+
+      // -- création d'un traitement de masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       UUID idTraitement = UUID.randomUUID();
       Map<String, String> jobParam = new HashMap<String, String>();
-      jobParam.put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement.toString());
-      
+      jobParam
+            .put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement.toString());
+
       String codeVi = "TEST_LANCER_JOB_RESTORE";
       VIContenuExtrait viExtrait = createTestVi("restore_masse", codeVi);
 
@@ -355,8 +446,8 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setSucces(true);
       exitTraitement.setExitMessage("message de sortie en succès");
       EasyMock.expect(
-            restoreMasseServiceSansSpringSecurity.restoreMasse(idJob, idTraitement)
-      ).andReturn(exitTraitement);
+            restoreMasseServiceSansSpringSecurity.restoreMasse(idJob,
+                  idTraitement)).andReturn(exitTraitement);
 
       EasyMock.replay(restoreMasseServiceSansSpringSecurity);
 
@@ -366,13 +457,113 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.SUCCESS, job.getState());
-      
+
       Assert.assertEquals(
             "le message de sortie du job dans la pile des travaux est inattendu",
             exitTraitement.getExitMessage(), job.getMessage());
 
       EasyMock.verify(suppressionMasseServiceSansSpringSecurity);
-   } 
+   }
+
+   @Test
+   public void lancerJobTransfertMasse_succes() throws Exception {
+
+      // création d'un traitement de transfert de masse
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      Map<String, String> jobParam = new HashMap<String, String>();
+      jobParam
+            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typehash");
+
+      String codeVi = "TEST_LANCER_JOB_TRANSFERT";
+      VIContenuExtrait viExtrait = createTestVi("transfert_masse", codeVi);
+
+      JobToCreate jobToCreate = new JobToCreate();
+      jobToCreate.setIdJob(idJob);
+      jobToCreate.setType(TYPES_JOB.transfert_masse.name());
+      jobToCreate.setJobParameters(jobParam);
+      jobToCreate.setVi(viExtrait);
+
+      jobQueueService.addJob(jobToCreate);
+      jobQueueService.reserveJob(idJob, "hostname", new Date());
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(true);
+      exitTraitement.setExitMessage("message de sortie en succès");
+      EasyMock.expect(
+            transfertMasseServiceSansSpringSecurity.transfertMasse(
+                  URI.create(jobToCreate.getJobParameters().get(
+                        Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
+            .andReturn(exitTraitement);
+
+      EasyMock.replay(transfertMasseServiceSansSpringSecurity);
+
+      service.lancerJob(idJob);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.SUCCESS, job.getState());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(transfertMasseServiceSansSpringSecurity);
+   }
+
+   @Test
+   public void lancerJobModificationMasse_success() throws Exception {
+
+      // création d'un traitement de capture en masse
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      Map<String, String> jobParam = new HashMap<String, String>();
+      jobParam
+            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typeHash");
+      jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
+
+      String codeVi = "TEST_LANCER_JOB_CAPTURE";
+      VIContenuExtrait viExtrait = createTestVi("modification_masse", codeVi);
+
+      JobToCreate jobToCreate = new JobToCreate();
+      jobToCreate.setIdJob(idJob);
+      jobToCreate.setType(TYPES_JOB.modification_masse.name());
+      jobToCreate.setJobParameters(jobParam);
+      jobToCreate.setVi(viExtrait);
+
+      jobQueueService.addJob(jobToCreate);
+      jobQueueService.reserveJob(idJob, "hostname", new Date());
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(true);
+      exitTraitement.setExitMessage("message de sortie en succès");
+      EasyMock.expect(
+            modificationMasseServiceSansSpringSecurity.modificationMasse(
+                  URI.create(jobToCreate.getJobParameters().get(
+                        Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
+            .andReturn(exitTraitement);
+
+      EasyMock.replay(modificationMasseServiceSansSpringSecurity);
+
+      service.lancerJob(idJob);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.SUCCESS, job.getState());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(modificationMasseServiceSansSpringSecurity);
+   }
+
    @Test
    public void lancerJob_failure_capturemasse() throws JobInexistantException,
          JobNonReserveException, JobDejaReserveException, LockTimeoutException {
@@ -397,10 +588,11 @@ public class TraitementAsynchroneServiceTest {
       exitTraitement.setSucces(false);
       exitTraitement.setExitMessage("message de sortie en échec");
       EasyMock.expect(
-            captureMasseServiceSansSpringSecurity.captureMasse(URI
-                  .create(jobToCreate.getJobParameters().get(
-                        Constantes.ECDE_URL)), idJob, jobParam
-                  .get(Constantes.HASH), jobParam.get(Constantes.TYPE_HASH)))
+            captureMasseServiceSansSpringSecurity.captureMasse(
+                  URI.create(jobToCreate.getJobParameters().get(
+                        Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
             .andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseServiceSansSpringSecurity);
@@ -411,12 +603,110 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.FAILURE, job.getState());
-      Assert
-            .assertEquals(
-                  "le message de sortie du job dans la pile des travaux est inattendu",
-                  exitTraitement.getExitMessage(), job.getMessage());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
 
       EasyMock.verify(captureMasseServiceSansSpringSecurity);
+   }
+
+   @Test
+   public void lancerJob_failure_transfertmasse() throws Exception {
+
+      // création d'un traitement de transfert de masse
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      Map<String, String> jobParam = new HashMap<String, String>();
+      jobParam
+            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typehash");
+
+      String codeVi = "TEST_LANCER_JOB_TRANSFERT_FAILURE";
+      VIContenuExtrait viExtrait = createTestVi("transfert_masse", codeVi);
+
+      JobToCreate jobToCreate = new JobToCreate();
+      jobToCreate.setIdJob(idJob);
+      jobToCreate.setType(TYPES_JOB.transfert_masse.name());
+      jobToCreate.setJobParameters(jobParam);
+      jobToCreate.setVi(viExtrait);
+
+      jobQueueService.addJob(jobToCreate);
+      jobQueueService.reserveJob(idJob, "hostname", new Date());
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(false);
+      exitTraitement.setExitMessage("message de sortie en échec");
+      EasyMock.expect(
+            transfertMasseServiceSansSpringSecurity.transfertMasse(
+                  URI.create(jobParam.get(Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
+            .andReturn(exitTraitement);
+
+      EasyMock.replay(transfertMasseServiceSansSpringSecurity);
+
+      service.lancerJob(idJob);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.FAILURE, job.getState());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(transfertMasseServiceSansSpringSecurity);
+   }
+
+   @Test
+   public void lancerJob_failure_modificationmasse()
+         throws JobInexistantException, JobNonReserveException,
+         JobDejaReserveException, LockTimeoutException {
+
+      // création d'un traitement de capture en masse
+      idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      Map<String, String> jobParam = new HashMap<String, String>();
+      jobParam
+            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      jobParam.put(Constantes.HASH, "hash");
+      jobParam.put(Constantes.TYPE_HASH, "typeHash");
+      jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
+
+      String codeVi = "TEST_LANCER_JOB_CAPTURE_FAILURE";
+      VIContenuExtrait viExtrait = createTestVi("modification_masse", codeVi);
+
+      JobToCreate jobToCreate = new JobToCreate();
+      jobToCreate.setIdJob(idJob);
+      jobToCreate.setType(TYPES_JOB.modification_masse.name());
+      jobToCreate.setJobParameters(jobParam);
+      jobToCreate.setVi(viExtrait);
+
+      jobQueueService.addJob(jobToCreate);
+      jobQueueService.reserveJob(idJob, "hostname", new Date());
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+      exitTraitement.setSucces(false);
+      exitTraitement.setExitMessage("message de sortie en échec");
+      EasyMock.expect(
+            modificationMasseServiceSansSpringSecurity.modificationMasse(
+                  URI.create(jobParam.get(Constantes.ECDE_URL)), idJob,
+                  jobParam.get(Constantes.HASH),
+                  jobParam.get(Constantes.TYPE_HASH)))
+            .andReturn(exitTraitement);
+
+      EasyMock.replay(modificationMasseServiceSansSpringSecurity);
+
+      service.lancerJob(idJob);
+
+      JobRequest job = jobLectureService.getJobRequest(idJob);
+      Assert.assertEquals(
+            "l'état du job dans la pile des travaux est incorrect",
+            JobState.FAILURE, job.getState());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            exitTraitement.getExitMessage(), job.getMessage());
+
+      EasyMock.verify(modificationMasseServiceSansSpringSecurity);
    }
 
    @Test
@@ -444,13 +734,11 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "l'état du job dans la pile des travaux est incorrect",
             JobState.FAILURE, job.getState());
-      Assert
-            .assertEquals(
-                  "le message de sortie du job dans la pile des travaux est inattendu",
-                  "Le traitement n°" + idJob
-                        + " a des paramètres inattendu : '"
-                        + job.getJobParameters().get(Constantes.ECDE_URL)
-                        + "'.", job.getMessage());
+      Assert.assertEquals(
+            "le message de sortie du job dans la pile des travaux est inattendu",
+            "Le traitement n°" + idJob + " a des paramètres inattendu : '"
+                  + job.getJobParameters().get(Constantes.ECDE_URL) + "'.",
+            job.getMessage());
 
    }
 
@@ -474,9 +762,8 @@ public class TraitementAsynchroneServiceTest {
 
          service.lancerJob(idJob);
 
-         Assert
-               .fail("Une exception JobNonReserveException doit être levée pour le traitement "
-                     + idJob);
+         Assert.fail("Une exception JobNonReserveException doit être levée pour le traitement "
+               + idJob);
 
       } catch (JobNonReserveException e) {
 
@@ -484,8 +771,8 @@ public class TraitementAsynchroneServiceTest {
                "Impossible d'exécuter le traitement n°" + idJob
                      + " car il n'a pas été réservé.", e.getMessage());
 
-         Assert.assertEquals("l'instance du job est incorrect", idJob, e
-               .getJobId());
+         Assert.assertEquals("l'instance du job est incorrect", idJob,
+               e.getJobId());
 
       }
 
@@ -512,19 +799,17 @@ public class TraitementAsynchroneServiceTest {
 
          service.lancerJob(idJob);
 
-         Assert
-               .fail("Une exception JobTypeInexistantException doit être levée pour le traitement "
-                     + idJob);
+         Assert.fail("Une exception JobTypeInexistantException doit être levée pour le traitement "
+               + idJob);
 
       } catch (JobTypeInexistantException e) {
 
-         Assert
-               .assertEquals(
-                     "le message de l'exception est inattendu",
-                     "Traitement n° "
-                        + idJob
-                        + " - Le type de traitement 'type_inexistant' est inconnu.",
-                     e.getMessage());
+         Assert.assertEquals(
+               "le message de l'exception est inattendu",
+               "Traitement n° "
+                     + idJob
+                     + " - Le type de traitement 'type_inexistant' est inconnu.",
+               e.getMessage());
 
          Assert.assertEquals("Le job est incorrect", idJob, e.getJob()
                .getIdJob());
@@ -552,18 +837,17 @@ public class TraitementAsynchroneServiceTest {
 
          service.lancerJob(idJob);
 
-         Assert
-               .fail("Une exception JobInexistantException doit être levée pour le traitement "
-                     + idJob);
+         Assert.fail("Une exception JobInexistantException doit être levée pour le traitement "
+               + idJob);
 
       } catch (JobInexistantException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer ou de réserver le traitement n°" + idJob
+               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
                      + " car il n'existe pas.", e.getMessage());
 
-         Assert.assertEquals("l'instance du job est incorrect", idJob, e
-               .getInstanceId());
+         Assert.assertEquals("l'instance du job est incorrect", idJob,
+               e.getInstanceId());
 
       }
    }

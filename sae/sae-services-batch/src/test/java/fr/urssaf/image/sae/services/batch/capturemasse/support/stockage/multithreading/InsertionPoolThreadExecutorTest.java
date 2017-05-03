@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
 
+import java.util.UUID;
+
 import org.easymock.EasyMock;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -17,9 +19,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exceptio
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -33,7 +32,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class InsertionPoolThreadExecutorTest {
 
-   private InsertionPoolThreadExecutor poolExecutor;
+   private InsertionCapturePoolThreadExecutor poolExecutor;
 
    @Autowired
    private InterruptionTraitementMasseSupport interruptionSupport;
@@ -55,6 +54,7 @@ public class InsertionPoolThreadExecutorTest {
 
       DOCUMENT = new StorageDocument();
       DOCUMENT.setFilePath("path");
+      DOCUMENT.setUuid(UUID.randomUUID());
 
    }
 
@@ -69,7 +69,7 @@ public class InsertionPoolThreadExecutorTest {
       InsertionPoolConfiguration poolConfiguration = new InsertionPoolConfiguration();
       poolConfiguration.setCorePoolSize(20);
 
-      poolExecutor = new InsertionPoolThreadExecutor(poolConfiguration,
+      poolExecutor = new InsertionCapturePoolThreadExecutor(poolConfiguration,
             interruptionSupport, interruptionConfig);
 
       insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer);
@@ -157,6 +157,8 @@ public class InsertionPoolThreadExecutorTest {
 
       for (int i = 0; i < count; i++) {
          poolExecutor.execute(insertionRunnable);
+         // Recalcul l'UUID du document
+         DOCUMENT.setUuid(UUID.randomUUID());
       }
 
       // nécessaire pour le bon déroulement du test

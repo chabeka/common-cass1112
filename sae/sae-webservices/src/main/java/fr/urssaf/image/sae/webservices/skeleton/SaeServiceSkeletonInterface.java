@@ -24,6 +24,8 @@ import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
 import fr.cirtil.www.saeservice.Copie;
 import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.Deblocage;
+import fr.cirtil.www.saeservice.DeblocageResponse;
 import fr.cirtil.www.saeservice.DocumentExistant;
 import fr.cirtil.www.saeservice.DocumentExistantResponse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasse;
@@ -31,6 +33,8 @@ import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationMasse;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
@@ -53,11 +57,14 @@ import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
+import fr.cirtil.www.saeservice.TransfertMasse;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -230,6 +237,21 @@ public interface SaeServiceSkeletonInterface {
          throws AxisFault;
 
    /**
+    * endpoint de la modification en masse de document
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   ModificationMasseResponse modificationMasseSecure(ModificationMasse request,
+         String callerIP)
+         throws AxisFault;
+
+   /**
     * endpoint de la récupération des métadonnées.
     * 
     * @param request
@@ -372,4 +394,34 @@ public interface SaeServiceSkeletonInterface {
          throws  DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
    
    ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, AxisFault, SAEConsultationAffichableParametrageException, RemoteException;
+
+   /**
+    * endpoint de transfert de masse
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    */
+   TransfertMasseResponse transfertMasseSecure(
+         TransfertMasse request, String callerIP) throws AxisFault;
+   
+   /**
+    * endpoint de déblocage de job
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service
+    * @throws JobInexistantException 
+    */
+   DeblocageResponse deblocageSecure(
+         Deblocage request, String callerIP) throws AxisFault, JobInexistantException;
+
 }

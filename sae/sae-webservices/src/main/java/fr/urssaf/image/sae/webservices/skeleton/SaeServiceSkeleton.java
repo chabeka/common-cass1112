@@ -44,6 +44,8 @@ import fr.cirtil.www.saeservice.ConsultationMTOMResponse;
 import fr.cirtil.www.saeservice.ConsultationResponse;
 import fr.cirtil.www.saeservice.Copie;
 import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.Deblocage;
+import fr.cirtil.www.saeservice.DeblocageResponse;
 import fr.cirtil.www.saeservice.DocumentExistant;
 import fr.cirtil.www.saeservice.DocumentExistantResponse;
 import fr.cirtil.www.saeservice.EtatTraitementsMasse;
@@ -51,6 +53,8 @@ import fr.cirtil.www.saeservice.EtatTraitementsMasseResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigine;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.Modification;
+import fr.cirtil.www.saeservice.ModificationMasse;
+import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.PingRequest;
 import fr.cirtil.www.saeservice.PingResponse;
@@ -73,12 +77,15 @@ import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.cirtil.www.saeservice.SuppressionResponse;
 import fr.cirtil.www.saeservice.Transfert;
+import fr.cirtil.www.saeservice.TransfertMasse;
+import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -108,6 +115,7 @@ import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CaptureAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
+import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
 import fr.urssaf.image.sae.webservices.exception.EtatTraitementsMasseAxisFault;
@@ -122,16 +130,19 @@ import fr.urssaf.image.sae.webservices.service.WSCaptureMasseService;
 import fr.urssaf.image.sae.webservices.service.WSCaptureService;
 import fr.urssaf.image.sae.webservices.service.WSConsultationService;
 import fr.urssaf.image.sae.webservices.service.WSCopieService;
+import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
 import fr.urssaf.image.sae.webservices.service.WSDocumentAttacheService;
 import fr.urssaf.image.sae.webservices.service.WSDocumentExistantService;
 import fr.urssaf.image.sae.webservices.service.WSEtatJobMasseService;
 import fr.urssaf.image.sae.webservices.service.WSMetadataService;
+import fr.urssaf.image.sae.webservices.service.WSModificationMasseService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
 import fr.urssaf.image.sae.webservices.service.WSRestoreMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
+import fr.urssaf.image.sae.webservices.service.WSTransfertMasseService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
@@ -204,6 +215,15 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    WSDocumentExistantService documentExistantService;
+
+   @Autowired
+   private WSTransfertMasseService transfertMasse;
+
+   @Autowired
+   private WSDeblocageService deblocageService;
+
+   @Autowired
+   private WSModificationMasseService modificationMasse;
 
    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
    private static final String MES_STOCKAGE = "ws.dfce.stockage";
@@ -595,7 +615,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Override
    public final DocumentExistantResponse documentExistant(
-         DocumentExistant request) throws DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx {
+         DocumentExistant request) throws DocumentExistantAxisFault,
+         SearchingServiceEx, ConnectionServiceEx {
       try {
 
          // Traces debug - entrée méthode
@@ -1219,7 +1240,11 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    }
 
    @Override
-   public ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, SAEConsultationAffichableParametrageException, RemoteException {
+   public ConsultationGNTGNSResponse consultationGNTGNSSecure(
+         ConsultationGNTGNS request) throws SearchingServiceEx,
+         ConnectionServiceEx, SAEConsultationServiceException,
+         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+         SAEConsultationAffichableParametrageException, RemoteException {
       try {
 
          // Traces debug - entrée méthode
@@ -1230,7 +1255,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          boolean dfceUp = dfceInfoService.isDfceUp();
          if (dfceUp) {
 
-            ConsultationGNTGNSResponse response = consultation.consultationGNTGNS(request);
+            ConsultationGNTGNSResponse response = consultation
+                  .consultationGNTGNS(request);
 
             // Traces debug - sortie méthode
             LOG.debug("{} - Sortie", prefixeTrc);
@@ -1251,4 +1277,106 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw ex;
       }
    }
+
+   @Override
+   public ModificationMasseResponse modificationMasseSecure(
+         ModificationMasse request, String callerIP) throws AxisFault {
+      try {
+
+         // Traces debug - entrée méthode
+         String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         // Fin des traces debug - entrée méthode
+
+         // l'opération web service n'interagit pas avec DFCE
+         // il n'est pas nécessaire de vérifier si DFCE est Up
+         ModificationMasseResponse response = modificationMasse
+               .modificationMasse(request, callerIP);
+
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
+
+         return response;
+
+      } catch (ModificationAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new CaptureAxisFault(
+               "ErreurInterneCapture",
+               "Une erreur interne à l'application est survenue lors de la capture.",
+               ex);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws TransfertAxisFault
+    * @throws SaeAccessDeniedAxisFault
+    */
+   @Override
+   public final TransfertMasseResponse transfertMasseSecure(
+         TransfertMasse request, String callerIP) throws TransfertAxisFault,
+         SaeAccessDeniedAxisFault {
+      try {
+         String prefixeTrc = "Opération transfertMasseSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         TransfertMasseResponse response = transfertMasse.transfertEnMasse(
+               request, callerIP);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         return response;
+      } catch (TransfertAxisFault ex) {
+         logSoapFault(ex);
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new TransfertAxisFault(
+               "ErreurInterneTransfert",
+               "Une erreur interne à l'application est survenue lors de transfert en masse.",
+               ex);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws DeblocageAxisFault
+    * @throws SaeAccessDeniedAxisFault
+    * @throws DeblocageAxisFault
+    */
+   @Override
+   public final DeblocageResponse deblocageSecure(Deblocage request,
+         String callerIP) throws DeblocageAxisFault, SaeAccessDeniedAxisFault,
+         JobInexistantException {
+      try {
+         String prefixeTrc = "Opération deblocageSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         DeblocageResponse response = deblocageService.deblocage(request,
+               callerIP);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         return response;
+      } catch (JobInexistantException ex) {
+         ex.printStackTrace();
+         LOG.warn("échec de déblocage: Job inexistant");
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new DeblocageAxisFault(
+               "ErreurInterneDeblocage",
+               "Une erreur interne à l'application est survenue lors de déblocage de job.",
+               ex);
+      }
+   }
+
 }

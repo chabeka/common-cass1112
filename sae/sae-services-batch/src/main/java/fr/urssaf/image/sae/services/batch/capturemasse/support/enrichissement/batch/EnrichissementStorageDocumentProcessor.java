@@ -3,8 +3,11 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.enrichissement.batch;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,7 +27,9 @@ public class EnrichissementStorageDocumentProcessor implements
    @Autowired
    private EnrichissementStorageDocumentSupport support;
 
+   private StepExecution stepExecution;
    private String uuid;
+   private String batchMode;
 
    /**
     * initialisation avant le début du Step
@@ -34,8 +39,12 @@ public class EnrichissementStorageDocumentProcessor implements
     */
    @BeforeStep
    public final void init(StepExecution stepExecution) {
+      this.stepExecution = stepExecution;
       this.uuid = stepExecution.getJobParameters().getString(
             Constantes.ID_TRAITEMENT);
+      this.batchMode = (String) stepExecution.getJobExecution()
+            .getExecutionContext().get(Constantes.BATCH_MODE_NOM_REDIRECT);
+
    }
 
    /**
@@ -43,9 +52,64 @@ public class EnrichissementStorageDocumentProcessor implements
     */
    @Override
    public final StorageDocument process(StorageDocument item) throws Exception {
+      try {
+         return support.enrichirDocument(item, uuid);
+      } catch (Exception e) {
 
-      return support.enrichirDocument(item, uuid);
+         if (isModePartielBatch()) {
+            getCodesErreurListe().add(Constantes.ERR_BUL002);
+            getIndexErreurListe().add(
+                  stepExecution.getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
+            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            return item;
+         } else {
+            throw e;
+         }
+
+      }
 
    }
 
+   protected boolean isModePartielBatch() {
+      return batchMode != null
+            && Constantes.BATCH_MODE.PARTIEL.getModeNomCourt()
+                  .equals(batchMode);
+   }
+
+   /**
+    * @return la liste des codes erreurs stockée dans le contexte d'execution du
+    *         job
+    */
+   @SuppressWarnings("unchecked")
+   protected final ConcurrentLinkedQueue<String> getCodesErreurListe() {
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      return (ConcurrentLinkedQueue<String>) jobExecution
+            .get(Constantes.CODE_EXCEPTION);
+   }
+   
+   /**
+    * @return la liste des index des erreurs stockée dans le contexte
+    *         d'execution du job
+    */
+   @SuppressWarnings("unchecked")
+   protected final ConcurrentLinkedQueue<Integer> getIndexErreurListe() {
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      return (ConcurrentLinkedQueue<Integer>) jobExecution
+            .get(Constantes.INDEX_EXCEPTION);
+   }
+   
+   /**
+    * @return la liste des exceptions des erreurs stockée dans le contexte
+    *         d'execution du job
+    */
+   @SuppressWarnings("unchecked")
+   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+      return (ConcurrentLinkedQueue<Exception>) jobExecution
+            .get(Constantes.DOC_EXCEPTION);
+   }
 }

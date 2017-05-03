@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>17.6.0.2-SNAPSHOT</version>
+      <version>17.9.0.1-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-webservices</artifactId>
-   <version>17.6.0.2-SNAPSHOT</version>
+   <version>17.9.0.1-SNAPSHOT</version>
    
    <name>sae-webservices</name>
    
@@ -20,7 +20,7 @@
 
    <properties>
       <axiom.version>1.2.12</axiom.version>
-      <sonar.exclusions>fr/cirtil/www/saeservice/*.java,fr/urssaf/image/sae/webservices/skeleton/SaeServiceMessageReceiverInOut.java,fr/urssaf/image/sae/webservices/client/modele/*</sonar.exclusions>
+      <sonar.exclusions>fr/cirtil/www/saeservice/*.java,fr/urssaf/image/sae/webservices/skeleton/SaeServiceMessageReceiverInOut.java</sonar.exclusions>
    </properties>
 
    <profiles>
@@ -197,7 +197,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>17.6.0.2-SNAPSHOT</version>
+         <version>17.9.0.1-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>commons-logging</groupId>
@@ -210,14 +210,14 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>17.6.0.2-SNAPSHOT</version>
+         <version>17.9.0.1-SNAPSHOT</version>
       </dependency>
 
       <!-- SAE IGC -->
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-igc</artifactId>
-         <version>17.6.0.2-SNAPSHOT</version>
+         <version>17.9.0.1-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>commons-logging</groupId>
@@ -234,7 +234,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>17.6.0.2-SNAPSHOT</version>
+         <version>17.9.0.1-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>axis</groupId>
@@ -247,7 +247,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-batch</artifactId>
-         <version>17.6.0.2-SNAPSHOT</version>
+         <version>17.9.0.1-SNAPSHOT</version>
       </dependency>
 
       <!--  AXIS 2 -->

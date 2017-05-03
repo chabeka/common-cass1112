@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.FinTraitementFlagSupport;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**
@@ -28,7 +28,7 @@ public class FinTraitementFlagTasklet implements Tasklet {
    private FinTraitementFlagSupport support;
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}
@@ -36,7 +36,7 @@ public class FinTraitementFlagTasklet implements Tasklet {
    @Override
    public final RepeatStatus execute(final StepContribution contribution,
          final ChunkContext chunkContext) throws Exception {
-
+      
       ExecutionContext context = chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext();
 

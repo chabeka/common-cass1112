@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.utils;
 import javax.xml.bind.JAXBElement;
 
 import org.easymock.EasyMock;
+import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.item.ItemProcessor;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -136,4 +137,12 @@ public class MockFactoryBean {
    public final SaeDroitService createDroitService() {
       return EasyMock.createMock(SaeDroitService.class);
    }
+
+   /**
+    * @return un mock de type {@link JobLauncher}
+    */
+   public final JobLauncher createJobLauncher() {
+      return EasyMock.createMock(JobLauncher.class);
+   }
+
 }
