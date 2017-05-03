@@ -96,7 +96,7 @@
             <ref bean="convertSommaireDocumentProcessor" />
             <ref bean="enrichissementMetadonneeProcessor" />
             <ref bean="controleStorageDocumentProcessor" />
-            <ref bean="processorConvertMetier2" />
+            <ref bean="processorConvertMetier" />
             <ref bean="enrichissementStorageDocumentProcessor" />
             <ref bean="replacementDocumentProcessor" />
          </list>

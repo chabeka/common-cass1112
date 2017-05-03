@@ -93,7 +93,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       if (isModePartielBatch()) {
          // En mode PARTIEL, on regarde s'il y a une erreur déclarée dans la
          // liste des erreurs. Si c'est le cas, on est en echec et non en
-         // success. Il faut donc remonter cette état.
+         // success. Il faut donc remonter cet état.
          if (!getIndexErreurListe().isEmpty()) {
             exitStatus = ExitStatus.FAILED;
          }

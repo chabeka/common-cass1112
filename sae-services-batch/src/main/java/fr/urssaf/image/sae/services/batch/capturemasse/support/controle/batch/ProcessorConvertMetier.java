@@ -19,7 +19,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  */
 @Component
-public class ProcessorConvertMetier2 extends AbstractListener implements
+public class ProcessorConvertMetier extends AbstractListener implements
       ItemProcessor<SAEDocument, StorageDocument> {
 
    @Autowired
