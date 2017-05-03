@@ -4,11 +4,11 @@
    IssueInstant="[AuthnInstant]"
    Version="2.0">
    
-   <saml2:Issuer>PNR</saml2:Issuer>
+   <saml2:Issuer>CS_DEV_TOUTES_ACTIONS</saml2:Issuer>
    
    <saml2:Subject>
       <saml2:NameID 
-         Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">NON_RENSEIGNE</saml2:NameID>
+         Format="urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified">CER69XXXXX</saml2:NameID>
       <saml2:SubjectConfirmation
          Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
          <saml2:SubjectConfirmationData
@@ -35,7 +35,7 @@
    
    <saml2:AttributeStatement>
       <saml2:Attribute Name="PAGM">
-         <saml2:AttributeValue>[PAGM]</saml2:AttributeValue>
+         <saml2:AttributeValue>PAGM_TOUTES_ACTIONS</saml2:AttributeValue>
       </saml2:Attribute>
    </saml2:AttributeStatement>
    

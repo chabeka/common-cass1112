@@ -48,6 +48,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeCodeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeValeurType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Modification;
+import sae.client.demo.webservice.modele.SaeServiceStub.ModificationMasse;
+import sae.client.demo.webservice.modele.SaeServiceStub.ModificationMasseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ModificationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.NoteTxtType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RangeMetadonneeType;
@@ -1099,6 +1101,51 @@ public final class Axis2ObjectFactory {
       etatTraitementsMasseRequest.setListeUuid(listeUuidType);
       
       return etatTraitementsMasse;
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param urlEcdeSommaire
+    *           l'URL ECDE du sommaire.xml
+    * @param typeHash
+    *           le type de hash
+    * @param hash
+    *           le hash
+    * @return le paramètre d'entrée de l'opération "ModificationMasse"
+    */
+   public static ModificationMasse contruitParamsEntreeModificationMasse(
+         String urlEcdeSommaire, String typeHash, String hash,
+         String codeTraitement) {
+
+      ModificationMasse modificationMasse = new ModificationMasse();
+
+      ModificationMasseRequestType modificationMasseRequest = new ModificationMasseRequestType();
+
+      modificationMasse.setModificationMasse(modificationMasseRequest);
+
+      // URL ECDE du sommaire
+      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+      modificationMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
+      URI ecdeUriSommaireUri;
+      try {
+         ecdeUriSommaireUri = new URI(urlEcdeSommaire);
+      } catch (MalformedURIException e) {
+         throw new DemoRuntimeException(e);
+      }
+      ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
+
+      // Le hash et le type de hash
+      modificationMasseRequest.setTypeHash(typeHash);
+      modificationMasseRequest.setHash(hash);
+
+      // Code traitement
+      modificationMasseRequest.setCodeTraitement(codeTraitement);
+
+      // Renvoie du paramètre d'entrée de l'opération archivageMasse
+      return modificationMasse;
+
    }
 
 }

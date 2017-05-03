@@ -1,8 +1,9 @@
 package fr.urssaf.image.sae.webservice.client.demo.service;
 
-import org.apache.log4j.Logger;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.webservice.client.demo.util.AssertXML;
 
@@ -10,7 +11,7 @@ public class PingSecureServiceTest {
 
    private static PingSecureService service;
 
-   private static final Logger LOG = Logger
+   private static final Logger LOG = LoggerFactory
          .getLogger(PingSecureServiceTest.class);
 
    @BeforeClass

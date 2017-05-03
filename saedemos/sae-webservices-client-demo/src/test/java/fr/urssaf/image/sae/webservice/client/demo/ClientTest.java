@@ -3,12 +3,13 @@ package fr.urssaf.image.sae.webservice.client.demo;
 import static org.junit.Assert.assertEquals;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ClientTest {
 
-   private static final Logger LOG = Logger.getLogger(ClientTest.class);
+   private static final Logger LOG = LoggerFactory.getLogger(ClientTest.class);
 
    
    /**

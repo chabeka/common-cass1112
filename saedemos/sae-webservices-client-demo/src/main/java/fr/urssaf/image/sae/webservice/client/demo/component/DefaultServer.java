@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.webservice.client.demo.util.ResourceUtils;
  */
 public final class DefaultServer {
 
-   private static final String PARAM_PROPERTIES = "sae-webservices-client-demo.properties";
+   private static final String PARAM_PROPERTIES = "sae-client-demo.properties";
 
    private static final String SERVER_URL = "server.url";
 

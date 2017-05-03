@@ -6,8 +6,9 @@ import java.security.KeyStore;
 import java.util.UUID;
 
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.webservice.client.demo.component.DefaultKeystore;
 import fr.urssaf.image.sae.webservice.client.demo.component.DefaultServer;
@@ -47,7 +48,8 @@ import fr.urssaf.image.sae.webservice.client.demo.util.StreamUtils;
  */
 public class PingSecureService {
 
-   private static final Logger LOG = Logger.getLogger(PingSecureService.class);
+   private static final Logger LOG = LoggerFactory
+         .getLogger(PingSecureService.class);
 
    private final URL serverURL;
 
@@ -143,16 +145,16 @@ public class PingSecureService {
     * @param args
     *           arguments
     */
-   public static void main(String[] args) {
+   public static void main(Object[] args) {
 
       if (ArrayUtils.isEmpty(args)) {
          throw new IllegalArgumentException("role is required");
       }
 
-      String role = args[0];
+      String role = (String) args[0];
       PingSecureService service = new PingSecureService();
 
-      LOG.debug("\n" + service.pingSecure(role));
+      LOG.debug("Response : \n" + service.pingSecure(role));
 
    }
 }

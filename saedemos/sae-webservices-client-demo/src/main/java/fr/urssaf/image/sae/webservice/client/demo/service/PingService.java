@@ -2,7 +2,8 @@ package fr.urssaf.image.sae.webservice.client.demo.service;
 
 import java.net.URL;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.webservice.client.demo.component.DefaultServer;
 import fr.urssaf.image.sae.webservice.client.demo.component.ServiceClient;
@@ -29,7 +30,7 @@ import fr.urssaf.image.sae.webservice.client.demo.util.ResourceUtils;
  */
 public class PingService {
 
-   private static final Logger LOG = Logger.getLogger(PingService.class);
+   private static final Logger LOG = LoggerFactory.getLogger(PingService.class);
 
    private final URL serverURL;
 
@@ -66,10 +67,10 @@ public class PingService {
     * @param args
     *           pas prise en compte
     */
-   public static void main(String[] args) {
+   public static void main(Object[] args) {
 
       PingService service = new PingService();
-      LOG.debug("\n" + service.ping());
+      LOG.debug("Response : \n" + service.ping());
 
    }
 

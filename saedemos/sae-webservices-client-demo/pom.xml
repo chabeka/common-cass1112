@@ -4,12 +4,14 @@
    
    <groupId>fr.urssaf.image.saedemos</groupId>
    <artifactId>sae-webservices-client-demo</artifactId>
-   <version>0.0.1-SNAPSHOT</version>
+   <version>17.9.0.1-SNAPSHOT</version>
    
    <name>sae-webservices-client-demo</name>
    
    <properties>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <org.slf4j.version>1.7.5</org.slf4j.version>
+      <logback.version>1.0.13</logback.version>
    </properties>
 
    <build>
@@ -87,12 +89,30 @@
 
    <dependencies>
 
-      <!-- LOG4J -->
+      <!-- SAEDEMOS -->
 
       <dependency>
-         <groupId>log4j</groupId>
-         <artifactId>log4j</artifactId>
-         <version>1.2.16</version>
+         <groupId>fr.urssaf.image.saedemos</groupId>
+         <artifactId>sae-client-demo</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      
+     <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-pile-travaux</artifactId>
+         <version>${project.version}</version>
+      </dependency>
+      
+   <!-- SLF4J et Logback -->
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>slf4j-api</artifactId>
+         <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>ch.qos.logback</groupId>
+         <artifactId>logback-classic</artifactId>
+         <version>${logback.version}</version>
       </dependency>
 
       <!--  COMMONS APACHE -->

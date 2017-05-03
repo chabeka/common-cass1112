@@ -143,22 +143,6 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for suppression method
-            * override this method for handling normal response from suppression operation
-            */
-           public void receiveResultsuppression(
-                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionResponse result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from suppression operation
-           */
-            public void receiveErrorsuppression(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for getDocFormatOrigine method
             * override this method for handling normal response from getDocFormatOrigine operation
             */
@@ -175,6 +159,38 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for transfertMasse method
+            * override this method for handling normal response from transfertMasse operation
+            */
+           public void receiveResulttransfertMasse(
+                    sae.client.demo.webservice.modele.SaeServiceStub.TransfertMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from transfertMasse operation
+           */
+            public void receiveErrortransfertMasse(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for suppression method
+            * override this method for handling normal response from suppression operation
+            */
+           public void receiveResultsuppression(
+                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from suppression operation
+           */
+            public void receiveErrorsuppression(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for stockageUnitaire method
             * override this method for handling normal response from stockageUnitaire operation
             */
@@ -188,6 +204,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from stockageUnitaire operation
            */
             public void receiveErrorstockageUnitaire(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for documentExistant method
+            * override this method for handling normal response from documentExistant operation
+            */
+           public void receiveResultdocumentExistant(
+                    sae.client.demo.webservice.modele.SaeServiceStub.DocumentExistantResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from documentExistant operation
+           */
+            public void receiveErrordocumentExistant(java.lang.Exception e) {
             }
                 
            /**
@@ -271,6 +303,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for consultationGNTGNS method
+            * override this method for handling normal response from consultationGNTGNS operation
+            */
+           public void receiveResultconsultationGNTGNS(
+                    sae.client.demo.webservice.modele.SaeServiceStub.ConsultationGNTGNSResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from consultationGNTGNS operation
+           */
+            public void receiveErrorconsultationGNTGNS(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for consultation method
             * override this method for handling normal response from consultation operation
             */
@@ -284,6 +332,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from consultation operation
            */
             public void receiveErrorconsultation(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for modificationMasse method
+            * override this method for handling normal response from modificationMasse operation
+            */
+           public void receiveResultmodificationMasse(
+                    sae.client.demo.webservice.modele.SaeServiceStub.ModificationMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from modificationMasse operation
+           */
+            public void receiveErrormodificationMasse(java.lang.Exception e) {
             }
                 
            /**
@@ -380,6 +444,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from modification operation
            */
             public void receiveErrormodification(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for copie method
+            * override this method for handling normal response from copie operation
+            */
+           public void receiveResultcopie(
+                    sae.client.demo.webservice.modele.SaeServiceStub.CopieResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from copie operation
+           */
+            public void receiveErrorcopie(java.lang.Exception e) {
             }
                 
            /**
