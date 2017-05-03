@@ -139,7 +139,7 @@
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="storageDocumentWriter" />
                <listener ref="controleStorageDocumentProcessor" />
-               <listener ref="processorConvertMetier2" />
+               <listener ref="processorConvertMetier" />
                <listener ref="stockageListener" />
                <listener ref="enrichissementStorageDocumentProcessor" />
                <listener ref="replacementDocumentProcessor" />
