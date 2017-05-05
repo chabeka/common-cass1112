@@ -23,6 +23,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
@@ -35,7 +36,6 @@ import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
@@ -52,7 +52,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-batch-test-mock-Services.xml" })
+"/applicationContext-sae-services-batch-test-mock-Services.xml" })
 @SuppressWarnings("PMD.MethodNamingConventions")
 @DirtiesContext
 public class TraitementAsynchroneServiceTest {
@@ -231,7 +231,7 @@ public class TraitementAsynchroneServiceTest {
             idJob, job.getIdJob());
 
       Assert.assertEquals("Le type de traitement est incorrect",
-            Constantes.TYPES_JOB.restore_masse.name(), job.getType());
+            TYPES_JOB.restore_masse.name(), job.getType());
    }
 
    @Test
@@ -264,7 +264,7 @@ public class TraitementAsynchroneServiceTest {
       Assert.assertEquals(
             "La paramètre de la modification en masse doit contenir une URL ECDE",
             "url_ecde", job.getJobParameters().get(Constantes.ECDE_URL));
-      
+
       Assert.assertEquals(
             "La paramètre de la modification en masse doit contenir un CODE_TRAITEMENT",
             "cdTraitement", job.getJobParameters().get(Constantes.CODE_TRAITEMENT));
@@ -334,7 +334,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
 
@@ -357,9 +357,9 @@ public class TraitementAsynchroneServiceTest {
             captureMasseServiceSansSpringSecurity.captureMasse(
                   URI.create(jobToCreate.getJobParameters().get(
                         Constantes.ECDE_URL)), idJob,
-                  jobParam.get(Constantes.HASH),
-                  jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                        jobParam.get(Constantes.HASH),
+                        jobParam.get(Constantes.TYPE_HASH)))
+                        .andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseServiceSansSpringSecurity);
 
@@ -402,7 +402,7 @@ public class TraitementAsynchroneServiceTest {
       EasyMock.expect(
             suppressionMasseServiceSansSpringSecurity.suppressionMasse(idJob,
                   jobParam.get(Constantes.REQ_LUCENE_SUPPRESSION))).andReturn(
-            exitTraitement);
+                        exitTraitement);
 
       EasyMock.replay(suppressionMasseServiceSansSpringSecurity);
 
@@ -428,7 +428,7 @@ public class TraitementAsynchroneServiceTest {
       UUID idTraitement = UUID.randomUUID();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement.toString());
+      .put(Constantes.ID_TRAITEMENT_A_RESTORER, idTraitement.toString());
 
       String codeVi = "TEST_LANCER_JOB_RESTORE";
       VIContenuExtrait viExtrait = createTestVi("restore_masse", codeVi);
@@ -472,7 +472,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typehash");
 
@@ -495,9 +495,9 @@ public class TraitementAsynchroneServiceTest {
             transfertMasseServiceSansSpringSecurity.transfertMasse(
                   URI.create(jobToCreate.getJobParameters().get(
                         Constantes.ECDE_URL)), idJob,
-                  jobParam.get(Constantes.HASH),
-                  jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                        jobParam.get(Constantes.HASH),
+                        jobParam.get(Constantes.TYPE_HASH)))
+                        .andReturn(exitTraitement);
 
       EasyMock.replay(transfertMasseServiceSansSpringSecurity);
 
@@ -521,7 +521,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
       jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
@@ -545,9 +545,9 @@ public class TraitementAsynchroneServiceTest {
             modificationMasseServiceSansSpringSecurity.modificationMasse(
                   URI.create(jobToCreate.getJobParameters().get(
                         Constantes.ECDE_URL)), idJob,
-                  jobParam.get(Constantes.HASH),
-                  jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                        jobParam.get(Constantes.HASH),
+                        jobParam.get(Constantes.TYPE_HASH)))
+                        .andReturn(exitTraitement);
 
       EasyMock.replay(modificationMasseServiceSansSpringSecurity);
 
@@ -566,13 +566,13 @@ public class TraitementAsynchroneServiceTest {
 
    @Test
    public void lancerJob_failure_capturemasse() throws JobInexistantException,
-         JobNonReserveException, JobDejaReserveException, LockTimeoutException {
+   JobNonReserveException, JobDejaReserveException, LockTimeoutException {
 
       // création d'un traitement de capture en masse
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
 
@@ -591,9 +591,9 @@ public class TraitementAsynchroneServiceTest {
             captureMasseServiceSansSpringSecurity.captureMasse(
                   URI.create(jobToCreate.getJobParameters().get(
                         Constantes.ECDE_URL)), idJob,
-                  jobParam.get(Constantes.HASH),
-                  jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                        jobParam.get(Constantes.HASH),
+                        jobParam.get(Constantes.TYPE_HASH)))
+                        .andReturn(exitTraitement);
 
       EasyMock.replay(captureMasseServiceSansSpringSecurity);
 
@@ -617,7 +617,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typehash");
 
@@ -641,7 +641,7 @@ public class TraitementAsynchroneServiceTest {
                   URI.create(jobParam.get(Constantes.ECDE_URL)), idJob,
                   jobParam.get(Constantes.HASH),
                   jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                  .andReturn(exitTraitement);
 
       EasyMock.replay(transfertMasseServiceSansSpringSecurity);
 
@@ -667,7 +667,7 @@ public class TraitementAsynchroneServiceTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       Map<String, String> jobParam = new HashMap<String, String>();
       jobParam
-            .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
+      .put(Constantes.ECDE_URL, "ecde://ecde.cer69.recouv/sommaire.xml");
       jobParam.put(Constantes.HASH, "hash");
       jobParam.put(Constantes.TYPE_HASH, "typeHash");
       jobParam.put(Constantes.CODE_TRAITEMENT, "cdTraitement");
@@ -692,7 +692,7 @@ public class TraitementAsynchroneServiceTest {
                   URI.create(jobParam.get(Constantes.ECDE_URL)), idJob,
                   jobParam.get(Constantes.HASH),
                   jobParam.get(Constantes.TYPE_HASH)))
-            .andReturn(exitTraitement);
+                  .andReturn(exitTraitement);
 
       EasyMock.replay(modificationMasseServiceSansSpringSecurity);
 
@@ -738,7 +738,7 @@ public class TraitementAsynchroneServiceTest {
             "le message de sortie du job dans la pile des travaux est inattendu",
             "Le traitement n°" + idJob + " a des paramètres inattendu : '"
                   + job.getJobParameters().get(Constantes.ECDE_URL) + "'.",
-            job.getMessage());
+                  job.getMessage());
 
    }
 
@@ -769,7 +769,7 @@ public class TraitementAsynchroneServiceTest {
 
          Assert.assertEquals("le message de l'exception est inattendu",
                "Impossible d'exécuter le traitement n°" + idJob
-                     + " car il n'a pas été réservé.", e.getMessage());
+               + " car il n'a pas été réservé.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob,
                e.getJobId());
@@ -809,7 +809,7 @@ public class TraitementAsynchroneServiceTest {
                "Traitement n° "
                      + idJob
                      + " - Le type de traitement 'type_inexistant' est inconnu.",
-               e.getMessage());
+                     e.getMessage());
 
          Assert.assertEquals("Le job est incorrect", idJob, e.getJob()
                .getIdJob());
@@ -844,7 +844,7 @@ public class TraitementAsynchroneServiceTest {
 
          Assert.assertEquals("le message de l'exception est inattendu",
                "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
-                     + " car il n'existe pas.", e.getMessage());
+               + " car il n'existe pas.", e.getMessage());
 
          Assert.assertEquals("l'instance du job est incorrect", idJob,
                e.getInstanceId());

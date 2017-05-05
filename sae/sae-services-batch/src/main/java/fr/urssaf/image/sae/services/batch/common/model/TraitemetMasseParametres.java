@@ -6,7 +6,7 @@ package fr.urssaf.image.sae.services.batch.common.model;
 import java.util.Map;
 import java.util.UUID;
 
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * 
  */
 public class TraitemetMasseParametres {
-   
+
    @Deprecated
    private String ecdeURL;
 
@@ -27,13 +27,13 @@ public class TraitemetMasseParametres {
    private final String clientHost;
 
    private final VIContenuExtrait viExtrait;
-   
-   
+
+
    /**
     * Type du traitement de masse
     */
    private TYPES_JOB type;
-   
+
    /**
     * Paramètre du traitement de masse
     */
@@ -81,7 +81,7 @@ public class TraitemetMasseParametres {
    public final UUID getUuid() {
       return uuid;
    }
-   
+
    /**
     * @return le type du traitement
     */

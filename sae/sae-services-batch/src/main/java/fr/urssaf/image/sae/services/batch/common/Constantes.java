@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.services.batch.common;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
+
 /**
  * Classe contenant les constantes utilisées dans le reste de la capture de
  * masse
@@ -299,13 +301,6 @@ public final class Constantes {
     * Constructeur
     */
    private Constantes() {
-   }
-
-   /**
-    * Types de traitements
-    */
-   public static enum TYPES_JOB {
-      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse;
    }
 
    /**
