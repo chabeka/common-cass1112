@@ -5,11 +5,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.CaptureMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ComptagesTdmFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationMasseResultatFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test3700Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.CaptureMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModificationMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
@@ -38,6 +41,13 @@ public class Test3700Controller extends AbstractTestWsController<Test3700Formula
       pagmList.add(SaeIntegrationConstantes.VI_DEFAULT_PAGM);
       viForm.setPagms(pagmList);
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
+      
+      CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
+      formCapture.setUrlSommaire(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-200/sommaire.xml"));
+      formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      formCapture.setTypeHash("SHA-1");
+      formCapture.setAvecHash(Boolean.TRUE);
+      formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
       
       ModificationMasseFormulaire formModification = formulaire.getModifMasseDecl();
       formModification.setUrlSommaire(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/TransfertMasse-3700/sommaire.xml"));
@@ -69,18 +79,53 @@ public class Test3700Controller extends AbstractTestWsController<Test3700Formula
          
       } else if ("2".equals(etape)) {
          
-         etape2TransfertMasseResultats(
+         etape2ModificationMasseResultats(
                formulaire.getModifMasseResult());
          
       } else if ("3".equals(etape)) {
 
          etape3Comptages(formulaire.getComptagesFormulaire());
 
-      } else {
+      } else if ("4".equals(etape)){
+         
+         etape1captureMasseAppelWs(
+               formulaire.getUrlServiceWeb(),
+               formulaire);
+         
+      }else {
          
          throw new IntegrationRuntimeException("L'étape " + etape + " est inconnue !");
          
       }  
+      
+   }
+   
+   private void etape1captureMasseAppelWs(
+         String urlWebService,
+         Test3700Formulaire formulaire) {
+      
+      // Vide le résultat du test précédent de l'étape 2
+      CaptureMasseResultatFormulaire formCaptMassRes = formulaire.getCaptureMasseResultat();
+      formCaptMassRes.getResultats().clear();
+      formCaptMassRes.setUrlSommaire(null);
+      
+      // Vide le résultat du test précédent de l'étape 3
+      ComptagesTdmFormulaire formComptages = formulaire.getComptagesFormulaire();
+      formComptages.getResultats().clear();
+      formComptages.setIdTdm(null);
+      
+      // Appel de la méthode de test
+      CaptureMasseResultat cmResult = getCaptureMasseTestService().appelWsOpArchiMasseTestLibre(
+            urlWebService, 
+            formulaire.getCaptureMasseDeclenchement(), formulaire.getViFormulaire());
+      
+      // Renseigne le formulaire de l'étape 2
+      formCaptMassRes.setUrlSommaire(formulaire.getCaptureMasseDeclenchement().getUrlSommaire());
+      
+      // Si pas d'erreur, on pré-remplit le formulaire de l'étape 3
+      if ((cmResult!=null) && (cmResult.isAppelAvecHashSommaire())) {
+         formComptages.setIdTdm(cmResult.getIdTraitement());
+      }
       
    }
    
@@ -113,7 +158,7 @@ public class Test3700Controller extends AbstractTestWsController<Test3700Formula
       
    }
 
-   private void etape2TransfertMasseResultats(
+   private void etape2ModificationMasseResultats(
          ModificationMasseResultatFormulaire formulaire) {
       
       getModificationMasseTestService().regardeResultatsTdm(formulaire);

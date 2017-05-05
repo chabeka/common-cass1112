@@ -23,6 +23,10 @@
 	<sae:vi objetFormulaire="${formulaire.viFormulaire}" pathFormulaire="viFormulaire" />
 
 	<form:hidden path="etape" />
+	
+	<sae:captureMasse numeroEtape="4"
+		objetFormulaire="${formulaire.captureMasseDeclenchement}"
+		pathFormulaire="captureMasseDeclenchement" />
 
 	<sae:transfertMasse numeroEtape="1"
 		objetFormulaire="${formulaire.transfertMasseDeclenchement}"

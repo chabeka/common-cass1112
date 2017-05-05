@@ -141,7 +141,7 @@
    <!-- ====================================================== -->
    
    
-   <p class="titre2">3) Configuration du chemin vers les tests de regression</p>
+   <p class="titre2">3) Configuration du chemin vers les tests de non-regression</p>
    
    <p style="color:red; font-style:italic; font-weight:bold;">Attention : cette modification n'est valable que pour la session en cours. Pour une modification définitive, il faut modifier le fichier de configuration de l'application.</p>
    
@@ -199,7 +199,7 @@
    <!-- ====================================================== -->
    
    
-   <p class="titre2">3) Configuration du chemin vers les fichiers des résultats attendus</p>
+   <p class="titre2">3) Configuration du chemin vers les fichiers des résultats attendus pour les tests de non-regression</p>
    
    <p style="color:red; font-style:italic; font-weight:bold;">Attention : cette modification n'est valable que pour la session en cours. Pour une modification définitive, il faut modifier le fichier de configuration de l'application.</p>
    
