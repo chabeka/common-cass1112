@@ -24,19 +24,19 @@
 
 	<form:hidden path="etape" />
 	
-	<sae:captureMasse numeroEtape="4"
+	<sae:captureMasse numeroEtape="1"
 		objetFormulaire="${formulaire.captureMasseDeclenchement}"
 		pathFormulaire="captureMasseDeclenchement" />
 
-	<sae:transfertMasse numeroEtape="1"
+	<sae:transfertMasse numeroEtape="2"
 		objetFormulaire="${formulaire.transfertMasseDeclenchement}"
 		pathFormulaire="transfertMasseDeclenchement" />
 
-	<sae:transfertMasseResultat numeroEtape="2"
+	<sae:transfertMasseResultat numeroEtape="3"
 		objetFormulaire="${formulaire.transfertMasseResultat}"
 		pathFormulaire="transfertMasseResultat" />
 	
-	<sae:comptagesTdm numeroEtape="3" pathFormulaire="comptagesFormulaire"
+	<sae:comptagesTdm numeroEtape="4" pathFormulaire="comptagesFormulaire"
       objetFormulaire="${formulaire.comptagesFormulaire}" />
 
 	<sae:soapMessages objetFormulaire="${formulaire.soapFormulaire}" />

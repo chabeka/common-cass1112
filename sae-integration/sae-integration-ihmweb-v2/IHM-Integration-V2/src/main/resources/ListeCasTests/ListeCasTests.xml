@@ -476,7 +476,7 @@
    <!-- Modification de masse -->
    <!-- ======================================================== -->
    <Categorie>
-      <Nom>modification de masse</Nom>
+      <Nom>Modification de masse</Nom>
       <Id>3700</Id>
       <CasTests>
          <CasTest>
@@ -492,7 +492,7 @@
    </Categorie>
    
    <!-- ======================================================== -->
-   <!-- Modification de masse -->
+   <!-- Deblocage de Job -->
    <!-- ======================================================== -->
    <Categorie>
       <Nom>Deblocage de Job</Nom>

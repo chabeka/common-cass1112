@@ -73,22 +73,22 @@ Test3600Formulaire formulaire = new Test3600Formulaire();
    protected void doPost(Test3600Formulaire formulaire) {
       
       String etape = formulaire.getEtape();
-      if ("1".equals(etape)) {
+      if ("2".equals(etape)) {
          
          etape1TransfertMasseAppelWs(
                formulaire.getUrlServiceWeb(),
                formulaire);
          
-      } else if ("2".equals(etape)) {
+      } else if ("3".equals(etape)) {
          
          etape2TransfertMasseResultats(
                formulaire.getTransfertMasseResultat());
          
-      } else if ("3".equals(etape)) {
+      } else if ("4".equals(etape)) {
 
          etape3Comptages(formulaire.getComptagesFormulaire());
 
-      } else if ("4".equals(etape)){
+      } else if ("1".equals(etape)){
          
          etape1captureMasseAppelWs(
                formulaire.getUrlServiceWeb(),

@@ -71,22 +71,22 @@ public class Test3700Controller extends AbstractTestWsController<Test3700Formula
    protected void doPost(Test3700Formulaire formulaire) {
 
       String etape = formulaire.getEtape();
-      if ("1".equals(etape)) {
+      if ("2".equals(etape)) {
          
          etape1ModificationMasseAppelWs(
                formulaire.getUrlServiceWeb(),
                formulaire);
          
-      } else if ("2".equals(etape)) {
+      } else if ("3".equals(etape)) {
          
          etape2ModificationMasseResultats(
                formulaire.getModifMasseResult());
          
-      } else if ("3".equals(etape)) {
+      } else if ("4".equals(etape)) {
 
          etape3Comptages(formulaire.getComptagesFormulaire());
 
-      } else if ("4".equals(etape)){
+      } else if ("1".equals(etape)){
          
          etape1captureMasseAppelWs(
                formulaire.getUrlServiceWeb(),
