@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 
 /**
@@ -38,10 +39,13 @@ public interface VerificationSupport {
     *           identifiant du traitement
     * @param listeDocsIntegres
     *           Liste des documents intégrés
+    * @param typeJob
+    *           Le type du job qui demande le check
     */
    void checkFinTraitement(URI sommaireURL, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement, boolean logPresent,
          List<Throwable> erreurs, UUID idTraitement,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres);
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+         TYPES_JOB typeJob);
 
 }

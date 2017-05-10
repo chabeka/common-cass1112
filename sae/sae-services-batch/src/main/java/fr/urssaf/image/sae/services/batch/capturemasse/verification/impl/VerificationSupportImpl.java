@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
@@ -65,44 +66,15 @@ public class VerificationSupportImpl implements VerificationSupport {
          + "\"Tout ou rien\" a été interrompue. Une procédure d'exploitation a été "
          + "initialisée pour supprimer les données qui auraient pu être stockées.";
 
+   private static final String LIBELLE_BUL004 = "La modification en masse en mode 'Partiel' a été interrompue. "
+         + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+
+   private static final String LIBELLE_BUL005 = "Le transfert de masse en mode 'Partiel' a été interrompue. "
+         + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+
    private static final String CATCH = "AvoidCatchingThrowable";
 
-   /**
-    * {@inheritDoc}
-    */
-   @SuppressWarnings(CATCH)
-   @Override
-   public final void checkFinTraitement(URI urlEcde, Integer nbreDocs,
-         Integer nbreStockes, String batchModeTraitement, boolean logPresent,
-         List<Throwable> erreurs, UUID idTraitement,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres) {
 
-      LOGGER.debug("{} - debut", CHECK);
-
-      try {
-
-         File sommaire = checkSommaire(urlEcde);
-
-         File repTravail = sommaire.getParentFile();
-
-         checkDebutTraitement(repTravail, idTraitement);
-
-         checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
-               erreurs, sommaire, listeDocsIntegres);
-
-         checkFinTraitement(repTravail);
-
-         checkLogs(nbreStockes, idTraitement, logPresent);
-
-         LOGGER.debug("{} - fin", CHECK);
-
-         /* erreurs de vérification du fichier sommaire */
-      } catch (Throwable e) {
-         LOGGER.warn(
-               "une erreur est survenue lors de la vérification de fin de traitement",
-               CHECK, e);
-      }
-   }
 
    /**
     * @param urlEcde
@@ -159,11 +131,14 @@ public class VerificationSupportImpl implements VerificationSupport {
     *           Mode de traitement du batch
     * @param listeDocsIntegres
     *           Liste des documents intégrés
+    * @param typeJob
+    *           Le type du job qui demande le check
     */
    private void checkResultats(File repTravail, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement,
          List<Throwable> listeErreurs, File sommaire,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres) {
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+         TYPES_JOB typeJob) {
 
       File resultats = new File(repTravail, "resultats.xml");
 
@@ -183,7 +158,7 @@ public class VerificationSupportImpl implements VerificationSupport {
          }
 
          CaptureMasseErreur erreur = convertListToErreur(listeErreurs,
-               nbreIntegres);
+               nbreIntegres, typeJob);
 
          resultatsSupport.writeResultatsFile(repTravail, sommaire, erreur,
                nbreTotal, nbreIntegres, batchModeTraitement, listeDocsIntegres);
@@ -192,21 +167,38 @@ public class VerificationSupportImpl implements VerificationSupport {
    }
 
    /**
+    * Convertit la liste d'exception en bean erreur.
+    * 
     * @param listeErreurs
-    * @return
+    *           liste des erreurs
+    * @param nbreIntegres
+    *           Nombre de documents intégrés
+    * @param typeJob
+    *           Le type du job qui demande le check
+    * @return L'erreur de capture de masse
     */
    private CaptureMasseErreur convertListToErreur(List<Throwable> listeErreurs,
-         int nbreIntegres) {
+         int nbreIntegres, TYPES_JOB typeJob) {
 
-      String messageErreur, codeErreur;
+      String messageErreur = null, codeErreur = null;
+
+      String messException = "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de "
+            + typeJob.name() + ". Détails : Erreur ";
 
       if (nbreIntegres > 0) {
-         messageErreur = LIBELLE_BUL003;
-         codeErreur = Constantes.ERR_BUL003;
-         LOGGER.error("Génération de secours du fichier "
-               + "resultats.xml car il n'a pas été généré "
-               + "par le job de capture de masse. Détails : Erreur "
-               + Constantes.ERR_BUL003);
+         if (TYPES_JOB.capture_masse.equals(typeJob)) {
+            messageErreur = LIBELLE_BUL003;
+            codeErreur = Constantes.ERR_BUL003;
+            LOGGER.error(messException + Constantes.ERR_BUL003);
+         } else if (TYPES_JOB.modification_masse.equals(typeJob)) {
+            messageErreur = LIBELLE_BUL004;
+            codeErreur = Constantes.ERR_BUL004;
+            LOGGER.error(messException + Constantes.ERR_BUL004);
+         } else if (TYPES_JOB.transfert_masse.equals(typeJob)) {
+            messageErreur = LIBELLE_BUL005;
+            codeErreur = Constantes.ERR_BUL005;
+            LOGGER.error(messException + Constantes.ERR_BUL005);
+         }
 
       } else {
          codeErreur = Constantes.ERR_BUL001;
@@ -234,10 +226,8 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          messageErreur = buffer.toString();
 
-         LOGGER.error("Génération de secours du fichier resultats.xml "
-               + "car il n'a pas été généré par le job "
-               + "de capture de masse. Détails : Erreur "
-               + Constantes.ERR_BUL001 + " avec le message : " + messageErreur);
+         LOGGER.error(messException + Constantes.ERR_BUL001
+               + " avec le message : " + messageErreur);
       }
 
       List<Exception> exceptions = new ArrayList<Exception>();
@@ -310,13 +300,54 @@ public class VerificationSupportImpl implements VerificationSupport {
                + "de rollback par procédure d'exploitation "
                + "car il n'a pas été généré par le job de capture de masse");
 
-         LOGGER
-.error(
-
-               "Le traitement de masse n°{} doit éventuellement être rollbacké "
-                     + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
-                     idTraitement);
+         LOGGER.error("Le traitement de masse n°{} doit éventuellement être rollbacké "
+               + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
+               idTraitement);
       }
 
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @SuppressWarnings(CATCH)
+   @Override
+   public void checkFinTraitement(
+         URI sommaireURL,
+         Integer nbreDocs,
+         Integer nbreStockes,
+         String batchModeTraitement,
+         boolean logPresent,
+         List<Throwable> erreurs,
+         UUID idTraitement,
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+         TYPES_JOB typeJob) {
+
+      LOGGER.debug("{} - debut", CHECK);
+
+      try {
+
+         File sommaire = checkSommaire(sommaireURL);
+
+         File repTravail = sommaire.getParentFile();
+
+         checkDebutTraitement(repTravail, idTraitement);
+
+         checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
+               erreurs, sommaire, listeDocsIntegres, typeJob);
+
+         checkFinTraitement(repTravail);
+
+         checkLogs(nbreStockes, idTraitement, logPresent);
+
+         LOGGER.debug("{} - fin", CHECK);
+
+         /* erreurs de vérification du fichier sommaire */
+      } catch (Throwable e) {
+         LOGGER.warn(
+               "une erreur est survenue lors de la vérification de fin de traitement",
+               CHECK, e);
+      }
+   }
+
 }

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
@@ -43,7 +44,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
    @Autowired
    private VerificationSupport verifSupport;
-   
+
    /**
     * Pool d'execution des insertions de documents
     */
@@ -103,9 +104,9 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
          logPresent = jobExecution.getExecutionContext().containsKey(
                Constantes.FLAG_BUL003);
       }
-      
+
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
-            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments());
+            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments(), TYPES_JOB.capture_masse);
 
    }
 

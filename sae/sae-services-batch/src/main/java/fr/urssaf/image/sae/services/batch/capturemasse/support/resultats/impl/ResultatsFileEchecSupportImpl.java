@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -335,7 +334,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @throws XMLStreamException
     */
    private void endElement(final String name) {
       if ("documents".equals(name)) {
@@ -346,7 +344,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @throws XMLStreamException
     */
    private void endElementVirtuel(final String name) {
       if ("documentsVirtuels".equals(name)) {
@@ -363,7 +360,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @throws XMLStreamException
     */
    private void endElementIntegrated(final String name) {
       if ("documents".equals(name)) {
@@ -375,7 +371,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param name
-    * @throws XMLStreamException
     */
    private void endElementVirtuelIntegrated(final String name) {
       if ("documentsVirtuels".equals(name)) {
@@ -768,7 +763,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param erreur
     * @param index
     * @param reader
-    * @throws XMLStreamException
     */
    private void addMetadatas(CaptureMasseErreur erreur, int index,
          XmlReader reader) {
@@ -943,7 +937,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             throw new ResultatEchecLectureXMLException(nomXmlEvent);
          }
          
-         baliseFind = xmlEvent != null && xmlEvent.isStartElement()
+         baliseFind = xmlEvent.isStartElement()
                && nomXmlEvent.equals(xmlEvent.asStartElement().getName()
                      .getLocalPart());
 
@@ -992,7 +986,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
    /**
     * @param xmlEvent
-    * @throws XMLStreamException
     */
    private void gestionElement(XMLEvent xmlEvent) {
 
@@ -1176,7 +1169,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param erreur
-    * @throws XMLStreamException
     */
    private void addErreurVirtuelle(final CaptureMasseErreur erreur, int index) {
 
@@ -1218,7 +1210,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    /**
     * 
     * @param erreur
-    * @throws XMLStreamException
     */
    private void addErreurReference(final CaptureMasseErreur erreur, int index) {
 

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
@@ -32,7 +33,7 @@ import fr.urssaf.image.sae.services.batch.transfert.SAETransfertMasseService;
  */
 @Service
 public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
-   
+
    /**
     * Logger
     */
@@ -54,7 +55,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
     */
    @Autowired
    private JobLauncher jobLauncher;
-   
+
    /**
     * Service de gestion de la pile des travaux.
     */
@@ -66,7 +67,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
     */
    @Autowired
    private VerificationSupport verifSupport;
-   
+
    /**
     * Pool d'execution des insertions de documents
     */
@@ -87,7 +88,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
    @Override
    public ExitTraitement transfertMasse(final URI sommaireURI, final UUID idTraitement, final String hash,
          String typeHash) {
-      
+
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       if (sommaireURI != null) {
          mapParam.put(Constantes.SOMMAIRE,
@@ -107,7 +108,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
       JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
       JobExecution jobExecution = null;
-      
+
       try {
          jobExecution = jobLauncher.run(job, parameters);
 
@@ -152,7 +153,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
 
       return exitTraitement;
    }
-   
+
    /**
     * @param jobExecution
     * @param idTraitement
@@ -180,7 +181,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
       }
 
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
-            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments());
+            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments(), TYPES_JOB.transfert_masse);
 
    }
 
