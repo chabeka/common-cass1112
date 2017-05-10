@@ -332,12 +332,13 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     */
    @Override
    public void modificationMetaDocument(StorageDocument document, String trcPrefix) throws ModificationException, UpdateServiceEx {
-     
-         if (document != null && document.getUuid() != null && document.getMetadatas() != null && document.getMetadatasToDelete() != null) {
-            documentService.updateStorageDocument(document.getUuid(), document.getMetadatas(), document.getMetadatasToDelete());  
-         } else {
-            throw new ModificationException("Le document à modifier est éronné");
-         }   
+      if (document != null && document.getUuid() != null 
+            && (document.getMetadatas() != null || document.getMetadatasToDelete() != null)) {
+         documentService.updateStorageDocument(document.getUuid(), document.getMetadatas(), document.getMetadatasToDelete());  
+      } else {
+         throw new ModificationException(
+               "Une erreur interne à l'application est survenue lors de la modification");
+      }   
    }
 
 
