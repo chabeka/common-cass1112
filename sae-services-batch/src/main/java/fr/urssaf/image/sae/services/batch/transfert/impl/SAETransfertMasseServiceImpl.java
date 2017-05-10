@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.modification.impl.SAEModificationMasseServiceImpl;
@@ -180,7 +181,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
       }
 
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
-            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments());
+            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments(), TYPES_JOB.transfert_masse);
 
    }
 

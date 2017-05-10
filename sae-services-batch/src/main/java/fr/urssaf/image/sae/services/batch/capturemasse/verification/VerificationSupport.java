@@ -9,6 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 
 /**
  * Ce service permet de réaliser les vérifications finales, une fois le job fini
@@ -38,10 +39,13 @@ public interface VerificationSupport {
     *           identifiant du traitement
     * @param listeDocsIntegres
     *           Liste des documents intégrés
+    * @param typeJob
+    *           Le type du job qui demande le check
     */
    void checkFinTraitement(URI sommaireURL, Integer nbreDocs,
          Integer nbreStockes, String batchModeTraitement, boolean logPresent,
          List<Throwable> erreurs, UUID idTraitement,
-         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres);
+         ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres,
+         TYPES_JOB typeJob);
 
 }
