@@ -75,7 +75,7 @@ public class MainValidation {
 
          StringBuffer strBuff = new StringBuffer();
          strBuff
-               .append("Erreur : Il faut indiquer, en premier argument de la ligne de commande, le chemin complet du fichier de configuration du SAE");
+         .append("Erreur : Il faut indiquer, en premier argument de la ligne de commande, le chemin complet du fichier de configuration du SAE");
          strBuff.append(String.format(" (argument fourni : %s).", pathFile));
          String message = strBuff.toString();
 
@@ -223,8 +223,11 @@ public class MainValidation {
       if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_170202
             .equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.CASSANDRA_DFCE_170900
+            .equalsIgnoreCase(nomOperation))
+         return;
 
-      
+
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)
 
