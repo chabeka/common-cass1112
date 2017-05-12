@@ -45,6 +45,7 @@ import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -456,7 +457,8 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       boolean messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier debut_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de "
+                  + TYPES_JOB.capture_masse.name());
 
       Assert.assertTrue(
             "présence du message pour le fichier debut_traitement.flag",
@@ -472,7 +474,8 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier fin_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de "
+                  + TYPES_JOB.capture_masse.name());
 
       Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
