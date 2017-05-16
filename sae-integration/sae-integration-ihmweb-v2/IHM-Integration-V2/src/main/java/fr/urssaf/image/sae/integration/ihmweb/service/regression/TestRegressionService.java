@@ -26,14 +26,19 @@ import org.apache.axiom.soap.SOAPMessage;
 import org.apache.axiom.soap.impl.builder.StAXSOAPModelBuilder;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
+import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
+import fr.urssaf.image.sae.integration.ihmweb.modele.EcdeRepertoire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TestMasse;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestProprietes;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub;
+import fr.urssaf.image.sae.integration.ihmweb.service.ecde.EcdeService;
 
 /**
  * couche service pour la partie des tests de non regression
@@ -44,6 +49,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
    @Autowired
    private TestConfig testConfig;
+   
+   @Autowired
+   private EcdeService ecdeService;
 
    private SaeServiceStub stub;
 
@@ -154,6 +162,246 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       test.setMessageInOut(testMessageMap);
 
       return test;
+   }
+
+   public List<TestMasse> testRegressionMasse(String[] checkboxValue)
+         throws IOException, XMLStreamException, SAXException,
+         ParserConfigurationException {
+      test = new TestProprietes();
+      test.setCheckboxValue(checkboxValue);
+      List<TestMasse> resMasse = new ArrayList<TestMasse>();
+
+      // on boucle sur l'ensemble des test de non regression
+      for (String reg : checkboxValue) {
+         // on stocke le nom de chaque test dans une list
+         List<String> records = new ArrayList<String>();
+         BufferedReader reader = new BufferedReader(new FileReader(
+               testConfig.getTestRegression() + reg));
+         String line;
+         while ((line = reader.readLine()) != null) {
+            records.add(line);
+         }
+         reader.close();
+
+         // on boucle sur l'ensemble des tes XML de chaque test de non
+         // regression
+         for (String str : records) {
+
+            // Recupere nom du service a appeller
+            String sub = str;
+            int debut = str.indexOf("_");
+            int fin = str.indexOf("_", debut + 1);
+            sub = str.substring(debut + 1, fin);
+
+            // Recupere contenu du fichier pour message context
+            File messageOut = new File(testConfig.getTestXml() + str);
+            BufferedInputStream in = new BufferedInputStream(
+                  new FileInputStream(messageOut));
+            StringWriter out = new StringWriter();
+            int b;
+            while ((b = in.read()) != -1)
+               out.write(b);
+            out.flush();
+            out.close();
+            in.close();
+            String contenu = out.toString();
+            String ecde;
+            
+            if (contenu.contains("<saes:urlSommaire>")) {
+               ecde = StringUtils.substringBetween(contenu,
+                     "<saes:urlSommaire>", "</saes:urlSommaire>");
+               ecde = StringUtils.substringBeforeLast(ecde, "/") + "/";
+            } else {
+               ecde = StringUtils.substringBetween(contenu,
+                     "<ns1:urlSommaire>", "</ns1:urlSommaire>");
+               ecde = StringUtils.substringBeforeLast(ecde, "/") + "/";
+            }
+
+            // appelle du stub
+            String res = appelleStub(sub, contenu, str);
+            System.out.println("RES : " + res);
+
+            TestMasse testMasse = new TestMasse();
+            testMasse.setLienEcde(ecde);
+            testMasse.setName(reg);
+            testMasse.setValider("NON");
+            testMasse.setIsResultatPresent(isResPresent(ecde));
+            resMasse.add(testMasse);
+            System.out.println("ECDE : " + ecde);
+            System.out.println("isResultatPResent : " + testMasse.getIsResultatPresent());
+         }
+      }
+
+      return resMasse;
+   }
+   
+   public boolean isResPresent(String ecde){
+      String cheminFicSommaire = ecdeService
+            .convertUrlEcdeToPath(ecde);
+
+      String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
+
+      String cheminFichierFlag = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_FLAG_TDM);
+      
+      System.out.println("CHEMIN FICHIER FLAG : " + cheminFichierFlag);
+      
+      File file = new File(cheminFichierFlag);
+      boolean isResultatPresent = file.exists();
+
+      return isResultatPresent;
+   }
+   
+   public String validerTestMasse(TestMasse testMasse) throws IOException{
+      
+      String cheminFicSommaire = ecdeService
+            .convertUrlEcdeToPath(testMasse.getLienEcde());
+      
+      String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
+      
+      String cheminFichierResultat = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_RESULTATS);
+      
+      File fileResultat = new File(cheminFichierResultat);
+      
+      BufferedInputStream in;
+      int b;
+      StringWriter out;
+      
+      String resultat;
+      
+      if (fileResultat.exists()){
+         in = new BufferedInputStream(
+               new FileInputStream(fileResultat));
+         out = new StringWriter();
+         b = 0;
+         while ((b = in.read()) != -1)
+            out.write(b);
+         out.flush();
+         out.close();
+         in.close();
+       resultat = out.toString();
+         }else
+           return ("Fichier resultat introuvable");
+      
+   // fonction de compare avec resultat et fichier attendu
+      String nom = StringUtils.remove(testMasse.getName(), ".txt");
+      // Recupere contenu du fichier pour message context
+
+      BufferedReader br = null;
+      FileReader fr = null;
+
+      try {
+
+         fr = new FileReader(testConfig.getTestAttendu() + nom + "_attendu.xml");
+         br = new BufferedReader(fr);
+
+         String sCurrentLine;
+
+         br = new BufferedReader(new FileReader(testConfig.getTestAttendu()
+               + nom + "_attendu.xml"));
+
+         // on verifi que chaque ligne contenu dans le fichier "attendu" se
+         // trouve bien dans le resultat du test
+         while ((sCurrentLine = br.readLine()) != null) {
+            System.out.println(sCurrentLine);
+            if (!resultat.contains(sCurrentLine))
+               return "KO";
+         }
+
+      } catch (IOException e) {
+
+         e.printStackTrace();
+      }
+      
+      
+      return "OK";
+   }
+   
+   public EcdeRepertoire contenuEcde(String ecde) throws IOException{
+      
+      EcdeRepertoire rep = new EcdeRepertoire();
+      
+      String cheminFicSommaire = ecdeService
+            .convertUrlEcdeToPath(ecde);
+
+      String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
+      
+      String cheminFichierFinFlag = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_FLAG_TDM);
+      String cheminFichierDebutFlag = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_DEB_FLAG_TDM);
+      String cheminFichierResultat = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_RESULTATS);
+      String cheminFichierSommaire = FilenameUtils.concat(repTraitement,
+            "sommaire.xml");
+      
+      File fileFinFlag = new File(cheminFichierFinFlag);
+      File fileDebutFlag = new File(cheminFichierDebutFlag);
+      File fileResultat = new File(cheminFichierResultat);
+      File fileSommaire = new File(cheminFichierSommaire);
+      
+      BufferedInputStream in;
+      int b;
+      StringWriter out;
+      
+      if (fileFinFlag.exists()){
+      in = new BufferedInputStream(
+            new FileInputStream(fileFinFlag));
+      out = new StringWriter();
+      b = 0;
+      while ((b = in.read()) != -1)
+         out.write(b);
+      out.flush();
+      out.close();
+      in.close();
+      rep.setFinTraitement(out.toString());
+      }else
+         rep.setFinTraitement("Fichier finTraitement.flag introuvable");
+      
+      if (fileDebutFlag.exists()){
+      in = new BufferedInputStream(
+            new FileInputStream(fileDebutFlag));
+      out = new StringWriter();
+      b = 0;
+      while ((b = in.read()) != -1)
+         out.write(b);
+      out.flush();
+      out.close();
+      in.close();
+      rep.setDebutTraitement(out.toString());
+      }else
+         rep.setDebutTraitement("Fichier debutTraitement.flag introuvable");
+      
+      if (fileResultat.exists()){
+      in = new BufferedInputStream(
+            new FileInputStream(fileResultat));
+      out = new StringWriter();
+      b = 0;
+      while ((b = in.read()) != -1)
+         out.write(b);
+      out.flush();
+      out.close();
+      in.close();
+      rep.setResultat(out.toString());
+      }else
+         rep.setResultat("Fichier resultat introuvable");
+      
+      if (fileSommaire.exists()){
+      in = new BufferedInputStream(
+            new FileInputStream(fileSommaire));
+      out = new StringWriter();
+      b = 0;
+      while ((b = in.read()) != -1)
+         out.write(b);
+      out.flush();
+      out.close();
+      in.close();
+      rep.setSommaire(out.toString());
+      }else
+         rep.setSommaire("Fichier sommaire introuvable");
+      
+      return rep;
    }
 
    /**

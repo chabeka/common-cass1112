@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.integration.ihmweb.config.TestConfig;
+import fr.urssaf.image.sae.integration.ihmweb.modele.EcdeRepertoire;
+import fr.urssaf.image.sae.integration.ihmweb.modele.TestMasse;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestProprietes;
 import fr.urssaf.image.sae.integration.ihmweb.service.regression.TestRegressionService;
 
@@ -40,11 +42,14 @@ public class TestRegressionController {
    private TestRegressionService testRegressionService;
 
    /**
-    * Injection du bean contenant toutes les informations sur la configuration de l'IHM
-    * ex : chemin vers dossiers des tests, URL des web services du SAE ...
+    * Injection du bean contenant toutes les informations sur la configuration
+    * de l'IHM ex : chemin vers dossiers des tests, URL des web services du SAE
+    * ...
     */
    @Autowired
    private TestConfig testConfig;
+   
+   List<TestMasse> testMasse; 
 
    TestProprietes test;
 
@@ -96,24 +101,39 @@ public class TestRegressionController {
          @RequestParam("checkboxName") String[] checkboxValue, Model model)
          throws IOException, XMLStreamException, SAXException,
          ParserConfigurationException, InterruptedException {
-      test = new TestProprietes();
+         
 
       // ajout du type de fichier pour la recherche dans le dossier des tests de
       // non regression
       String[] checkChange = new String[checkboxValue.length];
       int i = 0;
+      boolean isMasse = false;
       for (String str : checkboxValue) {
+         if (str.contains("Masse"))
+            isMasse = true;
          checkChange[i] = str + ".txt";
          i++;
       }
 
-      // appelle a la couche service pour lancer les tests selectionnés dans la
-      // checkbox
-      test = testRegressionService.testRegression(checkChange);
+      if (!isMasse) {
+         test = new TestProprietes();
+         // appelle a la couche service pour lancer les tests selectionnés dans
+         // la
+         // checkbox
+         test = testRegressionService.testRegression(checkChange);
 
-      // ajout des resultats dans le modele pour affichage dans la jsp
-      model.addAttribute("resRegression", test);
-      return "resultatRegression";
+         // ajout des resultats dans le modele pour affichage dans la jsp
+         model.addAttribute("resRegression", test);
+         return "resultatRegression";
+      } else {
+         testMasse = new ArrayList<TestMasse>();
+         // appelle couche service fonction testRegressionMasse
+         testMasse = testRegressionService.testRegressionMasse(checkChange);
+         // add Attribute dans model
+         model.addAttribute("resMasse", testMasse);
+         // return jsp resultatRegressionMasse
+         return "resultatRegressionMasse";
+      }
 
    }
 
@@ -167,10 +187,28 @@ public class TestRegressionController {
       System.out.println("RETOUR TEST");
       return "resultatRegression";
    }
+   
+   /**
+    * fonction permettant de gérer le retour au resultat des test depuis la JSP
+    * detailRegressionMasse
+    * 
+    * @param detailTest
+    * @param model
+    * @return
+    */
+   @RequestMapping(method = RequestMethod.POST, params = { "action=retourTestMasse" })
+   public String retourTestMasse(@RequestParam("myValue") String detailTest,
+         Model model) {
+      // permet de retourner au resultat des tests depuis la JSP de détail des
+      // resultats
+      model.addAttribute("resMasse", testMasse);
+      System.out.println("RETOUR TEST");
+      return "resultatRegressionMasse";
+   }
 
    /**
-    * fonction permettant d'afficher le contenu des messages envoyés et recus pour
-    * chaque test
+    * fonction permettant d'afficher le contenu des messages envoyés et recus
+    * pour chaque test
     * 
     * @param detailTest
     * @param model
@@ -207,6 +245,51 @@ public class TestRegressionController {
       return "detailTest";
    }
 
+   @RequestMapping(method = RequestMethod.POST, params = { "action=rafraichir" })
+   public String rafraichir(@RequestParam("myValue") String test,
+         Model model) {
+      
+      List<TestMasse> newList = new ArrayList<TestMasse>();
+      for (TestMasse t : testMasse)
+      {
+         t.setIsResultatPresent(testRegressionService.isResPresent(t.getLienEcde()));
+         newList.add(t);
+      }
+      
+      model.addAttribute("resMasse", newList);
+      return "resultatRegressionMasse";
+   }
+   
+   @RequestMapping(method = RequestMethod.POST, params = { "action=detailTestRegressionMasse" })
+   public String detailTestMasse(@RequestParam("myValue") String ecdeLien, Model model) throws IOException{
+      
+      EcdeRepertoire repEcde = testRegressionService.contenuEcde(ecdeLien);
+      
+      model.addAttribute("repertoireEcde", repEcde);
+      return "detailTestMasse";
+      
+   }
+   
+   @RequestMapping(method = RequestMethod.POST, params = { "action=validerTestMasse"})
+   public String validerTestMasse(@RequestParam("myValue") String name, Model model) throws IOException{
+      
+      TestMasse testValider = new TestMasse();
+      for (TestMasse t : testMasse){
+         if (t.getName().equals(name))
+            testValider = t;
+      }
+      
+//      EcdeRepertoire repEcde = testRegressionService.contenuEcde(testValider.getLienEcde());
+//      String resultat = repEcde.getResultat();
+      
+      //fonction couche service validerTestMasse
+      testValider.setValider(testRegressionService.validerTestMasse(testValider));
+      
+      model.addAttribute("resMasse", testMasse);
+      
+      return "resultatRegressionMasse";
+   }
+   
    // @RequestMapping(method = RequestMethod.POST, params = {
    // "action=downloadTest" })
    // public void downloadTest(@RequestParam("myValue") String checkboxValue,

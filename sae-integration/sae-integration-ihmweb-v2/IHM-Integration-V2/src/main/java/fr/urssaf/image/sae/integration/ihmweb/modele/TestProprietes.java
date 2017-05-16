@@ -11,12 +11,14 @@ public class TestProprietes {
    private Map<String, Map<String, String>> resStub;
    private Map<String, Map<String, Map<String, String>>> messageInOut;
    private Map<String, String> testOkKo;
+   private Map<String, Map<String, String>> mapRegressionMasse;
    
    
    public TestProprietes(){
       resStub = new LinkedHashMap<String, Map<String, String>>();
       messageInOut =  new LinkedHashMap<String, Map<String, Map<String, String>>>();
       testOkKo =  new LinkedHashMap<String, String>();
+      mapRegressionMasse = new LinkedHashMap<String, Map<String, String>>();
    }
    
    public TestProprietes(String name){
@@ -27,7 +29,15 @@ public class TestProprietes {
    }
    
    
-   
+   public Map<String, Map<String, String>> getMapRegressionMasse() {
+      return mapRegressionMasse;
+   }
+
+   public void setMapRegressionMasse(
+         Map<String, Map<String, String>> mapRegressionMasse) {
+      this.mapRegressionMasse = mapRegressionMasse;
+   }
+
    public Map<String, String> getTestOkKo() {
       return testOkKo;
    }

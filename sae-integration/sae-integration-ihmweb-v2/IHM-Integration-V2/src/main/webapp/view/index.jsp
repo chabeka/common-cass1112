@@ -32,6 +32,12 @@
 						<td><a href="config.do">Configuration de l'application</a></td>
 					</tr>
 					<tr>
+						<td><a href="jeuxTestInjectionConfig.do.do">Jeux de test à injecter : Configuration</a></td>
+					</tr>
+					<tr>
+						<td><a href="jeuxTestInjectionLancement.do">Jeux de test à injecter : Lancement</a></td>
+					</tr>
+					<tr>
 						<td><a href="calcTemp.do">Calculatrice temporelle</a></td>
 					</tr>
 					<tr>
