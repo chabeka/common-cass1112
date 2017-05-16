@@ -621,6 +621,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       StorageDocument document = new StorageDocument();
 
       try {
+         
+         controleDroitTransfert(idArchive);
+         
          document = recupererDocMetaTransferable(idArchive);
 
          StorageDocument documentGNS = transfertControlePlateforme(document,
@@ -642,6 +645,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (RetrievalServiceEx ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (InvalidSAETypeException ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (MappingFromReferentialException ex) {
          throw new TransfertException(erreur, ex);
       }
    }
