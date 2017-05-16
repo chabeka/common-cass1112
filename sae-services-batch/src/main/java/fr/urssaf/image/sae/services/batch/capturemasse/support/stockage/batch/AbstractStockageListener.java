@@ -212,25 +212,29 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          getLogger()
                .error(
 
-                     "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                     "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation",
                      idTraitement);
 
          getStepExecution().getJobExecution().getExecutionContext()
                .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
-         String messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
-               + "Une procédure d'exploitation a été initialisée pour supprimer les données "
-               + "qui auraient pu être stockées.";
-
+         codes.add(Constantes.ERR_BUL003);
          codes.add(Constantes.ERR_BUL003);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(messageError));
-
+         String messageError;
+         
          if (this.isModePartielBatch()) {
+            messageError = "La capture de masse en mode 'Partiel' a été interrompue. "
+                  + "Une procédure de rerprise doit être réalisée pour terminer le stockage de documents.";
             status = new ExitStatus("COMPLETED");
          } else {
+            messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
+                  + "Une procédure de reprise doit être réalisée afin de supprimer les données "
+                  + "qui auraient pu être stockées et de relancer la capture";
             status = new ExitStatus("FAILED_NO_ROLLBACK");
          }
+
+         exceptions.add(new Exception(messageError));
 
       } catch (Exception e) {
 

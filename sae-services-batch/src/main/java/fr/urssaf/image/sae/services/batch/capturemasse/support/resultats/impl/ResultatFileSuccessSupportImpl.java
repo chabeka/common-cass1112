@@ -169,10 +169,6 @@ public class ResultatFileSuccessSupportImpl implements
             String name;
             // On parcourt le fichier sommaire.xml et pour chaque document on
             // récupère l'uuid associé dans la liste des documents intégrés
-            // (Cette liste est triée par index et comme seul le mode "Tout ou
-            // rien" est pris en charge actuellement, elle correspond bien à
-            // l'ordre des documents du sommaire)
-
             int index = -1;
             IntegratedDocumentType integratedDocumentType = null;
             FichierType objetNumerique = null;
