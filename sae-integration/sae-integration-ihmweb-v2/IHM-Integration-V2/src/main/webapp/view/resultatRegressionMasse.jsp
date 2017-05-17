@@ -82,9 +82,9 @@
 						<td style="text-align: center;">
 							<form method="post" class="mesForms2"> 
 								<input type="hidden" name="myValue" value="${metadonnee.name}" />
-								<input type="hidden" name="action" id="${metadonnee.name}" />
+								<input type="hidden" name="action" id="${metadonnee.lienEcde}" />
 								<input type="submit" class="btn btn-default btn-md"
-									onclick="document.getElementById('${metadonnee.name}').value='validerTest'"
+									onclick="document.getElementById('${metadonnee.lienEcde}').value='validerTestMasse'"
 									value="Valider le test" />
 							</form>
 						</td>
@@ -109,10 +109,10 @@
 									onclick="document.getElementById('${resMasse}').value='rafraichir'"
 									value="Rafraichir" />
 										<form method="post" class="mesForms2">
-								<input type="hidden" name="myValue" value="${resMasse}" />
-								<input type="hidden" name="action" id="${resMasse}" />
+								<input type="hidden" name="myValue2" value="toutValider" />
+								<input type="hidden" name="action2" id="toutValider" />
 								<input type="submit" class="btn btn-default btn-md"
-									onclick="document.getElementById('${resMasse}').value='toutValider'"
+									onclick="document.getElementById('toutValider').value='toutValider'"
 									value="Valider tout les tests" />
 </body>
 </html>

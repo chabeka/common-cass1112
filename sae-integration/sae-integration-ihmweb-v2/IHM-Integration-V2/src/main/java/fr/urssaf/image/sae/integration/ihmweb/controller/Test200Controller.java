@@ -51,10 +51,10 @@ public class Test200Controller extends AbstractTestWsController<Test200Formulair
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       
       CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
-      formCapture.setUrlSommaire(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-200/sommaire.xml"));
-      formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      formCapture.setUrlSommaire("");
+      formCapture.setHash("");
       formCapture.setTypeHash("SHA-1");
-      formCapture.setAvecHash(Boolean.TRUE);
+      formCapture.setAvecHash(Boolean.FALSE);
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
       
       CaptureMasseResultatFormulaire formResultat = formulaire.getCaptureMasseResultat();

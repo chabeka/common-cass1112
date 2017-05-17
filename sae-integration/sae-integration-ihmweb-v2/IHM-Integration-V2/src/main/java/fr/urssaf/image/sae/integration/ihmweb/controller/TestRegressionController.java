@@ -48,8 +48,8 @@ public class TestRegressionController {
     */
    @Autowired
    private TestConfig testConfig;
-   
-   List<TestMasse> testMasse; 
+
+   List<TestMasse> testMasse;
 
    TestProprietes test;
 
@@ -101,7 +101,6 @@ public class TestRegressionController {
          @RequestParam("checkboxName") String[] checkboxValue, Model model)
          throws IOException, XMLStreamException, SAXException,
          ParserConfigurationException, InterruptedException {
-         
 
       // ajout du type de fichier pour la recherche dans le dossier des tests de
       // non regression
@@ -187,7 +186,7 @@ public class TestRegressionController {
       System.out.println("RETOUR TEST");
       return "resultatRegression";
    }
-   
+
    /**
     * fonction permettant de gérer le retour au resultat des test depuis la JSP
     * detailRegressionMasse
@@ -245,51 +244,101 @@ public class TestRegressionController {
       return "detailTest";
    }
 
+   /**
+    * Fonction permettant de rafraichir la page d'affichage des resultats des
+    * tests de non regression pour les traitements de masse
+    * 
+    * @param test
+    * @param model
+    * @return
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=rafraichir" })
-   public String rafraichir(@RequestParam("myValue") String test,
-         Model model) {
-      
+   public String rafraichir(@RequestParam("myValue") String test, Model model) {
+
       List<TestMasse> newList = new ArrayList<TestMasse>();
-      for (TestMasse t : testMasse)
-      {
-         t.setIsResultatPresent(testRegressionService.isResPresent(t.getLienEcde()));
+      for (TestMasse t : testMasse) {
+         t.setIsResultatPresent(testRegressionService.isResPresent(t
+               .getLienEcde()));
          newList.add(t);
       }
-      
+
       model.addAttribute("resMasse", newList);
       return "resultatRegressionMasse";
    }
-   
+
+   /**
+    * 
+    * Fonction permettant de d'afficher le détail d'un test de non regression
+    * (resultat, sommaire, debutTraitement et finTraitement)
+    * 
+    * @param ecdeLien
+    * @param model
+    * @return
+    * @throws IOException
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=detailTestRegressionMasse" })
-   public String detailTestMasse(@RequestParam("myValue") String ecdeLien, Model model) throws IOException{
-      
+   public String detailTestMasse(@RequestParam("myValue") String ecdeLien,
+         Model model) throws IOException {
+
       EcdeRepertoire repEcde = testRegressionService.contenuEcde(ecdeLien);
-      
+
       model.addAttribute("repertoireEcde", repEcde);
       return "detailTestMasse";
-      
+
    }
-   
-   @RequestMapping(method = RequestMethod.POST, params = { "action=validerTestMasse"})
-   public String validerTestMasse(@RequestParam("myValue") String name, Model model) throws IOException{
-      
-      TestMasse testValider = new TestMasse();
-      for (TestMasse t : testMasse){
-         if (t.getName().equals(name))
-            testValider = t;
+
+   /**
+    * 
+    * Fonction permettant de valider le test de traitement de masse choisi
+    * 
+    * @param name
+    * @param model
+    * @return
+    * @throws IOException
+    */
+   @RequestMapping(method = RequestMethod.POST, params = { "action=validerTestMasse" })
+   public String validerTestMasse(@RequestParam("myValue") String name,
+         Model model) throws IOException {
+
+      // TestMasse testValider = new TestMasse();
+      List<TestMasse> newList = new ArrayList<TestMasse>();
+      for (TestMasse t : testMasse) {
+         if (t.getName().equals(name)) {
+            // fonction couche service validerTestMasse
+            t.setValider(testRegressionService.validerTestMasse(t));
+         }
+         newList.add(t);
       }
-      
-//      EcdeRepertoire repEcde = testRegressionService.contenuEcde(testValider.getLienEcde());
-//      String resultat = repEcde.getResultat();
-      
-      //fonction couche service validerTestMasse
-      testValider.setValider(testRegressionService.validerTestMasse(testValider));
-      
-      model.addAttribute("resMasse", testMasse);
-      
+
+      model.addAttribute("resMasse", newList);
+
       return "resultatRegressionMasse";
    }
-   
+
+   /**
+    * Fonction permettant de valider tout les tests de non regression pour les
+    * traitements de masse
+    * 
+    * @param name
+    * @param model
+    * @return
+    * @throws IOException
+    */
+   @RequestMapping(method = RequestMethod.POST, params = { "action2=toutValider" })
+   public String toutValider(@RequestParam("myValue2") String name, Model model)
+         throws IOException {
+
+      List<TestMasse> newList = new ArrayList<TestMasse>();
+      for (TestMasse t : testMasse) {
+         t.setValider(testRegressionService.validerTestMasse(t));
+         newList.add(t);
+      }
+
+      model.addAttribute("resMasse", newList);
+
+      return "resultatRegressionMasse";
+   }
+
    // @RequestMapping(method = RequestMethod.POST, params = {
    // "action=downloadTest" })
    // public void downloadTest(@RequestParam("myValue") String checkboxValue,

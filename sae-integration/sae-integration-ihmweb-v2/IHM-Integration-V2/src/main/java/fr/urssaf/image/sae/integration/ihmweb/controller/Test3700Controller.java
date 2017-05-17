@@ -43,19 +43,19 @@ public class Test3700Controller extends AbstractTestWsController<Test3700Formula
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
       
       CaptureMasseFormulaire formCapture = formulaire.getCaptureMasseDeclenchement();
-      formCapture.setUrlSommaire(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/CaptureMasse-200/sommaire.xml"));
-      formCapture.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      formCapture.setUrlSommaire("");
+      formCapture.setHash("");
       formCapture.setTypeHash("SHA-1");
-      formCapture.setAvecHash(Boolean.TRUE);
+      formCapture.setAvecHash(Boolean.FALSE);
       formCapture.getResultats().setStatus(TestStatusEnum.SansStatus);
       
       ModificationMasseFormulaire formModification = formulaire.getModifMasseDecl();
-      formModification.setUrlSommaire(getEcdeService().construitUrlEcde("SAE_INTEGRATION/20110822/TransfertMasse-3700/sommaire.xml"));
-      formModification.setHash("23ec83cefdd26f30b68ecbbae1ce6cf6560bca44");
+      formModification.setUrlSommaire("");
+      formModification.setHash("");
       formModification.setTypeHash("SHA-1");
-      formModification.setAvecHash(Boolean.TRUE);
+      formModification.setAvecHash(Boolean.FALSE);
       formModification.getResultats().setStatus(TestStatusEnum.SansStatus);
-      formModification.setCodeTraitement("UR827");
+      formModification.setCodeTraitement("");
       
       ModificationMasseResultatFormulaire formResultat = formulaire.getModifMasseResult();
       formResultat.setUrlSommaire(formModification.getUrlSommaire());
