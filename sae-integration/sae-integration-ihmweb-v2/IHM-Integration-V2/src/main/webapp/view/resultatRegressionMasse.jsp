@@ -91,7 +91,7 @@
 						<td style="text-align: center;">
 						<c:choose>
 					<c:when test="${metadonnee.isResultatPresent ne true}">
-						<h5 style="color: #990000">Test encore en cour</h5>
+						<h5 style="color: #990000">Test encore en cours</h5>
 					</c:when>
 					<c:otherwise>
 						<h5 style="color: #2eb82e">Test terminé</h5>

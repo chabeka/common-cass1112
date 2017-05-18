@@ -95,6 +95,14 @@
 				onclick="loadTest()"
 				data-loading-text="<i class='fa fa-spinner fa-spin'></i> Lancement des tests">
 				Lancer les tests sélectionnés</button>
+				
+				<c:choose>
+				<c:when test="${isMasse ne false}">
+				<hr />
+				<button class="btn btn-primary btn-lg" id="btnSubmit"
+				onclick="loadTestMasse()"
+				data-loading-text="<i class='fa fa-spinner fa-spin'></i> Accès aux résultats précédents">
+				Voir les résultats des tests précédents</button></c:when></c:choose>
 			<div style="margin: 3em;">
 				<br>
 			</div>
@@ -113,6 +121,9 @@
 
       function loadTest() {
          document.getElementById('action').value = 'lancerTest'
+      }
+      function loadTestMasse() {
+         document.getElementById('action').value = 'resultatTestPrecedent'
       }
    </script>
 </body>

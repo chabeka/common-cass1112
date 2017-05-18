@@ -49,7 +49,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
    @Autowired
    private TestConfig testConfig;
-   
+
    @Autowired
    private EcdeService ecdeService;
 
@@ -164,9 +164,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       return test;
    }
 
-   public List<TestMasse> testRegressionMasse(String[] checkboxValue)
-         throws IOException, XMLStreamException, SAXException,
-         ParserConfigurationException {
+   public List<TestMasse> testRegressionMasse(String[] checkboxValue,
+         boolean isALancer) throws IOException, XMLStreamException,
+         SAXException, ParserConfigurationException {
       test = new TestProprietes();
       test.setCheckboxValue(checkboxValue);
       List<TestMasse> resMasse = new ArrayList<TestMasse>();
@@ -206,7 +206,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
             in.close();
             String contenu = out.toString();
             String ecde;
-            
+
             if (contenu.contains("<saes:urlSommaire>")) {
                ecde = StringUtils.substringBetween(contenu,
                      "<saes:urlSommaire>", "</saes:urlSommaire>");
@@ -217,9 +217,13 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
                ecde = StringUtils.substringBeforeLast(ecde, "/") + "/";
             }
 
-            // appelle du stub
-            String res = appelleStub(sub, contenu, str);
-            System.out.println("RES : " + res);
+            // appelle du stub si les tests doivent etre lancés
+            if (isALancer) {
+               // fonction suppression ancien test
+               suppressionAncienTest(ecde);
+               // appelle au web services
+               appelleStub(sub, contenu, str);
+            }
 
             TestMasse testMasse = new TestMasse();
             testMasse.setLienEcde(ecde);
@@ -227,52 +231,46 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
             testMasse.setValider("NON");
             testMasse.setIsResultatPresent(isResPresent(ecde));
             resMasse.add(testMasse);
-            System.out.println("ECDE : " + ecde);
-            System.out.println("isResultatPResent : " + testMasse.getIsResultatPresent());
          }
       }
 
       return resMasse;
    }
-   
-   public boolean isResPresent(String ecde){
-      String cheminFicSommaire = ecdeService
-            .convertUrlEcdeToPath(ecde);
+
+   public boolean isResPresent(String ecde) {
+      String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(ecde);
 
       String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
 
       String cheminFichierFlag = FilenameUtils.concat(repTraitement,
             SaeIntegrationConstantes.NOM_FIC_FLAG_TDM);
-      
-      System.out.println("CHEMIN FICHIER FLAG : " + cheminFichierFlag);
-      
+
       File file = new File(cheminFichierFlag);
       boolean isResultatPresent = file.exists();
 
       return isResultatPresent;
    }
-   
-   public String validerTestMasse(TestMasse testMasse) throws IOException{
-      
-      String cheminFicSommaire = ecdeService
-            .convertUrlEcdeToPath(testMasse.getLienEcde());
-      
+
+   public String validerTestMasse(TestMasse testMasse) throws IOException {
+
+      String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(testMasse
+            .getLienEcde());
+
       String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
-      
+
       String cheminFichierResultat = FilenameUtils.concat(repTraitement,
             SaeIntegrationConstantes.NOM_FIC_RESULTATS);
-      
+
       File fileResultat = new File(cheminFichierResultat);
-      
+
       BufferedInputStream in;
       int b;
       StringWriter out;
-      
+
       String resultat;
-      
-      if (fileResultat.exists()){
-         in = new BufferedInputStream(
-               new FileInputStream(fileResultat));
+
+      if (fileResultat.exists()) {
+         in = new BufferedInputStream(new FileInputStream(fileResultat));
          out = new StringWriter();
          b = 0;
          while ((b = in.read()) != -1)
@@ -280,11 +278,11 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
          out.flush();
          out.close();
          in.close();
-       resultat = out.toString();
-         }else
-           return ("Fichier resultat introuvable");
-      
-   // fonction de compare avec resultat et fichier attendu
+         resultat = out.toString();
+      } else
+         return ("Fichier resultat introuvable");
+
+      // fonction de compare avec resultat et fichier attendu
       String nom = StringUtils.remove(testMasse.getName(), ".txt");
       // Recupere contenu du fichier pour message context
 
@@ -313,20 +311,45 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
          e.printStackTrace();
       }
-      
-      
+
       return "OK";
    }
-   
-   public EcdeRepertoire contenuEcde(String ecde) throws IOException{
-      
+
+   public void suppressionAncienTest(String ecde) {
+
       EcdeRepertoire rep = new EcdeRepertoire();
-      
-      String cheminFicSommaire = ecdeService
-            .convertUrlEcdeToPath(ecde);
+
+      String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(ecde);
 
       String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
-      
+
+      String cheminFichierFinFlag = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_FLAG_TDM);
+      String cheminFichierDebutFlag = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_DEB_FLAG_TDM);
+      String cheminFichierResultat = FilenameUtils.concat(repTraitement,
+            SaeIntegrationConstantes.NOM_FIC_RESULTATS);
+
+      File fileFinFlag = new File(cheminFichierFinFlag);
+      File fileDebutFlag = new File(cheminFichierDebutFlag);
+      File fileResultat = new File(cheminFichierResultat);
+
+      if (fileFinFlag.exists())
+         fileFinFlag.delete();
+      if (fileDebutFlag.exists())
+         fileDebutFlag.delete();
+      if (fileResultat.exists())
+         fileResultat.delete();
+   }
+
+   public EcdeRepertoire contenuEcde(String ecde) throws IOException {
+
+      EcdeRepertoire rep = new EcdeRepertoire();
+
+      String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(ecde);
+
+      String repTraitement = FilenameUtils.getFullPath(cheminFicSommaire);
+
       String cheminFichierFinFlag = FilenameUtils.concat(repTraitement,
             SaeIntegrationConstantes.NOM_FIC_FLAG_TDM);
       String cheminFichierDebutFlag = FilenameUtils.concat(repTraitement,
@@ -335,72 +358,68 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
             SaeIntegrationConstantes.NOM_FIC_RESULTATS);
       String cheminFichierSommaire = FilenameUtils.concat(repTraitement,
             "sommaire.xml");
-      
+
       File fileFinFlag = new File(cheminFichierFinFlag);
       File fileDebutFlag = new File(cheminFichierDebutFlag);
       File fileResultat = new File(cheminFichierResultat);
       File fileSommaire = new File(cheminFichierSommaire);
-      
+
       BufferedInputStream in;
       int b;
       StringWriter out;
-      
-      if (fileFinFlag.exists()){
-      in = new BufferedInputStream(
-            new FileInputStream(fileFinFlag));
-      out = new StringWriter();
-      b = 0;
-      while ((b = in.read()) != -1)
-         out.write(b);
-      out.flush();
-      out.close();
-      in.close();
-      rep.setFinTraitement(out.toString());
-      }else
+
+      if (fileFinFlag.exists()) {
+         in = new BufferedInputStream(new FileInputStream(fileFinFlag));
+         out = new StringWriter();
+         b = 0;
+         while ((b = in.read()) != -1)
+            out.write(b);
+         out.flush();
+         out.close();
+         in.close();
+         rep.setFinTraitement(out.toString());
+      } else
          rep.setFinTraitement("Fichier finTraitement.flag introuvable");
-      
-      if (fileDebutFlag.exists()){
-      in = new BufferedInputStream(
-            new FileInputStream(fileDebutFlag));
-      out = new StringWriter();
-      b = 0;
-      while ((b = in.read()) != -1)
-         out.write(b);
-      out.flush();
-      out.close();
-      in.close();
-      rep.setDebutTraitement(out.toString());
-      }else
+
+      if (fileDebutFlag.exists()) {
+         in = new BufferedInputStream(new FileInputStream(fileDebutFlag));
+         out = new StringWriter();
+         b = 0;
+         while ((b = in.read()) != -1)
+            out.write(b);
+         out.flush();
+         out.close();
+         in.close();
+         rep.setDebutTraitement(out.toString());
+      } else
          rep.setDebutTraitement("Fichier debutTraitement.flag introuvable");
-      
-      if (fileResultat.exists()){
-      in = new BufferedInputStream(
-            new FileInputStream(fileResultat));
-      out = new StringWriter();
-      b = 0;
-      while ((b = in.read()) != -1)
-         out.write(b);
-      out.flush();
-      out.close();
-      in.close();
-      rep.setResultat(out.toString());
-      }else
+
+      if (fileResultat.exists()) {
+         in = new BufferedInputStream(new FileInputStream(fileResultat));
+         out = new StringWriter();
+         b = 0;
+         while ((b = in.read()) != -1)
+            out.write(b);
+         out.flush();
+         out.close();
+         in.close();
+         rep.setResultat(out.toString());
+      } else
          rep.setResultat("Fichier resultat introuvable");
-      
-      if (fileSommaire.exists()){
-      in = new BufferedInputStream(
-            new FileInputStream(fileSommaire));
-      out = new StringWriter();
-      b = 0;
-      while ((b = in.read()) != -1)
-         out.write(b);
-      out.flush();
-      out.close();
-      in.close();
-      rep.setSommaire(out.toString());
-      }else
+
+      if (fileSommaire.exists()) {
+         in = new BufferedInputStream(new FileInputStream(fileSommaire));
+         out = new StringWriter();
+         b = 0;
+         while ((b = in.read()) != -1)
+            out.write(b);
+         out.flush();
+         out.close();
+         in.close();
+         rep.setSommaire(out.toString());
+      } else
          rep.setSommaire("Fichier sommaire introuvable");
-      
+
       return rep;
    }
 

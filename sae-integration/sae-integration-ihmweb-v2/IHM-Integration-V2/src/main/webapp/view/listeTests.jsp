@@ -58,7 +58,7 @@
 			</tr>
 			<tr>
 				<td><a href="testsLibres.do"><c:out
-							value="Créer un test libre" /></a></td>
+							value="Liste des tests libres" /></a></td>
 			</tr>
 			<tr>
 				<td><a href="gestionTestNonRegression.do"><c:out
@@ -67,98 +67,6 @@
 		</tbody>
 	</table>
 
-	<!-- 	<table class="table table-bordered"> -->
-	<!-- 		<tbody> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="captureUnitaire.do"><c:out --%>
-	<%-- 							value="Capture unitaire" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="captureMasse.do"><c:out --%>
-	<%-- 							value="Capture de masse" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="consultation.do"><c:out value="Consultation" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="consultationAffichable.do"><c:out --%>
-	<%-- 							value="Consultation affichable" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="consultationGNTGNS.do"><c:out --%>
-	<%-- 							value="Consultation GNT/GNS" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="copie.do"><c:out value="Copie" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="recuperationDocOrigine.do"><c:out --%>
-	<%-- 							value="Récuperation de document d'origine" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="notes.do"><c:out value="Note" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="idGed.do"><c:out value="Id GED" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="recherche.do"><c:out value="Recherche" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="rechercheNbRes.do"><c:out --%>
-	<%-- 							value="Recherche avec nombre de résultats" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="rechercheIterateut.do"><c:out --%>
-	<%-- 							value="Recherche par itérateur" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="isolationDonnees.do"><c:out --%>
-	<%-- 							value="Isolation des données" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="droits.do"><c:out value="Droits" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="modification.do"><c:out --%>
-	<%-- 							value="Modification Métadonnées" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="suppression.do"><c:out --%>
-	<%-- 							value="Suppression de document" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="suppressionMasse.do"><c:out --%>
-	<%-- 							value="Suppression de masse" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="transfert.do"><c:out --%>
-	<%-- 							value="Transfert de document" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="restoreSuppressionMasse.do"><c:out --%>
-	<%-- 							value="Restore suppression de masse" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="formats.do"><c:out value="Formats" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="activationDocArchivable.do"><c:out --%>
-	<%-- 							value="Activation document archivable" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="pki.do"><c:out value="PKI" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="etatTraitementMasse.do"><c:out --%>
-	<%-- 							value="Etat traitement de masse" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 			<tr> -->
-	<%-- 				<td><a href="recuperationMetadonnee.do"><c:out --%>
-	<%-- 							value="Recuperation metadonnee" /></a></td> --%>
-	<!-- 			</tr> -->
-	<!-- 		</tbody> -->
-	<!-- 	</table> -->
 	<script>
       var testEl = Ext.get('testExtJS');
       var maFonction = function(e, t) {

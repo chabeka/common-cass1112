@@ -127,13 +127,36 @@ public class TestRegressionController {
       } else {
          testMasse = new ArrayList<TestMasse>();
          // appelle couche service fonction testRegressionMasse
-         testMasse = testRegressionService.testRegressionMasse(checkChange);
+         testMasse = testRegressionService.testRegressionMasse(checkChange, true);
          // add Attribute dans model
          model.addAttribute("resMasse", testMasse);
          // return jsp resultatRegressionMasse
          return "resultatRegressionMasse";
       }
 
+   }
+   
+   @RequestMapping(method = RequestMethod.POST, params = { "action=resultatTestPrecedent" })
+   public final String resultatTestPrecedent(
+         @RequestParam("checkboxName") String[] checkboxValue, Model model)
+         throws IOException, XMLStreamException, SAXException, ParserConfigurationException{
+      
+      // ajout du type de fichier pour la recherche dans le dossier des tests de
+      // non regression
+      String[] checkChange = new String[checkboxValue.length];
+      int i = 0;
+      for (String str : checkboxValue) {
+         checkChange[i] = str + ".txt";
+         i++;
+      }
+      
+      //methode couche service sans lancer les tests
+      testMasse = testRegressionService.testRegressionMasse(checkChange, false);
+      
+   // add Attribute dans model
+      model.addAttribute("resMasse", testMasse);
+      
+      return "resultatRegressionMasse";
    }
 
    /**
@@ -153,7 +176,10 @@ public class TestRegressionController {
       File repertoireXml = new File(testConfig.getTestRegression());
       File[] filesXml = repertoireXml.listFiles();
       List<String> records = new ArrayList<String>();
-      for (File f : filesXml) {
+      //check if traitement masse
+      boolean traitementMasse = checkboxValue.contains("Masse");
+    
+      for (File f : filesXml) {     
          // check if contains checkbox value
          if (f.getName().contains(checkboxValue + "_")) {
             // put in list
@@ -161,6 +187,10 @@ public class TestRegressionController {
             records.add(str);
          }
       }
+      
+      //add if traitement de masse ou non
+      System.out.println("IS MASSE : " + traitementMasse);
+      model.addAttribute("isMasse", traitementMasse);
 
       // add list to model
       model.addAttribute("checkboxRegression", records);
@@ -280,6 +310,7 @@ public class TestRegressionController {
    public String detailTestMasse(@RequestParam("myValue") String ecdeLien,
          Model model) throws IOException {
 
+      //appel couche service pour récupérer le contenu des fichiers dans le repertoire ECDE
       EcdeRepertoire repEcde = testRegressionService.contenuEcde(ecdeLien);
 
       model.addAttribute("repertoireEcde", repEcde);
