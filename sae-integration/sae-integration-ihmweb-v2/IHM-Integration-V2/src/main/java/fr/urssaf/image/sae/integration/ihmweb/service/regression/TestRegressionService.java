@@ -164,6 +164,19 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       return test;
    }
 
+   /**
+    * methode permettant de lancer les tests de non regression pour les
+    * traitements de masse si isALancer = true sinon on recupere les
+    * informations des tests precedents
+    * 
+    * @param checkboxValue
+    * @param isALancer
+    * @return
+    * @throws IOException
+    * @throws XMLStreamException
+    * @throws SAXException
+    * @throws ParserConfigurationException
+    */
    public List<TestMasse> testRegressionMasse(String[] checkboxValue,
          boolean isALancer) throws IOException, XMLStreamException,
          SAXException, ParserConfigurationException {
@@ -207,6 +220,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
             String contenu = out.toString();
             String ecde;
 
+            // Recuperation du chemin vers l'ECDE
             if (contenu.contains("<saes:urlSommaire>")) {
                ecde = StringUtils.substringBetween(contenu,
                      "<saes:urlSommaire>", "</saes:urlSommaire>");
@@ -225,6 +239,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
                appelleStub(sub, contenu, str);
             }
 
+            // remplie les informations des tests
             TestMasse testMasse = new TestMasse();
             testMasse.setLienEcde(ecde);
             testMasse.setName(reg);
@@ -237,6 +252,13 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       return resMasse;
    }
 
+   /**
+    * Fonction vérifiant si le resultat.xml est present dans le repertoire ecde
+    * passé en paramètre
+    * 
+    * @param ecde
+    * @return
+    */
    public boolean isResPresent(String ecde) {
       String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(ecde);
 
@@ -251,6 +273,14 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       return isResultatPresent;
    }
 
+   /**
+    * Fonction permettant de vérifier l'attendu pour chaque test de traitement
+    * de masse
+    * 
+    * @param testMasse
+    * @return
+    * @throws IOException
+    */
    public String validerTestMasse(TestMasse testMasse) throws IOException {
 
       String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(testMasse
@@ -269,6 +299,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
       String resultat;
 
+      // Recuperation du contenu du fichier resultat
       if (fileResultat.exists()) {
          in = new BufferedInputStream(new FileInputStream(fileResultat));
          out = new StringWriter();
@@ -315,9 +346,13 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       return "OK";
    }
 
+   /**
+    * Fonction permettant de supprimer les anciens fichiers avant de relancer
+    * les tests pour les traitements de masse
+    * 
+    * @param ecde
+    */
    public void suppressionAncienTest(String ecde) {
-
-      EcdeRepertoire rep = new EcdeRepertoire();
 
       String cheminFicSommaire = ecdeService.convertUrlEcdeToPath(ecde);
 
@@ -342,6 +377,14 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
          fileResultat.delete();
    }
 
+   /**
+    * Fonction permettant de recuperer le contenu des fichiers contenu dans le
+    * chemin ecde passé en parametre
+    * 
+    * @param ecde
+    * @return
+    * @throws IOException
+    */
    public EcdeRepertoire contenuEcde(String ecde) throws IOException {
 
       EcdeRepertoire rep = new EcdeRepertoire();
@@ -359,6 +402,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       String cheminFichierSommaire = FilenameUtils.concat(repTraitement,
             "sommaire.xml");
 
+      // Recuperation des fichiers de l'ecde
       File fileFinFlag = new File(cheminFichierFinFlag);
       File fileDebutFlag = new File(cheminFichierDebutFlag);
       File fileResultat = new File(cheminFichierResultat);
@@ -368,7 +412,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       int b;
       StringWriter out;
 
+      // Verification si le fichier finTraitement.flag existe
       if (fileFinFlag.exists()) {
+         // recuperation du contenu du fichier finTraitement.flag
          in = new BufferedInputStream(new FileInputStream(fileFinFlag));
          out = new StringWriter();
          b = 0;
@@ -381,7 +427,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       } else
          rep.setFinTraitement("Fichier finTraitement.flag introuvable");
 
+      // Verification si le fichier debutTraitement.flag existe
       if (fileDebutFlag.exists()) {
+         // recuperation du contenu du fichier debutTraitement.flag
          in = new BufferedInputStream(new FileInputStream(fileDebutFlag));
          out = new StringWriter();
          b = 0;
@@ -394,7 +442,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       } else
          rep.setDebutTraitement("Fichier debutTraitement.flag introuvable");
 
+      // Verification si le fichier resultat.xml existe
       if (fileResultat.exists()) {
+         // recuperation du contenu du fichier resultat.xml
          in = new BufferedInputStream(new FileInputStream(fileResultat));
          out = new StringWriter();
          b = 0;
@@ -407,7 +457,9 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
       } else
          rep.setResultat("Fichier resultat introuvable");
 
+      // Verification si le fichier sommaire.xml existe
       if (fileSommaire.exists()) {
+         // recuperation du contenu du fichier sommaire.xml
          in = new BufferedInputStream(new FileInputStream(fileSommaire));
          out = new StringWriter();
          b = 0;

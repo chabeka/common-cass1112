@@ -46,6 +46,9 @@
 					<tr>
 						<td><a href="gelDocument.do">Gel de document</a></td>
 					</tr>
+					<tr>
+						<td><a href="calculatriceHash.do">Calculatrice de Hash</a></td>
+					</tr>
 				</tbody>
 			</table>
 		</div>
