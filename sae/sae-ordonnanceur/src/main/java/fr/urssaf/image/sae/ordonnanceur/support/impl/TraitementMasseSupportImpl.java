@@ -315,17 +315,21 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
     */
    @Override
    public final boolean isEcdeUpJobTraitementMasse(JobQueue jobQueue) {
+      // Extrait l'URL ECDE des paramètres du job
+      URI ecdeUrl = extractUrlEcde(jobQueue);
 
-      // Vérifie que le job est bien un job de capture de masse
+      // Si on a pas d'URL ECDE, on a pas à controler la dispo de ce dernier.
+      if (ecdeUrl == null) {
+         return true;
+      }
+
+      // Vérifie que le job est bien un job de qui peut utiliser l'ECDE
       if (!isCaptureMasse(jobQueue) && !isModificationMasse(jobQueue)
             && !isTransfertMasse(jobQueue)) {
          throw new OrdonnanceurRuntimeException(
-               "Mauvaise utilisation du contrôle de la disponibilité de l'ECDE: le job contrôlé n'est pas un job de traitement de masse devant utilisé l'ecde (id: "
+               "Mauvaise utilisation du contrôle de la disponibilité de l'ECDE: le job contrôlé n'est pas un job de traitement de masse devant utiliser l'ecde (id: "
                      + jobQueue.getIdJob() + ")");
       }
-
-      // Extrait l'URL ECDE des paramètres du job
-      URI ecdeUrl = extractUrlEcde(jobQueue);
 
       // Vérifie si l'ECDE est disponble
       return ecdeSupport.isEcdeDisponible(ecdeUrl);
