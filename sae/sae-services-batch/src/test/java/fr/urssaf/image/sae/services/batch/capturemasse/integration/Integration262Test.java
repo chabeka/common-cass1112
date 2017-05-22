@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration262Test {
 
    @Autowired
@@ -173,7 +173,7 @@ public class Integration262Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
@@ -196,7 +196,7 @@ public class Integration262Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -217,7 +217,7 @@ public class Integration262Test {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -261,7 +261,7 @@ public class Integration262Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "332f9cb0fcfdc65db7774b7a4b5ca696c6b92510";
+      String sha1Attendu = "e4860d90f5f394f290edccab91bd56ceabd7d828";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -304,11 +304,11 @@ public class Integration262Test {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException: Le fichier document doc_inexistant.pdf est introuvable"));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException: Le fichier document doc_inexistant.pdf est introuvable"));
 
    }
 

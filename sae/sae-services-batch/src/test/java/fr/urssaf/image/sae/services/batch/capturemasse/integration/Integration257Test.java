@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration257Test {
 
    @Autowired
@@ -174,7 +174,7 @@ public class Integration257Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
@@ -197,7 +197,7 @@ public class Integration257Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -218,7 +218,7 @@ public class Integration257Test {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -262,7 +262,7 @@ public class Integration257Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "ba7bcc31417bb7f93e1fe223914b0ada7eab9428";
+      String sha1Attendu = "89ef2e9b9278903993086faf4dfb87fa73db89d6";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -305,11 +305,11 @@ public class Integration257Test {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx: Le type ou le format des métadonnées suivantes n'est pas valide : CodeSousCategorieV2, DateCreation, DateReception, NbPages"));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx: Le type ou le format des métadonnées suivantes n'est pas valide : CodeSousCategorieV2, DateCreation, DateReception, NbPages"));
 
    }
 

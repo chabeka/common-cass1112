@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration258Test {
 
    @Autowired
@@ -174,7 +174,7 @@ public class Integration258Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
@@ -197,7 +197,7 @@ public class Integration258Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -218,7 +218,7 @@ public class Integration258Test {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -262,7 +262,7 @@ public class Integration258Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "1956bf35440c09c833c5a59b75a35d937823bbb0";
+      String sha1Attendu = "8e40fdca14538522ce1bc412898d142c0210e379";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -305,11 +305,11 @@ public class Integration258Test {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx: La ou les métadonnées suivantes ne sont pas autorisées à l'archivage : CodeFonction, DureeConservation"));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx: La ou les métadonnées suivantes ne sont pas autorisées à l'archivage : CodeFonction, DureeConservation"));
 
    }
 

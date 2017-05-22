@@ -62,7 +62,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration266Test {
 
    @Autowired
@@ -170,7 +170,7 @@ public class Integration266Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
@@ -191,7 +191,7 @@ public class Integration266Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -212,7 +212,7 @@ public class Integration266Test {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -240,7 +240,7 @@ public class Integration266Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "e6b07bae564a4bbbb63fe6f280efa65deaecb1f4";
+      String sha1Attendu = "dc017f1a0503e27fcd6c2860e6ae84ae5cb73c8c";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -266,11 +266,11 @@ public class Integration266Test {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("Exception(s) sur les documents : 2", "java.lang.Exception: Le fichier document doc70.PDF est introuvable"));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("Exception(s) sur les documents : 2", "java.lang.Exception: Le fichier document doc70.PDF est introuvable"));
 
    }
 

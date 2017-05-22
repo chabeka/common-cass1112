@@ -92,7 +92,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    private static final String MESSAGE_ERREUR = "erreur insertion";
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du " + "document doc1.PDF. Détails : ";
+         + "survenue lors du traitement du " + "document doc1.PDF. Détails : ";
 
    private static final String ERREUR_ATTENDUE_RES_003 = "La capture de masse en mode \"Tout ou rien\" a été interrompue. "
          + "Une procédure d'exploitation a été initialisée pour supprimer les données qui auraient pu être stockées.";

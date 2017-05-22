@@ -59,9 +59,9 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -77,13 +77,13 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationBUL001ErreurAvantInsertionTest {
 
    private static final String MESSAGE_ERREUR = "erreur ouverture base";
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du "
+         + "survenue lors du traitement du "
          + "document doc1.PDF. Détails : "
          + MESSAGE_ERREUR;
 
@@ -194,8 +194,8 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    @Test
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException {
 
       initComposantsRuntime();
       initDatas();
@@ -222,8 +222,8 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    @Test
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException {
       initComposantsThrowable();
       initDatas();
 
@@ -247,7 +247,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    }
 
    private void initComposantsThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx {
+   DeletionServiceEx, InsertionServiceEx {
 
       // règlage provider
       provider.openConnexion();
@@ -259,12 +259,12 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
    }
 
    private void initComposantsRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx {
+   DeletionServiceEx, InsertionServiceEx {
 
       // règlage provider
       provider.openConnexion();
       EasyMock.expectLastCall().andThrow(new RuntimeException(MESSAGE_ERREUR))
-            .anyTimes();
+      .anyTimes();
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
 
@@ -309,7 +309,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
             "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
+            .valueOf(0), res.getInitialVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
             .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
@@ -357,7 +357,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
     * @throws SAXException
     */
    private ResultatsType getResultats(File resultats) throws JAXBException,
-         IOException, SAXException {
+   IOException, SAXException {
       JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -379,7 +379,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
-            .unmarshal(resultats);
+      .unmarshal(resultats);
 
       return doc.getValue();
 
