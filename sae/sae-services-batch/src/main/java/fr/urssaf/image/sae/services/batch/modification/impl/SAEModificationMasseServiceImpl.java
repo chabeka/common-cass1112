@@ -122,12 +122,12 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
             exitTraitement.setSucces(false);
          }
 
-         // met a jour le job pour renseigner le nombre de docs restorés
+         // met a jour le job pour renseigner le nombre de docs modifiés
          int nbDocsModifie = 0;
          if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_MODIFIES)) {
+               Constantes.NB_INTEG_DOCS)) {
             nbDocsModifie = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_MODIFIES);
+                  Constantes.NB_INTEG_DOCS);
          }
 
          jobQueueService.renseignerDocCountJob(idTraitement, nbDocsModifie);

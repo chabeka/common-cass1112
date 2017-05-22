@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.flag.FinTraitementFlagSupport;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**
@@ -26,9 +25,6 @@ public class FinTraitementFlagTasklet implements Tasklet {
 
    @Autowired
    private FinTraitementFlagSupport support;
-
-   @Autowired
-   private InsertionCapturePoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}
@@ -44,9 +40,6 @@ public class FinTraitementFlagTasklet implements Tasklet {
 
       if (sommairePathObject instanceof String) {
          String sommairePath = (String) sommairePathObject;
-
-         context.put(Constantes.NB_INTEG_DOCS, executor
-               .getIntegratedDocuments().size());
 
          final File sommaireFile = new File(sommairePath);
          final File ecdeDirectory = sommaireFile.getParentFile();
