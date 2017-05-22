@@ -397,8 +397,6 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
             modifiedStorageMetas = mappingDocumentService
                   .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
             storageDocument.setMetadatas(modifiedStorageMetas);
-         } else {
-            throw new ModificationException("La liste des metadonnées à modifier est vide");
          }
          
          List<StorageMetadata> deletedStorageMetas = new ArrayList<StorageMetadata>();
