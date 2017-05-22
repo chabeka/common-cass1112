@@ -212,7 +212,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          getLogger()
                .error(
 
-                     "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation",
+                     "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation.",
                      idTraitement);
 
          getStepExecution().getJobExecution().getExecutionContext()
@@ -230,7 +230,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          } else {
             messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
                   + "Une procédure de reprise doit être réalisée afin de supprimer les données "
-                  + "qui auraient pu être stockées et de relancer la capture";
+                  + "qui auraient pu être stockées et de relancer la capture.";
             status = new ExitStatus("FAILED_NO_ROLLBACK");
          }
 
