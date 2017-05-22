@@ -266,7 +266,7 @@ public class Integration264Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "557fe40ec55d590d6e842d99a55e68812251f32b";
+      String sha1Attendu = "42d1f751f846dea01d5a560324ac137639c2e996";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
