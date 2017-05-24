@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.commons.utils.ZookeeperUtils;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
@@ -45,20 +46,6 @@ public class JobServiceImpl implements JobService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(JobServiceImpl.class);
 
-   /**
-    * Prefixe pour la clef zookeeper.
-    */
-   private static final String PREFIXE_SEMAPHORE = "/Semaphore/";
-
-   /**
-    * Prefixe pour la clef cassandra.
-    */
-   private static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
-
-   /**
-    * Le code du traitement
-    */
-   private static final String CODE_TRAITEMENT = "codeTraitement";
 
    /**
     * Service de lecture des Jobs.
@@ -164,14 +151,15 @@ public class JobServiceImpl implements JobService {
       // Si on n'a pas de code de traitement, c'est qu'on est pas sur un job qui
       // est géré par semaphore.
       if (jobQueue.getJobParameters() != null
-            && jobQueue.getJobParameters().get(CODE_TRAITEMENT) != null) {
+            && jobQueue.getJobParameters().get(Constantes.CODE_TRAITEMENT) != null) {
          String codeTraitement = jobQueue.getJobParameters().get(
-               CODE_TRAITEMENT);
+               Constantes.CODE_TRAITEMENT);
 
          LOGGER.debug("{} - Vérification que le code traitement "
                + codeTraitement + " est libre", traceMethod);
          List<JobRequest> jobRequests = jobLectureService
-               .getNonTerminatedJobs(PREFIXE_SEMAPHORE_JOB + codeTraitement);
+               .getNonTerminatedJobs(Constantes.PREFIXE_SEMAPHORE_JOB
+                     + codeTraitement);
 
          if (jobRequests != null && !jobRequests.isEmpty()) {
             if (jobRequests.size() > 1) {
@@ -212,11 +200,11 @@ public class JobServiceImpl implements JobService {
       String traceMethod = "confirmerJobALancer";
 
       if (jobQueue.getJobParameters() != null
-            && jobQueue.getJobParameters().get(CODE_TRAITEMENT) != null) {
+            && jobQueue.getJobParameters().get(Constantes.CODE_TRAITEMENT) != null) {
          String codeTraitement = jobQueue.getJobParameters().get(
-               CODE_TRAITEMENT);
+               Constantes.CODE_TRAITEMENT);
 
-         String semaphore = PREFIXE_SEMAPHORE + codeTraitement;
+         String semaphore = Constantes.PREFIXE_SEMAPHORE + codeTraitement;
 
          LOGGER.debug("{} - Lancment de la réservation du code traitement "
                + codeTraitement + " pour le job" + jobQueue.getIdJob(),
@@ -246,7 +234,7 @@ public class JobServiceImpl implements JobService {
 
                // Reserver le job avec le semaphore
                jobQueueService.reserverJobDansJobsQueues(jobQueue.getIdJob(),
-                     PREFIXE_SEMAPHORE_JOB + codeTraitement,
+                     Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement,
                      jobQueue.getType(), jobQueue.getJobParameters());
 
                LOGGER.info(

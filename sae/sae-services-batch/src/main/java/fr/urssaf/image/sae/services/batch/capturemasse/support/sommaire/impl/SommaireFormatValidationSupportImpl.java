@@ -87,7 +87,7 @@ public class SommaireFormatValidationSupportImpl implements
       if (sommaireFile == null || batchModes == null
             || (batchModes != null && batchModes.length == 0)) {
          throw new IllegalArgumentException(
-               "Le fichier sommaire ou le mode du batch es null. La validation du sommaire.xml à échouée.");
+               "Le fichier sommaire ou le mode du batch est null. La validation du sommaire.xml à échouée.");
       }
 
       FileInputStream sommaireStream = null;

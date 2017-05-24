@@ -18,6 +18,11 @@ public final class Constantes {
    public static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
 
    /**
+    * Prefixe pour la clef zookeeper.
+    */
+   public static final String PREFIXE_SEMAPHORE = "/Semaphore/";
+
+   /**
     * Types de traitements
     */
    public static enum TYPES_JOB {
