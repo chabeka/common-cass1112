@@ -42,4 +42,12 @@ public class ControleListener extends CheckStateAfterStepListener {
       getExceptionErreurListe().add(new Exception(exception.getMessage()));
 
    }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected boolean isControleModePartielActif() {
+      return true;
+   }
 }

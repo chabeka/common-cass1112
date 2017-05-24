@@ -77,6 +77,7 @@
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="controleListener" />
                <listener ref="controleMetaDocumentModificationProcessor" />
+               <listener ref="convertMetaDocumentModificationProcessor" />
                <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>
@@ -109,6 +110,7 @@
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="modificationDocumentWriter" />
                <listener ref="controleModificationDocumentProcessor" />
+               <listener ref="convertMetaDocumentModificationProcessor" />
                <listener ref="modificationListener" />
                <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
