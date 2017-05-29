@@ -446,4 +446,42 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 Pour la GNT : 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNT_CASSANDRA_DFCE_170202
 
+// ------------------------------------------
+// 17) Lot 170900SAE
+// ------------------------------------------
+
+17-1) Lot 170900SAE
+Met la base Cassandra du SAE en version 26 :
+
+- Ajout de l'action unitaire transfert_masse.
+- Ajout de l'action unitaire modification_masse.
+- Ajout de l'événement WS_MODIFICATION_MASSE|KO
+- Ajout de l'événement MODIFICATION_MASSE|KO
+- Ajout de l'événement WS_TRANSFERT_MASSE|KO
+- Ajout de l'événement TRANSFERT_MASSE|KO
+- Ajout de l'événement WS_DEBLOCAGE|KO
+- Ajout de l'événement DEBLOCAGE|KO
+
+Pour la GNS :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170900
+
+Pour la GNT : 
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170900
+
+
+17-2) Lot 170901SAE
+Met la base Cassandra du SAE en version 27 :
+
+- Ajout de l'action unitaire reprise_masse.
+- Ajout de l'événement WS_REPRISE_MASSE|KO
+- Ajout de l'événement REPRISE_MASSE|KO
+- Ajout des metadonnées IdTransfertMasseInterne et IdModificationMasseInterne
+
+Pour la GNS :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901
+
+Pour la GNT : 
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901
+
+
 

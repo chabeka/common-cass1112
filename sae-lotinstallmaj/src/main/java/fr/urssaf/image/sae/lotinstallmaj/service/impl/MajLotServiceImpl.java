@@ -73,6 +73,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNS_CASSANDRA_DFCE_170202 = "GNS_CASSANDRA_DFCE_170202";
    public static final String GNT_CASSANDRA_DFCE_170202 = "GNT_CASSANDRA_DFCE_170202";
    public static final String CASSANDRA_DFCE_170900 = "CASSANDRA_DFCE_170900";
+   public static final String CASSANDRA_DFCE_170901 = "CASSANDRA_DFCE_170901";
    
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -339,6 +340,9 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_170900.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra170900();
+      } else if (CASSANDRA_DFCE_170901.equalsIgnoreCase(nomOperation)) {
+         // Update keyspace SAE
+         updateCassandra170901();
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -875,6 +879,13 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170900");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion26();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
+   private void updateCassandra170901() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170901");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion27();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 

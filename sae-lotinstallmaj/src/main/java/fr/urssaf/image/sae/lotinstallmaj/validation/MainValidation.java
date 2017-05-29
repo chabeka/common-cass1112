@@ -226,6 +226,9 @@ public class MainValidation {
       if (MajLotServiceImpl.CASSANDRA_DFCE_170900
             .equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.CASSANDRA_DFCE_170901
+            .equalsIgnoreCase(nomOperation))
+         return;
 
       
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
