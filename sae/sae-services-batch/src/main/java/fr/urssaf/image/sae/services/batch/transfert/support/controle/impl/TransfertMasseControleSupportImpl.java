@@ -15,16 +15,20 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
-import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
-import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
+import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
 import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
@@ -75,10 +79,10 @@ public class TransfertMasseControleSupportImpl implements
    private MappingDocumentService mappingDocumentService;
 
    /**
-    * ControleMetadataService
+    * ControleModificationService
     */
    @Autowired
-   private SaeControleMetadataService controleMetadataService;
+   private SAEControlesModificationService controleModification;
 
    /**
     * Provider de service pour la connexion DFCE de la GNS
@@ -102,6 +106,7 @@ public class TransfertMasseControleSupportImpl implements
 
    /**
     * {@inheritDoc}
+    * 
     * @throws TransfertException
     * @throws MappingFromReferentialException
     * @throws InvalidSAETypeException
@@ -110,6 +115,11 @@ public class TransfertMasseControleSupportImpl implements
     * @throws InvalidValueTypeAndFormatMetadataEx
     * @throws DuplicatedMetadataEx
     * @throws UnknownMetadataEx
+    * @throws NotModifiableMetadataEx
+    * @throws UnknownHashCodeEx
+    * @throws NotSpecifiableMetadataEx
+    * @throws UnknownCodeRndEx
+    * @throws ReferentialRndException
     */
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
          throws ReferentialException, SearchingServiceEx,
@@ -117,7 +127,9 @@ public class TransfertMasseControleSupportImpl implements
          TransfertException, InvalidSAETypeException,
          MappingFromReferentialException, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx {
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx {
 
       String trcPrefix = "controleSAEDocumentTransfert()";
       LOGGER.debug("{} - début", trcPrefix);
@@ -125,7 +137,7 @@ public class TransfertMasseControleSupportImpl implements
       List<StorageMetadata> storageMetas = new ArrayList<StorageMetadata>();
       if (!CollectionUtils.isEmpty(item.getUMetadatas())) {
 
-         controleMetadataService.checkUntypedMetadatas(item.getUMetadatas());
+         controleModification.checkSaeMetadataForUpdate(item.getUMetadatas());
 
          try {
             List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
