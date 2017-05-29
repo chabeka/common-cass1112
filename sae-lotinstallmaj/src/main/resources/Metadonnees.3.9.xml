@@ -2782,7 +2782,7 @@
 		<ns1:description>Application portant le besoin documentaire (Ancien index ApplicationSource)</ns1:description>
 		<ns1:hasDictionary>non</ns1:hasDictionary>
 		<ns1:isIndexed>non</ns1:isIndexed>
-		<ns1:modifiable>non</ns1:modifiable>
+		<ns1:modifiable>oui</ns1:modifiable>
 		<ns1:clientAvailable>oui</ns1:clientAvailable>
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
 		<ns1:rightTrimable>oui</ns1:rightTrimable>

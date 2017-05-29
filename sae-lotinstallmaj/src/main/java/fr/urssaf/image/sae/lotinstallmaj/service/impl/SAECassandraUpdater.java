@@ -1107,7 +1107,12 @@ public class SAECassandraUpdater {
 
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
 
+      // Modification du format png
+      donnees.addReferentielFormatV7();
+      
       // On positionne la version à 24
       saeDao.setDatabaseVersion(VERSION_27);
    }

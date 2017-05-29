@@ -1630,6 +1630,51 @@ public class InsertionDonnees {
       LOG.info("Format ajouté : {}", formatKey);
    }
 
+   
+   /**
+    * Ajout des données dans le référentiel des formats en V7 : 
+    * <li>modification fmt/13 en png</li>
+    */
+   public void addReferentielFormatV7() {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "ReferentielFormat", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      LOG.info("Mise à jour du référentiel des formats");
+      
+      // Modification de l'indentifiant fmt/13 en png
+      String formatPNG = "fmt/13";
+      cfTmpl.deleteRow(formatPNG);
+      formatPNG = "png";
+      updater = cfTmpl.createUpdater(formatPNG);
+
+      addColumn("idFormat", formatPNG, StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("description", "Fichier PNG", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("extension", "png", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("typeMime", "image/png", StringSerializer.get(),
+            StringSerializer.get(), updater);
+      cfTmpl.update(updater);
+      addColumn("visualisable", Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);      
+      addColumn(AUTORISE_GED, Boolean.TRUE, StringSerializer.get(),
+            BooleanSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      LOG.info("Format modifié : {}", formatPNG);
+
+
+   }
+   
+   
    /**
     * Modification des données dans le référentiel des formats : Ajout d'un
     * convertisseur pour le format <li>fmt/354</li>
