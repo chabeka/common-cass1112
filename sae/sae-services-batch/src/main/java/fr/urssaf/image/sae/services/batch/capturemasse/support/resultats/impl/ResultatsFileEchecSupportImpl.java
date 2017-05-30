@@ -997,7 +997,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          String name = xmlEvent.asEndElement().getName().getLocalPart();
          staxUtils.addEndTag(name, PX_SOMRES, NS_SOMRES);
 
-      } else {
+      } else if (xmlEvent.isCharacters()) {
          String value = xmlEvent.asCharacters().getData();
          staxUtils.addValue(value);
       }
@@ -1021,6 +1021,10 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          IndexReference indexReference) {
       TraitementMasseIntegratedDocument document = null;
       Object objFind = null;
+      if (!xmlEvent.isCharacters()) {
+         throw new CaptureMasseRuntimeException(
+               "Valeur ou commentaire non autorisé dans la valeur de la balise");
+      }
       // Valeur de la balise chemin
       String value = xmlEvent.asCharacters().getData();
       if (value != null) {

@@ -106,7 +106,9 @@ public class SommaireFormatValidationSupportImpl implements
                   && "batchMode".equals(event.asStartElement().getName()
                         .getLocalPart())) {
                event = reader.nextEvent();
-               mode = event.asCharacters().getData();
+               if (event.isCharacters()) {
+                  mode = event.asCharacters().getData();
+               }
             }
          }
          for (String batchMode : batchModes) {
@@ -204,33 +206,36 @@ public class SommaireFormatValidationSupportImpl implements
                         && "code".equals(event.asStartElement().getName()
                               .getLocalPart())) {
                      event = reader.nextEvent();
-                     nomMeta = event.asCharacters().getData();
+                     if (event.isCharacters()) {
+                        nomMeta = event.asCharacters().getData();
 
-                     // Si on trouve la métadonnée IdGed, on regarde si la
-                     // valeur
-                     // de l'UUID a déjà été utilisée
-                     if ("IdGed".equals(nomMeta)) {
-                        while (reader.hasNext()) {
-                           event = reader.nextEvent();
-                           if (event.isStartElement()
-                                 && "valeur".equals(event.asStartElement()
-                                       .getName().getLocalPart())) {
+                        // Si on trouve la métadonnée IdGed, on regarde si la
+                        // valeur
+                        // de l'UUID a déjà été utilisée
+                        if ("IdGed".equals(nomMeta)) {
+                           while (reader.hasNext()) {
                               event = reader.nextEvent();
-                              uuid = event.asCharacters().getData();
+                              if (event.isStartElement()
+                                    && "valeur".equals(event.asStartElement()
+                                          .getName().getLocalPart())) {
+                                 event = reader.nextEvent();
+                                 uuid = event.asCharacters().getData();
 
-                              if (listUuid.contains(uuid)) {
-                                 // UUID déjà présent, on renvoie une exception
-                                 throw new CaptureMasseSommaireFormatValidationException(
-                                       "IdGed " + uuid
-                                             + " présent plusieurs fois",
-                                       new Exception(
-                                             "IdGed présent plusieurs fois : "
-                                                   + uuid));
+                                 if (listUuid.contains(uuid)) {
+                                    // UUID déjà présent, on renvoie une
+                                    // exception
+                                    throw new CaptureMasseSommaireFormatValidationException(
+                                          "IdGed " + uuid
+                                          + " présent plusieurs fois",
+                                          new Exception(
+                                                "IdGed présent plusieurs fois : "
+                                                      + uuid));
 
-                              } else {
-                                 // UUID inconnu, on l'ajoute à la liste
-                                 listUuid.add(uuid);
-                                 break;
+                                 } else {
+                                    // UUID inconnu, on l'ajoute à la liste
+                                    listUuid.add(uuid);
+                                    break;
+                                 }
                               }
                            }
                         }
@@ -296,15 +301,17 @@ public class SommaireFormatValidationSupportImpl implements
 
                   if (event.isStartElement()
                         && event.asStartElement().getName().getLocalPart()
-                              .equals(baliseRequired)) {
+                        .equals(baliseRequired)) {
                      event = reader.nextEvent();
-                     valeurBalise = event.asCharacters().getData();
+                     if (event.isCharacters()) {
+                        valeurBalise = event.asCharacters().getData();
 
-                     if (valeurBalise.isEmpty()) {
-                        throw new CaptureMasseSommaireFormatValidationException(
-                              "La balise " + baliseRequired + " 'est vide",
-                              new Exception("La balise " + baliseRequired
-                                    + " est obligatoire"));
+                        if (valeurBalise.isEmpty()) {
+                           throw new CaptureMasseSommaireFormatValidationException(
+                                 "La balise " + baliseRequired + " 'est vide",
+                                 new Exception("La balise " + baliseRequired
+                                       + " est obligatoire"));
+                        }
                      }
                   }
                }
@@ -369,19 +376,22 @@ public class SommaireFormatValidationSupportImpl implements
                         && "UUID".equalsIgnoreCase(event.asStartElement()
                               .getName().getLocalPart())) {
                      event = reader.nextEvent();
-                     uuid = event.asCharacters().getData();
+                     if (event.isCharacters()) {
+                        uuid = event.asCharacters().getData();
 
-                     if (listUuid.contains(uuid)) {
-                        // UUID déjà présent, on renvoie une exception
-                        throw new CaptureMasseSommaireFormatValidationException(
-                              "UUID du document " + uuid
-                                    + " présent plusieurs fois", new Exception(
-                                    "UUID présent plusieurs fois : " + uuid));
+                        if (listUuid.contains(uuid)) {
+                           // UUID déjà présent, on renvoie une exception
+                           throw new CaptureMasseSommaireFormatValidationException(
+                                 "UUID du document " + uuid
+                                       + " présent plusieurs fois",
+                                 new Exception("UUID présent plusieurs fois : "
+                                       + uuid));
 
-                     } else {
-                        // UUID inconnu, on l'ajoute à la liste
-                        listUuid.add(uuid);
-                        break;
+                        } else {
+                           // UUID inconnu, on l'ajoute à la liste
+                           listUuid.add(uuid);
+                           break;
+                        }
                      }
                   }
                }
