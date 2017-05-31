@@ -22,13 +22,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
@@ -146,9 +146,9 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
          // mettre à jour le nombre de docs restorés
          int nbDocsTraites = 0;
          if (lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_MODIFIES)) {
+               Constantes.NB_INTEG_DOCS)) {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_MODIFIES);
+                  Constantes.NB_INTEG_DOCS);
          } else if(lastExecution.getExecutionContext().containsKey(
                Constantes.NB_DOCS_RESTORES)){
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
@@ -158,9 +158,9 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_DOCS_SUPPRIMES);
          } else if(lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_TRANSFERES)){
+               Constantes.NB_INTEG_DOCS)) {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_TRANSFERES);
+                  Constantes.NB_INTEG_DOCS);
          }
          
          // TODO Gestion de la reprise de différents traitements de masse

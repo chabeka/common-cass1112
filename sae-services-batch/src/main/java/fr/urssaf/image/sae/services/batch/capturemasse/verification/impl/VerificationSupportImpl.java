@@ -37,7 +37,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.Resulta
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 
 /**
  * Classe d'implémentation du serivce {@link VerificationSupport}

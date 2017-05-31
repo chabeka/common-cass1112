@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
+
 
 /**
  * Ce service permet de réaliser les vérifications finales, une fois le job fini
