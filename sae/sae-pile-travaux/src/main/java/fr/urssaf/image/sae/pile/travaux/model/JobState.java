@@ -9,6 +9,7 @@ package fr.urssaf.image.sae.pile.travaux.model;
  * <li>{@link #SUCCESS} : terminé avec succès</li>
  * <li>{@link #FAILURE} : terminé avec échec</li>
  * <li>{@link #ABORT} : abandonné</li>
+ * <li>{@link #REPLAY_SUCCESS} : reprise OK</li>
  * </ul>
  * 
  * 

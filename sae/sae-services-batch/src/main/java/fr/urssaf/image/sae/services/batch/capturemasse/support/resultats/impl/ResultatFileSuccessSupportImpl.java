@@ -27,6 +27,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,8 @@ public class ResultatFileSuccessSupportImpl implements
       ResultatFileSuccessSupport {
 
    private static final String ERREUR_VALEUR_VIDE = "Valeur vide non autorisée dans la valeur de la balise";
+
+   private static final String VALEUR_VIDE = "Valeur vide dans la balise valeur ";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatFileSuccessSupportImpl.class);
@@ -236,10 +239,11 @@ public class ResultatFileSuccessSupportImpl implements
                      reader.peek();
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
+                        LOGGER.info(VALEUR_VIDE);
+                        metadonnee.setValeur(StringUtils.EMPTY);
+                     } else {
+                        metadonnee.setValeur(xmlEventTmp.asCharacters().getData());  
                      }
-                     metadonnee.setValeur(xmlEventTmp.asCharacters().getData());
                      metadonnees.getMetadonnee().add(metadonnee);
                   } else if (NUM_PAGE_DEBUT.equals(name)) {
                      reader.peek();
