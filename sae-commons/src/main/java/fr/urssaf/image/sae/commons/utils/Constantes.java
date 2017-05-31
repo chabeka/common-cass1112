@@ -16,7 +16,19 @@ public final class Constantes {
     * Prefixe pour la clef cassandra.
     */
    public static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
-   
+
+   /**
+    * Prefixe pour la clef zookeeper.
+    */
+   public static final String PREFIXE_SEMAPHORE = "/Semaphore/";
+
+   /**
+    * Types de traitements
+    */
+   public static enum TYPES_JOB {
+      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse, reprise_masse;
+   }
+
    /**
     * Nom du job d'un traitement de reprise en masse
     */

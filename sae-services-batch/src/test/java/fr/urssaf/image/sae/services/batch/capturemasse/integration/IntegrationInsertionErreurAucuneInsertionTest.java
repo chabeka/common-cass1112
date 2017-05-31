@@ -76,13 +76,13 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationInsertionErreurAucuneInsertionTest {
 
    private static final String MESSAGE_ERREUR = "erreur insertion";
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du "
+         + "survenue lors du traitement du "
          + "document doc1.PDF. Détails : "
          + MESSAGE_ERREUR;
 
@@ -108,7 +108,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
    private Logger logger;
 
    private SaeLogAppender logAppenderSae;
-   
+
    @Autowired
    private CassandraServerBean server;
    @Autowired
@@ -153,11 +153,11 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
-      
+
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
-      
+
       TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
@@ -166,7 +166,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       typeDocCree.setDureeConservation(1825);
       typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
-      
+
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
    }
 
@@ -183,15 +183,15 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       logger.detachAppender(logAppenderSae);
-      
+
       server.resetData();
    }
 
    @Test
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException, InsertionIdGedExistantEx {
       initComposantsThrowable();
       initDatas();
 
@@ -212,8 +212,8 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
    @Test
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException, InsertionIdGedExistantEx {
       initComposantsRuntime();
       initDatas();
 
@@ -233,7 +233,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposantsThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -254,14 +254,14 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new Error(MESSAGE_ERREUR)).anyTimes();
+                        new Error(MESSAGE_ERREUR)).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initComposantsRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -282,7 +282,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new RuntimeException(MESSAGE_ERREUR)).anyTimes();
+                        new RuntimeException(MESSAGE_ERREUR)).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -325,7 +325,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
             "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
+            .valueOf(0), res.getInitialVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
             .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
@@ -372,7 +372,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
     * @throws SAXException
     */
    private ResultatsType getResultats(File resultats) throws JAXBException,
-         IOException, SAXException {
+   IOException, SAXException {
       JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -394,7 +394,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
-            .unmarshal(resultats);
+      .unmarshal(resultats);
 
       return doc.getValue();
 

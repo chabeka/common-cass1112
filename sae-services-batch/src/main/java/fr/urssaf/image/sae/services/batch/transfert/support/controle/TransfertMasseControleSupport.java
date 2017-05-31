@@ -41,6 +41,11 @@ public interface TransfertMasseControleSupport {
     * @throws NotSpecifiableMetadataEx 
     * @throws UnknownCodeRndEx 
     * @throws ReferentialRndException 
+    * @throws NotModifiableMetadataEx
+    * @throws UnknownHashCodeEx
+    * @throws NotSpecifiableMetadataEx
+    * @throws UnknownCodeRndEx
+    * @throws ReferentialRndException
     * 
     */
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
@@ -49,5 +54,7 @@ public interface TransfertMasseControleSupport {
          TransfertException, InvalidSAETypeException,
          MappingFromReferentialException, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx, ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx;
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx;
 }

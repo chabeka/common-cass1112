@@ -81,7 +81,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-dao-spring.xml" })
+"/applicationContext-sae-services-capturemasse-test-dao-spring.xml" })
 public class IntegrationSpringBatchFailureStepExecutionTest {
 
    /**
@@ -92,7 +92,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    private static final String MESSAGE_ERREUR = "erreur insertion";
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du " + "document doc1.PDF. Détails : ";
+         + "survenue lors du traitement du " + "document doc1.PDF. Détails : ";
 
    private static final String ERREUR_ATTENDUE_RES_003 = "La capture de masse en mode \"Tout ou rien\" a été interrompue. "
          + "Une procédure d'exploitation a été initialisée pour supprimer les données qui auraient pu être stockées.";
@@ -209,8 +209,8 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    @Test
    @DirtiesContext
    public void testLancementErreurAvantStockage() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException {
 
       initComposantsSansRollback("compteElements");
       initDatas();
@@ -315,21 +315,21 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       EasyMock.expectLastCall().anyTimes();
 
       EasyMock.expect(provider.getStorageDocumentService())
-            .andReturn(storageDocumentService).anyTimes();
+      .andReturn(storageDocumentService).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
 
    private void initSaveSansRollback() throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
+   InsertionIdGedExistantEx {
       UUID idTraitement = UUID.randomUUID();
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(idTraitement);
       EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(10);
+      .expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+                  .andReturn(storageDocument).times(10);
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
@@ -346,7 +346,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       EasyMock.expectLastCall().anyTimes();
 
       EasyMock.expect(provider.getStorageDocumentService())
-            .andReturn(storageDocumentService).anyTimes();
+      .andReturn(storageDocumentService).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
@@ -358,16 +358,16 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       storageDocument.setUuid(idTraitement);
 
       EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(9);
+      .expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+                  .andReturn(storageDocument).times(9);
 
       EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class)))
-            .andThrow(new Error(MESSAGE_ERREUR)).once();
+      .expect(
+            storageDocumentService.insertStorageDocument(EasyMock
+                  .anyObject(StorageDocument.class)))
+                  .andThrow(new Error(MESSAGE_ERREUR)).once();
 
       JobExecution jobExecution = new JobExecution(1L);
       StepExecution execution = new StepExecution("controleSommaireStep",
@@ -395,7 +395,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    }
 
    private void checkFilesAvantStockage() throws IOException, JAXBException,
-         SAXException {
+   SAXException {
 
       File repTraitement = ecdeTestSommaire.getRepEcde();
       File debut = new File(repTraitement, "debut_traitement.flag");
@@ -459,7 +459,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
    }
 
    private void checkFilesApresStockage() throws IOException, JAXBException,
-         SAXException {
+   SAXException {
 
       File repTraitement = ecdeTestSommaire.getRepEcde();
       File debut = new File(repTraitement, "debut_traitement.flag");
@@ -530,7 +530,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
     * @throws SAXException
     */
    private ResultatsType getResultats(File resultats) throws JAXBException,
-         IOException, SAXException {
+   IOException, SAXException {
       JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -552,7 +552,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
-            .unmarshal(resultats);
+      .unmarshal(resultats);
 
       return doc.getValue();
 
@@ -571,11 +571,8 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       Assert.assertEquals("deux messages de niveau ERROR", 2, list.size());
 
       // message resultats.xml
-      boolean messageOk = LogUtils
-            .logExists(
-                  list,
-                  Level.ERROR,
-                  "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de capture de masse. Détails :");
+      boolean messageOk = LogUtils.logExists(list, Level.ERROR,
+            "Génération de secours du fichier resultats.xml car il n'a pas été généré par le job de capture_masse. Détails :");
 
       Assert.assertTrue("présence du message de resultats.xml", messageOk);
 
@@ -583,7 +580,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier fin_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de capture_masse");
 
       Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
    }
@@ -604,7 +601,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       boolean messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du log ERROR "
                   + "de rollback par procédure d'exploitation "
-                  + "car il n'a pas été généré par le job de capture de masse");
+                  + "car il n'a pas été généré par le job de capture_masse");
 
       Assert.assertTrue("présence du message indiquant que "
             + "le rollback a été effectué en dehors du job", messageOk);
@@ -625,7 +622,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier fin_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de capture_masse");
 
       Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
@@ -649,7 +646,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       boolean messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier debut_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de capture_masse");
 
       Assert.assertTrue(
             "présence du message pour le fichier debut_traitement.flag",
@@ -665,7 +662,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier fin_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de capture_masse");
 
       Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 
@@ -703,7 +700,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       messageOk = LogUtils.logExists(list, Level.ERROR,
             "Génération de secours du "
                   + "fichier fin_traitement.flag car il n'a "
-                  + "pas été généré par le job de capture de masse");
+                  + "pas été généré par le job de capture_masse");
 
       Assert.assertTrue("présence du message de fin_traitement.flag", messageOk);
 

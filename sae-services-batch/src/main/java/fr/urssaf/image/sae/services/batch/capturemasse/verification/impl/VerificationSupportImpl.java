@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireEcdeURLException;
@@ -91,11 +92,17 @@ public class VerificationSupportImpl implements VerificationSupport {
    }
 
    /**
+    * Verification du debut du traitement.
+    * 
     * @param repTravail
     *           repertoire père
+    * @param typeJob
+    *           Type de job
     * @throws UnknownHostException
+    *            @{@link UnknownHostException}
     */
-   private void checkDebutTraitement(File repTravail, UUID idTraitement)
+   private void checkDebutTraitement(File repTravail, UUID idTraitement,
+         TYPES_JOB typeJob)
          throws UnknownHostException {
 
       File debut = new File(repTravail, "debut_traitement.flag");
@@ -104,7 +111,7 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          LOGGER.error("Génération de secours du "
                + "fichier debut_traitement.flag car il n'a "
-               + "pas été généré par le job de capture de masse");
+               + "pas été généré par le job de " + typeJob.name());
 
          InetAddress hostInfo = InetAddress.getLocalHost();
 
@@ -271,8 +278,9 @@ public class VerificationSupportImpl implements VerificationSupport {
 
    /**
     * @param repTravail
+    * @param typeJob
     */
-   private void checkFinTraitement(File repTravail) {
+   private void checkFinTraitement(File repTravail, TYPES_JOB typeJob) {
 
       File fin = new File(repTravail, "fin_traitement.flag");
 
@@ -280,7 +288,7 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          LOGGER.error("Génération de secours du "
                + "fichier fin_traitement.flag car il n'a "
-               + "pas été généré par le job de capture de masse");
+               + "pas été généré par le job de " + typeJob.name());
 
          finSupport.writeFinTraitementFlag(repTravail);
       }
@@ -291,18 +299,19 @@ public class VerificationSupportImpl implements VerificationSupport {
     * @param nbreStockes
     * @param idTraitement
     * @param logPresent
+    * @param typeJob
     */
    private void checkLogs(Integer nbreStockes, UUID idTraitement,
-         boolean logPresent) {
+         boolean logPresent, TYPES_JOB typeJob) {
 
       if (!logPresent && nbreStockes != null && nbreStockes > 0) {
          LOGGER.error("Génération de secours du log ERROR "
                + "de rollback par procédure d'exploitation "
-               + "car il n'a pas été généré par le job de capture de masse");
+               + "car il n'a pas été généré par le job de " + typeJob.name());
 
          LOGGER.error("Le traitement de masse n°{} doit éventuellement être rollbacké "
-                     + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
-                     idTraitement);
+               + "par une procédure d'exploitation (il faut faire une analyse au préalable).",
+               idTraitement);
       }
 
    }
@@ -331,14 +340,14 @@ public class VerificationSupportImpl implements VerificationSupport {
 
          File repTravail = sommaire.getParentFile();
 
-         checkDebutTraitement(repTravail, idTraitement);
+         checkDebutTraitement(repTravail, idTraitement, typeJob);
 
          checkResultats(repTravail, nbreDocs, nbreStockes, batchModeTraitement,
                erreurs, sommaire, listeDocsIntegres, typeJob);
 
-         checkFinTraitement(repTravail);
+         checkFinTraitement(repTravail, typeJob);
 
-         checkLogs(nbreStockes, idTraitement, logPresent);
+         checkLogs(nbreStockes, idTraitement, logPresent, typeJob);
 
          LOGGER.debug("{} - fin", CHECK);
 

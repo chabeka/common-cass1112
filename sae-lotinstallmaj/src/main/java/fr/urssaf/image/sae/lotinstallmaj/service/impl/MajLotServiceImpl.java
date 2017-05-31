@@ -446,15 +446,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Methode permettant de
-    */
-   private void installGNTServeurDFCE() {
-      // Update de la base DFCE
-      commonUpdateDFCE();
-   }
-
-   /**
-    * Methode permettant de
+    * Methode permettant de réaliser les updates pour le serveur DFCE.
     */
    private void installServeurDFCE() {
       // Update de la base DFCE
@@ -462,7 +454,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Methode permettant de
+    * Methode permettant de réaliser les updates pour le serveur DFCE.
     */
    private void commonUpdateDFCE() {
       updateDFCE130700();

@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
@@ -38,7 +38,7 @@ public class TraitementAsynchroneServiceValidationTest {
    private static final String EXCEPTION_MESSAGE = "Le message de l'exception est inattendu";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
-   
+
    @Autowired
    private EcdeServices ecdeServices;
 
@@ -80,7 +80,7 @@ public class TraitementAsynchroneServiceValidationTest {
 
          @Override
          public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
-            
+
          }
 
          @Override
@@ -314,7 +314,7 @@ public class TraitementAsynchroneServiceValidationTest {
 
    @Test
    public void lancerJob_failure_empty_idJob() throws JobInexistantException,
-         JobNonReserveException {
+   JobNonReserveException {
 
       try {
          service.lancerJob(null);
@@ -343,7 +343,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "listeUuid"), e.getMessage());
       }
    }
-   
+
    @Test
    public void ajouterJobTransfertMasse_success() {
       Map<String, String> jobParams = new HashMap<String, String>();
@@ -353,7 +353,7 @@ public class TraitementAsynchroneServiceValidationTest {
             null, null);
       service.ajouterJobTransfertMasse(parametres);
    }
-   
+
    @Test
    public void ajouterJobTransfertMasse_failure_empty_urlEcde() {
       assertAjouterJobTransfertMasse_urlEcde(null);
@@ -451,7 +451,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
       }
    }
-   
+
    private void assertAjouterJobModificationMasse_codeTraitement(String codeTraitement) {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, URL_ECDE);
@@ -467,7 +467,7 @@ public class TraitementAsynchroneServiceValidationTest {
                MessageFormat.format(ARG_EMPTY, "codeTraitement"), e.getMessage());
       }
    }
-     
+
    private void assertAjouterJobTransfertMasse_urlEcde(String urlECDE) {
       Map<String, String> jobParams = new HashMap<String, String>();
       jobParams.put(Constantes.ECDE_URL, urlECDE);

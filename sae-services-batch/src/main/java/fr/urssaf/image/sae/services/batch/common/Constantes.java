@@ -3,6 +3,8 @@
  */
 package fr.urssaf.image.sae.services.batch.common;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
+
 /**
  * Classe contenant les constantes utilisées dans le reste de la capture de
  * masse
@@ -269,12 +271,7 @@ public final class Constantes {
     * Traçabilité : contexte pour la restore de masse
     */
    public static final String CONTEXTE_RESTORE_MASSE = "restoreMasse";
-   
-   /**
-    * Nombre de docs modifiés.
-    */
-   public static final String NB_DOCS_MODIFIES = "nbDocsRestores";
-   
+
    /**
     * Traçabilité : le code de l'événement pour l'échec d'une modification de masse
     */
@@ -301,11 +298,6 @@ public final class Constantes {
    public static final String BATCH_MODE_ELEMENT_NAME = "batchMode";
    
    /**
-    * Nombre de docs transférés.
-    */
-   public static final String NB_DOCS_TRANSFERES = "nbDocsTransferes";
-   
-   /**
     * Traçabilité : le code de l'événement pour l'échec d'un transfert de masse
     */
    public static final String TRACE_CODE_EVT_ECHEC_TM = "TRANSFERT_MASSE|KO";
@@ -319,13 +311,6 @@ public final class Constantes {
     * Constructeur
     */
    private Constantes() {
-   }
-
-   /**
-    * Types de traitements
-    */
-   public static enum TYPES_JOB {
-      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse, reprise_masse;
    }
 
    /**

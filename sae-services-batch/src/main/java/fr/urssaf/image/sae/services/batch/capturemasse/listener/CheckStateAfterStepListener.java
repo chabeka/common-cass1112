@@ -26,7 +26,7 @@ public class CheckStateAfterStepListener extends AbstractListener {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
       if (CollectionUtils.isEmpty(getExceptionErreurListe())
-            || isModePartielBatch()) {
+            || (isModePartielBatch() && isControleModePartielActif())) {
          exitStatus = ExitStatus.COMPLETED;
       }
 
@@ -36,6 +36,16 @@ public class CheckStateAfterStepListener extends AbstractListener {
    @Override
    protected void specificInitOperations() {
       // rien à faire
+   }
+
+   /**
+    * Methode permettant d'activer le controle sur le mode Partiel.
+    * 
+    * @return True si le controle sur le mode Partiel doit être actif, false
+    *         sinon.
+    */
+   protected boolean isControleModePartielActif() {
+      return false;
    }
 
 }

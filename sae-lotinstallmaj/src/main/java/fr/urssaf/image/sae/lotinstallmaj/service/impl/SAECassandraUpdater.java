@@ -949,17 +949,17 @@ public class SAECassandraUpdater {
 
       // Ajout du format fmt/13 (PNG) et fmt/44 (JPG)
       donnees.addReferentielFormatV5();
-      
+
       // Ajout des paramètres pour la purge de la corbeille
       donnees.addCorbeilleParameters();
-      
+
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }
-   
+
    /**
     * Version 22 : <li>Ajout de l'action unitaire suppression et modification pour la GNS</li>
     */
@@ -980,11 +980,11 @@ public class SAECassandraUpdater {
 
       // Ajout de l'action unitaire suppression et modification
       donnees.addActionUnitaireSuppressionModification();
-      
+
       // On positionne la version à 22
       saeDao.setDatabaseVersion(VERSION_22);
    }
-   
+
    /**
     * Version 23 : <li>Ajout de l'action unitaire copie</li>
     */
@@ -1005,11 +1005,11 @@ public class SAECassandraUpdater {
 
       // Ajout de l'action unitaire copie
       donnees.addActionUnitaireCopie();
-      
+
       // On positionne la version à 23
       saeDao.setDatabaseVersion(VERSION_23);
    }
-   
+
    public void updateToVersion24() {
 
       long version = saeDao.getDatabaseVersion();
@@ -1107,12 +1107,15 @@ public class SAECassandraUpdater {
 
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout droit unitaire reprise des traitements de masse.
+      donnees.addActionUnitaireRepriseMasse();
 
       // Modification du format png
       donnees.addReferentielFormatV7();
-      
+
       // On positionne la version à 24
       saeDao.setDatabaseVersion(VERSION_27);
    }

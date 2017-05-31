@@ -72,7 +72,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationRollBack11DocRechercheSuccesTest {
 
    /**
@@ -81,7 +81,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
    private static final String LIBELLE_ATTENDU = "insertion impossible";
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application "
-         + "est survenue lors de la capture du document doc1.PDF. "
+         + "est survenue lors du traitement du document doc1.PDF. "
          + "Détails : " + LIBELLE_ATTENDU;
 
    @Autowired
@@ -228,12 +228,12 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(9);
+                  .andReturn(storageDocument).times(9);
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new InsertionServiceEx(LIBELLE_ATTENDU)).anyTimes();
+                        new InsertionServiceEx(LIBELLE_ATTENDU)).anyTimes();
 
       // la recherche va retourner 10 éléments
       UntypedDocument untypedDocument = new UntypedDocument();
@@ -246,14 +246,14 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       EasyMock.expect(
             saeDocumentService.search(EasyMock.anyObject(String.class),
                   EasyMock.anyObject(List.class), EasyMock.anyInt()))
-            .andReturn(list).once();
+                  .andReturn(list).once();
 
       List<UntypedDocument> list2 = new ArrayList<UntypedDocument>();
       list2.add(untypedDocument);
       EasyMock.expect(
             saeDocumentService.search(EasyMock.anyObject(String.class),
                   EasyMock.anyObject(List.class), EasyMock.anyInt()))
-            .andReturn(list2).once();
+                  .andReturn(list2).once();
 
       Advised advised = (Advised) saeDocumentService;
       SAEDocumentService impl = (SAEDocumentService) advised.getTargetSource()
@@ -303,7 +303,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
             "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
+            .valueOf(0), res.getInitialVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
             .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
@@ -350,7 +350,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
     * @throws SAXException
     */
    private ResultatsType getResultats(File resultats) throws JAXBException,
-         IOException, SAXException {
+   IOException, SAXException {
       JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -372,7 +372,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
-            .unmarshal(resultats);
+      .unmarshal(resultats);
 
       return doc.getValue();
 

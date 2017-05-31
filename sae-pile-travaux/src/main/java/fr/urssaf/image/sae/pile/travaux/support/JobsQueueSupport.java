@@ -14,6 +14,7 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 import org.apache.commons.lang.StringUtils;
 
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
@@ -400,7 +401,7 @@ public class JobsQueueSupport {
 
          // Opération 1 : Suppression du job de la liste de la file d'attente
          this.jobsQueueDao.mutatorAjouterSuppressionJobQueue(mutator,
-               "semaphore_" + codeTraitement, idJob, clock);
+               Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement, idJob, clock);
 
          // Exécution de l'opération
          mutator.execute();

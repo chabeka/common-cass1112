@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
@@ -51,7 +52,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
     */
    @Autowired
    private JobLauncher jobLauncher;
-   
+
    /**
     * Service de gestion de la pile des travaux.
     */
@@ -63,7 +64,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
     */
    @Autowired
    private VerificationSupport verifSupport;
-   
+
    /**
     * Pool d'execution des insertions de documents
     */
@@ -76,8 +77,8 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
    @Autowired
    @Qualifier("modification_masse")
    private Job job;
-   
-   
+
+
    /**
     * {@inheritDoc}
     */
@@ -122,12 +123,12 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
             exitTraitement.setSucces(false);
          }
 
-         // met a jour le job pour renseigner le nombre de docs restorés
+         // met a jour le job pour renseigner le nombre de docs modifiés
          int nbDocsModifie = 0;
          if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_MODIFIES)) {
+               Constantes.NB_INTEG_DOCS)) {
             nbDocsModifie = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_MODIFIES);
+                  Constantes.NB_INTEG_DOCS);
          }
 
          jobQueueService.renseignerDocCountJob(idTraitement, nbDocsModifie);
@@ -149,7 +150,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
 
       return exitTraitement;
    }
-   
+
    /**
     * @param jobExecution
     * @param idTraitement

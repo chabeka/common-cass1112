@@ -16,10 +16,8 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
-import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
 import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
-import fr.urssaf.image.sae.services.controles.SaeControleMetadataService;
 import fr.urssaf.image.sae.services.documentExistant.SAEDocumentExistantService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
@@ -131,8 +129,8 @@ public class TransfertMasseControleSupportImpl implements
          MappingFromReferentialException, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
-         NotModifiableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         NotSpecifiableMetadataEx, UnknownHashCodeEx {
+         ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
+         UnknownHashCodeEx, NotModifiableMetadataEx {
 
       String trcPrefix = "controleSAEDocumentTransfert()";
       LOGGER.debug("{} - début", trcPrefix);

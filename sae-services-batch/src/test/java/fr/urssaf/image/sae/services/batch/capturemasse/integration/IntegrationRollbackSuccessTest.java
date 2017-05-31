@@ -76,11 +76,11 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationRollbackSuccessTest {
 
    private static final String ERREUR_ATTENDUE = "Une erreur interne à l'application est "
-         + "survenue lors de la capture du "
+         + "survenue lors du traitement du "
          + "document doc1.PDF. Détails : erreur mémoire";
 
    @Autowired
@@ -186,8 +186,8 @@ public class IntegrationRollbackSuccessTest {
    @Test
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException, InsertionIdGedExistantEx {
       initThrowable();
       initGeneral();
       initDatas();
@@ -211,8 +211,8 @@ public class IntegrationRollbackSuccessTest {
    @Test
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,
-         DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-         SAXException, InsertionIdGedExistantEx {
+   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
+   SAXException, InsertionIdGedExistantEx {
       initRuntime();
       initGeneral();
       initDatas();
@@ -254,44 +254,44 @@ public class IntegrationRollbackSuccessTest {
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initThrowable() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(2);
+                  .andReturn(storageDocument).times(2);
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new Error("erreur mémoire")).once();
+                        new Error("erreur mémoire")).once();
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initRuntime() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
       StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).times(2);
+                  .andReturn(storageDocument).times(2);
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class))).andThrow(
-            new RuntimeException("erreur mémoire")).once();
+                        new RuntimeException("erreur mémoire")).once();
 
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
    }
 
    private void initDatas() throws IOException {
@@ -332,7 +332,7 @@ public class IntegrationRollbackSuccessTest {
             .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
             "0 documents virtuels doivent être initialement présents", Integer
-                  .valueOf(0), res.getInitialVirtualDocumentsCount());
+            .valueOf(0), res.getInitialVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
             .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
@@ -379,7 +379,7 @@ public class IntegrationRollbackSuccessTest {
     * @throws SAXException
     */
    private ResultatsType getResultats(File resultats) throws JAXBException,
-         IOException, SAXException {
+   IOException, SAXException {
       JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
       Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -401,7 +401,7 @@ public class IntegrationRollbackSuccessTest {
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
-            .unmarshal(resultats);
+      .unmarshal(resultats);
 
       return doc.getValue();
 
@@ -413,7 +413,7 @@ public class IntegrationRollbackSuccessTest {
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
       Assert
-            .assertTrue("Au moins un message présent", loggingEvents.size() > 0);
+      .assertTrue("Au moins un message présent", loggingEvents.size() > 0);
 
       int nbreErreur = LogUtils.countLogsWithLevel(loggingEvents, Level.ERROR);
 

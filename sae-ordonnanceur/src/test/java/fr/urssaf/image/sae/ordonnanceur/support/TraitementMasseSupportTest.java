@@ -292,6 +292,12 @@ public class TraitementMasseSupportTest {
       jobParametersSuppression.put(REQUETE_SUPPRESSION, "requête lucène");
       JobQueue jobQueue = createJob(SUPPRESSION_MASSE_JN, jobParametersSuppression);
 
+      Assert.assertTrue(traitementMasseSupport
+            .isEcdeUpJobTraitementMasse(jobQueue));
+
+      jobParametersSuppression.put(ECDE_URL, "url_ecde");
+      jobQueue = createJob(SUPPRESSION_MASSE_JN, jobParametersSuppression);
+
       traitementMasseSupport.isEcdeUpJobTraitementMasse(jobQueue);
       
       Assert.fail("Une exception est attendue");
