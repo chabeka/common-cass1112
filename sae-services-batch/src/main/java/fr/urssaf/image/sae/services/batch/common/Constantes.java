@@ -14,7 +14,27 @@ public final class Constantes {
     * Identifiant du paramètre idTraitement
     */
    public static final String ID_TRAITEMENT = "capture.masse.idtraitement";
-
+   
+   /**
+    * Identifiant du paramètre idTraitement de reprise
+    */
+   public static final String ID_TRAITEMENT_REPRISE = "idTraitement";
+   
+   /**
+    * Identifiant de l'id du traitement à reprendre
+    */
+   public static final String ID_TRAITEMENT_A_REPRENDRE = "idTraitementAReprendre";
+   
+   /**
+    * Type du traitement à reprendre
+    */
+   public static final String TYPE_TRAITEMENT_A_REPRENDRE = "typeTraitementAReprendre";
+   
+   /**
+    * l'UUID du job à reprendre 
+    */
+   public static final String UUID_JOB_A_Reprendre = "uuidJobAReprendre";
+   
    /**
     * Identifiant du paramètre sommaire
     */
@@ -153,7 +173,7 @@ public final class Constantes {
     * l'Url ECDE
     */
    public static final String ECDE_URL = "ecdeUrl";
-
+   
    /**
     * Traçabilité : le code de l'événement pour l'échec d'une capture de masse
     */
@@ -294,7 +314,7 @@ public final class Constantes {
     * Traçabilité : contexte pour la modification de masse
     */
    public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
-
+   
    /**
     * Constructeur
     */
@@ -305,7 +325,7 @@ public final class Constantes {
     * Types de traitements
     */
    public static enum TYPES_JOB {
-      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse;
+      capture_masse, suppression_masse, restore_masse, modification_masse, transfert_masse, reprise_masse;
    }
 
    /**

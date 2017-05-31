@@ -287,9 +287,25 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
       updateService.setUpdateServiceParameter(getDfceService());
-      updateService.updateStorageDocument(uuid, modifiedMetadatas,
+      updateService.updateStorageDocument(null, uuid, modifiedMetadatas,
             deletedMetadatas);
 
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final void updateStorageDocument(UUID uuidJob, UUID uuid,
+         List<StorageMetadata> modifiedMetadatas,
+         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {      
+      if( uuidJob== null){
+         updateStorageDocument(uuid, modifiedMetadatas, deletedMetadatas);
+      } else {
+         updateService.setUpdateServiceParameter(getDfceService());
+         updateService.updateStorageDocument(uuidJob, uuid, modifiedMetadatas,
+               deletedMetadatas);
+      }
    }
 
    /**

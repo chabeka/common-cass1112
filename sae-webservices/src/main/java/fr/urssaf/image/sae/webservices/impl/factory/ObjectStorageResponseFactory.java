@@ -8,6 +8,8 @@ import fr.cirtil.www.saeservice.DeblocageResponse;
 import fr.cirtil.www.saeservice.DeblocageResponseType;
 import fr.cirtil.www.saeservice.ModificationMasseResponse;
 import fr.cirtil.www.saeservice.ModificationMasseResponseType;
+import fr.cirtil.www.saeservice.RepriseResponse;
+import fr.cirtil.www.saeservice.RepriseResponseType;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.RestoreMasseResponseType;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
@@ -171,6 +173,26 @@ public final class ObjectStorageResponseFactory {
       responseType.setUuid(uuid);
       responseType.setEtat(etat);
       response.setDeblocageResponse(responseType);
+      return response;
+   }
+   
+   /**
+    * instanciation de {@link RepriseResponse}.<br>
+    * implémentation de {@link RepriseResponseType}
+    * 
+    * <pre>
+    * &lt;xsd:complexType name="repriseResponseType">
+    * ...
+    * &lt;/xsd:complexType>
+    * </pre>
+    * 
+    * @return instance de {@link RepriseResponse}
+    */
+   public static RepriseResponse createRepriseResponse(String uuid) {
+      RepriseResponse response = new RepriseResponse();
+      RepriseResponseType responseType = new RepriseResponseType();
+      responseType.setUuid(uuid);
+      response.setRepriseResponse(responseType);
       return response;
    }
    

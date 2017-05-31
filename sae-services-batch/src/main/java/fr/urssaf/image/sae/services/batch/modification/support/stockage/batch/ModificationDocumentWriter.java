@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.batch.modification.support.stockage.batch;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -141,12 +142,21 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
    public final StorageDocument insertStorageDocument(
          final StorageDocument storageDocument) throws UpdateServiceEx {
 
-         serviceProvider.getStorageDocumentService().updateStorageDocument(
-               storageDocument.getUuid(), storageDocument.getMetadatas(), storageDocument.getMetadatasToDelete());
+      // Récuperer l'id du traitement en cours
+      String idJob = (String) getStepExecution().getJobParameters()
+            .getString(Constantes.ID_TRAITEMENT);
+      
+      UUID uuidJob = null;
+      if(StringUtils.isNotEmpty(idJob)){
+         // conversion
+         uuidJob = UUID.fromString(idJob);
+      }
+      serviceProvider.getStorageDocumentService().updateStorageDocument(
+            uuidJob, storageDocument.getUuid(), storageDocument.getMetadatas(),
+            storageDocument.getMetadatasToDelete());
 
       return storageDocument;
    }
-
 
    /**
     * {@inheritDoc}

@@ -24,5 +24,9 @@
    <bean id="transfertMasseService" class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
       factory-method="createSAETransfertMasseService">
    </bean>
+   
+   <bean id="repriseMasseService" class="fr.urssaf.image.sae.services.batch.ServiceMockManager"
+      factory-method="createSAERepriseMasseService">
+   </bean>
 
 </beans>

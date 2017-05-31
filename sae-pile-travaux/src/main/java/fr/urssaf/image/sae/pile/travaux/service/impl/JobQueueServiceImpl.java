@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
@@ -51,7 +52,7 @@ public class JobQueueServiceImpl implements JobQueueService {
    private final JobClockSupport jobClockSupport;
 
    private final JobsQueueSupport jobsQueueSupport;
-
+   
    private final JobHistorySupport jobHistorySupport;
 
    private final JobLectureService jobLectureService;
@@ -59,6 +60,11 @@ public class JobQueueServiceImpl implements JobQueueService {
    private final JobRequestDao jobRequestDao;
 
    private final JobRequestSupport jobRequestSupport;
+   
+   /**
+    * l'UUID du job à reprendre 
+    */
+   public static final String UUID_JOB_A_Reprendre = "uuidJobAReprendre";
 
    private static final Logger LOG = LoggerFactory
          .getLogger(JobQueueServiceImpl.class);
@@ -144,7 +150,11 @@ public class JobQueueServiceImpl implements JobQueueService {
       // Lecture du job
       ColumnFamilyResult<UUID, String> result = this.jobRequestDao
             .getJobRequestTmpl().queryColumns(idJob);
-
+      
+      // TODO Pour la reprise de traitement de masse, 
+      // 1- Prévoir maj du job de reprise => FAIT
+      // 2- Prévoir maj du job de masse repris => TODO
+      
       // Récupération de la colonne "state"
       HColumn<?, ?> columnState = result
             .getColumn(JobRequestDao.JR_STATE_COLUMN);
@@ -159,7 +169,16 @@ public class JobQueueServiceImpl implements JobQueueService {
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
             dateFinTraitement, succes, message, clock);
-
+      // TODO 
+      if(jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes){
+         String idTraitementAReprendre = jobRequest.getJobParameters().get(UUID_JOB_A_Reprendre);
+         UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
+         // Passer le job à l'état REPLAY_SUCCESS
+         Date dateReprise = new Date();
+         changerEtatJobRequest(idJobAReprendre,
+               JobState.REPLAY_SUCCESS.name(), dateReprise, "Repris avec succes");
+      }
+      
       // Ecriture dans la CF "JobQueues" pour hostname
       this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
 

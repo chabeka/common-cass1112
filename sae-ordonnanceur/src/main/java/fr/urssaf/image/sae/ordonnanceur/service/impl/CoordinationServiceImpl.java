@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.commons.exception.ParameterRuntimeException;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
@@ -105,7 +106,7 @@ public class CoordinationServiceImpl implements CoordinationService {
    }
 
    /**
-    * Trouver le job qui doit être lancé.
+    * Récuperer et réserver le job qui doit être lancé.
     * 
     * @return Le Job à lancer.
     * @throws AucunJobALancerException
@@ -129,7 +130,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       List<JobQueue> listeTraitement = this.decisionService
             .trouverListeJobALancer(jobsEnAttente, jobsEnCours);
-
+      
       // Etape 4 : vérification que le serveur DFCE est Up!
       if (!dfceSuppport.isDfceUp()) {
          LOG.debug("{} - DFCE n'est pas accessible avec la configuration",
@@ -144,8 +145,9 @@ public class CoordinationServiceImpl implements CoordinationService {
          if (isJobSelectionnableALancer(jobQueue)) {
             try {
                // Etape 6 : Vérification que l'URL ECDE est toujours actif
-               this.decisionService.controleDispoEcdeTraitementMasse(jobQueue);
-               
+               if(!Constantes.REPRISE_MASSE_JN.equals(jobQueue.getType())){
+                  this.decisionService.controleDispoEcdeTraitementMasse(jobQueue);
+               }
                // Etape 7 : Positionne le sémaphore pour le traitement
                // sélectionné
                traitement = this.jobService

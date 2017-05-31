@@ -17,4 +17,9 @@ public final class Constantes {
     */
    public static final String PREFIXE_SEMAPHORE_JOB = "semaphore_";
    
+   /**
+    * Nom du job d'un traitement de reprise en masse
+    */
+   public static final String REPRISE_MASSE_JN = "reprise_masse";
+   
 }

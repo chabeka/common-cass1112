@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 public interface TraitementExecutionSupport {
 
    /**
-    * Exécute une traitement de masse à partir d'un job contenu dans la pile des
+    * Exécute un traitement de masse à partir d'un job contenu dans la pile des
     * travaux
     * 
     * @param job

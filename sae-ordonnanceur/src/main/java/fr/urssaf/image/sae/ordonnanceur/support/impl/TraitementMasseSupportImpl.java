@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.support.EcdeSupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementMasseSupport;
@@ -52,7 +53,7 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
     * Nom du job d'un traitement de transfert en masse
     */
    public static final String TRANSFERT_MASSE_JN = "transfert_masse";
-
+   
    private final EcdeSupport ecdeSupport;
 
    private static final String ECDE_URL = "ecdeUrl";
@@ -98,11 +99,14 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
                   boolean isModificationMasse = isModificationMasse(jobRequest);
                   
                   boolean isTransfertMasse = isTransfertMasse(jobRequest);
+                  
+                  boolean isRepriseMasse = isRepriseMasse(jobRequest);
 
                   boolean isLocal = isLocal(jobRequest);
 
                   return isRestoreMasse || isSuppressionMasse
-                        || (isCaptureMasse && isLocal) || isModificationMasse || isTransfertMasse;
+                        || (isCaptureMasse && isLocal) || isModificationMasse
+                        || isTransfertMasse || isRepriseMasse;
                }
 
             });
@@ -134,8 +138,11 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
                   boolean isModificationMasse = isModificationMasseJobRequest(jobRequest);
                   
                   boolean isTransfertMasse = isTransfertMasseJobRequest(jobRequest);
+                  
+                  boolean isRepriseMasse = isRepriseMasseJobRequest(jobRequest);
 
-                  return isCaptureMasse || isSuppressionMasse || isRestoreMasse || isModificationMasse || isTransfertMasse;
+                  return isCaptureMasse || isSuppressionMasse || isRestoreMasse 
+                        || isModificationMasse || isTransfertMasse || isRepriseMasse;
                }
 
             });
@@ -255,6 +262,25 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
 
       return isTransfertMasse;
    }
+   
+   /**
+    * Détermine si le jobRequest passé en paramètre est un job de reprise de masse
+    * @param jobRequest
+    * @return true si le jobRequest est une reprsie de masse
+    */
+   private boolean isRepriseMasseJobRequest(JobRequest jobRequest) {
+
+      boolean isRepriseMasse = Constantes.REPRISE_MASSE_JN.equals(jobRequest.getType());
+
+      return isRepriseMasse;
+   }
+   
+   public final boolean isRepriseMasse(JobQueue jobRequest) {
+
+      boolean isRepriseMasse = Constantes.REPRISE_MASSE_JN.equals(jobRequest.getType());
+
+      return isRepriseMasse;
+   }
 
    private boolean isLocal(JobQueue jobQueue) {
 
@@ -362,5 +388,5 @@ public class TraitementMasseSupportImpl implements TraitementMasseSupport {
 
       return jobMasse;
    }
-
+   
 }

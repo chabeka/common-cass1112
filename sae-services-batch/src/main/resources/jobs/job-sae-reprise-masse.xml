@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns:beans="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.springframework.org/schema/batch"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
+
+   <job id="reprise_masse">
+      <decision id="repriseMasseDecision" decider="repriseMasseDecider">
+         <next on="REPRISE_MODIFICATION" to="repriseModificationMasse" />
+         <next on="REPRISE_CAPTURE" to="repriseCaptureMasse" />
+         <next on="REPRISE_TRANSFERT_MASSE" to="repriseTransfertMasse" />
+      </decision>
+      <step id="repriseModificationMasse">
+         <job ref="modification_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor" />
+      </step>
+      <step id="repriseCaptureMasse">
+         <job ref="capture_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor"/>
+      </step>
+      <step id="repriseTransfertMasse">
+         <job ref="transfert_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor"/>
+      </step>
+   </job>
+
+</beans:beans>

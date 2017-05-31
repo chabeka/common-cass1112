@@ -140,7 +140,7 @@ public class UpdateServiceTest {
       List<StorageMetadata> modifMetas = Arrays.asList(new StorageMetadata(
             "apr", "SAE"));
 
-      commonsServices.getUpdateService().updateStorageDocument(
+      commonsServices.getUpdateService().updateStorageDocument(null,
             firstDocument.getUuid(), modifMetas, delMetas);
 
       StorageDocument storedDoc = commonsServices

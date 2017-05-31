@@ -52,7 +52,7 @@ public class UpdateServiceImpl extends AbstractServices implements
     */
    @Override
    @ServiceChecked
-   public final void updateStorageDocument(UUID uuid,
+   public final void updateStorageDocument(UUID uuidJob, UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
 
@@ -63,45 +63,70 @@ public class UpdateServiceImpl extends AbstractServices implements
       List<String> delMetas = new ArrayList<String>();
       Document storedDocument = getDfceService().getSearchService()
             .getDocumentByUUID(getBaseDFCE(), uuid);
+      
+      // Récupérer la metadata IdModificationMasseInterne
+      StorageMetadata idModifMasseInterne = getStorageMetadataByCode(modifiedMetadatas, 
+            StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode() );
+      
+      // Reprendre la modification du doc que s'il n'a pas été traité
+      // par la modification de masse nominal
+      if(idModifMasseInterne == null || ( idModifMasseInterne != null && 
+            !idModifMasseInterne.getValue().toString().equals(uuidJob.toString()))){
+         
+         LOGGER.debug("{} - Modification des critères", trcPrefix);
+         for (StorageMetadata metadata : Utils.nullSafeIterable(modifiedMetadatas)) {
+            manageMetadata(uuidJob, storedDocument, metadata);
+            modifMetas.add(metadata.getShortCode());
+         }
+         LOGGER.debug("{} - Suppression des critères", trcPrefix);
+         for (StorageMetadata metadata : Utils.nullSafeIterable(deletedMetadatas)) {
+            storedDocument.deleteCriterion(storedDocument
+                  .getSingleCriterion(metadata.getShortCode()));
+            delMetas.add(metadata.getShortCode());
+         }
+         LOGGER.debug("{} - Mise à jour dans DFCE", trcPrefix);
+         String rndCode = null;
+         Date referenceDate = null;
+         try {
+            rndCode = rndCodeUpdate(modifiedMetadatas, storedDocument);
+            referenceDate = referenceDateUpdate(modifiedMetadatas, storedDocument);
+            getDfceService().getStoreService().updateDocument(storedDocument);
 
-      LOGGER.debug("{} - Modification des critères", trcPrefix);
-      for (StorageMetadata metadata : Utils.nullSafeIterable(modifiedMetadatas)) {
-         manageMetadata(storedDocument, metadata);
-         modifMetas.add(metadata.getShortCode());
+         } catch (TagControlException exception) {
+            rollback(rndCode, referenceDate, storedDocument);
+            throw new UpdateServiceEx(exception);
+
+         } catch (FrozenDocumentException exception) {
+            rollback(rndCode, referenceDate, storedDocument);
+            throw new UpdateServiceEx(exception);
+
+         }
+         LOGGER.debug("{} - Ajout d'une trace", trcPrefix);
+         tracesDfceSupport.traceModifDocumentDansDFCE(uuid, modifMetas, delMetas,
+               new Date());         
+      }else if(idModifMasseInterne != null) {
+         LOGGER.debug("{} - Le document a déjà été traité par la modification nominal", trcPrefix);
       }
-
-      LOGGER.debug("{} - Suppression des critères", trcPrefix);
-      for (StorageMetadata metadata : Utils.nullSafeIterable(deletedMetadatas)) {
-         storedDocument.deleteCriterion(storedDocument
-               .getSingleCriterion(metadata.getShortCode()));
-         delMetas.add(metadata.getShortCode());
-      }
-
-      LOGGER.debug("{} - Mise à jour dans DFCE", trcPrefix);
-      String rndCode = null;
-      Date referenceDate = null;
-
-      try {
-         rndCode = rndCodeUpdate(modifiedMetadatas, storedDocument);
-         referenceDate = referenceDateUpdate(modifiedMetadatas, storedDocument);
-         getDfceService().getStoreService().updateDocument(storedDocument);
-
-      } catch (TagControlException exception) {
-         rollback(rndCode, referenceDate, storedDocument);
-         throw new UpdateServiceEx(exception);
-
-      } catch (FrozenDocumentException exception) {
-         rollback(rndCode, referenceDate, storedDocument);
-         throw new UpdateServiceEx(exception);
-
-      }
-
-      LOGGER.debug("{} - Ajout d'une trace", trcPrefix);
-      tracesDfceSupport.traceModifDocumentDansDFCE(uuid, modifMetas, delMetas,
-            new Date());
-
+     
       LOGGER.debug("{} - fin", trcPrefix);
 
+   }
+   
+   /**
+    * Retourne l'objet StorageMetadata de code passé en paramètre à partir 
+    * de la liste listMetadatas
+    * @param listMetadatas 
+    * @param shortCode 
+    * @return
+    */
+   private StorageMetadata getStorageMetadataByCode(List<StorageMetadata> listMetadatas, String shortCode){
+      StorageMetadata metaData = null;      
+      for (StorageMetadata storageMetadata : listMetadatas) {
+         if(shortCode.equals(storageMetadata.getShortCode())){
+            metaData = storageMetadata;
+         }
+      }
+      return metaData;
    }
 
    private void rollback(String rndCode, Date referenceDate,
@@ -222,7 +247,7 @@ public class UpdateServiceImpl extends AbstractServices implements
 
    }
 
-   private void manageMetadata(Document storedDocument, StorageMetadata metadata) {
+   private void manageMetadata(UUID uuidJob, Document storedDocument, StorageMetadata metadata) {
       String trcPrefix = "manageMetadata";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -234,10 +259,18 @@ public class UpdateServiceImpl extends AbstractServices implements
             metadata.getShortCode())) {
          storedDocument.setCreationDate((Date) metadata.getValue());
 
+      }else if(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode().equals(
+            metadata.getShortCode())){
+         if (storedDocument.getSingleCriterion(metadata.getShortCode()) == null) {
+            storedDocument.addCriterion(metadata.getShortCode(), (Serializable) uuidJob);
+         } else {
+            storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
+                  (Serializable) uuidJob);
+         }
       } else if (!StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
             .getShortCode().equals(metadata.getShortCode())
             && !StorageTechnicalMetadatas.TYPE.getShortCode().equals(
-                  metadata.getShortCode())) {
+                  metadata.getShortCode()) ) {
          if (storedDocument.getSingleCriterion(metadata.getShortCode()) == null) {
             storedDocument.addCriterion(metadata.getShortCode(),
                   (Serializable) metadata.getValue());
@@ -246,7 +279,6 @@ public class UpdateServiceImpl extends AbstractServices implements
                   (Serializable) metadata.getValue());
          }
       }
-
       LOGGER.debug("{} - fin", trcPrefix);
 
    }
