@@ -57,7 +57,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
     */
    @Override
    public final DeblocageResponse deblocage(Deblocage request, String callerIP)
-         throws DeblocageAxisFault {
+         throws DeblocageAxisFault, JobInexistantException {
       String prefixeTrc = "deblocage()";
       LOG.debug("{} - Début", prefixeTrc);
 
@@ -118,6 +118,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
       } catch (JobInexistantException e) {
          LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus",
                new Object[] { prefixeTrc, uuid });
+         throw new JobInexistantException(uuidJob);
       } catch (AccessDeniedException e) {
          throw e;
       } catch (Exception e) {

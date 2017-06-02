@@ -612,12 +612,6 @@ public class ReferentielServiceUtils {
             StringSerializer.get(), ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
-      // DEBLOCAGE|KO
-      updater = cfTmpl.createUpdater("DEBLOCAGE|KO");
-      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
-            StringSerializer.get(), ListSerializer.get(), updater);
-      cfTmpl.update(updater);
-
    }
 
    /**
