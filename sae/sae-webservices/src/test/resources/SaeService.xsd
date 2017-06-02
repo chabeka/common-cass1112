@@ -1627,7 +1627,7 @@
          </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="uuid" type="xsd:string">
+            <xsd:element name="uuid" type="sae:uuidType">
                 <xsd:annotation>
                     <xsd:documentation>L'UUID du job à débloquer
                </xsd:documentation>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
     <xsd:element name="PingRequest">
         <xsd:annotation>
             <xsd:documentation>Requête de Ping (compatibilité ascendante)
@@ -1475,7 +1474,7 @@
          </xsd:documentation>
         </xsd:annotation>
         <xsd:sequence>
-            <xsd:element name="uuid" type="xsd:string">
+            <xsd:element name="uuid" type="sae:uuidType">
                 <xsd:annotation>
                     <xsd:documentation>L'UUID du job à débloquer
                </xsd:documentation>
