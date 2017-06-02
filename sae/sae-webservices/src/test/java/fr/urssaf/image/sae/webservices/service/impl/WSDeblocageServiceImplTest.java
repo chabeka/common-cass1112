@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.Deblocage;
 import fr.cirtil.www.saeservice.DeblocageRequestType;
+import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -37,7 +38,7 @@ import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
 @SuppressWarnings({ "PMD.MethodNamingConventions",
-      "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+   "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public class WSDeblocageServiceImplTest {
 
    @Autowired
@@ -127,10 +128,12 @@ public class WSDeblocageServiceImplTest {
     * @throws JobInexistantException
     */
    private void mockDeblocageJob(String uuid) throws DeblocageAxisFault,
-         JobInexistantException {
+   JobInexistantException {
       Deblocage request = new Deblocage();
       request.setDeblocage(new DeblocageRequestType());
-      request.getDeblocage().setUuid(uuid);
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuid);
+      request.getDeblocage().setUuid(uuidType);
       wsDeblocage.deblocage(request, IP_VALUE);
    }
 
