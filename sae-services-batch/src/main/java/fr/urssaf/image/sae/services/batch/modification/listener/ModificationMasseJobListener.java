@@ -54,6 +54,8 @@ public class ModificationMasseJobListener {
       ConcurrentLinkedQueue<Exception> listRollbackExceptions = new ConcurrentLinkedQueue<Exception>();
       context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
 
+      ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();
+      context.put(Constantes.INDEX_DOCUMENT_DONE, listIndexDocumentDone);
    }
 
    /**

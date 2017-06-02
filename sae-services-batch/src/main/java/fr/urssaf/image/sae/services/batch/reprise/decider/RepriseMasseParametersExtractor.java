@@ -52,7 +52,10 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
          }
          jobParameters.put(Constantes.ID_TRAITEMENT,
                new JobParameter(idJobAReprendreParam));
-         // TODO charger un param pr identifier la reprise dans le job à reprendre
+
+         jobParameters.put(Constantes.TRAITEMENT_REPRISE,
+               new JobParameter(Boolean.TRUE.toString()));
+
          JobParameters parameters = new JobParameters(jobParameters);
          return parameters;
       }

@@ -30,14 +30,14 @@
                         */
 
                         
-                                    protected java.lang.String localUuid ;
+                                    protected fr.cirtil.www.saeservice.UuidType localUuid ;
                                 
 
                            /**
                            * Auto generated getter method
-                           * @return java.lang.String
+                           * @return fr.cirtil.www.saeservice.UuidType
                            */
-                           public  java.lang.String getUuid(){
+                           public  fr.cirtil.www.saeservice.UuidType getUuid(){
                                return localUuid;
                            }
 
@@ -47,7 +47,7 @@
                                * Auto generated setter method
                                * @param param Uuid
                                */
-                               public void setUuid(java.lang.String param){
+                               public void setUuid(fr.cirtil.www.saeservice.UuidType param){
                             
                                             this.localUuid=param;
                                     
@@ -114,24 +114,12 @@
                
                    }
                
-                                    namespace = "http://www.cirtil.fr/saeService";
-                                    writeStartElement(null, namespace, "uuid", xmlWriter);
-                             
-
-                                          if (localUuid==null){
-                                              // write the nil attribute
-                                              
-                                                     throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
-                                                  
-                                          }else{
-
+                                            if (localUuid==null){
+                                                 throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
+                                            }
+                                           localUuid.serialize(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","uuid"),
+                                               xmlWriter);
                                         
-                                                   xmlWriter.writeCharacters(localUuid);
-                                            
-                                          }
-                                    
-                                   xmlWriter.writeEndElement();
-                             
                     xmlWriter.writeEndElement();
                
 
@@ -317,15 +305,15 @@
                  java.util.ArrayList attribList = new java.util.ArrayList();
 
                 
-                                      elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                            elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
                                                                       "uuid"));
-                                 
-                                        if (localUuid != null){
-                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localUuid));
-                                        } else {
-                                           throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
-                                        }
-                                    
+                            
+                            
+                                    if (localUuid==null){
+                                         throw new org.apache.axis2.databinding.ADBException("uuid cannot be null!!");
+                                    }
+                                    elementList.add(localUuid);
+                                
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -406,10 +394,7 @@
                                 
                                     if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","uuid").equals(reader.getName())){
                                 
-                                    java.lang.String content = reader.getElementText();
-                                    
-                                              object.setUuid(
-                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                                object.setUuid(fr.cirtil.www.saeservice.UuidType.Factory.parse(reader));
                                               
                                         reader.next();
                                     

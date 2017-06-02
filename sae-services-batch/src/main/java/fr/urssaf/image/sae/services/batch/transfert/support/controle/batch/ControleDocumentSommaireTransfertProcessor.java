@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.controle.batch;
 
+import java.util.UUID;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -58,7 +61,7 @@ public class ControleDocumentSommaireTransfertProcessor extends
          boolean isExiste = support.controleSAEDocumentSuppression(item);
          document.setUuid(item.getUuid());
          document.setBatchTypeAction(item.getBatchActionType());
-         if (!isExiste) {
+         if (!isExiste && !isRepriseActifBatch()) {
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
                getIndexErreurListe().add(
@@ -73,10 +76,32 @@ public class ControleDocumentSommaireTransfertProcessor extends
                throw new ArchiveInexistanteEx(StringUtils.replace(message,
                      "{0}", uuidString));
             }
+         } else if (!isExiste && isRepriseActifBatch()) {
+            getIndexRepriseDoneListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
          }
       } else if (item.getBatchActionType().equals("TRANSFERT")) {
          try {
-            document = support.controleSAEDocumentTransfert(item);
+            UUID idTraitementMasse = null;
+            if (getStepExecution() != null
+                  && getStepExecution().getJobParameters() != null
+                  && getStepExecution().getJobParameters().getString(
+                        Constantes.ID_TRAITEMENT) != null) {
+               idTraitementMasse = UUID.fromString(getStepExecution()
+                     .getJobParameters().getString(Constantes.ID_TRAITEMENT));
+            }
+            if (isRepriseActifBatch()) {
+               document = support.controleSAEDocumentRepriseTransfert(item,
+                     idTraitementMasse);
+            } else {
+               document = support.controleSAEDocumentTransfert(item,
+                     idTraitementMasse);
+            }
+         } catch (TraitementRepriseAlreadyDoneException e) {
+            getIndexRepriseDoneListe().add(
+                  getStepExecution().getExecutionContext().getInt(
+                        Constantes.CTRL_INDEX));
          } catch (Exception e) {
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);

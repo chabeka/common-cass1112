@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.Deblocage;
 import fr.cirtil.www.saeservice.DeblocageRequestType;
+import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -130,7 +131,9 @@ public class WSDeblocageServiceImplTest {
          JobInexistantException {
       Deblocage request = new Deblocage();
       request.setDeblocage(new DeblocageRequestType());
-      request.getDeblocage().setUuid(uuid);
+      UuidType uuidType = new UuidType();
+      uuidType.setUuidType(uuid);
+      request.getDeblocage().setUuid(uuidType);
       wsDeblocage.deblocage(request, IP_VALUE);
    }
 

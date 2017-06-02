@@ -25,7 +25,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +65,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -317,12 +317,12 @@ public class SAETransfertServiceTest {
                .recupererDocMetaTransferable(idArchive);
 
          StorageDocument documentGNS = saeTransfertService
-               .transfertControlePlateforme(document, idArchive);
+               .transfertControlePlateforme(document, idArchive, false, null);
 
          if (documentGNS == null) {
 
             document = saeTransfertService.updateMetaDocumentForTransfertMasse(
-                  document, listeMeta);
+                  document, listeMeta, UUID.randomUUID());
 
             saeTransfertService.transfertDocument(document);
          } else {
@@ -355,6 +355,8 @@ public class SAETransfertServiceTest {
       } catch (MappingFromReferentialException ex) {
          throw new TransfertException(erreur, ex);
       } catch (RetrievalServiceEx ex) {
+         throw new TransfertException(erreur, ex);
+      } catch (TraitementRepriseAlreadyDoneException ex) {
          throw new TransfertException(erreur, ex);
       }
    }

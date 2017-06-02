@@ -148,7 +148,6 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
 
    @Override
    protected Logger getLogger() {
-      // TODO Auto-generated method stub
       return LOGGER;
    }
 
@@ -164,10 +163,11 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-         boolean isdocumentInError = isDocumentInError(index);
-         // Si le document n'est pas en erreur, on traite, sinon on passe au
+         boolean isdocumentATraite = isDocumentATraite(index);
+         // Si le document n'est pas en erreur ou dans la liste de document déjà
+         // traité (Reprise), on traite, sinon on passe au
          // suivant.
-         if (!isdocumentInError) {
+         if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
                   + index, storageDocument, this);
 

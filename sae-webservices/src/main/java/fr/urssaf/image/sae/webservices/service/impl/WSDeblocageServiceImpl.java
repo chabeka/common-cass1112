@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import fr.cirtil.www.saeservice.Deblocage;
 import fr.cirtil.www.saeservice.DeblocageResponse;
+import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -62,8 +63,8 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
       LOG.debug("{} - Début", prefixeTrc);
 
       // Récuperer les paramètres du job à débloquer
-      String uuid = request.getDeblocage().getUuid();
-      UUID uuidJob = UUID.fromString(uuid);
+      UuidType uuid = request.getDeblocage().getUuid();
+      UUID uuidJob = UUID.fromString(uuid.getUuidType());
       String etatJob = StringUtils.EMPTY;
       LOG.debug("{} - UUID du job: {}", prefixeTrc, uuid);
 
@@ -125,8 +126,8 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
                e);
       }
 
-      return ObjectStorageResponseFactory
-            .createDeblocageResponse(uuid, etatJob);
+      return ObjectStorageResponseFactory.createDeblocageResponse(
+            uuid.getUuidType(), etatJob);
    }
 
 }

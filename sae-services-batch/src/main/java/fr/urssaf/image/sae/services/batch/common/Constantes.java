@@ -88,7 +88,7 @@ public final class Constantes {
    public static final String SOMMAIRE_FILE = "SOMMAIRE_FILE";
 
    /**
-    * Index utilisé pour le contrôler le document courant
+    * Index utilisé pour contrôler le document courant
     */
    public static final String CTRL_INDEX = "CTRL_INDEX";
 
@@ -307,6 +307,16 @@ public final class Constantes {
     */
    public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
    
+   /**
+    * Liste des indexs des documents déjà traités
+    */
+   public static final String INDEX_DOCUMENT_DONE = "INDEX_DOCUMENT_DONE";
+
+   /**
+    * Identification d'un traitement de reprise
+    */
+   public static final String TRAITEMENT_REPRISE = "traitementReprise";
+
    /**
     * Constructeur
     */

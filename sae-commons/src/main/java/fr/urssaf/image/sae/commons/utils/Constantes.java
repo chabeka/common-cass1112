@@ -34,4 +34,10 @@ public final class Constantes {
     */
    public static final String REPRISE_MASSE_JN = "reprise_masse";
    
+
+   /**
+    * Code court de la métadonnée 'identifiant de suppression de masse'
+    */
+   public static final String CODE_COURT_META_ID_TRANSFERT = "ifi";
+
 }

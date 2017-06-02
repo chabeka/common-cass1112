@@ -11,6 +11,7 @@ import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -50,10 +51,39 @@ public interface SAETransfertService {
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException;
 
+   /**
+    * Methode de contrôle de presence du document sur les plateformes GNS et
+    * GNT.
+    * 
+    * @param document
+    *           document
+    * @param idArchive
+    *           identifiant de l'archive
+    * @param isReprise
+    *           Mode reprise actif
+    * @return Le document trouvé soit en GNT, soit en GNS.
+    * @throws ArchiveAlreadyTransferedException
+    *            @{@link ArchiveAlreadyTransferedException}
+    * @throws SearchingServiceEx
+    *            @{@link SearchingServiceEx}
+    * @throws ReferentialException
+    *            @{@link ReferentialException}
+    * @throws ArchiveInexistanteEx
+    *            @{@link ArchiveInexistanteEx}
+    * 
+    *            Permet plusieurs controles avant le transfert : Document en GNT
+    *            ? Document en GNS ?
+    * @throws ConnectionServiceEx
+    *            @{@link ConnectionServiceEx}
+    * @throws TraitementRepriseAlreadyDoneException
+    *            @{@link TraitementRepriseAlreadyDoneException}
+    */
    StorageDocument transfertControlePlateforme(StorageDocument document,
-         final UUID idArchive) throws ArchiveAlreadyTransferedException,
+         final UUID idArchive, boolean isReprise, UUID idTraitementMasse)
+         throws ArchiveAlreadyTransferedException,
          SearchingServiceEx, ReferentialException, ArchiveInexistanteEx,
-         TransfertException, ConnectionServiceEx;
+ TransfertException,
+         ConnectionServiceEx, TraitementRepriseAlreadyDoneException;
 
    void transfertDocument(StorageDocument document) throws TransfertException;
 
@@ -63,12 +93,34 @@ public interface SAETransfertService {
    StorageDocument recupererDocMetaTransferable(final UUID idArchive)
          throws ReferentialException, SearchingServiceEx;
 
+   /**
+    * Méthode permettant de modifier les métadonnées du document avant
+    * transfert.
+    * 
+    * @param document
+    *           Document
+    * @param listeMeta
+    *           Liste des métadonnées
+    * @param idTraitementMasse
+    *           Identifiant du traitement qui réalise le transfert
+    * @return Le document transférable.
+    * @throws ReferentialException
+    *            @{@link ReferentialException}
+    * @throws TransfertException
+    *            @{@link TransfertException}
+    * 
+    *            Methode permettant la modification de métadonnées avant le
+    *            transfert pour le traitement de transfert de masse
+    */
    StorageDocument updateMetaDocumentForTransfertMasse(
-         StorageDocument document, final List<StorageMetadata> listeMeta)
+         StorageDocument document, final List<StorageMetadata> listeMeta,
+         UUID idTraitementMasse)
          throws ReferentialException, TransfertException;
 
    StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
-         final List<StorageMetadata> storageMetas) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
+         final List<StorageMetadata> storageMetas, boolean isReprise,
+         UUID idTraitementMasse) throws TransfertException,
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
+         TraitementRepriseAlreadyDoneException;
 
 }

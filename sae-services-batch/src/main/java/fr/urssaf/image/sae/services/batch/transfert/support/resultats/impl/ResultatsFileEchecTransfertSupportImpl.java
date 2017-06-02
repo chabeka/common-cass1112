@@ -992,7 +992,6 @@ public class ResultatsFileEchecTransfertSupportImpl implements
     * @throws XMLStreamException
     */
    private void gestionElement(final XMLEvent xmlEvent) {
-
       if (xmlEvent.isStartElement()) {
          String name = xmlEvent.asStartElement().getName().getLocalPart();
          staxUtils.addStartTag(name, PX_SOMRES, NS_SOMRES);

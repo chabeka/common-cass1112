@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.batch.transfert.support.controle.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -11,7 +12,6 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -108,29 +109,97 @@ public class TransfertMasseControleSupportImpl implements
    /**
     * {@inheritDoc}
     * 
-    * @throws TransfertException
-    * @throws MappingFromReferentialException
-    * @throws InvalidSAETypeException
-    * @throws MetadataValueNotInDictionaryEx
-    * @throws RequiredArchivableMetadataEx
-    * @throws InvalidValueTypeAndFormatMetadataEx
-    * @throws DuplicatedMetadataEx
-    * @throws UnknownMetadataEx
-    * @throws NotModifiableMetadataEx
-    * @throws UnknownHashCodeEx
-    * @throws NotSpecifiableMetadataEx
-    * @throws UnknownCodeRndEx
-    * @throws ReferentialRndException
     */
-   public StorageDocument controleSAEDocumentTransfert(UntypedDocument item)
+   @Override
+   public StorageDocument controleSAEDocumentTransfert(UntypedDocument item,
+         UUID idTraitementMasse)
          throws ReferentialException, SearchingServiceEx,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
          TransfertException, InvalidSAETypeException,
          MappingFromReferentialException, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
+         NotModifiableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+         NotSpecifiableMetadataEx, UnknownHashCodeEx,
+         TraitementRepriseAlreadyDoneException {
+
+      String trcPrefix = "controleSAEDocumentTransfert()";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      return controleSAEDocumentTransfertCommon(item, false, idTraitementMasse);
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    */
+   @Override
+   public StorageDocument controleSAEDocumentRepriseTransfert(
+         UntypedDocument item, UUID idTraitementMasse) throws ReferentialException, SearchingServiceEx,
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
+         TransfertException, InvalidSAETypeException,
+         MappingFromReferentialException, UnknownMetadataEx,
+         DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
          ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx {
+         UnknownHashCodeEx, NotModifiableMetadataEx,
+         TraitementRepriseAlreadyDoneException {
+      String trcPrefix = "controleSAEDocumentRepriseTransfert()";
+      LOGGER.debug("{} - début", trcPrefix);
+
+      return controleSAEDocumentTransfertCommon(item, true, idTraitementMasse);
+   }
+
+   /**
+    * Controle du document pour le transfert de masse.
+    * 
+    * @param item
+    *           document
+    * @param isReprise
+    *           Mode reprise, true actif, false sinon
+    * @param idTraitementMasse
+    *           Identifiant traitement de masse
+    * @return Le document controlé.
+    * @throws TransfertException
+    * @{@link TransfertException}
+    * @throws MappingFromReferentialException
+    * @{@link MappingFromReferentialException}
+    * @throws InvalidSAETypeException
+    * @{@link InvalidSAETypeException}
+    * @throws MetadataValueNotInDictionaryEx
+    * @{@link MetadataValueNotInDictionaryEx}
+    * @throws RequiredArchivableMetadataEx
+    * @{@link RequiredArchivableMetadataEx}
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    * @{@link InvalidValueTypeAndFormatMetadataEx}
+    * @throws DuplicatedMetadataEx
+    * @{@link DuplicatedMetadataEx}
+    * @throws UnknownMetadataEx
+    * @{@link UnknownMetadataEx}
+    * @throws NotModifiableMetadataEx
+    * @{@link NotModifiableMetadataEx}
+    * @throws UnknownHashCodeEx
+    * @{@link UnknownHashCodeEx}
+    * @throws NotSpecifiableMetadataEx
+    * @{@link NotSpecifiableMetadataEx}
+    * @throws UnknownCodeRndEx
+    * @{@link UnknownCodeRndEx}
+    * @throws ReferentialRndException
+    * @{@link ReferentialRndException}
+    * @throws TraitementRepriseAlreadyDoneException
+    * @{@link TraitementRepriseAlreadyDoneException}
+    */
+   private StorageDocument controleSAEDocumentTransfertCommon(
+         UntypedDocument item, boolean isReprise, UUID idTraitementMasse)
+         throws ReferentialException, SearchingServiceEx,
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
+         TransfertException, InvalidSAETypeException,
+         MappingFromReferentialException, UnknownMetadataEx,
+         DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+         RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
+         NotModifiableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+         NotSpecifiableMetadataEx, UnknownHashCodeEx,
+         TraitementRepriseAlreadyDoneException {
 
       String trcPrefix = "controleSAEDocumentTransfert()";
       LOGGER.debug("{} - début", trcPrefix);
@@ -153,7 +222,8 @@ public class TransfertMasseControleSupportImpl implements
       }
 
       StorageDocument document = transfertService
-            .controleDocumentTransfertMasse(item.getUuid(), storageMetas);
+            .controleDocumentTransfertMasse(item.getUuid(), storageMetas,
+                  isReprise, idTraitementMasse);
       return document;
 
    }

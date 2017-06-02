@@ -343,6 +343,9 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_170901.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra170901();
+
+         // Ajout nouvelles des métadonnées
+         updateMetaDfce("META_170901");
       } else {
 
          // Opération inconnue => log + exception runtime
