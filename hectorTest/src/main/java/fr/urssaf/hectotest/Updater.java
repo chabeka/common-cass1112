@@ -7,14 +7,16 @@ import java.util.Date;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
+
+import org.junit.Assert;
 
 public class Updater {
 
@@ -98,5 +100,25 @@ public class Updater {
          sysout.println("Column " + columnName + " inexistante pour la key "
                + rowName + " dans la CF " + CFName);
       }
+   }
+
+   public void addColumn(String CFName, String rowName, String columnName,
+         Object value) throws Exception {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, CFName, StringSerializer.get(), StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater = cfTmpl
+            .createUpdater(rowName);
+
+      if (value != null) {
+         HColumn<String, Object> column = HFactory.createColumn(columnName,
+               value, StringSerializer.get(), ObjectSerializer.get());
+         updater.setColumn(column);
+         cfTmpl.update(updater);
+
+      }
+
+      Assert.assertTrue(cfTmpl.queryColumns(rowName).getColumnNames()
+            .contains(columnName));
    }
 }

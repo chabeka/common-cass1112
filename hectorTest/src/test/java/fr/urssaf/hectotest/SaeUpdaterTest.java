@@ -6,13 +6,13 @@ import java.util.HashMap;
 
 import me.prettyprint.cassandra.connection.DynamicLoadBalancingPolicy;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
+import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.cassandra.serializers.ObjectSerializer;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -90,7 +90,7 @@ public class SaeUpdaterTest {
    @Test
    public void testUpdateParametersVersionBDD() throws Exception {
       updater.updateColumn("Parameters", "parameters", "versionBDD",
-            Long.valueOf(17));
+            Long.valueOf(26));
    }
 
    @Test
@@ -110,6 +110,12 @@ public class SaeUpdaterTest {
    public void testUpdateParametersDureeRetentionCorbeille() throws Exception {
       updater.updateColumn("Parameters", "parametresCorbeille",
             "PURGE_CORBEILLE_DUREE", 0, ObjectSerializer.get());
+   }
+
+   @Test
+   public void testAddDroitUnitaire() throws Exception {
+      updater.addColumn("DroitActionUnitaire", "reprise", "description",
+            "reprise des traitements de masse");
    }
 
 }
