@@ -52,10 +52,14 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
          }
          jobParameters.put(Constantes.ID_TRAITEMENT,
                new JobParameter(idJobAReprendreParam));
-
+         
+         // TODO à éviter
          jobParameters.put(Constantes.TRAITEMENT_REPRISE,
                new JobParameter(Boolean.TRUE.toString()));
-
+         
+         // Permet de distinguer le traitement de reprise en cours si il a été déjà lancé
+         jobParameters.put(Constantes.HEURE_REPRISE, new JobParameter(System.currentTimeMillis()));
+         
          JobParameters parameters = new JobParameters(jobParameters);
          return parameters;
       }

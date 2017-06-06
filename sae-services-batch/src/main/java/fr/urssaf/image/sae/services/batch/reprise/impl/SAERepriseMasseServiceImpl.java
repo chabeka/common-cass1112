@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,13 +124,17 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
       try {
          jobExecution = jobLauncher.run(job, parameters);
-         
          String jobName = jobAReprendre.getType();
          List<JobInstance> instances = jobExplorer.getJobInstances(jobName, 0, 1);
          JobInstance internalJobInstance = instances.size() > 0 ? instances.get(0) : null;
+         // TODO tester internalJobInstance== null
          lastExecution = jobRepository.getLastJobExecution(internalJobInstance.getJobName(),internalJobInstance.getJobParameters());
+         // boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
+         boolean traitementOK = StatutCaptureUtils.isCaptureOk(lastExecution);
+         if(traitementOK){
+            traitementOK = checkErreursReprise(lastExecution);
+         }
          
-         boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
          if (traitementOK) {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
@@ -141,9 +146,8 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
-
-         // TODO Identifier le traitement de masse repris pour 
-         // mettre à jour le nombre de docs restorés
+         
+         // Récupérer le nombre de documents traités par la reprise de masse
          int nbDocsTraites = 0;
          if (lastExecution.getExecutionContext().containsKey(
                Constantes.NB_INTEG_DOCS)) {
@@ -157,13 +161,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
                Constantes.NB_DOCS_SUPPRIMES)){
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_DOCS_SUPPRIMES);
-         } else if(lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_INTEG_DOCS)) {
-            nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_INTEG_DOCS);
          }
-         
-         // TODO Gestion de la reprise de différents traitements de masse
          jobQueueService.renseignerDocCountJob(uidJobAReprendre, nbDocsTraites);
 
          /* erreurs Spring non gérées */
@@ -212,6 +210,28 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
             logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments(), TYPES_JOB.valueOf(typeJob));
 
+   }
+   
+   /**
+    * Contrôle les erreurs éventuelles lors de la de reprise de traitement de masse
+    * @param jobExecution
+    * @return true si aucune erreur rencontrée, false sinon
+    */
+   private boolean checkErreursReprise(final JobExecution jobExecution){
+      boolean traitementOk = true;
+      List<ConcurrentLinkedQueue<String>> listErreursReprise = new ArrayList<ConcurrentLinkedQueue<String>>();      
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.CODE_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.DOC_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.INDEX_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.INDEX_REF_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.ROLLBACK_EXCEPTION));
+      
+      for (ConcurrentLinkedQueue<String> concurrentLinkedQueue : listErreursReprise) {
+         if(!concurrentLinkedQueue.isEmpty()){
+            traitementOk =false;
+         }
+      }
+      return traitementOk;
    }
   
 }

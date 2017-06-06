@@ -151,10 +151,6 @@ public class JobQueueServiceImpl implements JobQueueService {
       ColumnFamilyResult<UUID, String> result = this.jobRequestDao
             .getJobRequestTmpl().queryColumns(idJob);
       
-      // TODO Pour la reprise de traitement de masse, 
-      // 1- Prévoir maj du job de reprise => FAIT
-      // 2- Prévoir maj du job de masse repris => TODO
-      
       // Récupération de la colonne "state"
       HColumn<?, ?> columnState = result
             .getColumn(JobRequestDao.JR_STATE_COLUMN);
@@ -169,14 +165,21 @@ public class JobQueueServiceImpl implements JobQueueService {
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
             dateFinTraitement, succes, message, clock);
-      // TODO 
+      
+      // Gestion du succès de la reprise de masse
       if(jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes){
          String idTraitementAReprendre = jobRequest.getJobParameters().get(UUID_JOB_A_Reprendre);
          UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
+         JobRequest jobAReprendre = this.jobLectureService.getJobRequest(idJobAReprendre);
+         String cdTraitement = jobAReprendre.getJobParameters().get(Constantes.CODE_TRAITEMENT);
+         
          // Passer le job à l'état REPLAY_SUCCESS
          Date dateReprise = new Date();
          changerEtatJobRequest(idJobAReprendre,
                JobState.REPLAY_SUCCESS.name(), dateReprise, "Repris avec succes");
+         // Supprimer le sémaphore du traitement repris
+         this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJobAReprendre, succes,
+               cdTraitement, clock);
       }
       
       // Ecriture dans la CF "JobQueues" pour hostname

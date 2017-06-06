@@ -58,7 +58,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
     */
    @Override
    public final DeblocageResponse deblocage(Deblocage request, String callerIP)
-         throws DeblocageAxisFault {
+         throws DeblocageAxisFault, JobInexistantException {
       String prefixeTrc = "deblocage()";
       LOG.debug("{} - Début", prefixeTrc);
 
@@ -109,8 +109,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
          } else {
             LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état",
                   new Object[] { prefixeTrc, uuid });
-            throw new DeblocageAxisFault(
-                  "DeblocageAxisFault",
+            throw new DeblocageAxisFault("DeblocageAxisFault",
                   "Erreur de déblocage: le job ne peut pas être débloqué à cause de son état");
          }
          // Récupérer l'état du job apèrs déblocage
@@ -119,6 +118,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
       } catch (JobInexistantException e) {
          LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus",
                new Object[] { prefixeTrc, uuid });
+         throw new JobInexistantException(uuidJob);
       } catch (AccessDeniedException e) {
          throw e;
       } catch (Exception e) {

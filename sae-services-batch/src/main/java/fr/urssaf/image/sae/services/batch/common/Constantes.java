@@ -18,6 +18,11 @@ public final class Constantes {
    public static final String ID_TRAITEMENT = "capture.masse.idtraitement";
    
    /**
+    * Identifiant du paramètre heureTraitement
+    */
+   public static final String HEURE_REPRISE = "reprise.heureTraitement";
+   
+   /**
     * Identifiant du paramètre idTraitement de reprise
     */
    public static final String ID_TRAITEMENT_REPRISE = "idTraitement";
