@@ -49,6 +49,8 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
+   
+   private static volatile Integer index = 0;
 
    /**
     * Gestionnaire des traces.
@@ -67,7 +69,6 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
          throws Exception {
 
       Runnable command;
-      int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
          boolean isdocumentATraite = isDocumentATraite(index);
@@ -76,7 +77,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this);
+                  + index, storageDocument, this, index);
 
             try {
                poolExecutor.execute(command);
@@ -107,17 +108,16 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
     * {@inheritDoc}
     */
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
       StorageDocument document = null;
       try {
          document = insertStorageDocument((StorageDocument) storageDocument);
       } catch (Throwable except) {
+         synchronized (this){
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
-            getIndexErreurListe().add(
-                  getStepExecution().getExecutionContext().getInt(
-                        Constantes.CTRL_INDEX));
+            getIndexErreurListe().add(indexRun);
             final String message = "Erreur DFCE : " + except.getMessage();
             getExceptionErreurListe().add(new Exception(message));
             LOGGER.error(message, except);
@@ -125,6 +125,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
             throw new UpdateServiceEx(new Exception("Erreur DFCE : "
                   + except.getMessage()));
          }
+      }
       }
 
       return document != null ? document.getUuid() : null;

@@ -55,7 +55,7 @@ public class InsertionRunnableTest {
       EasyMock.replay(storageDocumentService);
 
       InsertionRunnable insertionRunnable = new InsertionRunnable(0,
-            new StorageDocument(), writer);
+            new StorageDocument(), writer, 0);
 
       insertionRunnable.run();
    }
@@ -79,7 +79,7 @@ public class InsertionRunnableTest {
       EasyMock.replay(storageDocumentService);
 
       InsertionRunnable insertionRunnable = new InsertionRunnable(0, aIntegrer,
-            writer);
+            writer, 0);
       insertionRunnable.run();
 
       Assert.assertNotNull("l'uuid du document doit être renseigné",

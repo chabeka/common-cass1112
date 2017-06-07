@@ -61,7 +61,7 @@ public class VirtualStorageReferenceFileWriterListener extends
    }
 
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
       return null;
    }
@@ -73,7 +73,7 @@ public class VirtualStorageReferenceFileWriterListener extends
    protected final Logger getLogger() {
       return LOGGER;
    }
-
+ 
    /**
     * {@inheritDoc}
     */

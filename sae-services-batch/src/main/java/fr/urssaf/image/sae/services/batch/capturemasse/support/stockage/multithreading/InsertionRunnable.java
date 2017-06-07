@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multith
 import java.util.UUID;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.StorageDocumentWriter;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
@@ -21,6 +22,8 @@ public class InsertionRunnable implements Runnable {
    private final StorageDocument storageDocument;
 
    private final AbstractDocumentWriterListener service;
+   
+   private final int index;
 
    /**
     * 
@@ -33,12 +36,14 @@ public class InsertionRunnable implements Runnable {
     */
    public InsertionRunnable(final int indexDocument,
          final StorageDocument storageDocument,
-         final AbstractDocumentWriterListener service) {
+         final AbstractDocumentWriterListener service, final int index) {
       this.indexDocument = indexDocument;
       this.storageDocument = storageDocument;
       this.service = service;
+      this.index = index;
 
    }
+   
 
    /**
     * {@inheritDoc}
@@ -48,7 +53,8 @@ public class InsertionRunnable implements Runnable {
 
       try {
 
-         final UUID uuid = this.service.launchTraitement(storageDocument);
+         final UUID uuid = this.service.launchTraitement(storageDocument, index);
+         
          storageDocument.setUuid(uuid);
 
       } catch (Exception e) {
@@ -59,7 +65,7 @@ public class InsertionRunnable implements Runnable {
       }
 
    }
-
+   
    /**
     * 
     * @return document à insérer

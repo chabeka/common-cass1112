@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.listener;
 
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.ExitStatus;
@@ -12,6 +13,7 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 
 /**
  * Méthodes de base pour les listener
@@ -176,4 +178,6 @@ public abstract class AbstractListener {
    public String getBatchMode() {
       return batchMode;
    }
+
+
 }

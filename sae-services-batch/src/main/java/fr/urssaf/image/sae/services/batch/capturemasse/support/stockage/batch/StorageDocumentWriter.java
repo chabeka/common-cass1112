@@ -60,6 +60,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
    private static final String TRC_INSERT = "StorageDocumentWriter()";
    private static final String CATCH = "AvoidCatchingThrowable";
+   private static volatile Integer index = 0;
 
    /**
     * {@inheritDoc}
@@ -69,7 +70,6 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          throws Exception {
 
       Runnable command;
-      int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
 
@@ -90,7 +90,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          if (!isdocumentInError) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this);
+                  + index, storageDocument, this, index);
 
             poolExecutor.execute(command);
 
@@ -99,34 +99,34 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                   TRC_INSERT, poolExecutor.getQueue().size());
          }
 
-         index++;
+          index++;
 
       }
 
    }
 
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
-      
+
       try {
          StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
          UUID uuid = document != null ? document.getUuid() : null;
          return uuid;
       } catch (Exception e) {
-         if (isModePartielBatch()) {
-            getCodesErreurListe().add(Constantes.ERR_BUL002);
-            getIndexErreurListe().add(
-                  getStepExecution().getExecutionContext().getInt(
-                        Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
-            return null;
-         } else {
-            throw e;
+         synchronized (this) {
+            if (isModePartielBatch()) {
+               getCodesErreurListe().add(Constantes.ERR_BUL002);
+               getIndexErreurListe().add(indexRun);
+               getExceptionErreurListe().add(new Exception(e.getMessage()));
+               return null;
+            } else {
+               throw e;
+            }
          }
 
       }
-      
+
    }
 
    /**

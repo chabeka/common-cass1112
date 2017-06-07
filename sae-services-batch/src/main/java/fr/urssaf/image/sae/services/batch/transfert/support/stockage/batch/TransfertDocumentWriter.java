@@ -75,6 +75,8 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
+   
+   private static volatile Integer index = 0;
 
    /**
     * Gestionnaire des traces.
@@ -86,7 +88,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
 
       StorageDocument document = new StorageDocument();
@@ -160,7 +162,6 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          throws Exception {
 
       Runnable command;
-      int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
          boolean isdocumentATraite = isDocumentATraite(index);
@@ -169,7 +170,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this);
+                  + index, storageDocument, this, index);
 
             try {
                poolExecutor.execute(command);

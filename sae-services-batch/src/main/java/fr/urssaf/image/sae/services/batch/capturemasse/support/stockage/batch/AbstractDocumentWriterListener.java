@@ -150,7 +150,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * @param storageDocument Document à traiter.
     * @return l'identifiant du document traité.
     */
-   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument) throws Exception;
+   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument, final int index) throws Exception;
 
    
    /**
