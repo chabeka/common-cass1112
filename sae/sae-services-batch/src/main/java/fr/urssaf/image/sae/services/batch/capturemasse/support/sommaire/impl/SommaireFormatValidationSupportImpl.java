@@ -292,8 +292,9 @@ public class SommaireFormatValidationSupportImpl implements
             // On parcourt le sommaire pour tomber sur un document
             event = reader.nextEvent();
             if (event.isStartElement()
-                  && "document".equals(event.asStartElement().getName()
-                        .getLocalPart())) {
+                  && ("document".equals(event.asStartElement().getName()
+                        .getLocalPart()) || "documentMultiAction".equals(event
+                        .asStartElement().getName().getLocalPart()))) {
 
                // On continue le parcourt pour trouver la métadonnée IdGed
                while (reader.hasNext()) {
@@ -365,8 +366,9 @@ public class SommaireFormatValidationSupportImpl implements
             // On parcourt le sommaire pour tomber sur un document
             event = reader.nextEvent();
             if (event.isStartElement()
-                  && "document".equals(event.asStartElement().getName()
-                        .getLocalPart())) {
+                  && ("document".equals(event.asStartElement().getName()
+                        .getLocalPart()) || "documentMultiAction".equals(event
+                              .asStartElement().getName().getLocalPart()))) {
 
                // On continue le parcourt pour trouver la métadonnée IdGed
                while (reader.hasNext()) {
