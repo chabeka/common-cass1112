@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.services.batch.modification.support.controle;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -24,6 +25,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -84,9 +86,9 @@ public interface ModificationMasseControleSupport {
     * @throws RetrievalServiceEx @{@link RetrievalServiceEx}
     * @throws ReferentialException @{@link ReferentialException}
     */
-   StorageDocument controleSAEDocumentModification(UntypedDocument item) 
+   StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item) 
          throws UnknownCodeRndEx, ReferentialRndException, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, 
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, 
-         MetadataValueNotInDictionaryEx, ModificationException, RetrievalServiceEx, ReferentialException;
+         MetadataValueNotInDictionaryEx, ModificationException, RetrievalServiceEx, ReferentialException, TraitementRepriseAlreadyDoneException;
 
 }

@@ -20,6 +20,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -98,8 +99,29 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       UUID uidJobAReprendre = UUID.fromString(idJobAReprendreParam);
       JobRequest jobAReprendre = jobLectureService
             .getJobRequest(uidJobAReprendre);
-
+      
       Assert.notNull(jobAReprendre, "Le job à reprendre est requis");
+
+      // Gestion de droits pour la reprise
+      List<String> pagmsReprise = jobReprise.getVi().getPagms();
+      List<String> pagmsJobAReprendre = jobAReprendre.getVi().getPagms();
+      boolean checkAccessReprise = true;
+      
+      if(!jobReprise.getVi().getCodeAppli().equals(jobAReprendre.getVi().getCodeAppli()) ){
+         checkAccessReprise = false;
+      }
+
+      if(checkAccessReprise){
+         for (String pagmAReprendre : pagmsJobAReprendre) {
+            if(!pagmsReprise.contains(pagmAReprendre)){
+               checkAccessReprise = false;
+            }
+         }
+      }
+      if (!checkAccessReprise) {
+         throw new AccessDeniedException(
+               "Erreur PAGMS de Reprise: Le job de reprise doit avoir le même contrat de service");
+      }
 
       // Chargement des paramètres de reprise
       mapParam.put(Constantes.ID_TRAITEMENT_REPRISE, new JobParameter(
@@ -127,11 +149,11 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
          String jobName = jobAReprendre.getType();
          List<JobInstance> instances = jobExplorer.getJobInstances(jobName, 0, 1);
          JobInstance internalJobInstance = instances.size() > 0 ? instances.get(0) : null;
-         // TODO tester internalJobInstance== null
+         Assert.notNull(internalJobInstance, "ERREUR RREPRISE: Le traitement en erreur n'a pas été relancé par la reprise");
          lastExecution = jobRepository.getLastJobExecution(internalJobInstance.getJobName(),internalJobInstance.getJobParameters());
-         // boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
          boolean traitementOK = StatutCaptureUtils.isCaptureOk(lastExecution);
          if(traitementOK){
+            // Validation de la reprise
             traitementOK = checkErreursReprise(lastExecution);
          }
          
@@ -139,7 +161,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
          } else {
-            // Passer le jobExecution repris
             checkFinal(lastExecution, sommaireURL, uidJobAReprendre, jobExecution
                   .getAllFailureExceptions(), jobAReprendre.getType());
             
@@ -172,7 +193,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
          List<Throwable> listThrowables = new ArrayList<Throwable>();
          listThrowables.add(e);
-         // TODO Prévoir des vérifications pour les traitements de masse repris
          checkFinal(lastExecution, sommaireURL, uidJobAReprendre, listThrowables, jobAReprendre.getType());
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);

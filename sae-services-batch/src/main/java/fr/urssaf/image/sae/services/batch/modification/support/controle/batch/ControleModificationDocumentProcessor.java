@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.services.batch.modification.support.controle.batch;
 
+import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -36,9 +39,20 @@ public class ControleModificationDocumentProcessor extends AbstractListener
    public final StorageDocument process(final UntypedDocument item) throws Exception {
       
       StorageDocument document = null;
-
+      
+      // Récuperer l'id du traitement en cours
+      String idJob = (String) getStepExecution().getJobParameters()
+            .getString(Constantes.ID_TRAITEMENT);
+      
+      UUID uuidJob = null;
+      if(StringUtils.isNotEmpty(idJob)){
+         // conversion
+         uuidJob = UUID.fromString(idJob);
+      }
+      
+      
       try {
-         document = support.controleSAEDocumentModification(item);
+         document = support.controleSAEDocumentModification(uuidJob, item);
       } catch (Exception e) {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);

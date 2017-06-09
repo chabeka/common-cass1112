@@ -110,8 +110,9 @@ public class WSRepriseServiceImpl implements WSRepriseService {
                   "Erreur de reprise: le job ne peut pas être repris à cause de son état");
          }
       } catch (JobInexistantException e) {
-         LOG.warn("{} - échec de reprise du job {} - ce job n'existe plus",
+         LOG.warn("{} - échec de reprise du traitement {} - ce job n'existe plus en base",
                new Object[] { prefixeTrc, uuid });
+         throw new JobInexistantException(uuidJobAReprendre);
       } catch (AccessDeniedException e) {
          throw e;
       } catch (Exception e) {

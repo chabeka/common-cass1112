@@ -5,7 +5,9 @@ package fr.urssaf.image.sae.services.batch.modification.support.controle.impl;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.ModificationMasseControleSupport;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.model.ModificationMasseControlResult;
 import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
@@ -32,10 +35,14 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
+import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
  * Implémentation du support {@link CaptureMasseControleSupport}
@@ -50,7 +57,8 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
 
    @Autowired
    private SAEModificationService modificationService;
-
+   
+   
    /**
     * {@inheritDoc}
     */
@@ -94,14 +102,15 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
 
    /**
     * {@inheritDoc}
+    * @throws TraitementRepriseAlreadyDoneException 
     */
    @Override
-   public StorageDocument controleSAEDocumentModification(UntypedDocument item)
+   public StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item)
          throws UnknownCodeRndEx, ReferentialRndException,
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         ModificationException, ReferentialException, RetrievalServiceEx {
+         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException {
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
 
@@ -111,11 +120,55 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
       StorageDocument document = modificationService.separationMetaDocumentModifie(
             item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
             trcPrefix);
-
+      
+      String idModifMasseInterne = StorageMetadataUtils
+            .valueMetadataFinder(document.getMetadatas(),
+                  StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                        .getShortCode());
+     
+      if (StringUtils.isNotEmpty(idModifMasseInterne) && idModifMasseInterne.equals(uuidJob.toString()) ) {
+         String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
+         String messageFormat = StringUtils.replaceEach(message, new String[] {
+               "{0}", "{1}" }, new String[] { item.getUuid().toString(),
+               uuidJob.toString() });
+         LOGGER.warn(messageFormat);         
+         throw new TraitementRepriseAlreadyDoneException(
+               messageFormat);
+      } else if(StringUtils.isNotEmpty(idModifMasseInterne)) {
+         // On modifie la métadonnée par l'uuid du traitement en cours
+         for (StorageMetadata storageMetadata : document.getMetadatas()) {
+            if (StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                  .getShortCode().equals(storageMetadata.getShortCode())) {
+               storageMetadata.setValue(uuidJob.toString());
+            }
+         }
+      }else {
+         document.getMetadatas().add(
+               new StorageMetadata(
+                     StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                           .getShortCode(), uuidJob.toString()));
+      }
       LOGGER.debug("{} - fin", trcPrefix);
 
       return document;
 
+   }
+   
+   /**
+    * Retourne l'objet StorageMetadata de code passé en paramètre à partir 
+    * de la liste listMetadatas
+    * @param listMetadatas 
+    * @param shortCode 
+    * @return
+    */
+   private StorageMetadata getStorageMetadataByCode(List<StorageMetadata> listMetadatas, String shortCode){
+      StorageMetadata metaData = null;      
+      for (StorageMetadata storageMetadata : listMetadatas) {
+         if(shortCode.equals(storageMetadata.getShortCode())){
+            metaData = storageMetadata;
+         }
+      }
+      return metaData;
    }
 
 }
