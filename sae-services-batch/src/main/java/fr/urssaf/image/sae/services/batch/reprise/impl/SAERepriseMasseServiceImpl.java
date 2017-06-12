@@ -157,17 +157,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             traitementOK = checkErreursReprise(lastExecution);
          }
          
-         if (traitementOK) {
-            exitTraitement.setExitMessage("Traitement réalisé avec succès");
-            exitTraitement.setSucces(true);
-         } else {
-            checkFinal(lastExecution, sommaireURL, uidJobAReprendre, jobExecution
-                  .getAllFailureExceptions(), jobAReprendre.getType());
-            
-            exitTraitement.setExitMessage("Traitement en erreur");
-            exitTraitement.setSucces(false);
-         }
-         
          // Récupérer le nombre de documents traités par la reprise de masse
          int nbDocsTraites = 0;
          if (lastExecution.getExecutionContext().containsKey(
@@ -183,7 +172,26 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_DOCS_SUPPRIMES);
          }
-         jobQueueService.renseignerDocCountJob(uidJobAReprendre, nbDocsTraites);
+
+         if (traitementOK) {
+            exitTraitement.setExitMessage("Traitement réalisé avec succès");
+            exitTraitement.setSucces(true);
+            // Mise à jour compteur job à reprendre
+            jobQueueService.renseignerDocCountJob(uidJobAReprendre,
+                  nbDocsTraites);
+            // Mise à jour compteur job reprise
+            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
+         } else {
+            checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
+                  jobExecution.getAllFailureExceptions(),
+                  jobAReprendre.getType());
+
+            exitTraitement.setExitMessage("Traitement en erreur");
+            exitTraitement.setSucces(false);
+            // Mise à jour compteur job reprise uniquement pour le voir le delta
+            // qui a été repris.
+            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
+         }
 
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
@@ -237,6 +245,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
     * @param jobExecution
     * @return true si aucune erreur rencontrée, false sinon
     */
+   @SuppressWarnings("unchecked")
    private boolean checkErreursReprise(final JobExecution jobExecution){
       boolean traitementOk = true;
       List<ConcurrentLinkedQueue<String>> listErreursReprise = new ArrayList<ConcurrentLinkedQueue<String>>();      
@@ -247,7 +256,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.ROLLBACK_EXCEPTION));
       
       for (ConcurrentLinkedQueue<String> concurrentLinkedQueue : listErreursReprise) {
-         if(!concurrentLinkedQueue.isEmpty()){
+         if (concurrentLinkedQueue != null && !concurrentLinkedQueue.isEmpty()) {
             traitementOk =false;
          }
       }
