@@ -86,6 +86,14 @@
       <constructor-arg ref="executionContextDao" />
    </bean>
    
+   <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.SimpleJobExplorer">
+      <constructor-arg ref="jobInstanceDao" />
+      <constructor-arg ref="stepExecutionDao" />
+      <constructor-arg ref="jobExecutionDao" />
+      <constructor-arg ref="executionContextDao" />
+   </bean>
+   
+   
    <bean id="jobLauncher"
       class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
       <property name="jobRepository" ref="jobRepository" />
