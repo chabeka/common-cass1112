@@ -473,8 +473,6 @@ public final class MajLotServiceImpl implements MajLotService {
     *           {@link APPL_CONCERNEE}
     */
    private void commonUpdateSAE(APPL_CONCERNEE gedConcernee) {
-      // Create data base SAE
-      createGedBase();
       // META_130400
       updateMeta("meta130400.xml", "META_130400");
       // META_150100
@@ -513,6 +511,8 @@ public final class MajLotServiceImpl implements MajLotService {
       updateMetaDfce("META_160900");
       // CASSANDRA_DFCE_160901
       updateMetaDfce("META_160901");
+      // CASSANDRA_DFCE_170901
+      updateMetaDfce("META_170901");
    }
 
    /**
@@ -1350,6 +1350,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion24();
       updater.updateToVersion25();
       updater.updateToVersion26();
+      updater.updateToVersion27();
    }
 
 }
