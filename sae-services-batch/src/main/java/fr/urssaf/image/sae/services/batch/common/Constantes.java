@@ -127,13 +127,13 @@ public final class Constantes {
     * Code Erreur pour la modification en masse en mode partiel qui a été
     * interrompue
     */
-   public static final String ERR_BUL004 = "SAE-CA-BUL004";
+   public static final String ERR_BUL004 = "SAE-MO-BUL004";
    
    /**
     * Code Erreur pour le transfert de masse en mode partiel qui a été
     * interrompue
     */
-   public static final String ERR_BUL005 = "SAE-CA-BUL005";
+   public static final String ERR_BUL005 = "SAE-TR-BUL005";
 
    /**
     * Recherche réalisée pour le rollback

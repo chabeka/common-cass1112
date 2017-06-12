@@ -44,6 +44,7 @@ public class ProcessorConvertMetier extends AbstractListener implements
          } else {
             StorageDocument storageDoc = new StorageDocument();
             storageDoc.setUuid(item.getUuid());
+            storageDoc.setFilePath(item.getFilePath());
             return storageDoc;
          }
       } catch (Exception e) {

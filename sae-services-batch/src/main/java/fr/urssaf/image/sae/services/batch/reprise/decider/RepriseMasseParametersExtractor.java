@@ -37,7 +37,6 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
             .getJobRequest(idJobAReprendre);
       
       if (jobAReprendre != null) {
-         // JobInstance instance = lastExecution.getJobInstance();
          Map<String, String> mapParam = jobAReprendre.getJobParameters();
          Map<String, JobParameter> jobParameters = new HashMap<String, JobParameter>();
 
@@ -53,7 +52,6 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
          jobParameters.put(Constantes.ID_TRAITEMENT,
                new JobParameter(idJobAReprendreParam));
          
-         // TODO à éviter
          jobParameters.put(Constantes.TRAITEMENT_REPRISE,
                new JobParameter(Boolean.TRUE.toString()));
          

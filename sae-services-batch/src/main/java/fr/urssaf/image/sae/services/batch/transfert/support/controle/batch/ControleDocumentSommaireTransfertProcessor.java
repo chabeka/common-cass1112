@@ -54,13 +54,13 @@ public class ControleDocumentSommaireTransfertProcessor extends
       String trcPrefix = "process";
       LOGGER.debug("{} - début", trcPrefix);
       document = new StorageDocument();
-
+      document.setUuid(item.getUuid());
+      document.setBatchTypeAction(item.getBatchActionType());
+      
       String uuidString = item.getUuid().toString();
 
       if (item.getBatchActionType().equals("SUPPRESSION")) {
          boolean isExiste = support.controleSAEDocumentSuppression(item);
-         document.setUuid(item.getUuid());
-         document.setBatchTypeAction(item.getBatchActionType());
          if (!isExiste && !isRepriseActifBatch()) {
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);

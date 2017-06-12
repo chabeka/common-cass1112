@@ -70,6 +70,7 @@ public class EnrichissementMetadonneeProcessor implements
          } else {
             SAEDocument saeDocument = new SAEDocument();
             saeDocument.setUuid(item.getUuid());
+            saeDocument.setFilePath(item.getFilePath());
             return saeDocument;
          }
       } catch (Exception e) {

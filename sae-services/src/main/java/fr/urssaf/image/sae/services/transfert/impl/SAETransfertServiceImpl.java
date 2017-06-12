@@ -185,9 +185,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
    @Override
    public final StorageDocument transfertControlePlateforme(
          StorageDocument document, final UUID idArchive, boolean isReprise,
-         UUID idTraitementMasse)
-         throws ArchiveAlreadyTransferedException, SearchingServiceEx,
- ReferentialException, ArchiveInexistanteEx,
+         UUID idTraitementMasse) throws ArchiveAlreadyTransferedException,
+         SearchingServiceEx, ReferentialException, ArchiveInexistanteEx,
          TraitementRepriseAlreadyDoneException {
       String message = null;
       // On récupère le document avec uniquement les méta transférables
@@ -209,34 +208,21 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                   uuid));
          } else {
             if (isReprise) {
-               message = "Le document {0} a déjà été transféré par le traitement de masse en cours ({1})";
+               message = "Le document {0} a déjà été transféré par le traitement de masse en cours {1}";
                if (idTraitementMasse == null) {
                   message = "L'identifiant du traitement de masse est inexistant pour le contrôle du document {0}";
                   throw new TransfertMasseRuntimeException(StringUtils.replace(
-                        message,
-                        "{0}", uuid));
+                        message, "{0}", uuid));
                }
-               for (StorageMetadata storageMetadata : Utils
-                     .nullSafeIterable(document.getMetadatas())) {
-                  if (Constantes.CODE_COURT_META_ID_TRANSFERT
-                        .equals(storageMetadata.getShortCode())) {
-                     if (storageMetadata.getValue() != null
-                           && !idTraitementMasse.toString().equals(
-                                 storageMetadata.getValue().toString())) {
-                        // -- Le document existe sur la GNS
-                        message = "Le document {0} a déjà été transféré par le traitement de masse {1}";
-                        throw new ArchiveAlreadyTransferedException(
-                              StringUtils.replaceEach(message, new String[] {
-                                    "{0}", "{1}" }, new String[] { uuid,
-                                    storageMetadata.getValue().toString() }));
-                     }
-                     String messageFormat = StringUtils.replaceEach(message, new String[] {
-                           "{0}", "{1}" }, new String[] { uuid,
-                           idTraitementMasse.toString() });
-                     throw new TraitementRepriseAlreadyDoneException(
-                           messageFormat);
-                  }
+               if (ckeckIdTraitementExiste(document.getMetadatas(),
+                     idTraitementMasse)) {
+                  // -- Le document a déjà été transféré dans la GNS
+                  String messageFormat = StringUtils.replaceEach(message,
+                        new String[] { "{0}", "{1}" }, new String[] { uuid,
+                              idTraitementMasse.toString() });
+                  throw new TraitementRepriseAlreadyDoneException(messageFormat);
                }
+
             }
 
             // -- Le document existe sur la GNS
@@ -251,6 +237,33 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                .searchStorageDocumentByUUIDCriteria(uuidCriteria);
          return documentGNS;
       }
+   }
+
+   /**
+    * Vérifie que l'identifiant du traitement existe dans la liste des
+    * metadonnées
+    * 
+    * @param metadatas
+    *           Liste des métadonnées
+    * @param idTraitementMasse
+    *           Identifiant de traitement.
+    * @return True si l'identifiant du traitement existe dans la liste des
+    *         metadonnées, false sinon.
+    */
+   private boolean ckeckIdTraitementExiste(List<StorageMetadata> metadatas,
+         UUID idTraitementMasse) {
+      for (StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
+         if (Constantes.CODE_COURT_META_ID_TRANSFERT.equals(storageMetadata
+               .getShortCode())) {
+            if (storageMetadata.getValue() != null
+                  && idTraitementMasse.toString().equals(
+                        storageMetadata.getValue().toString())) {
+               return true;
+            }
+            break;
+         }
+      }
+      return false;
    }
 
    /**
@@ -548,7 +561,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
-                           .getShortCode(), idTraitementMasse));
+                           .getShortCode(), idTraitementMasse.toString()));
+      } else {
+         String erreur = "La métadonnée idTransfertMasseInterne ne peut êre alimenté alors que le document n'a pas été transféré";
+         throw new TransfertException(erreur);
       }
 
       // -- Ajout traces (preachivage) au document
@@ -654,7 +670,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       StorageDocument document = new StorageDocument();
 
       try {
-         
          controleDroitTransfert(idArchive);
          
          document = recupererDocMetaTransferable(idArchive);
@@ -662,17 +677,44 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          StorageDocument documentGNS = transfertControlePlateforme(document,
                idArchive, isReprise, idTraitementMasse);
 
-         if (documentGNS == null) {
-            document = updateMetaDocumentForTransfertMasse(document,
-                  storageMetas, idTraitementMasse);
-            document.setBatchTypeAction("TRANSFERT");
-         } else {
-            // -- Le document existe sur la GNS et sur la GNT
+         if (documentGNS != null) {
             String uuid = idArchive.toString();
             String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
-            throw new ArchiveAlreadyTransferedException(StringUtils.replace(
-                  message, "{0}", uuid));
+            if (isReprise) {
+               // -- Pour la reprise, on supprime le document de la GNS et on
+               // reprend le transfert uniquement si le document contient un
+               // idTransfertMasseInterne possédant la même valeur d'identifiant
+               // que le traitement de masse en cours d'execution.
+               if (ckeckIdTraitementExiste(document.getMetadatas(),
+                     idTraitementMasse)) {
+                  try {
+                     storageTransfertService.deleteStorageDocument(idArchive);
+                     LOG.info(
+                           "{} - Reprise - Suppression du document {} de la GNS.",
+                           "transfertDoc", idArchive.toString());
+                  } catch (DeletionServiceEx ex) {
+                     message = "Reprise transfert de masse - La suppression du document {0} de la GNS a échoué.";
+                     throw new TransfertMasseRuntimeException(
+                           StringUtils.replace(message, "{0}",
+                                 idArchive.toString()));
+                  }
+               } else {
+                  LOG.info(
+                        "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution",
+                        "transfertDoc", idArchive.toString());
+                  throw new ArchiveAlreadyTransferedException(
+                        StringUtils.replace(message, "{0}", uuid));
+               }
+            } else {
+               // -- Le document existe sur la GNS et sur la GNT
+               throw new ArchiveAlreadyTransferedException(StringUtils.replace(
+                     message, "{0}", uuid));
+            }
          }
+
+         document = updateMetaDocumentForTransfertMasse(document, storageMetas,
+               idTraitementMasse);
+         document.setBatchTypeAction("TRANSFERT");
 
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -93,10 +94,12 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
 
       StorageDocument document = new StorageDocument();
       String actionType = checkActionType((StorageDocument) storageDocument);
-      if (actionType.equals("SUPPRESSION")) {
-         document = deleteDocument((StorageDocument) storageDocument);
-      } else {
-         document = transfertDocument((StorageDocument) storageDocument);
+      if (actionType != null) {
+         if (actionType.equals("SUPPRESSION")) {
+            document = deleteDocument((StorageDocument) storageDocument);
+         } else {
+            document = transfertDocument((StorageDocument) storageDocument);
+         }  
       }
       UUID uuid = document != null ? document.getUuid() : null;
       return uuid;
@@ -117,7 +120,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          transfertService.transfertDocMasse(document);
       } catch (Throwable except) {
          throw new TransfertException("Erreur transfert : "
-               + except.getMessage());
+               + except.getMessage(), except);
       }
       return document;
    }
@@ -138,7 +141,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          suppressionService.suppression(document.getUuid());
       } catch (Throwable except) {
          throw new SuppressionException("Erreur Suppression : "
-               + except.getMessage());
+               + except.getMessage(), except);
       }
       return document;
    }
@@ -190,9 +193,18 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
                   "{} - nombre de documents en attente dans le pool : {}",
                   TRC_INSERT, poolExecutor.getQueue().size());
 
+         } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
+            poolExecutor.getIntegratedDocuments().add(
+                  new TraitementMasseIntegratedDocument(storageDocument
+                        .getUuid(), null,
+                        index));
          }
+
          index++;
       }
+
+      // Reinitialisation du compteur si prochain passage.
+      index = 0;
    }
 
    /**

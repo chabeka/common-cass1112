@@ -123,6 +123,24 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    }
 
    /**
+    * Vérifie que le document a déjà été traité par le traitement nominal lors
+    * de la reprise.
+    * 
+    * @param index
+    *           index du document
+    * @return True si le document a déjà été traité, false sinon.
+    */
+   protected boolean isDocumentDejaTraite(int index) {
+      boolean isdocumentDejaTraite = false;
+      if (isRepriseActifBatch()) {
+         isdocumentDejaTraite = !isDocumentATraiteByListIndex(
+               getIndexRepriseDoneListe(), index);
+      }
+
+      return isdocumentDejaTraite;
+   }
+
+   /**
     * Méthode permettant de voir si un index d'un document est présent dans une
     * liste d'index de type {@link ConcurrentLinkedQueue}
     * 

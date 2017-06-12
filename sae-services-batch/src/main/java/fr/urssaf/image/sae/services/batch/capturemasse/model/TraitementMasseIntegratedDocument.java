@@ -13,7 +13,34 @@ import java.util.UUID;
  */
 public class TraitementMasseIntegratedDocument implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+
+   /**
+    * SUID
+    */
+   private static final long serialVersionUID = 1433593441518063701L;
+
+   /**
+    * Constructor.
+    */
+   public TraitementMasseIntegratedDocument() {
+   }
+
+   /**
+    * Constructor.
+    * 
+    * @param identifiant
+    *           Identifiant
+    * @param documentFile
+    *           Fichier document
+    * @param index
+    *           Index dans le sommaire
+    */
+   public TraitementMasseIntegratedDocument(UUID identifiant,
+         File documentFile, int index) {
+      this.identifiant = identifiant;
+      this.documentFile = documentFile;
+      this.index = index;
+   }
 
    /**
     * Identifiant d'archivage d'un document dans DFCE

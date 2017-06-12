@@ -39,17 +39,18 @@ public class ControleStorageDocumentProcessor extends AbstractListener
                && getIndexErreurListe().contains(getStepExecution().getExecutionContext().getInt(
                      Constantes.CTRL_INDEX)))) {
             support.controleSAEDocumentStockage(item);
-
-            String pathSommaire = getStepExecution().getJobExecution()
-                  .getExecutionContext().getString(Constantes.SOMMAIRE_FILE);
-
-            File sommaireFile = new File(pathSommaire);
-            File ecdeDirectory = sommaireFile.getParentFile();
-
-            String path = ecdeDirectory.getAbsolutePath() + File.separator
-                  + "documents" + File.separator + item.getFilePath();
-            item.setFilePath(path);
          }
+
+         String pathSommaire = getStepExecution().getJobExecution()
+               .getExecutionContext().getString(Constantes.SOMMAIRE_FILE);
+
+         File sommaireFile = new File(pathSommaire);
+         File ecdeDirectory = sommaireFile.getParentFile();
+
+         String path = ecdeDirectory.getAbsolutePath() + File.separator
+               + "documents" + File.separator + item.getFilePath();
+         item.setFilePath(path);
+
       } catch (Exception e) {
          if (isModePartielBatch()) {
 
