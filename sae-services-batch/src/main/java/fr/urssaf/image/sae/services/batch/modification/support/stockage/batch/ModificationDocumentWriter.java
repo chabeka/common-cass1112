@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -97,6 +98,11 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
                   "{} - nombre de documents en attente dans le pool : {}",
                   TRC_INSERT, poolExecutor.getQueue().size());
 
+         } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
+            poolExecutor.getIntegratedDocuments().add(
+                  new TraitementMasseIntegratedDocument(storageDocument
+                        .getUuid(), null,
+                        index));
          }
          index++;
 

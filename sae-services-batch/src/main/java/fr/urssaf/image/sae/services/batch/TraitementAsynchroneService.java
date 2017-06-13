@@ -127,6 +127,6 @@ public interface TraitementAsynchroneService {
     * @throws JobInexistantException si le job à reprendre n'existe pas en base
     */
    ExitTraitement lancerReprise(JobRequest jobReprise)
-         throws JobParameterTypeException, JobInexistantException;
+         throws JobInexistantException;
    
 }

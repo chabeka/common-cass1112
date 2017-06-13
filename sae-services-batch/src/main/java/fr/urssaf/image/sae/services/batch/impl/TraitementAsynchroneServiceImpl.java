@@ -28,7 +28,6 @@ import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.common.utils.BatchAuthentificationUtils;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
-import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -310,7 +309,7 @@ public class TraitementAsynchroneServiceImpl implements
     * @throws JobInexistantException
     */
    public ExitTraitement lancerReprise(JobRequest jobReprise)
-         throws JobParameterTypeException, JobInexistantException {
+         throws JobInexistantException {
 
       ExitTraitement exitTraitement = new ExitTraitement();
 
@@ -320,6 +319,7 @@ public class TraitementAsynchroneServiceImpl implements
       
       // 2- Vérifier si le jobAReprendre existe en base
       UUID idJobAReprendre = UUID.fromString(jobAReprendreParam);
+      
       // Récupérer le job à reprendre
       JobRequest jobAReprendre = jobLectureService.getJobRequest(idJobAReprendre);
       
@@ -330,7 +330,7 @@ public class TraitementAsynchroneServiceImpl implements
           // Lancer la reprise de masse
           exitTraitement = repriseMasse.execute(jobReprise);
       }else {
-         throw new JobTypeInexistantException(jobAReprendre);
+         throw new JobInexistantException(idJobAReprendre);
       }
 
       return exitTraitement;

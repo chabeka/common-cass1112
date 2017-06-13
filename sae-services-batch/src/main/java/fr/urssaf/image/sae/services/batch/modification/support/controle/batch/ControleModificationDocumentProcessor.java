@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.ModificationMasseControleSupport;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -53,6 +54,10 @@ public class ControleModificationDocumentProcessor extends AbstractListener
       
       try {
          document = support.controleSAEDocumentModification(uuidJob, item);
+      } catch (TraitementRepriseAlreadyDoneException e1){
+         getIndexRepriseDoneListe().add(
+             getStepExecution().getExecutionContext().getInt(
+                   Constantes.CTRL_INDEX));
       } catch (Exception e) {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);

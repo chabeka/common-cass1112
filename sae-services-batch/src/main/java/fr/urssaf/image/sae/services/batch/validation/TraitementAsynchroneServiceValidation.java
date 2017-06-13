@@ -316,9 +316,7 @@ public class TraitementAsynchroneServiceValidation {
     */
    @Before(METHOD_LANCER_REPRISE)
    public final void lancerReprise(JobRequest jobReprise) {
-      // Méthode de validation de traitement de reprise
-      // TODO Factoriser les validations élémentaires des traitements de masse 
-      // 1- Vérifier si le param uidJobAReprendre est bien renseigné
+      // Méthode de validation des traitements de reprise
       String jobAReprendreParam = jobReprise.getJobParameters().get(
             Constantes.UUID_JOB_A_Reprendre);
       

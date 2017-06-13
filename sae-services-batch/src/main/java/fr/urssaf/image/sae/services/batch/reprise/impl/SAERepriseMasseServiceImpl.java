@@ -179,7 +179,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             // Mise à jour compteur job à reprendre
             jobQueueService.renseignerDocCountJob(uidJobAReprendre,
                   nbDocsTraites);
-            // Mise à jour compteur job reprise
+            // Mise à jour du compteur de job reprise
             jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          } else {
             checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
@@ -188,7 +188,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
-            // Mise à jour compteur job reprise uniquement pour le voir le delta
+            // Mise à jour compteur job reprise uniquement pour voir le delta
             // qui a été repris.
             jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          }

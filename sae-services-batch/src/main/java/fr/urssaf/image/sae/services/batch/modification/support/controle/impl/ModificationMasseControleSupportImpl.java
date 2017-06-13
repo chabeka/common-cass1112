@@ -122,7 +122,7 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
             trcPrefix);
       
       String idModifMasseInterne = StorageMetadataUtils
-            .valueMetadataFinder(document.getMetadatas(),
+            .valueMetadataFinder(listeMetadataDocument,
                   StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
                         .getShortCode());
      
@@ -131,18 +131,10 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
          String messageFormat = StringUtils.replaceEach(message, new String[] {
                "{0}", "{1}" }, new String[] { item.getUuid().toString(),
                uuidJob.toString() });
-         LOGGER.warn(messageFormat);         
+         LOGGER.warn(messageFormat);
          throw new TraitementRepriseAlreadyDoneException(
                messageFormat);
-      } else if(StringUtils.isNotEmpty(idModifMasseInterne)) {
-         // On modifie la métadonnée par l'uuid du traitement en cours
-         for (StorageMetadata storageMetadata : document.getMetadatas()) {
-            if (StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                  .getShortCode().equals(storageMetadata.getShortCode())) {
-               storageMetadata.setValue(uuidJob.toString());
-            }
-         }
-      }else {
+      } else {
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
