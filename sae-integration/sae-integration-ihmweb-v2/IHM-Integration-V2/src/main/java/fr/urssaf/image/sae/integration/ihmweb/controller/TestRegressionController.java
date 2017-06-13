@@ -170,7 +170,6 @@ public class TestRegressionController {
    @RequestMapping(method = RequestMethod.POST, params = { "action=checkboxTest" })
    public String checkboxTest(@RequestParam("myValue") String checkboxValue,
          Model model) throws IOException {
-      System.out.println(checkboxValue);
 
       // recuperer list nom test regression
       File repertoireXml = new File(testConfig.getTestRegression());
@@ -189,7 +188,6 @@ public class TestRegressionController {
       }
       
       //add if traitement de masse ou non
-      System.out.println("IS MASSE : " + traitementMasse);
       model.addAttribute("isMasse", traitementMasse);
 
       // add list to model
@@ -213,7 +211,6 @@ public class TestRegressionController {
       // permet de retourner au resultat des tests depuis la JSP de détail des
       // resultats
       model.addAttribute("resRegression", test);
-      System.out.println("RETOUR TEST");
       return "resultatRegression";
    }
 
@@ -231,7 +228,6 @@ public class TestRegressionController {
       // permet de retourner au resultat des tests depuis la JSP de détail des
       // resultats
       model.addAttribute("resMasse", testMasse);
-      System.out.println("RETOUR TEST");
       return "resultatRegressionMasse";
    }
 
@@ -257,7 +253,6 @@ public class TestRegressionController {
          for (Map.Entry<String, Map<String, String>> mp2 : mp.getValue()
                .entrySet()) {
             if (mp2.getKey().equals(detailTest)) {
-               System.out.println("MP2 KEY : " + mp2.getKey());
                for (Map.Entry<String, String> mp3 : mp2.getValue().entrySet()) {
                   msgOut = mp3.getKey();
                   msgIn = mp3.getValue();

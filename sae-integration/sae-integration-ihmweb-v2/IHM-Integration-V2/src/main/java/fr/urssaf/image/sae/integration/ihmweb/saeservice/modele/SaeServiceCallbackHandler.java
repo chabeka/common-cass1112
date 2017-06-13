@@ -335,6 +335,22 @@ public abstract class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for reprise method
+            * override this method for handling normal response from reprise operation
+            */
+           public void receiveResultreprise(
+                    fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RepriseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from reprise operation
+           */
+            public void receiveErrorreprise(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for consultation method
             * override this method for handling normal response from consultation operation
             */

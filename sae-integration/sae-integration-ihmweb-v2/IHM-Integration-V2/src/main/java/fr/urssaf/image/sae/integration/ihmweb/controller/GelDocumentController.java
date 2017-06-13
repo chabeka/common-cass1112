@@ -47,9 +47,7 @@ public class GelDocumentController {
          //-- Gel du document
          final String idDoc = form.getIdDocument().toString();
          if(StringUtils.isNotEmpty(idDoc) && StringUtils.isNotBlank(idDoc)){
-            System.out.println("COUCOU");
             String base = testConfig.getDfceBase();
-            System.out.println("BASEEEE : " + base);
             dfceService.freezeDocument(form.getIdDocument(), base);
             form.setResultats("Gel du document terminé sans erreur.");
          }else{

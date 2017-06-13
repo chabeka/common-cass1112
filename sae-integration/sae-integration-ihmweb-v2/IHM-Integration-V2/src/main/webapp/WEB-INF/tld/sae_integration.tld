@@ -212,6 +212,12 @@
       <path>/WEB-INF/tags/deblocage.tag</path>
    </tag-file>
    
+    <tag-file>
+      <name>reprise</name>
+      <description>Appel du service web de reprise d'un job</description>
+      <path>/WEB-INF/tags/reprise.tag</path>
+   </tag-file>
+   
 
    <function>
       <name>booleanToOuiNon</name>

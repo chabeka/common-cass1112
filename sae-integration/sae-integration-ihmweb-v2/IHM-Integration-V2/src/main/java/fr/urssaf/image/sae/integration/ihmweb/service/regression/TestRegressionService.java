@@ -118,7 +118,6 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
             // appelle du stub
             String res = appelleStub(sub, contenu, str);
-            System.out.println("RES : " + res);
 
             // on stocke le resultat de l'appelle du stub
             testMessage.put(contenu, res);
@@ -333,7 +332,6 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
          // on verifi que chaque ligne contenu dans le fichier "attendu" se
          // trouve bien dans le resultat du test
          while ((sCurrentLine = br.readLine()) != null) {
-            System.out.println(sCurrentLine);
             if (!resultat.contains(sCurrentLine))
                return "KO";
          }
@@ -505,7 +503,6 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
          // on verifi que chaque ligne contenu dans le fichier "attendu" se
          // trouve bien dans le resultat du test
          while ((sCurrentLine = br.readLine()) != null) {
-            System.out.println(sCurrentLine);
             if (!res.contains(sCurrentLine))
                return false;
          }

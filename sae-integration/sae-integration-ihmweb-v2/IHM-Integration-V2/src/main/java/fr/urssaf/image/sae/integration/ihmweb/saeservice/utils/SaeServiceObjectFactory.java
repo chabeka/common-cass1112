@@ -72,6 +72,8 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.R
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateur;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheParIterateurRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RechercheRequestType;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.Reprise;
+import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RepriseRequestType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequetePrincipaleType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.RequeteRechercheType;
@@ -114,12 +116,12 @@ public final class SaeServiceObjectFactory {
    public static EcdeUrlType buildEcdeUrl(String urlEcde)
          throws MalformedURIException {
       EcdeUrlType ecdeUrlType = new EcdeUrlType();
-      
+
       try {
          ecdeUrlType.setEcdeUrlType(new URI(urlEcde));
-        } catch (MalformedURIException e) {
-           throw new IntegrationRuntimeException(e);
-        }       
+      } catch (MalformedURIException e) {
+         throw new IntegrationRuntimeException(e);
+      }
 
       return ecdeUrlType;
    }
@@ -315,58 +317,59 @@ public final class SaeServiceObjectFactory {
     *           les métadonnées associés au document
     * @return l'objet pour la couche web service
     */
-   public static StockageUnitaire buildStockageUnitaireRequest(
-         String urlEcde,String urlEcdeOrig, MetadonneeValeurList metadonnees) {
-     
+   public static StockageUnitaire buildStockageUnitaireRequest(String urlEcde,
+         String urlEcdeOrig, MetadonneeValeurList metadonnees) {
+
       StockageUnitaire stockageUnitaire = new StockageUnitaire();
 
       StockageUnitaireRequestType stockageUnitaireReqType = new StockageUnitaireRequestType();
 
       stockageUnitaire.setStockageUnitaire(stockageUnitaireReqType);
-      
+
       StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
       stockageUnitaireReqType
             .setStockageUnitaireRequestTypeChoice_type0(choice0);
-      
+
       // URL ECDE du document parent
       EcdeUrlType ecdeUrlFichier = null;
       try {
          ecdeUrlFichier = buildEcdeUrl(urlEcde);
          choice0.setUrlEcdeDoc(ecdeUrlFichier);
-        } catch (MalformedURIException e) {
+      } catch (MalformedURIException e) {
          throw new IntegrationRuntimeException(e);
-      } 
-      
+      }
+
       // URL ECDE du document au format d'origine
-        StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
-        stockageUnitaireReqType
-              .setStockageUnitaireRequestTypeChoice_type1(choice1);       
-        EcdeUrlType ecdeUrlFichierOrig = null;
-        if (!urlEcdeOrig.isEmpty()){
-           try {
-              ecdeUrlFichierOrig = buildEcdeUrl(urlEcdeOrig);
-              choice1.setUrlEcdeDocOrigine(ecdeUrlFichierOrig);
-              } catch (MalformedURIException e) {
-                 throw new IntegrationRuntimeException(e);
-              }
-        }
-        
+      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      stockageUnitaireReqType
+            .setStockageUnitaireRequestTypeChoice_type1(choice1);
+      EcdeUrlType ecdeUrlFichierOrig = null;
+      if (!urlEcdeOrig.isEmpty()) {
+         try {
+            ecdeUrlFichierOrig = buildEcdeUrl(urlEcdeOrig);
+            choice1.setUrlEcdeDocOrigine(ecdeUrlFichierOrig);
+         } catch (MalformedURIException e) {
+            throw new IntegrationRuntimeException(e);
+         }
+      }
+
       // Les métadonnées
       ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
       stockageUnitaireReqType.setMetadonnees(listeMetadonneeType);
-     
+
       // fin
       return stockageUnitaire;
 
    }
-   
+
    /**
-    * Construit un objet de requête pour l'opération "stockageUnitairePJContenuSansMtom"
+    * Construit un objet de requête pour l'opération
+    * "stockageUnitairePJContenuSansMtom"
     * 
     * @param urlEcde
     *           l'URL ECDE du document à archiver
     * @param contenu
-    *           le flux pointant vers le fichier à archiver     
+    *           le flux pointant vers le fichier à archiver
     * @param urlEcdeOrig
     *           l'URL ECDE du document origine à archiver
     * @param contenuOrig
@@ -377,9 +380,8 @@ public final class SaeServiceObjectFactory {
     */
 
    public static StockageUnitaire buildStockageUnitaireRequestavecContenu(
-         String urlEcde, InputStream contenu,
-         String urlEcdeOrig, InputStream contenuFormatOrigine,
-         MetadonneeValeurList metadonnees) {
+         String urlEcde, InputStream contenu, String urlEcdeOrig,
+         InputStream contenuFormatOrigine, MetadonneeValeurList metadonnees) {
 
       StockageUnitaire stockageUnitaire = new StockageUnitaire();
       StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
@@ -398,23 +400,28 @@ public final class SaeServiceObjectFactory {
       DataHandler dataHandler = new DataHandler(byteArray);
       dataFile.setFile(dataHandler);
       StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
-      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type0(choice0);
+      stockageUnitaireRequest
+            .setStockageUnitaireRequestTypeChoice_type0(choice0);
       choice0.setDataFileDoc(dataFile);
-      
+
       // Nom et contenu du fichier au format d'origine
       DataFileType dataFileFormatOrigine = new DataFileType();
       dataFileFormatOrigine.setFileName(urlEcdeOrig);
       byte[] contenuBytesFormatOrigine;
       try {
-         contenuBytesFormatOrigine = IOUtils.getStreamAsByteArray(contenuFormatOrigine);
+         contenuBytesFormatOrigine = IOUtils
+               .getStreamAsByteArray(contenuFormatOrigine);
       } catch (IOException e) {
          throw new IntegrationRuntimeException(e);
       }
-      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(contenuBytesFormatOrigine);
-      DataHandler dataHandlerFormatOrigine = new DataHandler(byteArrayFormatOrigine);
+      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(
+            contenuBytesFormatOrigine);
+      DataHandler dataHandlerFormatOrigine = new DataHandler(
+            byteArrayFormatOrigine);
       dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
       StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
-      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type1(choice1);
+      stockageUnitaireRequest
+            .setStockageUnitaireRequestTypeChoice_type1(choice1);
       choice1.setDataFileAttached(dataFileFormatOrigine);
 
       // Métadonnées
@@ -426,7 +433,6 @@ public final class SaeServiceObjectFactory {
 
    }
 
-   
    /**
     * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
     * comme paramètre d'entrée une URL ECDE
@@ -576,7 +582,7 @@ public final class SaeServiceObjectFactory {
       return archivageMasseAvecHash;
 
    }
-   
+
    /**
     * Renvoie un objet de requête pour le service web transfertMasse
     * 
@@ -584,14 +590,14 @@ public final class SaeServiceObjectFactory {
     *           l'URL du fichier sommaire.xml
     * @return l'objet pour la couche WebService
     */
-   public static TransfertMasse buildTransfertMasseRequest(String urlSommaire, String hash, String typeHash) {
-      
+   public static TransfertMasse buildTransfertMasseRequest(String urlSommaire,
+         String hash, String typeHash) {
+
       TransfertMasse transfertMasse = new TransfertMasse();
 
       TransfertMasseRequestType transfertMasseReqType = new TransfertMasseRequestType();
 
-      transfertMasse
-            .setTransfertMasse(transfertMasseReqType);
+      transfertMasse.setTransfertMasse(transfertMasseReqType);
 
       // URL de sommaire.xml
       EcdeUrlSommaireType urlEcdeSommaire;
@@ -611,7 +617,7 @@ public final class SaeServiceObjectFactory {
       // fin
       return transfertMasse;
    }
-   
+
    /**
     * Renvoie un objet de requête pour le service web modificationMasse
     * 
@@ -619,34 +625,34 @@ public final class SaeServiceObjectFactory {
     *           l'URL du fichier sommaire.xml
     * @return l'objet pour la couche WebService
     */
-   public static ModificationMasse buildModificationMasseRequest(String urlSommaire, String hash, String typeHash, String codeTraitement) {
-      
+   public static ModificationMasse buildModificationMasseRequest(
+         String urlSommaire, String hash, String typeHash, String codeTraitement) {
+
       ModificationMasse modificationMasse = new ModificationMasse();
-      
+
       ModificationMasseRequestType modificationMasseRequestType = new ModificationMasseRequestType();
-      
+
       modificationMasse.setModificationMasse(modificationMasseRequestType);
-      
-   // URL de sommaire.xml
+
+      // URL de sommaire.xml
       EcdeUrlSommaireType urlEcdeSommaire;
       try {
          urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
       } catch (MalformedURIException e) {
          throw new IntegrationRuntimeException(e);
       }
-      
+
       modificationMasseRequestType.setUrlSommaire(urlEcdeSommaire);
-      
+
       modificationMasseRequestType.setHash(hash);
-      
+
       modificationMasseRequestType.setTypeHash(typeHash);
-      
+
       modificationMasseRequestType.setCodeTraitement(codeTraitement);
-      
+
       return modificationMasse;
-      
+
    }
-   
 
    /**
     * Construit un objet de requête pour le service web "consultation"
@@ -691,7 +697,8 @@ public final class SaeServiceObjectFactory {
     *           l'identifiant d'archivage du document parent
     * @return l'objet pour la couche WebService
     */
-   public static GetDocFormatOrigine buildGetDocFormatOrigineRequest(String uuidDocParent) {
+   public static GetDocFormatOrigine buildGetDocFormatOrigineRequest(
+         String uuidDocParent) {
       GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
       GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
       getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
@@ -700,10 +707,10 @@ public final class SaeServiceObjectFactory {
       UuidType uuidType = new UuidType();
       uuidType.setUuidType(uuidDocParent.toString());
       getDocFormatOrigineRequest.setIdDoc(uuidType);
-      
+
       return getDocFormatOrigine;
    }
-   
+
    /**
     * Construit un objet de requête pour le service web "consultationMTOM"
     * 
@@ -739,7 +746,7 @@ public final class SaeServiceObjectFactory {
       return consultation;
 
    }
-   
+
    public static ConsultationGNTGNS buildConsultationGNTGNSRequest(
          String idArchivage, CodeMetadonneeList codeMetadonnees) {
 
@@ -893,7 +900,7 @@ public final class SaeServiceObjectFactory {
     * @param equalFilter
     *           les filtres de type equal
     * @param notEqualFilter
-    *           les filtres de type notEqual          
+    *           les filtres de type notEqual
     * @param rangeFilter
     *           les filtres de type range
     * @param nbDocParPage
@@ -922,7 +929,8 @@ public final class SaeServiceObjectFactory {
       rechercheReqType.setRequetePrincipale(reqPrincipaleType);
 
       // Les filtres
-      FiltreType filtreType = buildFiltres(equalFilter, notEqualFilter, rangeFilter);
+      FiltreType filtreType = buildFiltres(equalFilter, notEqualFilter,
+            rangeFilter);
       rechercheReqType.setFiltres(filtreType);
 
       // Le nombre de documents par pages
@@ -997,13 +1005,14 @@ public final class SaeServiceObjectFactory {
     * @param equalFilter
     *           Filtres de type equal
     * @param notEqualFilter
-    *           Filtres de type notEqual          
+    *           Filtres de type notEqual
     * @param rangeFilter
     *           Filtres de type range
     * @return l'objet de type FiltreType
     */
    private static FiltreType buildFiltres(MetadonneeValeurList equalFilter,
-         MetadonneeValeurList notEqualFilter, MetadonneeRangeValeurList rangeFilter) {
+         MetadonneeValeurList notEqualFilter,
+         MetadonneeRangeValeurList rangeFilter) {
       FiltreType filtreType = new FiltreType();
       ListeMetadonneeType listeMeta = new ListeMetadonneeType();
       for (MetadonneeValeur metaValeur : equalFilter) {
@@ -1030,7 +1039,7 @@ public final class SaeServiceObjectFactory {
          listeMetaNE.addMetadonnee(metaTypeNE);
       }
       filtreType.setNotEqualFilter(listeMetaNE);
-      
+
       ListeRangeMetadonneeType listeRangeMeta = new ListeRangeMetadonneeType();
       for (MetadonneeRangeValeur metaValeur : rangeFilter) {
          RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
@@ -1142,7 +1151,7 @@ public final class SaeServiceObjectFactory {
       return transfert;
 
    }
-   
+
    /**
     * Construit un objet "Note" pour la couche WebService
     * 
@@ -1174,52 +1183,53 @@ public final class SaeServiceObjectFactory {
 
       AjoutNote ajoutnote = new AjoutNote();
 
-      //-- UUID & NOTE
+      // -- UUID & NOTE
       UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
       NoteTxtType texteNote = SaeServiceObjectFactory.buildNote(contenuNote);
-      
+
       AjoutNoteRequestType ajoutnoteReqType = new AjoutNoteRequestType();
       ajoutnoteReqType.setUuid(uuid);
       ajoutnoteReqType.setNote(texteNote);
-      
+
       ajoutnote.setAjoutNote(ajoutnoteReqType);
 
       return ajoutnote;
    }
 
-
-   public static SuppressionMasse buildSuppressionMasseRequest(String requeteLucene) {
+   public static SuppressionMasse buildSuppressionMasseRequest(
+         String requeteLucene) {
 
       SuppressionMasse suppressionmasse = new SuppressionMasse();
       SuppressionMasseRequestType requestType = new SuppressionMasseRequestType();
-      RequeteRechercheType requeteRechType = new RequeteRechercheType();  
+      RequeteRechercheType requeteRechType = new RequeteRechercheType();
       requestType.setRequete(requeteRechType);
       suppressionmasse.setSuppressionMasse(requestType);
-      
-      suppressionmasse.getSuppressionMasse().getRequete().setRequeteRechercheType(requeteLucene);
+
+      suppressionmasse.getSuppressionMasse().getRequete()
+            .setRequeteRechercheType(requeteLucene);
       return suppressionmasse;
    }
-
 
    public static RestoreMasse buildRestoreMasseRequest(String idArchivage) {
 
       RestoreMasse restoremasse = new RestoreMasse();
       RestoreMasseRequestType restoremasseReqType = new RestoreMasseRequestType();
-      
+
       UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
       restoremasseReqType.setUuid(uuid);
       restoremasse.setRestoreMasse(restoremasseReqType);
-      
+
       return restoremasse;
-      
+
    }
 
-   public static EtatTraitementsMasse buildEtatTraitementMasseRequest( List<String> listeUuid) {
+   public static EtatTraitementsMasse buildEtatTraitementMasseRequest(
+         List<String> listeUuid) {
 
-      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();     
+      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();
       EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
       etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
-      
+
       ListeUuidType listeUuidType = new ListeUuidType();
       for (String uuid : listeUuid) {
          UuidType uuidType = new UuidType();
@@ -1227,20 +1237,44 @@ public final class SaeServiceObjectFactory {
          listeUuidType.addUuid(uuidType);
       }
       etatTraitementsMasseRequest.setListeUuid(listeUuidType);
-      
+
       return etatTraitementsMasse;
    }
-   
-   public static Deblocage buildDeblocageRequest(String uuid){
-      
+
+   public static Deblocage buildDeblocageRequest(String uuid) {
+
       Deblocage deblocage = new Deblocage();
       DeblocageRequestType deblocageRequestType = new DeblocageRequestType();
       deblocage.setDeblocage(deblocageRequestType);
-      
-      deblocageRequestType.setUuid(uuid);
-      
+
+      UuidType uuidType = new UuidType();
+      if (uuid.equals(null) || uuid.equals(""))
+         uuidType.setUuidType(new String());
+      else
+         uuidType.setUuidType(uuid);
+
+      deblocageRequestType.setUuid(uuidType);
+
       return deblocage;
-      
+
+   }
+   
+   public static Reprise buildRepriseRequest(String uuid) {
+
+      Reprise reprise = new Reprise();
+      RepriseRequestType repriseRequestType = new RepriseRequestType();
+      reprise.setReprise(repriseRequestType);
+
+      UuidType uuidType = new UuidType();
+      if (uuid.equals(null) || uuid.equals(""))
+         uuidType.setUuidType(new String());
+      else
+         uuidType.setUuidType(uuid);
+
+      repriseRequestType.setUuid(uuidType);
+
+      return reprise;
+
    }
 
    /**

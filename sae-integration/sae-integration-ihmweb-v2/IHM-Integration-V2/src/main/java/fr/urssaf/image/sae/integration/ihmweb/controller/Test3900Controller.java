@@ -4,26 +4,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import fr.urssaf.image.sae.integration.ihmweb.constantes.SaeIntegrationConstantes;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.DeblocageFormulaire;
-import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test3800Formulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.RepriseFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.Test3900Formulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.ViFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.modele.PagmList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.TestStatusEnum;
 
 @Controller
-@RequestMapping(value = "test3800")
-public class Test3800Controller extends
-      AbstractTestWsController<Test3800Formulaire> {
+@RequestMapping(value = "test3900")
+public class Test3900Controller extends
+      AbstractTestWsController<Test3900Formulaire> {
+
+   public static final String NUMERO_TEST = "3900";
 
    @Override
    protected String getNumeroTest() {
-      return "3800";
+      return NUMERO_TEST;
    }
 
    @Override
-   protected Test3800Formulaire getFormulairePourGet() {
+   protected Test3900Formulaire getFormulairePourGet() {
 
-      Test3800Formulaire formulaire = new Test3800Formulaire();
+      Test3900Formulaire formulaire = new Test3900Formulaire();
 
       // Valeurs initiales du formulaire pour les paramètres du VI
       ViFormulaire viForm = formulaire.getViFormulaire();
@@ -34,23 +36,21 @@ public class Test3800Controller extends
       viForm.setPagms(pagmList);
       viForm.setRecipient(SaeIntegrationConstantes.VI_DEFAULT_RECIPIENT);
 
-      DeblocageFormulaire formDeblocage = formulaire.getDeblocage();
-      formDeblocage.getResultats().setStatus(TestStatusEnum.SansStatus);
+      RepriseFormulaire formReprise = formulaire.getReprise();
+      formReprise.getResultats().setStatus(TestStatusEnum.SansStatus);
 
       return formulaire;
-
    }
 
    @Override
-   protected void doPost(Test3800Formulaire formulaire) {
-      deblocage(formulaire.getUrlServiceWeb(), formulaire.getDeblocage(),
+   protected void doPost(Test3900Formulaire formulaire) {
+      reprise(formulaire.getUrlServiceWeb(), formulaire.getReprise(),
             formulaire.getViFormulaire());
    }
 
-   private void deblocage(String urlServiceWeb, DeblocageFormulaire formulaire,
+   private void reprise(String urlServiceWeb, RepriseFormulaire formulaire,
          ViFormulaire viForm) {
-
-      getDeblocageTestService().appelWsOpDeblocageTestLibre(urlServiceWeb,
+      getRepriseTestService().appelWsOpRepriseTestLibre(urlServiceWeb,
             formulaire, viForm);
    }
 

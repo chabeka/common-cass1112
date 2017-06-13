@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheAvecNbResTe
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheParIterateurTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RechercheTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RecuperationMetadonneeTestService;
+import fr.urssaf.image.sae.integration.ihmweb.service.tests.RepriseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.RestoreMasseTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.StockageUnitaireTestService;
 import fr.urssaf.image.sae.integration.ihmweb.service.tests.SuppressionMasseTestService;
@@ -145,6 +146,9 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
    
    @Autowired
    private DeblocageTestService deblocageTestServ;
+   
+   @Autowired
+   private RepriseTestService repriseTestServ;
 
    public RecuperationMetadonneeTestService getRecuperationMetadonneeTestServ() {
       return recuperationMetadonneeTestServ;
@@ -526,6 +530,16 @@ public abstract class AbstractTestWsController<T extends TestWsParentFormulaire>
     */
    public final DeblocageTestService getDeblocageTestService(){
       return this.deblocageTestServ;
+   }
+   
+   /**
+    * Service des tests de l'opération "reprise" du service web SaeService
+    * 
+    * @return Service des tests de l'opération "reprise" du service web
+    *         SaeService
+    */
+   public final RepriseTestService getRepriseTestService(){
+      return this.repriseTestServ;
    }
    
 }

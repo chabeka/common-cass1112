@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.integration.ihmweb.formulaire.ModificationMasseFormul
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RechercheParIterateurFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RecuperationMetadonneeFormulaire;
+import fr.urssaf.image.sae.integration.ihmweb.formulaire.RepriseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.RestoreMasseFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.StockageUnitaireFormulaire;
 import fr.urssaf.image.sae.integration.ihmweb.formulaire.SuppressionFormulaire;
@@ -50,6 +51,7 @@ import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeur;
 import fr.urssaf.image.sae.integration.ihmweb.modele.MetadonneeValeurList;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ModificationMasseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.RecuperationMetadonneeResultat;
+import fr.urssaf.image.sae.integration.ihmweb.modele.RepriseResultat;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTest;
 import fr.urssaf.image.sae.integration.ihmweb.modele.ResultatTestLog;
 import fr.urssaf.image.sae.integration.ihmweb.modele.SoapFault;
@@ -1205,6 +1207,12 @@ public final class SaeServiceLogUtils {
             
    }
    
+   public static void logAppelReprise(ResultatTestLog log,
+         RepriseFormulaire formulaire) {
+      log.appendLogLn("Appel de l'opération Deblocage");
+            
+   }
+   
    /**
     * Ajoute, dans le log du résultat du test cf l'id du job
     * 
@@ -1224,6 +1232,13 @@ public final class SaeServiceLogUtils {
       log.appendLogLn("ID du Job : " + res.getIdTraitement());
       log.appendLogLn("Etat du Job : " + res.getEtat());
       log.appendLogLn("Fin du deblocage du job");      
+      log.appendLogNewLine();
+   }
+   
+   public static void logResultatReprise(ResultatTest resultatTest, RepriseResultat res) {
+      ResultatTestLog log = resultatTest.getLog();
+      log.appendLogLn("ID du Job : " + res.getIdTraitement());
+      log.appendLogLn("Fin de reprise du job");      
       log.appendLogNewLine();
    }
 

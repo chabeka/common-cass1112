@@ -78,7 +78,6 @@ public class TestXmlExistantService extends org.apache.axis2.client.Stub{
 
             // appelle du stub
             String res = appelleStub(sub, contenu, str);
-            System.out.println("RES : " + res);
 
             // fonction compare retourne boolean
             
@@ -89,10 +88,7 @@ public class TestXmlExistantService extends org.apache.axis2.client.Stub{
          //add map resultat
          resultat.put(reg, resStub);
          resStub = new LinkedHashMap<String, String>();
-         System.out.println("NAME " + reg);
       }
-
-      System.out.println("Service 2 OK !");
 
       return resultat;
    }

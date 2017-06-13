@@ -116,7 +116,7 @@ public class RecuperationMetadonneeTestService {
          wsListener.onSoapFault(resultatTest, fault, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
-         System.out.println(fault.getMessage());
+       
 
       } catch (RemoteException e) {
 

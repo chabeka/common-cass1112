@@ -76,7 +76,6 @@ public class StockageUnitaireTestService {
          // La valeur de retour d'une capture unitaire
          String idArchivage;
          
-         System.out.println("ModeStockage : "+formulaire.getModeStockage());
          
          // Selon le mode d'appel au stockage unitaire
          // stockageUnitaire avec UrlEcde : stockageUnitaireAvecUrlEcde       

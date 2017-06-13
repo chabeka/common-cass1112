@@ -65,7 +65,6 @@ public class TestXmlServeurService extends org.apache.axis2.client.Stub {
 
       // appelle du stub
       String res = appelleStub(sub, contenu, testXml);
-      System.out.println("RES : " + res);
 
       resStub.put(testXml, res);
 

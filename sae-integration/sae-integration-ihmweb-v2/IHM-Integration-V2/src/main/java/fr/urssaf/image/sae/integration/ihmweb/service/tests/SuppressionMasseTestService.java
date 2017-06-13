@@ -46,8 +46,8 @@ public class SuppressionMasseTestService {
    @Autowired
    private SaeServiceStubUtils saeServiceStubUtils;
 
-   private SuppressionMasseResponse appelWsOpSuppressionMasse(String urlServiceWeb,
-         ViStyle viStyle, ViFormulaire viParams,
+   private SuppressionMasseResponse appelWsOpSuppressionMasse(
+         String urlServiceWeb, ViStyle viStyle, ViFormulaire viParams,
          SuppressionMasseFormulaire formulaire, WsTestListener wsListener) {
 
       // Initialise le résultat
@@ -68,15 +68,16 @@ public class SuppressionMasseTestService {
 
       // Appel du service web et gestion de erreurs
       try {
- //        System.out.println("formulaire.getRequeteLucene() : " +formulaire.getRequeteLucene());
+         // System.out.println("formulaire.getRequeteLucene() : "
+         // +formulaire.getRequeteLucene());
          // Construction du paramètre d'entrée de l'opération
          SuppressionMasse paramsService = SaeServiceObjectFactory
                .buildSuppressionMasseRequest(formulaire.getRequeteLucene());
 
          // Appel du service web
          response = service.suppressionMasse(paramsService);
-         
-           // Appel du listener
+
+         // Appel du listener
          wsListener.onRetourWsSansErreur(resultatTest, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
@@ -85,19 +86,19 @@ public class SuppressionMasseTestService {
          log.appendLogNewLine();
          log.appendLogLn("Détails de la réponse obtenue de l'opération \"SuppressionMasse\" :");
          log.appendLogLn(response.getSuppressionMasseResponse().getUuid());
-         SaeServiceLogUtils.logResultatSuppressionMasse(log, response.getSuppressionMasseResponse());
+         SaeServiceLogUtils.logResultatSuppressionMasse(log,
+               response.getSuppressionMasseResponse());
       } catch (AxisFault fault) {
          // Appel du listener
          wsListener.onSoapFault(resultatTest, fault, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
-    } 
-         catch (RemoteException e) {
+      } catch (RemoteException e) {
          // Appel du listener
          wsListener.onRemoteException(resultatTest, e, service
                ._getServiceClient().getServiceContext()
                .getConfigurationContext(), formulaire.getParent());
-     }
+      }
 
       // Ajoute le timestamp en 1ère ligne du log
       log.insertTimestamp();
@@ -108,7 +109,8 @@ public class SuppressionMasseTestService {
    }
 
    /**
-    * Test libre de l'appel à l'opération "suppressionMasse" du service web SaeService.<br>
+    * Test libre de l'appel à l'opération "suppressionMasse" du service web
+    * SaeService.<br>
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
@@ -123,7 +125,8 @@ public class SuppressionMasseTestService {
    }
 
    /**
-    * Test libre de l'appel à l'opération "SuppressionMasse" du service web SaeService.<br>
+    * Test libre de l'appel à l'opération "SuppressionMasse" du service web
+    * SaeService.<br>
     * 
     * @param urlServiceWeb
     *           l'URL du service web SaeService
@@ -140,7 +143,8 @@ public class SuppressionMasseTestService {
       WsTestListener testLibre = new WsTestListenerImplLibre();
 
       // Appel de la méthode "générique" de test
-      appelWsOpSuppressionMasse(urlServiceWeb, ViStyle.VI_OK, viParams, formulaire,testLibre);
+      appelWsOpSuppressionMasse(urlServiceWeb, ViStyle.VI_OK, viParams,
+            formulaire, testLibre);
 
    }
 
@@ -178,54 +182,52 @@ public class SuppressionMasseTestService {
     *           à effectuer sur la suppressionMasse
     * @param viParams
     *           les paramètres du VI
-    * @return la réponse de l'opération "suppressionMasse", ou null si une exception
-    *         s'est produite
+    * @return la réponse de l'opération "suppressionMasse", ou null si une
+    *         exception s'est produite
     */
    public final SuppressionMasseResponse appelWsOpSuppressionMasseReponseCorrecteAttendue(
          String urlServiceWeb, SuppressionMasseFormulaire formulaire,
          Integer nbResultatsAttendus, ViFormulaire viParams) {
 
-
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui s'attend à recevoir une réponse
       WsTestListener testAvecReponse = new WsTestListenerImplReponseAttendue();
-      
+
       ResultatTest resultatTest = formulaire.getResultats();
       resultatTest.setStatus(TestStatusEnum.Echec);
       ResultatTestLog log = resultatTest.getLog();
-      log
-            .appendLogLn("TEST");
+      log.appendLogLn("TEST");
 
       // Appel de la méthode "générique" de test
-      SuppressionMasseResponse response = appelWsOpSuppressionMasse(urlServiceWeb,
-            ViStyle.VI_OK, viParams, formulaire, testAvecReponse);
-//
-//      // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
-//      // étapes préalables)
-//      ResultatTest resultatTest = formulaire.getResultats();
-//      if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
-//
-//         // Vérifie que l'on ait reçu une réponse
-//         if (response == null) {
-//
-//            // Echec bizarre
-//            resultatTest.setStatus(TestStatusEnum.Echec);
-//            ResultatTestLog log = resultatTest.getLog();
-//            log
-//                  .appendLogLn("On s'attendait à une réponse sans erreur du service web, hors on a obtenu une réponse null");
-//
-//         } else {
-//
-//            // Vérification de la réponse par rapport aux paramètres envoyés au
-//            // service web
-//            wsVerifieRetour(resultatTest, response, nbResultatsAttendus);
-//
-//         }
-//
-//      }
+      SuppressionMasseResponse response = appelWsOpSuppressionMasse(
+            urlServiceWeb, ViStyle.VI_OK, viParams, formulaire, testAvecReponse);
+      //
+      // // On vérifie le résultat obtenu (si le test n'a pas échoué dans les
+      // // étapes préalables)
+      // ResultatTest resultatTest = formulaire.getResultats();
+      // if (!TestStatusEnum.Echec.equals(resultatTest.getStatus())) {
+      //
+      // // Vérifie que l'on ait reçu une réponse
+      // if (response == null) {
+      //
+      // // Echec bizarre
+      // resultatTest.setStatus(TestStatusEnum.Echec);
+      // ResultatTestLog log = resultatTest.getLog();
+      // log
+      // .appendLogLn("On s'attendait à une réponse sans erreur du service web, hors on a obtenu une réponse null");
+      //
+      // } else {
+      //
+      // // Vérification de la réponse par rapport aux paramètres envoyés au
+      // // service web
+      // wsVerifieRetour(resultatTest, response, nbResultatsAttendus);
+      //
+      // }
+      //
+      // }
 
       // Renvoie la réponse du service web
-//      SuppressionMasseResponse response = new SuppressionMasseResponse();
+      // SuppressionMasseResponse response = new SuppressionMasseResponse();
       return response;
 
    }
@@ -233,173 +235,177 @@ public class SuppressionMasseTestService {
    private void wsVerifieRetour(ResultatTest resultatTest,
          SuppressionMasseResponse response, Integer nbResultatsAttendus) {
 
-//      // Initialise
-//      ResultatTestLog log = resultatTest.getLog();
-//
-//      if ((response != null) && (response.getSuppressionMasseResponse() != null)) {
-//
-//         // Récupère le retour de la suppressionMasse
-//         boolean resultatTronque = response.getSuppressionMasseResponse()
-//               .getResultatTronque();
-////         ResultatSuppressionMasseType[] resultats = null;
-//         if (response.getSuppressionMasseResponse().getResultats() != null) {
-//        
-////            resultats = response.getSuppressionMasseResponse().getResultats()
-////                  .getResultat();
-//         }
-//
-//         // Calcul le nombre de résultats
-////         int nbResultatsObtenus;
-////         if (resultats == null) {
-////            nbResultatsObtenus = 0;
-////         } else {
-////            nbResultatsObtenus = resultats.length;
-////         }
-//
-//         // Vérifie le nombre de résultats attendus, si demandé
-//         if ((nbResultatsAttendus != null)
-//               && (nbResultatsObtenus != nbResultatsAttendus.intValue())) {
-//
-//            resultatTest.setStatus(TestStatusEnum.Echec);
-//
-//            log.appendLogNewLine();
-//            log.appendLog("Erreur : on s'attendait à obtenir ");
-//            log.appendLog(Integer.toString(nbResultatsAttendus));
-//            log.appendLog(" résultat(s) de suppressionMasse, alors que l'on en a obtenu ");
-//            log.appendLog(Integer.toString(nbResultatsObtenus));
-//            log.appendLogLn(".");
-//
-//         }
-//
-//         // Vérifie le flag tronqué, si demandé
-//         if ((flagResultatsTronquesAttendu != null)
-//               && (resultatTronque != flagResultatsTronquesAttendu
-//                     .booleanValue())) {
-//
-//            resultatTest.setStatus(TestStatusEnum.Echec);
-//
-//            log.appendLogNewLine();
-//            log
-//                  .appendLog("Erreur : on s'attendait à obtenir le flag de résultat tronqué à ");
-//            log.appendLog(Boolean.toString(flagResultatsTronquesAttendu));
-//            log.appendLog(" alors qu'on a obtenu ");
-//            log.appendLog(Boolean.toString(resultatTronque));
-//            log.appendLogLn(".");
-//
-//         }
+      // // Initialise
+      // ResultatTestLog log = resultatTest.getLog();
+      //
+      // if ((response != null) && (response.getSuppressionMasseResponse() !=
+      // null)) {
+      //
+      // // Récupère le retour de la suppressionMasse
+      // boolean resultatTronque = response.getSuppressionMasseResponse()
+      // .getResultatTronque();
+      // // ResultatSuppressionMasseType[] resultats = null;
+      // if (response.getSuppressionMasseResponse().getResultats() != null) {
+      //
+      // // resultats = response.getSuppressionMasseResponse().getResultats()
+      // // .getResultat();
+      // }
+      //
+      // // Calcul le nombre de résultats
+      // // int nbResultatsObtenus;
+      // // if (resultats == null) {
+      // // nbResultatsObtenus = 0;
+      // // } else {
+      // // nbResultatsObtenus = resultats.length;
+      // // }
+      //
+      // // Vérifie le nombre de résultats attendus, si demandé
+      // if ((nbResultatsAttendus != null)
+      // && (nbResultatsObtenus != nbResultatsAttendus.intValue())) {
+      //
+      // resultatTest.setStatus(TestStatusEnum.Echec);
+      //
+      // log.appendLogNewLine();
+      // log.appendLog("Erreur : on s'attendait à obtenir ");
+      // log.appendLog(Integer.toString(nbResultatsAttendus));
+      // log.appendLog(" résultat(s) de suppressionMasse, alors que l'on en a obtenu ");
+      // log.appendLog(Integer.toString(nbResultatsObtenus));
+      // log.appendLogLn(".");
+      //
+      // }
+      //
+      // // Vérifie le flag tronqué, si demandé
+      // if ((flagResultatsTronquesAttendu != null)
+      // && (resultatTronque != flagResultatsTronquesAttendu
+      // .booleanValue())) {
+      //
+      // resultatTest.setStatus(TestStatusEnum.Echec);
+      //
+      // log.appendLogNewLine();
+      // log
+      // .appendLog("Erreur : on s'attendait à obtenir le flag de résultat tronqué à ");
+      // log.appendLog(Boolean.toString(flagResultatsTronquesAttendu));
+      // log.appendLog(" alors qu'on a obtenu ");
+      // log.appendLog(Boolean.toString(resultatTronque));
+      // log.appendLogLn(".");
+      //
+      // }
 
-         // Vérifie les métadonnées
-         // Soit :
-         // - on vérifie que l'on a obtenu, par défaut, les métadonnées dites
-         // "consultées par défaut"
-         // - ou on vérifie que l'on a obtenu les métadonnées demandées
-//         if (resultats != null) {
-//            if (CollectionUtils.isNotEmpty(codesMetaAttendues)) {
-//
-//               wsVerifieRetourMetaDemandees(resultatTest, codesMetaAttendues,
-//                     resultats);
-//
-//            } else {
-//
-//               wsVerifieRetourMetaParDefaut(resultatTest, resultats);
-//
-//            }
-//         } else 
-            
-//         if ((nbResultatsAttendus == null || nbResultatsAttendus == 0) && resultats == null) {
-//            log.appendLogLn("Aucun résultat attendu, aucun résultat retourné");
-//            resultatTest.setStatus(TestStatusEnum.Succes);
-//         }
-//
-//         
-//      }
+      // Vérifie les métadonnées
+      // Soit :
+      // - on vérifie que l'on a obtenu, par défaut, les métadonnées dites
+      // "consultées par défaut"
+      // - ou on vérifie que l'on a obtenu les métadonnées demandées
+      // if (resultats != null) {
+      // if (CollectionUtils.isNotEmpty(codesMetaAttendues)) {
+      //
+      // wsVerifieRetourMetaDemandees(resultatTest, codesMetaAttendues,
+      // resultats);
+      //
+      // } else {
+      //
+      // wsVerifieRetourMetaParDefaut(resultatTest, resultats);
+      //
+      // }
+      // } else
+
+      // if ((nbResultatsAttendus == null || nbResultatsAttendus == 0) &&
+      // resultats == null) {
+      // log.appendLogLn("Aucun résultat attendu, aucun résultat retourné");
+      // resultatTest.setStatus(TestStatusEnum.Succes);
+      // }
+      //
+      //
+      // }
 
    }
 
-//   private void wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
-//         CodeMetadonneeList codesMetaAttendues,
-//         ResultatSuppressionMasseType[] resultats) {
-//
-//      ResultatTestLog log = resultatTest.getLog();
-//
-//      // Vérifie que les codes de métadonnées demandées sont bien consultables
-//      // C'est une sorte de "sur-vérification"
-//      log.appendLogNewLine();
-//      testMetaService.areMetadonneesConsultables(codesMetaAttendues,
-//            resultatTest);
-//
-//      // Vérifie que les métadonnées obtenues sont bien celles demandées
-//
-//      // D'abord, pour les besoins du service utilisé plus tard, on construit la
-//      // liste des MetadonneeDefinition correspondant aux codes longs attendus
-//      List<MetadonneeDefinition> metadonneesDefinitions = referentielMetadonneesService
-//            .construitListeMetadonnee(codesMetaAttendues);
-//
-//      // Puis on boucle sur les résultats de la suppressionMasse, afin de contrôler
-//      // chaque résultat
-//      String messageErreur1;
-//      String messageErreur2;
-//      String messageErreurAll;
-//      for (int i = 0; i < resultats.length; i++) {
-//
-//         // 1) Vérifie que les métadonnnées retournées font bien partie de la
-//         // liste demandées
-//
-//         messageErreur1 = testMetaService
-//               .verifieMetasUniquementDansListeAutorisee(resultats[i]
-//                     .getMetadonnees(), metadonneesDefinitions);
-//
-//         // 2) Vérifie que toutes les métadonnées demandées font bien partie de
-//         // la liste
-//         // des métadonnées renvoyées
-//
-//         messageErreur2 = testMetaService.verifieMetasToutesPresentes(
-//               resultats[i].getMetadonnees(), metadonneesDefinitions);
-//
-//         // Bilan des erreurs
-//         messageErreurAll = TestUtils.concatMessagesErreurs(messageErreur1,
-//               messageErreur2);
-//         if (StringUtils.isNotBlank(messageErreurAll)) {
-//
-//            resultatTest.setStatus(TestStatusEnum.Echec);
-//
-//            log.appendLogNewLine();
-//            log.appendLogLn("Erreur sur les métadonnées du résultat #"
-//                  + (i + 1));
-//            log.appendLogLn(messageErreurAll);
-//
-//         }
-//
-//      }
-//
-//   }
-//
-//   private void wsVerifieRetourMetaParDefaut(ResultatTest resultatTest,
-//         ResultatSuppressionMasseType[] resultats) {
-//
-//      ResultatTestLog log = resultatTest.getLog();
-//
-//      String messageErreur;
-//      for (int i = 0; i < resultats.length; i++) {
-//
-//         messageErreur = testMetaService
-//               .verifieMetadonneesConsulteeParDefaut(resultats[i]
-//                     .getMetadonnees());
-//
-//         if (StringUtils.isNotBlank(messageErreur)) {
-//
-//            resultatTest.setStatus(TestStatusEnum.Echec);
-//
-//            log.appendLogNewLine();
-//            log.appendLogLn("Erreur sur les métadonnées du résultat #"
-//                  + (i + 1));
-//            log.appendLogLn(messageErreur);
-//
-//         }
-//
-//      }
-//
-//   }
+   // private void wsVerifieRetourMetaDemandees(ResultatTest resultatTest,
+   // CodeMetadonneeList codesMetaAttendues,
+   // ResultatSuppressionMasseType[] resultats) {
+   //
+   // ResultatTestLog log = resultatTest.getLog();
+   //
+   // // Vérifie que les codes de métadonnées demandées sont bien consultables
+   // // C'est une sorte de "sur-vérification"
+   // log.appendLogNewLine();
+   // testMetaService.areMetadonneesConsultables(codesMetaAttendues,
+   // resultatTest);
+   //
+   // // Vérifie que les métadonnées obtenues sont bien celles demandées
+   //
+   // // D'abord, pour les besoins du service utilisé plus tard, on construit la
+   // // liste des MetadonneeDefinition correspondant aux codes longs attendus
+   // List<MetadonneeDefinition> metadonneesDefinitions =
+   // referentielMetadonneesService
+   // .construitListeMetadonnee(codesMetaAttendues);
+   //
+   // // Puis on boucle sur les résultats de la suppressionMasse, afin de
+   // contrôler
+   // // chaque résultat
+   // String messageErreur1;
+   // String messageErreur2;
+   // String messageErreurAll;
+   // for (int i = 0; i < resultats.length; i++) {
+   //
+   // // 1) Vérifie que les métadonnnées retournées font bien partie de la
+   // // liste demandées
+   //
+   // messageErreur1 = testMetaService
+   // .verifieMetasUniquementDansListeAutorisee(resultats[i]
+   // .getMetadonnees(), metadonneesDefinitions);
+   //
+   // // 2) Vérifie que toutes les métadonnées demandées font bien partie de
+   // // la liste
+   // // des métadonnées renvoyées
+   //
+   // messageErreur2 = testMetaService.verifieMetasToutesPresentes(
+   // resultats[i].getMetadonnees(), metadonneesDefinitions);
+   //
+   // // Bilan des erreurs
+   // messageErreurAll = TestUtils.concatMessagesErreurs(messageErreur1,
+   // messageErreur2);
+   // if (StringUtils.isNotBlank(messageErreurAll)) {
+   //
+   // resultatTest.setStatus(TestStatusEnum.Echec);
+   //
+   // log.appendLogNewLine();
+   // log.appendLogLn("Erreur sur les métadonnées du résultat #"
+   // + (i + 1));
+   // log.appendLogLn(messageErreurAll);
+   //
+   // }
+   //
+   // }
+   //
+   // }
+   //
+   // private void wsVerifieRetourMetaParDefaut(ResultatTest resultatTest,
+   // ResultatSuppressionMasseType[] resultats) {
+   //
+   // ResultatTestLog log = resultatTest.getLog();
+   //
+   // String messageErreur;
+   // for (int i = 0; i < resultats.length; i++) {
+   //
+   // messageErreur = testMetaService
+   // .verifieMetadonneesConsulteeParDefaut(resultats[i]
+   // .getMetadonnees());
+   //
+   // if (StringUtils.isNotBlank(messageErreur)) {
+   //
+   // resultatTest.setStatus(TestStatusEnum.Echec);
+   //
+   // log.appendLogNewLine();
+   // log.appendLogLn("Erreur sur les métadonnées du résultat #"
+   // + (i + 1));
+   // log.appendLogLn(messageErreur);
+   //
+   // }
+   //
+   // }
+   //
+   // }
 
    /**
     * Test d'appel à l'opération "suppressionMasse" du service web SaeService.<br>
@@ -430,10 +436,10 @@ public class SuppressionMasseTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpSuppressionMasse(urlServiceWeb, viStyle, null, formulaire, listener);
+      appelWsOpSuppressionMasse(urlServiceWeb, viStyle, null, formulaire,
+            listener);
    }
-   
-   
+
    /**
     * Test d'appel à l'opération "suppressionMasse" du service web SaeService.<br>
     * <br>
@@ -446,7 +452,7 @@ public class SuppressionMasseTestService {
     * @param viStyle
     *           le type de VI à générer
     * @param viParams
-    *             Formulaire contenant les parametres du VI
+    *           Formulaire contenant les parametres du VI
     * @param idSoapFaultAttendu
     *           l'identifiant de la SoapFault attendu dans le référentiel des
     *           SoapFault
@@ -455,8 +461,9 @@ public class SuppressionMasseTestService {
     *           attendue
     */
    public final void appelWsOpSuppressionMasseSoapFault(String urlServiceWeb,
-         SuppressionMasseFormulaire formulaire, ViStyle viStyle, ViFormulaire viParams,
-         String idSoapFaultAttendu, final Object[] argsMsgSoapFault) {
+         SuppressionMasseFormulaire formulaire, ViStyle viStyle,
+         ViFormulaire viParams, String idSoapFaultAttendu,
+         final Object[] argsMsgSoapFault) {
 
       // Création de l'objet qui implémente l'interface WsTestListener
       // et qui s'attend à recevoir une certaine SoapFault
@@ -465,7 +472,8 @@ public class SuppressionMasseTestService {
             argsMsgSoapFault);
 
       // Appel de la méthode "générique" de test
-      appelWsOpSuppressionMasse(urlServiceWeb, viStyle, viParams, formulaire, listener);
+      appelWsOpSuppressionMasse(urlServiceWeb, viStyle, viParams, formulaire,
+            listener);
 
    }
 
@@ -482,49 +490,49 @@ public class SuppressionMasseTestService {
     * @param valeursAttendues
     *           la liste des métadonnées attendues (codes + valeurs)
     */
-//   public final void verifieResultatSuppressionMasse(
-//         ResultatSuppressionMasseType resultatSuppressionMasse,
-//         String numeroResultatSuppressionMasse, ResultatTest resultatTest,
-//         MetadonneeValeurList valeursAttendues) {
-//
-//      StringBuffer sbErreurs = new StringBuffer();
-//
-//      MetadonneeValeurList metadonnees = SaeServiceObjectExtractor
-//            .extraitMetadonnees(resultatSuppressionMasse);
-//
-//      for (MetadonneeValeur valeurAttendue : valeursAttendues) {
-//         verifiePresenceEtValeur(resultatTest, metadonnees,
-//               numeroResultatSuppressionMasse, sbErreurs, valeurAttendue.getCode(),
-//               valeurAttendue.getValeur());
-//      }
-//
-//      if (sbErreurs.length() > 0) {
-//         resultatTest.setStatus(TestStatusEnum.Echec);
-//         resultatTest.getLog().appendLogLn(sbErreurs.toString());
-//      }
-//
-//   }
-//
-//   private void verifiePresenceEtValeur(ResultatTest resultatTest,
-//         MetadonneeValeurList metadonnees, String numeroResultatSuppressionMasse,
-//         StringBuffer sbErreurs, String code, String valeurAttendue) {
-//
-//      String messageErreur = testMetaService.verifiePresenceEtValeur(
-//            resultatTest, metadonnees, code, valeurAttendue);
-//
-//      if (StringUtils.isNotBlank(messageErreur)) {
-//
-//         if (sbErreurs.length() == 0) {
-//            sbErreurs.append("Erreur sur le résultat #");
-//            sbErreurs.append(numeroResultatSuppressionMasse);
-//            sbErreurs.append("\r\n");
-//         }
-//
-//         sbErreurs.append(messageErreur);
-//         sbErreurs.append("\r\n");
-//
-//      }
-//
-//   }
+   // public final void verifieResultatSuppressionMasse(
+   // ResultatSuppressionMasseType resultatSuppressionMasse,
+   // String numeroResultatSuppressionMasse, ResultatTest resultatTest,
+   // MetadonneeValeurList valeursAttendues) {
+   //
+   // StringBuffer sbErreurs = new StringBuffer();
+   //
+   // MetadonneeValeurList metadonnees = SaeServiceObjectExtractor
+   // .extraitMetadonnees(resultatSuppressionMasse);
+   //
+   // for (MetadonneeValeur valeurAttendue : valeursAttendues) {
+   // verifiePresenceEtValeur(resultatTest, metadonnees,
+   // numeroResultatSuppressionMasse, sbErreurs, valeurAttendue.getCode(),
+   // valeurAttendue.getValeur());
+   // }
+   //
+   // if (sbErreurs.length() > 0) {
+   // resultatTest.setStatus(TestStatusEnum.Echec);
+   // resultatTest.getLog().appendLogLn(sbErreurs.toString());
+   // }
+   //
+   // }
+   //
+   // private void verifiePresenceEtValeur(ResultatTest resultatTest,
+   // MetadonneeValeurList metadonnees, String numeroResultatSuppressionMasse,
+   // StringBuffer sbErreurs, String code, String valeurAttendue) {
+   //
+   // String messageErreur = testMetaService.verifiePresenceEtValeur(
+   // resultatTest, metadonnees, code, valeurAttendue);
+   //
+   // if (StringUtils.isNotBlank(messageErreur)) {
+   //
+   // if (sbErreurs.length() == 0) {
+   // sbErreurs.append("Erreur sur le résultat #");
+   // sbErreurs.append(numeroResultatSuppressionMasse);
+   // sbErreurs.append("\r\n");
+   // }
+   //
+   // sbErreurs.append(messageErreur);
+   // sbErreurs.append("\r\n");
+   //
+   // }
+   //
+   // }
 
 }

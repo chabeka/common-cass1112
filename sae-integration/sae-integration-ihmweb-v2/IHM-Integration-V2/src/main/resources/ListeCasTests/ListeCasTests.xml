@@ -510,4 +510,23 @@
       </CasTests>
    </Categorie>
 
+<!-- ======================================================== -->
+   <!-- Deblocage de Job -->
+   <!-- ======================================================== -->
+   <Categorie>
+      <Nom>Reprise d'un Job</Nom>
+      <Id>3900</Id>
+      <CasTests>
+         <CasTest>
+            <id>3900</id>
+            <code>Test Libre</code>
+            <description>
+                  Test libre de reprise d'un job
+               </description>
+            <implemente>true</implemente>
+            <luceneExemple>Denomination:"Test 3900-Reprise d'un Job-Test-Libre"</luceneExemple>
+         </CasTest>
+      </CasTests>
+   </Categorie>
+
 </Tests>
