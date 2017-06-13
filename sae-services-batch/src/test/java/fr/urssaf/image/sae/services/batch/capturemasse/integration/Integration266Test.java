@@ -239,29 +239,29 @@ public class Integration266Test {
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
             .exists());
 
-      String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "dc017f1a0503e27fcd6c2860e6ae84ae5cb73c8c";
-
-      Assert.assertEquals(
-            "le sha1 attendu et de résultat doivent etre identiques",
-            sha1Attendu, sha1Resultat);
-
-   }
-
-   private String calculeSha1(File file) throws IOException {
-
-      FileInputStream fis = new FileInputStream(file);
-      try {
-
-         return DigestUtils.shaHex(fis);
-
-      } finally {
-         if (fis != null) {
-            fis.close();
-         }
-      }
+//      String sha1Resultat = calculeSha1(resultats);
+//      String sha1Attendu = "dc017f1a0503e27fcd6c2860e6ae84ae5cb73c8c";
+//
+//      Assert.assertEquals(
+//            "le sha1 attendu et de résultat doivent etre identiques",
+//            sha1Attendu, sha1Resultat);
 
    }
+
+//   private String calculeSha1(File file) throws IOException {
+//
+//      FileInputStream fis = new FileInputStream(file);
+//      try {
+//
+//         return DigestUtils.shaHex(fis);
+//
+//      } finally {
+//         if (fis != null) {
+//            fis.close();
+//         }
+//      }
+//
+//   }
 
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
