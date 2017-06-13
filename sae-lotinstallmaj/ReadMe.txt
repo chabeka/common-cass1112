@@ -1,4 +1,4 @@
-﻿﻿﻿// ----------------------------------------------------------------------------
+﻿﻿﻿﻿// ----------------------------------------------------------------------------
 // UTILISATION DE sae-lotinstallmaj DANS L'INSTALLATION DES LOTS SAE
 // ----------------------------------------------------------------------------
 
@@ -455,6 +455,7 @@ Met la base Cassandra du SAE en version 26 :
 
 - Ajout de l'action unitaire transfert_masse.
 - Ajout de l'action unitaire modification_masse.
+- Ajout de l'action unitaire deblocage.
 - Ajout de l'événement WS_MODIFICATION_MASSE|KO
 - Ajout de l'événement MODIFICATION_MASSE|KO
 - Ajout de l'événement WS_TRANSFERT_MASSE|KO

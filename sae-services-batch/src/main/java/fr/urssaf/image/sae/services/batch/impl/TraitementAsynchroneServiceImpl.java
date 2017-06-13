@@ -182,6 +182,14 @@ public class TraitementAsynchroneServiceImpl implements
             exitTraitement = transfertMasse.execute(job);
          } else if (job.getType().equals(TYPES_JOB.reprise_masse.name())) {
             exitTraitement = lancerReprise(job);
+         } else {
+            LOG.warn(
+                  "Impossible d'executer le traitement ID={0}, de type {1}.",
+                  job.getIdJob(), job.getType());
+            exitTraitement.setSucces(false);
+            String mssg = "Impossible d'executer le type de traitement "
+                  + job.getType();
+            exitTraitement.setExitMessage(mssg);
          }
       } catch (Exception e) {
          LOG.warn("Erreur grave lors de l'exécution  du traitement.", e);

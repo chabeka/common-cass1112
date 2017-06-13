@@ -27,6 +27,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,8 @@ public class ResultatFileSuccessSupportImpl implements
       ResultatFileSuccessSupport {
 
    private static final String ERREUR_VALEUR_VIDE = "Valeur vide non autorisée dans la valeur de la balise";
+
+   private static final String VALEUR_VIDE = "Valeur vide dans la balise valeur ";
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ResultatFileSuccessSupportImpl.class);
@@ -169,6 +172,10 @@ public class ResultatFileSuccessSupportImpl implements
             String name;
             // On parcourt le fichier sommaire.xml et pour chaque document on
             // récupère l'uuid associé dans la liste des documents intégrés
+            // (Cette liste est triée par index et comme seul le mode "Tout ou
+            // rien" est pris en charge actuellement, elle correspond bien à
+            // l'ordre des documents du sommaire)
+
             int index = -1;
             IntegratedDocumentType integratedDocumentType = null;
             FichierType objetNumerique = null;
@@ -232,10 +239,11 @@ public class ResultatFileSuccessSupportImpl implements
                      reader.peek();
                      final XMLEvent xmlEventTmp = reader.peek();
                      if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
+                        LOGGER.info(VALEUR_VIDE);
+                        metadonnee.setValeur(StringUtils.EMPTY);
+                     } else {
+                        metadonnee.setValeur(xmlEventTmp.asCharacters().getData());  
                      }
-                     metadonnee.setValeur(xmlEventTmp.asCharacters().getData());
                      metadonnees.getMetadonnee().add(metadonnee);
                   } else if (NUM_PAGE_DEBUT.equals(name)) {
                      reader.peek();

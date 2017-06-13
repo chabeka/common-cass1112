@@ -20,6 +20,22 @@ public class TraitementMasseIntegratedDocument implements Serializable {
    private static final long serialVersionUID = 1433593441518063701L;
 
    /**
+    * Identifiant d'archivage d'un document dans DFCE
+    */
+   private UUID identifiant;
+
+   /**
+    * Chemin du fichier du document dans le répertoire ECDE
+    */
+   private File documentFile;
+   
+   /**
+    * Index du document traité
+    */
+   private int index;
+   
+   
+   /**
     * Constructor.
     */
    public TraitementMasseIntegratedDocument() {
@@ -41,21 +57,6 @@ public class TraitementMasseIntegratedDocument implements Serializable {
       this.documentFile = documentFile;
       this.index = index;
    }
-
-   /**
-    * Identifiant d'archivage d'un document dans DFCE
-    */
-   private UUID identifiant;
-
-   /**
-    * Chemin du fichier du document dans le répertoire ECDE
-    */
-   private File documentFile;
-   
-   /**
-    * Index du document traité
-    */
-   private int index;
    
    /**
     * @return the identifiant Identifiant d'archivage d'un document dans DFCE

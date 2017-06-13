@@ -147,7 +147,7 @@ public final class TraceAssertUtils {
             urlSommaire.toString());
       verifieInfo(trace.getInfos(), "jobParams.hash", null);
       verifieInfo(trace.getInfos(), "jobParams.typeHash", null);
-      verifieInfo(trace.getInfos(), "batchStatus", "COMPLETED");
+      verifieInfo(trace.getInfos(), "batchStatus", "FAILED");
       verifieInfo(trace.getInfos(), "saeServeurHostname", HostnameUtil
             .getHostname());
       verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());

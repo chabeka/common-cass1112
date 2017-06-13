@@ -3,11 +3,16 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.listener;
 
+import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.AfterStep;
+import org.springframework.batch.item.ExecutionContext;
+
+import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**
  * Classe mère des listeners réalisant un log des erreurs rencontrées pendant le
@@ -23,8 +28,10 @@ public abstract class AbstractAfterStepLogListener {
     *           le stepExecution
     * @return le status de sortie
     */
+   @SuppressWarnings("unchecked")
    @AfterStep
    public final ExitStatus afterStep(StepExecution stepExecution) {
+      ExitStatus status = stepExecution.getExitStatus();
 
       if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
 
@@ -33,7 +40,19 @@ public abstract class AbstractAfterStepLogListener {
          }
       }
 
-      return stepExecution.getExitStatus();
+      ExecutionContext jobExecution = stepExecution.getJobExecution()
+            .getExecutionContext();
+
+      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
+            .get(Constantes.DOC_EXCEPTION);
+
+      if (CollectionUtils.isEmpty(exceptions)) {
+         status = ExitStatus.COMPLETED;
+      } else {
+         status = ExitStatus.FAILED;
+      }
+
+      return status;
 
    }
 
