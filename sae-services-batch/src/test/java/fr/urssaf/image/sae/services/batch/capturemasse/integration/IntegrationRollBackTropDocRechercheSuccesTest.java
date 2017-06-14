@@ -316,7 +316,7 @@ public class IntegrationRollBackTropDocRechercheSuccesTest {
 
       }
 
-      Assert.assertTrue("le message d'erreur doit être trouvé", erreurFound);
+
 
    }
 
