@@ -116,7 +116,9 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       try {
          this.getStorageServiceProvider().openConnexion();
 
-         List<StorageMetadata> listeStorageMetaDocument = this.controlerMetaDocumentModifie(idArchive, metadonnees, trcPrefix);
+         List<StorageMetadata> listeStorageMetaDocument = this
+               .controlerMetaDocumentModifie(idArchive, metadonnees, trcPrefix,
+                     "modification");
          
          StorageDocument document = this.separationMetaDocumentModifie(idArchive, listeStorageMetaDocument, metadonnees, trcPrefix);  
          
@@ -248,7 +250,9 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     */
    @Override
    public List<StorageMetadata> controlerMetaDocumentModifie(UUID idArchive,
-         List<UntypedMetadata> metadonnees, String trcPrefix) throws ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx {
+         List<UntypedMetadata> metadonnees, String trcPrefix,
+         String actionUnitaire) throws ArchiveInexistanteEx,
+         ModificationException, DuplicatedMetadataEx {
       List<StorageMetadata> listeStorageMeta;
       
       try {
@@ -269,7 +273,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          LOG.debug("{} - Récupération des droits", trcPrefix);
          AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                .getContext().getAuthentication();
-         List<SaePrmd> saePrmds = token.getSaeDroits().get("modification");
+         List<SaePrmd> saePrmds = token.getSaeDroits().get(actionUnitaire);
          LOG.debug("{} - Vérification des droits", trcPrefix);
          boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 

@@ -171,7 +171,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          LOG.debug("{} - Récupération des droits", "transfertDoc");
          AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                .getContext().getAuthentication();
-         List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
+         List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert_masse");
          LOG.debug("{} - Vérification des droits", "transfertDoc");
          boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 

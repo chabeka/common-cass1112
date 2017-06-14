@@ -17,7 +17,6 @@ import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireDocumentNotFoundException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
-import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.ModificationMasseControleSupport;
 import fr.urssaf.image.sae.services.batch.modification.support.controle.model.ModificationMasseControlResult;
 import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
@@ -41,7 +40,6 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
-import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
@@ -82,7 +80,7 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
 
          List<StorageMetadata> storageMetadatasList = modificationService
                .controlerMetaDocumentModifie(document.getUuid(),
-                     document.getUMetadatas(), trcPrefix);
+                     document.getUMetadatas(), trcPrefix, "modification_masse");
 
          if (storageMetadatasList != null && !storageMetadatasList.isEmpty()) {
             result = new ModificationMasseControlResult();
