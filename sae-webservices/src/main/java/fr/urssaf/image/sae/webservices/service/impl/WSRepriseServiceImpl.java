@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
-import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
 import fr.urssaf.image.sae.webservices.impl.factory.ObjectStorageResponseFactory;
 import fr.urssaf.image.sae.webservices.service.WSRepriseService;
@@ -106,7 +105,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             LOG.warn(
                   "{} - échec de reprise du job {} - ce job ne peut pas être repris à cause de son état",
                   new Object[] { prefixeTrc, uuid });
-            throw new DeblocageAxisFault("RepriseAxisFault",
+            throw new RepriseAxisFault("RepriseAxisFault",
                   "Erreur de reprise: le job ne peut pas être repris à cause de son état");
          }
       } catch (JobInexistantException e) {
