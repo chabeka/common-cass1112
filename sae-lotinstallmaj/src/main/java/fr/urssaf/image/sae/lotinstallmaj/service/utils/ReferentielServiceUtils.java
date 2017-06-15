@@ -1311,14 +1311,14 @@ public class ReferentielServiceUtils {
 
       List<String> allInfos = Arrays.asList("all_infos");
 
-      // WS_MODIFICATION_MASSE|KO
+      // WS_REPRISE_MASSE|KO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("WS_REPRISE_MASSE|KO");
       CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
             StringSerializer.get(), ListSerializer.get(), updater);
       cfTmpl.update(updater);
 
-      // MODIFICATION_MASSE|KO
+      // REPRISE_MASSE|KO
       // dans le registre de surveillance technique avec all_infos
       updater = cfTmpl.createUpdater("REPRISE_MASSE|KO");
       CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
