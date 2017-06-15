@@ -264,6 +264,15 @@ public class SAEControlesModificationServiceImpl implements
                   .loadMessage("modification.metadonnees.non.modifiable",
                         listeCodeLong));
          }
+         
+         errors = metadataCS.checkDuplicateMetadata(metadatas);
+         if (CollectionUtils.isNotEmpty(errors)) {
+            listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+            LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+                  "capture.metadonnees.doublon", listeCodeLong));
+            throw new DuplicatedMetadataEx(ResourceMessagesUtils.loadMessage(
+                  "capture.metadonnees.doublon", listeCodeLong));
+         }
       } catch (MappingFromReferentialException exception) {
          throw new ModificationRuntimeException(exception);
 
