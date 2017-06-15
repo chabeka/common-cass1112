@@ -313,6 +313,16 @@ public final class Constantes {
    public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
    
    /**
+    * Traçabilité : le code de l'événement pour l'échec d'une reprise de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_REPRISE = "REPRISE_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la reprise de masse
+    */
+   public static final String CONTEXTE_REPRISE_MASSE = "repriseMasse";
+   
+   /**
     * Liste des indexs des documents déjà traités
     */
    public static final String INDEX_DOCUMENT_DONE = "INDEX_DOCUMENT_DONE";

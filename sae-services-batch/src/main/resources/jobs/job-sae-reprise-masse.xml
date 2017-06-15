@@ -5,6 +5,9 @@
 		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd">
 
    <job id="reprise_masse">
+      <listeners>
+         <listener ref="repriseMasseJobListener" />
+      </listeners>
       <decision id="repriseMasseDecision" decider="repriseMasseDecider">
          <next on="REPRISE_MODIFICATION" to="repriseModificationMasse" />
          <next on="REPRISE_CAPTURE" to="repriseCaptureMasse" />
