@@ -1209,7 +1209,7 @@ public final class SaeServiceLogUtils {
    
    public static void logAppelReprise(ResultatTestLog log,
          RepriseFormulaire formulaire) {
-      log.appendLogLn("Appel de l'opération Deblocage");
+      log.appendLogLn("Appel de l'opération Reprise");
             
    }
    
