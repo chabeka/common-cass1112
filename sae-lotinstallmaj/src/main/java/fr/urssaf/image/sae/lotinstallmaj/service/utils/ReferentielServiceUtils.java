@@ -1298,4 +1298,33 @@ public class ReferentielServiceUtils {
       LOG.info("Colonne ajoutée pour le format {}", identifiant);
    }
 
+   /**
+    * Référentiel des événements en V13 Ajout des évenements : <li>
+    * WS_REPRISE_MASSE|KO</li> <li>REPRISE_MASSE|KO</li>
+    */
+   public static void addReferentielEvenementV13(Keyspace keyspace) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // WS_MODIFICATION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_REPRISE_MASSE|KO");
+      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
+            StringSerializer.get(), ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // MODIFICATION_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("REPRISE_MASSE|KO");
+      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
+            StringSerializer.get(), ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+
 }

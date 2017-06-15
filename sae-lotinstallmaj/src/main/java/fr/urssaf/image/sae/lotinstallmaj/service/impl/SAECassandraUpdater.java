@@ -1063,7 +1063,7 @@ public class SAECassandraUpdater {
       donnees.modifyReferentielFormatCrtl1();
 
 
-      // On positionne la version à 24
+      // On positionne la version à 25
       saeDao.setDatabaseVersion(VERSION_25);
    }
 
@@ -1085,10 +1085,10 @@ public class SAECassandraUpdater {
       // Ajout droits unitaires nouveaux traitements de masse.
       donnees.addActionUnitaireTraitementMasse2();
 
-      // Ajout des évenements WS_MODIFICATION_MASSE|MODIFICATION_MASSE
+      // Ajout des évenements
       donnees.addReferentielEvenementV12();
 
-      // On positionne la version à 24
+      // On positionne la version à 26
       saeDao.setDatabaseVersion(VERSION_26);
    }
 
@@ -1113,10 +1113,13 @@ public class SAECassandraUpdater {
       // Ajout droit unitaire reprise des traitements de masse.
       donnees.addActionUnitaireRepriseMasse();
 
+      // Ajout des évenements
+      donnees.addReferentielEvenementV13();
+
       // Modification du format png
       donnees.addReferentielFormatV7();
 
-      // On positionne la version à 24
+      // On positionne la version à 27
       saeDao.setDatabaseVersion(VERSION_27);
    }
 

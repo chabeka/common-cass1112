@@ -591,5 +591,14 @@ public class InsertionDonnees {
    public void addReferentielFormatV7() {
       ReferentielServiceUtils.addReferentielFormatV7(keyspace);
    }
+   
+   /**
+    * Référentiel des événements en V13 Ajout des évenements : <li>
+    * WS_REPRISE_MASSE|KO</li> <li>REPRISE_MASSE|KO</li>
+    */
+   public void addReferentielEvenementV13() {
+      LOG.info("Mise à jour du référentiel des événements");
+      ReferentielServiceUtils.addReferentielEvenementV13(keyspace);
+   }
 
 }
