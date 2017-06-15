@@ -204,6 +204,89 @@ public class SAEControlesModificationServiceImpl implements
       LOG.debug("{} - fin", trcPrefix);
    }
 
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws MetadataValueNotInDictionaryEx
+    */
+   @Override
+   public final void checkSaeMetadataForTransfertMasse(List<UntypedMetadata> metadatas)
+         throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, ReferentialRndException,
+         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
+         MetadataValueNotInDictionaryEx {
+      String trcPrefix = "checkSaeMetadataForUpdate";
+      LOG.debug("{} - début", trcPrefix);
+
+      String listeCodeLong = null;
+
+      LOG.debug("{} - vérification de l'existence des métadonnées", trcPrefix);
+      List<MetadataError> errors = metadataCS
+            .checkExistingMetadataList(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.inconnu", listeCodeLong));
+         throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
+               "capture.metadonnees.inconnu", listeCodeLong));
+      }
+
+      checkModifiables(metadatas);
+
+      try {
+
+         LOG.debug("{} - vérification des types et formats des métadonnées",
+               trcPrefix);
+         errors = metadataCS.checkMetadataListValueTypeAndFormatForTransfertMasse(metadatas);
+         if (CollectionUtils.isNotEmpty(errors)) {
+            listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+            LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+                  "capture.metadonnees.format.type.non.valide", listeCodeLong));
+            throw new InvalidValueTypeAndFormatMetadataEx(ResourceMessagesUtils
+                  .loadMessage("capture.metadonnees.format.type.non.valide",
+                        listeCodeLong));
+         }
+
+         LOG
+               .debug(
+                     "{} - vérification de la possibilité d'archiver les métadonnées",
+                     trcPrefix);
+         List<SAEMetadata> saeMetadatas = mappingService
+               .untypedMetadatasToSaeMetadatas(metadatas);
+         errors = metadataCS.checkArchivableMetadataList(saeMetadatas);
+
+         if (CollectionUtils.isNotEmpty(errors)) {
+            listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+            LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+                  "modification.metadonnees.non.modifiable", listeCodeLong));
+            throw new NotModifiableMetadataEx(ResourceMessagesUtils
+                  .loadMessage("modification.metadonnees.non.modifiable",
+                        listeCodeLong));
+         }
+      } catch (MappingFromReferentialException exception) {
+         throw new ModificationRuntimeException(exception);
+
+      } catch (InvalidSAETypeException exception) {
+         throw new InvalidValueTypeAndFormatMetadataEx(exception.getMessage(),
+               exception);
+      }
+
+      LOG.debug(
+            "{} - vérification des valeurs des métadonnées avec dictionnaire",
+            trcPrefix);
+      errors = metadataCS.checkMetadataListValueFromDictionary(metadatas);
+      if (CollectionUtils.isNotEmpty(errors)) {
+         listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+         LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+               "metadata.not.in.dictionary", listeCodeLong));
+         throw new MetadataValueNotInDictionaryEx(ResourceMessagesUtils
+               .loadMessage("metadata.not.in.dictionary", listeCodeLong));
+      }
+
+      LOG.debug("{} - fin", trcPrefix);
+   }
+   
    private void checkModifiables(List<UntypedMetadata> metadatas)
          throws NotModifiableMetadataEx {
       String trcPrefix = "checkModifiables";

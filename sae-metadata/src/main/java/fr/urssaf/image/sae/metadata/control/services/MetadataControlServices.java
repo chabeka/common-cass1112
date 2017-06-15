@@ -51,6 +51,7 @@ public interface MetadataControlServices {
     */
    List<MetadataError> checkMetadataValueTypeAndFormat(
          final UntypedDocument untypedDoc);
+   
 
    /**
     * Contrôle que la liste des métadonnées fournit contient toutes les
@@ -198,6 +199,17 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataListValueTypeAndFormat(
+         final List<UntypedMetadata> metadatas);
+   
+   /**
+    * Contrôle le type, le format, la taille max de la valeur de chaque
+    * métadonnées spécifique pour le transfert de masse.
+    * 
+    * @param metadatas
+    *           : la liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkMetadataListValueTypeAndFormatForTransfertMasse(
          final List<UntypedMetadata> metadatas);
 
    /**

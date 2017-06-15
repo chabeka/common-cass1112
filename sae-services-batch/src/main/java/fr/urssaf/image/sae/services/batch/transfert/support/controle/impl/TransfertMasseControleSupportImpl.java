@@ -207,7 +207,7 @@ public class TransfertMasseControleSupportImpl implements
       List<StorageMetadata> storageMetas = new ArrayList<StorageMetadata>();
       if (!CollectionUtils.isEmpty(item.getUMetadatas())) {
 
-         controleModification.checkSaeMetadataForUpdate(item.getUMetadatas());
+         controleModification.checkSaeMetadataForTransfertMasse(item.getUMetadatas());
 
          try {
             List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
