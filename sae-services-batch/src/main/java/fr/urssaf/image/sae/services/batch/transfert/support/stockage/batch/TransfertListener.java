@@ -15,18 +15,17 @@ import org.springframework.batch.core.annotation.BeforeChunk;
 import org.springframework.batch.core.annotation.BeforeProcess;
 import org.springframework.batch.core.annotation.OnProcessError;
 import org.springframework.batch.core.annotation.OnReadError;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
-
-import org.springframework.batch.item.ExecutionContext;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 
 /**
  * Classe d'écoute du transfert de masse
@@ -48,7 +47,7 @@ public class TransfertListener extends AbstractListener {
     * classe d'execution des threads
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private TransfertPoolThreadExecutor executor;
 
    /**
     * Action exécutée avant chaque process
@@ -236,7 +235,7 @@ public class TransfertListener extends AbstractListener {
          String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-         codes.add(Constantes.ERR_BUL005);
+         codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
          exceptions.add(new Exception(messageError));
 

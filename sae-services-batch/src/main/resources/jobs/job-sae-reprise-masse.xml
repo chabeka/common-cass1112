@@ -10,7 +10,7 @@
       </listeners>
       <decision id="repriseMasseDecision" decider="repriseMasseDecider">
          <next on="REPRISE_MODIFICATION" to="repriseModificationMasse" />
-         <next on="REPRISE_CAPTURE" to="repriseCaptureMasse" />
+         <next on="REPRISE_CAPTURE" to="repriseCaptureMasseInitialisation" />
          <next on="REPRISE_TRANSFERT" to="repriseTransfertMasse" />
       </decision>
       <step id="repriseModificationMasse">
@@ -21,6 +21,25 @@
       </step>
       <step id="repriseTransfertMasse">
          <job ref="transfert_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor"/>
+      </step>
+
+      <step id="repriseCaptureMasseInitialisation">
+         <tasklet ref="repriseCaptureMasseInitTasklet">
+            <listeners>
+               <listener ref="repriseCaptureMasseInitListener" />
+            </listeners>
+         </tasklet>
+         <next on="*" to="repriseCaptureMasse" />
+         <next on="FAILED" to="finErreur" />
+      </step>
+      
+      <step id="finErreur">
+         <tasklet ref="resultatsFileRepriseFailureErrorTasklet">
+            <listeners>
+               <listener ref="resultatsFileFailureErrorListener" />
+            </listeners>
+         </tasklet>
+         <fail on="*" exit-code="EARLY TERMINATION"/>
       </step>
    </job>
 

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.AbstractPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatFileSuccessTransfertSupport;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 
 @Component
 public class ResultatsFileSuccessTransfertTasklet extends AbstractResultatsFileSuccessTransfertTasklet implements Tasklet{
@@ -25,7 +25,7 @@ public class ResultatsFileSuccessTransfertTasklet extends AbstractResultatsFileS
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private TransfertPoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}

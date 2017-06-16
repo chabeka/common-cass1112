@@ -198,12 +198,12 @@ public class VerificationSupportImpl implements VerificationSupport {
             LOGGER.error(messException + Constantes.ERR_BUL003);
          } else if (TYPES_JOB.modification_masse.equals(typeJob)) {
             messageErreur = LIBELLE_BUL004;
-            codeErreur = Constantes.ERR_BUL004;
-            LOGGER.error(messException + Constantes.ERR_BUL004);
+            codeErreur = Constantes.ERR_MO_BUL001;
+            LOGGER.error(messException + Constantes.ERR_MO_BUL001);
          } else if (TYPES_JOB.transfert_masse.equals(typeJob)) {
             messageErreur = LIBELLE_BUL005;
-            codeErreur = Constantes.ERR_BUL005;
-            LOGGER.error(messException + Constantes.ERR_BUL005);
+            codeErreur = Constantes.ERR_TR_BUL001;
+            LOGGER.error(messException + Constantes.ERR_TR_BUL001);
          }
 
       } else {

@@ -1,9 +1,8 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
+package fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -20,6 +19,9 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exceptio
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.AbstractPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionPoolConfiguration;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
@@ -27,24 +29,21 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  */
 @Component
-public class InsertionCapturePoolThreadExecutor
+public class ModificationPoolThreadExecutor
       extends
       AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
       implements Serializable, DisposableBean {
 
-   // FIXME - Trouver une solution plus propre afin de ne pas partager les
-   // ressources
-
    private static final long serialVersionUID = 1L;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(InsertionCapturePoolThreadExecutor.class);
+         .getLogger(ModificationPoolThreadExecutor.class);
 
    private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
 
    private InsertionMasseRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "InsertionCapturePoolThreadExecutor()";
+   private static final String PREFIX_TRACE = "InsertionPoolModificationThreadExecutor()";
 
    /**
     * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
@@ -78,15 +77,15 @@ public class InsertionCapturePoolThreadExecutor
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
    @Autowired
-   public InsertionCapturePoolThreadExecutor(
-         InsertionPoolConfiguration poolConfiguration,
+   public ModificationPoolThreadExecutor(
+         ModificationPoolConfiguration poolConfiguration,
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {
 
       super(poolConfiguration, support, config);
 
       LOGGER.debug(
-            "{} - Taille du pool de threads pour l'insertion en masse dans DFCE: {}",
+            "{} - Taille du pool de threads pour la modification en masse dans DFCE: {}",
             new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.integDocs = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
@@ -162,14 +161,29 @@ public class InsertionCapturePoolThreadExecutor
    @Override
    protected final void addDocumentToIntegratedList(
          StorageDocument storageDocument, int indexDocument) {
-
       TraitementMasseIntegratedDocument document = new TraitementMasseIntegratedDocument();
-      File file = new File(storageDocument.getFilePath());
-      document.setDocumentFile(file);
       document.setIdentifiant(storageDocument.getUuid());
       document.setIndex(indexDocument);
       integDocs.add(document);
+   }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   protected void traitementAfterExecute(String trcPrefix,
+         StorageDocument document, int indexDocument) {
+      // On test si le document a été modifié ou non (en mode PARTIEL, si erreur
+      // lors de la modification, l'exception est catchée et on renvoie un UUID
+      // null)
+      if (document.getUuid() != null) {
+         addDocumentToIntegratedList(document, indexDocument);
+         getLogger()
+               .debug(
+                     "{} - Modification du document #{} uuid:{}",
+                     new Object[] { trcPrefix, (indexDocument + 1),
+                           getUuid(document) });
+      }
    }
 
    /**
@@ -185,7 +199,7 @@ public class InsertionCapturePoolThreadExecutor
     */
    @Override
    protected final String getPathName(StorageDocument document) {
-      return document.getFilePath();
+      return null;
    }
 
    /**

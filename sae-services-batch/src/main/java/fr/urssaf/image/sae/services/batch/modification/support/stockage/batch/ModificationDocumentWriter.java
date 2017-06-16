@@ -18,7 +18,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseInte
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -42,7 +42,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
     * Pool executor
     */
    @Autowired
-   private InsertionPoolThreadExecutor poolExecutor;
+   private ModificationPoolThreadExecutor poolExecutor;
 
    /**
     * Provider pour la modification.

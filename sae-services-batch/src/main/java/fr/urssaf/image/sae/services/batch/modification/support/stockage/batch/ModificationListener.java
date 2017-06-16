@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseInte
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.AbstractInsertionMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
 
 /**
  * Ecouteur pour la partie persistance des documents du fichier sommaire.xml
@@ -43,7 +43,7 @@ public class ModificationListener extends AbstractListener {
    private static final int THREAD_SLEEP = 30000;
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private ModificationPoolThreadExecutor executor;
 
    /**
     * Action exécutée avant chaque process
@@ -242,7 +242,7 @@ public class ModificationListener extends AbstractListener {
          String messageError = "La modification de masse en mode 'Partiel' a été interrompue. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
-         codes.add(Constantes.ERR_BUL004);
+         codes.add(Constantes.ERR_MO_BUL001);
          index.add(exception.getIndex());
          exceptions.add(new Exception(messageError));
 

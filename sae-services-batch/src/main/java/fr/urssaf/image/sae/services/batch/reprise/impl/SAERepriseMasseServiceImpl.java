@@ -28,13 +28,16 @@ import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
+import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.reprise.SAERepriseMasseService;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 
 /**
  * Implémentation du service {@link SAERepriseMasseService}
@@ -42,6 +45,9 @@ import fr.urssaf.image.sae.services.batch.reprise.SAERepriseMasseService;
 @Service
 public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
+   /**
+    * Logger
+    */
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAERepriseMasseServiceImpl.class);
 
@@ -75,10 +81,29 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private InsertionCapturePoolThreadExecutor captureExecutor;
+
+   /**
+    * Pool d'execution des insertions de documents
+    */
+   @Autowired
+   private ModificationPoolThreadExecutor modifExecutor;
+
+   /**
+    * Pool d'execution des insertions de documents
+    */
+   @Autowired
+   private TransfertPoolThreadExecutor transfertExecutor;
    
+   /**
+    * Job explorer {@link JobExplorer}
+    */
    @Autowired
    private JobExplorer jobExplorer;
+
+   /**
+    * Job repository {@link JobRepository}
+    */
    @Autowired
    private JobRepository jobRepository;
 
@@ -89,6 +114,9 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
    @Qualifier("reprise_masse")
    private Job job;
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public ExitTraitement repriseMasse(UUID idJobReprise) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
@@ -146,14 +174,15 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
       try {
          jobExecution = jobLauncher.run(job, parameters);
-         String jobName = jobAReprendre.getType();
-         List<JobInstance> instances = jobExplorer.getJobInstances(jobName, 0, 1);
+         String jobType = jobAReprendre.getType();
+         List<JobInstance> instances = jobExplorer.getJobInstances(jobType, 0, 1);
          JobInstance internalJobInstance = instances.size() > 0 ? instances.get(0) : null;
          Assert.notNull(internalJobInstance, "ERREUR RREPRISE: Le traitement en erreur n'a pas été relancé par la reprise");
          lastExecution = jobRepository.getLastJobExecution(internalJobInstance.getJobName(),internalJobInstance.getJobParameters());
-         boolean traitementOK = StatutCaptureUtils.isCaptureOk(lastExecution);
+         boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
          if(traitementOK){
-            // Validation de la reprise
+            // Si le job de reprise est COMPLETED, on vérifie tout de même que
+            // le job à reprendre n'a pas levé d'exception.
             traitementOK = checkErreursReprise(lastExecution);
          }
          
@@ -210,9 +239,14 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
    }
    
    /**
+    * Vérification des traitement de fin de job.
+    * 
     * @param jobExecution
+    *           {@link JobExecution}
     * @param idTraitement
+    *           Identifiant de traitement
     * @param sommaireURL
+    *           Url du sommaire.xml
     */
    private void checkFinal(final JobExecution jobExecution, final URI sommaireURL,
          final UUID idTraitement, final List<Throwable> listeExceptions, String typeJob) {
@@ -232,17 +266,34 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
                Constantes.FLAG_BUL003);
 
          batchModeTraitement = (String) jobExecution.getExecutionContext().get(
-               Constantes.BATCH_MODE_NOM_REDIRECT);
+               Constantes.BATCH_MODE_NOM);
+      }
+
+      // Récupération de la liste des documents intégrés en fonction du type de
+      // job
+      ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeDocsIntegres = null;
+      if (TYPES_JOB.capture_masse.name().equals(typeJob)) {
+         listeDocsIntegres = captureExecutor.getIntegratedDocuments();
+      } else if (TYPES_JOB.modification_masse.name().equals(typeJob)) {
+         listeDocsIntegres = modifExecutor.getIntegratedDocuments();
+      } else if (TYPES_JOB.transfert_masse.name().equals(typeJob)) {
+         listeDocsIntegres = transfertExecutor.getIntegratedDocuments();
+      } else {
+         listeDocsIntegres = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>(
+               new ArrayList<TraitementMasseIntegratedDocument>());
       }
 
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
-            logPresent, listeExceptions, idTraitement, executor.getIntegratedDocuments(), TYPES_JOB.valueOf(typeJob));
+            logPresent, listeExceptions, idTraitement, listeDocsIntegres, TYPES_JOB.valueOf(typeJob));
 
    }
    
    /**
-    * Contrôle les erreurs éventuelles lors de la de reprise de traitement de masse
+    * Contrôle les erreurs éventuelles lors de la de reprise de traitement de
+    * masse
+    * 
     * @param jobExecution
+    *           {@link JobExecution}
     * @return true si aucune erreur rencontrée, false sinon
     */
    @SuppressWarnings("unchecked")

@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,18 +22,24 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import de.schlichtherle.io.File;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -72,39 +77,51 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
       Runnable command;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-
-         boolean isdocumentInError = false;
+         boolean isdocumentATraite = true;
          if (isModePartielBatch()) {
-            // En mode PARTIEL, on regarde s'il y a une erreur déclarée pour
-            // l'item. Si c'est le cas, on ne le traite pas.
-            List<Integer> listIndex = new ArrayList<Integer>(
-                  getIndexErreurListe());
-
-            for (Integer indexDocError : listIndex) {
-               if (indexDocError == (getStepExecution().getReadCount() + index)) {
-                  isdocumentInError = true;
-               }
-            }
+            isdocumentATraite = isDocumentATraite(index);
          }
+
          // Si le document n'est pas en erreur, on traite, sinon on passe au
          // suivant.
-         if (!isdocumentInError) {
+         if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this, index);
+                  + index.intValue(), storageDocument, this, index.intValue());
 
-            poolExecutor.execute(command);
+            try {
+               poolExecutor.execute(command);
+            } catch (Exception e) {
+               // Rerprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
+               if (e instanceof TraitementRepriseAlreadyDoneException) {
+                  poolExecutor.getIntegratedDocuments().add(
+                        new TraitementMasseIntegratedDocument(storageDocument
+                              .getUuid(), null, index.intValue()));
+               } else if (isModePartielBatch()) {
+                  // En mode partiel, on ajoute l'exception à la liste des exceptions et on continue le traitement des documents.
+                     getCodesErreurListe().add(Constantes.ERR_BUL002);
+                     getIndexErreurListe().add(
+                           getStepExecution().getExecutionContext().getInt(
+                                 Constantes.CTRL_INDEX));
+                     final String message = e.getMessage();
+                     getExceptionErreurListe().add(new Exception(message));
+                     LOGGER.error(message, e);
+                  }  
+               }
 
-            LOGGER.debug(
-                  "{} - nombre de documents en attente dans le pool : {}",
-                  TRC_INSERT, poolExecutor.getQueue().size());
+            }
+
+         index++;
+         LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
+               TRC_INSERT, poolExecutor.getQueue().size());
          }
 
-          index++;
 
       }
 
-   }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
@@ -137,10 +154,12 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     * @return le document avec l'uuid renseigné
     * @throws InsertionServiceEx
     *            Exception levée lors de la persistance
+    * @throws TraitementRepriseAlreadyDoneException
     */
    @SuppressWarnings(CATCH)
    public final StorageDocument insertStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx {
+         final StorageDocument storageDocument) throws InsertionServiceEx,
+         TraitementRepriseAlreadyDoneException {
 
       try {
          final StorageDocument retour = serviceProvider
@@ -155,6 +174,20 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          ajoutFichierOrigineSiNecessaire(storageDocument, retour);
 
          return retour;
+      } catch (InsertionIdGedExistantEx except) {
+
+         try {
+            if (isRepriseActifBatch()
+                  && verificationTraitementReprise(storageDocument)) {
+               throw new TraitementRepriseAlreadyDoneException(except);
+            }
+         } catch (RetrievalServiceEx e) {
+            // Do nothing exception levé juste aprés
+         }
+
+         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
+               except);
+
       } catch (Exception except) {
 
          throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
@@ -168,6 +201,86 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
       }
 
+   }
+
+   /**
+    * Vérifie que la reprise est dans un cas d'erreur ou un cas de reprise d'un
+    * document déjà traité.
+    * 
+    * @param storageDocument
+    *           Document
+    * @return True si cas passant, false sinon.
+    * @throws RetrievalServiceEx
+    *            @{@link RetrievalServiceEx}
+    */
+   private boolean verificationTraitementReprise(StorageDocument storageDocument)
+         throws RetrievalServiceEx {
+      boolean retour = false;
+      UUID uuid = storageDocument.getUuid();
+      List<StorageMetadata> listeMetadatas = storageDocument.getMetadatas();
+
+      if (uuid != null && !uuid.toString().isEmpty()) {
+         // On recherche la metadonnée idTraitementInterne dans la liste des
+         // métadonnées du document.
+         StorageTechnicalMetadatas technical = retrieveMetadonneeByList(
+               listeMetadatas,
+               StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                     .getShortCode());
+
+         if (technical == null) {
+            // Si on ne trouve pas la métadonnée idTraitementInterne, on
+            // l'ajoute à la liste des métadonnées.
+            listeMetadatas.add(new StorageMetadata(
+                  StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                        .getShortCode()));
+
+            // On met à jour les metadatas du document
+            UUIDCriteria uuidCriteria = new UUIDCriteria(uuid, listeMetadatas);
+            List<StorageMetadata> listeMetadatasRetrieve = serviceProvider
+                  .getStorageDocumentService()
+                  .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+
+            // On vérifie qu'elle se trouve bien dans la liste mise à jour.
+            technical = retrieveMetadonneeByList(listeMetadatasRetrieve,
+                  StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                        .getShortCode());
+            if (technical != null) {
+               // Si la métadonnée existe, la vérification est OK.
+               retour = true;
+            }
+         } else {
+            // Si la métadonnée existe, la vérification est OK.
+            retour = true;
+         }
+
+      }
+
+      return retour;
+   }
+
+   /**
+    * Permet de retouver une metadonnée à partir d'une liste de metadonées.
+    * 
+    * @param listeMetadatas
+    *           Liste métadonnées
+    * @param shortCode
+    *           Code à retrouver
+    * @return La metadonnée recherchée
+    */
+   private StorageTechnicalMetadatas retrieveMetadonneeByList(
+         List<StorageMetadata> listeMetadatas, String shortCode) {
+      if (shortCode != null && !shortCode.isEmpty()) {
+         for (StorageMetadata storageMetadata : Utils
+               .nullSafeIterable(listeMetadatas)) {
+            final StorageTechnicalMetadatas technical = Utils
+                  .technicalMetadataFinder(storageMetadata.getShortCode());
+
+            if (shortCode.equals(technical.getShortCode())) {
+               return technical;
+            }
+         }
+      }
+      return null;
    }
 
    /**
@@ -288,7 +401,9 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                      formatFichier);
 
                // Récupère l'identifiant de traitement unitaire
-               String idTraitement = findMetadataValue("iti",
+               String idTraitement = findMetadataValue(
+                     StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                           .getShortCode(),
                      storageDocument.getMetadatas());
 
                LOGGER.debug("{} - Identifiant du traitement : {}", trcPrefix,
