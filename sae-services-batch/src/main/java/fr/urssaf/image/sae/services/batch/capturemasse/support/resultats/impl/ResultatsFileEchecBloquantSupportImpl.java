@@ -55,10 +55,10 @@ public class ResultatsFileEchecBloquantSupportImpl implements
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en erreur bloquante)",
             PREFIX_TRC);
+      if (erreur != null && ecdeDirectory != null) {
 
       final String pathResultats = ecdeDirectory.getAbsolutePath()
             + File.separator + "resultats.xml";
-      if (erreur != null) {
          final ResultatsType resultatsType = affectResultatsOnError(erreur);
          final JAXBElement<ResultatsType> resultat = objFactory
                .createResultats(resultatsType);
@@ -91,6 +91,9 @@ public class ResultatsFileEchecBloquantSupportImpl implements
                }
             }
          }
+      } else {
+         throw new IllegalArgumentException(
+               "Les paramètres obligatoires sont manquants pour le traitement : url sommaire ou l'erreur");
       }
 
       LOGGER.debug("{} - Fin de création du fichier (resultats.xml en erreur bloquante)",
