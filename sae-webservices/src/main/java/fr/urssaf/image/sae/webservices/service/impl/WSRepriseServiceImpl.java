@@ -77,8 +77,15 @@ public class WSRepriseServiceImpl implements WSRepriseService {
          // Récuperer le job
          JobRequest jobRequest = jobLectureService
                .getJobRequestNotNull(uuidJobAReprendre);
-
-         if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
+         
+         // Reprise impossible pour le job de reprise 
+         if(jobRequest.getType().equals(TYPES_JOB.reprise_masse.name())){
+            LOG.warn(
+                  "{} - échec de reprise du job {} - Le job de reprise ne peut pas être repris",
+                  new Object[] { prefixeTrc, uuid });
+            throw new RepriseAxisFault("RepriseAxisFault",
+                  "Le job de reprise ne peut pas être repris");
+         } else if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
             LOG.debug(
                   "{} - ajout d'un traitement de reprise de masse du job: {}",
                   new Object[] { "ajouterJob()", uuid });

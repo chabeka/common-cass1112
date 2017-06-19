@@ -44,12 +44,10 @@ public class RepriseMasseSupportImpl implements TraitementExecutionSupport {
          Assert.notNull(
                this.repriseMasseService,
                "Il n'existe aucune configuration pour instancier le composant 'SAERepriseMasseService'");
-
          if (MapUtils.isNotEmpty(job.getJobParameters())) {
             if (StringUtils.isNotEmpty(job.getJobParameters().get(Constantes.UUID_JOB_A_Reprendre))) {
                exitTraitement = repriseMasseService.repriseMasse(idJobReprise);
             }
-
          }
       }
       return exitTraitement;

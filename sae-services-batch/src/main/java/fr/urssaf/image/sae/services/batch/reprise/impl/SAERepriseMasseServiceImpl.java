@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
+import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
@@ -64,19 +65,19 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
    @Autowired
    private JobLectureService jobLectureService;
-   
+
    /**
     * Service de gestion de la pile des travaux.
     */
    @Autowired
    private JobQueueService jobQueueService;
-   
+
    /**
     * Support pour la verification final du traitement.
     */
    @Autowired
    private VerificationSupport verifSupport;
-   
+
    /**
     * Pool d'execution des insertions de documents
     */
@@ -94,7 +95,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
     */
    @Autowired
    private TransfertPoolThreadExecutor transfertExecutor;
-   
+
    /**
     * Job explorer {@link JobExplorer}
     */
@@ -116,39 +117,61 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
    /**
     * {@inheritDoc}
+    * 
+    * @throws JobInexistantException
     */
    @Override
    public ExitTraitement repriseMasse(UUID idJobReprise) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       JobRequest jobReprise = jobLectureService.getJobRequest(idJobReprise);
-
       String idJobAReprendreParam = jobReprise.getJobParameters().get(
             Constantes.UUID_JOB_A_Reprendre);
       UUID uidJobAReprendre = UUID.fromString(idJobAReprendreParam);
       JobRequest jobAReprendre = jobLectureService
             .getJobRequest(uidJobAReprendre);
-      
-      Assert.notNull(jobAReprendre, "Le job à reprendre est requis");
+      int nbDocsTraites = 0;
+
+      Assert.notNull(jobAReprendre, "Le traitement à reprendre est requis");
 
       // Gestion de droits pour la reprise
       List<String> pagmsReprise = jobReprise.getVi().getPagms();
       List<String> pagmsJobAReprendre = jobAReprendre.getVi().getPagms();
-      boolean checkAccessReprise = true;
-      
-      if(!jobReprise.getVi().getCodeAppli().equals(jobAReprendre.getVi().getCodeAppli()) ){
-         checkAccessReprise = false;
+
+      // Contrôle CS du traitement de reprise
+      boolean checkAccessRepriseCS = true;
+      if (!jobReprise.getVi().getCodeAppli()
+            .equals(jobAReprendre.getVi().getCodeAppli())) {
+         checkAccessRepriseCS = false;
+         // Mise à jour du compteur de job reprise
+         try {
+            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
+         } catch (JobInexistantException e) {
+            throw new JobParameterTypeException(jobReprise, e);
+         }
+         LOGGER.warn(
+               "{} - Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre",
+               TRC_REPRISE);
+         throw new AccessDeniedException(
+               "Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre");
       }
 
-      if(checkAccessReprise){
+      // Contrôle PAGM de reprise
+      if (checkAccessRepriseCS) {
          for (String pagmAReprendre : pagmsJobAReprendre) {
-            if(!pagmsReprise.contains(pagmAReprendre)){
-               checkAccessReprise = false;
+            if (!pagmsReprise.contains(pagmAReprendre)) {
+               // Mise à jour du compteur de job reprise
+               try {
+                  jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
+               } catch (JobInexistantException e) {
+                  throw new JobParameterTypeException(jobReprise, e);
+               }
+               LOGGER.warn(
+                     "{} - Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre",
+                     TRC_REPRISE);
+               throw new AccessDeniedException(
+                     "Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre");
             }
          }
-      }
-      if (!checkAccessReprise) {
-         throw new AccessDeniedException(
-               "Erreur PAGMS de Reprise: Le job de reprise doit avoir le même contrat de service");
       }
 
       // Chargement des paramètres de reprise
@@ -158,12 +181,19 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             idJobAReprendreParam));
       mapParam.put(Constantes.TYPE_TRAITEMENT_A_REPRENDRE, new JobParameter(
             jobAReprendre.getType()));
-      
-      String urlECDE = jobAReprendre.getJobParameters().get(Constantes.ECDE_URL);
+
+      String urlECDE = jobAReprendre.getJobParameters()
+            .get(Constantes.ECDE_URL);
       URI sommaireURL;
       try {
          sommaireURL = URI.create(urlECDE);
       } catch (IllegalArgumentException e) {
+         // Mise à jour du compteur de job reprise
+         try {
+            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
+         } catch (JobInexistantException e1) {
+            throw new JobParameterTypeException(jobReprise, e);
+         }
          throw new JobParameterTypeException(jobAReprendre, e);
       }
 
@@ -177,27 +207,29 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
          String jobType = jobAReprendre.getType();
          List<JobInstance> instances = jobExplorer.getJobInstances(jobType, 0, 1);
          JobInstance internalJobInstance = instances.size() > 0 ? instances.get(0) : null;
-         Assert.notNull(internalJobInstance, "ERREUR RREPRISE: Le traitement en erreur n'a pas été relancé par la reprise");
-         lastExecution = jobRepository.getLastJobExecution(internalJobInstance.getJobName(),internalJobInstance.getJobParameters());
+         Assert.notNull(internalJobInstance,
+               "ERREUR RREPRISE: Le traitement en erreur n'a pas été relancé par la reprise");
+         lastExecution = jobRepository.getLastJobExecution(
+               internalJobInstance.getJobName(),
+               internalJobInstance.getJobParameters());
          boolean traitementOK = StatutCaptureUtils.isCaptureOk(jobExecution);
-         if(traitementOK){
+         if (traitementOK) {
             // Si le job de reprise est COMPLETED, on vérifie tout de même que
             // le job à reprendre n'a pas levé d'exception.
             traitementOK = checkErreursReprise(lastExecution);
          }
-         
+
          // Récupérer le nombre de documents traités par la reprise de masse
-         int nbDocsTraites = 0;
          if (lastExecution.getExecutionContext().containsKey(
                Constantes.NB_INTEG_DOCS)) {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_INTEG_DOCS);
-         } else if(lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_RESTORES)){
+         } else if (lastExecution.getExecutionContext().containsKey(
+               Constantes.NB_DOCS_RESTORES)) {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_DOCS_RESTORES);
-         } else if(lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_SUPPRIMES)){
+         } else if (lastExecution.getExecutionContext().containsKey(
+               Constantes.NB_DOCS_SUPPRIMES)) {
             nbDocsTraites = lastExecution.getExecutionContext().getInt(
                   Constantes.NB_DOCS_SUPPRIMES);
          }
@@ -206,8 +238,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
             // Mise à jour compteur job à reprendre
-            jobQueueService.renseignerDocCountJob(uidJobAReprendre,
-                  nbDocsTraites);
+            jobQueueService.renseignerDocCountJob(uidJobAReprendre, nbDocsTraites);
             // Mise à jour du compteur de job reprise
             jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          } else {
@@ -230,14 +261,15 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
          List<Throwable> listThrowables = new ArrayList<Throwable>();
          listThrowables.add(e);
-         checkFinal(lastExecution, sommaireURL, uidJobAReprendre, listThrowables, jobAReprendre.getType());
+         checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
+               listThrowables, jobAReprendre.getType());
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }
       return exitTraitement;
 
    }
-   
+
    /**
     * Vérification des traitement de fin de job.
     * 
@@ -248,8 +280,9 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
     * @param sommaireURL
     *           Url du sommaire.xml
     */
-   private void checkFinal(final JobExecution jobExecution, final URI sommaireURL,
-         final UUID idTraitement, final List<Throwable> listeExceptions, String typeJob) {
+   private void checkFinal(final JobExecution jobExecution,
+         final URI sommaireURL, final UUID idTraitement,
+         final List<Throwable> listeExceptions, String typeJob) {
 
       Integer nbreDocs = null;
       Integer nbDocsIntegres = null;
@@ -283,11 +316,12 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
                new ArrayList<TraitementMasseIntegratedDocument>());
       }
 
-      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,
-            logPresent, listeExceptions, idTraitement, listeDocsIntegres, TYPES_JOB.valueOf(typeJob));
+      verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres,
+            batchModeTraitement, logPresent, listeExceptions, idTraitement,
+            listeDocsIntegres, TYPES_JOB.valueOf(typeJob));
 
    }
-   
+
    /**
     * Contrôle les erreurs éventuelles lors de la de reprise de traitement de
     * masse
@@ -297,21 +331,26 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
     * @return true si aucune erreur rencontrée, false sinon
     */
    @SuppressWarnings("unchecked")
-   private boolean checkErreursReprise(final JobExecution jobExecution){
+   private boolean checkErreursReprise(final JobExecution jobExecution) {
       boolean traitementOk = true;
-      List<ConcurrentLinkedQueue<String>> listErreursReprise = new ArrayList<ConcurrentLinkedQueue<String>>();      
-      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.CODE_EXCEPTION));
-      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.DOC_EXCEPTION));
-      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.INDEX_EXCEPTION));
-      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.INDEX_REF_EXCEPTION));
-      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution.getExecutionContext().get(Constantes.ROLLBACK_EXCEPTION));
-      
+      List<ConcurrentLinkedQueue<String>> listErreursReprise = new ArrayList<ConcurrentLinkedQueue<String>>();
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.CODE_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.DOC_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.INDEX_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.INDEX_REF_EXCEPTION));
+      listErreursReprise.add((ConcurrentLinkedQueue<String>) jobExecution
+            .getExecutionContext().get(Constantes.ROLLBACK_EXCEPTION));
+
       for (ConcurrentLinkedQueue<String> concurrentLinkedQueue : listErreursReprise) {
          if (concurrentLinkedQueue != null && !concurrentLinkedQueue.isEmpty()) {
-            traitementOk =false;
+            traitementOk = false;
          }
       }
       return traitementOk;
    }
-  
+
 }
