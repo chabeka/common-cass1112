@@ -39,5 +39,10 @@ public final class Constantes {
     * Code court de la métadonnée 'identifiant de suppression de masse'
     */
    public static final String CODE_COURT_META_ID_TRANSFERT = "ifi";
+   
+   /**
+    * Identifiant de l'id du traitement à reprendre
+    */
+   public static final String ID_TRAITEMENT_A_REPRENDRE = "uuidJobAReprendre";
 
 }
