@@ -118,9 +118,10 @@ public class WSRepriseServiceImpl implements WSRepriseService {
       } catch (JobInexistantException e) {
          LOG.warn("{} - échec de reprise du traitement {} - ce job n'existe plus en base",
                new Object[] { prefixeTrc, uuid });
-         throw new JobInexistantException(uuidJobAReprendre);
+         //throw new JobInexistantException(uuidJobAReprendre);
+         throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
       } catch (AccessDeniedException e) {
-         throw e;
+         throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
       } catch (Exception e) {
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
       }

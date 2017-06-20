@@ -46,7 +46,7 @@ public class MockFactoryBean {
    public final CaptureMasseControleSupport createCaptureMasseControleSupport() {
       return EasyMock.createMock(CaptureMasseControleSupport.class);
    }
-
+   
    /**
     * 
     * @return instance de {@link DeletionService}

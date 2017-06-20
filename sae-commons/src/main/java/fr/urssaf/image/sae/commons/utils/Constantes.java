@@ -44,5 +44,20 @@ public final class Constantes {
     * Identifiant de l'id du traitement à reprendre
     */
    public static final String ID_TRAITEMENT_A_REPRENDRE = "uuidJobAReprendre";
+   
+   /**
+    * l'Url ECDE
+    */
+   public static final String ECDE_URL = "ecdeUrl";
+   
+   /**
+    * Hash du fichier sommaire.xml
+    */
+   public static final String HASH = "hash";
+   
+   /**
+    * Le type de hash
+    */
+   public static final String TYPE_HASH = "typeHash";
 
 }
