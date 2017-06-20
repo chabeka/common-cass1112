@@ -118,9 +118,11 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
       } catch (JobInexistantException e) {
          LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus",
                new Object[] { prefixeTrc, uuid });
-         throw new JobInexistantException(uuidJob);
+         throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
+               e);
       } catch (AccessDeniedException e) {
-         throw e;
+         throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
+               e);
       } catch (Exception e) {
          throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
                e);
