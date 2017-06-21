@@ -119,6 +119,9 @@
       <property name="job" ref="transfert_masse" />
    </bean>
 
+   <bean id="launcherReprise" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="reprise_masse" />
+   </bean>
 
    <!-- Bean pour vérifier les traces -->
    <bean id="traceAssertUtils"

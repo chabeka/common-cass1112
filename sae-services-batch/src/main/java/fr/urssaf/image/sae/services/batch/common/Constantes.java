@@ -396,6 +396,21 @@ public final class Constantes {
          return modeNomCourt;
       }
 
+      /**
+       * Vérifiez si le nom d'un type de travail spécifique existe
+       * 
+       * @param name
+       * @return true/false
+       */
+      public static Boolean batchModeExist(final String name) {
+         for (BATCH_MODE elm : BATCH_MODE.values()) {
+            if (elm.modeNom.equals(name)) {
+               return true;
+            }
+         }
+         return false;
+      }
+
    }
 
    /**

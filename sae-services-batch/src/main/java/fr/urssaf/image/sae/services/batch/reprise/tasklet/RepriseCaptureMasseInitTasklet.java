@@ -34,6 +34,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.Constantes.BATCH_MODE;
 import fr.urssaf.image.sae.services.batch.reprise.exception.RepriseException;
 import fr.urssaf.image.sae.services.batch.suppression.exception.SuppressionMasseSearchException;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
@@ -168,6 +169,8 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          urlECDE = jobAReprendre.getJobParameters().get(Constantes.ECDE_URL);
       }
 
+      Assert.notNull(urlECDE, "L'url de l'ECDE est obligatoire");
+
       URI sommaireURL;
       try {
          sommaireURL = URI.create(urlECDE);
@@ -189,7 +192,8 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       String batchmode = XmlReadUtils.getElementValue(sommaireFile,
             Constantes.BATCH_MODE_ELEMENT_NAME);
 
-      if (batchmode == null || batchmode.isEmpty()) {
+      if (batchmode == null || batchmode.isEmpty()
+            || !BATCH_MODE.batchModeExist(batchmode)) {
          throw new RepriseException("Le mode du batch n'est pas reconnu",
                idTraitement.toString());
       }
@@ -209,6 +213,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          }
 
          StorageDocument doc = null;
+         boolean isFirstRound = true;
          while (hasNext()) {
             doc = next();
 
@@ -223,7 +228,13 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
                } catch (Exception e) {
                   throw new RepriseException(e);
                }
+               isFirstRound = false;
             }
+         }
+
+         if (isFirstRound) {
+            LOGGER.info("Pas de documents identifiés pour le rollback du traitement "
+                  + idTraitement.toString());
          }
 
       } else {

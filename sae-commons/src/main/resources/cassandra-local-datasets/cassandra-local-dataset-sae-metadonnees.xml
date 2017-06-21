@@ -3347,7 +3347,7 @@
             </column>
             <column>
                <name>length</name>
-               <value>integer(20)</value>
+               <value>integer(36)</value>
             </column>
             <column>
                <name>cons</name>
@@ -5731,7 +5731,7 @@
             </column>
             <column>
                <name>length</name>
-               <value>integer(20)</value>
+               <value>integer(36)</value>
             </column>
             <column>
                <name>cons</name>
@@ -5818,7 +5818,7 @@
             </column>
             <column>
                <name>length</name>
-               <value>integer(20)</value>
+               <value>integer(36)</value>
             </column>
             <column>
                <name>cons</name>

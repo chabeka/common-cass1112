@@ -11,11 +11,13 @@ import org.springframework.batch.item.ItemProcessor;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
+import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
@@ -143,6 +145,20 @@ public class MockFactoryBean {
     */
    public final JobLauncher createJobLauncher() {
       return EasyMock.createMock(JobLauncher.class);
+   }
+
+   /**
+    * @return un mock de type {@link JobLectureService}
+    */
+   public final JobLectureService createJobLectureService() {
+      return EasyMock.createMock(JobLectureService.class);
+   }
+
+   /**
+    * @return un mock de type {@link JobLectureService}
+    */
+   public final RollbackSupport createRollbackSupport() {
+      return EasyMock.createMock(RollbackSupport.class);
    }
 
 }
