@@ -33,7 +33,7 @@
          <next on="FAILED" to="finErreur" />
       </step>
       
-      <step id="finErreur">
+      <step id="finErreurReprise">
          <tasklet ref="resultatsFileRepriseFailureErrorTasklet">
             <listeners>
                <listener ref="resultatsFileFailureErrorListener" />

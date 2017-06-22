@@ -63,8 +63,6 @@ public class ResultatsFileRepriseFailureErrorTasklet extends AbstractCaptureMass
       }
 
       Object sommairePathObject = context.get(Constantes.SOMMAIRE_FILE);
-      final String ident = (String) stepContext.getStepExecution()
-            .getJobParameters().getString(Constantes.ID_TRAITEMENT_A_REPRENDRE);
       if (sommairePathObject instanceof String && erreur != null) {
 
          String sommairePath = (String) sommairePathObject;
