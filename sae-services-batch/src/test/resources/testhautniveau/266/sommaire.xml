@@ -62,6 +62,10 @@
                <somres:code>NumeroRecours</somres:code>
                <somres:valeur>1</somres:valeur>
             </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>IdGed</somres:code>
+               <somres:valeur>0c3a2f90-4064-41d6-8da5-1e9a5d011d5b</somres:valeur>
+            </somres:metadonnee>
          </somres:metadonnees>
          
          <somres:numeroPageDebut>1</somres:numeroPageDebut>
@@ -125,6 +129,10 @@
             <somres:metadonnee>
                <somres:code>NumeroRecours</somres:code>
                <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>IdGed</somres:code>
+               <somres:valeur>6983a3f3-fcea-45c0-b5e4-e3ba77d6ccf1</somres:valeur>
             </somres:metadonnee>
          </somres:metadonnees>
          
