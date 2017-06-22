@@ -90,9 +90,10 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
             try {
                poolExecutor.execute(command);
-            } catch (Exception e) {
+            } catch (Exception ex) {
                // Rerprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
-               if (e instanceof TraitementRepriseAlreadyDoneException) {
+               if (ex != null
+                     && ex.getCause() instanceof TraitementRepriseAlreadyDoneException) {
                   poolExecutor.getIntegratedDocuments().add(
                         new TraitementMasseIntegratedDocument(storageDocument
                               .getUuid(), null, index.intValue()));
@@ -102,9 +103,9 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                      getIndexErreurListe().add(
                            getStepExecution().getExecutionContext().getInt(
                                  Constantes.CTRL_INDEX));
-                     final String message = e.getMessage();
+                  final String message = ex.getMessage();
                      getExceptionErreurListe().add(new Exception(message));
-                     LOGGER.error(message, e);
+                  LOGGER.error(message, ex);
                   }  
                }
 
@@ -115,6 +116,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                TRC_INSERT, poolExecutor.getQueue().size());
          }
 
+      // Reinitialisation du compteur si prochain passage.
+      index = 0;
 
       }
 
@@ -132,7 +135,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          return uuid;
       } catch (Exception e) {
          synchronized (this) {
-            if (isModePartielBatch()) {
+            if (isModePartielBatch() && !isRepriseActifBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
                getIndexErreurListe().add(indexRun);
                getExceptionErreurListe().add(new Exception(e.getMessage()));

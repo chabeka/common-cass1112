@@ -225,7 +225,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                if ("documents".equals(name)) {
                   staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
                } else {
-                  startTagDocsIntegres(name, reader, listIntDocTemp,
+                  indexReference = startTagDocsIntegres(name, reader, listIntDocTemp,
                         indexReference);
                }
             }
@@ -513,18 +513,20 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param indexReference
     * @return L'index de reference ajouté au fichier resultat.xml.
     */
-   private void startTagDocsIntegres(final String name, final XmlReader reader,
+   private IndexReference startTagDocsIntegres(final String name, final XmlReader reader,
          final ConcurrentLinkedQueue<?> listIntDocs,
          IndexReference indexReference) {
 
       // Gestion des documents non intégrés
       if (CHEMIN_FICHIER.equals(name)) {
-         this.addIntegratedDocumentByTagName(CHEMIN_FICHIER, reader, listIntDocs,
+         indexReference = this.addIntegratedDocumentByTagName(CHEMIN_FICHIER, reader, listIntDocs,
                indexReference);
       } else if (UUID_FICHIER.equals(name)) {
-         this.addIntegratedDocumentByTagName(UUID_FICHIER, reader, listIntDocs,
+         indexReference = this.addIntegratedDocumentByTagName(UUID_FICHIER, reader, listIntDocs,
                indexReference);
       }
+      
+      return indexReference;
 
    }
 
@@ -540,7 +542,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     * @param indexReference
     *           Index de référence
     */
-   private void addIntegratedDocumentByTagName(String tagName, XmlReader reader,
+   private IndexReference addIntegratedDocumentByTagName(String tagName, XmlReader reader,
          ConcurrentLinkedQueue<?> listIntDocs, IndexReference indexReference) {
       final XMLEvent xmlEvent = reader.peek();
       TraitementMasseIntegratedDocument document = this
@@ -549,6 +551,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          this.addTagIntegratedDocumentByTagName(tagName, xmlEvent, document,
                reader);
       }
+
+      return new IndexReference(indexReference.getDocIndex() + 1,
+            indexReference.getRefIndex());
    }
 
    /**
@@ -1031,10 +1036,12 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
          // On recherche si le document existe dans les documents
          for (Object obj : listDocs) {
             document = (TraitementMasseIntegratedDocument) obj;
-            if ((document.getDocumentFile() != null && value
+            if (((document.getDocumentFile() != null && value
                         .equals(document.getDocumentFile().getName()))
                   || (document.getIdentifiant() != null && value
-                        .equalsIgnoreCase(document.getIdentifiant().toString()))) {
+                  .equalsIgnoreCase(document.getIdentifiant().toString())))
+                  && (document.getIndex() > -1 && indexReference
+                        .getDocIndex()== document.getIndex())) {
                // Document trouvé dans la liste des documents
                objFind = obj;
                break;

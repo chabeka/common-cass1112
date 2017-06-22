@@ -108,6 +108,9 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
 
       }
 
+      // Reinitialisation du compteur si prochain passage.
+      index = 0;
+
    }
 
    /**
