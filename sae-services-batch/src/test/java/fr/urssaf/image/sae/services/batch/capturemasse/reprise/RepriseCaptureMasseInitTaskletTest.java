@@ -30,7 +30,6 @@ import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
@@ -42,6 +41,7 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -77,6 +77,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.MetadonneeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.sommaire.ObjectFactory;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.sommaire.SommaireType;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.utils.JAXBUtilsTest;
@@ -144,13 +145,21 @@ public class RepriseCaptureMasseInitTaskletTest {
 
    @Autowired
    private ParametersService parametersService;
+
    @Autowired
    private RndSupport rndSupport;
+
    @Autowired
    private JobClockSupport jobClockSupport;
 
    @Autowired
    private ApplicationContext applicationContext;
+
+   @Autowired
+   private InsertionCapturePoolThreadExecutor poolExecutor;
+
+   @Autowired
+   DefaultListableBeanFactory beanFactory;
 
    private ExecutionContext context;
 
@@ -170,6 +179,17 @@ public class RepriseCaptureMasseInitTaskletTest {
 
       if (idJobReprendre != null) {
          jobQueueService.deleteJob(idJobReprendre);
+      }
+
+      try {
+         if (!poolExecutor.isShutdown()) {
+            poolExecutor.destroy();
+         }
+         beanFactory.destroySingleton("insertionCapturePoolThreadExecutor");
+         beanFactory.destroySingleton("repriseCaptureMasseInitTasklet");
+
+      } catch (Exception e) {
+         Assert.fail("Shutdown pool thread KO");
       }
 
       AuthenticationContext.setAuthenticationToken(null);
@@ -299,13 +319,12 @@ public class RepriseCaptureMasseInitTaskletTest {
     * 
     * @throws Exception
     */
-   @Ignore
    @Test
    public void testRollbackPartielSuccess() {
       // Ajout de documents (sommaire par défaut = 4 docs)
       int nbDocumentIntegrated = 4;
       try {
-         this.addDocumentCapture(4);
+         this.addDocumentCapture(0);
       } catch (Exception e) {
          Assert.fail("Erreur de capture des documents : " + e.getMessage());
       }
