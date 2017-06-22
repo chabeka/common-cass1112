@@ -30,7 +30,7 @@
             </listeners>
          </tasklet>
          <next on="*" to="repriseCaptureMasse" />
-         <next on="FAILED" to="finErreur" />
+         <next on="FAILED" to="finErreurReprise" />
       </step>
       
       <step id="finErreurReprise">
