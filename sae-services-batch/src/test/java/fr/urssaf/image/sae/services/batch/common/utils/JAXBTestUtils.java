@@ -10,6 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.junit.Ignore;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFactory;
@@ -22,9 +23,10 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFa
  * Utilitaire principalement utilisé pour les services SommaireXMLService et
  * ResultatsXMLService.
  */
-public final class JAXBUtilsTest {
+@Ignore
+public final class JAXBTestUtils {
 
-   private JAXBUtilsTest() {
+   private JAXBTestUtils() {
    }
 
    /**

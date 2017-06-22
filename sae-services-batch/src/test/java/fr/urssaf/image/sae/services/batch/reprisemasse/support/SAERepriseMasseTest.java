@@ -42,8 +42,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-reprisemasse-test-mock.xml" })
+      "/applicationContext-sae-services-batch-test.xml" })
 public class SAERepriseMasseTest {
 
    @Autowired

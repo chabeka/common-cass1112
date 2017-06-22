@@ -80,7 +80,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.sommaire.SommaireT
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.common.utils.JAXBUtilsTest;
+import fr.urssaf.image.sae.services.batch.common.utils.JAXBTestUtils;
 import fr.urssaf.image.sae.services.document.SAESearchService;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.CaptureBadEcdeUrlEx;
@@ -834,7 +834,7 @@ public class RepriseCaptureMasseInitTaskletTest {
          URL xsdSchema;
 
          xsdSchema = classPath.getURL();
-         JAXBUtilsTest.marshal(sommaireType, output, xsdSchema, true);
+         JAXBTestUtils.marshal(sommaireType, output, xsdSchema, true);
 
       } catch (FileNotFoundException e) {
          throw new CaptureMasseRuntimeException(e);

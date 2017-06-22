@@ -96,7 +96,7 @@ public class WSRepriseServiceImplTest {
     * @throws JobDejaReserveException
     * @throws LockTimeoutException
     */
-   @Test(expected=JobInexistantException.class)
+   @Test(expected = RepriseAxisFault.class)
    public void testRepriseTraitementMasseInexistant_success()
          throws RepriseAxisFault, JobInexistantException,
          JobDejaReserveException, LockTimeoutException {
