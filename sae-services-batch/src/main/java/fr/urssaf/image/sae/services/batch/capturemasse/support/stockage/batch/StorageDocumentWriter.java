@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import de.schlichtherle.io.File;
-import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.compression.model.CompressedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
@@ -86,18 +85,14 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index.intValue(), storageDocument, this, index.intValue());
+                  + index.intValue(), storageDocument, this, getStepExecution()
+                  .getReadCount() + index.intValue());
 
             try {
                poolExecutor.execute(command);
             } catch (Exception ex) {
                // Rerprise - Si traitement déjà réaliser par le traitement nominal, on déclare le document comme traité.
-               if (ex != null
-                     && ex.getCause() instanceof TraitementRepriseAlreadyDoneException) {
-                  poolExecutor.getIntegratedDocuments().add(
-                        new TraitementMasseIntegratedDocument(storageDocument
-                              .getUuid(), null, index.intValue()));
-               } else if (isModePartielBatch()) {
+               if (isModePartielBatch()) {
                   // En mode partiel, on ajoute l'exception à la liste des exceptions et on continue le traitement des documents.
                      getCodesErreurListe().add(Constantes.ERR_BUL002);
                      getIndexErreurListe().add(
@@ -119,7 +114,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
       // Reinitialisation du compteur si prochain passage.
       index = 0;
 
-      }
+   }
 
 
    /**
@@ -128,20 +123,21 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
    @Override
    public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
-
       try {
          StorageDocument document = insertStorageDocument((StorageDocument) storageDocument);
          UUID uuid = document != null ? document.getUuid() : null;
          return uuid;
-      } catch (Exception e) {
+      } catch (TraitementRepriseAlreadyDoneException ex) {
+         throw ex;
+      } catch (Exception ex) {
          synchronized (this) {
-            if (isModePartielBatch() && !isRepriseActifBatch()) {
+            if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
                getIndexErreurListe().add(indexRun);
-               getExceptionErreurListe().add(new Exception(e.getMessage()));
+               getExceptionErreurListe().add(new Exception(ex.getMessage()));
                return null;
             } else {
-               throw e;
+               throw ex;
             }
          }
 
@@ -219,17 +215,14 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
    private boolean verificationTraitementReprise(StorageDocument storageDocument)
          throws RetrievalServiceEx {
       boolean retour = false;
-      String idJobEnCours = (String) getStepExecution().getJobParameters().getString(
-            Constantes.ID_TRAITEMENT);
-      UUID uuid = storageDocument.getUuid();
+      String idJobEnCours = (String) getStepExecution().getJobParameters()
+            .getString(Constantes.ID_TRAITEMENT);
       List<StorageMetadata> listeMetadatas = storageDocument.getMetadatas();
 
-      if (uuid != null && !uuid.toString().isEmpty() && idJobEnCours != null
-            && !idJobEnCours.isEmpty()) {
+      if (idJobEnCours != null && !idJobEnCours.isEmpty()) {
          // On recherche la metadonnée idTraitementInterne dans la liste des
          // métadonnées du document.
-         StorageMetadata metadata = retrieveMetadonneeByList(
-               listeMetadatas,
+         StorageMetadata metadata = retrieveMetadonneeByList(listeMetadatas,
                StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
                      .getShortCode());
 
@@ -239,23 +232,29 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             listeMetadatas.add(new StorageMetadata(
                   StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
                         .getShortCode()));
+         }
 
-            // On met à jour les metadatas du document
-            UUIDCriteria uuidCriteria = new UUIDCriteria(uuid, listeMetadatas);
-            List<StorageMetadata> listeMetadatasRetrieve = serviceProvider
-                  .getStorageDocumentService()
-                  .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+         StorageMetadata metadataIdGed = retrieveMetadonneeByList(
+               listeMetadatas, StorageTechnicalMetadatas.IDGED.getShortCode());
 
-            // On vérifie qu'elle se trouve bien dans la liste mise à jour.
-            metadata = retrieveMetadonneeByList(listeMetadatasRetrieve,
-                  StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-                        .getShortCode());
-            if (metadata != null) {
-               // Si la métadonnée existe, la vérification est OK.
-               retour = true;
-            }
-         } else if (metadata != null
+
+         UUID uuid = UUID.fromString(metadataIdGed.getValue().toString());
+
+         // On met à jour les metadatas du document
+         UUIDCriteria uuidCriteria = new UUIDCriteria(uuid, listeMetadatas);
+         List<StorageMetadata> listeMetadatasRetrieve = serviceProvider
+               .getStorageDocumentService()
+               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+
+         // On vérifie qu'elle se trouve bien dans la liste mise à jour.
+         metadata = retrieveMetadonneeByList(listeMetadatasRetrieve,
+               StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
+                     .getShortCode());
+         if (metadata != null
                && idJobEnCours.equals(metadata.getValue().toString())) {
+            // On alimente l'uuid du document pour ne pas bloquer le reste du
+            // traitement.
+            storageDocument.setUuid(uuid);
             // Si la métadonnée existe, la vérification est OK.
             retour = true;
          }

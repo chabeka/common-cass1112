@@ -78,7 +78,8 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
          // suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this, index);
+                  + index, storageDocument, this, getStepExecution()
+                  .getReadCount() + index);
 
             try {
                poolExecutor.execute(command);

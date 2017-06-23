@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.common.support.multithreading.DefaultPoolThreadConfiguration;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 
 /**
  * classe mère des pools d'execution
@@ -295,11 +296,19 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
       final BOT document = getDocumentFromRunnable(runnable);
       int indexDocument = getIndexFromRunnable(runnable);
-
+      
       if (throwable == null) {
 
          traitementAfterExecute(trcPrefix, document, indexDocument);
 
+      } else if (throwable != null
+            && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
+         addDocumentToIntegratedList(document, indexDocument);
+
+         getLogger().debug(
+                     "{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
+               new Object[] { trcPrefix, (indexDocument + 1),
+                     getPathName(document), getUuid(document) });
       } else {
 
          setInsertionException((AbstractInsertionMasseRuntimeException) throwable);
