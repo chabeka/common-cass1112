@@ -219,18 +219,21 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
    private boolean verificationTraitementReprise(StorageDocument storageDocument)
          throws RetrievalServiceEx {
       boolean retour = false;
+      String idJobEnCours = (String) getStepExecution().getJobParameters().getString(
+            Constantes.ID_TRAITEMENT);
       UUID uuid = storageDocument.getUuid();
       List<StorageMetadata> listeMetadatas = storageDocument.getMetadatas();
 
-      if (uuid != null && !uuid.toString().isEmpty()) {
+      if (uuid != null && !uuid.toString().isEmpty() && idJobEnCours != null
+            && !idJobEnCours.isEmpty()) {
          // On recherche la metadonnée idTraitementInterne dans la liste des
          // métadonnées du document.
-         StorageTechnicalMetadatas technical = retrieveMetadonneeByList(
+         StorageMetadata metadata = retrieveMetadonneeByList(
                listeMetadatas,
                StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
                      .getShortCode());
 
-         if (technical == null) {
+         if (metadata == null) {
             // Si on ne trouve pas la métadonnée idTraitementInterne, on
             // l'ajoute à la liste des métadonnées.
             listeMetadatas.add(new StorageMetadata(
@@ -244,14 +247,15 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                   .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
 
             // On vérifie qu'elle se trouve bien dans la liste mise à jour.
-            technical = retrieveMetadonneeByList(listeMetadatasRetrieve,
+            metadata = retrieveMetadonneeByList(listeMetadatasRetrieve,
                   StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
                         .getShortCode());
-            if (technical != null) {
+            if (metadata != null) {
                // Si la métadonnée existe, la vérification est OK.
                retour = true;
             }
-         } else {
+         } else if (metadata != null
+               && idJobEnCours.equals(metadata.getValue().toString())) {
             // Si la métadonnée existe, la vérification est OK.
             retour = true;
          }
@@ -270,7 +274,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
     *           Code à retrouver
     * @return La metadonnée recherchée
     */
-   private StorageTechnicalMetadatas retrieveMetadonneeByList(
+   private StorageMetadata retrieveMetadonneeByList(
          List<StorageMetadata> listeMetadatas, String shortCode) {
       if (shortCode != null && !shortCode.isEmpty()) {
          for (StorageMetadata storageMetadata : Utils
@@ -279,7 +283,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                   .technicalMetadataFinder(storageMetadata.getShortCode());
 
             if (shortCode.equals(technical.getShortCode())) {
-               return technical;
+               return storageMetadata;
             }
          }
       }
