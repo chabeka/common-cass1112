@@ -188,17 +188,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * @throws RetrievalServiceEx
     * @throws InvalidSAETypeException
     * @throws MappingFromReferentialException
-    *            Permet de vérifier les droits avant le transfert
+    *            Permet de vérifier les droits avant le transfert de masse
     */
    public final void controleDroitTransfertMasse(List<StorageMetadata> allMeta)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException {
-
-      // On récupère les métadonnées du document à partir de l'UUID, avec
-      // toutes les
-      // métadonnées du référentiel sauf la note qui n'est pas utilise pour
-      // les droits
-
 
       if (allMeta.size() != 0) {
          List<UntypedMetadata> listeUMeta = mappingService
