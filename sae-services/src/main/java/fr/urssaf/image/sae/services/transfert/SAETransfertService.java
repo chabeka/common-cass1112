@@ -50,6 +50,10 @@ public interface SAETransfertService {
    void controleDroitTransfert(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException;
+   
+   void controleDroitTransfertMasse(List<StorageMetadata> allMeta)
+         throws ReferentialException, RetrievalServiceEx,
+         InvalidSAETypeException, MappingFromReferentialException;
 
    /**
     * Methode de contrôle de presence du document sur les plateformes GNS et
