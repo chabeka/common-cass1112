@@ -453,7 +453,7 @@ public final class SaeServiceLogUtils {
                .getResultats().getResultat();
 
          // -- on log les résultat
-         logRestultats(log, tabResRechTypes, triDesResultats);
+         logRestultatsNbRech(log, rechercheResponse.getNbResultats(), tabResRechTypes, triDesResultats);
       }
    }
 
@@ -525,6 +525,65 @@ public final class SaeServiceLogUtils {
 
          log.appendLogLn("Nombre de résultats de recherche : "
                + tabResRechTypes.length);
+         log.appendLogLn("Liste des résultats de recherche :");
+         log.appendLogNewLine();
+
+         // Tri des résultats de recherche si demandé
+         ResultatRechercheType[] tabResRechTypesOk;
+         if (triDesResultats != null) {
+
+            List<ResultatRechercheType> resultatsTries = Arrays
+                  .asList(tabResRechTypes);
+
+            Collections.sort(resultatsTries, new ResultatRechercheComparator(
+                  triDesResultats));
+
+            tabResRechTypesOk = (ResultatRechercheType[]) resultatsTries
+                  .toArray();
+
+         } else {
+            tabResRechTypesOk = tabResRechTypes;
+         }
+
+         String uuid;
+         ResultatRechercheType resRechType;
+         for (int i = 0; i < tabResRechTypesOk.length; i++) {
+
+            log.appendLogLn("Résultat #" + (i + 1));
+            resRechType = tabResRechTypesOk[i];
+            uuid = SaeServiceTypeUtils.extractUuid(resRechType.getIdArchive());
+
+            log.appendLogLn("IdArchive = " + uuid);
+            logMetadonnees(log, resRechType.getMetadonnees());
+            log.appendLogNewLine();
+         }
+      }
+   }
+   
+   /**
+    * Méthode utilitaire, factorisation code des méthodes logResultatRecherche
+    * et logResultatRechercheAvecNbRes
+    * 
+    * @param log
+    *           : le log à mettre à jour
+    * 
+    * @param tabResRechTypes
+    *           : la réponse de l'opération "recherche"
+    * 
+    * @param triDesResultats
+    *           : ordre de tri des résultats de recherche. Passer null pour ne
+    *           pas trier
+    */
+   private static void logRestultatsNbRech(ResultatTestLog log, int nbRes,
+         ResultatRechercheType[] tabResRechTypes,
+         TypeComparaison triDesResultats) {
+
+      if (tabResRechTypes == null) {
+         log.appendLogLn("Les résultats de recherche sont null");
+      } else {
+
+         log.appendLogLn("Nombre de résultats de recherche : "
+               + nbRes);
          log.appendLogLn("Liste des résultats de recherche :");
          log.appendLogNewLine();
 
