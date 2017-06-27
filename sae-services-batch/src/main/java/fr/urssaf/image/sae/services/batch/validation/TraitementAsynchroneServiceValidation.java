@@ -297,7 +297,7 @@ public class TraitementAsynchroneServiceValidation {
       }
 
       if (StringUtils.isBlank(parametres.getJobParameters().get(
-            Constantes.UUID_JOB_A_Reprendre))) {
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH))) {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                "uuidJobAReprendre"));
       }
@@ -318,7 +318,7 @@ public class TraitementAsynchroneServiceValidation {
    public final void lancerReprise(JobRequest jobReprise) {
       // Méthode de validation des traitements de reprise
       String jobAReprendreParam = jobReprise.getJobParameters().get(
-            Constantes.UUID_JOB_A_Reprendre);
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
       
       if (jobAReprendreParam == null || jobAReprendreParam.isEmpty()) {
          LOG.warn("Impossible d'executer le traitement de reprise de ID={0}: "

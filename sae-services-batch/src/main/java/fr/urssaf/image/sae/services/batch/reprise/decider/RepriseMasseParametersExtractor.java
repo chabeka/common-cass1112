@@ -29,7 +29,7 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
       String idJobAReprendreParam = null;
       if(stepExecution.getJobExecution().getJobInstance().getJobParameters() != null){
          idJobAReprendreParam = (String) stepExecution
-               .getJobExecution().getJobInstance().getJobParameters().getString(Constantes.ID_TRAITEMENT_A_REPRENDRE);
+               .getJobExecution().getJobInstance().getJobParameters().getString(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
       }
 
       UUID idJobAReprendre = UUID.fromString(idJobAReprendreParam);

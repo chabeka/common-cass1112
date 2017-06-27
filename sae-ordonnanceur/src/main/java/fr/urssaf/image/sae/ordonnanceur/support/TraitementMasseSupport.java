@@ -93,11 +93,11 @@ public interface TraitementMasseSupport {
    public List<JobQueue> filtrerTraitementMasseFailure(final Set<UUID> jobsFailure, Collection<JobQueue> jobRequests);
 
    /**
-    * Extrait l'URL ECDE pointé par un job de capture de masse
+    * Extrait l'URL ECDE pointé par un job de traitement de masse
     * 
     * @param jobQueue
-    *           le job de capture de masse
-    * @return l'URL ECDE pointé par le job de capture de masse
+    *           le job de traitement de masse
+    * @return l'URL ECDE pointé par le job de traitement de masse
     */
    public URI extractUrlEcde(JobQueue jobQueue);
 }

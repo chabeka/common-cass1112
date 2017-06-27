@@ -61,11 +61,6 @@ public class JobQueueServiceImpl implements JobQueueService {
 
    private final JobRequestSupport jobRequestSupport;
    
-   /**
-    * l'UUID du job à reprendre 
-    */
-   public static final String UUID_JOB_A_Reprendre = "uuidJobAReprendre";
-
    private static final Logger LOG = LoggerFactory
          .getLogger(JobQueueServiceImpl.class);
 
@@ -168,7 +163,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       
       // Gestion du succès de la reprise de masse
       if(jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes){
-         String idTraitementAReprendre = jobRequest.getJobParameters().get(UUID_JOB_A_Reprendre);
+         String idTraitementAReprendre = jobRequest.getJobParameters().get(
+               Constantes.ID_TRAITEMENT_A_REPRENDRE);
          UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
          JobRequest jobAReprendre = this.jobLectureService.getJobRequest(idJobAReprendre);
          String cdTraitement = jobAReprendre.getJobParameters().get(Constantes.CODE_TRAITEMENT);

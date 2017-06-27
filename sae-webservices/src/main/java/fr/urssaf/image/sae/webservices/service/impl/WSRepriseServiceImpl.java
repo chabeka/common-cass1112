@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import fr.cirtil.www.saeservice.Reprise;
 import fr.cirtil.www.saeservice.RepriseResponse;
 import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
@@ -23,7 +24,6 @@ import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
-import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
@@ -98,7 +98,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             // Charger l'uuid du job à reprendre dans les paramètres de la
             // reprise
             Map<String, String> jobParams = new HashMap<String, String>();
-            jobParams.put(Constantes.UUID_JOB_A_Reprendre,
+            jobParams.put(Constantes.ID_TRAITEMENT_A_REPRENDRE,
                   uuidJobAReprendre.toString());
 
             VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder

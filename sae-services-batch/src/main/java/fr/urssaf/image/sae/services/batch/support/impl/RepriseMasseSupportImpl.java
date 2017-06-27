@@ -45,7 +45,8 @@ public class RepriseMasseSupportImpl implements TraitementExecutionSupport {
                this.repriseMasseService,
                "Il n'existe aucune configuration pour instancier le composant 'SAERepriseMasseService'");
          if (MapUtils.isNotEmpty(job.getJobParameters())) {
-            if (StringUtils.isNotEmpty(job.getJobParameters().get(Constantes.UUID_JOB_A_Reprendre))) {
+            if (StringUtils.isNotEmpty(job.getJobParameters().get(
+                  Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH))) {
                exitTraitement = repriseMasseService.repriseMasse(idJobReprise);
             }
          }

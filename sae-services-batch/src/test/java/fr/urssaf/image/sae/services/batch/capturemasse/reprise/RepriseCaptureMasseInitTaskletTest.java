@@ -295,7 +295,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
 
-      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobReprendre.toString()));
 
       JobParameters parameters = new JobParameters(mapParameter);
@@ -362,7 +362,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
 
-      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobReprendre.toString()));
 
       JobParameters parameters = new JobParameters(mapParameter);
@@ -409,7 +409,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
 
-      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobReprendre.toString()));
 
       JobParameters parameters = new JobParameters(mapParameter);
@@ -464,7 +464,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
 
-      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobReprendre.toString()));
 
 
@@ -514,7 +514,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
 
-      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParameter.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobReprendre.toString()));
 
       JobParameters parameters = new JobParameters(mapParameter);

@@ -30,17 +30,13 @@ public final class Constantes {
    /**
     * Identifiant de l'id du traitement à reprendre
     */
-   public static final String ID_TRAITEMENT_A_REPRENDRE = "idTraitementAReprendre";
-   
+   public static final String ID_TRAITEMENT_A_REPRENDRE_BATCH = "uuidJobAReprendre";
+
    /**
     * Type du traitement à reprendre
     */
    public static final String TYPE_TRAITEMENT_A_REPRENDRE = "typeTraitementAReprendre";
    
-   /**
-    * l'UUID du job à reprendre 
-    */
-   public static final String UUID_JOB_A_Reprendre = "uuidJobAReprendre";
    
    /**
     * Identifiant du paramètre sommaire

@@ -149,7 +149,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
             .getStepExecution();
 
       final String ident = (String) stepExecution.getJobParameters().getString(
-            Constantes.ID_TRAITEMENT_A_REPRENDRE);
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
       
       Assert.notNull(ident, "L'identifiant du job à reprendre est requis");
       

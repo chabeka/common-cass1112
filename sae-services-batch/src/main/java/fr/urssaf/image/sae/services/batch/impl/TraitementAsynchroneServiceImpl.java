@@ -315,7 +315,7 @@ public class TraitementAsynchroneServiceImpl implements
 
       // 1- Vérifier si le param uidJobAReprendre est bien renseigné
       String jobAReprendreParam = jobReprise.getJobParameters().get(
-            Constantes.UUID_JOB_A_Reprendre);
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
       
       // 2- Vérifier si le jobAReprendre existe en base
       UUID idJobAReprendre = UUID.fromString(jobAReprendreParam);

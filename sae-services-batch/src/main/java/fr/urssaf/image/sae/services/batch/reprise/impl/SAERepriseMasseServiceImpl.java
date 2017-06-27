@@ -125,7 +125,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       JobRequest jobReprise = jobLectureService.getJobRequest(idJobReprise);
       String idJobAReprendreParam = jobReprise.getJobParameters().get(
-            Constantes.UUID_JOB_A_Reprendre);
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
       UUID uidJobAReprendre = UUID.fromString(idJobAReprendreParam);
       JobRequest jobAReprendre = jobLectureService
             .getJobRequest(uidJobAReprendre);
@@ -177,7 +177,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       // Chargement des paramètres de reprise
       mapParam.put(Constantes.ID_TRAITEMENT_REPRISE, new JobParameter(
             idJobReprise.toString()));
-      mapParam.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, new JobParameter(
+      mapParam.put(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH, new JobParameter(
             idJobAReprendreParam));
       mapParam.put(Constantes.TYPE_TRAITEMENT_A_REPRENDRE, new JobParameter(
             jobAReprendre.getType()));
