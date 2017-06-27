@@ -479,6 +479,7 @@ Met la base Cassandra du SAE en version 27 :
 - Ajout des metadonnées IdTransfertMasseInterne et IdModificationMasseInterne
 - Passage de la méta ApplicationMetier à modifiable (pour les besoins WATT)
 - Changement format fmt/13 en png
+- Ajout de l'action unitaire reprise_masse dans tous les PAGM du CS_V2
 
 Pour la GNS :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901

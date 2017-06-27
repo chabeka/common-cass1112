@@ -1118,7 +1118,10 @@ public class SAECassandraUpdater {
 
       // Modification du format png
       donnees.addReferentielFormatV7();
-
+      
+      // Mise à jour du CS_V2 pour ajouter l'action reprise_masse à tous les PAGM
+      droitService.majPagmCsV2AjoutActionReprise170900(saeDao.getKeyspace());
+      
       // On positionne la version à 27
       saeDao.setDatabaseVersion(VERSION_27);
    }

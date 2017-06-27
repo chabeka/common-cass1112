@@ -17,8 +17,15 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl;
+import fr.urssaf.image.sae.droit.dao.PagmDao;
+import fr.urssaf.image.sae.droit.dao.PagmaDao;
 import fr.urssaf.image.sae.droit.dao.PrmdDao;
+import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
+import fr.urssaf.image.sae.droit.dao.model.Pagm;
+import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
+import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 
 /**
@@ -101,4 +108,31 @@ public final class DroitService {
 
    }
 
+   public void majPagmCsV2AjoutActionReprise170900(Keyspace keyspace) {
+
+      LOG.info("Mise à jour du CS_V2 (ajout de la reprise)");
+
+      JobClockConfiguration clock = new JobClockConfiguration();
+      clock.setMaxTimeSynchroError(10000000);
+      clock.setMaxTimeSynchroWarn(2000000);
+      JobClockSupport jobClock = new JobClockSupportImpl(keyspace, clock);
+
+      PagmSupport pagmSupport = new PagmSupport(new PagmDao(keyspace));
+      List<Pagm> listePagmV2 = pagmSupport.find("CS_V2");
+      
+      PagmaSupport pagmaSupport = new PagmaSupport(new PagmaDao(keyspace));
+      
+      for (Pagm pagm : listePagmV2) {
+         Pagma pagma = pagmaSupport.find(pagm.getPagma());
+         List<String> listeActionsU = pagma.getActionUnitaires();
+         listeActionsU.add("reprise_masse");
+         pagma.setActionUnitaires(listeActionsU);
+         pagmaSupport.create(pagma, jobClock.currentCLock());
+      }
+      
+
+      LOG.info("Fin mise à jour du CS_V2");
+
+   }
+   
 }
