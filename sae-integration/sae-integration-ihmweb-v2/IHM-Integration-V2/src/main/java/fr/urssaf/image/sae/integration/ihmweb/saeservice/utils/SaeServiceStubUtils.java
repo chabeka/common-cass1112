@@ -98,6 +98,9 @@ public final class SaeServiceStubUtils {
          SaeServiceStub service = new SaeServiceStub(configContext,
                urlServiceWeb);
          
+         //ajout d'un TimeOut plus grand
+         service._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
+         
          // Renvoie du Stub
          return service;
 

@@ -537,6 +537,7 @@ public class TestRegressionService extends org.apache.axis2.client.Stub {
 
       // initialisation du stub
       stub = new SaeServiceStub(testConfig.getUrlSaeService());
+      stub._getServiceClient().getOptions().setTimeOutInMilliSeconds(5 * 60 * 1000);
       org.apache.axis2.client.OperationClient _operationClient = stub
             ._getServiceClient().createClient(q);
       _operationClient.getOptions().setAction(serviceName);
