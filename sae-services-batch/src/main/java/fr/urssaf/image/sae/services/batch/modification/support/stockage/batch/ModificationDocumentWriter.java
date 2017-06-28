@@ -125,15 +125,15 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
          document = insertStorageDocument((StorageDocument) storageDocument);
       } catch (Throwable except) {
          synchronized (this){
+            final String message = "Erreur DFCE - identifiant archivage "
+                  + storageDocument.getUuid() + " : " + except.getMessage();
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(indexRun);
-            final String message = "Erreur DFCE : " + except.getMessage();
             getExceptionErreurListe().add(new Exception(message));
             LOGGER.error(message, except);
          } else {
-            throw new UpdateServiceEx(new Exception("Erreur DFCE : "
-                  + except.getMessage()));
+               throw new UpdateServiceEx(new Exception(message));
          }
       }
       }

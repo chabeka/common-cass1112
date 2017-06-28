@@ -119,8 +119,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       try {
          transfertService.transfertDocMasse(document);
       } catch (Throwable except) {
-         throw new TransfertException("Erreur transfert : "
-               + except.getMessage(), except);
+         throw new TransfertException(
+               "Erreur transfert - identifiant archivage " + document.getUuid()
+                     + " : " + except.getMessage(), except);
       }
       return document;
    }
@@ -140,8 +141,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       try {
          suppressionService.suppression(document.getUuid());
       } catch (Throwable except) {
-         throw new SuppressionException("Erreur Suppression : "
-               + except.getMessage(), except);
+         throw new SuppressionException(
+               "Erreur Suppression - identifiant archivage "
+                     + document.getUuid() + " : " + except.getMessage(), except);
       }
       return document;
    }
