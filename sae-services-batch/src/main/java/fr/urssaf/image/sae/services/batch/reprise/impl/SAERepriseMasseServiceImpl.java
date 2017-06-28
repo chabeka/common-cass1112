@@ -133,47 +133,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
       Assert.notNull(jobAReprendre, "Le traitement à reprendre est requis");
 
-      // Gestion de droits pour la reprise
-      List<String> pagmsReprise = jobReprise.getVi().getPagms();
-      List<String> pagmsJobAReprendre = jobAReprendre.getVi().getPagms();
-
-      // Contrôle CS du traitement de reprise
-      boolean checkAccessRepriseCS = true;
-      if (!jobReprise.getVi().getCodeAppli()
-            .equals(jobAReprendre.getVi().getCodeAppli())) {
-         checkAccessRepriseCS = false;
-         // Mise à jour du compteur de job reprise
-         try {
-            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
-         } catch (JobInexistantException e) {
-            throw new JobParameterTypeException(jobReprise, e);
-         }
-         LOGGER.warn(
-               "{} - Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre",
-               TRC_REPRISE);
-         throw new AccessDeniedException(
-               "Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre");
-      }
-
-      // Contrôle PAGM de reprise
-      if (checkAccessRepriseCS) {
-         for (String pagmAReprendre : pagmsJobAReprendre) {
-            if (!pagmsReprise.contains(pagmAReprendre)) {
-               // Mise à jour du compteur de job reprise
-               try {
-                  jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
-               } catch (JobInexistantException e) {
-                  throw new JobParameterTypeException(jobReprise, e);
-               }
-               LOGGER.warn(
-                     "{} - Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre",
-                     TRC_REPRISE);
-               throw new AccessDeniedException(
-                     "Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre");
-            }
-         }
-      }
-
       // Chargement des paramètres de reprise
       mapParam.put(Constantes.ID_TRAITEMENT_REPRISE, new JobParameter(
             idJobReprise.toString()));

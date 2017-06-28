@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -25,6 +26,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
@@ -64,7 +66,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
    @Override
    public RepriseResponse reprise(Reprise request, String callerIP)
          throws RepriseAxisFault, JobInexistantException {
-      String prefixeTrc = "deblocage()";
+      String prefixeTrc = "reprise()";
       LOG.debug("{} - Début", prefixeTrc);
 
       // Récuperer les paramètres du job à reprendre
@@ -94,15 +96,43 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             String contextLog = MDC.get(BuildOrClearMDCAspect.LOG_CONTEXTE);
             // Récupération de l'UUID du traitement
             uuidJobReprise = UUID.fromString(contextLog);
+            
+            VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
+                  .getContext().getAuthentication().getPrincipal();
 
+            // Vérification des droits pour le traitement reprise
+            List<String> pagmsReprise = extrait.getPagms();
+            List<String> pagmsJobAReprendre = jobRequest.getVi().getPagms();
+            
+            // Contrôle CS du traitement de reprise
+            boolean checkAccessRepriseCS = true;
+            if (!jobRequest.getVi().getCodeAppli()
+                  .equals(extrait.getCodeAppli())) {
+               checkAccessRepriseCS = false;
+               LOG.warn(
+                     "{} - Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre",
+                     prefixeTrc);
+               throw new RepriseAxisFault("RepriseAxisFault",
+                     "Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre");
+            }
+            // Contrôle PAGM de reprise
+            if (checkAccessRepriseCS) {
+               for (String pagmAReprendre : pagmsJobAReprendre) {
+                  if (!pagmsReprise.contains(pagmAReprendre)) {
+                     LOG.warn(
+                           "{} - Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre",
+                          prefixeTrc);
+                     throw new RepriseAxisFault("RepriseAxisFault",
+                           "Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre");
+                  }
+               }
+            }
+            
             // Charger l'uuid du job à reprendre dans les paramètres de la
             // reprise
             Map<String, String> jobParams = new HashMap<String, String>();
             jobParams.put(Constantes.ID_TRAITEMENT_A_REPRENDRE,
                   uuidJobAReprendre.toString());
-
-            VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
-                  .getContext().getAuthentication().getPrincipal();
             
             TraitemetMasseParametres parametres = new TraitemetMasseParametres(
                   jobParams, uuidJobReprise, TYPES_JOB.reprise_masse, hName,
