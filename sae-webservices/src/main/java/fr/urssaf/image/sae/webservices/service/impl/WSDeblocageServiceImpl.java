@@ -94,8 +94,8 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
                LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse",
                      new Object[] { prefixeTrc, uuid });
                throw new DeblocageAxisFault(
-                     "DeblocageAxisFault",
-                     "Erreur de déblocage: le job ne correspond pas à un traitement de modification de masse");
+                     "ErreurInterneDeblocage",
+                     "Le job ne correspond pas à un traitement de modification de masse");
             }
          } else if (JobState.RESERVED.name().equals(
                jobRequest.getState().toString())
@@ -109,8 +109,8 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
          } else {
             LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état",
                   new Object[] { prefixeTrc, uuid });
-            throw new DeblocageAxisFault("DeblocageAxisFault",
-                  "Erreur de déblocage: le job ne peut pas être débloqué à cause de son état");
+            throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                  "Le job ne peut pas être débloqué à cause de son état");
          }
          // Récupérer l'état du job apèrs déblocage
          JobRequest job = jobLectureService.getJobRequest(uuidJob);
