@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -84,18 +85,22 @@ public class EcdeControleSupportImpl implements EcdeControleSupport {
    public final void checkHash(File sommaire, String hash, String typeHash)
          throws CaptureMasseSommaireTypeHashException,
          CaptureMasseSommaireHashException {
-
       if ("SHA-1".equals(typeHash)) {
-
          // récupération du contenu pour le calcul du HASH
-         byte[] content;
+         FileInputStream content;
          try {
-            content = FileUtils.readFileToByteArray(sommaire);
+            content = FileUtils.openInputStream(sommaire);
          } catch (IOException e) {
             throw new SAECaptureServiceRuntimeException(e);
          }
          // calcul du Hash
-         String hashCode = DigestUtils.shaHex(content);
+         String hashCode = StringUtils.EMPTY;
+         try {
+            hashCode = DigestUtils.shaHex(content);
+         } catch (IOException e) {
+            throw new CaptureMasseSommaireHashException(hash, hashCode,
+                  typeHash);
+         }
 
          // comparaison avec la valeur attendu
          if (!StringUtils.equalsIgnoreCase(hashCode, hash.trim())) {
