@@ -36,6 +36,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Copie;
 import sae.client.demo.webservice.modele.SaeServiceStub.CopieRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.DataFileType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Deblocage;
+import sae.client.demo.webservice.modele.SaeServiceStub.DeblocageRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlSommaireType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EcdeUrlType;
 import sae.client.demo.webservice.modele.SaeServiceStub.EtatTraitementsMasse;
@@ -723,6 +725,14 @@ public final class Axis2ObjectFactory {
       
       return transfertMasse;    
       
+   }
+   
+   public static Deblocage contruitParamsEntreeDeblocage(String uuidJob){
+      Deblocage deblocage = new Deblocage();
+      DeblocageRequestType deblocageRequest = new DeblocageRequestType();
+      deblocageRequest.setUuid(uuidJob);
+      deblocage.setDeblocage(deblocageRequest);
+      return deblocage;
    }
 
    private static EcdeUrlType buildEcdeUrl(String urlEcde) {
