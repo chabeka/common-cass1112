@@ -382,6 +382,19 @@
     <wsdl:part name="output" element="tns:deblocageResponse">
     </wsdl:part>
   </wsdl:message>
+  <wsdl:message name="repriseRequestMessage">
+<wsdl:documentation>Message de demande de reprise de job
+      </wsdl:documentation>
+    <wsdl:part name="input" element="tns:reprise">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="repriseResponseMessage">
+<wsdl:documentation>Message de réponse à une demande
+         de reprise de job
+      </wsdl:documentation>
+    <wsdl:part name="output" element="tns:repriseResponse">
+    </wsdl:part>
+  </wsdl:message>
    <wsdl:portType name="SaeServicePortType">
       <wsdl:operation name="Ping" parameterOrder="input">
          <wsdl:documentation>Opération de test de la disponibilité
@@ -620,6 +633,14 @@
       <wsdl:input message="tns:deblocageRequestMessage">
     </wsdl:input>
       <wsdl:output message="tns:deblocageResponseMessage">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="reprise" parameterOrder="input">
+<wsdl:documentation>Opération de reprise de job
+         </wsdl:documentation>
+      <wsdl:input message="tns:repriseRequestMessage">
+    </wsdl:input>
+      <wsdl:output message="tns:repriseResponseMessage">
     </wsdl:output>
     </wsdl:operation>
    </wsdl:portType>
@@ -963,6 +984,18 @@
          <wsdl:documentation>Service de déblocage de job
          </wsdl:documentation>
       <soap:operation soapAction="deblocage"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="reprise">
+         <wsdl:documentation>Service de reprise de job
+         </wsdl:documentation>
+      <soap:operation soapAction="reprise"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>

@@ -12,7 +12,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.Resulta
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.batch.AbstractResultatsFileFailureTasklet;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
 
 /**
  * Tasklet pour l'écriture du fichier resultats.xml lors d'un échec de
@@ -36,7 +36,7 @@ public class ResultatsFileFailureTasklet extends
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private ModificationPoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}

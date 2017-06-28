@@ -550,6 +550,44 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
       }
       return errors;
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final List<MetadataError> checkMetadataListValueTypeAndFormatForTransfertMasse(
+         List<UntypedMetadata> metadatas) {
+      final List<MetadataError> errors = new ArrayList<MetadataError>();
+      for (UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         try {
+            final MetadataReference reference = referenceDAO
+                  .getByLongCode(metadata.getLongCode());
+            if (!ruleFactory.getValueTypeRule().isSatisfiedBy(metadata,
+                  reference)) {
+               errors.add(new MetadataError(MetadataMessageHandler
+                     .getMessage("metadata.control.type"), metadata
+                     .getLongCode(), MetadataMessageHandler.getMessage(
+                     "metadata.bad.type", metadata.getLongCode())));
+            }
+            if (!ruleFactory.getValueLengthRule().isSatisfiedBy(metadata,
+                  reference)) {
+               errors.add(new MetadataError(MetadataMessageHandler
+                     .getMessage("metadata.control.Length"), metadata
+                     .getLongCode(), MetadataMessageHandler.getMessage(
+                     "metadata.length.not.verified", metadata.getLongCode(),
+                     reference.getLength())));
+            }
+            //}
+         } catch (ReferentialException refExcept) {
+            errors.add(new MetadataError(MetadataMessageHandler
+                  .getMessage("metadata.referentiel.error"), metadata
+                  .getLongCode(), MetadataMessageHandler
+                  .getMessage("metadata.referentiel.retrieve")));
+         }
+
+      }
+      return errors;
+   }
 
    /**
     * {@inheritDoc}

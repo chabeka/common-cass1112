@@ -72,7 +72,7 @@ public class InsertionPoolThreadExecutorTest {
       poolExecutor = new InsertionCapturePoolThreadExecutor(poolConfiguration,
             interruptionSupport, interruptionConfig);
 
-      insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer);
+      insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer, 0);
    }
 
    @After

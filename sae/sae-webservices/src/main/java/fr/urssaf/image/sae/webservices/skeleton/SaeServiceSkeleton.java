@@ -68,6 +68,8 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
+import fr.cirtil.www.saeservice.Reprise;
+import fr.cirtil.www.saeservice.RepriseResponse;
 import fr.cirtil.www.saeservice.RestoreMasse;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.StockageUnitaire;
@@ -122,6 +124,7 @@ import fr.urssaf.image.sae.webservices.exception.EtatTraitementsMasseAxisFault;
 import fr.urssaf.image.sae.webservices.exception.GetDocFormatOrigineAxisFault;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
+import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RestoreAxisFault;
 import fr.urssaf.image.sae.webservices.exception.SuppressionAxisFault;
 import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
@@ -139,6 +142,7 @@ import fr.urssaf.image.sae.webservices.service.WSModificationMasseService;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.WSRechercheService;
+import fr.urssaf.image.sae.webservices.service.WSRepriseService;
 import fr.urssaf.image.sae.webservices.service.WSRestoreMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionMasseService;
 import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
@@ -221,6 +225,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
    @Autowired
    private WSDeblocageService deblocageService;
+   
+   @Autowired
+   private WSRepriseService repriseService;
 
    @Autowired
    private WSModificationMasseService modificationMasse;
@@ -1375,6 +1382,40 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new DeblocageAxisFault(
                "ErreurInterneDeblocage",
                "Une erreur interne à l'application est survenue lors de déblocage de job.",
+               ex);
+      }
+   }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws RepriseAxisFault
+    * @throws SaeAccessDeniedAxisFault
+    * @throws DeblocageAxisFault
+    */
+   @Override
+   public RepriseResponse repriseSecure(Reprise request, String callerIP)
+         throws AxisFault, JobInexistantException {
+      // TODO 
+      try {
+         String prefixeTrc = "Opération repriseSecure()";
+         LOG.debug("{} - Début", prefixeTrc);
+         RepriseResponse response = repriseService.reprise(request,
+               callerIP);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         return response;
+      } catch (JobInexistantException ex) {
+         ex.printStackTrace();
+         LOG.warn("échec de reprise du job: Job inexistant");
+         throw ex;
+      } catch (AccessDeniedException exception) {
+         throw new SaeAccessDeniedAxisFault(exception);
+      } catch (RuntimeException ex) {
+         logRuntimeException(ex);
+         throw new RepriseAxisFault(
+               "ErreurInterneReprise",
+               "Une erreur interne à l'application est survenue lors de la reprise du job.",
                ex);
       }
    }

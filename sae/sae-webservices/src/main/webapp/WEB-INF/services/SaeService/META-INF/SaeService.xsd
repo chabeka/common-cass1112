@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
     <xsd:element name="PingRequest">
         <xsd:annotation>
             <xsd:documentation>Requête de Ping (compatibilité ascendante)
@@ -1504,6 +1505,37 @@
             </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
+    <xsd:complexType name="repriseRequestType">
+        <xsd:annotation>
+            <xsd:documentation>Paramètres d'entrées de l'opération
+            'reprise'
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="sae:uuidType">
+                <xsd:annotation>
+                    <xsd:documentation>L'uuid du job à reprendre
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
+    <xsd:complexType name="repriseResponseType">
+        <xsd:annotation>
+            <xsd:documentation>Valeur de retour de l'opération
+            'reprise'. Le type est un UUID, il sert à
+            identifier le job dans la pile des travaux
+         </xsd:documentation>
+        </xsd:annotation>
+        <xsd:sequence>
+            <xsd:element name="uuid" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>l'uuid du job de reprise
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+        </xsd:sequence>
+    </xsd:complexType>
     <xsd:element name="archivageUnitaire" type="sae:archivageUnitaireRequestType"/>
     <xsd:element name="archivageUnitaireResponse" type="sae:archivageUnitaireResponseType"/>
     <xsd:element name="archivageUnitairePJ" type="sae:archivageUnitairePJRequestType"/>
@@ -1555,4 +1587,6 @@
     <xsd:element name="transfertMasseResponse" type="sae:transfertMasseResponseType"/>
     <xsd:element name="deblocage" type="sae:deblocageRequestType"/>
     <xsd:element name="deblocageResponse" type="sae:deblocageResponseType"/>
+    <xsd:element name="reprise" type="sae:repriseRequestType"/>
+    <xsd:element name="repriseResponse" type="sae:repriseResponseType"/>
 </xsd:schema>

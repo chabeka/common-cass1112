@@ -106,17 +106,17 @@ public class WSModificationMasseServiceImpl implements
 
          controleSupport.checkHash(fileEcde, hash, typeHash);
       } catch (EcdeBadURLException e) {
-         throw new ModificationAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(), e);
+         throw new ModificationAxisFault("ModificationUrlEcdeIncorrecte", e.getMessage(), e);
       } catch (EcdeBadURLFormatException e) {
-         throw new ModificationAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(), e);
+         throw new ModificationAxisFault("ModificationUrlEcdeIncorrecte", e.getMessage(), e);
       } catch (URISyntaxException e) {
-         throw new ModificationAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(), e);
+         throw new ModificationAxisFault("ModificationUrlEcdeIncorrecte", e.getMessage(), e);
       } catch (CaptureMasseSommaireHashException e) {
          throw new ModificationAxisFault("HashSommaireIncorrect", e.getMessage(), e);
       } catch (CaptureMasseSommaireTypeHashException e) {
          throw new ModificationAxisFault("TypeHashSommaireIncorrect", e.getMessage(), e);
       } catch (CaptureMasseRuntimeException e) {
-         throw new ModificationAxisFault("CaptureUrlEcdeFichierIntrouvable", e.getMessage(), e);
+         throw new ModificationAxisFault("ModificationUrlEcdeFichierIntrouvable", e.getMessage(), e);
       }
 
       Map<String, String> jobParam = new HashMap<String, String>();

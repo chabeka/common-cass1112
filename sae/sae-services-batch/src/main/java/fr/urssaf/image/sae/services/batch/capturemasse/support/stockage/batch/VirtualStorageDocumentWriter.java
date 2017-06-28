@@ -76,7 +76,7 @@ public class VirtualStorageDocumentWriter extends
    }
    
    @Override
-   public UUID launchTraitement(AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
       // Non utilisé pour les documents virtuels. A mettre en place si besoin pour rendre le code plus générique.
       // VirtualStorageDocument document = insertStorageDocument((VirtualStorageDocument) storageDocument);

@@ -19,6 +19,8 @@ public interface UpdateService {
     * Réalise la mise à jour du document dans DFCE. Ecrase l'intégralité du
     * document : toute métadonnée non renseignée sera écrasée
     * 
+    * @param uuidJob
+    *           identifiant unique du traitement de masse
     * @param uuid
     *           identifiant unique du document
     * @param modifiedMetadatas
@@ -29,7 +31,7 @@ public interface UpdateService {
     *            Exception levée lorsque la modification du document est en
     *            erreur
     */
-   void updateStorageDocument(UUID uuid,
+   void updateStorageDocument(UUID uuidJob, UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 

@@ -31,6 +31,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
@@ -159,7 +160,24 @@ public class JobQueueServiceImpl implements JobQueueService {
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
             dateFinTraitement, succes, message, clock);
-
+      
+      // Gestion du succès de la reprise de masse
+      if(jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes){
+         String idTraitementAReprendre = jobRequest.getJobParameters().get(
+               Constantes.ID_TRAITEMENT_A_REPRENDRE);
+         UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
+         JobRequest jobAReprendre = this.jobLectureService.getJobRequest(idJobAReprendre);
+         String cdTraitement = jobAReprendre.getJobParameters().get(Constantes.CODE_TRAITEMENT);
+         
+         // Passer le job à l'état REPLAY_SUCCESS
+         Date dateReprise = new Date();
+         changerEtatJobRequest(idJobAReprendre,
+               JobState.REPLAY_SUCCESS.name(), dateReprise, "Repris avec succes");
+         // Supprimer le sémaphore du traitement repris
+         this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJobAReprendre, succes,
+               cdTraitement, clock);
+      }
+      
       // Ecriture dans la CF "JobQueues" pour hostname
       this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
 

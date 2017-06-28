@@ -250,6 +250,25 @@ public interface StorageDocumentService {
    void updateStorageDocument(UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
+   
+   /**
+    * Réalise la mise à jour du document dans DFCE
+    * 
+    * @param uuidJob
+    *           identifiant unique de traitement de masse
+    * @param uuid
+    *           identifiant unique du document
+    * @param modifiedMetadatas
+    *           Liste des métadonnées à modifier
+    * @param deletedMetadatas
+    *           Liste des métadonnées à supprimer
+    * @throws UpdateServiceEx
+    *            Exception levée lorsque la modification du document est en
+    *            erreu
+    */
+   void updateStorageDocument(UUID uuidJob, UUID uuid,
+         List<StorageMetadata> modifiedMetadatas,
+         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 
    /**
     * Réalise suppresion d'un StorageDocument, suite à un transfert, à partir du
@@ -384,4 +403,5 @@ public interface StorageDocumentService {
    PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
+
 }

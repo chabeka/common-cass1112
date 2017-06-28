@@ -8,6 +8,7 @@ import java.io.IOException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport;
+import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.model.ErreurTraitement;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -50,8 +52,11 @@ public class ResultatsFileEchecBloquantSupportTest {
 
    @Test(expected = IllegalArgumentException.class)
    public void testEcdeDirectoryObligatoire() {
-      support.writeResultatsFile(null,
-            new CaptureMasseSommaireFormatValidationException(null));
+      ErreurTraitement erreurTraitement = new ErreurTraitement();
+      erreurTraitement
+            .setException(new CaptureMasseSommaireFormatValidationException(
+                  null));
+      support.writeResultatsFile(null, erreurTraitement);
    }
 
    @Test(expected = IllegalArgumentException.class)
@@ -67,8 +72,11 @@ public class ResultatsFileEchecBloquantSupportTest {
       CaptureMasseSommaireFormatValidationException erreur = new CaptureMasseSommaireFormatValidationException(
             new ParserConfigurationException(
                   "erreur lors de la configuration du parser"));
-
-      support.writeResultatsFile(ecdeDirectory, erreur);
+      ErreurTraitement erreurTraitement = new ErreurTraitement();
+      erreurTraitement.setCodeErreur(Constantes.ERR_BUL001);
+      erreurTraitement.setMessageErreur(StringUtils.EMPTY);
+      erreurTraitement.setException(erreur);
+      support.writeResultatsFile(ecdeDirectory, erreurTraitement);
 
       File resultatsFile = new File(ecdeDirectory, "resultats.xml");
 

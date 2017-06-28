@@ -16,7 +16,28 @@ public final class Constantes {
     * Identifiant du paramètre idTraitement
     */
    public static final String ID_TRAITEMENT = "capture.masse.idtraitement";
+   
+   /**
+    * Identifiant du paramètre heureTraitement
+    */
+   public static final String HEURE_REPRISE = "reprise.heureTraitement";
+   
+   /**
+    * Identifiant du paramètre idTraitement de reprise
+    */
+   public static final String ID_TRAITEMENT_REPRISE = "idTraitement";
+   
+   /**
+    * Identifiant de l'id du traitement à reprendre
+    */
+   public static final String ID_TRAITEMENT_A_REPRENDRE_BATCH = "uuidJobAReprendre";
 
+   /**
+    * Type du traitement à reprendre
+    */
+   public static final String TYPE_TRAITEMENT_A_REPRENDRE = "typeTraitementAReprendre";
+   
+   
    /**
     * Identifiant du paramètre sommaire
     */
@@ -68,7 +89,7 @@ public final class Constantes {
    public static final String SOMMAIRE_FILE = "SOMMAIRE_FILE";
 
    /**
-    * Index utilisé pour le contrôler le document courant
+    * Index utilisé pour contrôler le document courant
     */
    public static final String CTRL_INDEX = "CTRL_INDEX";
 
@@ -102,13 +123,19 @@ public final class Constantes {
     * Code Erreur pour la modification en masse en mode partiel qui a été
     * interrompue
     */
-   public static final String ERR_BUL004 = "SAE-CA-BUL004";
+   public static final String ERR_MO_BUL001 = "SAE-MO-BUL001";
+
+   /**
+    * Code Erreur pour le transfert de masse en mode partiel qui a été
+    * interrompue
+    */
+   public static final String ERR_TR_BUL001 = "SAE-TR-BUL001";
    
    /**
     * Code Erreur pour le transfert de masse en mode partiel qui a été
     * interrompue
     */
-   public static final String ERR_BUL005 = "SAE-CA-BUL005";
+   public static final String ERR_RE_BUL001 = "SAE-RE-BUL001";
 
    /**
     * Recherche réalisée pour le rollback
@@ -155,7 +182,7 @@ public final class Constantes {
     * l'Url ECDE
     */
    public static final String ECDE_URL = "ecdeUrl";
-
+   
    /**
     * Traçabilité : le code de l'événement pour l'échec d'une capture de masse
     */
@@ -276,7 +303,7 @@ public final class Constantes {
     * Nom balise dans sommaire/résultat pour le batch mode.
     */
    public static final String BATCH_MODE_ELEMENT_NAME = "batchMode";
-
+   
    /**
     * Traçabilité : le code de l'événement pour l'échec d'un transfert de masse
     */
@@ -286,6 +313,26 @@ public final class Constantes {
     * Traçabilité : contexte pour la modification de masse
     */
    public static final String CONTEXTE_TRANSFERT_MASSE = "transfertMasse";
+   
+   /**
+    * Traçabilité : le code de l'événement pour l'échec d'une reprise de masse
+    */
+   public static final String TRACE_CODE_EVT_ECHEC_REPRISE = "REPRISE_MASSE|KO";
+   
+   /**
+    * Traçabilité : contexte pour la reprise de masse
+    */
+   public static final String CONTEXTE_REPRISE_MASSE = "repriseMasse";
+   
+   /**
+    * Liste des indexs des documents déjà traités
+    */
+   public static final String INDEX_DOCUMENT_DONE = "INDEX_DOCUMENT_DONE";
+
+   /**
+    * Identification d'un traitement de reprise
+    */
+   public static final String TRAITEMENT_REPRISE = "traitementReprise";
 
    /**
     * Constructeur
@@ -343,6 +390,21 @@ public final class Constantes {
        */
       public String getModeNomCourt() {
          return modeNomCourt;
+      }
+
+      /**
+       * Vérifiez si le nom d'un type de travail spécifique existe
+       * 
+       * @param name
+       * @return true/false
+       */
+      public static Boolean batchModeExist(final String name) {
+         for (BATCH_MODE elm : BATCH_MODE.values()) {
+            if (elm.modeNom.equals(name)) {
+               return true;
+            }
+         }
+         return false;
       }
 
    }

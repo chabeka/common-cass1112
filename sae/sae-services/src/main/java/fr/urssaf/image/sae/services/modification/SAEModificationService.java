@@ -90,13 +90,15 @@ public interface SAEModificationService {
     * @param idArchive Identifiant du document
     * @param metadonnees Metadonnées à controler
     * @param trcPrefix Trace prefixe
+    * @param actionUnitaire action unitaire du service appelant
     * @return La liste des metadonnées devant être modifiées.
     * @throws ArchiveInexistanteEx @{@link ArchiveInexistanteEx}
     * @throws ModificationException @{@link ModificationException}
     * @throws DuplicatedMetadataEx @{@link DuplicatedMetadataEx}
     */
    public List<StorageMetadata> controlerMetaDocumentModifie(UUID idArchive,
-         List<UntypedMetadata> metadonnees, String trcPrefix) throws ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx;
+         List<UntypedMetadata> metadonnees, String trcPrefix,
+         String actionUnitaire) throws ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx;
    
    /**
     * Modification des metadonnées d'un document.

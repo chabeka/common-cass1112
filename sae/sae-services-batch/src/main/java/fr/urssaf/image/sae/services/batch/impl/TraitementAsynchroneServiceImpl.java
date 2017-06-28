@@ -40,7 +40,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 public class TraitementAsynchroneServiceImpl implements
-TraitementAsynchroneService {
+      TraitementAsynchroneService {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(TraitementAsynchroneServiceImpl.class);
@@ -71,6 +71,9 @@ TraitementAsynchroneService {
    @Qualifier("transfertMasseTraitement")
    private TraitementExecutionSupport transfertMasse;
 
+   @Autowired
+   @Qualifier("repriseMasseTraitement")
+   private TraitementExecutionSupport repriseMasse;
 
    /**
     * 
@@ -114,7 +117,7 @@ TraitementAsynchroneService {
     */
    @Override
    public final void lancerJob(UUID idJob) throws JobInexistantException,
-   JobNonReserveException {
+         JobNonReserveException {
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -166,17 +169,19 @@ TraitementAsynchroneService {
           * Appel de l'implémentation de TraitementExecutionSupport pour
           * l'exécution du traitement de masse
           */
-         if (job.getType().equals(TYPES_JOB.capture_masse.name()))
+         if (job.getType().equals(TYPES_JOB.capture_masse.name())) {
             exitTraitement = captureMasse.execute(job);
-         else if (job.getType().equals(TYPES_JOB.suppression_masse.name()))
+         } else if (job.getType().equals(TYPES_JOB.suppression_masse.name())) {
             exitTraitement = suppressionMasse.execute(job);
-         else if (job.getType().equals(TYPES_JOB.restore_masse.name()))
+         } else if (job.getType().equals(TYPES_JOB.restore_masse.name())) {
             exitTraitement = restoreMasse.execute(job);
-         else if (job.getType().equals(TYPES_JOB.modification_masse.name()))
+         } else if (job.getType().equals(TYPES_JOB.modification_masse.name())) {
             exitTraitement = modificationMasse.execute(job);
-         else if (job.getType().equals(TYPES_JOB.transfert_masse.name()))
+         } else if (job.getType().equals(TYPES_JOB.transfert_masse.name())) {
             exitTraitement = transfertMasse.execute(job);
-         else {
+         } else if (job.getType().equals(TYPES_JOB.reprise_masse.name())) {
+            exitTraitement = lancerReprise(job);
+         } else {
             LOG.warn(
                   "Impossible d'executer le traitement ID={0}, de type {1}.",
                   job.getIdJob(), job.getType());
@@ -198,7 +203,7 @@ TraitementAsynchroneService {
                   job.getIdJob(),
                   BooleanUtils.toString(exitTraitement.isSucces(),
                         "avec succès", "sur un échec"),
-                        exitTraitement.getExitMessage() });
+                  exitTraitement.getExitMessage() });
 
       String codeTraitement = null;
       if (job.getJobParameters() != null) {
@@ -254,7 +259,16 @@ TraitementAsynchroneService {
     */
    @Override
    public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
-      ajouterJob(parametres); 
+      ajouterJob(parametres);
+   }
+
+   /**
+    * {@inheritDoc}<br>
+    * <br>
+    */
+   @Override
+   public void ajouterJobReprise(TraitemetMasseParametres parametres) {
+      ajouterJob(parametres);
    }
 
    /**
@@ -284,6 +298,42 @@ TraitementAsynchroneService {
       }
 
       return listJobs;
+   }
+
+   /**
+    * Permet de lancer le traitement de reprise de masse passé en paramètre
+    * @param jobReprise
+    *           Le job de reprise
+    *           
+    * @return ExitTraitement résultat de l'exécution d'un traitement de masse.
+    * @throws JobInexistantException
+    */
+   public ExitTraitement lancerReprise(JobRequest jobReprise)
+         throws JobInexistantException {
+
+      ExitTraitement exitTraitement = new ExitTraitement();
+
+      // 1- Vérifier si le param uidJobAReprendre est bien renseigné
+      String jobAReprendreParam = jobReprise.getJobParameters().get(
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+      
+      // 2- Vérifier si le jobAReprendre existe en base
+      UUID idJobAReprendre = UUID.fromString(jobAReprendreParam);
+      
+      // Récupérer le job à reprendre
+      JobRequest jobAReprendre = jobLectureService.getJobRequest(idJobAReprendre);
+      
+      if (jobAReprendre != null) {
+          LOG.debug("Lancement de la reprise du traitement - {}",
+          idJobAReprendre.toString());
+          
+          // Lancer la reprise de masse
+          exitTraitement = repriseMasse.execute(jobReprise);
+      }else {
+         throw new JobInexistantException(idJobAReprendre);
+      }
+
+      return exitTraitement;
    }
 
 }

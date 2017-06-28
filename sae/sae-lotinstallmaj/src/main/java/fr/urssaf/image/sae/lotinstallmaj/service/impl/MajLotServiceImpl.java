@@ -73,6 +73,7 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNS_CASSANDRA_DFCE_170202 = "GNS_CASSANDRA_DFCE_170202";
    public static final String GNT_CASSANDRA_DFCE_170202 = "GNT_CASSANDRA_DFCE_170202";
    public static final String CASSANDRA_DFCE_170900 = "CASSANDRA_DFCE_170900";
+   public static final String CASSANDRA_DFCE_170901 = "CASSANDRA_DFCE_170901";
    
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -339,6 +340,12 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_170900.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra170900();
+      } else if (CASSANDRA_DFCE_170901.equalsIgnoreCase(nomOperation)) {
+         // Update keyspace SAE
+         updateCassandra170901();
+
+         // Ajout nouvelles des métadonnées
+         updateMetaDfce("META_170901");
       } else {
 
          // Opération inconnue => log + exception runtime
@@ -442,7 +449,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Methode permettant de réaliser les updtaes pour le serveur DFCE.
+    * Methode permettant de réaliser les updates pour le serveur DFCE.
     */
    private void installServeurDFCE() {
       // Update de la base DFCE
@@ -450,7 +457,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    /**
-    * Methode permettant de
+    * Methode permettant de réaliser les updates pour le serveur DFCE.
     */
    private void commonUpdateDFCE() {
       updateDFCE130700();
@@ -466,8 +473,6 @@ public final class MajLotServiceImpl implements MajLotService {
     *           {@link APPL_CONCERNEE}
     */
    private void commonUpdateSAE(APPL_CONCERNEE gedConcernee) {
-      // Create data base SAE
-      createGedBase();
       // META_130400
       updateMeta("meta130400.xml", "META_130400");
       // META_150100
@@ -506,6 +511,8 @@ public final class MajLotServiceImpl implements MajLotService {
       updateMetaDfce("META_160900");
       // CASSANDRA_DFCE_160901
       updateMetaDfce("META_160901");
+      // CASSANDRA_DFCE_170901
+      updateMetaDfce("META_170901");
    }
 
    /**
@@ -867,6 +874,13 @@ public final class MajLotServiceImpl implements MajLotService {
       LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170900");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion26();
+      LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
+   }
+
+   private void updateCassandra170901() {
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170901");
+      // Récupération de la chaîne de connexion au cluster cassandra
+      updater.updateToVersion27();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");
    }
 
@@ -1336,6 +1350,7 @@ public final class MajLotServiceImpl implements MajLotService {
       updater.updateToVersion24();
       updater.updateToVersion25();
       updater.updateToVersion26();
+      updater.updateToVersion27();
    }
 
 }

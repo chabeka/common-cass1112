@@ -38,7 +38,7 @@ import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
 @SuppressWarnings({ "PMD.MethodNamingConventions",
-   "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
+      "PMD.AvoidDuplicateLiterals", "PMD.TooManyMethods" })
 public class WSDeblocageServiceImplTest {
 
    @Autowired
@@ -128,7 +128,7 @@ public class WSDeblocageServiceImplTest {
     * @throws JobInexistantException
     */
    private void mockDeblocageJob(String uuid) throws DeblocageAxisFault,
-   JobInexistantException {
+         JobInexistantException {
       Deblocage request = new Deblocage();
       request.setDeblocage(new DeblocageRequestType());
       UuidType uuidType = new UuidType();

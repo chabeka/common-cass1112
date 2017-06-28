@@ -315,6 +315,21 @@ public class DroitsServiceUtils {
    }
 
    /**
+    * Ajout de l'action unitaire reprise_masse
+    * 
+    * @param keyspace
+    *           Keyspace
+    */
+   public static void addActionUnitaireRepriseMasse(Keyspace keyspace) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "DroitActionUnitaire", StringSerializer.get(),
+            StringSerializer.get());
+      addActionUnitaire("reprise_masse", "reprise de traitement de masse",
+            cfTmpl);
+
+   }
+
+   /**
     * 
     * Ajout de l'action unitaire Copie Ajout de l'action unitaire
     */

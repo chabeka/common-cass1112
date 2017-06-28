@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.transfert.support.resultats.ResultatsFileEchecTransfertSupport;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 
 /**
  * Tasklet pour l'écriture du fichier resultats.xml lors d'un échec de
@@ -41,7 +41,7 @@ public class ResultatsFileFailureTransfertTasklet extends
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private TransfertPoolThreadExecutor executor;
 
    /**
     * {@inheritDoc}

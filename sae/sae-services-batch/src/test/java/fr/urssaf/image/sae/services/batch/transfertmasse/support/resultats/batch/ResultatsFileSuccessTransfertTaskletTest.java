@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -51,7 +51,7 @@ public class ResultatsFileSuccessTransfertTaskletTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private TransfertPoolThreadExecutor executor;
 
    @Before
    public void init() {

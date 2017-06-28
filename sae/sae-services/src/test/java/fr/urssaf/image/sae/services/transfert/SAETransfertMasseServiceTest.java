@@ -34,7 +34,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -66,6 +65,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -216,25 +216,33 @@ public class SAETransfertMasseServiceTest {
       listeMeta.add(new StorageMetadata("apr", "ADELA"));
       listeMeta.add(new StorageMetadata("cop", "CER68"));
       
-      StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta);
+
+      try {
+         StorageDocument document = saeTransfertService
+               .controleDocumentTransfertMasse(
+               uidDocGNT, listeMeta, false, null);
       
-      saeTransfertService.transfertDocMasse(document);
+         saeTransfertService.transfertDocMasse(document);
 
-      // -- Vérification présence fichier transféré
-      Document doc = testProviderGNS.searchDocument(uidDocGNT);
-      Assert.assertNotNull("l'UUID '" + uidDocGNT
-            + "' doit exister dans la GNS", doc);
+         // -- Vérification présence fichier transféré
+         Document doc = testProviderGNS.searchDocument(uidDocGNT);
+         Assert.assertNotNull("l'UUID '" + uidDocGNT
+               + "' doit exister dans la GNS", doc);
 
-      // recupere l'identifiant du document que l'on a transfere en GNS
-      // pour pouvoir le supprimer a la fin du test
-      uidDocGNS = doc.getUuid();
+         // recupere l'identifiant du document que l'on a transfere en GNS
+         // pour pouvoir le supprimer a la fin du test
+         uidDocGNS = doc.getUuid();
 
-      // le doc à été supprimé par transferDoc()
-      // ne pas le re-suppr. dans "@After" erreur dfce.
-      uidDocGNT = null;
+         // le doc à été supprimé par transferDoc()
+         // ne pas le re-suppr. dans "@After" erreur dfce.
+         uidDocGNT = null;
 
-      // test sur les métadonnées techniques
-      assertDocument(doc);
+         // test sur les métadonnées techniques
+         assertDocument(doc);
+
+      } catch (TraitementRepriseAlreadyDoneException e) {
+         Assert.fail("Exception non prévu");
+      }
    }
    
    @Test
@@ -251,11 +259,14 @@ public class SAETransfertMasseServiceTest {
          listeMeta.add(new StorageMetadata("apr", "ADELA"));
          listeMeta.add(new StorageMetadata("cop", "CER68"));
          
-         saeTransfertService.controleDocumentTransfertMasse(uuid, listeMeta);
+         saeTransfertService.controleDocumentTransfertMasse(uuid, listeMeta,
+               false, null);
          Assert.fail("une ArchiveInexistanteEx est attendue");
 
       } catch (ArchiveInexistanteEx e) {
          // On a la bonne exception
+      } catch (TraitementRepriseAlreadyDoneException e) {
+         Assert.fail("Exception non prévu");
       }
    }
    
@@ -279,7 +290,8 @@ public class SAETransfertMasseServiceTest {
 
       // -- Appel méthode de transfert sur un doc déjà transféré
       try {
-         saeTransfertService.controleDocumentTransfertMasse(uidDocGNS, listeMeta);
+         saeTransfertService.controleDocumentTransfertMasse(uidDocGNS,
+               listeMeta, false, null);
          Assert.fail("une ArchiveAlreadyTransferedException est attendue");
 
       } catch (ArchiveAlreadyTransferedException e) {
@@ -314,33 +326,39 @@ public class SAETransfertMasseServiceTest {
       listeMeta.add(new StorageMetadata("cop", "CER68"));
 
       // -- Transfert du document vers la GNS
-      StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, null);
-      saeTransfertService.transfertDocMasse(document);
+      try {
+         StorageDocument document = saeTransfertService
+               .controleDocumentTransfertMasse(
+               uidDocGNT, null, false, null);
 
-      // -- Vérification présence fichier transféré
-      Document doc = testProviderGNS.searchDocument(uidDocGNT);
-      Assert.assertNotNull("l'UUID '" + uidDocGNT
-            + "' doit exister dans la GNS", doc);
+         saeTransfertService.transfertDocMasse(document);
 
-      // recupere l'identifiant du document que l'on a transfere en GNS
-      // pour pouvoir le supprimer a la fin du test
-      uidDocGNS = doc.getUuid();
+         // -- Vérification présence fichier transféré
+         Document doc = testProviderGNS.searchDocument(uidDocGNT);
+         Assert.assertNotNull("l'UUID '" + uidDocGNT
+               + "' doit exister dans la GNS", doc);
 
-      // le doc à été supprimé par transferDoc()
-      // ne pas le re-suppr. dans "@After" erreur dfce.
-      uidDocGNT = null;
+         // recupere l'identifiant du document que l'on a transfere en GNS
+         // pour pouvoir le supprimer a la fin du test
+         uidDocGNS = doc.getUuid();
 
-      // test sur le bon transfert de la note
-      List<Note> listeNotes = testProviderGNS.getNoteDocument(uidDocGNS);
-      
-      
-      if (listeNotes.size() > 0) {
-         Assert.assertEquals("Le contenu de la note est incorrect",
-               "Contenu de la note", listeNotes.get(0).getContent());
-      } else {
-         Assert.fail("Une note doit être présente sur le document");
+         // le doc à été supprimé par transferDoc()
+         // ne pas le re-suppr. dans "@After" erreur dfce.
+         uidDocGNT = null;
+
+         // test sur le bon transfert de la note
+         List<Note> listeNotes = testProviderGNS.getNoteDocument(uidDocGNS);
+
+         if (listeNotes.size() > 0) {
+            Assert.assertEquals("Le contenu de la note est incorrect",
+                  "Contenu de la note", listeNotes.get(0).getContent());
+         } else {
+            Assert.fail("Une note doit être présente sur le document");
+         }
+      } catch (TraitementRepriseAlreadyDoneException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
       }
-
    }
    
    private UUID insertDoc(SAEServiceTestProvider testProvider)

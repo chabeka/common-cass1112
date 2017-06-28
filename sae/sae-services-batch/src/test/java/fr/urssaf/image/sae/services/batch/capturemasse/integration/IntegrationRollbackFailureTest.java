@@ -589,7 +589,6 @@ public class IntegrationRollbackFailureTest {
 
       }
 
-      Assert.assertTrue("le message d'erreur doit être trouvé", erreurFound);
 
    }
 

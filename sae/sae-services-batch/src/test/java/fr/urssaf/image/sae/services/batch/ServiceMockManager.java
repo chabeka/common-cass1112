@@ -4,6 +4,7 @@ import org.easymock.EasyMock;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.modification.SAEModificationMasseService;
+import fr.urssaf.image.sae.services.batch.reprise.SAERepriseMasseService;
 import fr.urssaf.image.sae.services.batch.restore.SAERestoreMasseService;
 import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService;
 import fr.urssaf.image.sae.services.batch.transfert.SAETransfertMasseService;
@@ -57,6 +58,14 @@ public final class ServiceMockManager {
     */
    public static SAETransfertMasseService createSAETransfertMasseService() {
       return EasyMock.createMock(SAETransfertMasseService.class);
+   }
+   
+   /**
+    * 
+    * @return instance de {@link SAERepriseMasseService}
+    */
+   public static SAERepriseMasseService createSAERepriseMasseService() {
+      return EasyMock.createMock(SAERepriseMasseService.class);
    }
    
 }

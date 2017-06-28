@@ -24,8 +24,8 @@ import fr.urssaf.image.sae.services.batch.capturemasse.utils.StatutCaptureUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.verification.VerificationSupport;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.modification.SAEModificationMasseService;
+import fr.urssaf.image.sae.services.batch.modification.support.stockage.multithreading.ModificationPoolThreadExecutor;
 
 /**
  * Implémentation du service {@link SAEModificationMasseService}
@@ -68,7 +68,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
     * Pool d'execution des insertions de documents
     */
    @Autowired
-   private InsertionPoolThreadExecutor executor;
+   private ModificationPoolThreadExecutor executor;
 
    /**
     * Job de modification de documents
@@ -173,7 +173,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
                Constantes.FLAG_BUL003);
 
          batchModeTraitement = (String) jobExecution.getExecutionContext().get(
-               Constantes.BATCH_MODE_NOM_REDIRECT);
+               Constantes.BATCH_MODE_NOM);
       }
 
       verifSupport.checkFinTraitement(sommaireURL, nbreDocs, nbDocsIntegres, batchModeTraitement,

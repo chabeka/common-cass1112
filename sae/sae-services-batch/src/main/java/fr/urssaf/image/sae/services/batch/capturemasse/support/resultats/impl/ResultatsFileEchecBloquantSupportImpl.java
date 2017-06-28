@@ -26,6 +26,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFa
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.ResultatsFileEchecBloquantSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.JAXBUtils;
+import fr.urssaf.image.sae.services.batch.common.model.ErreurTraitement;
 
 /**
  * Implémentation du support {@link ResultatsFileEchecBloquantSupport}
@@ -50,46 +51,49 @@ public class ResultatsFileEchecBloquantSupportImpl implements
     */
    @Override
    public final void writeResultatsFile(final File ecdeDirectory,
-         final Exception erreur) {
-
+         final ErreurTraitement erreur) {
       LOGGER.debug(
             "{} - Début de création du fichier (resultats.xml en erreur bloquante)",
             PREFIX_TRC);
+      if (erreur != null && ecdeDirectory != null) {
 
       final String pathResultats = ecdeDirectory.getAbsolutePath()
             + File.separator + "resultats.xml";
+         final ResultatsType resultatsType = affectResultatsOnError(erreur);
+         final JAXBElement<ResultatsType> resultat = objFactory
+               .createResultats(resultatsType);
 
-      final ResultatsType resultatsType = affectResultatsOnError(erreur);
-      final JAXBElement<ResultatsType> resultat = objFactory
-            .createResultats(resultatsType);
+         FileOutputStream outputStream = null;
 
-      FileOutputStream outputStream = null;
+         URL xsdSchema;
 
-      URL xsdSchema;
-
-      final Resource classPath = context
-            .getResource("classpath:xsd_som_res/resultats.xsd");
-      try {
-         xsdSchema = classPath.getURL();
-         outputStream = new FileOutputStream(pathResultats);
-         JAXBUtils.marshal(resultat, outputStream, xsdSchema);
-      } catch (FileNotFoundException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (IOException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (JAXBException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } catch (SAXException e) {
-         throw new CaptureMasseRuntimeException(e);
-      } finally {
-         if (outputStream != null) {
-            try {
-               outputStream.close();
-            } catch (IOException e) {
-               LOGGER.debug("{} - Erreur de fermeture du flux de "
-                     + pathResultats, PREFIX_TRC);
+         final Resource classPath = context
+               .getResource("classpath:xsd_som_res/resultats.xsd");
+         try {
+            xsdSchema = classPath.getURL();
+            outputStream = new FileOutputStream(pathResultats);
+            JAXBUtils.marshal(resultat, outputStream, xsdSchema);
+         } catch (FileNotFoundException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } catch (IOException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } catch (JAXBException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } catch (SAXException e) {
+            throw new CaptureMasseRuntimeException(e);
+         } finally {
+            if (outputStream != null) {
+               try {
+                  outputStream.close();
+               } catch (IOException e) {
+                  LOGGER.debug("{} - Erreur de fermeture du flux de "
+                        + pathResultats, PREFIX_TRC);
+               }
             }
          }
+      } else {
+         throw new IllegalArgumentException(
+               "Les paramètres obligatoires sont manquants pour le traitement : url sommaire ou l'erreur");
       }
 
       LOGGER.debug("{} - Fin de création du fichier (resultats.xml en erreur bloquante)",
@@ -106,12 +110,12 @@ public class ResultatsFileEchecBloquantSupportImpl implements
     * 
     * @return ResultatsType correspondant au resultats.xml
     */
-   private ResultatsType affectResultatsOnError(final Exception erreur) {
+   private ResultatsType affectResultatsOnError(final ErreurTraitement erreur) {
 
       final ErreurType erreurType = new ErreurType();
-      erreurType.setCode("SAE-EC-SOM001");
-      erreurType.setLibelle("Le fichier sommaire n'est pas valide. Détails : "
-            + erreur.getMessage());
+      erreurType.setCode(erreur.getCodeErreur());
+      erreurType.setLibelle(erreur.getMessageErreur()
+            + erreur.getException().getMessage());
 
       ResultatsType resultats = objFactory.createResultatsType();
 

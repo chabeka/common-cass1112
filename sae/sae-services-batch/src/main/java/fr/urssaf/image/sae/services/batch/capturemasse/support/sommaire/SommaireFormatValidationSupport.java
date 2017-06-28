@@ -84,5 +84,21 @@ public interface SommaireFormatValidationSupport {
    void validationDocumentTypeMultiActionSommaire(File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException;
 
+   /**
+    * Validation de la presence de la balise "baliseRequired" et de la valeur
+    * associée dans le fichier sommaire.
+    * 
+    * @param sommaireFile
+    *           Fichier sommaire.xml
+    * @param baliseRequired
+    *           Balise obligatoire
+    * @param valeurRequired
+    *           Valeur obligatoire
+    * @throws CaptureMasseSommaireFormatValidationException
+    *            Le fichier sommaire.xml est invalide
+    */
+   void validationDocumentValeurBaliseRequisSommaire(File sommaireFile,
+         String baliseRequired, String valeurRequired)
+         throws CaptureMasseSommaireFormatValidationException;
 
 }

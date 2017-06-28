@@ -53,6 +53,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_24 = 24;
    private static final int VERSION_25 = 25;
    private static final int VERSION_26 = 26;
+   private static final int VERSION_27 = 27;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1062,7 +1063,7 @@ public class SAECassandraUpdater {
       donnees.modifyReferentielFormatCrtl1();
 
 
-      // On positionne la version à 24
+      // On positionne la version à 25
       saeDao.setDatabaseVersion(VERSION_25);
    }
 
@@ -1084,11 +1085,45 @@ public class SAECassandraUpdater {
       // Ajout droits unitaires nouveaux traitements de masse.
       donnees.addActionUnitaireTraitementMasse2();
 
-      // Ajout des évenements WS_MODIFICATION_MASSE|MODIFICATION_MASSE
+      // Ajout des évenements
       donnees.addReferentielEvenementV12();
 
-      // On positionne la version à 24
+      // On positionne la version à 26
       saeDao.setDatabaseVersion(VERSION_26);
+   }
+
+   public void updateToVersion27() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_27) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_27);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // -- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout droit unitaire reprise des traitements de masse.
+      donnees.addActionUnitaireRepriseMasse();
+
+      // Ajout des évenements
+      donnees.addReferentielEvenementV13();
+
+      // Modification du format png
+      donnees.addReferentielFormatV7();
+      
+      // Mise à jour du CS_V2 pour ajouter l'action reprise_masse à tous les PAGM
+      droitService.majPagmCsV2AjoutActionReprise170900(saeDao.getKeyspace());
+      
+      // On positionne la version à 27
+      saeDao.setDatabaseVersion(VERSION_27);
    }
 
    /**

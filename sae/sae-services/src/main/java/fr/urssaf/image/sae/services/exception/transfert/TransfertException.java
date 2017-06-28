@@ -39,7 +39,7 @@ public class TransfertException extends Exception {
     * @param exception
     *           l'exception mère
     */
-   public TransfertException(String message, Exception exception) {
+   public TransfertException(String message, Throwable exception) {
       super(message, exception);
    }
 

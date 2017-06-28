@@ -349,6 +349,93 @@ public class SommaireFormatValidationSupportImpl implements
    }
 
    @Override
+   public void validationDocumentValeurBaliseRequisSommaire(File sommaireFile,
+         String baliseRequired, String valeurRequired)
+         throws CaptureMasseSommaireFormatValidationException {
+      boolean baliseValuefind = false;
+      FileInputStream sommaireStream = null;
+      XMLEventReader reader = null;
+
+      try {
+         sommaireStream = new FileInputStream(sommaireFile);
+         reader = openSommaire(sommaireStream);
+         String valeurBalise = null;
+         XMLEvent event;
+
+         while (reader.hasNext()) {
+
+            // On parcourt le sommaire pour tomber sur un document
+            event = reader.nextEvent();
+            if (event.isStartElement()
+                  && ("document".equals(event.asStartElement().getName()
+                        .getLocalPart()) || "documentMultiAction".equals(event
+                        .asStartElement().getName().getLocalPart()))) {
+
+               // On continue le parcourt pour trouver la métadonnée IdGed
+               while (reader.hasNext()) {
+                  event = reader.nextEvent();
+
+                  if (event.isStartElement()
+                        && event.asStartElement().getName().getLocalPart()
+                              .equals(baliseRequired)) {
+                     event = reader.nextEvent();
+                     if (event.isCharacters()) {
+                        valeurBalise = event.asCharacters().getData();
+
+                        if (valeurBalise.equals(valeurRequired)) {
+                           // Si on trouve la balise et la valeur requise, on
+                           // passe au document suivant.
+                           baliseValuefind = true;
+                           break;
+                        }
+                     }
+                  }
+               }
+               if (!baliseValuefind) {
+                  // Si on ne trouve pas la balise et la valeur requise, on
+                  // arrete
+                  // le traitement pour lancer une erreur de validation.
+                  break;
+               }
+            }
+         }
+
+         if (!baliseValuefind) {
+            throw new CaptureMasseSommaireFormatValidationException(
+                  "Au moins un '" + valeurRequired + "' n'est pas présent dans le sommaire. '" + valeurRequired + "'  est obligatoire pour tous les documents", new Exception(
+                        "'" + valeurRequired + "' est obligatoire pour tous les documents."));
+         }
+
+      } catch (FileNotFoundException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } catch (XMLStreamException e) {
+         throw new CaptureMasseRuntimeException(e);
+
+      } finally {
+
+         if (reader != null) {
+            try {
+               reader.close();
+            } catch (XMLStreamException e) {
+               LOGGER.debug("erreur de fermeture du reader "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+
+         if (sommaireStream != null) {
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("erreur de fermeture du flux "
+                     + sommaireFile.getAbsolutePath());
+            }
+         }
+      }
+
+   }
+
+   @Override
    public void validerUniciteUuid(File sommaireFile)
          throws CaptureMasseSommaireFormatValidationException {
       FileInputStream sommaireStream = null;
@@ -362,7 +449,6 @@ public class SommaireFormatValidationSupportImpl implements
          XMLEvent event;
 
          while (reader.hasNext()) {
-
             // On parcourt le sommaire pour tomber sur un document
             event = reader.nextEvent();
             if (event.isStartElement()

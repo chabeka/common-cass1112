@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.ordonnanceur.service.impl;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
@@ -65,8 +68,7 @@ public class DecisionServiceImpl implements DecisionService {
     */
    @Autowired
    public DecisionServiceImpl(TraitementMasseSupport traitementMasseSupport,
-         JobFailureService jobFailureService,
-         TraceOrdoSupport traceOrdoSupport) {
+         JobFailureService jobFailureService, TraceOrdoSupport traceOrdoSupport) {
 
       this.traitementMasseSupport = traitementMasseSupport;
       this.jobFailureService = jobFailureService;
@@ -80,38 +82,35 @@ public class DecisionServiceImpl implements DecisionService {
    public List<JobQueue> trouverListeJobALancer(List<JobQueue> jobsEnAttente,
          List<JobRequest> jobsEnCours) throws AucunJobALancerException {
 
-
       // vérification que des traitements de masse sont à lancer
       if (CollectionUtils.isEmpty(jobsEnAttente)) {
          throw new AucunJobALancerException();
       }
-
       // filtrage des traitements de masse :
       // - capture en masse sur l'ECDE local
       // - suppression en masse sur tous les CNP
       // - restore en masse sur tous les CNP
+      // - modification en masse
+      // - transfert de masse
+      // - reprise de masse
       List<JobQueue> jobInstances = traitementMasseSupport
             .filtrerTraitementMasse(jobsEnAttente);
-
       // vérification que des traitements de masse
       if (CollectionUtils.isEmpty(jobInstances)) {
          throw new AucunJobALancerException();
       }
-
-      // filtrage des traitements en cours sur les capture en masse, suppression
-      // et restore
+      // filtrage des traitements en cours sur les capture en masse,
+      // suppression,
+      // restore, modification et transfert
       if (!CollectionUtils.isEmpty(jobsEnCours)) {
          Collection<JobRequest> enCours = traitementMasseSupport
                .filtrerTraitementMasse(jobsEnCours);
-
          // si un traitement en masse est en cours alors aucun
          // traitement n'est à lancer sur le serveur
          if (!enCours.isEmpty()) {
             throw new AucunJobALancerException();
          }
-
       }
-
       // filtrage des traitements de masse à lancer des traitements ayant
       // soulevé un nombre anormal d'anomalies
       jobInstances = filtrerTraitementMasseFailure(jobInstances);
@@ -119,10 +118,17 @@ public class DecisionServiceImpl implements DecisionService {
          throw new AucunJobALancerException();
       }
 
+      // Passer les jobs de reprise de masse en tête de liste des jobs à traiter 
+      Collections.sort(jobInstances, new Comparator<JobQueue>() {
+         @Override
+         public int compare(final JobQueue job1, final JobQueue job2) {
+            return Constantes.REPRISE_MASSE_JN.equals(job1.getType()) ? -1
+                  : Constantes.REPRISE_MASSE_JN.equals(job2.getType()) ? 1 : 0;
+         }
+      });
 
-      // renvoie du job à lancer
+      // renvoie des jobs à lancer
       return jobInstances;
-
    }
 
    private List<JobQueue> filtrerTraitementMasseFailure(

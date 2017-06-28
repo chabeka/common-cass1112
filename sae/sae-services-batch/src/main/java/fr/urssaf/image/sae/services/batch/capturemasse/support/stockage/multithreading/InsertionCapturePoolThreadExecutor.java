@@ -44,7 +44,7 @@ public class InsertionCapturePoolThreadExecutor
 
    private InsertionMasseRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "InsertionPoolThreadExecutor()";
+   private static final String PREFIX_TRACE = "InsertionCapturePoolThreadExecutor()";
 
    /**
     * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments

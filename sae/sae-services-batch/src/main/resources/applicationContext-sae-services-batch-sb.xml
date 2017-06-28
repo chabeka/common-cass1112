@@ -8,17 +8,13 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
 
-   <!--
-   Sous-ensemble du fichier principal de l'artéfact.
-   
-   Ce fichier contient la définition des beans pour Spring Batch sur Cassandra.
-   
-   Ce fichier est externalisé par rapport au fichier principal car ces beans peuvent être surchargés
-   pour les TU.
-   -->
-   
-   <!-- Définition des beans pour Spring Batch -->   
-   
+   <!-- Sous-ensemble du fichier principal de l'artéfact. Ce fichier contient 
+      la définition des beans pour Spring Batch sur Cassandra. Ce fichier est externalisé 
+      par rapport au fichier principal car ces beans peuvent être surchargés pour 
+      les TU. -->
+
+   <!-- Définition des beans pour Spring Batch -->
+
    <bean id="jobRepository"
       class="org.springframework.batch.core.repository.support.SimpleJobRepository">
       <constructor-arg ref="cassandraJobInstanceDao" />
@@ -27,6 +23,13 @@
       <constructor-arg ref="cassandraExecutionContextDao" />
    </bean>
    
+   <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.SimpleJobExplorer">
+     <constructor-arg ref="cassandraJobInstanceDao" />
+      <constructor-arg ref="cassandraJobExecutionDao" />
+      <constructor-arg ref="cassandraStepExecutionDao" />
+      <constructor-arg ref="cassandraExecutionContextDao" />
+   </bean>
+
    <bean id="jobLauncher"
       class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
       <property name="jobRepository" ref="jobRepository" />

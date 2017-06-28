@@ -49,6 +49,8 @@ public class TransfertMasseJobListener {
       ConcurrentLinkedQueue<Exception> listExceptions = new ConcurrentLinkedQueue<Exception>();
       context.put(Constantes.DOC_EXCEPTION, listExceptions);
 
+      ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();
+      context.put(Constantes.INDEX_DOCUMENT_DONE, listIndexDocumentDone);
    }
 
    /**

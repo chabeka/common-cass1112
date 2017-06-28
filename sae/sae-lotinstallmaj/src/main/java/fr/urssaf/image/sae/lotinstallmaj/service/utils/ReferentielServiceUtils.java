@@ -846,6 +846,30 @@ public class ReferentielServiceUtils {
 
    }
 
+   /**
+    * Ajout des données dans le référentiel des formats en V7 : <li>modification
+    * fmt/13 en png</li>
+    */
+   public static void addReferentielFormatV7(Keyspace keyspace) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, REFERENTIEL_FORMAT, StringSerializer.get(),
+            StringSerializer.get());
+
+      LOG.info("Mise à jour du référentiel des formats");
+
+      // Modification de l'indentifiant fmt/13 en png
+      String formatPNG = "fmt/13";
+      cfTmpl.deleteRow(formatPNG);
+
+      formatPNG = "png";
+
+      addNewColumnToReferentielFormat(cfTmpl, formatPNG, "Fichier PNG", "png",
+            "image/png", Boolean.TRUE, Boolean.TRUE);
+
+      LOG.info("Format modifié : {}", formatPNG);
+
+   }
+
 
    /**
     * Modification des données dans le référentiel des formats : Ajout d'un
@@ -1273,6 +1297,35 @@ public class ReferentielServiceUtils {
       cfTmpl.update(updater);
 
       LOG.info("Colonne ajoutée pour le format {}", identifiant);
+   }
+
+   /**
+    * Référentiel des événements en V13 Ajout des évenements : <li>
+    * WS_REPRISE_MASSE|KO</li> <li>REPRISE_MASSE|KO</li>
+    */
+   public static void addReferentielEvenementV13(Keyspace keyspace) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+
+      // WS_REPRISE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_REPRISE_MASSE|KO");
+      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
+            StringSerializer.get(), ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // REPRISE_MASSE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("REPRISE_MASSE|KO");
+      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
+            StringSerializer.get(), ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
    }
 
 }

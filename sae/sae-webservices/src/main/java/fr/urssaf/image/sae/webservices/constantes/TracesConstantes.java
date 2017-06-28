@@ -108,4 +108,10 @@ public final class TracesConstantes {
     * Le code de l'événement de l'échec du WS de déblocage
     */
    public static final String CODE_EVT_WS_DEBLOCAGE_KO = "WS_DEBLOCAGE|KO";
+   
+   /**
+    * Le code de l'événement de l'échec du WS de reprise
+    */
+   public static final String CODE_EVT_WS_REPRISE_KO = "WS_REPRISE|KO";
+   
 }

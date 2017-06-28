@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.services.batch.common.support.multithreading;
+package fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
  * 
  */
 @Component
-public class InsertionPoolThreadExecutor
+public class TransfertPoolThreadExecutor
       extends
       AbstractPoolThreadExecutor<StorageDocument, TraitementMasseIntegratedDocument>
       implements Serializable, DisposableBean {
@@ -37,13 +37,13 @@ public class InsertionPoolThreadExecutor
    private static final long serialVersionUID = 1L;
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(InsertionPoolThreadExecutor.class);
+         .getLogger(TransfertPoolThreadExecutor.class);
 
    private final ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> integDocs;
 
    private InsertionMasseRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "InsertionPoolModificationThreadExecutor()";
+   private static final String PREFIX_TRACE = "TransfertPoolThreadExecutor()";
 
    /**
     * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments
@@ -77,8 +77,8 @@ public class InsertionPoolThreadExecutor
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
    @Autowired
-   public InsertionPoolThreadExecutor(
-         InsertionPoolConfiguration poolConfiguration,
+   public TransfertPoolThreadExecutor(
+         TransfertPoolConfiguration poolConfiguration,
          final InterruptionTraitementMasseSupport support,
          final InterruptionTraitementConfig config) {
 

@@ -56,7 +56,13 @@ public enum StorageTechnicalMetadatas {
 	// Note sur le document
 	NOTE("Note","not"),
 	// Identifiant unique du document
-   IDGED("IdGed", SystemFieldName.SM_UUID.toString());
+   IDGED("IdGed", SystemFieldName.SM_UUID.toString()), 
+   // Id de traitement de modification de masse de document
+   ID_MODIFICATION_MASSE_INTERNE("IdModificationMasseInterne", "imi"),
+   // Id de traitement de transfert de masse de document
+   ID_TRANSFERT_MASSE_INTERNE("IdTransfertMasseInterne", "ifi"),
+   // Id de traitement de masse interne du document
+   ID_TRAITEMENT_MASSE_INTERNE("IdTraitementMasseInterne", "iti");
 	
 	// Le code court de la métadonnée.
 	private String shortCode;

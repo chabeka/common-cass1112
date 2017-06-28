@@ -21,6 +21,7 @@ public abstract class AbstractListener {
 
    private StepExecution stepExecution;
    private String batchMode;
+   private boolean repriseActif;
 
    private static final ExitStatus FAILED_FIN_BLOQUANT = new ExitStatus(
          "FAILED_FIN_BLOQUANT");
@@ -36,6 +37,10 @@ public abstract class AbstractListener {
       this.stepExecution = stepExecution;
       batchMode = (String) getStepExecution().getJobExecution()
             .getExecutionContext().get(Constantes.BATCH_MODE_NOM_REDIRECT);
+      repriseActif = getStepExecution().getJobParameters().getString(
+            Constantes.TRAITEMENT_REPRISE) != null
+            && Boolean.valueOf((String) getStepExecution()
+                  .getJobParameters().getString(Constantes.TRAITEMENT_REPRISE));
       specificInitOperations();
    }
 
@@ -107,6 +112,20 @@ public abstract class AbstractListener {
    }
 
    /**
+    * Getter
+    * 
+    * @return la liste des index des documents déjà traité par le traitement de
+    *         masse initial dans le contexte d'execution du job
+    */
+   @SuppressWarnings("unchecked")
+   protected final ConcurrentLinkedQueue<Integer> getIndexRepriseDoneListe() {
+      ExecutionContext jobExecution = getStepExecution().getJobExecution()
+            .getExecutionContext();
+      return (ConcurrentLinkedQueue<Integer>) jobExecution
+            .get(Constantes.INDEX_DOCUMENT_DONE);
+   }
+
+   /**
     * Opérations supplémentaires à réaliser lors de l'initialisation du
     * listener. Initialisation du stepExecution déjà réalisée
     */
@@ -124,6 +143,16 @@ public abstract class AbstractListener {
     */
    protected final StepExecution getStepExecution() {
       return stepExecution;
+   }
+
+   /**
+    * 
+    * Methode permettant de savoir si la reprise est actif.
+    * 
+    * @return True si reprise est actif, false sinon.
+    */
+   protected boolean isRepriseActifBatch() {
+      return repriseActif;
    }
 
    /**

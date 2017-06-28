@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSom
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
+import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.BatchModeType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReadUtils;
@@ -180,6 +181,22 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
       LOGGER.debug(
             "{} - Fin de validation spécifique de la présence du chemin/nom du fichier",
             TRC_EXEC);
+
+      String batchModeSommaire = XmlReadUtils.getElementValue(sommaireFile,
+            Constantes.BATCH_MODE_ELEMENT_NAME);
+
+      if (batchModeSommaire != null && !batchModeSommaire.isEmpty()
+            && BatchModeType.PARTIEL.name().equals(batchModeSommaire)) {
+
+         LOGGER.debug(
+               "{} - Début de validation spécifique de la présence de l'IdGed",
+               TRC_EXEC);
+         validationSupport.validationDocumentValeurBaliseRequisSommaire(
+               sommaireFile, "code", "IdGed");
+         LOGGER.debug(
+               "{} - Fin de validation spécifique de la présence de l'IdGed",
+               TRC_EXEC);
+      }
 
       LOGGER.debug("{} - Début de validation unicité IdGed des documents",
             TRC_EXEC);

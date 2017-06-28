@@ -3,9 +3,8 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.slf4j.Logger;
 import org.springframework.batch.core.ExitStatus;
@@ -103,28 +102,65 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    }
 
    /**
-    * Vérifie que le document est dans liste des document en erreur. Renvoi True
-    * si c'est le cas, false sinon.
+    * Vérifie que le document est dans liste des document en erreur ou déjà
+    * traité (Reprise). Renvoi True si c'est le cas, false sinon.
     * 
     * @param index
     *           index du document traité
-    * @return True si le document est dans liste des document en erreur, false
+    * @return True si le document est dans liste des document en erreur ou déjà
+    *         traité (Reprise), false sinon.
+    */
+   protected boolean isDocumentATraite(int index) {
+      boolean isdocumentATraite = true;
+      if (isModePartielBatch() || isRepriseActifBatch()) {
+         isdocumentATraite = isDocumentATraiteByListIndex(
+               getIndexErreurListe(), index)
+               && isDocumentATraiteByListIndex(getIndexRepriseDoneListe(),
+                     index);
+      }
+
+      return isdocumentATraite;
+   }
+
+   /**
+    * Vérifie que le document a déjà été traité par le traitement nominal lors
+    * de la reprise.
+    * 
+    * @param index
+    *           index du document
+    * @return True si le document a déjà été traité, false sinon.
+    */
+   protected boolean isDocumentDejaTraite(int index) {
+      boolean isdocumentDejaTraite = false;
+      if (isRepriseActifBatch()) {
+         isdocumentDejaTraite = !isDocumentATraiteByListIndex(
+               getIndexRepriseDoneListe(), index);
+      }
+
+      return isdocumentDejaTraite;
+   }
+
+   /**
+    * Méthode permettant de voir si un index d'un document est présent dans une
+    * liste d'index de type {@link ConcurrentLinkedQueue}
+    * 
+    * @param indexListe
+    *           liste d'index
+    * @param index
+    *           index à trouver
+    * @return True si l'index du document est present dans la liste, false
     *         sinon.
     */
-   protected boolean isDocumentInError(int index) {
-      boolean isdocumentInError = false;
-      if (isModePartielBatch()) {
-         // En mode PARTIEL, on regarde s'il y a une erreur de déclarer pour
-         // l'item. Si c'est le cas, on ne le traite pas.
-         List<Integer> listIndex = new ArrayList<Integer>(getIndexErreurListe());
-
-         for (Integer indexDocError : listIndex) {
-            if (indexDocError == (getStepExecution().getReadCount() + index)) {
-               isdocumentInError = true;
-            }
+   private boolean isDocumentATraiteByListIndex(
+         ConcurrentLinkedQueue<Integer> indexListe, int index) {
+      // En mode PARTIEL, on regarde s'il y a une erreur de déclarer pour
+      // l'item. Si c'est le cas, on ne le traite pas.
+      for (Integer indexDocError : indexListe) {
+         if (indexDocError == (getStepExecution().getReadCount() + index)) {
+            return false;
          }
       }
-      return isdocumentInError;
+      return true;
    }
 
    /**
@@ -132,7 +168,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     * @param storageDocument Document à traiter.
     * @return l'identifiant du document traité.
     */
-   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument) throws Exception;
+   public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument, final int index) throws Exception;
 
    
    /**

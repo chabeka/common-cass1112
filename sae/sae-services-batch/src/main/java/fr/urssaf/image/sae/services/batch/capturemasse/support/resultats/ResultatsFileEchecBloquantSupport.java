@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.resultats;
 
 import java.io.File;
 
+import fr.urssaf.image.sae.services.batch.common.model.ErreurTraitement;
+
 /**
  * Support pour l'écriture des fichiers resultats.xml en cas d'échec bloquant
  * lors du traitement de capture de masse
@@ -19,10 +21,10 @@ public interface ResultatsFileEchecBloquantSupport {
     * 
     * @param ecdeDirectory
     *           Répertoire ECDE de traitement pour une capture de masse
-    * @param erreur
+    * @param erreurTraitement
     *           Exception bloquante
     */
    void writeResultatsFile(File ecdeDirectory,
-         Exception erreur);
+         ErreurTraitement erreurTraitement);
 
 }

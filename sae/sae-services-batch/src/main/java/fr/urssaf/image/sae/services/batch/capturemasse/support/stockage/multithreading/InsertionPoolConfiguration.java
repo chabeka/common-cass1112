@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
 
+import fr.urssaf.image.sae.services.batch.common.support.multithreading.DefaultPoolThreadConfiguration;
+
 /**
  * Configuration spécifique du Pool de Threads pour l'insertion des documents
  * dans DFCE.<br>
@@ -11,8 +13,12 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multith
  * 
  * 
  */
-public class InsertionPoolConfiguration {
+public class InsertionPoolConfiguration implements
+      DefaultPoolThreadConfiguration {
 
+   /**
+    * Core pool size
+    */
    private int corePoolSize;
 
    /**
@@ -30,6 +36,11 @@ public class InsertionPoolConfiguration {
     */
    public final int getCorePoolSize() {
       return corePoolSize;
+   }
+
+   @Override
+   public int loadCorePoolSize() {
+      return corePoolSize > 0 ? corePoolSize : DEFAULT_CORE_POOL_SIZE;
    }
 
 }

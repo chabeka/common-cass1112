@@ -7,9 +7,13 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
+import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 
 /**
  * Classe de validation des arguments en entrée des implémentations du service
@@ -20,6 +24,9 @@ import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
  */
 @Aspect
 public class TraitementAsynchroneServiceValidation {
+   
+   private static final Logger LOG = LoggerFactory
+         .getLogger(TraitementAsynchroneServiceValidation.class);
 
    private static final String CLASS = "fr.urssaf.image.sae.services.batch.TraitementAsynchroneService.";
 
@@ -43,6 +50,12 @@ public class TraitementAsynchroneServiceValidation {
 
    private static final String METHOD_LANCER_JOB = "execution(void " + CLASS
          + "lancerJob(*))" + "&& args(idJob)";
+   
+   private static final String METHOD_REPRISE = "execution(void " + CLASS
+         + "ajouterJobReprise(*))" + "&& args(parametres)";
+   
+   private static final String METHOD_LANCER_REPRISE = "execution(fr.urssaf.image.sae.services.batch.common.model.ExitTraitement " + CLASS
+         + "lancerReprise(*))" + "&& args(jobReprise)";
 
    private static final String ARG_EMPTY = "L''argument ''{0}'' doit être renseigné.";
 
@@ -260,6 +273,60 @@ public class TraitementAsynchroneServiceValidation {
          throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
                "uuid"));
       }
+   }
+   
+   /**
+    * Validation des arguments d'entrée de la méthode
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#ajouterJobReprise}
+    * 
+    * @param parametres
+    *           paramètres nécessaires à la création de
+    *           l'enregistrement de transfert de masse
+    */
+   @Before(METHOD_REPRISE)
+   public final void ajouterJobReprise(TraitemetMasseParametres parametres) {
+
+      if (parametres == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "parametres"));
+      }
+
+      if (parametres.getType() == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "type"));
+      }
+
+      if (StringUtils.isBlank(parametres.getJobParameters().get(
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH))) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "uuidJobAReprendre"));
+      }
+
+      if (parametres.getUuid() == null) {
+         throw new IllegalArgumentException(MessageFormat.format(ARG_EMPTY,
+               "uuid"));
+      }
+   }
+   
+   /**
+    * Validation du traitement de masse à reprendre
+    * {@link fr.urssaf.image.sae.services.batch.TraitementAsynchroneService#lancerReprise}
+    * 
+    * @param idJob l'uuid du job de reprise
+    */
+   @Before(METHOD_LANCER_REPRISE)
+   public final void lancerReprise(JobRequest jobReprise) {
+      // Méthode de validation des traitements de reprise
+      String jobAReprendreParam = jobReprise.getJobParameters().get(
+            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+      
+      if (jobAReprendreParam == null || jobAReprendreParam.isEmpty()) {
+         LOG.warn("Impossible d'executer le traitement de reprise de ID={0}: "
+                     + "Le pramètre uuidJobAReprendre ne peut pas être null ", jobReprise.getIdJob().toString());
+         throw new JobParameterTypeException(jobReprise, new Exception(
+                     "L'uuidJobAReprendre est obligatoire pour le lancement du job de reprise"));
+      }
+      
    }
 
 }

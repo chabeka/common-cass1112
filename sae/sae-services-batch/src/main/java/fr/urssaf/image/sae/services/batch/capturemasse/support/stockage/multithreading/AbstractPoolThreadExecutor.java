@@ -19,6 +19,8 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exceptio
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
+import fr.urssaf.image.sae.services.batch.common.support.multithreading.DefaultPoolThreadConfiguration;
+import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 
 /**
  * classe mère des pools d'execution
@@ -48,12 +50,12 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     *           configuration pour l'arrêt du traitement de la capture en masse
     */
    public AbstractPoolThreadExecutor(
-         InsertionPoolConfiguration poolConfiguration,
+         DefaultPoolThreadConfiguration poolConfiguration,
          InterruptionTraitementMasseSupport support,
          InterruptionTraitementConfig config) {
 
-      super(poolConfiguration.getCorePoolSize(), poolConfiguration
-            .getCorePoolSize(), 1, TimeUnit.MILLISECONDS,
+      super(poolConfiguration.loadCorePoolSize(), poolConfiguration
+            .loadCorePoolSize(), 1, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
 
       Assert.notNull(support, "'support' is required");
@@ -299,6 +301,14 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
 
          traitementAfterExecute(trcPrefix, document, indexDocument);
 
+      } else if (throwable != null
+            && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
+         addDocumentToIntegratedList(document, indexDocument);
+
+         getLogger().debug(
+                     "{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
+               new Object[] { trcPrefix, (indexDocument + 1),
+                     getPathName(document), getUuid(document) });
       } else {
 
          setInsertionException((AbstractInsertionMasseRuntimeException) throwable);

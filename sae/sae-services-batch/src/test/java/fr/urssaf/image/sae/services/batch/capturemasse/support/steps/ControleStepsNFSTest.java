@@ -67,7 +67,17 @@ public class ControleStepsNFSTest {
    public void controleDocumentsTest() {
       nfsConnexionTest("controleDocuments");
    }
+   
+   @Test
+   public void controleModeBatch() {
+      nfsConnexionTest("controleModeBatch");
+   }
 
+   @Test
+   public void persistanceDocumentsPartielTest() {
+      nfsConnexionTest("persistanceDocumentsPartiel");
+   }
+   
    @Test
    public void persistanceDocumentsTest() {
       nfsConnexionTest("persistanceDocuments");

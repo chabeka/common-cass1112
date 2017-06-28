@@ -21,8 +21,10 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
@@ -79,6 +81,18 @@ public class TraitementAsynchroneServiceValidationTest {
          @Override
          public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
 
+         }
+
+         @Override
+         public void ajouterJobReprise(TraitemetMasseParametres parametres) {
+            // Aucune implémentation
+         }
+
+         @Override
+         public ExitTraitement lancerReprise(JobRequest jobReprise)
+               throws JobParameterTypeException, JobInexistantException {
+            
+            return null;
          }
 
       };

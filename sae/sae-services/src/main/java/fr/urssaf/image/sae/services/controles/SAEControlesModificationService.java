@@ -63,6 +63,45 @@ public interface SAEControlesModificationService {
          MetadataValueNotInDictionaryEx;
 
    /**
+    * Réalise les contrôles des métadonnées du document avant sa mise à jour
+    * pour le transfert de masse
+    * 
+    * @param metadatas
+    *           la liste des métadonnées à vérifier
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    *            Au moins une des métadonnées fournies n'est pas du bon type ou
+    *            du bon format
+    * @throws UnknownMetadataEx
+    *            Au moins une des métadonnées n'existe pas
+    * @throws DuplicatedMetadataEx
+    *            Au moins une des métadonnées est en double dans la liste
+    *            fournie
+    * @throws NotSpecifiableMetadataEx
+    *            Au moins une des métadonnées n'est pas spécifiable à
+    *            l'archivage
+    * @throws RequiredArchivableMetadataEx
+    *            Au moins une des métadonnées requises à l'archivage n'est pas
+    *            présente
+    * @throws ReferentialRndException
+    *            Une erreur a eu lieu lors de la récupération des RND
+    * @throws UnknownCodeRndEx
+    *            Le code RND est inconnu
+    * @throws UnknownHashCodeEx
+    *            Une erreur a été soulevée lors de la vérification du HASH
+    * @throws NotModifiableMetadataEx
+    *            Au moins une des métadonnées n'est pas modifiable
+    * @throws MetadataValueNotInDictionaryEx
+    *            La valeurs d'au moins une des métadonnées n'est pas dans le
+    *            dictionnaire
+    */
+   void checkSaeMetadataForTransfertMasse(List<UntypedMetadata> metadatas)
+         throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+         RequiredArchivableMetadataEx, ReferentialRndException,
+         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
+         MetadataValueNotInDictionaryEx;
+
+   /**
     * Réalise les contrôles des métadonnées à supprimer du document avant sa
     * mise à jour
     * 

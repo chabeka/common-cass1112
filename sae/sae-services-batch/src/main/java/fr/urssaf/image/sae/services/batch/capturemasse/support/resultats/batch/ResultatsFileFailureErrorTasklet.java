@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.Resulta
 import fr.urssaf.image.sae.services.batch.capturemasse.support.xsd.XsdValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.tasklet.AbstractCaptureMasseTasklet;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.common.model.ErreurTraitement;
 
 /**
  * Tasklet décriture du fichier resultats.xml en cas d'erreur bloquante
@@ -61,7 +62,12 @@ public class ResultatsFileFailureErrorTasklet extends AbstractCaptureMasseTaskle
          String sommairePath = (String) sommairePathObject;
          final File sommaireFile = new File(sommairePath);
          File ecdeDirectory = sommaireFile.getParentFile();
-         support.writeResultatsFile(ecdeDirectory, erreur);
+         ErreurTraitement erreurTraitement = new ErreurTraitement();
+         erreurTraitement.setCodeErreur("SAE-EC-SOM001");
+         erreurTraitement
+               .setMessageErreur("Le fichier sommaire n'est pas valide. Détails : ");
+         erreurTraitement.setException(erreur);
+         support.writeResultatsFile(ecdeDirectory, erreurTraitement);
 
          File resultats = new File(ecdeDirectory, "resultats.xml");
 

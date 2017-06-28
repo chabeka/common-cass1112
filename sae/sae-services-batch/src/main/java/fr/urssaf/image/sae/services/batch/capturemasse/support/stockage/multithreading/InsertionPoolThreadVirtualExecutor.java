@@ -40,7 +40,7 @@ public class InsertionPoolThreadVirtualExecutor
 
    private InsertionMasseVirtualRuntimeException exception;
 
-   private static final String PREFIX_TRACE = "InsertionPoolThreadExecutor()";
+   private static final String PREFIX_TRACE = "InsertionPoolThreadVirtualExecutor()";
 
    /**
     * instanciation d'un {@link AbstractPoolThreadExecutor} avec comme arguments

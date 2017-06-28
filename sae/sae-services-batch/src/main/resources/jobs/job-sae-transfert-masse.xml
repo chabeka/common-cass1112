@@ -90,9 +90,10 @@
                writer="transfertDocumentWriter" commit-interval="5" />
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />         
-               <listener ref="controleDocumentSommaireTransfertProcessor" />        
-                 <listener ref="transfertDocumentWriter" />     
-                <listener ref="transfertListener" />
+               <listener ref="convertSommaireDocumentTransfertProcessor" />
+               <listener ref="controleDocumentSommaireTransfertProcessor" />       
+               <listener ref="transfertDocumentWriter" />     
+               <listener ref="transfertListener" />
                <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>
          </tasklet>

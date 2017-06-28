@@ -1,4 +1,4 @@
-﻿﻿// ----------------------------------------------------------------------------
+﻿﻿﻿// ----------------------------------------------------------------------------
 // UTILISATION DE sae-lotinstallmaj DANS L'INSTALLATION DES LOTS SAE
 // ----------------------------------------------------------------------------
 
@@ -468,4 +468,24 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 Pour la GNT : 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170900
+
+
+17-2) Lot 170901SAE
+Met la base Cassandra du SAE en version 27 :
+
+- Ajout de l'action unitaire reprise_masse.
+- Ajout de l'événement WS_REPRISE_MASSE|KO
+- Ajout de l'événement REPRISE_MASSE|KO
+- Ajout des metadonnées IdTransfertMasseInterne et IdModificationMasseInterne
+- Passage de la méta ApplicationMetier à modifiable (pour les besoins WATT)
+- Changement format fmt/13 en png
+- Ajout de l'action unitaire reprise_masse dans tous les PAGM du CS_V2
+
+Pour la GNS :
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901
+
+Pour la GNT : 
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901
+
+
 

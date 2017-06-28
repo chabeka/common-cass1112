@@ -96,6 +96,13 @@
       <constructor-arg ref="executionContextDao" />
    </bean>
 
+   <bean id="jobExplorer" class="org.springframework.batch.core.explore.support.SimpleJobExplorer">
+     <constructor-arg ref="jobInstanceDao" />
+      <constructor-arg ref="jobExecutionDao" />
+      <constructor-arg ref="stepExecutionDao" />
+      <constructor-arg ref="executionContextDao" />
+   </bean>
+
    <bean id="jobLauncher"
       class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
       <property name="jobRepository" ref="jobRepository" />
@@ -112,6 +119,9 @@
       <property name="job" ref="transfert_masse" />
    </bean>
 
+   <bean id="launcherReprise" class="org.springframework.batch.test.JobLauncherTestUtils">
+      <property name="job" ref="reprise_masse" />
+   </bean>
 
    <!-- Bean pour vérifier les traces -->
    <bean id="traceAssertUtils"
@@ -129,5 +139,6 @@
    <import resource="applicationContext-sae-services-restoremasse-main.xml" />
    <import resource="applicationContext-sae-services-modificationmasse-main.xml" />
    <import resource="applicationContext-sae-services-transfertmasse-main.xml" />
+   <import resource="applicationContext-sae-services-reprisemasse-main.xml" />
 
 </beans>

@@ -48,6 +48,8 @@ import fr.cirtil.www.saeservice.RechercheParIterateurResponse;
 import fr.cirtil.www.saeservice.RechercheResponse;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
+import fr.cirtil.www.saeservice.Reprise;
+import fr.cirtil.www.saeservice.RepriseResponse;
 import fr.cirtil.www.saeservice.RestoreMasse;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.StockageUnitaire;
@@ -423,5 +425,20 @@ public interface SaeServiceSkeletonInterface {
     */
    DeblocageResponse deblocageSecure(
          Deblocage request, String callerIP) throws AxisFault, JobInexistantException;
+   
+   /**
+    * endpoint de reprise de job
+    * 
+    * @param request
+    *           request du web service
+    * @param callerIP
+    *           adresse IP de l'appelant
+    * @return reponse du web service
+    * @throws AxisFault
+    *            exception levée dans la consommation du web service de reprise
+    * @throws JobInexistantException 
+    */
+   RepriseResponse repriseSecure(
+         Reprise request, String callerIP) throws AxisFault, JobInexistantException;
 
 }

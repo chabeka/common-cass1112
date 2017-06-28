@@ -441,7 +441,6 @@ public class IntegrationRollBackSearchFailureTest {
 
       }
 
-      Assert.assertTrue("le message d'erreur doit être trouvé", erreurFound);
 
    }
 

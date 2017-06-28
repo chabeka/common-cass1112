@@ -80,4 +80,13 @@ public interface JobService {
     * @return Le job à lancer.
     */
    JobQueue reserverCodeTraitementJobALancer(JobQueue jobQueue);
+
+   /**
+    * Récupère un traitement dans la pile des travaux
+    * 
+    * @param jobRequestUUID
+    *           identifiant du traitement persisté
+    * @return le traitement trouvé
+    */
+   JobRequest getJobRequest(UUID jobRequestUUID);
 }

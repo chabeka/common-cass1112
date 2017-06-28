@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.controles.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -67,18 +68,22 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
    public final void checkHash(File sommaire, String hash, String typeHash)
          throws CaptureMasseSommaireTypeHashException,
          CaptureMasseSommaireHashException {
-
       if (StringUtils.equalsIgnoreCase("SHA-1", typeHash)) {
-
          // récupération du contenu pour le calcul du HASH
-         byte[] content;
+         FileInputStream content;
          try {
-            content = FileUtils.readFileToByteArray(sommaire);
+            content = FileUtils.openInputStream(sommaire);
          } catch (IOException e) {
             throw new CaptureMasseRuntimeException(e);
          }
          // calcul du Hash
-         String hashCode = DigestUtils.shaHex(content);
+         String hashCode = StringUtils.EMPTY;
+         try {
+            hashCode = DigestUtils.shaHex(content);
+         } catch (IOException e) {
+            throw new CaptureMasseSommaireHashException(hash, hashCode,
+                  typeHash);
+         }
 
          // comparaison avec la valeur attendu
          if (!StringUtils.equalsIgnoreCase(hashCode, hash.trim())) {

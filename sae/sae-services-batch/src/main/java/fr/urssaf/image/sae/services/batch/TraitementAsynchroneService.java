@@ -7,8 +7,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
 import fr.urssaf.image.sae.services.batch.exception.JobNonReserveException;
+import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 
 /**
  * Service des traitements de masse.<br>
@@ -82,6 +84,13 @@ public interface TraitementAsynchroneService {
    @PreAuthorize("hasRole('transfert_masse')")
    void ajouterJobTransfertMasse(TraitemetMasseParametres parametres);
    
+   /**
+    * Ajoute un traitement de reprise dans la pile des traitements de masse en attente
+    * @param parametres
+    *             contient les paramètres nécessaires à l'enregistrement de reprise
+    */
+   @PreAuthorize("hasRole('reprise_masse')")
+   void ajouterJobReprise(TraitemetMasseParametres parametres);
    
    /**
     * Exécute un traitement de masse stocké dans la pile des traitements en
@@ -107,4 +116,17 @@ public interface TraitementAsynchroneService {
     * @return La liste des jobs correspondants aux UUID fournis en paramètre          
     */
    List<JobRequest> recupererJobs(List<UUID> listeUuid);
+   
+   
+   /**
+    * Exécute un traitement de reprise de masse stocké dans la pile des travaux en
+    * attente
+    * @param jobReprise Le traitement de reprise
+    * @return un objet ExitTraitement résultat
+    * @throws JobParameterTypeException est levée si l'uuid du job à reprendre n'est pas renseigné
+    * @throws JobInexistantException si le job à reprendre n'existe pas en base
+    */
+   ExitTraitement lancerReprise(JobRequest jobReprise)
+         throws JobInexistantException;
+   
 }

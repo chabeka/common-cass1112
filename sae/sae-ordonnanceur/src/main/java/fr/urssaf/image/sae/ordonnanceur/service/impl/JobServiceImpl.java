@@ -254,4 +254,12 @@ public class JobServiceImpl implements JobService {
       return jobQueue;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public JobRequest getJobRequest(UUID jobRequestUUID) {
+      return jobLectureService.getJobRequest(jobRequestUUID);
+   }
+
 }

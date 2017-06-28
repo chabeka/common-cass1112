@@ -32,4 +32,16 @@ public class SuppressionException extends Exception {
       super(message);
    }
 
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           le message d'erreur
+    * @param cause
+    *           l'exception
+    */
+   public SuppressionException(String message, Throwable cause) {
+      super(message, cause);
+   }
+
 }

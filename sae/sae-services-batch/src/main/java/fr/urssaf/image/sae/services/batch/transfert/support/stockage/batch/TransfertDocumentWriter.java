@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
+import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.support.multithreading.InsertionPoolThreadExecutor;
+import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
@@ -43,7 +44,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * Pool executor
     */
    @Autowired
-   private InsertionPoolThreadExecutor poolExecutor;
+   private TransfertPoolThreadExecutor poolExecutor;
 
    /**
     * Provider pour le transfert.
@@ -75,6 +76,8 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
+   
+   private static volatile Integer index = 0;
 
    /**
     * Gestionnaire des traces.
@@ -86,15 +89,17 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, int indexRun)
          throws Exception {
 
       StorageDocument document = new StorageDocument();
       String actionType = checkActionType((StorageDocument) storageDocument);
-      if (actionType.equals("SUPPRESSION")) {
-         document = deleteDocument((StorageDocument) storageDocument);
-      } else {
-         document = transfertDocument((StorageDocument) storageDocument);
+      if (actionType != null) {
+         if (actionType.equals("SUPPRESSION")) {
+            document = deleteDocument((StorageDocument) storageDocument);
+         } else {
+            document = transfertDocument((StorageDocument) storageDocument);
+         }  
       }
       UUID uuid = document != null ? document.getUuid() : null;
       return uuid;
@@ -114,8 +119,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       try {
          transfertService.transfertDocMasse(document);
       } catch (Throwable except) {
-         throw new TransfertException("Erreur transfert : "
-               + except.getMessage());
+         throw new TransfertException(
+               "Erreur transfert - identifiant archivage " + document.getUuid()
+                     + " : " + except.getMessage(), except);
       }
       return document;
    }
@@ -135,8 +141,9 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       try {
          suppressionService.suppression(document.getUuid());
       } catch (Throwable except) {
-         throw new SuppressionException("Erreur Suppression : "
-               + except.getMessage());
+         throw new SuppressionException(
+               "Erreur Suppression - identifiant archivage "
+                     + document.getUuid() + " : " + except.getMessage(), except);
       }
       return document;
    }
@@ -148,7 +155,6 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
 
    @Override
    protected Logger getLogger() {
-      // TODO Auto-generated method stub
       return LOGGER;
    }
 
@@ -161,15 +167,16 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
          throws Exception {
 
       Runnable command;
-      int index = 0;
 
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-         boolean isdocumentInError = isDocumentInError(index);
-         // Si le document n'est pas en erreur, on traite, sinon on passe au
+         boolean isdocumentATraite = isDocumentATraite(index);
+         // Si le document n'est pas en erreur ou dans la liste de document déjà
+         // traité (Reprise), on traite, sinon on passe au
          // suivant.
-         if (!isdocumentInError) {
+         if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this);
+                  + index, storageDocument, this, getStepExecution()
+                  .getReadCount() + index);
 
             try {
                poolExecutor.execute(command);
@@ -189,9 +196,18 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
                   "{} - nombre de documents en attente dans le pool : {}",
                   TRC_INSERT, poolExecutor.getQueue().size());
 
+         } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
+            poolExecutor.getIntegratedDocuments().add(
+                  new TraitementMasseIntegratedDocument(storageDocument
+                        .getUuid(), null,
+                        index));
          }
+
          index++;
       }
+
+      // Reinitialisation du compteur si prochain passage.
+      index = 0;
    }
 
    /**

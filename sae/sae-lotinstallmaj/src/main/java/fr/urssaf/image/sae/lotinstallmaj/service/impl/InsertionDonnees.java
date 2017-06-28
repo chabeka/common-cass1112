@@ -571,6 +571,11 @@ public class InsertionDonnees {
       DroitsServiceUtils.addActionUnitaireTraitementMasseBis(keyspace);
    }
 
+   public void addActionUnitaireRepriseMasse() {
+      LOG.info("Mise à jour des actions unitaires");
+      DroitsServiceUtils.addActionUnitaireRepriseMasse(keyspace);
+   }
+
    /**
     * Référentiel des événements en V12 Ajout des évenements : <li>
     * WS_MODIFICATION_MASSE|KO</li> <li>MODIFICATION_MASSE|KO</li>
@@ -578,6 +583,22 @@ public class InsertionDonnees {
    public void addReferentielEvenementV12() {
       LOG.info("Mise à jour du référentiel des événements");
       ReferentielServiceUtils.addReferentielEvenementV12(keyspace);
+   }
+
+   /**
+    * Methode permettant de
+    */
+   public void addReferentielFormatV7() {
+      ReferentielServiceUtils.addReferentielFormatV7(keyspace);
+   }
+   
+   /**
+    * Référentiel des événements en V13 Ajout des évenements : <li>
+    * WS_REPRISE_MASSE|KO</li> <li>REPRISE_MASSE|KO</li>
+    */
+   public void addReferentielEvenementV13() {
+      LOG.info("Mise à jour du référentiel des événements");
+      ReferentielServiceUtils.addReferentielEvenementV13(keyspace);
    }
 
 }
