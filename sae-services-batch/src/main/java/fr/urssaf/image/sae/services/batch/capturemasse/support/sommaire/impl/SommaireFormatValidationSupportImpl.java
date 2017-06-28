@@ -402,8 +402,8 @@ public class SommaireFormatValidationSupportImpl implements
 
          if (!baliseValuefind) {
             throw new CaptureMasseSommaireFormatValidationException(
-                  "La balise '" + baliseRequired + "' ne contient pas la valeur '" + valeurRequired + "' qui est obligatoire", new Exception(
-                        "La balise '" + baliseRequired + "' doit contenir obligatoirement la valeur '" + valeurRequired+"'"));
+                  "Au moins un '" + valeurRequired + "' n'est pas présent dans le sommaire. '" + valeurRequired + "'  est obligatoire pour tous les documents", new Exception(
+                        "'" + valeurRequired + "' est obligatoire pour tous les documents."));
          }
 
       } catch (FileNotFoundException e) {
