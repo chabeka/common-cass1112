@@ -26,7 +26,6 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
-import fr.urssaf.image.sae.services.batch.exception.JobParameterTypeException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.aspect.BuildOrClearMDCAspect;
 import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
@@ -85,7 +84,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             LOG.warn(
                   "{} - échec de reprise du job {} - Le job de reprise ne peut pas être repris",
                   new Object[] { prefixeTrc, uuidJobAReprendre });
-            throw new RepriseAxisFault("RepriseAxisFault",
+            throw new RepriseAxisFault("ErreurInterneReprise",
                   "Le job de reprise ne peut pas être repris");
          } else if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
             LOG.debug(
@@ -112,7 +111,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
                LOG.warn(
                      "{} - Erreur de Reprise: Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre",
                      prefixeTrc);
-               throw new RepriseAxisFault("RepriseAxisFault",
+               throw new RepriseAxisFault("ErreurInterneReprise",
                      "Le traitement de reprise doit avoir le même contrat de service que celui du traitement à reprendre");
             }
             // Contrôle PAGM de reprise
@@ -122,7 +121,7 @@ public class WSRepriseServiceImpl implements WSRepriseService {
                      LOG.warn(
                            "{} - Erreur PAGM de reprise: Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre",
                           prefixeTrc);
-                     throw new RepriseAxisFault("RepriseAxisFault",
+                     throw new RepriseAxisFault("ErreurInterneReprise",
                            "Le traitement de reprise doit avoir un PAGM équivalent à celui du traitement à reprendre");
                   }
                }
@@ -142,13 +141,12 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             LOG.warn(
                   "{} - échec de reprise du job {} - ce job ne peut pas être repris à cause de son état",
                   new Object[] { prefixeTrc, uuid });
-            throw new RepriseAxisFault("RepriseAxisFault",
+            throw new RepriseAxisFault("ErreurInterneReprise",
                   "Erreur de reprise: le job ne peut pas être repris à cause de son état");
          }
       } catch (JobInexistantException e) {
          LOG.warn("{} - échec de reprise du traitement {} - ce job n'existe plus en base",
                new Object[] { prefixeTrc, uuid });
-         //throw new JobInexistantException(uuidJobAReprendre);
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
       } catch (AccessDeniedException e) {
          throw new RepriseAxisFault("ErreurInterneReprise", e.getMessage(), e);
