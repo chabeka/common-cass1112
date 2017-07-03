@@ -1313,9 +1313,9 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throw new SaeAccessDeniedAxisFault(exception);
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
-         throw new CaptureAxisFault(
-               "ErreurInterneCapture",
-               "Une erreur interne à l'application est survenue lors de la capture.",
+         throw new ModificationAxisFault(
+               "ErreurInterneModification",
+               "Une erreur interne à l'application est survenue lors de la modification de masse.",
                ex);
       }
    }
