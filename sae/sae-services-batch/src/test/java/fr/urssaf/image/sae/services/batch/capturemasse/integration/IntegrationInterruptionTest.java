@@ -130,11 +130,11 @@ public class IntegrationInterruptionTest {
 
    @After
    public void end() throws Exception {
-      try {
-         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      } catch (IOException e) {
-         // rien a faire
-      }
+      // try {
+      // ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+      // } catch (IOException e) {
+      // rien a faire
+      // }
 
       AuthenticationContext.setAuthenticationToken(null);
 
@@ -146,7 +146,7 @@ public class IntegrationInterruptionTest {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException {
+   InsertionServiceEx, IOException {
       initComposants();
       initDatas();
 
@@ -169,7 +169,7 @@ public class IntegrationInterruptionTest {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
 
       // règlage provider
       // provider.openConnexion();
