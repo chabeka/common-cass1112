@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -73,8 +75,17 @@ public class WSRepriseServiceImplTest {
       job.setIdJob(idJob);
       // Simuler un job de modification de masse
       job.setType("modification_masse");
+      
+      // Similation du service de reprise
+      String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
+      VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);
+      
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
+      
       Map<String, String> jobParameters = new HashMap<String, String>();
       jobParameters.put(Constantes.CODE_TRAITEMENT, Constantes.CODE_TRAITEMENT);
+      job.setVi(viExtrait);
       job.setJobParameters(jobParameters);
       jobQueueService.addJob(job);
    }
@@ -146,8 +157,12 @@ public class WSRepriseServiceImplTest {
       
       String[] roles = new String[] { "reprise_masse" };
       // Similation du service de reprise
-      String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
-      VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);
+       String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
+       VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);
+
+       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
+       
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
