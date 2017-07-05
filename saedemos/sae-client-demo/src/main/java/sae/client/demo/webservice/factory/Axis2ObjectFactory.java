@@ -65,6 +65,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResRequestTyp
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateur;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Reprise;
+import sae.client.demo.webservice.modele.SaeServiceStub.RepriseRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequetePrincipaleType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheNbResType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RequeteRechercheType;
@@ -138,7 +140,7 @@ public final class Axis2ObjectFactory {
       return contruitParamsEntreeConsultation(idArchive, null);
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -216,7 +218,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -235,7 +237,7 @@ public final class Axis2ObjectFactory {
       return consultation;
 
    }
-   
+
 
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
@@ -294,7 +296,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -341,7 +343,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -360,7 +362,7 @@ public final class Axis2ObjectFactory {
       return consultation;
 
    }
-   
+
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
@@ -388,7 +390,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -440,7 +442,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -492,7 +494,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -556,7 +558,7 @@ public final class Axis2ObjectFactory {
       RechercheParIterateurRequestType rechercheParIterateurRequest = new RechercheParIterateurRequestType();
 
       rechercheParIterateur
-            .setRechercheParIterateur(rechercheParIterateurRequest);
+      .setRechercheParIterateur(rechercheParIterateurRequest);
 
       // Requête principale
       RechercheParIterateurRequestType requeteParIterateurObj = new RechercheParIterateurRequestType();
@@ -643,7 +645,7 @@ public final class Axis2ObjectFactory {
       if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
 
          MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-               .size()];
+                                                                         .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -699,16 +701,16 @@ public final class Axis2ObjectFactory {
       return archivageMasse;
 
    }
-   
+
    public static TransfertMasse contruitParamsEntreeTransfertMasse(String urlEcdeSommaire, String hash, String typeHash){
-      
+
       TransfertMasse transfertMasse = new TransfertMasse();
-      
+
       TransfertMasseRequestType transfertMasseRequest = new TransfertMasseRequestType();
-      
+
       transfertMasse.setTransfertMasse(transfertMasseRequest);
-      
-   // URL ECDE du sommaire
+
+      // URL ECDE du sommaire
       EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
       transfertMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
       URI ecdeUriSommaireUri;
@@ -718,19 +720,21 @@ public final class Axis2ObjectFactory {
          throw new DemoRuntimeException(e);
       }
       ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
-      
+
       transfertMasseRequest.setHash(hash);
-      
+
       transfertMasseRequest.setTypeHash(typeHash);
-      
+
       return transfertMasse;    
-      
+
    }
-   
+
    public static Deblocage contruitParamsEntreeDeblocage(String uuidJob){
       Deblocage deblocage = new Deblocage();
       DeblocageRequestType deblocageRequest = new DeblocageRequestType();
-      deblocageRequest.setUuid(uuidJob);
+      UuidType uuid = new UuidType();
+      uuid.setUuidType(uuidJob);
+      deblocageRequest.setUuid(uuid);
       deblocage.setDeblocage(deblocageRequest);
       return deblocage;
    }
@@ -846,7 +850,7 @@ public final class Axis2ObjectFactory {
       EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
       ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
       archivageUnitairePJRequest
-            .setArchivageUnitairePJRequestTypeChoice_type0(choice);
+      .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setEcdeUrl(ecdeUrl);
 
       // Métadonnées
@@ -893,7 +897,7 @@ public final class Axis2ObjectFactory {
       dataFile.setFile(dataHandler);
       ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
       archivageUnitairePJRequest
-            .setArchivageUnitairePJRequestTypeChoice_type0(choice);
+      .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setDataFile(dataFile);
 
       // Métadonnées
@@ -925,7 +929,7 @@ public final class Axis2ObjectFactory {
       ArchivageMasseAvecHashRequestType archivageMasseAvecHashRequest = new ArchivageMasseAvecHashRequestType();
 
       archivageMasseAvecHash
-            .setArchivageMasseAvecHash(archivageMasseAvecHashRequest);
+      .setArchivageMasseAvecHash(archivageMasseAvecHashRequest);
 
       // URL ECDE du sommaire
       EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
@@ -1069,7 +1073,7 @@ public final class Axis2ObjectFactory {
       EcdeUrlType ecdeUrlFichier = buildEcdeUrl(urlEcdeFichier);
       StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
       stockageUnitaireRequest
-            .setStockageUnitaireRequestTypeChoice_type0(choice0);
+      .setStockageUnitaireRequestTypeChoice_type0(choice0);
       choice0.setUrlEcdeDoc(ecdeUrlFichier);
 
       // Métadonnées
@@ -1080,7 +1084,7 @@ public final class Axis2ObjectFactory {
       EcdeUrlType ecdeUrlFichierFormatOrigine = buildEcdeUrl(urlEcdeFichierFormatOrigine);
       StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
       stockageUnitaireRequest
-            .setStockageUnitaireRequestTypeChoice_type1(choice1);
+      .setStockageUnitaireRequestTypeChoice_type1(choice1);
       choice1.setUrlEcdeDocOrigine(ecdeUrlFichierFormatOrigine);
 
       return stockageUnitaire;
@@ -1126,7 +1130,7 @@ public final class Axis2ObjectFactory {
       dataFile.setFile(dataHandler);
       StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
       stockageUnitaireRequest
-            .setStockageUnitaireRequestTypeChoice_type0(choice0);
+      .setStockageUnitaireRequestTypeChoice_type0(choice0);
       choice0.setDataFileDoc(dataFile);
 
       // Nom et contenu du fichier au format d'origine
@@ -1146,7 +1150,7 @@ public final class Axis2ObjectFactory {
       dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
       StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
       stockageUnitaireRequest
-            .setStockageUnitaireRequestTypeChoice_type1(choice1);
+      .setStockageUnitaireRequestTypeChoice_type1(choice1);
       choice1.setDataFileAttached(dataFileFormatOrigine);
 
       // Métadonnées
@@ -1294,6 +1298,29 @@ public final class Axis2ObjectFactory {
 
       // Renvoie du paramètre d'entrée de l'opération archivageMasse
       return modificationMasse;
+
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    * 
+    * @param idJob
+    *           l'identifiant unique du job que l'on veut relancer en mode
+    *           "Reprise".
+    * @return le paramètre d'entrée de l'opération "copie"
+    */
+   public static Reprise contruitParamsEntreeReprise(String idJob) {
+
+      Reprise reprise = new Reprise();
+
+      RepriseRequestType repriseRequest = new RepriseRequestType();
+
+      reprise.setReprise(repriseRequest);
+
+      repriseRequest.setUuid(buildUuid(idJob));
+
+      return reprise;
 
    }
 

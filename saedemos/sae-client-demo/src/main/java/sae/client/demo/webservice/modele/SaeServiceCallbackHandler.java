@@ -111,6 +111,22 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
+            * auto generated Axis2 call back method for deblocage method
+            * override this method for handling normal response from deblocage operation
+            */
+           public void receiveResultdeblocage(
+                    sae.client.demo.webservice.modele.SaeServiceStub.DeblocageResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from deblocage operation
+           */
+            public void receiveErrordeblocage(java.lang.Exception e) {
+            }
+                
+           /**
             * auto generated Axis2 call back method for rechercheNbRes method
             * override this method for handling normal response from rechercheNbRes operation
             */
@@ -191,38 +207,6 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for stockageUnitaire method
-            * override this method for handling normal response from stockageUnitaire operation
-            */
-           public void receiveResultstockageUnitaire(
-                    sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireResponse result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from stockageUnitaire operation
-           */
-            public void receiveErrorstockageUnitaire(java.lang.Exception e) {
-            }
-                
-           /**
-            * auto generated Axis2 call back method for documentExistant method
-            * override this method for handling normal response from documentExistant operation
-            */
-           public void receiveResultdocumentExistant(
-                    sae.client.demo.webservice.modele.SaeServiceStub.DocumentExistantResponse result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from documentExistant operation
-           */
-            public void receiveErrordocumentExistant(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for etatTraitementsMasse method
             * override this method for handling normal response from etatTraitementsMasse operation
             */
@@ -252,6 +236,38 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from ping operation
            */
             public void receiveErrorping(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for stockageUnitaire method
+            * override this method for handling normal response from stockageUnitaire operation
+            */
+           public void receiveResultstockageUnitaire(
+                    sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from stockageUnitaire operation
+           */
+            public void receiveErrorstockageUnitaire(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for documentExistant method
+            * override this method for handling normal response from documentExistant operation
+            */
+           public void receiveResultdocumentExistant(
+                    sae.client.demo.webservice.modele.SaeServiceStub.DocumentExistantResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from documentExistant operation
+           */
+            public void receiveErrordocumentExistant(java.lang.Exception e) {
             }
                 
            /**
@@ -316,6 +332,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from consultationGNTGNS operation
            */
             public void receiveErrorconsultationGNTGNS(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for reprise method
+            * override this method for handling normal response from reprise operation
+            */
+           public void receiveResultreprise(
+                    sae.client.demo.webservice.modele.SaeServiceStub.RepriseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from reprise operation
+           */
+            public void receiveErrorreprise(java.lang.Exception e) {
             }
                 
            /**
@@ -415,22 +447,6 @@ public class SaeServiceCallbackHandler{
             }
                 
            /**
-            * auto generated Axis2 call back method for suppressionMasse method
-            * override this method for handling normal response from suppressionMasse operation
-            */
-           public void receiveResultsuppressionMasse(
-                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseResponse result
-                        ) {
-           }
-
-          /**
-           * auto generated Axis2 Error handler
-           * override this method for handling error response from suppressionMasse operation
-           */
-            public void receiveErrorsuppressionMasse(java.lang.Exception e) {
-            }
-                
-           /**
             * auto generated Axis2 call back method for modification method
             * override this method for handling normal response from modification operation
             */
@@ -444,6 +460,22 @@ public class SaeServiceCallbackHandler{
            * override this method for handling error response from modification operation
            */
             public void receiveErrormodification(java.lang.Exception e) {
+            }
+                
+           /**
+            * auto generated Axis2 call back method for suppressionMasse method
+            * override this method for handling normal response from suppressionMasse operation
+            */
+           public void receiveResultsuppressionMasse(
+                    sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseResponse result
+                        ) {
+           }
+
+          /**
+           * auto generated Axis2 Error handler
+           * override this method for handling error response from suppressionMasse operation
+           */
+            public void receiveErrorsuppressionMasse(java.lang.Exception e) {
             }
                 
            /**
