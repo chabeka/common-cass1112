@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.batch.reprisemasse.support;
 
+
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -19,7 +21,6 @@ import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,6 +28,7 @@ import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
+import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -52,8 +54,8 @@ public class SAERepriseMasseTest {
    private JobLauncher jobLauncher;
 
    @Autowired
-   private EcdeTestTools tools;
-
+   private EcdeTestTools ecdeTestTools;
+   
    /**
     * Service de gestion de la pile des travaux
     */
@@ -63,6 +65,8 @@ public class SAERepriseMasseTest {
    private JobToCreate traitementAReprendre;
 
    private JobToCreate traitementReprise;
+   
+   private EcdeTestSommaire ecdeTestSommaire;
 
    @Before
    public void init() throws Exception {
@@ -84,8 +88,10 @@ public class SAERepriseMasseTest {
       String typeHash = "SHA-1";
       String hash = "29ff24a0ec2474463f1c904ddf1e8a3c671198e9";
       String codeTraitement = "UR827";
-      String urlEcdeSommaire = "ecde://cnp69devecde.cer69.recouv/doc_5000_AUG/CS_DEV_TOUTES_ACTIONS/20170426/Traitement001_ModificationMasse_passant/sommaire.xml";
-
+      
+      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+      String urlEcdeSommaire = ecdeTestSommaire.getUrlEcde().toString();
+      
       traitementAReprendre = new JobToCreate();
       traitementAReprendre.setIdJob(idJob);
       // Simuler un job de modification de masse
@@ -173,39 +179,6 @@ public class SAERepriseMasseTest {
       // On charge un traitement à reprendre inexistant
       paramReprise.put(Constantes.ID_TRAITEMENT_A_REPRENDRE, TimeUUIDUtils
             .getUniqueTimeUUIDinMillis().toString());
-      VIContenuExtrait viReprise = createTestVi("reprise_masse", codeVi);
-      traitementReprise.setVi(viReprise);
-      traitementReprise.setJobParameters(paramReprise);
-      jobQueueService.addJob(traitementReprise);
-
-      jobQueueService.reserveJob(traitementReprise.getIdJob(), "hostname",
-            new Date());
-      ExitTraitement exitTraitement = service.repriseMasse(traitementReprise
-            .getIdJob());
-      Assert.assertFalse("l'opération doit etre ko", exitTraitement.isSucces());
-
-   }
-
-   /**
-    * Teste la vérification du contrat de service du traitement de reprise 
-    * @throws JobDejaReserveException
-    * @throws JobInexistantException
-    * @throws LockTimeoutException
-    */
-   @Test(expected = AccessDeniedException.class)
-   public void testRepriseCsAccessFailed()
-         throws JobDejaReserveException, JobInexistantException,
-         LockTimeoutException {
-      JobExecution jobEx = new JobExecution(1L);
-      jobEx.setExitStatus(ExitStatus.FAILED);
-
-      String codeVi = "TEST_REPRISE_JOB_MODIFICATION_";
-      traitementReprise = new JobToCreate();
-      traitementReprise.setIdJob(TimeUUIDUtils.getUniqueTimeUUIDinMillis());
-      traitementReprise.setType(TYPES_JOB.reprise_masse.name());
-      Map<String, String> paramReprise = new HashMap<String, String>();
-      paramReprise.put(Constantes.ID_TRAITEMENT_A_REPRENDRE,
-            traitementAReprendre.getIdJob().toString());
       VIContenuExtrait viReprise = createTestVi("reprise_masse", codeVi);
       traitementReprise.setVi(viReprise);
       traitementReprise.setJobParameters(paramReprise);
