@@ -57,18 +57,8 @@ public class IntegrationInterruptionTest {
 
    @Autowired
    private SAECaptureMasseService service;
-
    @Autowired
    private EcdeTestTools ecdeTestTools;
-
-   // @Autowired
-   // @Qualifier("storageDocumentService")
-   // private StorageDocumentService storageDocumentService;
-   //
-   // @Autowired
-   // @Qualifier("storageServiceProvider")
-   // private StorageServiceProvider provider;
-
    @Autowired
    private CassandraServerBean server;
    @Autowired
@@ -130,11 +120,11 @@ public class IntegrationInterruptionTest {
 
    @After
    public void end() throws Exception {
-      // try {
-      // ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      // } catch (IOException e) {
-      // rien a faire
-      // }
+      try {
+         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+      } catch (IOException e) {
+         // rien a faire
+      }
 
       AuthenticationContext.setAuthenticationToken(null);
 
@@ -246,6 +236,14 @@ public class IntegrationInterruptionTest {
    private String calculeSha1(File file) throws IOException {
 
       FileInputStream fis = new FileInputStream(file);
+      StringBuilder sb = new StringBuilder();
+      int content;
+      while ((content = fis.read()) != -1) {
+         // convert to char and display it
+         sb.append((char) content);
+      }
+
+      LOGGER.debug(sb.toString());
       try {
 
          return DigestUtils.shaHex(fis);
