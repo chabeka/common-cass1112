@@ -119,20 +119,24 @@ public final class DroitService {
 
       PagmSupport pagmSupport = new PagmSupport(new PagmDao(keyspace));
       List<Pagm> listePagmV2 = pagmSupport.find("CS_V2");
-      
-      PagmaSupport pagmaSupport = new PagmaSupport(new PagmaDao(keyspace));
-      
-      for (Pagm pagm : listePagmV2) {
-         Pagma pagma = pagmaSupport.find(pagm.getPagma());
-         List<String> listeActionsU = pagma.getActionUnitaires();
-         listeActionsU.add("reprise_masse");
-         pagma.setActionUnitaires(listeActionsU);
-         pagmaSupport.create(pagma, jobClock.currentCLock());
-      }
-      
 
-      LOG.info("Fin mise à jour du CS_V2");
+      if (listePagmV2 != null) {
+         PagmaSupport pagmaSupport = new PagmaSupport(new PagmaDao(keyspace));
+
+         for (Pagm pagm : listePagmV2) {
+            Pagma pagma = pagmaSupport.find(pagm.getPagma());
+            List<String> listeActionsU = pagma.getActionUnitaires();
+            listeActionsU.add("reprise_masse");
+            pagma.setActionUnitaires(listeActionsU);
+            pagmaSupport.create(pagma, jobClock.currentCLock());
+         }
+         LOG.info("Fin mise à jour du CS_V2");
+      } else {
+         LOG.info("CS_V2 inexistant, aucune modification");
+      }
+
+     
 
    }
-   
+
 }
