@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
@@ -50,7 +51,7 @@ import fr.urssaf.image.sae.webservices.util.WsTraitementMasseCommonsUtils;
  */
 @Service
 public class WSModificationMasseServiceImpl implements
-      WSModificationMasseService {
+WSModificationMasseService {
    private static final Logger LOG = LoggerFactory
          .getLogger(WSModificationMasseServiceImpl.class);
 
@@ -65,7 +66,7 @@ public class WSModificationMasseServiceImpl implements
 
    @Autowired
    private WsTraitementMasseCommonsUtils wsTraitementMasseCommonsUtils;
-   
+
    @Autowired
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
@@ -75,7 +76,7 @@ public class WSModificationMasseServiceImpl implements
    @Override
    public ModificationMasseResponse modificationMasse(
          ModificationMasse request, String callerIP)
-         throws ModificationAxisFault {
+               throws ModificationAxisFault {
 
       String prefixeTrc = "archivageEnMasseAvecHash()";
 
@@ -92,13 +93,13 @@ public class WSModificationMasseServiceImpl implements
       LOG.debug("{} - Hash: {}", prefixeTrc, hash);
       LOG.debug("{} - Type hash: {}", prefixeTrc, typeHash);
       LOG.debug("{} - Code traitement: {}", prefixeTrc, codeTraitement);
-      
-      
+
+
       if (codeTraitement == null || (codeTraitement != null && codeTraitement.isEmpty())) {
          throw new ModificationAxisFault("CodeTraitementManquant", wsMessageRessourcesUtils.recupererMessage(
-                  "code.traitement.sommaire.manquant", null));
+               "code.traitement.sommaire.manquant", null));
       }
-      
+
       File fileEcde;
       try {
          fileEcde = ecdeServices.convertSommaireToFile(new URI(ecdeUrl));
@@ -159,7 +160,11 @@ public class WSModificationMasseServiceImpl implements
             extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobModificationMasse(parametres);
+      try {
+         traitementService.ajouterJobModificationMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new ModificationAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE

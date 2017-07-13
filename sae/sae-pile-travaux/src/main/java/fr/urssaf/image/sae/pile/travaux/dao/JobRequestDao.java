@@ -125,6 +125,11 @@ public class JobRequestDao {
     */
    public static final String JR_JOB_PARAM_COLUMN = "jobParameters";
 
+   /**
+    * Colonne {@value #JR_JOB_KEY_COLUMN}
+    */
+   public static final String JR_JOB_KEY_COLUMN = "jobRKey";
+
    private static final int MAX_JOB_ATTIBUTS = 100;
 
    private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
@@ -516,6 +521,23 @@ public class JobRequestDao {
    }
 
    /**
+    * Ajoute une colonne {@value #JR_JOB_KEY_COLUMN}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param valeur
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public void ecritColonneJobKey(ColumnFamilyUpdater<UUID, String> updater,
+         byte[] valeur, long clock) {
+      addColumn(updater, JR_JOB_KEY_COLUMN, valeur, StringSerializer.get(),
+            BytesArraySerializer.get(), clock);
+
+   }
+
+   /**
     * Suppression d'un JobRequest
     * 
     * @param mutator
@@ -567,10 +589,10 @@ public class JobRequestDao {
       if (result.getByteArray(JR_CREATION_DATE_COLUMN) == null) {
          throw new PileTravauxRuntimeException(
                String
-                     .format(
-                           "Erreur technique : la colonne %s pour le job %s est vide ou absente (Column family %s)",
-                           JR_CREATION_DATE_COLUMN, jobRequest.getIdJob(),
-                           JOBREQUEST_CFNAME));
+               .format(
+                     "Erreur technique : la colonne %s pour le job %s est vide ou absente (Column family %s)",
+                     JR_CREATION_DATE_COLUMN, jobRequest.getIdJob(),
+                     JOBREQUEST_CFNAME));
       }
       Date creationDate = dSlz.fromBytes(result
             .getByteArray(JR_CREATION_DATE_COLUMN));
@@ -607,7 +629,7 @@ public class JobRequestDao {
       jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
 
       jobRequest
-            .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
+      .setToCheckFlagRaison(result.getString(JR_TO_CHECK_FLAG_RAISON));
 
       if (result.getByteArray(JR_VI) != null) {
          VIContenuExtrait contenuExtrait = VISerializer.get().fromBytes(
@@ -618,6 +640,11 @@ public class JobRequestDao {
       if (result.getByteArray(JR_JOB_PARAM_COLUMN) != null) {
          byte[] bMetadata = result.getByteArray(JR_JOB_PARAM_COLUMN);
          jobRequest.setJobParameters(MapSerializer.get().fromBytes(bMetadata));
+      }
+
+      if (result.getByteArray(JR_JOB_KEY_COLUMN) != null) {
+         byte[] bMetadata = result.getByteArray(JR_JOB_KEY_COLUMN);
+         jobRequest.setJobKey(bMetadata);
       }
 
       return jobRequest;

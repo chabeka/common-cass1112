@@ -12,6 +12,7 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
+import me.prettyprint.cassandra.service.template.IndexedSlicesPredicate;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.OrderedRows;
@@ -20,11 +21,14 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
+import org.apache.cassandra.thrift.IndexOperator;
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.IndexedSlicesPredicateHelper;
 import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
@@ -107,7 +111,7 @@ public class JobLectureServiceImpl implements JobLectureService {
       }      
       return jobRequest;      
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -231,13 +235,13 @@ public class JobLectureServiceImpl implements JobLectureService {
       return list;
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax) {
-      
+
       List<JobRequest> list = new ArrayList<JobRequest>();
       // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
       // en requêtant directement dans la CF JobRequest
@@ -247,7 +251,7 @@ public class JobLectureServiceImpl implements JobLectureService {
                   StringSerializer.get(), bytesSerializer);
       rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
       rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
-      
+
       JobRequestRowsIterator iterator = new JobRequestRowsIterator(rangeSlicesQuery, 1000, jobRequestDao);
       while (iterator.hasNext()) {
          JobRequest jobRequest = iterator.next();
@@ -258,13 +262,14 @@ public class JobLectureServiceImpl implements JobLectureService {
             list.add(jobRequest);
          }
       }
-      
+
       return list;
    }
 
    /**
     * {@inheritDoc}
     */
+   @Override
    public final boolean isJobResettable(JobRequest job) {
       String state = job.getState().toString();
       if (state.equals("RESERVED") || state.equals("STARTING")) {
@@ -276,6 +281,7 @@ public class JobLectureServiceImpl implements JobLectureService {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final boolean isJobRemovable(JobRequest job) {
       String state = job.getState().toString();
       if ("CREATED".equals(state) || "STARTING".equals(state)
@@ -283,6 +289,39 @@ public class JobLectureServiceImpl implements JobLectureService {
          return true;
       }
       return false;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public UUID getJobRequestIdByJobKey(byte[] jobKey) {
+      Assert.notNull(jobKey, "Job key must not be null.");
+      IndexedSlicesPredicate<UUID, String, byte[]> predicate = new IndexedSlicesPredicate<UUID, String, byte[]>(
+            UUIDSerializer.get(), StringSerializer.get(),
+            BytesArraySerializer.get());
+      predicate.addExpression(JobRequestDao.JR_JOB_KEY_COLUMN,
+            IndexOperator.EQ, jobKey);
+
+      // Il est obligatoire de préciser une "start_key". (à ne pas confondre
+      // avec Starsky !)
+      // Ce "start_key" ne correspond pas à la clé de JobInstance, mais à la clé
+      // de JobInstance.jobKey_idx
+      // Il faut donc l'exprimer en bytes, mais l'API d'hector veut l'exprimer
+      // en long, ce qui n'est pas bon.
+      // Pour contourner le problème on passe par
+      // IndexedSlicesPredicateHelper.setEmptyStartKey
+      IndexedSlicesPredicateHelper.setEmptyStartKey(predicate);
+      // predicate.startKey(new byte[0]);
+      predicate.count(1);
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(predicate);
+
+      if (!result.hasResults()) {
+         return null;
+      }
+
+      return result.getKey();
    }
 
 }

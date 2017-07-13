@@ -80,9 +80,9 @@ public class SAECassandraService {
                // createColumnFamillyFromDefinition(c,
                // blockUntilComplete,this.getMAX_RETRY());
                LOG
-                     .error(
-                           "Un exception s'est produite lors de la création de la famille de colonnes {}",
-                           c.getName());
+               .error(
+                     "Un exception s'est produite lors de la création de la famille de colonnes {}",
+                     c.getName());
             }
          }
       }
@@ -113,9 +113,9 @@ public class SAECassandraService {
       } catch (HectorException e) {
          LOG.error("Error : ", e);
          LOG
-               .error(
-                     "Echec de la création de la famille de colonnes {}. Nouvelle tentative dans 5 sec",
-                     colDef.getName());
+         .error(
+               "Echec de la création de la famille de colonnes {}. Nouvelle tentative dans 5 sec",
+               colDef.getName());
          try {
             // en cas d'exception on met en pause 5 sec et on re-essaie
             Thread.sleep(SLEEP_TIME);
@@ -133,9 +133,80 @@ public class SAECassandraService {
 
          } catch (InterruptedException e1) {
             LOG
-                  .error(
-                        "Echec lors de la temporisation entre 2 tentatives de création de famille de colonnes {}",
-                        colDef.getName());
+            .error(
+                  "Echec lors de la temporisation entre 2 tentatives de création de famille de colonnes {}",
+                  colDef.getName());
+         }
+      }
+      // on réinitialise le compteur
+      this.setMaxRetry(maxRetryValue);
+      return succes;
+   }
+
+   /**
+    * Methode permettant de modifier une famille de colonne à partir de la
+    * définition d'une colonne.
+    * 
+    * @param cfDef
+    *           Définition de colonne.
+    */
+   public void updateColumnFamilyFromDefinition(ColumnFamilyDefinition cfDef) {
+      if (!cfExists(cfDef.getName())) {
+         LOG.info("La famille de colonnes {} n'existe pas", cfDef.getName());
+      } else {
+         try {
+            updateColumnFamillyFromDefinition(cfDef, this.getMaxRetry());
+         } catch (HCassandraInternalException ex) {
+            LOG.error(
+                  "Un exception s'est produite lors de la modification de la famille de colonnes {}",
+                  cfDef.getName());
+         }
+      }
+   }
+
+   /**
+    * Methode permettant de
+    * 
+    * @param cfDef
+    *           Définition de colonne.
+    * @param maxRetry
+    *           Nombre max d'essai
+    * @return True en cas de succes, false sinon.
+    */
+   private boolean updateColumnFamillyFromDefinition(
+         ColumnFamilyDefinition cfDef,
+         int maxRetry) {
+      // on décrémente le compteur
+      this.setMaxRetry(maxRetry - 1);
+      boolean succes = false;
+      try {
+         // appel de la creation de la CF
+         LOG.info("Mise à jour de la famille de colonnes {}", cfDef.getName());
+         saeDao.updateColumnFamily(cfDef);
+      } catch (HectorException e) {
+         LOG.error("Error : ", e);
+         LOG.error(
+               "Echec de la modification de la famille de colonnes {}. Nouvelle tentative dans 5 sec",
+               cfDef.getName());
+         try {
+            // en cas d'exception on met en pause 5 sec et on re-essaie
+            Thread.sleep(SLEEP_TIME);
+            if (this.getMaxRetry() > 0 && !succes) {
+               int nbTentatives = maxRetryValue - maxRetry;
+               LOG.info("Tentative {} : modification de {} ", nbTentatives,
+                     cfDef.getName());
+               succes = updateColumnFamillyFromDefinition(cfDef,
+                     this.getMaxRetry());
+            } else {
+               // on réinitialise le compteur
+               this.setMaxRetry(maxRetryValue);
+               return succes;
+            }
+
+         } catch (InterruptedException e1) {
+            LOG.error(
+                  "Echec lors de la temporisation entre 2 tentatives de création de famille de colonnes {}",
+                  cfDef.getName());
          }
       }
       // on réinitialise le compteur

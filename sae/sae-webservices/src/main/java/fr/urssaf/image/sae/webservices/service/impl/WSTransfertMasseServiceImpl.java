@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
@@ -54,23 +55,23 @@ import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
  */
 @Service
 public class WSTransfertMasseServiceImpl implements WSTransfertMasseService {
-      
+
    private static final Logger LOG = LoggerFactory
          .getLogger(WSTransfertMasseServiceImpl.class);
-   
+
    @Autowired
    private EcdeServices ecdeServices;
-   
+
    @Autowired
    private SAEControleSupportService controleSupport;
-   
+
    @Autowired
    @Qualifier("saeControlesCaptureService")
    private SAEControlesCaptureService controlesService;
 
    @Autowired
    private TraitementAsynchroneService traitementService;
-   
+
    @Autowired
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
@@ -82,7 +83,7 @@ public class WSTransfertMasseServiceImpl implements WSTransfertMasseService {
    @Override
    public final TransfertMasseResponse transfertEnMasse(
          TransfertMasse request, String callerIP)
-         throws TransfertAxisFault {
+               throws TransfertAxisFault {
 
       String prefixeTrc = "transfertEnMasse()";
 
@@ -136,21 +137,25 @@ public class WSTransfertMasseServiceImpl implements WSTransfertMasseService {
 
       VIContenuExtrait extrait = (VIContenuExtrait) SecurityContextHolder
             .getContext().getAuthentication().getPrincipal();
-      
+
       // Paramètres de traitements de transfert en masse
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParam, uuid, TYPES_JOB.transfert_masse, hName,
             callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job de transfert en masse de documents dans la pile des travaux
-      traitementService.ajouterJobTransfertMasse(parametres);
+      try {
+         traitementService.ajouterJobTransfertMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new TransfertAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
       return ObjectStorageResponseFactory
             .createTransfertMasseResponse(uuid.toString());
    }
-   
+
    /**
     * Vérification de l'URL ECDE du sommaire contenu dans la requête SOAP
     * @param ecdeUrl
@@ -222,5 +227,5 @@ public class WSTransfertMasseServiceImpl implements WSTransfertMasseService {
       }
       return nombreDoc;
    }
-   
+
 }

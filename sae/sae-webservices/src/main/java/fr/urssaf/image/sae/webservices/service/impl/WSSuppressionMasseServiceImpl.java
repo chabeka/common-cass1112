@@ -15,6 +15,7 @@ import fr.cirtil.www.saeservice.RequeteRechercheType;
 import fr.cirtil.www.saeservice.SuppressionMasse;
 import fr.cirtil.www.saeservice.SuppressionMasseResponse;
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
@@ -39,7 +40,7 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
 
    @Autowired
    private TraitementAsynchroneService traitementService;
-   
+
    /**
     * 
     * {@inheritDoc}
@@ -75,8 +76,12 @@ public class WSSuppressionMasseServiceImpl implements WSSuppressionMasseService 
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(jobParam,
             uuid, TYPES_JOB.suppression_masse, hName, callerIP, null, extrait);
 
-       // appel de la méthode d'insertion du job dans la pile des travaux
-       traitementService.ajouterJobSuppressionMasse(parametres);
+      // appel de la méthode d'insertion du job dans la pile des travaux
+      try {
+         traitementService.ajouterJobSuppressionMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new SuppressionAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande
       return ObjectStorageResponseFactory.createSuppressionMasseResponse(uuid

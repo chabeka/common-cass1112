@@ -20,7 +20,6 @@ import fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl;
 import fr.urssaf.image.sae.droit.dao.PagmDao;
 import fr.urssaf.image.sae.droit.dao.PagmaDao;
 import fr.urssaf.image.sae.droit.dao.PrmdDao;
-import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;

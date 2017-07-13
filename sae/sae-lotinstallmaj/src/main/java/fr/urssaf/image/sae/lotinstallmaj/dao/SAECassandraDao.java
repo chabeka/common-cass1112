@@ -274,4 +274,19 @@ public class SAECassandraDao {
       cfDef.setCompactionStrategyOptions(compactionOptions);
    }
 
+   /**
+    * Methode permettant de mettre à jour une colonne family à partir d'une
+    * définition de colonne.
+    * 
+    * @param cfDef
+    *           colonne family
+    */
+   public void updateColumnFamily(ColumnFamilyDefinition cfDef) {
+      // ajout des attributs par défauts
+      addDefaultCFAttributs(cfDef);
+      // modification de la column familly
+      cluster.updateColumnFamily(cfDef);
+
+   }
+
 }

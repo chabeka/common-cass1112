@@ -15,6 +15,7 @@ import fr.cirtil.www.saeservice.RestoreMasse;
 import fr.cirtil.www.saeservice.RestoreMasseResponse;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
@@ -39,8 +40,8 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
 
    @Autowired
    private TraitementAsynchroneService traitementService;
-   
-   
+
+
    /**
     * 
     * {@inheritDoc}
@@ -77,7 +78,11 @@ public class WSRestoreMasseServiceImpl implements WSRestoreMasseService {
             jobParam, uuid, TYPES_JOB.restore_masse, hName, callerIP, null, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobRestoreMasse(parametres);
+      try {
+         traitementService.ajouterJobRestoreMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new RestoreAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande
       return ObjectStorageResponseFactory.createRestoreMasseResponse(uuid

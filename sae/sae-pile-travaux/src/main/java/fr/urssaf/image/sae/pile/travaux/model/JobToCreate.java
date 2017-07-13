@@ -17,9 +17,9 @@ public class JobToCreate {
 
    @Deprecated
    private String parameters;
-   
+
    private Map<String,String> jobParameters;
-   
+
    private Date creationDate;
 
    private String saeHost;
@@ -27,8 +27,10 @@ public class JobToCreate {
    private String clientHost;
 
    private Integer docCount;
-   
+
    private VIContenuExtrait viExtrait;
+
+   byte[] jobKey;
 
    /**
     * @return the idJob
@@ -76,7 +78,7 @@ public class JobToCreate {
    public final void setParameters(String parameters) {
       this.parameters = parameters;
    }
-   
+
    /**
     * @return the creationDate
     */
@@ -172,6 +174,25 @@ public class JobToCreate {
     */
    public final void setJobParameters(Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
+   }
+
+   /**
+    * Getter pour jobKey
+    * 
+    * @return the jobKey
+    */
+   public byte[] getJobKey() {
+      return jobKey;
+   }
+
+   /**
+    * Setter pour jobKey
+    * 
+    * @param jobKey
+    *           the jobKey to set
+    */
+   public void setJobKey(byte[] jobKey) {
+      this.jobKey = jobKey;
    }
 
 }

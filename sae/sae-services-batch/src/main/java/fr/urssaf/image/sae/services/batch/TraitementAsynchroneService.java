@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.batch.common.model.TraitemetMasseParametres;
@@ -30,10 +31,13 @@ public interface TraitementAsynchroneService {
     * @param parametres
     *           ensemble des paramètres nécessaires à l'enregistrement d'un
     *           traitement de masse
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     * 
     */
    @PreAuthorize("hasRole('archivage_masse')")
-   void ajouterJobCaptureMasse(TraitemetMasseParametres parametres);
+   void ajouterJobCaptureMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException;
 
    /**
     * Ajoute un traitement de restore de masse dans la pile des traitements de
@@ -42,10 +46,13 @@ public interface TraitementAsynchroneService {
     * @param parametres
     *           ensemble des paramètres nécessaires à l'enregistrement d'un
     *           traitement de masse
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     * 
     */
    @PreAuthorize("hasRole('restore_masse')")
-   void ajouterJobRestoreMasse(TraitemetMasseParametres parametres);
+   void ajouterJobRestoreMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException;
 
    /**
     * Ajoute un traitement de suppression masse dans la pile des traitements de
@@ -54,11 +61,13 @@ public interface TraitementAsynchroneService {
     * @param parametres
     *           ensemble des paramètres nécessaires à l'enregistrement d'un
     *           traitement de masse
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     * 
     */
    @PreAuthorize("hasRole('suppression_masse')")
-   void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres);
-   
+   void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) throws JobRequestAlreadyExistsException;
+
 
    /**
     * Ajoute un traitement de modification de masse dans la pile des traitements de
@@ -67,11 +76,13 @@ public interface TraitementAsynchroneService {
     * @param parametres
     *           ensemble des paramètres nécessaires à l'enregistrement d'un
     *           traitement de masse
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     * 
     */
    @PreAuthorize("hasRole('modification_masse')")
-   void ajouterJobModificationMasse(TraitemetMasseParametres parametres);
-   
+   void ajouterJobModificationMasse(TraitemetMasseParametres parametres) throws JobRequestAlreadyExistsException;
+
    /**
     * Ajoute un traitement de modification de masse dans la pile des traitements de
     * masse en attente
@@ -79,19 +90,23 @@ public interface TraitementAsynchroneService {
     * @param parametres
     *           ensemble des paramètres nécessaires à l'enregistrement d'un
     *           traitement de masse
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     * 
     */
    @PreAuthorize("hasRole('transfert_masse')")
-   void ajouterJobTransfertMasse(TraitemetMasseParametres parametres);
-   
+   void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) throws JobRequestAlreadyExistsException;
+
    /**
     * Ajoute un traitement de reprise dans la pile des traitements de masse en attente
     * @param parametres
     *             contient les paramètres nécessaires à l'enregistrement de reprise
+    * @throws JobRequestAlreadyExistsException
+    *            @{@link JobRequestAlreadyExistsException}
     */
    @PreAuthorize("hasRole('reprise_masse')")
-   void ajouterJobReprise(TraitemetMasseParametres parametres);
-   
+   void ajouterJobReprise(TraitemetMasseParametres parametres) throws JobRequestAlreadyExistsException;
+
    /**
     * Exécute un traitement de masse stocké dans la pile des traitements en
     * attente
@@ -106,7 +121,7 @@ public interface TraitementAsynchroneService {
     *            paramètre n'a pas été réservé
     */
    void lancerJob(UUID idJob) throws JobInexistantException,
-         JobNonReserveException;
+   JobNonReserveException;
 
    /**
     * Récupère la liste des jobs demandés
@@ -116,8 +131,8 @@ public interface TraitementAsynchroneService {
     * @return La liste des jobs correspondants aux UUID fournis en paramètre          
     */
    List<JobRequest> recupererJobs(List<UUID> listeUuid);
-   
-   
+
+
    /**
     * Exécute un traitement de reprise de masse stocké dans la pile des travaux en
     * attente
@@ -128,5 +143,5 @@ public interface TraitementAsynchroneService {
     */
    ExitTraitement lancerReprise(JobRequest jobReprise)
          throws JobInexistantException;
-   
+
 }

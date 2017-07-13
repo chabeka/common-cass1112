@@ -54,6 +54,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_25 = 25;
    private static final int VERSION_26 = 26;
    private static final int VERSION_27 = 27;
+   private static final int VERSION_28 = 28;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -949,17 +950,17 @@ public class SAECassandraUpdater {
 
       // Ajout du format fmt/13 (PNG) et fmt/44 (JPG)
       donnees.addReferentielFormatV5();
-      
+
       // Ajout des paramètres pour la purge de la corbeille
       donnees.addCorbeilleParameters();
-      
+
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
-      
+
       // On positionne la version à 21
       saeDao.setDatabaseVersion(VERSION_21);
    }
-   
+
    /**
     * Version 22 : <li>Ajout de l'action unitaire suppression et modification pour la GNS</li>
     */
@@ -980,11 +981,11 @@ public class SAECassandraUpdater {
 
       // Ajout de l'action unitaire suppression et modification
       donnees.addActionUnitaireSuppressionModification();
-      
+
       // On positionne la version à 22
       saeDao.setDatabaseVersion(VERSION_22);
    }
-   
+
    /**
     * Version 23 : <li>Ajout de l'action unitaire copie</li>
     */
@@ -1005,11 +1006,11 @@ public class SAECassandraUpdater {
 
       // Ajout de l'action unitaire copie
       donnees.addActionUnitaireCopie();
-      
+
       // On positionne la version à 23
       saeDao.setDatabaseVersion(VERSION_23);
    }
-   
+
    public void updateToVersion24() {
 
       long version = saeDao.getDatabaseVersion();
@@ -1118,12 +1119,42 @@ public class SAECassandraUpdater {
 
       // Modification du format png
       donnees.addReferentielFormatV7();
-      
+
       // Mise à jour du CS_V2 pour ajouter l'action reprise_masse à tous les PAGM
       droitService.majPagmCsV2AjoutActionReprise170900(saeDao.getKeyspace());
-      
+
       // On positionne la version à 27
       saeDao.setDatabaseVersion(VERSION_27);
+   }
+
+   public void updateToVersion28() {
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_28) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_28);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      // Ajout d'une colonne indexée jobRKey à la CF JobRequest.
+      BasicColumnDefinition jobKeyCol = new BasicColumnDefinition();
+      jobKeyCol.setName(StringSerializer.get().toByteBuffer("jobRKey"));
+      jobKeyCol.setIndexName("jobRKey_idx");
+      jobKeyCol.setValidationClass("BytesType");
+      jobKeyCol.setIndexType(ColumnIndexType.KEYS);
+      List<ColumnDefinition> colDefs = new ArrayList<ColumnDefinition>();
+      colDefs.add(jobKeyCol);
+      ColumnFamilyDefinition cfDef = HFactory.createColumnFamilyDefinition(
+            ksName, "JobRequest", ComparatorType.BYTESTYPE, colDefs);
+
+      saeCassandraService.updateColumnFamilyFromDefinition(cfDef);
+
+
+      // On positionne la version à 28
+      saeDao.setDatabaseVersion(VERSION_28);
    }
 
    /**

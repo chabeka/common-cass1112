@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
@@ -157,7 +158,11 @@ public class TraitementAsynchroneServiceTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, idJob, TYPES_JOB.capture_masse, null, null, null, null);
 
-      service.ajouterJobCaptureMasse(parametres);
+      try {
+         service.ajouterJobCaptureMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -192,7 +197,11 @@ public class TraitementAsynchroneServiceTest {
             jobParams, idJob, TYPES_JOB.suppression_masse, null, null, null,
             null);
 
-      service.ajouterJobSuppressionMasse(parametres);
+      try {
+         service.ajouterJobSuppressionMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -221,7 +230,11 @@ public class TraitementAsynchroneServiceTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, idJob, TYPES_JOB.restore_masse, null, null, null, null);
 
-      service.ajouterJobRestoreMasse(parametres);
+      try {
+         service.ajouterJobRestoreMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -252,7 +265,11 @@ public class TraitementAsynchroneServiceTest {
             jobParams, idJob, TYPES_JOB.modification_masse, null, null, null,
             null);
 
-      service.ajouterJobModificationMasse(parametres);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -290,7 +307,11 @@ public class TraitementAsynchroneServiceTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, idJob, TYPES_JOB.transfert_masse, null, null, null, null);
 
-      service.ajouterJobTransfertMasse(parametres);
+      try {
+         service.ajouterJobTransfertMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 

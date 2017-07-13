@@ -22,6 +22,7 @@ import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
@@ -120,7 +121,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             hName, callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobCaptureMasse(parametres);
+      try {
+         traitementService.ajouterJobCaptureMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new CaptureAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE
@@ -135,7 +140,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
    @Override
    public final ArchivageMasseAvecHashResponse archivageEnMasseAvecHash(
          ArchivageMasseAvecHash request, String callerIP)
-         throws CaptureAxisFault {
+               throws CaptureAxisFault {
 
       String prefixeTrc = "archivageEnMasseAvecHash()";
 
@@ -187,7 +192,7 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
       Integer nbDoc;
       try {
          uuid = wsTraitementMasseCommonsUtils.checkEcdeUrl(ecdeUrl);
-         
+
          nbDoc = wsTraitementMasseCommonsUtils.getNombreDoc(ecdeUrl);
       } catch (EcdeBadURLException e) {
          throw new CaptureAxisFault("CaptureUrlEcdeIncorrecte", e.getMessage(),
@@ -221,7 +226,11 @@ public class WSCaptureMasseServiceImpl implements WSCaptureMasseService {
             callerIP, nbDoc, extrait);
 
       // appel de la méthode d'insertion du job dans la pile des travaux
-      traitementService.ajouterJobCaptureMasse(parametres);
+      try {
+         traitementService.ajouterJobCaptureMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         throw new CaptureAxisFault("JobDejaExistant", e.getMessage(), e);
+      }
 
       // On prend acte de la demande,
       // le retour se fera via le fichier resultats.xml de l'ECDE

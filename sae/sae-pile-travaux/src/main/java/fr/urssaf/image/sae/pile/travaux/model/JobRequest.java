@@ -71,8 +71,10 @@ public class JobRequest {
    private String toCheckFlagRaison;
 
    private VIContenuExtrait viExtrait;
-   
+
    private Map<String, String> jobParameters;
+
+   private byte[] jobKey;
 
    /**
     * @return the idJob
@@ -360,6 +362,25 @@ public class JobRequest {
     */
    public final void setJobParameters(Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
+   }
+
+   /**
+    * Getter pour jobKey
+    * 
+    * @return the jobKey
+    */
+   public byte[] getJobKey() {
+      return jobKey;
+   }
+
+   /**
+    * Setter pour jobKey
+    * 
+    * @param jobKey
+    *           the jobKey to set
+    */
+   public void setJobKey(byte[] jobKey) {
+      this.jobKey = jobKey;
    }
 
 }

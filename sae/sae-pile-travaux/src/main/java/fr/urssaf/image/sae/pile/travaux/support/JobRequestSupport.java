@@ -55,11 +55,13 @@ public class JobRequestSupport {
          jobRequestDao.ecritColonneParameters(updaterJobRequest, jobToCreate
                .getParameters(), clock);
       }
-      
+
       if (jobToCreate.getJobParameters() != null) {
          jobRequestDao.ecritColonneJobParameters(updaterJobRequest, jobToCreate
                .getJobParameters(), clock);
       }
+      jobRequestDao.ecritColonneJobKey(updaterJobRequest,
+            jobToCreate.getJobKey(), clock);
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
       jobRequestDao.ecritColonneCreationDate(updaterJobRequest, jobToCreate
             .getCreationDate(), clock);
@@ -112,7 +114,7 @@ public class JobRequestSupport {
       // Ecriture des colonnes
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
       jobRequestDao
-            .ecritColonneReservedBy(updaterJobRequest, reservedBy, clock);
+      .ecritColonneReservedBy(updaterJobRequest, reservedBy, clock);
       jobRequestDao.ecritColonneReservationDate(updaterJobRequest,
             reservationDate, clock);
 
@@ -185,7 +187,7 @@ public class JobRequestSupport {
       // Ecriture des colonnes
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
       jobRequestDao
-            .ecritColonneEndingDate(updaterJobRequest, endingDate, clock);
+      .ecritColonneEndingDate(updaterJobRequest, endingDate, clock);
 
       if (message != null) {
 
@@ -324,7 +326,7 @@ public class JobRequestSupport {
       mutator.execute();
 
    }
-   
+
    /**
     * Ajoute le nombre de docs traités dans la pile des travaux.
     * 
@@ -350,7 +352,7 @@ public class JobRequestSupport {
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
 
    }
-   
+
    /**
     * Permet de changer l'état du statut dans la jobRequest
     * @param idJob
@@ -381,5 +383,5 @@ public class JobRequestSupport {
       // Ecrit en base
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
    }   
-   
+
 }

@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
@@ -91,7 +92,7 @@ public class TraitementAsynchroneServiceValidationTest {
          @Override
          public ExitTraitement lancerReprise(JobRequest jobReprise)
                throws JobParameterTypeException, JobInexistantException {
-            
+
             return null;
          }
 
@@ -111,7 +112,11 @@ public class TraitementAsynchroneServiceValidationTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.capture_masse, null, null,
             null, null);
-      service.ajouterJobCaptureMasse(parametres);
+      try {
+         service.ajouterJobCaptureMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
    }
 
    @Test
@@ -134,6 +139,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -150,6 +157,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -162,7 +171,11 @@ public class TraitementAsynchroneServiceValidationTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.suppression_masse, null,
             null, null, null);
-      service.ajouterJobSuppressionMasse(parametres);
+      try {
+         service.ajouterJobSuppressionMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
    }
 
    @Test
@@ -185,6 +198,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -200,6 +215,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -211,7 +228,11 @@ public class TraitementAsynchroneServiceValidationTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.restore_masse, null, null,
             null, null);
-      service.ajouterJobRestoreMasse(parametres);
+      try {
+         service.ajouterJobRestoreMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
    }
 
    @Test
@@ -227,6 +248,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -249,6 +272,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -261,7 +286,11 @@ public class TraitementAsynchroneServiceValidationTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.modification_masse, null, null,
             null, null);
-      service.ajouterJobModificationMasse(parametres);
+      try {
+         service.ajouterJobModificationMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
    }
 
    @Test
@@ -292,6 +321,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -309,6 +340,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -351,7 +384,11 @@ public class TraitementAsynchroneServiceValidationTest {
       TraitemetMasseParametres parametres = new TraitemetMasseParametres(
             jobParams, UUID_TRAITEMENT, TYPES_JOB.transfert_masse, null, null,
             null, null);
-      service.ajouterJobTransfertMasse(parametres);
+      try {
+         service.ajouterJobTransfertMasse(parametres);
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
+      }
    }
 
    @Test
@@ -373,6 +410,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "uuid"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -388,6 +427,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "type"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -403,6 +444,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "idTraitement"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -418,6 +461,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -433,6 +478,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "requete"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -449,6 +496,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -465,6 +514,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "codeTraitement"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 
@@ -480,6 +531,8 @@ public class TraitementAsynchroneServiceValidationTest {
       } catch (IllegalArgumentException e) {
          Assert.assertEquals(EXCEPTION_MESSAGE,
                MessageFormat.format(ARG_EMPTY, "urlEcde"), e.getMessage());
+      } catch (JobRequestAlreadyExistsException e) {
+         Assert.fail("Exception do not occured");
       }
    }
 

@@ -71,7 +71,7 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getAllJobs(Keyspace keyspace);
-   
+
    /**
     * Récupère l'ensemble des jobs présents dans la pile des travaux 
     * (non démarrés, démarrés, terminés)
@@ -80,7 +80,7 @@ public interface JobLectureService {
     * @return liste des traitements
     */
    List<JobRequest> getAllJobs(Keyspace keyspace, int maxKeysToRead);
-   
+
    /**
     * Récupère l'ensemble des jobs présents dans la pile des travaux (non
     * démarrés, démarrés, terminés) dont la date de creation est inferieure ou
@@ -103,7 +103,7 @@ public interface JobLectureService {
     * @return true si le job peut être réinitialisé
     */
    boolean isJobResettable(JobRequest job);
-   
+
    /**
     * Teste si le job peut être supprimé
     * (ie : si le job est à l'état CREATED, STARTING ou RESERVED)
@@ -123,5 +123,16 @@ public interface JobLectureService {
     */
    JobRequest getJobRequestNotNull(UUID uuidJob)
          throws JobInexistantException;
-   
+
+   /**
+    * Methode permettant de récuperer l'identificant du jobRequest possedant la
+    * clef "jobKey" s'il existe dans la pile des travaux.
+    * 
+    * @param jobKey
+    *           Clef d'un job
+    * @return l'identificant du jobRequest possedant la clef "jobKey" s'il
+    *         existe dans la pile des travaux.
+    */
+   UUID getJobRequestIdByJobKey(byte[] jobKey);
+
 }

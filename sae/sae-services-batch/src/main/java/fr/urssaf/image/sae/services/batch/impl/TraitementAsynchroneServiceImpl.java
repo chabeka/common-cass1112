@@ -1,22 +1,30 @@
 package fr.urssaf.image.sae.services.batch.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.commons.utils.Constantes.TYPES_JOB;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
+import fr.urssaf.image.sae.pile.travaux.exception.JobRequestAlreadyExistsException;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
@@ -40,7 +48,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 public class TraitementAsynchroneServiceImpl implements
-      TraitementAsynchroneService {
+TraitementAsynchroneService {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(TraitementAsynchroneServiceImpl.class);
@@ -91,13 +99,19 @@ public class TraitementAsynchroneServiceImpl implements
 
    }
 
-   private void ajouterJob(TraitemetMasseParametres parameters) {
+   private void ajouterJob(TraitemetMasseParametres parameters)
+         throws JobRequestAlreadyExistsException {
 
       LOG.debug(
             "{} - ajout d'un traitement de masse de type : {} pour  l'identifiant: {}",
             new Object[] { "ajouterJob()", parameters.getType(),
                   parameters.getUuid() });
-
+      byte[] jobKey = createJobKey(parameters.getType().name(),
+            parameters.getJobParameters());
+      UUID jobRequestId = jobLectureService.getJobRequestIdByJobKey(jobKey);
+      if (jobRequestId != null) {
+         throw new JobRequestAlreadyExistsException(jobRequestId);
+      }
       JobToCreate job = new JobToCreate();
       job.setIdJob(parameters.getUuid());
       job.setType(parameters.getType().name());
@@ -108,6 +122,7 @@ public class TraitementAsynchroneServiceImpl implements
       job.setDocCount(parameters.getNbreDocs());
       job.setVi(parameters.getVi());
       job.setJobParameters(parameters.getJobParameters());
+      job.setJobKey(jobKey);
       jobQueueService.addJob(job);
    }
 
@@ -117,7 +132,7 @@ public class TraitementAsynchroneServiceImpl implements
     */
    @Override
    public final void lancerJob(UUID idJob) throws JobInexistantException,
-         JobNonReserveException {
+   JobNonReserveException {
 
       JobRequest job = jobLectureService.getJobRequest(idJob);
 
@@ -203,7 +218,7 @@ public class TraitementAsynchroneServiceImpl implements
                   job.getIdJob(),
                   BooleanUtils.toString(exitTraitement.isSucces(),
                         "avec succès", "sur un échec"),
-                  exitTraitement.getExitMessage() });
+                        exitTraitement.getExitMessage() });
 
       String codeTraitement = null;
       if (job.getJobParameters() != null) {
@@ -220,54 +235,66 @@ public class TraitementAsynchroneServiceImpl implements
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres) {
+   public void ajouterJobCaptureMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres) {
+   public void ajouterJobRestoreMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres) {
+   public void ajouterJobSuppressionMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobTransfertMasse(TraitemetMasseParametres parametres) {
+   public void ajouterJobTransfertMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobModificationMasse(TraitemetMasseParametres parametres) {
+   public void ajouterJobModificationMasse(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
    /**
     * {@inheritDoc}<br>
     * <br>
+    * 
     */
    @Override
-   public void ajouterJobReprise(TraitemetMasseParametres parametres) {
+   public void ajouterJobReprise(TraitemetMasseParametres parametres)
+         throws JobRequestAlreadyExistsException {
       ajouterJob(parametres);
    }
 
@@ -308,6 +335,7 @@ public class TraitementAsynchroneServiceImpl implements
     * @return ExitTraitement résultat de l'exécution d'un traitement de masse.
     * @throws JobInexistantException
     */
+   @Override
    public ExitTraitement lancerReprise(JobRequest jobReprise)
          throws JobInexistantException {
 
@@ -316,24 +344,66 @@ public class TraitementAsynchroneServiceImpl implements
       // 1- Vérifier si le param uidJobAReprendre est bien renseigné
       String jobAReprendreParam = jobReprise.getJobParameters().get(
             Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
-      
+
       // 2- Vérifier si le jobAReprendre existe en base
       UUID idJobAReprendre = UUID.fromString(jobAReprendreParam);
-      
+
       // Récupérer le job à reprendre
       JobRequest jobAReprendre = jobLectureService.getJobRequest(idJobAReprendre);
-      
+
       if (jobAReprendre != null) {
-          LOG.debug("Lancement de la reprise du traitement - {}",
-          idJobAReprendre.toString());
-          
-          // Lancer la reprise de masse
-          exitTraitement = repriseMasse.execute(jobReprise);
+         LOG.debug("Lancement de la reprise du traitement - {}",
+               idJobAReprendre.toString());
+
+         // Lancer la reprise de masse
+         exitTraitement = repriseMasse.execute(jobReprise);
       }else {
          throw new JobInexistantException(idJobAReprendre);
       }
 
       return exitTraitement;
+   }
+
+   /**
+    * Crée une "clé" permettant de résumer un job et ses paramètres.
+    * 
+    * @param jobName
+    *           Le nom du job
+    * @param jobParameters
+    *           Les paramètres du job
+    * @return la "clé" (correspond à un MD5)
+    */
+   public static byte[] createJobKey(String jobName,
+         Map<String, String> jobParameters) {
+      Assert.notNull(jobName, "Job name must not be null.");
+      Assert.notNull(jobParameters, "JobParameters must not be null.");
+      String keyJobName = "__jobName";
+      jobParameters.put(keyJobName, jobName);
+      StringBuffer stringBuffer = new StringBuffer();
+      List<String> keys = new ArrayList<String>(jobParameters.keySet());
+      Collections.sort(keys);
+      for (String key : keys) {
+         String jobParameter = jobParameters.get(key);
+         String value = jobParameter == null ? StringUtils.EMPTY : jobParameter;
+         stringBuffer.append(key + "=" + value + ";");
+      }
+      jobParameters.remove(keyJobName);
+      MessageDigest digest;
+      try {
+         digest = MessageDigest.getInstance("MD5");
+      } catch (NoSuchAlgorithmException e) {
+         throw new IllegalStateException(
+               "MD5 algorithm not available.  Fatal (should be in the JDK).");
+      }
+      try {
+         byte[] bytes = digest
+               .digest(stringBuffer.toString().getBytes("UTF-8"));
+         return bytes;
+      } catch (UnsupportedEncodingException e) {
+         throw new IllegalStateException(
+               "UTF-8 encoding not available.  Fatal (should be in the JDK).");
+      }
+
    }
 
 }
