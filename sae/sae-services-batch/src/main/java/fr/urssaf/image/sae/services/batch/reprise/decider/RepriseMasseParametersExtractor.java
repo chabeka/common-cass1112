@@ -27,37 +27,51 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
 
       // Récupérer l'idJobAReprendre
       String idJobAReprendreParam = null;
-      if(stepExecution.getJobExecution().getJobInstance().getJobParameters() != null){
-         idJobAReprendreParam = (String) stepExecution
-               .getJobExecution().getJobInstance().getJobParameters().getString(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+      String idJobSuppression = null;
+      JobParameters params = stepExecution.getJobExecution().getJobInstance()
+            .getJobParameters();
+      if(params != null){
+         idJobAReprendreParam = params
+               .getString(Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+
+         idJobSuppression = params
+               .getString(Constantes.ID_TRAITEMENT_SUPPRESSION);
       }
 
       UUID idJobAReprendre = UUID.fromString(idJobAReprendreParam);
       JobRequest jobAReprendre = jobLectureService
             .getJobRequest(idJobAReprendre);
-      
+
       if (jobAReprendre != null) {
          Map<String, String> mapParam = jobAReprendre.getJobParameters();
          Map<String, JobParameter> jobParameters = new HashMap<String, JobParameter>();
 
          for (Map.Entry<String, String> entry : mapParam.entrySet()) {
-            if(entry.getKey().equalsIgnoreCase(Constantes.ECDE_URL)){
+            if (entry.getKey().equalsIgnoreCase(Constantes.ECDE_URL)) {
                jobParameters.put(Constantes.SOMMAIRE,
                      new JobParameter(entry.getValue()));
-            }else {
+            } else if (entry.getKey().equalsIgnoreCase(fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE)) {
+               // Permet de distinguer le traitement de reprise en cours si il a été déjà lancé
+               jobParameters
+               .put(fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE,
+                     new JobParameter(Long.getLong(entry.getValue())));
+            } else {
                jobParameters.put(entry.getKey(),
                      new JobParameter(entry.getValue()));
             }
          }
+
+         if (idJobSuppression != null && !idJobSuppression.isEmpty()) {
+            jobParameters.put(Constantes.ID_TRAITEMENT_SUPPRESSION,
+                  new JobParameter(idJobSuppression));
+         }
+
          jobParameters.put(Constantes.ID_TRAITEMENT,
                new JobParameter(idJobAReprendreParam));
-         
+
          jobParameters.put(Constantes.TRAITEMENT_REPRISE,
                new JobParameter(Boolean.TRUE.toString()));
-         
-         // Permet de distinguer le traitement de reprise en cours si il a été déjà lancé
-         jobParameters.put(Constantes.HEURE_REPRISE, new JobParameter(System.currentTimeMillis()));
-         
+
          JobParameters parameters = new JobParameters(jobParameters);
          return parameters;
       }

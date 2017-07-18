@@ -20,7 +20,6 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -140,21 +139,29 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             idJobAReprendreParam));
       mapParam.put(Constantes.TYPE_TRAITEMENT_A_REPRENDRE, new JobParameter(
             jobAReprendre.getType()));
+      if (TYPES_JOB.suppression_masse.name().equals(jobAReprendre.getType())) {
+         mapParam.put(Constantes.ID_TRAITEMENT_SUPPRESSION, new JobParameter(
+               idJobAReprendreParam));
+      }
 
       String urlECDE = jobAReprendre.getJobParameters()
             .get(Constantes.ECDE_URL);
-      URI sommaireURL;
-      try {
-         sommaireURL = URI.create(urlECDE);
-      } catch (IllegalArgumentException e) {
-         // Mise à jour du compteur de job reprise
+      URI sommaireURL = null;
+      if (urlECDE != null && !urlECDE.isEmpty()) {
          try {
-            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
-         } catch (JobInexistantException e1) {
-            throw new JobParameterTypeException(jobReprise, e);
+            sommaireURL = URI.create(urlECDE);
+         } catch (IllegalArgumentException e) {
+            // Mise à jour du compteur de job reprise
+            try {
+               jobQueueService.renseignerDocCountJob(idJobReprise,
+                     nbDocsTraites);
+            } catch (JobInexistantException e1) {
+               throw new JobParameterTypeException(jobReprise, e);
+            }
+            throw new JobParameterTypeException(jobAReprendre, e);
          }
-         throw new JobParameterTypeException(jobAReprendre, e);
       }
+
 
       JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
@@ -201,9 +208,11 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             // Mise à jour du compteur de job reprise
             jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          } else {
-            checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
-                  jobExecution.getAllFailureExceptions(),
-                  jobAReprendre.getType());
+            if (sommaireURL != null) {
+               checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
+                     jobExecution.getAllFailureExceptions(),
+                     jobAReprendre.getType());
+            }
 
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
@@ -220,8 +229,10 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
          List<Throwable> listThrowables = new ArrayList<Throwable>();
          listThrowables.add(e);
-         checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
-               listThrowables, jobAReprendre.getType());
+         if (sommaireURL != null) {
+            checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
+                  listThrowables, jobAReprendre.getType());
+         }
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }

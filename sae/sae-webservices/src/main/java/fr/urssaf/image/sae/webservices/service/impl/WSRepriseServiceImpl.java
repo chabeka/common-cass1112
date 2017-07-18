@@ -132,7 +132,9 @@ public class WSRepriseServiceImpl implements WSRepriseService {
             Map<String, String> jobParams = new HashMap<String, String>();
             jobParams.put(Constantes.ID_TRAITEMENT_A_REPRENDRE,
                   uuidJobAReprendre.toString());
-            
+            jobParams.put(Constantes.HEURE_REPRISE,
+                  Long.toString(System.currentTimeMillis()));
+
             TraitemetMasseParametres parametres = new TraitemetMasseParametres(
                   jobParams, uuidJobReprise, TYPES_JOB.reprise_masse, hName,
                   callerIP, null, extrait);
