@@ -14,7 +14,7 @@ public interface WSRepriseService {
     * Service réalisant la <b>Reprise de job </b>
     * 
     * @param request
-    *           Un objet qui contient l'uuid du job et le codeTraitement 
+    *           Un objet qui contient l'uuid du job
     * @param callerIP
     *            adresse IP de l'appelant
     * @return un objet de type {@link RepriseResponse}.
