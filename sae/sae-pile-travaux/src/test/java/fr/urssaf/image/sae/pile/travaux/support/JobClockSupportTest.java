@@ -72,6 +72,8 @@ public class JobClockSupportTest {
       job.setType("type");
       job.setJobParameters(jobParam);
       job.setCreationDate(dateCreation);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
 

@@ -244,6 +244,8 @@ public class JobLectureServiceTest {
       JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
       job.setJobParameters(jobParam);
       job.setCreationDate(new Date());
 

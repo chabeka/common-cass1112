@@ -100,6 +100,8 @@ public class JobServiceTest {
       job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("jobTest");
+      String jobKey = new String("jobKey1");
+      job.setJobKey(jobKey.getBytes());
       Map<String, String> jobParameters = new HashMap<String, String>();
       jobParameters.put(CODE_TRAITEMENT, CODE_TRAITEMENT);
       job.setJobParameters(jobParameters);;
@@ -111,6 +113,8 @@ public class JobServiceTest {
 
       jobEncours = new JobToCreate();
       jobEncours.setIdJob(idJob);
+      jobKey = new String("jobKeyEnCours");
+      jobEncours.setJobKey(jobKey.getBytes());
       jobEncours.setType("jobTestEnCours");
       Map<String, String> jobParameters2 = new HashMap<String, String>();
       jobParameters2.put(CODE_TRAITEMENT, CODE_TRAITEMENT);
@@ -275,7 +279,7 @@ public class JobServiceTest {
 
       try {
          jobQueueService.reserveJob(jobEncours.getIdJob(),
- SEMAPHORE_JOB_TAG,
+               SEMAPHORE_JOB_TAG,
                new Date());
 
          jobQueueService.startingJob(jobEncours.getIdJob(), new Date());
@@ -321,10 +325,10 @@ public class JobServiceTest {
 
       try {
          jobQueueService.reserveJob(jobEncours.getIdJob(),
- SEMAPHORE_JOB_TAG,
+               SEMAPHORE_JOB_TAG,
                new Date());
          jobQueueService.reserveJob(job.getIdJob(),
- SEMAPHORE_JOB_TAG,
+               SEMAPHORE_JOB_TAG,
                new Date());
       } catch (Exception e) {
          Assert.fail("Erreur non permise : " + e.getMessage());
@@ -335,7 +339,7 @@ public class JobServiceTest {
 
    @Test
    public void confirmerJobALancer_success() {// récupération des traitements à
-                                              // lancer
+      // lancer
       List<JobQueue> jobsAlancer = jobService.recupJobsALancer();
 
       Assert.assertTrue("la liste des job à lancer doit être non vide",

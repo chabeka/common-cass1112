@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import junit.framework.Assert;
-
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 import me.prettyprint.hector.api.Keyspace;
 
@@ -139,6 +138,8 @@ public class OperationPileTravauxServiceTest {
       job.setType("ArchivageMasse");
       job.setJobParameters(jobParam);
       job.setCreationDate(dateCreation);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
       return idJob;

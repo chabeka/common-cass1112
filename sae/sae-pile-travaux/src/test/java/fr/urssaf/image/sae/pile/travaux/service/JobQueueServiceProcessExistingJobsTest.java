@@ -89,6 +89,8 @@ public class JobQueueServiceProcessExistingJobsTest {
       job.setDocCount(100);
       job.setSaeHost("saeHost");
       job.setCreationDate(dateCreation);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
       
@@ -144,6 +146,7 @@ public class JobQueueServiceProcessExistingJobsTest {
             "le message de l'ajout d'un traitement est inattendu",
             "DEMARRAGE DU JOB", historiesJobParam.get(2).getTrace());
       
+
 
    }
 

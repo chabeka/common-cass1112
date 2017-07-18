@@ -82,6 +82,7 @@ public class JobQueueServiceTest {
          this.uuids = uuids;
       }
 
+      @Override
       public void run() {
          for (int i = 0; i < 5; i++) {
             try {
@@ -199,6 +200,8 @@ public class JobQueueServiceTest {
       job.setDocCount(100);
       job.setSaeHost("saeHost");
       job.setCreationDate(dateCreation);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
    }
@@ -223,6 +226,8 @@ public class JobQueueServiceTest {
       job.setType("ArchivageMasse");
       job.setJobParameters(jobParam);
       job.setCreationDate(new Date());
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
       return idJob;

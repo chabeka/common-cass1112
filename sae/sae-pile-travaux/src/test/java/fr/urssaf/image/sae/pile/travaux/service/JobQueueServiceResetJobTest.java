@@ -199,6 +199,8 @@ public class JobQueueServiceResetJobTest {
       job.setDocCount(100);
       job.setSaeHost("saeHost");
       job.setCreationDate(dateCreation);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
    }
