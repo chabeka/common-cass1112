@@ -33,7 +33,7 @@ public final class Constantes {
     * Nom du job d'un traitement de reprise en masse
     */
    public static final String REPRISE_MASSE_JN = "reprise_masse";
-   
+
 
    /**
     * Code court de la métadonnée 'identifiant de suppression de masse'
@@ -59,5 +59,10 @@ public final class Constantes {
     * Le type de hash
     */
    public static final String TYPE_HASH = "typeHash";
+
+   /**
+    * Identifiant du paramètre heureTraitement
+    */
+   public static final String HEURE_REPRISE = "heureTraitementReprise";
 
 }
