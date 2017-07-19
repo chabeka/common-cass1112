@@ -64,6 +64,8 @@ public class WSDeblocageServiceImplTest {
       Map<String, String> jobParameters = new HashMap<String, String>();
       jobParameters.put(Constantes.CODE_TRAITEMENT, Constantes.CODE_TRAITEMENT);
       job.setJobParameters(jobParameters);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
       jobQueueService.addJob(job);
    }
 
@@ -128,7 +130,7 @@ public class WSDeblocageServiceImplTest {
     * @throws JobInexistantException
     */
    private void mockDeblocageJob(String uuid) throws DeblocageAxisFault,
-         JobInexistantException {
+   JobInexistantException {
       Deblocage request = new Deblocage();
       request.setDeblocage(new DeblocageRequestType());
       UuidType uuidType = new UuidType();

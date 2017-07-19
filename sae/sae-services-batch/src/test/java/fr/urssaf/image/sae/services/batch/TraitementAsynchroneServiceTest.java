@@ -367,6 +367,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.capture_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -413,6 +415,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.suppression_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -459,6 +463,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.restore_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -505,6 +511,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.transfert_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -555,6 +563,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.modification_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -601,6 +611,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setIdJob(idJob);
       jobToCreate.setType(TYPES_JOB.capture_masse.name());
       jobToCreate.setJobParameters(jobParam);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -650,6 +662,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.transfert_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -701,6 +715,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setType(TYPES_JOB.modification_masse.name());
       jobToCreate.setJobParameters(jobParam);
       jobToCreate.setVi(viExtrait);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -745,6 +761,8 @@ public class TraitementAsynchroneServiceTest {
       jobToCreate.setIdJob(idJob);
       jobToCreate.setType(TYPES_JOB.capture_masse.name());
       jobToCreate.setJobParameters(jobParam);
+      String jobKey = new String("jobKey");
+      jobToCreate.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(jobToCreate);
       jobQueueService.reserveJob(idJob, "hostname", new Date());
@@ -777,6 +795,8 @@ public class TraitementAsynchroneServiceTest {
       job.setIdJob(idJob);
       job.setType(TYPES_JOB.capture_masse.name());
       job.setJobParameters(jobParam);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
       jobQueueService.addJob(job);
 
       try {
@@ -813,6 +833,8 @@ public class TraitementAsynchroneServiceTest {
       job.setIdJob(idJob);
       job.setType("type_inexistant");
       job.setJobParameters(jobParam);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
 

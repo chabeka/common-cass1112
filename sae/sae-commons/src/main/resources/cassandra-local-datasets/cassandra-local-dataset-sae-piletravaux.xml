@@ -16,6 +16,12 @@
       <columnFamily>
          <name>JobRequest</name>
          <comparatorType>BytesType</comparatorType>
+         <columnMetadata>
+            <name>6a6f62524b6579</name>
+            <validationClass>BytesType</validationClass>
+            <indexType>KEYS</indexType>
+            <indexName>jobRKey_idx</indexName>
+         </columnMetadata>
       </columnFamily>
       <columnFamily>
          <name>JobsQueue</name>

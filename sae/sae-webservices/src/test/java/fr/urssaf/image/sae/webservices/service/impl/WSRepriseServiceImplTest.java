@@ -86,6 +86,9 @@ public class WSRepriseServiceImplTest {
       jobParameters.put(Constantes.CODE_TRAITEMENT, Constantes.CODE_TRAITEMENT);
       job.setVi(viExtrait);
       job.setJobParameters(jobParameters);
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
+
       jobQueueService.addJob(job);
    }
 
@@ -156,12 +159,12 @@ public class WSRepriseServiceImplTest {
       
       String[] roles = new String[] { "reprise_masse" };
       // Similation du service de reprise
-       String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
-       VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);
+      String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
+      VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);
 
-       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
-       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
-       
+      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
+
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);

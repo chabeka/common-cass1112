@@ -96,6 +96,9 @@ public class SAERepriseMasseTest {
       traitementAReprendre.setIdJob(idJob);
       // Simuler un job de modification de masse
       traitementAReprendre.setType(TYPES_JOB.modification_masse.name());
+      String jobKey = new String("jobKey");
+      traitementAReprendre.setJobKey(jobKey.getBytes());
+
       Map<String, String> jobParameters = new HashMap<String, String>();
       jobParameters.put(Constantes.CODE_TRAITEMENT, codeTraitement);
       jobParameters.put(Constantes.HASH, hash);
@@ -142,6 +145,9 @@ public class SAERepriseMasseTest {
          VIContenuExtrait viReprise = createTestVi("reprise_masse", codeVi);
          traitementReprise.setVi(viReprise);
          traitementReprise.setJobParameters(paramReprise);
+         String jobKey = new String("jobKey");
+         traitementReprise.setJobKey(jobKey.getBytes());
+
          jobQueueService.addJob(traitementReprise);
 
          jobQueueService.reserveJob(traitementReprise.getIdJob(), "hostname",
@@ -182,6 +188,9 @@ public class SAERepriseMasseTest {
       VIContenuExtrait viReprise = createTestVi("reprise_masse", codeVi);
       traitementReprise.setVi(viReprise);
       traitementReprise.setJobParameters(paramReprise);
+      String jobKey = new String("jobKey");
+      traitementReprise.setJobKey(jobKey.getBytes());
+
       jobQueueService.addJob(traitementReprise);
 
       jobQueueService.reserveJob(traitementReprise.getIdJob(), "hostname",

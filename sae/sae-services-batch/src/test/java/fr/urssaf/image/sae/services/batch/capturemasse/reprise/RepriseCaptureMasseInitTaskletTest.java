@@ -651,6 +651,8 @@ public class RepriseCaptureMasseInitTaskletTest {
       job.setType("ArchivageMasse");
       job.setJobParameters(jobParam);
       job.setCreationDate(new Date());
+      String jobKey = new String("jobKey");
+      job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
 

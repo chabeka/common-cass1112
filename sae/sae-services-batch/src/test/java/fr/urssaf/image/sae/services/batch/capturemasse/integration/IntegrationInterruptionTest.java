@@ -226,7 +226,7 @@ public class IntegrationInterruptionTest {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "de6273873baab4d45cb78c5dcc4dce79f917ed4e";
+      String sha1Attendu = "da39a3ee5e6b4b0d3255bfef95601890afd80709";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
