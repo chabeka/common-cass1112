@@ -77,11 +77,15 @@ public class JobRequestSupport {
          jobRequestDao.ecritColonneDocCount(updaterJobRequest, jobToCreate
                .getDocCount(), clock);
       }
-
+      if (jobToCreate.getDocCountTraite() != null) {
+         jobRequestDao.ecritColonneDocCountTraite(updaterJobRequest,
+               jobToCreate.getDocCountTraite(), clock);
+      }
       if (jobToCreate.getVi() != null) {
          jobRequestDao.ecritColonneVi(updaterJobRequest, jobToCreate.getVi(),
                clock);
       }
+
 
       // Ecrit en base
       this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
@@ -165,11 +169,14 @@ public class JobRequestSupport {
     *           <code>true</code> si le job a réussi, <code>false</false> sinon
     * @param message
     *           message de conclusion du job
+    * @param nbDocTraite
+    *           Nombre de documents traités
+    * 
     * @param clock
     *           horloge de conclusion du job
     */
    public final void passerEtatTermineJobRequest(UUID idJob, Date endingDate,
-         boolean success, String message, long clock) {
+         boolean success, String message, int nbDocTraite, long clock) {
 
       // Valeur définie "en dur" par la méthode
       String state;
@@ -188,6 +195,11 @@ public class JobRequestSupport {
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
       jobRequestDao
       .ecritColonneEndingDate(updaterJobRequest, endingDate, clock);
+
+      if (nbDocTraite > 0) {
+         jobRequestDao.ecritColonneDocCountTraite(updaterJobRequest,
+               nbDocTraite, clock);
+      }
 
       if (message != null) {
 
@@ -347,6 +359,33 @@ public class JobRequestSupport {
 
       // Ecriture des colonnes
       jobRequestDao.ecritColonneDocCount(updaterJobRequest, nbDocs, clock);
+
+      // Ecrit en base
+      jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
+
+   }
+
+   /**
+    * Ajoute le nombre de docs traités dans la pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param nbDocs
+    *           Nombre de docs traités
+    * @param clock
+    *           horloge de l'ajout du PID
+    */
+   public final void renseignerDocCountTraiteDansJobRequest(UUID idJob,
+         Integer nbDocs, long clock) {
+
+      // On utilise un ColumnFamilyUpdater, et on renseigne
+      // la valeur de la clé dans la construction de l'updater
+      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+            .getJobRequestTmpl().createUpdater(idJob);
+
+      // Ecriture des colonnes
+      jobRequestDao
+      .ecritColonneDocCountTraite(updaterJobRequest, nbDocs, clock);
 
       // Ecrit en base
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);

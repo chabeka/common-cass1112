@@ -94,6 +94,27 @@ public interface JobQueueService {
          String message, String codeTraitement) throws JobInexistantException;
 
    /**
+    * /** Met à jour le traitement après son exécution.<br>
+    * 
+    * @param idJob
+    *           identifiant du traitement
+    * @param succes
+    *           valeur de retour de l'exécution du traitement
+    * @param dateFinTraitement
+    *           date de fin du traitement
+    * @param message
+    *           message de compte-rendu du traitement (ex : message d'erreur)
+    * @param codeTraitement
+    *           Code traitement
+    * @param nbDocumentTraite
+    *           Nombre de documents traités
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
+    */
+   void endingJob(UUID idJob, boolean succes, Date dateFinTraitement, String message,
+         String codeTraitement, int nbDocumentTraite) throws JobInexistantException;
+
+   /**
     * Ajoute une trace d'execution dans l'historique du job
     * 
     * @param jobUuid
@@ -117,10 +138,10 @@ public interface JobQueueService {
     *            le traitement n'existe pas
     */
    void renseignerPidJob(UUID idJob, Integer pid) throws JobInexistantException;
-   
+
    /**
-    * Renseigne le nombre de docs traités par le traitement de masse dans la pile des
-    * travaux
+    * Renseigne le nombre de docs à traiter par le traitement de masse dans la
+    * pile des travaux
     * 
     * @param idJob
     *           identifiant du job
@@ -164,7 +185,7 @@ public interface JobQueueService {
     *            exception levée lorsque le travail n'est pas réinitialisable
     */
    void resetJob(UUID idJob) throws JobNonReinitialisableException;
-   
+
    /**
     * Methode permettant de recuperer la liste des serveurs qui ont deja traites
     * au moins un job.
@@ -172,7 +193,7 @@ public interface JobQueueService {
     * @return List<String>
     */
    List<String> getHosts();
-   
+
    /**
     * Ajouter un job de type JobsQueue dans la pile des travaux
     * @param jobToCreate Job à créer.
@@ -194,7 +215,7 @@ public interface JobQueueService {
    public void reserverJobDansJobsQueues(UUID idJob, String hostname,
          String type, Map<String, String> jobParameters);
 
-   
+
    /**
     * Supprimer le job de la pile des jobsQueue
     * @param idJob
@@ -215,7 +236,7 @@ public interface JobQueueService {
    void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
          String message);
 
-   
+
    /**
     * Supprime le job et le sémaphore associé si il existe de la pile des jobsQueue
     * @param idJob
@@ -225,4 +246,4 @@ public interface JobQueueService {
     */
    public void deleteJobAndSemaphoreFromJobsQueues(UUID idJob, String codeTraitement);
 
-  }
+}

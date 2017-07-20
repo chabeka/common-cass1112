@@ -34,25 +34,25 @@ public class SAERestoreMasseServiceImpl implements SAERestoreMasseService {
     */
    @Autowired
    private JobLauncher jobLauncher;
-   
+
    /**
     * Service de gestion de la pile des travaux.
     */
    @Autowired
    private JobQueueService jobQueueService;
-   
+
    /**
     * Job de la restauration de documents 
     */
    @Autowired
    @Qualifier("restore_masse")
    private Job jobRestore;
-   
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAERestoreMasseServiceImpl.class);
 
    private final String TRC_RESTORE = "restoreMasse()";
-   
+
    /**
     * {@inheritDoc}
     */
@@ -67,7 +67,7 @@ public class SAERestoreMasseServiceImpl implements SAERestoreMasseService {
       JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
       JobExecution jobExecution = null;
-      
+
       try {
          jobExecution = jobLauncher.run(jobRestore, parameters);
 
@@ -79,15 +79,6 @@ public class SAERestoreMasseServiceImpl implements SAERestoreMasseService {
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
-         
-         // met a jour le job pour renseigner le nombre de docs restorés
-         int nbDocsRestores = 0;
-         if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_RESTORES)) {
-            nbDocsRestores = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_RESTORES);
-         }
-         jobQueueService.renseignerDocCountJob(idTraitementRestore, nbDocsRestores);
 
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
@@ -102,7 +93,16 @@ public class SAERestoreMasseServiceImpl implements SAERestoreMasseService {
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }
-      
+
+      if (jobExecution != null
+            && jobExecution.getExecutionContext() != null
+            && jobExecution.getExecutionContext().containsKey(
+                  Constantes.NB_DOCS_RESTORES)) {
+         int nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_DOCS_RESTORES);
+         exitTraitement.setNbDocumentTraite(nbDocsIntegres);
+      }
+
       return exitTraitement;
    }
 

@@ -126,16 +126,6 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
             exitTraitement.setSucces(false);
          }
 
-         // met a jour le job pour renseigner le nombre de docs transférés
-         int nbDocsTransfert = 0;
-         if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_INTEG_DOCS)) {
-            nbDocsTransfert = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_INTEG_DOCS);
-         }
-
-         jobQueueService.renseignerDocCountJob(idTraitement, nbDocsTransfert);
-
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
 
@@ -149,6 +139,15 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
 
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
+      }
+
+      if (jobExecution != null
+            && jobExecution.getExecutionContext() != null
+            && jobExecution.getExecutionContext().containsKey(
+                  Constantes.NB_INTEG_DOCS)) {
+         int nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_INTEG_DOCS);
+         exitTraitement.setNbDocumentTraite(nbDocsIntegres);
       }
 
       return exitTraitement;

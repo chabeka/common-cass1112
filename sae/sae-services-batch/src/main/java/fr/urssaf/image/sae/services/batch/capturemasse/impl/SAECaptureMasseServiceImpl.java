@@ -138,14 +138,12 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
          } else {
-
             checkFinal(jobExecution, sommaireURI, idTraitement, jobExecution
                   .getAllFailureExceptions());
 
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
-
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
 
@@ -159,6 +157,15 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
 
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
+      }
+
+      if (jobExecution != null
+            && jobExecution.getExecutionContext() != null
+            && jobExecution.getExecutionContext().containsKey(
+            Constantes.NB_INTEG_DOCS)) {
+         int nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_INTEG_DOCS);
+         exitTraitement.setNbDocumentTraite(nbDocsIntegres);
       }
 
       return exitTraitement;

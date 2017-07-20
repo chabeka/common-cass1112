@@ -132,7 +132,18 @@ public class JobQueueServiceImpl implements JobQueueService {
    @Override
    public final void endingJob(UUID idJob, boolean succes,
          Date dateFinTraitement, String message, String codeTraitement)
-         throws JobInexistantException {
+               throws JobInexistantException {
+      this.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, -1);
+
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void endingJob(UUID idJob, boolean succes, Date dateFinTraitement,
+         String message, String codeTraitement, int nbDocumentTraite)
+               throws JobInexistantException {
 
       JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
       // Vérifier que le job existe
@@ -159,25 +170,30 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupport.passerEtatTermineJobRequest(idJob,
-            dateFinTraitement, succes, message, clock);
-      
+            dateFinTraitement, succes, message, nbDocumentTraite, clock);
+
       // Gestion du succès de la reprise de masse
-      if(jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes){
+      if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes) {
          String idTraitementAReprendre = jobRequest.getJobParameters().get(
                Constantes.ID_TRAITEMENT_A_REPRENDRE);
          UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
          JobRequest jobAReprendre = this.jobLectureService.getJobRequest(idJobAReprendre);
          String cdTraitement = jobAReprendre.getJobParameters().get(Constantes.CODE_TRAITEMENT);
-         
+
          // Passer le job à l'état REPLAY_SUCCESS
          Date dateReprise = new Date();
-         changerEtatJobRequest(idJobAReprendre,
+         this.changerEtatJobRequest(idJobAReprendre,
                JobState.REPLAY_SUCCESS.name(), dateReprise, "Repris avec succes");
+
+         // Renseigne le nombre de documents traités par le traitement de masse
+         if (nbDocumentTraite > 0) {
+            this.renseignerDocCountTraiteJob(idJobAReprendre, nbDocumentTraite);
+         }
          // Supprimer le sémaphore du traitement repris
          this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJobAReprendre, succes,
                cdTraitement, clock);
       }
-      
+
       // Ecriture dans la CF "JobQueues" pour hostname
       this.jobsQueueSupport.supprimerJobDeJobsQueues(idJob, reservedBy, clock);
 
@@ -190,7 +206,6 @@ public class JobQueueServiceImpl implements JobQueueService {
       UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
             clock);
-
    }
 
    /**
@@ -404,7 +419,7 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       // Ecriture dans la CF "JobHistory"
       this.jobHistorySupport
-            .ajouterTrace(jobUuid, timeUuid, description, clock);
+      .ajouterTrace(jobUuid, timeUuid, description, clock);
    }
 
    /**
@@ -455,7 +470,7 @@ public class JobQueueServiceImpl implements JobQueueService {
             clock);
 
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -499,6 +514,64 @@ public class JobQueueServiceImpl implements JobQueueService {
 
       // Ecriture dans la CF "JobHistory"
       String messageTrace = "DOC_COUNT RENSEIGNE";
+      UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
+            clock);
+
+   }
+
+   /**
+    * Renseigne le nombre de docs traités par le traitement de masse dans la
+    * pile des travaux.
+    * 
+    * @param idJob
+    *           identifiant du job
+    * @param nbDocs
+    *           Nombre de docs traités
+    * @throws JobInexistantException
+    *            le traitement n'existe pas
+    */
+   private final void renseignerDocCountTraiteJob(UUID idJob, Integer nbDocs)
+         throws JobInexistantException {
+
+      JobRequest jobRequest = this.jobLectureService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+         throw new JobInexistantException(idJob);
+      }
+
+      // Lecture du job
+      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
+            .getJobRequestTmpl().queryColumns(idJob);
+
+      // Récupération du timestamp courant de la colonne "docCount", si elle est
+      // présente
+
+      // Récupération de la colonne "docCount"
+      HColumn<?, ?> columnDocCount = result
+            .getColumn(JobRequestDao.JR_DOC_COUNT_TRAITE);
+
+      long clock;
+
+      if (columnDocCount == null) {
+
+         clock = jobClockSupport.currentCLock();
+
+      } else {
+
+         clock = jobClockSupport.currentCLock(columnDocCount);
+
+      }
+
+      // Ecriture dans la CF "JobRequest"
+      this.jobRequestSupport.renseignerDocCountTraiteDansJobRequest(idJob,
+            nbDocs, clock);
+
+      // Ecriture dans la CF "JobQueues"
+      // rien à écrire
+
+      // Ecriture dans la CF "JobHistory"
+      String messageTrace = "DOC_COUNT_TRAITE RENSEIGNE";
       UUID timestampTrace = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       this.jobHistorySupport.ajouterTrace(idJob, timestampTrace, messageTrace,
             clock);
@@ -707,7 +780,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       long clock = jobClockSupport.currentCLock();
       this.reserverJobDansJobQueues(idJob, hostname, type, jobParameters, clock);
    }
-   
+
    @Override
    public final void deleteJobFromJobsQueues(UUID idJob) {
 
@@ -733,7 +806,7 @@ public class JobQueueServiceImpl implements JobQueueService {
       String reservedBy = jobRequest.getReservedBy();
       this.jobsQueueSupport.supprimerJobDeJobsAllQueues(idJob, reservedBy, clock);
    }
-   
+
    @Override
    public final void deleteJobAndSemaphoreFromJobsQueues(UUID uuidJob, String codeTraitement) {
 
@@ -757,12 +830,12 @@ public class JobQueueServiceImpl implements JobQueueService {
       // Suppression de la CF "JobQueues"
       String reservedBy = jobRequest.getReservedBy();
       this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, reservedBy, clock);
-      
+
       String SemaphoreReserved =  Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement;
       this.jobsQueueSupport.supprimerJobDeJobsAllQueues(uuidJob, SemaphoreReserved, clock);
-      
+
    }
-   
+
    @Override
    public final void changerEtatJobRequest(UUID idJob, String stateJob, Date endingDate,
          String message) {
@@ -778,5 +851,5 @@ public class JobQueueServiceImpl implements JobQueueService {
       long clock = jobClockSupport.currentCLock(columnState);      
       this.jobRequestSupport.changerEtatJobRequest(idJob, stateJob, endingDate, message, clock);
    }
-   
+
 }

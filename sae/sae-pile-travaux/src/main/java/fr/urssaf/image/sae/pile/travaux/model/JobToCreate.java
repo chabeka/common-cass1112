@@ -28,6 +28,8 @@ public class JobToCreate {
 
    private Integer docCount;
 
+   private Integer docCountTraite;
+
    private VIContenuExtrait viExtrait;
 
    byte[] jobKey;
@@ -193,6 +195,25 @@ public class JobToCreate {
     */
    public void setJobKey(byte[] jobKey) {
       this.jobKey = jobKey;
+   }
+
+   /**
+    * Getter pour docCountTraite
+    * 
+    * @return the docCountTraite
+    */
+   public Integer getDocCountTraite() {
+      return docCountTraite;
+   }
+
+   /**
+    * Setter pour docCountTraite
+    * 
+    * @param docCountTraite
+    *           the docCountTraite to set
+    */
+   public void setDocCountTraite(Integer docCountTraite) {
+      this.docCountTraite = docCountTraite;
    }
 
 }

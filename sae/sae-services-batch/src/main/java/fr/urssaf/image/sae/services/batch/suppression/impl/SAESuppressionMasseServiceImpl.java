@@ -28,29 +28,29 @@ import fr.urssaf.image.sae.services.batch.suppression.SAESuppressionMasseService
  */
 @Service
 public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseService{
-   
+
    /**
     * Executable du traitement de suppression de masse
     */
    @Autowired
    private JobLauncher jobLauncher;
-   
+
    /**
     * Service de gestion de la pile des travaux.
     */
    @Autowired
    private JobQueueService jobQueueService;
-   
+
    /**
     * Job de la suppression de masse
     */
    @Autowired
    @Qualifier("suppression_masse")
    private Job jobSuppression;
-   
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAESuppressionMasseServiceImpl.class);
-   
+
    private final String TRC_SUPPRESSION = "suppressionMasse()";
 
    /**
@@ -67,10 +67,10 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
       JobParameters parameters = new JobParameters(mapParam);
       ExitTraitement exitTraitement = new ExitTraitement();
       JobExecution jobExecution = null;
-      
+
       try {
          jobExecution = jobLauncher.run(jobSuppression, parameters);
-         
+
          if (ExitStatus.COMPLETED.equals(jobExecution.getExitStatus())) {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
@@ -79,15 +79,6 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
-         
-         // met a jour le job pour renseigner le nombre de docs supprimes
-         int nbDocsSupprimes = 0;
-         if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_SUPPRIMES)) {
-            nbDocsSupprimes = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_SUPPRIMES);
-         }
-         jobQueueService.renseignerDocCountJob(idTraitement, nbDocsSupprimes);
 
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
@@ -102,7 +93,16 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }
-      
+
+      if (jobExecution != null
+            && jobExecution.getExecutionContext() != null
+            && jobExecution.getExecutionContext().containsKey(
+                  Constantes.NB_DOCS_SUPPRIMES)) {
+         int nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_DOCS_SUPPRIMES);
+         exitTraitement.setNbDocumentTraite(nbDocsIntegres);
+      }
+
       return exitTraitement;
    }
 

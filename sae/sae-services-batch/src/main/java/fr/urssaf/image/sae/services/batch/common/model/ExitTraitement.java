@@ -13,11 +13,24 @@ package fr.urssaf.image.sae.services.batch.common.model;
  */
 public class ExitTraitement {
 
+   /**
+    * Etat du traitement
+    */
    private boolean succes;
 
+   /**
+    * Message de sortie du traitement
+    */
    private String exitMessage;
 
    /**
+    * Nombre de document traitement
+    */
+   private int nbDocumentTraite;
+
+   /**
+    * Getter succes
+    * 
     * @return <code>true</code> si le traitement a réussi, <code>false</code>
     *         sinon
     */
@@ -26,6 +39,8 @@ public class ExitTraitement {
    }
 
    /**
+    * Setter succes
+    * 
     * @param succes
     *           <code>true</code> si le traitement a réussi, <code>false</code>
     *           sinon
@@ -35,6 +50,8 @@ public class ExitTraitement {
    }
 
    /**
+    * Getter exit message
+    * 
     * @return message de sortie en fin de traitement
     */
    public final String getExitMessage() {
@@ -42,11 +59,32 @@ public class ExitTraitement {
    }
 
    /**
+    * Setter exit message
+    * 
     * @param exitMessage
     *           message de sortie en fin de traitement
     */
    public final void setExitMessage(String exitMessage) {
       this.exitMessage = exitMessage;
+   }
+
+   /**
+    * Getter pour nbDocumentTraite
+    * 
+    * @return the nbDocumentTraite
+    */
+   public int getNbDocumentTraite() {
+      return nbDocumentTraite;
+   }
+
+   /**
+    * Setter pour nbDocumentTraite
+    * 
+    * @param nbDocumentTraite
+    *           the nbDocumentTraite to set
+    */
+   public void setNbDocumentTraite(int nbDocumentTraite) {
+      this.nbDocumentTraite = nbDocumentTraite;
    }
 
 }

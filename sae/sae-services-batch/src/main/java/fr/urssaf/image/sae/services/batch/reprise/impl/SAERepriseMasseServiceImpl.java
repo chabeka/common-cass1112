@@ -151,13 +151,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
          try {
             sommaireURL = URI.create(urlECDE);
          } catch (IllegalArgumentException e) {
-            // Mise à jour du compteur de job reprise
-            try {
-               jobQueueService.renseignerDocCountJob(idJobReprise,
-                     nbDocsTraites);
-            } catch (JobInexistantException e1) {
-               throw new JobParameterTypeException(jobReprise, e);
-            }
             throw new JobParameterTypeException(jobAReprendre, e);
          }
       }
@@ -185,28 +178,11 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             traitementOK = checkErreursReprise(lastExecution);
          }
 
-         // Récupérer le nombre de documents traités par la reprise de masse
-         if (lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_INTEG_DOCS)) {
-            nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_INTEG_DOCS);
-         } else if (lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_RESTORES)) {
-            nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_RESTORES);
-         } else if (lastExecution.getExecutionContext().containsKey(
-               Constantes.NB_DOCS_SUPPRIMES)) {
-            nbDocsTraites = lastExecution.getExecutionContext().getInt(
-                  Constantes.NB_DOCS_SUPPRIMES);
-         }
+         nbDocsTraites = retreiveNbDocTraites(lastExecution);
 
          if (traitementOK) {
             exitTraitement.setExitMessage("Traitement réalisé avec succès");
             exitTraitement.setSucces(true);
-            // Mise à jour compteur job à reprendre
-            jobQueueService.renseignerDocCountJob(uidJobAReprendre, nbDocsTraites);
-            // Mise à jour du compteur de job reprise
-            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          } else {
             if (sommaireURL != null) {
                checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
@@ -216,9 +192,6 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
 
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
-            // Mise à jour compteur job reprise uniquement pour voir le delta
-            // qui a été repris.
-            jobQueueService.renseignerDocCountJob(idJobReprise, nbDocsTraites);
          }
 
          /* erreurs Spring non gérées */
@@ -233,11 +206,47 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
             checkFinal(lastExecution, sommaireURL, uidJobAReprendre,
                   listThrowables, jobAReprendre.getType());
          }
+         nbDocsTraites = retreiveNbDocTraites(lastExecution);
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
       }
+
+      if (nbDocsTraites > 0) {
+         exitTraitement.setNbDocumentTraite(nbDocsTraites);
+      }
+
       return exitTraitement;
 
+   }
+
+   /**
+    * Methode permettant de retourner le nombre de documents traités à partir du
+    * resultat d'execution
+    * 
+    * @param jobExecution
+    *           Resultat de l'execution du job Spring
+    * @return le nombre de documents traités
+    */
+   private int retreiveNbDocTraites(JobExecution jobExecution) {
+      int nbDocsTraites = 0;
+      if (jobExecution != null && jobExecution.getExecutionContext() != null) {
+         // Récupérer le nombre de documents traités par la reprise de masse
+         if (jobExecution.getExecutionContext().containsKey(
+               Constantes.NB_INTEG_DOCS)) {
+            nbDocsTraites = jobExecution.getExecutionContext().getInt(
+                  Constantes.NB_INTEG_DOCS);
+         } else if (jobExecution.getExecutionContext().containsKey(
+               Constantes.NB_DOCS_RESTORES)) {
+            nbDocsTraites = jobExecution.getExecutionContext().getInt(
+                  Constantes.NB_DOCS_RESTORES);
+         } else if (jobExecution.getExecutionContext().containsKey(
+               Constantes.NB_DOCS_SUPPRIMES)) {
+            nbDocsTraites = jobExecution.getExecutionContext().getInt(
+                  Constantes.NB_DOCS_SUPPRIMES);
+         }
+      }
+
+      return nbDocsTraites;
    }
 
    /**

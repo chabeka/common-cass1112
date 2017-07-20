@@ -120,6 +120,7 @@ TraitementAsynchroneService {
       job.setClientHost(parameters.getClientHost());
       job.setSaeHost(parameters.getSaeHost());
       job.setDocCount(parameters.getNbreDocs());
+      job.setDocCountTraite(0);
       job.setVi(parameters.getVi());
       job.setJobParameters(parameters.getJobParameters());
       job.setJobKey(jobKey);
@@ -229,7 +230,7 @@ TraitementAsynchroneService {
       // le traitement est terminé
       // on met à jour la pile des travaux
       jobQueueService.endingJob(idJob, exitTraitement.isSucces(), new Date(),
-            exitTraitement.getExitMessage(), codeTraitement);
+            exitTraitement.getExitMessage(), codeTraitement, exitTraitement.getNbDocumentTraite());
    }
 
    /**

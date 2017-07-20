@@ -101,6 +101,11 @@ public class JobRequestDao {
    public static final String JR_DOC_COUNT = "docCount";
 
    /**
+    * Colonne {@value #JR_DOC_COUNT_TRAITE}
+    */
+   public static final String JR_DOC_COUNT_TRAITE = "docCountTraite";
+
+   /**
     * Colonne {@value #JR_PID}
     */
    public static final String JR_PID = "pid";
@@ -428,6 +433,25 @@ public class JobRequestDao {
    }
 
    /**
+    * Ajoute une colonne {@value #JR_DOC_COUNT_TRAITE}
+    * 
+    * @param updater
+    *           Updater de <code>JobRequest</code>
+    * @param docCountTraite
+    *           valeur de la colonne
+    * @param clock
+    *           horloge de la colonne
+    */
+   public final void ecritColonneDocCountTraite(
+         ColumnFamilyUpdater<UUID, String> updater, Integer docCountTraite,
+         long clock) {
+
+      addColumn(updater, JR_DOC_COUNT_TRAITE, docCountTraite, StringSerializer.get(),
+            IntegerSerializer.get(), clock);
+
+   }
+
+   /**
     * Ajoute une colonne {@value #JR_PID}
     * 
     * @param updater
@@ -625,6 +649,11 @@ public class JobRequestDao {
       jobRequest.setPid(result.getInteger(JR_PID));
 
       jobRequest.setDocCount(result.getInteger(JR_DOC_COUNT));
+
+      Integer nbDocTraite = result.getInteger(JR_DOC_COUNT_TRAITE);
+      if (nbDocTraite != null) {
+         jobRequest.setDocCountTraite(nbDocTraite);
+      }
 
       jobRequest.setToCheckFlag(result.getBoolean(JR_TO_CHECK_FLAG));
 

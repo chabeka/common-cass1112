@@ -64,6 +64,8 @@ public class JobRequest {
 
    private Integer docCount;
 
+   private Integer docCountTraite;
+
    private Integer pid;
 
    private Boolean toCheckFlag;
@@ -381,6 +383,25 @@ public class JobRequest {
     */
    public void setJobKey(byte[] jobKey) {
       this.jobKey = jobKey;
+   }
+
+   /**
+    * Getter pour docCountTraite
+    * 
+    * @return the docCountTraite
+    */
+   public Integer getDocCountTraite() {
+      return docCountTraite;
+   }
+
+   /**
+    * Setter pour docCountTraite
+    * 
+    * @param docCountTraite
+    *           the docCountTraite to set
+    */
+   public void setDocCountTraite(Integer docCountTraite) {
+      this.docCountTraite = docCountTraite;
    }
 
 }

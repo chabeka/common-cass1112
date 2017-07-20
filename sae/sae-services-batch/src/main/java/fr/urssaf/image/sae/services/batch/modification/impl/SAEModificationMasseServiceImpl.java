@@ -121,17 +121,6 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
             exitTraitement.setExitMessage("Traitement en erreur");
             exitTraitement.setSucces(false);
          }
-
-         // met a jour le job pour renseigner le nombre de docs modifiés
-         int nbDocsModifie = 0;
-         if (jobExecution.getExecutionContext().containsKey(
-               Constantes.NB_INTEG_DOCS)) {
-            nbDocsModifie = jobExecution.getExecutionContext().getInt(
-                  Constantes.NB_INTEG_DOCS);
-         }
-
-         jobQueueService.renseignerDocCountJob(idTraitement, nbDocsModifie);
-
          /* erreurs Spring non gérées */
       } catch (Throwable e) {
 
@@ -145,6 +134,15 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
 
          exitTraitement.setExitMessage(e.getMessage());
          exitTraitement.setSucces(false);
+      }
+
+      if (jobExecution != null
+            && jobExecution.getExecutionContext() != null
+            && jobExecution.getExecutionContext().containsKey(
+                  Constantes.NB_INTEG_DOCS)) {
+         int nbDocsIntegres = (Integer) jobExecution.getExecutionContext().get(
+               Constantes.NB_INTEG_DOCS);
+         exitTraitement.setNbDocumentTraite(nbDocsIntegres);
       }
 
       return exitTraitement;
