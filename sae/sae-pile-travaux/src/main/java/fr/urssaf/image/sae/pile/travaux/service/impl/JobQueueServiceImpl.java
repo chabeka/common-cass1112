@@ -173,25 +173,30 @@ public class JobQueueServiceImpl implements JobQueueService {
             dateFinTraitement, succes, message, nbDocumentTraite, clock);
 
       // Gestion du succès de la reprise de masse
-      if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN) && succes) {
+      if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN)) {
          String idTraitementAReprendre = jobRequest.getJobParameters().get(
                Constantes.ID_TRAITEMENT_A_REPRENDRE);
          UUID idJobAReprendre = UUID.fromString(idTraitementAReprendre);
-         JobRequest jobAReprendre = this.jobLectureService.getJobRequest(idJobAReprendre);
-         String cdTraitement = jobAReprendre.getJobParameters().get(Constantes.CODE_TRAITEMENT);
+         if (succes) {
+            JobRequest jobAReprendre = this.jobLectureService
+                  .getJobRequest(idJobAReprendre);
+            String cdTraitement = jobAReprendre.getJobParameters().get(
+                  Constantes.CODE_TRAITEMENT);
 
-         // Passer le job à l'état REPLAY_SUCCESS
-         Date dateReprise = new Date();
-         this.changerEtatJobRequest(idJobAReprendre,
-               JobState.REPLAY_SUCCESS.name(), dateReprise, "Repris avec succes");
+            // Passer le job à l'état REPLAY_SUCCESS
+            Date dateReprise = new Date();
+            this.changerEtatJobRequest(idJobAReprendre,
+                  JobState.REPLAY_SUCCESS.name(), dateReprise,
+                  "Repris avec succes");
+            // Supprimer le sémaphore du traitement repris
+            this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(
+                  idJobAReprendre, succes, cdTraitement, clock);
+         }
 
          // Renseigne le nombre de documents traités par le traitement de masse
          if (nbDocumentTraite > 0) {
             this.renseignerDocCountTraiteJob(idJobAReprendre, nbDocumentTraite);
          }
-         // Supprimer le sémaphore du traitement repris
-         this.jobsQueueSupport.supprimerCodeTraitementDeJobsQueues(idJobAReprendre, succes,
-               cdTraitement, clock);
       }
 
       // Ecriture dans la CF "JobQueues" pour hostname
