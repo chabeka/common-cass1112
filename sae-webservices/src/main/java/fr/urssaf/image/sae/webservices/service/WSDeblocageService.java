@@ -4,26 +4,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
 
 import fr.cirtil.www.saeservice.Deblocage;
 import fr.cirtil.www.saeservice.DeblocageResponse;
-import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
-import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 
 public interface WSDeblocageService {
 
    
    /**
-    * Service réalisant le <b>Déblocage de job </b>
+    * Service réalisant le <b>Déblocage de job en erreur </b>
     * 
     * @param request
-    *           Un objet qui contient l'uuid du job et le codeTraitement 
+    *           Un objet qui contient l'uuid du traitement en erreur à débloquer 
     * @param callerIP
     *            adresse IP de l'appelant
-    * @return un objet de type {@link TransfertMasseResponse}.
-    * de confirmation du transfert.
+    * @return un objet de type {@link DeblocageResponse}.
+    * de confirmation du déblocage.
     * 
-    * @throws TransfertAxisFault
-    *            Une exception est levée lors du transfert.
+    * @throws DeblocageAxisFault
+    *            Une exception est levée lors du déblocage.
     * @throws JobInexistantException 
     */
    @PreAuthorize("hasRole('deblocage')")
