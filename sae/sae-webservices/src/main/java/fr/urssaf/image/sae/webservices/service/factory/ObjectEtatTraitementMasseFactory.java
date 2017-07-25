@@ -83,11 +83,18 @@ public final class ObjectEtatTraitementMasseFactory {
             } else {
                traitementMasseType.setNombreDocuments(StringUtils.EMPTY);
             }
-
             if (job.getType() == null) {
                traitementMasseType.setType(StringUtils.EMPTY);
             } else {
                traitementMasseType.setType(job.getType());
+            }
+            if(job.getToCheckFlag() != null) {
+               traitementMasseType.setToCheckFlag(job.getToCheckFlag());
+            }
+            if(job.getToCheckFlagRaison() != null) {
+               traitementMasseType.setToCheckFlagRaison(job.getToCheckFlagRaison());
+            } else {
+               traitementMasseType.setToCheckFlagRaison(StringUtils.EMPTY);
             }
 
             listeTraitementsMasseType.addTraitementMasse(traitementMasseType);

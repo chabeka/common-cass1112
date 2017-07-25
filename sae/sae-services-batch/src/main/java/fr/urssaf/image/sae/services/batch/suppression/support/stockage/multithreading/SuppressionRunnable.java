@@ -41,7 +41,7 @@ public class SuppressionRunnable implements Runnable {
       try {
 
          this.service
-               .moveToRecycleBeanStorageDocument(storageDocument);
+               .moveToRecycleBeanStorageDocument(null, storageDocument);
 
       } catch (Exception e) {
 

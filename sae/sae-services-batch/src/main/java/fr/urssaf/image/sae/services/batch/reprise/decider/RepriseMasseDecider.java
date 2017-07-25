@@ -17,6 +17,7 @@ public class RepriseMasseDecider implements JobExecutionDecider {
    private static final String REPRISE_MODIFICATION = "REPRISE_MODIFICATION";
    private static final String REPRISE_CAPTURE = "REPRISE_CAPTURE";
    private static final String REPRISE_TRANSFERT = "REPRISE_TRANSFERT";
+   private static final String REPRISE_RESTORE = "REPRISE_RESTORE";
    private static final String REPRISE_SUPPRESSION = "REPRISE_SUPPRESSION";
 
    @Autowired
@@ -35,9 +36,10 @@ public class RepriseMasseDecider implements JobExecutionDecider {
             return new FlowExecutionStatus(REPRISE_TRANSFERT);
          } else if (TYPES_JOB.capture_masse.name().equals(typeJobAReprendre)) {
             return new FlowExecutionStatus(REPRISE_CAPTURE);
-         } else if (TYPES_JOB.suppression_masse.name()
-               .equals(typeJobAReprendre)) {
+         } else if (TYPES_JOB.suppression_masse.name().equals(typeJobAReprendre)) {
             return new FlowExecutionStatus(REPRISE_SUPPRESSION);
+         } else if (TYPES_JOB.restore_masse.name().equals(typeJobAReprendre)) {
+            return new FlowExecutionStatus(REPRISE_RESTORE);
          } else {
             throw new RuntimeException("Reprise impossible: Type de traitement de masse inconnu");
          }

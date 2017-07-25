@@ -12,6 +12,7 @@
          <next on="REPRISE_MODIFICATION" to="repriseModificationMasse" />
          <next on="REPRISE_CAPTURE" to="repriseCaptureMasseInitialisation" />
          <next on="REPRISE_TRANSFERT" to="repriseTransfertMasse" />
+         <next on="REPRISE_RESTORE" to="repriseRestoreMasse" />
          <next on="REPRISE_SUPPRESSION" to="repriseSuppressionMasse" />
       </decision>
       <step id="repriseModificationMasse">
@@ -25,6 +26,9 @@
       </step>
       <step id="repriseSuppressionMasse">
          <job ref="suppression_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor"/>
+      </step>
+      <step id="repriseRestoreMasse">
+         <job ref="restore_masse" job-launcher="jobLauncher" job-parameters-extractor="repriseMasseParametersExtractor"/>
       </step>
 
       <step id="repriseCaptureMasseInitialisation">

@@ -120,6 +120,18 @@
                </xsd:documentation>
                 </xsd:annotation>
             </xsd:element>
+            <xsd:element name="toCheckFlag" type="xsd:boolean">
+                <xsd:annotation>
+                    <xsd:documentation>Flag permettant de vérifier si le job est bloqué
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
+            <xsd:element name="toCheckFlagRaison" type="xsd:string">
+                <xsd:annotation>
+                    <xsd:documentation>La raison du blocage du job
+               </xsd:documentation>
+                </xsd:annotation>
+            </xsd:element>
         </xsd:sequence>
     </xsd:complexType>
     <xsd:complexType name="listeTraitementsMasseType">

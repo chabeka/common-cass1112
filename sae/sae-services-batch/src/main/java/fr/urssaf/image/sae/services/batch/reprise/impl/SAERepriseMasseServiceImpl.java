@@ -142,6 +142,11 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
       if (TYPES_JOB.suppression_masse.name().equals(jobAReprendre.getType())) {
          mapParam.put(Constantes.ID_TRAITEMENT_SUPPRESSION, new JobParameter(
                idJobAReprendreParam));
+      } else if (TYPES_JOB.restore_masse.name().equals(jobAReprendre.getType())) {
+         String idTraitementARestaurer = jobAReprendre.getJobParameters().get(Constantes.ID_TRAITEMENT_A_RESTORER);
+         mapParam.put(Constantes.ID_TRAITEMENT_A_RESTORER, new JobParameter(idTraitementARestaurer));
+         mapParam.put(Constantes.ID_TRAITEMENT_RESTORE, new JobParameter(
+               idJobAReprendreParam));
       }
 
       String urlECDE = jobAReprendre.getJobParameters()

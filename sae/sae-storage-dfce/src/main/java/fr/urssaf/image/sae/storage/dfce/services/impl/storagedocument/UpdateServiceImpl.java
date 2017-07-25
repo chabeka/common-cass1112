@@ -259,7 +259,18 @@ public class UpdateServiceImpl extends AbstractServices implements
             storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
                   (Serializable) uuidJob.toString());
          }
-      } else if (!StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
+      } // MAJ de la métadonnée pour tracer le traitement de transfert dans le doc
+      else if (StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
+            .getShortCode().equals(metadata.getShortCode())) {
+         if (storedDocument.getSingleCriterion(metadata.getShortCode()) == null) {
+            storedDocument.addCriterion(metadata.getShortCode(),
+                  (Serializable) uuidJob.toString());
+         } else {
+            storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
+                  (Serializable) uuidJob.toString());
+         }
+      }      
+      else if (!StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
             .getShortCode().equals(metadata.getShortCode())
             && !StorageTechnicalMetadatas.TYPE.getShortCode().equals(
                   metadata.getShortCode())) {

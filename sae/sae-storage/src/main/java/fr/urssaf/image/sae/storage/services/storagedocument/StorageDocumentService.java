@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +15,7 @@ import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -388,6 +390,22 @@ public interface StorageDocumentService {
 
    void deleteStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx;
+   
+   /**
+    * Permet de récupérer un storageDocuement de la corbeille
+    * @param uuid
+    *          identifiant du document
+    * @return
+    *          un storageDocument à partir de son uuid passé en paramètre
+    * @throws RecycleBinServiceEx
+    *             Runtime exception
+    * @throws StorageException
+    *             storageException
+    * @throws IOException
+    *             ioexception 
+    */
+   StorageDocument getStorageDocumentFromRecycleBin(final UUIDCriteria uuid)
+         throws RecycleBinServiceEx, StorageException, IOException;
    
    /**
     * Permet de faire une recherche paginée dans la corbeille.

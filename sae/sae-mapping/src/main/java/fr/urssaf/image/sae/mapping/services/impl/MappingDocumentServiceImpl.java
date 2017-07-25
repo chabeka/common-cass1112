@@ -103,7 +103,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    public UntypedDocument saeDocumentToUntypedDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException, MappingFromReferentialException {
       final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
-
       for (SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
          try {
             final MetadataReference reference = referenceDAO

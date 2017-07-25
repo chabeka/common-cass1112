@@ -588,7 +588,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             .valueMetadataFinder(document.getMetadatas(),
                   StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
                         .getShortCode());
-      if (idTransfertMasseInterne == null || idTransfertMasseInterne.isEmpty()) {
+      if ( StringUtils.isEmpty(idTransfertMasseInterne) ) {
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
@@ -747,8 +747,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          
          controleDroitTransfertMasse(document.getMetadatas());
          
-         document.setBatchTypeAction("TRANSFERT");
-
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {

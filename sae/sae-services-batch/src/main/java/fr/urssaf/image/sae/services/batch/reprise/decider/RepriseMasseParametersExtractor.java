@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
@@ -28,6 +29,7 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
       // Récupérer l'idJobAReprendre
       String idJobAReprendreParam = null;
       String idJobSuppression = null;
+      String idJobRestauration = null;
       JobParameters params = stepExecution.getJobExecution().getJobInstance()
             .getJobParameters();
       if(params != null){
@@ -36,6 +38,9 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
 
          idJobSuppression = params
                .getString(Constantes.ID_TRAITEMENT_SUPPRESSION);
+         
+         idJobRestauration = params
+               .getString(Constantes.ID_TRAITEMENT_RESTORE);
       }
 
       UUID idJobAReprendre = UUID.fromString(idJobAReprendreParam);
@@ -61,9 +66,15 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
             }
          }
 
-         if (idJobSuppression != null && !idJobSuppression.isEmpty()) {
+         if (!StringUtils.isEmpty(idJobSuppression) ) {
             jobParameters.put(Constantes.ID_TRAITEMENT_SUPPRESSION,
                   new JobParameter(idJobSuppression));
+         } else if (!StringUtils.isEmpty(idJobRestauration) ){
+            jobParameters.put(Constantes.ID_TRAITEMENT_RESTORE,
+                  new JobParameter(idJobRestauration));
+            String idTraitementARestaurer = params.getString(Constantes.ID_TRAITEMENT_A_RESTORER);
+            jobParameters.put(Constantes.ID_TRAITEMENT_A_RESTORER,
+                  new JobParameter(idTraitementARestaurer));
          }
 
          jobParameters.put(Constantes.ID_TRAITEMENT,

@@ -31,8 +31,6 @@ public class SAEDocumentExistantServiceImpl implements
    @Override
    public boolean documentExistant(UUID idGed) throws 
           SearchingServiceEx, ConnectionServiceEx {
-      // TODO Auto-generated method stub
-
       serviceProvider.openConnexion();
       UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
             new ArrayList<StorageMetadata>());

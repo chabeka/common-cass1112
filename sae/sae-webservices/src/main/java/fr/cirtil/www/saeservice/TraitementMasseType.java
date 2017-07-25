@@ -295,6 +295,66 @@
                                }
                             
 
+                        /**
+                        * field for ToCheckFlag
+                        */
+
+                        
+                                    protected boolean localToCheckFlag ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return boolean
+                           */
+                           public  boolean getToCheckFlag(){
+                               return localToCheckFlag;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ToCheckFlag
+                               */
+                               public void setToCheckFlag(boolean param){
+                            
+                                            this.localToCheckFlag=param;
+                                    
+
+                               }
+                            
+
+                        /**
+                        * field for ToCheckFlagRaison
+                        */
+
+                        
+                                    protected java.lang.String localToCheckFlagRaison ;
+                                
+
+                           /**
+                           * Auto generated getter method
+                           * @return java.lang.String
+                           */
+                           public  java.lang.String getToCheckFlagRaison(){
+                               return localToCheckFlagRaison;
+                           }
+
+                           
+                        
+                            /**
+                               * Auto generated setter method
+                               * @param param ToCheckFlagRaison
+                               */
+                               public void setToCheckFlagRaison(java.lang.String param){
+                            
+                                            this.localToCheckFlagRaison=param;
+                                    
+
+                               }
+                            
+
      
      
         /**
@@ -499,6 +559,37 @@
 
                                         
                                                    xmlWriter.writeCharacters(localMessage);
+                                            
+                                          }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.cirtil.fr/saeService";
+                                    writeStartElement(null, namespace, "toCheckFlag", xmlWriter);
+                             
+                                               if (false) {
+                                           
+                                                         throw new org.apache.axis2.databinding.ADBException("toCheckFlag cannot be null!!");
+                                                      
+                                               } else {
+                                                    xmlWriter.writeCharacters(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localToCheckFlag));
+                                               }
+                                    
+                                   xmlWriter.writeEndElement();
+                             
+                                    namespace = "http://www.cirtil.fr/saeService";
+                                    writeStartElement(null, namespace, "toCheckFlagRaison", xmlWriter);
+                             
+
+                                          if (localToCheckFlagRaison==null){
+                                              // write the nil attribute
+                                              
+                                                     throw new org.apache.axis2.databinding.ADBException("toCheckFlagRaison cannot be null!!");
+                                                  
+                                          }else{
+
+                                        
+                                                   xmlWriter.writeCharacters(localToCheckFlagRaison);
                                             
                                           }
                                     
@@ -770,6 +861,21 @@
                                            throw new org.apache.axis2.databinding.ADBException("message cannot be null!!");
                                         }
                                     
+                                      elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "toCheckFlag"));
+                                 
+                                elementList.add(
+                                   org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localToCheckFlag));
+                            
+                                      elementList.add(new javax.xml.namespace.QName("http://www.cirtil.fr/saeService",
+                                                                      "toCheckFlagRaison"));
+                                 
+                                        if (localToCheckFlagRaison != null){
+                                            elementList.add(org.apache.axis2.databinding.utils.ConverterUtil.convertToString(localToCheckFlagRaison));
+                                        } else {
+                                           throw new org.apache.axis2.databinding.ADBException("toCheckFlagRaison cannot be null!!");
+                                        }
+                                    
 
                 return new org.apache.axis2.databinding.utils.reader.ADBXMLStreamReaderImpl(qName, elementList.toArray(), attribList.toArray());
             
@@ -1002,6 +1108,44 @@
                                     java.lang.String content = reader.getElementText();
                                     
                                               object.setMessage(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","toCheckFlag").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setToCheckFlag(
+                                                    org.apache.axis2.databinding.utils.ConverterUtil.convertToBoolean(content));
+                                              
+                                        reader.next();
+                                    
+                              }  // End of if for expected property start element
+                                
+                                else{
+                                    // A start element we are not expecting indicates an invalid parameter was passed
+                                    throw new org.apache.axis2.databinding.ADBException("Unexpected subelement " + reader.getName());
+                                }
+                            
+                                    
+                                    while (!reader.isStartElement() && !reader.isEndElement()) reader.next();
+                                
+                                    if (reader.isStartElement() && new javax.xml.namespace.QName("http://www.cirtil.fr/saeService","toCheckFlagRaison").equals(reader.getName())){
+                                
+                                    java.lang.String content = reader.getElementText();
+                                    
+                                              object.setToCheckFlagRaison(
                                                     org.apache.axis2.databinding.utils.ConverterUtil.convertToString(content));
                                               
                                         reader.next();

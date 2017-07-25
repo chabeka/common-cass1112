@@ -91,12 +91,13 @@ public class StorageDocumentServiceSupport {
     * @return Le document inséré
     * @throws InsertionServiceEx
     *            Exception levée si erreur lors de l'insertion
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    public final StorageDocument insertBinaryStorageDocument(
          ServiceProvider dfceService, DFCEConnection cnxParams,
          DocumentsTypeList typeDocList, StorageDocument storageDocument,
-         Logger log, TracesDfceSupport tracesSupport) throws InsertionServiceEx, InsertionIdGedExistantEx {
+         Logger log, TracesDfceSupport tracesSupport)
+         throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       Base base = StorageDocumentServiceSupport.getBaseDFCE(dfceService,
             cnxParams);
@@ -159,7 +160,7 @@ public class StorageDocumentServiceSupport {
     * @return Le document inséré
     * @throws InsertionServiceEx
     *            Exception levée si erreur lors de l'insertion
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    public final StorageDocument insertDocumentInStorage(
          ServiceProvider dfceService, DFCEConnection cxnParam,
@@ -865,6 +866,29 @@ public class StorageDocumentServiceSupport {
                frozenExcept.getMessage(), frozenExcept);
       }
    }
+   
+   /**
+    * Récupérer le document de la corbeille 
+    * @param dfceService
+    * @param cnxParameters
+    * @param uuid
+    * @param log
+    * @param tracesSupport
+    * @return
+    */
+   public final Document getDocumentFromRecycleBin(
+         ServiceProvider dfceService, DFCEConnection cnxParameters, UUID uuid,
+         Logger log, TracesDfceSupport tracesSupport) {
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "getStorageDocumentFromRecycleBin()";
+      log.debug("{} - Début", prefixeTrc);
+      
+      Document document = dfceService.getRecycleBinService().
+            getDocumentByUUID(getBaseDFCE(dfceService, cnxParameters), uuid);
+      
+      return document;
+   }
+   
 
    /**
     * Suppression de document de la corbeille
@@ -910,4 +934,5 @@ public class StorageDocumentServiceSupport {
                frozenExcept.getMessage(), frozenExcept);
       }
    }
+
 }

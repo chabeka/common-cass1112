@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -16,11 +17,11 @@ import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseInte
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionRunnable;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.batch.suppression.support.stockage.batch.StorageDocumentToRecycleWriter;
 import fr.urssaf.image.sae.services.batch.transfert.support.stockage.multithreading.TransfertPoolThreadExecutor;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
-import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
@@ -53,10 +54,10 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    private SAETransfertService transfertService;
 
    /**
-    * Provider pour la suppression.
+    * Provider pour la mise des documents dans la corbeille.
     */
    @Autowired
-   private SAESuppressionService suppressionService;
+   private StorageDocumentToRecycleWriter suppressionService;
 
    /**
     * Provider pour les traces.
@@ -96,7 +97,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       String actionType = checkActionType((StorageDocument) storageDocument);
       if (actionType != null) {
          if (actionType.equals("SUPPRESSION")) {
-            document = deleteDocument((StorageDocument) storageDocument);
+            document = moveDocumentToRecycleBin((StorageDocument) storageDocument);
          } else {
             document = transfertDocument((StorageDocument) storageDocument);
          }  
@@ -127,7 +128,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    }
 
    /**
-    * suppression du document
+    * Mise en corbeille du document passé en paramètre
     * 
     * @param document
     * @return le document supprimé
@@ -135,11 +136,21 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
     * @{@link SuppressionException}
     */
    @SuppressWarnings(CATCH)
-   public final StorageDocument deleteDocument(final StorageDocument document)
+   public final StorageDocument moveDocumentToRecycleBin(final StorageDocument document)
          throws SuppressionException {
 
       try {
-         suppressionService.suppression(document.getUuid());
+         // Récuperer l'id du traitement en cours
+         String idJob = (String) getStepExecution().getJobParameters()
+               .getString(Constantes.ID_TRAITEMENT);
+         
+         UUID uuidJob = null;
+         if(StringUtils.isNotEmpty(idJob)){
+            // conversion
+            uuidJob = UUID.fromString(idJob);
+         }
+         
+         suppressionService.moveToRecycleBeanStorageDocument(uuidJob, document);
       } catch (Throwable except) {
          throw new SuppressionException(
                "Erreur Suppression - identifiant archivage "

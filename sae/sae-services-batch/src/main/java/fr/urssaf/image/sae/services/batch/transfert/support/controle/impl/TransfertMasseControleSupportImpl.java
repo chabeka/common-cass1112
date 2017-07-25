@@ -224,6 +224,8 @@ public class TransfertMasseControleSupportImpl implements
       StorageDocument document = transfertService
             .controleDocumentTransfertMasse(item.getUuid(), storageMetas,
                   isReprise, idTraitementMasse);
+      // Charger le typeAction dans le storageDoc
+      document.setBatchTypeAction(item.getBatchActionType());
       return document;
 
    }

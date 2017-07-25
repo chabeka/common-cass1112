@@ -1,8 +1,12 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageException;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 
 /**
  * Fournit les services de gestion de la corbeille.<BR />
@@ -60,7 +64,6 @@ public interface RecycleBinService {
     * @throws RecycleBinServiceEx
     *            Runtime exception
     */
-
    void deleteStorageDocumentFromRecycleBin(final UUID uuid) throws RecycleBinServiceEx;
 
    /**
@@ -70,5 +73,15 @@ public interface RecycleBinService {
     * @param parameter
     *           : Le paramètre du service {@link RecycleBinService}
     */
-   <T> void setRecycleBinServiceParameter(T parameter);  
+   <T> void setRecycleBinServiceParameter(T parameter);
+
+   /**
+    * Permet de récupérer un StorageDocument de la corbeille à partir du critère « UUIDCriteria
+    * * ».
+    * @param uuidCriteria
+    * @return
+    * @throws IOException 
+    * @throws StorageException 
+    */
+   StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria) throws StorageException, IOException;  
 }

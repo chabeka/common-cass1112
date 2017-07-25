@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
+import java.io.IOException;
 import java.util.UUID;
 
+import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
@@ -12,11 +14,15 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
+import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageException;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
 
 /**
@@ -26,13 +32,13 @@ import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
 @Qualifier("recycleBinService")
 public class RecycleBinServiceImpl extends AbstractServices implements
       RecycleBinService {
-   
+
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RecycleBinServiceImpl.class);
-   
+
    @Autowired
    private TracesDfceSupport tracesSupport;
-   
+
    @Autowired
    private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
@@ -43,9 +49,9 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    @ServiceChecked
    public void moveStorageDocumentToRecycleBin(UUID uuid)
          throws RecycleBinServiceEx {
-      //-- Mise a la corbeille du ducument
-      storageDocumentServiceSupport.moveStorageDocumentToRecycleBin(getDfceService(), 
-            getCnxParameters(), uuid, LOGGER, tracesSupport);
+      // -- Mise a la corbeille du ducument
+      storageDocumentServiceSupport.moveStorageDocumentToRecycleBin(
+            getDfceService(), getCnxParameters(), uuid, LOGGER, tracesSupport);
    }
 
    /**
@@ -55,9 +61,9 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    @ServiceChecked
    public void restoreStorageDocumentFromRecycleBin(UUID uuid)
          throws RecycleBinServiceEx {
-      //-- Restore de la corbeille du ducument
-      storageDocumentServiceSupport.restoreStorageDocumentFromRecycleBin(getDfceService(), 
-            getCnxParameters(), uuid, LOGGER, tracesSupport);
+      // -- Restore de la corbeille du ducument
+      storageDocumentServiceSupport.restoreStorageDocumentFromRecycleBin(
+            getDfceService(), getCnxParameters(), uuid, LOGGER, tracesSupport);
    }
 
    /**
@@ -67,9 +73,24 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    @ServiceChecked
    public void deleteStorageDocumentFromRecycleBin(UUID uuid)
          throws RecycleBinServiceEx {
-      //-- Suppression de la corbeille du ducument
-      storageDocumentServiceSupport.deleteStorageDocumentFromRecycleBin(getDfceService(), 
-            getCnxParameters(), uuid, LOGGER, tracesSupport);
+      // -- Suppression de la corbeille du ducument
+      storageDocumentServiceSupport.deleteStorageDocumentFromRecycleBin(
+            getDfceService(), getCnxParameters(), uuid, LOGGER, tracesSupport);
+   }
+
+   @Loggable(LogLevel.TRACE)
+   public StorageDocument getStorageDocumentFromRecycleBin(
+         UUIDCriteria uuidCriteria) throws StorageException, IOException {
+
+      // Rechercher le document dans la corbeille
+      Document doc = storageDocumentServiceSupport.getDocumentFromRecycleBin(
+            getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
+            LOGGER, tracesSupport);
+
+      StorageDocument storageDocument = BeanMapper.dfceDocumentToStorageDocument(doc,
+            uuidCriteria.getDesiredStorageMetadatas(), getDfceService(), false);
+
+      return storageDocument;
    }
 
    /**
