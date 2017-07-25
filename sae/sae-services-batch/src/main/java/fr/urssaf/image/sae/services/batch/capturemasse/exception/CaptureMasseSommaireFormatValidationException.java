@@ -18,7 +18,7 @@ public class CaptureMasseSommaireFormatValidationException extends Exception {
     *           cause mère
     */
    public CaptureMasseSommaireFormatValidationException(Throwable cause) {
-      super("Aucun document du sommaire ne sera intégré dans le SAE.", cause);
+      super("Aucun document du sommaire ne sera traité dans le SAE.", cause);
    }
 
    /**
@@ -31,7 +31,7 @@ public class CaptureMasseSommaireFormatValidationException extends Exception {
     */
    public CaptureMasseSommaireFormatValidationException(String message,
          Throwable cause) {
-      super("Aucun document du sommaire ne sera intégré dans le SAE ("
+      super("Aucun document du sommaire ne sera traité dans le SAE ("
             + message + ").", cause);
    }
 
