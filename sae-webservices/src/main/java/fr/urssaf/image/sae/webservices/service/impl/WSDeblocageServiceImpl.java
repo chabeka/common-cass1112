@@ -39,7 +39,7 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
    private OperationPileTravauxService operationPileTravaux;
 
    /**
-    * Service permettant de réaliser des objets sur les jobs
+    * Service de gestion de la pile des travaux
     */
    @Autowired
    private JobQueueService jobQueueService;

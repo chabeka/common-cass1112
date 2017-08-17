@@ -865,6 +865,28 @@ public class StorageDocumentServiceSupport {
                frozenExcept.getMessage(), frozenExcept);
       }
    }
+   
+   /**
+    * Récupérer le document de la corbeille 
+    * @param dfceService
+    * @param cnxParameters
+    * @param uuid
+    * @param log
+    * @param tracesSupport
+    * @return
+    */
+   public final Document getDocumentFromRecycleBin(
+         ServiceProvider dfceService, DFCEConnection cnxParameters, UUID uuid,
+         Logger log, TracesDfceSupport tracesSupport) {
+      // -- Traces debug - entrée méthode
+      String prefixeTrc = "getStorageDocumentFromRecycleBin()";
+      log.debug("{} - Début", prefixeTrc);
+      
+      Document document = dfceService.getRecycleBinService().
+            getDocumentByUUID(getBaseDFCE(dfceService, cnxParameters), uuid);
+      
+      return document;
+   }
 
    /**
     * Suppression de document de la corbeille

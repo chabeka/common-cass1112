@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,6 +23,7 @@ import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
+import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -402,6 +404,18 @@ public class StorageDocumentServiceImpl extends AbstractServiceProvider
          throws RecycleBinServiceEx {
       recycleBinService.setRecycleBinServiceParameter(getDfceService());
       recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
+   }
+   
+   /**
+    * {@inheritDoc}
+    * @throws IOException 
+    * @throws StorageException 
+    */
+   @Override
+   public StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria)
+         throws StorageException, IOException {
+      recycleBinService.setRecycleBinServiceParameter(getDfceService());
+      return recycleBinService.getStorageDocumentFromRecycleBin(uuidCriteria);
    }
 
    /**
