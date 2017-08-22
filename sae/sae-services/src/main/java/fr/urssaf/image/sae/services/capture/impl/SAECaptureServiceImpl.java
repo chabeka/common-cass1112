@@ -416,8 +416,6 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          uuid = serviceProvider.getStorageDocumentService()
                .insertStorageDocument(storageDoc).getUuid();
 
-      } catch (ConnectionServiceEx e) {
-         throw new SAECaptureServiceEx(e);
       } catch (InsertionServiceEx e) {
          throw new SAECaptureServiceEx(e);
       } catch (InsertionIdGedExistantEx e) {

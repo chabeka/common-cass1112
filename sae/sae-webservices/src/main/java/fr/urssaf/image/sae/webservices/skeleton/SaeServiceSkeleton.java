@@ -286,37 +286,30 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          ArchivageUnitaire request) throws CaptureAxisFault,
          SaeAccessDeniedAxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération archivageUnitaireSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         ArchivageUnitaireResponse response = capture
+               .archivageUnitaire(request);
 
-            ArchivageUnitaireResponse response = capture
-                  .archivageUnitaire(request);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -336,37 +329,29 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public final ArchivageUnitairePJResponse archivageUnitairePJSecure(
          ArchivageUnitairePJ request) throws AxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération archivageUnitairePJSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         ArchivageUnitairePJResponse response = capture
+               .archivageUnitairePJ(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            ArchivageUnitairePJResponse response = capture
-                  .archivageUnitairePJ(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -428,36 +413,28 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public final RechercheResponse rechercheSecure(Recherche request)
          throws RechercheAxis2Fault, SaeAccessDeniedAxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération rechercheSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         RechercheResponse response = search.search(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            RechercheResponse response = search.search(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
@@ -475,37 +452,32 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    @Override
    public final ConsultationResponse consultationSecure(Consultation request)
          throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
+      // Traces debug - entrée méthode
+      String prefixeTrc = "Opération consultationSecure()";
       try {
-
-         // Traces debug - entrée méthode
-         String prefixeTrc = "Opération consultationSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         ConsultationResponse response = consultation.consultation(request);
 
-            ConsultationResponse response = consultation.consultation(request);
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
+         return response;
 
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         ConsultationAxisFault spf = new ConsultationAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ConsultationAxisFault(
@@ -525,38 +497,30 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          ConsultationMTOM request) throws ConsultationAxisFault,
          SaeAccessDeniedAxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération consultationMTOMSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         ConsultationMTOMResponse responseMTOM = consultation
+               .consultationMTOM(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            ConsultationMTOMResponse responseMTOM = consultation
-                  .consultationMTOM(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return responseMTOM;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-
-            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return responseMTOM;
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         ConsultationAxisFault spf = new ConsultationAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, ex));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ConsultationAxisFault(
@@ -581,36 +545,28 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          UnexpectedDomainException, InvalidPagmsCombinaisonException,
          CaptureExistingUuuidException {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération copieSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         CopieResponse response = copieService.copie(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            CopieResponse response = copieService.copie(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new CopieAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (CopieAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         CopieAxisFault spf = new CopieAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CopieAxisFault(
@@ -625,35 +581,28 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          DocumentExistant request) throws DocumentExistantAxisFault,
          SearchingServiceEx, ConnectionServiceEx {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération copieSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         DocumentExistantResponse response = documentExistantService
+               .documentExistant(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            DocumentExistantResponse response = documentExistantService
-                  .documentExistant(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new DocumentExistantAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (DocumentExistantAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (ConnectionServiceEx ex) {
+         DocumentExistantAxisFault spf = new DocumentExistantAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new DocumentExistantAxisFault(
@@ -704,7 +653,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    @Override
    public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
          ArchivageMasseAvecHash request, String callerIP)
-         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
+               throws CaptureAxisFault, SaeAccessDeniedAxisFault {
       try {
 
          // Traces debug - entrée méthode
@@ -742,33 +691,26 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throws AxisFault {
 
       try {
-
          String trcPrefix = "modificationSecure";
          LOG.debug("{} - début", trcPrefix);
+         ModificationResponse response = modificationService
+               .modification(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         LOG.debug("{} - fin", trcPrefix);
 
-            ModificationResponse response = modificationService
-                  .modification(request);
-
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", trcPrefix);
-            setCodeHttp412();
-            throw new ModificationAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-         }
-
+         return response;
       } catch (ModificationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException ex) {
          throw new SaeAccessDeniedAxisFault(ex);
+      } catch (ConnectionServiceEx ex) {
+         ModificationAxisFault spf = new ModificationAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ModificationAxisFault(
@@ -783,33 +725,25 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          throws AxisFault {
 
       try {
-
          String trcPrefix = "suppressionSecure";
          LOG.debug("{} - début", trcPrefix);
+         SuppressionResponse response = suppressionService
+               .suppression(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         LOG.debug("{} - fin", trcPrefix);
 
-            SuppressionResponse response = suppressionService
-                  .suppression(request);
-
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", trcPrefix);
-            setCodeHttp412();
-            throw new SuppressionAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-         }
-
+         return response;
       } catch (SuppressionAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException ex) {
          throw new SaeAccessDeniedAxisFault(ex);
+      } catch (ConnectionServiceEx ex) {
+         SuppressionAxisFault spf = new SuppressionAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new SuppressionAxisFault(
@@ -851,33 +785,26 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public TransfertResponse transfertSecure(Transfert request) throws AxisFault {
 
       try {
-
          String trcPrefix = "transfertSecure";
          LOG.debug("{} - début", trcPrefix);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // -- Transfert du document
+         TransfertResponse response = transfertService.transfert(request);
 
-            // -- Transfert du document
-            TransfertResponse response = transfertService.transfert(request);
+         LOG.debug("{} - fin", trcPrefix);
 
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", trcPrefix);
-            setCodeHttp412();
-            throw new TransfertAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-         }
-
+         return response;
       } catch (TransfertAxisFault e) {
          logSoapFault(e);
          throw e;
       } catch (AccessDeniedException ex) {
          throw new SaeAccessDeniedAxisFault(ex);
+      } catch (ConnectionServiceEx ex) {
+         TransfertAxisFault spf = new TransfertAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException e) {
          logRuntimeException(e);
          String erreur = "Une erreur interne à l'application est survenue lors du transfert";
@@ -889,37 +816,30 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public final ConsultationAffichableResponse consultationAffichableSecure(
          ConsultationAffichable request) throws AxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération consultationAffichableSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         ConsultationAffichableResponse response = consultation
+               .consultationAffichable(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            ConsultationAffichableResponse response = consultation
-                  .consultationAffichable(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         ConsultationAxisFault spf = new ConsultationAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new ConsultationAxisFault(
@@ -937,24 +857,22 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String prefixeTrc = "Opération rechercheNbResSecure()";
          LOG.debug("{} - Début", prefixeTrc);
 
-         if (dfceInfoService.isDfceUp()) {
-            RechercheNbResResponse response = search.searchWithNbRes(request);
-            // -- Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+         RechercheNbResResponse response = search.searchWithNbRes(request);
+         // -- Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
 
-            return response;
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-         }
+         return response;
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
@@ -968,37 +886,29 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
    public RechercheParIterateurResponse rechercheParIterateurSecure(
          RechercheParIterateur request) throws AxisFault {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération rechercheParIterateurSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         RechercheParIterateurResponse response = search
+               .rechercheParIterateur(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            RechercheParIterateurResponse response = search
-                  .rechercheParIterateur(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (RechercheAxis2Fault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new RechercheAxis2Fault(
@@ -1016,32 +926,24 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String prefixeTrc = "Opération ajoutNoteSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         AjoutNoteResponse response = noteService.ajoutNote(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            AjoutNoteResponse response = noteService.ajoutNote(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new AjoutNoteAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
-
+         return response;
       } catch (AjoutNoteAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         AjoutNoteAxisFault spf = new AjoutNoteAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new AjoutNoteAxisFault(
@@ -1060,33 +962,24 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String prefixeTrc = "Opération stockageUnitaireSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         StockageUnitaireResponse response = capture.stockageUnitaire(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            StockageUnitaireResponse response = capture
-                  .stockageUnitaire(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new CaptureAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
-
+         return response;
       } catch (CaptureAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+               wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new CaptureAxisFault(
@@ -1104,33 +997,26 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          String prefixeTrc = "Opération getDocFormatOrigineSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         GetDocFormatOrigineResponse response = documentAttacheService
+               .getDocFormatOrigine(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            GetDocFormatOrigineResponse response = documentAttacheService
-                  .getDocFormatOrigine(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new GetDocFormatOrigineAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
-
+         return response;
       } catch (GetDocFormatOrigineAxisFault ex) {
          logSoapFault(ex);
          throw ex;
       } catch (AccessDeniedException exception) {
          throw new SaeAccessDeniedAxisFault(exception);
+      } catch (ConnectionServiceEx ex) {
+         GetDocFormatOrigineAxisFault spf = new GetDocFormatOrigineAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       } catch (RuntimeException ex) {
          logRuntimeException(ex);
          throw new GetDocFormatOrigineAxisFault(
@@ -1253,35 +1139,28 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException, RemoteException {
       try {
-
          // Traces debug - entrée méthode
          String prefixeTrc = "Opération copieSecure()";
          LOG.debug("{} - Début", prefixeTrc);
          // Fin des traces debug - entrée méthode
+         ConsultationGNTGNSResponse response = consultation
+               .consultationGNTGNS(request);
 
-         boolean dfceUp = dfceInfoService.isDfceUp();
-         if (dfceUp) {
+         // Traces debug - sortie méthode
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
 
-            ConsultationGNTGNSResponse response = consultation
-                  .consultationGNTGNS(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-
-            return response;
-
-         } else {
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            setCodeHttp412();
-            throw new ConsultationAxisFault(STOCKAGE_INDISPO,
-                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-
-         }
+         return response;
       } catch (ConsultationAxisFault ex) {
          logSoapFault(ex);
          throw ex;
+      } catch (ConnectionServiceEx ex) {
+         ConsultationAxisFault spf = new ConsultationAxisFault(
+               STOCKAGE_INDISPO, wsMessageRessourcesUtils.recupererMessage(
+                     MES_STOCKAGE, null));
+         logSoapFault(spf);
+         setCodeHttp412();
+         throw spf;
       }
    }
 

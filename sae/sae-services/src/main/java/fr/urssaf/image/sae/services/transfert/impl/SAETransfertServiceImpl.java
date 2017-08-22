@@ -40,7 +40,6 @@ import fr.urssaf.image.sae.services.exception.transfert.TransfertMasseRuntimeExc
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -142,6 +141,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * @throws MappingFromReferentialException
     *            Permet de vérifier les droits avant le transfert
     */
+   @Override
    public final void controleDroitTransfert(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException {
@@ -190,6 +190,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * @throws MappingFromReferentialException
     *            Permet de vérifier les droits avant le transfert de masse
     */
+   @Override
    public final void controleDroitTransfertMasse(List<StorageMetadata> allMeta)
          throws ReferentialException, RetrievalServiceEx,
          InvalidSAETypeException, MappingFromReferentialException {
@@ -304,6 +305,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * 
     *            Fonction de transfert du document avec notes et doc attachés
     */
+   @Override
    public final void transfertDocument(StorageDocument document)
          throws TransfertException {
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
@@ -374,6 +376,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     * 
     *            Fonction permet suppression doc sur GNT apres le transfert
     */
+   @Override
    public final void deleteDocApresTransfert(final UUID idArchive)
          throws SearchingServiceEx, ReferentialException, TransfertException {
       // -- Suppression du document transféré de la GNT
@@ -409,6 +412,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     *            Permet de récupérer le document avec les metadonnées
     *            transférables
     */
+   @Override
    public final StorageDocument recupererDocMetaTransferable(
          final UUID idArchive) throws ReferentialException, SearchingServiceEx {
       // On récupère le document avec uniquement les méta transférables
@@ -421,6 +425,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       return document;
    }
 
+   @Override
    public final void transfertDocMasse(final StorageDocument document)
          throws TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx, ReferentialException, RetrievalServiceEx,
@@ -765,6 +770,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    public final void transfertDoc(final UUID idArchive)
          throws TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx {
@@ -944,8 +950,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             LOG.debug("{} - Fin de transfert du document {}", new Object[] {
                   trcPrefix, idArchive.toString() });
          }
-      } catch (ConnectionServiceEx ex) {
-         throw new TransfertException(erreur, ex);
       } catch (SearchingServiceEx ex) {
          throw new TransfertException(erreur, ex);
       } catch (ReferentialException ex) {

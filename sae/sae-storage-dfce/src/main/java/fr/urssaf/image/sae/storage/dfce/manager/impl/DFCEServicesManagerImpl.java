@@ -66,6 +66,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    /**
     * @return the cnxParameters
     */
+   @Override
    public final DFCEConnection getCnxParameters() {
       return cnxParameters;
    }
@@ -73,6 +74,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final void closeConnection() {
       if (dfceService.isServerUp() || dfceService.isSessionActive()) {
          dfceService.disconnect();
@@ -83,6 +85,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final ServiceProvider getDFCEService() {
 
       return dfceService;
@@ -91,6 +94,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final void getConnection() throws ConnectionServiceEx {
       getConnection(Boolean.FALSE);
    }
@@ -98,13 +102,14 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final void getConnection(boolean forceReconnection)
          throws ConnectionServiceEx {
       try {
          String prefixLog = "getConnection()";
          // ici on synchronise l'appel de la méthode connect.
          synchronized (this) {
-            if (forceReconnection || !isDFCEServiceValid()) {
+            if (forceReconnection || !isActive()) {
                LOGGER.debug(
                      "{} - Etablissement d'une nouvelle connexion à DFCE",
                      prefixLog);
@@ -128,17 +133,9 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
     * {@inheritDoc}
     * 
     */
+   @Override
    public final boolean isActive() {
-      return dfceService.isSessionActive();
-   }
-
-   /**
-    * 
-    * @return True si le service DFCE est valide.
-    */
-   private boolean isDFCEServiceValid() {
-      return dfceService != null && dfceService.isServerUp()
-            && dfceService.isSessionActive();
+      return dfceService != null && dfceService.isSessionActive();
    }
 
 }

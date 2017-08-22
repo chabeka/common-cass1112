@@ -106,6 +106,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    public final List<UntypedDocument> search(String requete,
          List<String> listMetaDesired) throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
@@ -431,10 +432,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                .getStorageDocumentService()
                .searchStorageDocumentByLuceneCriteria(luceneCriteria);
          allStorageDocuments = storageDocuments.getAllStorageDocuments();
-      } catch (ConnectionServiceEx except) {
-         throw new SAESearchServiceEx(
-               ResourceMessagesUtils.loadMessage("search.connection.error"),
-               except);
       } catch (SearchingServiceEx except) {
          throw new SAESearchServiceEx(except.getMessage(), except);
       }
@@ -497,7 +494,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
       // gestion des droits
       LOG.debug("{} - Récupération des droits", prefixeTrc);
-      AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+      AuthenticationToken token = AuthenticationContext
             .getAuthenticationToken();
       List<SaePrmd> prmds = token.getSaeDroits().get("recherche");
       LOG.debug("{} - Ajustage de la requete avec les éléments des droits",
@@ -938,10 +935,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                .getStorageDocumentService().searchPaginatedStorageDocuments(
                      paginatedLuceneCriteria);
 
-      } catch (ConnectionServiceEx except) {
-         throw new SAESearchServiceEx(
-               ResourceMessagesUtils.loadMessage("search.connection.error"),
-               except);
       } catch (SearchingServiceEx except) {
          throw new SAESearchServiceEx(except.getMessage(), except);
       }

@@ -51,7 +51,6 @@ import fr.urssaf.image.sae.services.exception.modification.ModificationException
 import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -124,8 +123,6 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          
          this.modificationMetaDocument(document, trcPrefix);
 
-      } catch (ConnectionServiceEx e) {
-         throw new ModificationException(e);
       } catch (UpdateServiceEx exception) {
          throw new ModificationRuntimeException(exception);
       }

@@ -10,7 +10,6 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,13 +31,11 @@ import fr.urssaf.image.sae.ecde.service.EcdeServices;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
-import fr.urssaf.image.sae.metadata.exceptions.LongCodeNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.referential.services.SAEControlMetadataService;
 import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
-import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.controles.SAEControlesCaptureService;
 import fr.urssaf.image.sae.services.document.SAEDocumentAttachmentService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
@@ -50,8 +47,6 @@ import fr.urssaf.image.sae.services.exception.capture.EmptyDocumentEx;
 import fr.urssaf.image.sae.services.exception.capture.EmptyFileNameEx;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
@@ -348,10 +343,6 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          }
 
       } catch (StorageDocAttachmentServiceEx e) {
-         throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
-      } catch (ConnectionServiceEx e) {
          throw new SAEDocumentAttachmentEx(
                "Une exception a eu lieu lors de la récupération du document au format d'origine",
                e);

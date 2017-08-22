@@ -52,7 +52,6 @@ import fr.urssaf.image.sae.services.exception.consultation.SAEConsultationServic
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.services.util.UntypedMetadataFinderUtils;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -139,110 +138,105 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             idArchive);
       // Fin des traces debug - entrée méthode
+      this.getStorageServiceProvider().openConnexion();
+
       try {
-         this.getStorageServiceProvider().openConnexion();
 
-         try {
+         // Liste des métadonnées à consulter
+         List<String> metadatas = manageMetaDataNames(consultParams);
 
-            // Liste des métadonnées à consulter
-            List<String> metadatas = manageMetaDataNames(consultParams);
+         LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
+               prefixeTrc, buildMessageFromList(metadatas));
 
-            LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
-                  prefixeTrc, buildMessageFromList(metadatas));
-
-            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-            Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferences();
-            String shortCode;
-            for (String mapKey : listeAllMeta.keySet()) {
-               shortCode = listeAllMeta.get(mapKey).getShortCode();
-               // On ne récupère la note, le gel et la durée de conservation que si elle est demandée à la consulation (car sinon cela génère un appel à DFCE inutile)
-               if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                     shortCode)) {
-                  if (metadatas.contains(StorageTechnicalMetadatas.NOTE
-                        .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
-                     shortCode)) {
-                  if (metadatas.contains(StorageTechnicalMetadatas.GEL
-                        .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
-                     .getShortCode().equals(shortCode)) {
-                  if (metadatas
-                        .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
-                              .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else {
+         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         Map<String, MetadataReference> listeAllMeta = referenceDAO
+               .getAllMetadataReferences();
+         String shortCode;
+         for (String mapKey : listeAllMeta.keySet()) {
+            shortCode = listeAllMeta.get(mapKey).getShortCode();
+            // On ne récupère la note, le gel et la durée de conservation que si
+            // elle est demandée à la consulation (car sinon cela génère un
+            // appel à DFCE inutile)
+            if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(shortCode)) {
+               if (metadatas.contains(StorageTechnicalMetadatas.NOTE
+                     .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
-
-            }
-
-            UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-
-            // On récupère le document à partir de l'UUID, avec toutes les
-            // métadonnées du référentiel
-            StorageDocument storageDocument = this.getStorageServiceProvider()
-                  .getStorageDocumentService()
-                  .retrieveStorageDocumentByUUID(uuidCriteria);
-
-            UntypedDocument untypedDocument = null;
-
-            // Vérification des droits
-            if (storageDocument != null) {
-               untypedDocument = this.mappingService
-                     .storageDocumentToUntypedDocument(storageDocument);
-
-               LOG.debug("{} - Récupération des droits", prefixeTrc);
-               AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-                     .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getSaeDroits()
-                     .get("consultation");
-               LOG.debug("{} - Vérification des droits", prefixeTrc);
-               boolean isPermitted = prmdService.isPermitted(
-                     untypedDocument.getUMetadatas(), saePrmds);
-
-               if (!isPermitted) {
-                  throw new AccessDeniedException(
-                        "Le document est refusé à la consultation car les droits sont insuffisants");
+            } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
+                  shortCode)) {
+               if (metadatas.contains(StorageTechnicalMetadatas.GEL
+                     .getLongCode())) {
+                  allMeta.add(new StorageMetadata(shortCode));
                }
-
-               // On filtre uniquement sur les métadonnées souhaitées à la
-               // consultation
-               List<UntypedMetadata> list = filterMetadatas(metadatas,
-                     untypedDocument.getUMetadatas());
-               untypedDocument.setUMetadatas(list);
-
+            } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
+                  .getShortCode().equals(shortCode)) {
+               if (metadatas
+                     .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
+                           .getLongCode())) {
+                  allMeta.add(new StorageMetadata(shortCode));
+               }
+            } else {
+               allMeta.add(new StorageMetadata(shortCode));
             }
-
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-            return untypedDocument;
-
-         } catch (RetrievalServiceEx e) {
-
-            throw new SAEConsultationServiceException(e);
-
-         } catch (ReferentialException e) {
-
-            throw new SAEConsultationServiceException(e);
-
-         } catch (InvalidSAETypeException e) {
-
-            throw new SAEConsultationServiceException(e);
-
-         } catch (MappingFromReferentialException e) {
-
-            throw new SAEConsultationServiceException(e);
 
          }
-      } catch (ConnectionServiceEx e) {
+
+         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+         // On récupère le document à partir de l'UUID, avec toutes les
+         // métadonnées du référentiel
+         StorageDocument storageDocument = this.getStorageServiceProvider()
+               .getStorageDocumentService()
+               .retrieveStorageDocumentByUUID(uuidCriteria);
+
+         UntypedDocument untypedDocument = null;
+
+         // Vérification des droits
+         if (storageDocument != null) {
+            untypedDocument = this.mappingService
+                  .storageDocumentToUntypedDocument(storageDocument);
+
+            LOG.debug("{} - Récupération des droits", prefixeTrc);
+            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                  .getContext().getAuthentication();
+            List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+            LOG.debug("{} - Vérification des droits", prefixeTrc);
+            boolean isPermitted = prmdService.isPermitted(
+                  untypedDocument.getUMetadatas(), saePrmds);
+
+            if (!isPermitted) {
+               throw new AccessDeniedException(
+                     "Le document est refusé à la consultation car les droits sont insuffisants");
+            }
+
+            // On filtre uniquement sur les métadonnées souhaitées à la
+            // consultation
+            List<UntypedMetadata> list = filterMetadatas(metadatas,
+                  untypedDocument.getUMetadatas());
+            untypedDocument.setUMetadatas(list);
+
+         }
+
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
+         return untypedDocument;
+
+      } catch (RetrievalServiceEx e) {
 
          throw new SAEConsultationServiceException(e);
+
+      } catch (ReferentialException e) {
+
+         throw new SAEConsultationServiceException(e);
+
+      } catch (InvalidSAETypeException e) {
+
+         throw new SAEConsultationServiceException(e);
+
+      } catch (MappingFromReferentialException e) {
+
+         throw new SAEConsultationServiceException(e);
+
       }
    }
 
@@ -263,142 +257,134 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             idArchive);
       // Fin des traces debug - entrée méthode
+      this.getStorageServiceProvider().openConnexion();
+
       try {
-         this.getStorageServiceProvider().openConnexion();
+         List<String> metadatas = manageMetaDataNames(consultParams);
 
-         try {
-            List<String> metadatas = manageMetaDataNames(consultParams);
+         LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
+               prefixeTrc, buildMessageFromList(metadatas));
 
-            LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
-                  prefixeTrc, buildMessageFromList(metadatas));
+         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
 
-            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-
-            Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferences();
-            String shortCode;
-            for (String mapKey : listeAllMeta.keySet()) {
-               shortCode = listeAllMeta.get(mapKey).getShortCode();
-               // On ne récupère la note, le gel et la durée de conservation que
-               // si elle est demandée à la consulation (car sinon cela génère
-               // un appel à DFCE inutile)
-               if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                     shortCode)) {
-                  if (metadatas.contains(StorageTechnicalMetadatas.NOTE
-                        .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
-                     shortCode)) {
-                  if (metadatas.contains(StorageTechnicalMetadatas.GEL
-                        .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
-                     .getShortCode().equals(shortCode)) {
-                  if (metadatas
-                        .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
-                              .getLongCode())) {
-                     allMeta.add(new StorageMetadata(shortCode));
-                  }
-               } else {
+         Map<String, MetadataReference> listeAllMeta = referenceDAO
+               .getAllMetadataReferences();
+         String shortCode;
+         for (String mapKey : listeAllMeta.keySet()) {
+            shortCode = listeAllMeta.get(mapKey).getShortCode();
+            // On ne récupère la note, le gel et la durée de conservation que
+            // si elle est demandée à la consulation (car sinon cela génère
+            // un appel à DFCE inutile)
+            if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(shortCode)) {
+               if (metadatas.contains(StorageTechnicalMetadatas.NOTE
+                     .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
-            }
-
-            UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-
-            // On récupère le document à partir de l'UUID, avec toutes les
-            // métadonnées du référentiel
-            StorageDocument storageDocument = this.getStorageServiceProvider()
-                  .getStorageDocumentService()
-                  .retrieveStorageDocumentByUUID(uuidCriteria);
-
-            UntypedDocument untypedDocument = null;
-
-            if (storageDocument != null) {
-               untypedDocument = this.mappingService
-                     .storageDocumentToUntypedDocument(storageDocument);
-
-               LOG.debug("{} - Récupération des droits", prefixeTrc);
-               AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-                     .getContext().getAuthentication();
-               List<SaePrmd> saePrmds = token.getSaeDroits()
-                     .get("consultation");
-               LOG.debug("{} - Vérification des droits", prefixeTrc);
-               boolean isPermitted = prmdService.isPermitted(
-                     untypedDocument.getUMetadatas(), saePrmds);
-
-               if (!isPermitted) {
-                  throw new AccessDeniedException(
-                        "Le document est refusé à la consultation car les droits sont insuffisants");
+            } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
+                  shortCode)) {
+               if (metadatas.contains(StorageTechnicalMetadatas.GEL
+                     .getLongCode())) {
+                  allMeta.add(new StorageMetadata(shortCode));
                }
+            } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
+                  .getShortCode().equals(shortCode)) {
+               if (metadatas
+                     .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
+                           .getLongCode())) {
+                  allMeta.add(new StorageMetadata(shortCode));
+               }
+            } else {
+               allMeta.add(new StorageMetadata(shortCode));
+            }
+         }
 
-               // recuperation de l'identifiant de format
-               String idFormat = UntypedMetadataFinderUtils
-                     .valueMetadataFinder(untypedDocument.getUMetadatas(),
-                           "FormatFichier");
+         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-               // On filtre uniquement sur les métadonnées souhaitées à la
-               // consultation
-               List<UntypedMetadata> list = filterMetadatas(metadatas,
-                     untypedDocument.getUMetadatas());
-               untypedDocument.setUMetadatas(list);
+         // On récupère le document à partir de l'UUID, avec toutes les
+         // métadonnées du référentiel
+         StorageDocument storageDocument = this.getStorageServiceProvider()
+               .getStorageDocumentService()
+               .retrieveStorageDocumentByUUID(uuidCriteria);
 
-               // recupere le train de byte au format natif
-               final InputStream inputContent = untypedDocument.getContent()
-                     .getInputStream();
-               byte[] byteArray = org.apache.commons.io.IOUtils
-                     .toByteArray(inputContent);
+         UntypedDocument untypedDocument = null;
 
-               // conversion du fichier
-               byte[] fichierConverti = conversionService.convertirFichier(
-                     idFormat, byteArray, consultParams.getNumeroPage(),
-                     consultParams.getNombrePages());
+         if (storageDocument != null) {
+            untypedDocument = this.mappingService
+                  .storageDocumentToUntypedDocument(storageDocument);
 
-               // remplacement du fichier d'origine par le fichier converti
-               // TODO : voir comment remplacer le application/pdf
-               ByteArrayDataSource dataSource = new ByteArrayDataSource(
-                     fichierConverti, "application/pdf");
-               DataHandler dataHandler = new DataHandler(dataSource);
-               untypedDocument.setContent(dataHandler);
+            LOG.debug("{} - Récupération des droits", prefixeTrc);
+            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+                  .getContext().getAuthentication();
+            List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+            LOG.debug("{} - Vérification des droits", prefixeTrc);
+            boolean isPermitted = prmdService.isPermitted(
+                  untypedDocument.getUMetadatas(), saePrmds);
+
+            if (!isPermitted) {
+               throw new AccessDeniedException(
+                     "Le document est refusé à la consultation car les droits sont insuffisants");
             }
 
-            LOG.debug("{} - Sortie", prefixeTrc);
-            // Fin des traces debug - sortie méthode
-            return untypedDocument;
+            // recuperation de l'identifiant de format
+            String idFormat = UntypedMetadataFinderUtils.valueMetadataFinder(
+                  untypedDocument.getUMetadatas(), "FormatFichier");
 
-         } catch (RetrievalServiceEx e) {
+            // On filtre uniquement sur les métadonnées souhaitées à la
+            // consultation
+            List<UntypedMetadata> list = filterMetadatas(metadatas,
+                  untypedDocument.getUMetadatas());
+            untypedDocument.setUMetadatas(list);
 
-            throw new SAEConsultationServiceException(e);
+            // recupere le train de byte au format natif
+            final InputStream inputContent = untypedDocument.getContent()
+                  .getInputStream();
+            byte[] byteArray = org.apache.commons.io.IOUtils
+                  .toByteArray(inputContent);
 
-         } catch (ReferentialException e) {
+            // conversion du fichier
+            byte[] fichierConverti = conversionService.convertirFichier(
+                  idFormat, byteArray, consultParams.getNumeroPage(),
+                  consultParams.getNombrePages());
 
-            throw new SAEConsultationServiceException(e);
-
-         } catch (InvalidSAETypeException e) {
-
-            throw new SAEConsultationServiceException(e);
-
-         } catch (MappingFromReferentialException e) {
-
-            throw new SAEConsultationServiceException(e);
-
-         } catch (IOException ex) {
-            throw new SAEConsultationServiceException(ex);
-         } catch (ConvertisseurInitialisationException ex) {
-            throw new SAEConsultationServiceException(ex);
-         } catch (UnknownFormatException ex) {
-            throw new SAEConsultationServiceException(ex);
-         } catch (ConversionParametrageException ex) {
-            throw new SAEConsultationAffichableParametrageException(
-                  ex.getMessage(), ex);
-         } catch (ConversionRuntimeException ex) {
-            throw new SAEConsultationServiceException(ex);
+            // remplacement du fichier d'origine par le fichier converti
+            // TODO : voir comment remplacer le application/pdf
+            ByteArrayDataSource dataSource = new ByteArrayDataSource(
+                  fichierConverti, "application/pdf");
+            DataHandler dataHandler = new DataHandler(dataSource);
+            untypedDocument.setContent(dataHandler);
          }
-      } catch (ConnectionServiceEx e) {
+
+         LOG.debug("{} - Sortie", prefixeTrc);
+         // Fin des traces debug - sortie méthode
+         return untypedDocument;
+
+      } catch (RetrievalServiceEx e) {
 
          throw new SAEConsultationServiceException(e);
+
+      } catch (ReferentialException e) {
+
+         throw new SAEConsultationServiceException(e);
+
+      } catch (InvalidSAETypeException e) {
+
+         throw new SAEConsultationServiceException(e);
+
+      } catch (MappingFromReferentialException e) {
+
+         throw new SAEConsultationServiceException(e);
+
+      } catch (IOException ex) {
+         throw new SAEConsultationServiceException(ex);
+      } catch (ConvertisseurInitialisationException ex) {
+         throw new SAEConsultationServiceException(ex);
+      } catch (UnknownFormatException ex) {
+         throw new SAEConsultationServiceException(ex);
+      } catch (ConversionParametrageException ex) {
+         throw new SAEConsultationAffichableParametrageException(
+               ex.getMessage(), ex);
+      } catch (ConversionRuntimeException ex) {
+         throw new SAEConsultationServiceException(ex);
       }
    }
 

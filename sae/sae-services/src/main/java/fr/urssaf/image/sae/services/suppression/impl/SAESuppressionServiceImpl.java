@@ -17,7 +17,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -31,12 +30,8 @@ import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
-import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
@@ -50,7 +45,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 public class SAESuppressionServiceImpl extends AbstractSAEServices implements
-      SAESuppressionService {
+SAESuppressionService {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(SAESuppressionServiceImpl.class);
@@ -73,70 +68,67 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements
     */
    @Override
    public final void suppression(UUID idArchive) throws SuppressionException,
-         ArchiveInexistanteEx {
+   ArchiveInexistanteEx {
       String trcPrefix = "suppression";
       LOG.debug("{} - début", trcPrefix);
       LOG.debug("{} - Début de suppression du document {}", new Object[] {
             trcPrefix, idArchive.toString() });
 
+      this.getStorageServiceProvider().openConnexion();
+
       try {
-         this.getStorageServiceProvider().openConnexion();
-
-         try {
-            LOG.debug("{} - recherche du document", trcPrefix);
-            List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-            Map<String, MetadataReference> listeAllMeta = referenceDAO
-                  .getAllMetadataReferencesPourVerifDroits();
-            for (String mapKey : listeAllMeta.keySet()) {
-                  allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                        .getShortCode()));
-            }
-            UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
-
-            List<StorageMetadata> listeStorageMeta = this
-                  .getStorageServiceProvider().getStorageDocumentService()
-                  .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
-            if (listeStorageMeta.size() == 0) {
-               String message = StringUtils
-                     .replace(
-                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                           "{0}", idArchive.toString());
-               throw new ArchiveInexistanteEx(message);
-            }
-            List<UntypedMetadata> listeUMeta = mappingService
-                  .storageMetadataToUntypedMetadata(listeStorageMeta);
-
-            // Vérification des droits
-            LOG.debug("{} - Récupération des droits", trcPrefix);
-            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-                  .getContext().getAuthentication();
-            List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
-            LOG.debug("{} - Vérification des droits", trcPrefix);
-            boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
-
-            if (!isPermitted) {
-               throw new AccessDeniedException(
-                     "Le document est refusé à la suppression car les droits sont insuffisants");
-
-            }
-
-            LOG.debug("{} - suppression du document", trcPrefix);
-            storageService.deleteStorageDocument(idArchive);
-
-         } catch (DeletionServiceEx exception) {
-            throw new SuppressionException(exception);
-         } catch (ReferentialException exception) {
-            throw new SuppressionException(exception);
-         } catch (InvalidSAETypeException exception) {
-            throw new SuppressionException(exception);
-         } catch (MappingFromReferentialException exception) {
-            throw new SuppressionException(exception);
-         } catch (RetrievalServiceEx exception) {
-            throw new SuppressionException(exception);
+         LOG.debug("{} - recherche du document", trcPrefix);
+         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         Map<String, MetadataReference> listeAllMeta = referenceDAO
+               .getAllMetadataReferencesPourVerifDroits();
+         for (String mapKey : listeAllMeta.keySet()) {
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                  .getShortCode()));
          }
-      } catch (ConnectionServiceEx e) {
-         throw new SuppressionException(e);
+         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+         List<StorageMetadata> listeStorageMeta = this
+               .getStorageServiceProvider().getStorageDocumentService()
+               .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+         if (listeStorageMeta.size() == 0) {
+            String message = StringUtils
+                  .replace(
+                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                        "{0}", idArchive.toString());
+            throw new ArchiveInexistanteEx(message);
+         }
+         List<UntypedMetadata> listeUMeta = mappingService
+               .storageMetadataToUntypedMetadata(listeStorageMeta);
+
+         // Vérification des droits
+         LOG.debug("{} - Récupération des droits", trcPrefix);
+         AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+               .getContext().getAuthentication();
+         List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
+         LOG.debug("{} - Vérification des droits", trcPrefix);
+         boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+
+         if (!isPermitted) {
+            throw new AccessDeniedException(
+                  "Le document est refusé à la suppression car les droits sont insuffisants");
+
+         }
+
+         LOG.debug("{} - suppression du document", trcPrefix);
+         storageService.deleteStorageDocument(idArchive);
+
+      } catch (DeletionServiceEx exception) {
+         throw new SuppressionException(exception);
+      } catch (ReferentialException exception) {
+         throw new SuppressionException(exception);
+      } catch (InvalidSAETypeException exception) {
+         throw new SuppressionException(exception);
+      } catch (MappingFromReferentialException exception) {
+         throw new SuppressionException(exception);
+      } catch (RetrievalServiceEx exception) {
+         throw new SuppressionException(exception);
       }
+
       LOG.debug("{} - Suppression du document {} terminée", new Object[] {
             trcPrefix, idArchive.toString() });
       LOG.debug("{} - fin", trcPrefix);

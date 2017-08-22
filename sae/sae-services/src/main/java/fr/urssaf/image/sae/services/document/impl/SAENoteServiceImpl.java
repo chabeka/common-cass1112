@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,21 +20,14 @@ import fr.urssaf.image.sae.droit.service.PrmdService;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.mapping.services.MappingDocumentService;
-import fr.urssaf.image.sae.metadata.exceptions.LongCodeNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.referential.services.SAEControlMetadataService;
 import fr.urssaf.image.sae.metadata.referential.services.SAEConvertMetadataService;
-import fr.urssaf.image.sae.services.consultation.model.ConsultParams;
 import fr.urssaf.image.sae.services.document.SAENoteService;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
-import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
-import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
-import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
@@ -50,7 +42,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("saeNoteService")
 public class SAENoteServiceImpl extends AbstractSAEServices implements
-      SAENoteService {
+SAENoteService {
 
    private static final String SEPARATOR_STRING = ", ";
 
@@ -95,8 +87,8 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferencesPourVerifDroits();
          for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                  .getShortCode()));
          }
 
          UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
@@ -133,9 +125,6 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
          LOG.debug("{} - Ajout de la note au document", prefixeTrc);
          storageService.addDocumentNote(docUuid, contenu, login);
 
-      } catch (ConnectionServiceEx except) {
-         throw new SAEDocumentNoteException(
-               "Erreur de connection au service de gestion des notes", except);
       } catch (DocumentNoteServiceEx e) {
          throw new SAEDocumentNoteException(
                "Une erreur a eu lieu lors de l'ajout d'une note", e);
@@ -166,12 +155,7 @@ public class SAENoteServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
 
-      try {
-         getStorageServiceProvider().openConnexion();
-      } catch (ConnectionServiceEx except) {
-         throw new SAEDocumentNoteException(
-               "Erreur de connection au service de gestion des notes", except);
-      }
+      getStorageServiceProvider().openConnexion();
 
       LOG.debug("{} - Sortie", prefixeTrc);
 
