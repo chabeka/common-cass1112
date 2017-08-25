@@ -488,4 +488,9 @@ Pour la GNT :
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_170901
 
 
+// ------------------------------------------
+// 18) Lot 171100SAE
+// ------------------------------------------
 
+18-1) Lot 171100SAE
+Ajout d'une colonne avec index secondaire pour la gestion des doublons dans les jobs de la pile des travaux.
