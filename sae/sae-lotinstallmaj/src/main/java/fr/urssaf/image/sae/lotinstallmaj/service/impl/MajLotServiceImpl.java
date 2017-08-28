@@ -344,12 +344,13 @@ public final class MajLotServiceImpl implements MajLotService {
       } else if (CASSANDRA_DFCE_170901.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra170901();
-
          // Ajout nouvelles des métadonnées
          updateMetaDfce("META_170901");
       } else if (CASSANDRA_171100.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra171100();
+         // MAJ des métadonnées
+         updateMetaDfce("META_171100");
 
       } else {
 

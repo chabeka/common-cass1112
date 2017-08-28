@@ -1152,7 +1152,9 @@ public class SAECassandraUpdater {
 
       saeCassandraService.updateColumnFamilyFromDefinition(cfDef);
 
-
+      // -- Ajout des métadonnées
+      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+      
       // On positionne la version à 28
       saeDao.setDatabaseVersion(VERSION_28);
    }
