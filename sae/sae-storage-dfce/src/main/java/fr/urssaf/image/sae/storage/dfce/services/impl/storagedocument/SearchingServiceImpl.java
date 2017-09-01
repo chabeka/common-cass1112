@@ -12,10 +12,10 @@ import java.util.TimeZone;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.ChainedFilter;
+import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.SortedSearchQuery;
-import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +48,6 @@ import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -78,7 +77,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("searchingService")
 public class SearchingServiceImpl extends AbstractServices implements
-      SearchingService {
+SearchingService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SearchingServiceImpl.class);
 
@@ -107,6 +106,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final StorageDocuments searchStorageDocumentByLuceneCriteria(
@@ -175,6 +175,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @ServiceChecked
    public final StorageDocument searchMetaDatasByUUIDCriteria(
          final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
@@ -184,7 +185,7 @@ public class SearchingServiceImpl extends AbstractServices implements
 
          return BeanMapper.dfceMetaDataToStorageDocument(docDfce, uuidCriteria
                .getDesiredStorageMetadatas(), getDfceService());
-         
+
       } catch (StorageException srcSerEx) {
          throw new SearchingServiceEx(StorageMessageHandler
                .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
@@ -203,6 +204,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    public final <T> void setSearchingServiceParameter(final T parameter) {
       setDfceService((ServiceProvider) parameter);
    }
@@ -213,7 +215,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    @Override
    public final PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
-         throws SearchingServiceEx, QueryParseServiceEx {
+               throws SearchingServiceEx, QueryParseServiceEx {
 
       return searchByIterator(paginatedLuceneCriteria, false, true);
    }
@@ -239,7 +241,7 @@ public class SearchingServiceImpl extends AbstractServices implements
          PaginatedLuceneCriteria paginatedLuceneCriteria,
          boolean searchInRecycleBean, 
          boolean useChainedFilter)
-         throws SearchingServiceEx, QueryParseServiceEx {
+               throws SearchingServiceEx, QueryParseServiceEx {
       PaginatedStorageDocuments paginatedStorageDocuments = new PaginatedStorageDocuments();
       try {
          String prefixeTrc = "searchByIterator()";
@@ -274,7 +276,7 @@ public class SearchingServiceImpl extends AbstractServices implements
             iterateur = getDfceService().getSearchService()
                   .createDocumentIterator(searchQuery);
          }
-         
+
          Integer limite = paginatedLuceneCriteria.getLimit();
          Integer compteur = 0;
 
@@ -282,7 +284,7 @@ public class SearchingServiceImpl extends AbstractServices implements
          // pouvoir tester les droits
          List<String> metadonneesRef = new ArrayList<String>(referentielMeta
                .keySet());
-         
+
          List<StorageMetadata> allMeta = null;
          // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
          if (!searchInRecycleBean) {
@@ -323,7 +325,7 @@ public class SearchingServiceImpl extends AbstractServices implements
                // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
                if (!searchInRecycleBean) {
                   LOG.debug("{} - Récupération des droits", prefixeTrc);
-                  AuthenticationToken token = (AuthenticationToken) AuthenticationContext
+                  AuthenticationToken token = AuthenticationContext
                         .getAuthenticationToken();
                   List<SaePrmd> saePrmds = token.getSaeDroits().get(
                         "recherche_iterateur");
@@ -336,13 +338,13 @@ public class SearchingServiceImpl extends AbstractServices implements
                   storageDocuments.add(BeanMapper
                         .dfceDocumentToStorageDocument(doc,
                               paginatedLuceneCriteria
-                                    .getDesiredStorageMetadatas(),
+                              .getDesiredStorageMetadatas(),
                               getDfceService(), false));
                   compteur++;
                }
             } else {
                paginatedStorageDocuments
-                     .setAllStorageDocuments(storageDocuments);
+               .setAllStorageDocuments(storageDocuments);
                paginatedStorageDocuments.setLastPage(false);
                break;
             }
@@ -522,8 +524,28 @@ public class SearchingServiceImpl extends AbstractServices implements
    @Override
    public final PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
-         throws SearchingServiceEx, QueryParseServiceEx {
+               throws SearchingServiceEx, QueryParseServiceEx {
 
       return searchByIterator(paginatedLuceneCriteria, true, false);
+   }
+
+   /**
+    * Setter pour referenceDAO
+    * 
+    * @param referenceDAO
+    *           the referenceDAO to set
+    */
+   public void setReferenceDAO(MetadataReferenceDAO referenceDAO) {
+      this.referenceDAO = referenceDAO;
+   }
+
+   /**
+    * Setter pour mappingService
+    * 
+    * @param mappingService
+    *           the mappingService to set
+    */
+   public void setMappingService(MappingDocumentService mappingService) {
+      this.mappingService = mappingService;
    }
 }

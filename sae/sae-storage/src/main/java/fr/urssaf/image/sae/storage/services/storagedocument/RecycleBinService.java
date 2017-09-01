@@ -36,7 +36,7 @@ public interface RecycleBinService {
     */
 
    void moveStorageDocumentToRecycleBin(final UUID uuid) throws RecycleBinServiceEx;
-   
+
    /**
     * Permet de restaurer un StorageDocument de la corbeille à partir du critère « UUIDCriteria
     * ».
@@ -51,7 +51,7 @@ public interface RecycleBinService {
     */
 
    void restoreStorageDocumentFromRecycleBin(final UUID uuid) throws RecycleBinServiceEx;
-   
+
    /**
     * Permet de supprimer un StorageDocument de la corbeille à partir du critère « UUIDCriteria
     * ».
@@ -83,5 +83,19 @@ public interface RecycleBinService {
     * @throws IOException 
     * @throws StorageException 
     */
-   StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria) throws StorageException, IOException;  
+   StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria)
+         throws StorageException, IOException;
+
+   /**
+    * Permet de consulter un StorageDocument de la corbeille à partir du critère
+    * « UUIDCriteria * ».
+    * 
+    * @param uuidCriteria
+    * @param forConsultion
+    * @return
+    * @throws IOException
+    * @throws StorageException
+    */
+   StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria,
+         boolean forConsultion) throws StorageException, IOException;
 }

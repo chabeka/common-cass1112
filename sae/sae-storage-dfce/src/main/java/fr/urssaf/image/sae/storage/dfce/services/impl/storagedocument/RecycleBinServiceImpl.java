@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
 @Service
 @Qualifier("recycleBinService")
 public class RecycleBinServiceImpl extends AbstractServices implements
-      RecycleBinService {
+RecycleBinService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RecycleBinServiceImpl.class);
@@ -45,6 +45,7 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public void moveStorageDocumentToRecycleBin(UUID uuid)
@@ -57,6 +58,7 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public void restoreStorageDocumentFromRecycleBin(UUID uuid)
@@ -69,6 +71,7 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public void deleteStorageDocumentFromRecycleBin(UUID uuid)
@@ -78,6 +81,7 @@ public class RecycleBinServiceImpl extends AbstractServices implements
             getDfceService(), getCnxParameters(), uuid, LOGGER, tracesSupport);
    }
 
+   @Override
    @Loggable(LogLevel.TRACE)
    public StorageDocument getStorageDocumentFromRecycleBin(
          UUIDCriteria uuidCriteria) throws StorageException, IOException {
@@ -87,8 +91,30 @@ public class RecycleBinServiceImpl extends AbstractServices implements
             getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
             LOGGER, tracesSupport);
 
-      StorageDocument storageDocument = BeanMapper.dfceDocumentToStorageDocument(doc,
+      StorageDocument storageDocument = BeanMapper
+            .dfceDocumentFromRecycleBinToStorageDocument(doc,
             uuidCriteria.getDesiredStorageMetadatas(), getDfceService(), false);
+
+      return storageDocument;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public StorageDocument getStorageDocumentFromRecycleBin(
+         UUIDCriteria uuidCriteria, boolean forConsultion)
+               throws StorageException, IOException {
+
+      // Rechercher le document dans la corbeille
+      Document doc = storageDocumentServiceSupport.getDocumentFromRecycleBin(
+            getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
+            LOGGER, tracesSupport);
+
+      StorageDocument storageDocument = BeanMapper
+            .dfceDocumentFromRecycleBinToStorageDocument(doc,
+                  uuidCriteria.getDesiredStorageMetadatas(), getDfceService(),
+                  forConsultion);
 
       return storageDocument;
    }
@@ -99,6 +125,27 @@ public class RecycleBinServiceImpl extends AbstractServices implements
    @Override
    public <T> void setRecycleBinServiceParameter(T parameter) {
       setDfceService((ServiceProvider) parameter);
+   }
+
+   /**
+    * Setter pour storageDocumentServiceSupport
+    * 
+    * @param storageDocumentServiceSupport
+    *           the storageDocumentServiceSupport to set
+    */
+   public void setStorageDocumentServiceSupport(
+         StorageDocumentServiceSupport storageDocumentServiceSupport) {
+      this.storageDocumentServiceSupport = storageDocumentServiceSupport;
+   }
+
+   /**
+    * Setter pour tracesSupport
+    * 
+    * @param tracesSupport
+    *           the tracesSupport to set
+    */
+   public void setTracesSupport(TracesDfceSupport tracesSupport) {
+      this.tracesSupport = tracesSupport;
    }
 
 }

@@ -81,13 +81,45 @@ public final class BeanMapper {
    public static StorageDocument dfceDocumentToStorageDocument(
          final Document document, final List<StorageMetadata> desiredMetaDatas,
          final ServiceProvider serviceDFCE, boolean forConsultion)
-         throws StorageException, IOException {
+               throws StorageException, IOException {
       // on construit la liste des métadonnées à partir de la liste des
       // métadonnées souhaitées.
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
             document, desiredMetaDatas, serviceDFCE);
       return buildStorageDocument(document, metaDatas, serviceDFCE,
-            forConsultion);
+            forConsultion, false);
+   }
+
+   /**
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
+    * 
+    * @param document
+    *           : Le document DFCE.
+    * @param desiredMetaDatas
+    *           : Les métadonnées souhaitées.
+    * @param serviceDFCE
+    *           : Les services DFCE.
+    * @param forConsultion
+    *           : Paramètre pour récupérer le contenue des documents pour la
+    *           consultation.
+    * @return une occurrence de StorageDocument
+    * @throws StorageException
+    *            : Exception levée lorsque qu'un dysfonctionnement se produit.
+    * @throws IOException
+    *            : Exception levée lorsque qu'un dysfonctionnement se produit
+    *            lors des I/O.
+    */
+   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+   public static StorageDocument dfceDocumentFromRecycleBinToStorageDocument(
+         final Document document, final List<StorageMetadata> desiredMetaDatas,
+         final ServiceProvider serviceDFCE, boolean forConsultion)
+               throws StorageException, IOException {
+      // on construit la liste des métadonnées à partir de la liste des
+      // métadonnées souhaitées.
+      final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
+            document, desiredMetaDatas, serviceDFCE);
+      return buildStorageDocument(document, metaDatas, serviceDFCE,
+            forConsultion, true);
    }
 
    /**
@@ -218,7 +250,7 @@ public final class BeanMapper {
     */
    public static String[] findFileNameAndExtension(
          final StorageDocument storageDocument, final String shortCode)
-         throws ParseException {
+               throws ParseException {
       String value = null;
       for (StorageMetadata storageMetadata : Utils
             .nullSafeIterable(storageDocument.getMetadatas())) {
@@ -245,6 +277,8 @@ public final class BeanMapper {
     *           : Les services DFCE.
     * @param forConsultation
     *           : Paramtére pour charger le contenue du document.
+    * @param fromRecyclebin
+    *           : True si le document provient de la corbeille, false sinon
     * 
     * @throws IOException
     *            Exception levée lorsque qu'un dysfonctionnement se produit lors
@@ -252,14 +286,21 @@ public final class BeanMapper {
     */
    private static StorageDocument buildStorageDocument(final Document document,
          final List<StorageMetadata> listMetaData,
-         final ServiceProvider serviceDFCE, boolean forConsultation)
-         throws IOException {
+         final ServiceProvider serviceDFCE, boolean forConsultation,
+         boolean fromRecyclebin)
+               throws IOException {
       // Instance de StorageDocument
       final StorageDocument storageDocument = new StorageDocument();
       if (document != null) {
          if (forConsultation) {
-            final InputStream docContent = serviceDFCE.getStoreService()
-                  .getDocumentFile(document);
+            InputStream docContent = null;
+            if (fromRecyclebin) {
+               docContent = serviceDFCE.getRecycleBinService().getDocumentFile(
+                     document);
+            } else {
+               docContent = serviceDFCE.getStoreService().getDocumentFile(
+                     document);
+            }
             InputStreamSource source = new InputStreamSource(docContent);
             storageDocument.setContent(new DataHandler(source));
          }
@@ -292,7 +333,7 @@ public final class BeanMapper {
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
          final StorageDocument storageDocument, String[] file)
-         throws ParseException, MetadonneeInexistante {
+               throws ParseException, MetadonneeInexistante {
 
       Document document = createDocument(storageDocument.getMetadatas(),
             baseDFCE, file);
@@ -315,7 +356,7 @@ public final class BeanMapper {
     */
    public static Document virtualStorageDocumentToDfceDocument(
          final Base baseDFCE, final VirtualStorageDocument storageDocument)
-         throws ParseException, MetadonneeInexistante {
+               throws ParseException, MetadonneeInexistante {
 
       String[] file = { storageDocument.getReferenceFile().getName(),
             storageDocument.getReferenceFile().getExtension() };
@@ -365,7 +406,7 @@ public final class BeanMapper {
          } else if (technical.getShortCode()
                .equals(
                      StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
-                           .getShortCode())) {
+                     .getShortCode())) {
             document.setLifeCycleReferenceDate((Date) storageMetadata
                   .getValue());
 
@@ -456,8 +497,8 @@ public final class BeanMapper {
          // Coté Ged Nationale, nous n'en aurons qu'une seule
          metadataFound = new StorageMetadata(metadata.getShortCode(),
                serviceDFCE.getStorageAdministrationService()
-                     .getLifeCycleRule(document.getType()).getSteps().get(0)
-                     .getLength());
+               .getLifeCycleRule(document.getType()).getSteps().get(0)
+               .getLength());
       } else if (technical.getShortCode().equals(
             StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
@@ -531,7 +572,7 @@ public final class BeanMapper {
          FileReference fileReference) {
 
       StorageReferenceFile referenceFile = new StorageReferenceFile();
-      FileReference impl = (FileReference) fileReference;
+      FileReference impl = fileReference;
 
       referenceFile.setDigest(impl.getDigest());
       referenceFile.setDigestAlgorithm(impl.getDigestAlgorithm());
@@ -543,7 +584,7 @@ public final class BeanMapper {
       StorageContentRepository contentRepo = new StorageContentRepository();
       contentRepo.setName(impl.getContentRepository().getName());
       contentRepo
-            .setColumnFamily(impl.getContentRepository().getColumnFamily());
+      .setColumnFamily(impl.getContentRepository().getColumnFamily());
       contentRepo.setState(impl.getContentRepository().getState().getState());
       referenceFile.setContentRepository(contentRepo);
 
@@ -580,7 +621,7 @@ public final class BeanMapper {
       }
       impl.setContentRepository(contentRepo);
 
-      return (FileReference) impl;
+      return impl;
    }
 
    /**

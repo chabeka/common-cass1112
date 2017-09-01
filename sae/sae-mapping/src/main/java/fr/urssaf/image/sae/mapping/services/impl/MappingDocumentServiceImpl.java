@@ -44,8 +44,9 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    /**
     * {@inheritDoc}
     */
+   @Override
    @SuppressWarnings({ "PMD.AvoidInstantiatingObjectsInLoops",
-         "PMD.DataflowAnomalyAnalysis" })
+   "PMD.DataflowAnomalyAnalysis" })
    public StorageDocument saeDocumentToStorageDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException {
 
@@ -69,6 +70,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     * {@inheritDoc}
     * 
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public SAEDocument storageDocumentToSaeDocument(
          final StorageDocument storageDoc) throws InvalidSAETypeException,
@@ -99,6 +101,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     * {@inheritDoc}
     * 
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public UntypedDocument saeDocumentToUntypedDocument(final SAEDocument saeDoc)
          throws InvalidSAETypeException, MappingFromReferentialException {
@@ -125,6 +128,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     * {@inheritDoc}
     * 
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public SAEDocument untypedDocumentToSaeDocument(final UntypedDocument untyped)
          throws InvalidSAETypeException, MappingFromReferentialException {
@@ -139,6 +143,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     * {@inheritDoc}
     * 
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public UntypedDocument storageDocumentToUntypedDocument(
          final StorageDocument storage) throws InvalidSAETypeException,
@@ -213,7 +218,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
                   .getByLongCode(metadata.getLongCode());
             saeMetadatas.add(new SAEMetadata(reference.getLongCode(), reference
                   .getShortCode(), Utils.conversionToObject(
-                  metadata.getValue(), reference)));
+                        metadata.getValue(), reference)));
          } catch (ParseException parseExcept) {
             throw new InvalidSAETypeException(parseExcept);
          } catch (ReferentialException refExcpt) {
@@ -363,5 +368,15 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       } catch (ParseException e) {
          throw new InvalidSAETypeException(e);
       }
+   }
+
+   /**
+    * Setter pour referenceDAO
+    * 
+    * @param referenceDAO
+    *           the referenceDAO to set
+    */
+   public void setReferenceDAO(MetadataReferenceDAO referenceDAO) {
+      this.referenceDAO = referenceDAO;
    }
 }
