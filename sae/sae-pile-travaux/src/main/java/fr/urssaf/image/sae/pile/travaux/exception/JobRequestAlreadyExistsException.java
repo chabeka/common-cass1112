@@ -19,7 +19,7 @@ public class JobRequestAlreadyExistsException extends Exception {
    /**
     * Format du message de l'exception
     */
-   protected static final String EXCEPTION_MESSAGE = "Impossible de créer le traitement demandé car un traitement identique (n°{0}) existe déjà dans la pile des travaux.";
+   protected static final String EXCEPTION_MESSAGE = "Impossible de créer le traitement demandé car un traitement identique ({0}) existe déjà dans la pile des travaux.";
 
    /**
     * Identifiant du job

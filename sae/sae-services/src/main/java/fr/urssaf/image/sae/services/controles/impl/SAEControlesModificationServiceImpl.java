@@ -216,7 +216,7 @@ public class SAEControlesModificationServiceImpl implements
          RequiredArchivableMetadataEx, ReferentialRndException,
          UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
          MetadataValueNotInDictionaryEx {
-      String trcPrefix = "checkSaeMetadataForUpdate";
+      String trcPrefix = "checkSaeMetadataForTransfertMasse";
       LOG.debug("{} - début", trcPrefix);
 
       String listeCodeLong = null;
