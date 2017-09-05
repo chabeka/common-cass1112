@@ -194,10 +194,12 @@ public class SAESuppressionMasseServiceTest {
             .anyObject(ServiceProvider.class));
       
       EasyMock.expectLastCall().once();
-      
-      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
-            (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
-      
+
+      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+            EasyMock.anyObject(UUID.class),
+            (List<StorageMetadata>) EasyMock.anyObject(),
+            (List<StorageMetadata>) EasyMock.anyObject());
+
       EasyMock.expectLastCall().once();
       
       mockService.moveStorageDocumentToRecycleBin(EasyMock.anyObject(UUID.class));

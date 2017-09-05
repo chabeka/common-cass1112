@@ -66,7 +66,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
       "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationErreurFormatTest {
 
-   private static final String LOG_WARN = "Aucun document du sommaire ne sera intégré dans le SAE.";
+   private static final String LOG_WARN = "Aucun document du sommaire ne sera traité dans le SAE.";
 
    @Autowired
    private SAECaptureMasseService service;
@@ -171,7 +171,7 @@ public class IntegrationErreurFormatTest {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException {
+   InsertionServiceEx, IOException {
       initComposants();
       initDatas();
 
@@ -194,7 +194,7 @@ public class IntegrationErreurFormatTest {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
 
       // règlage provider
       provider.openConnexion();
@@ -239,7 +239,7 @@ public class IntegrationErreurFormatTest {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "51b17876ca3a54819b25873648d232ba6e4bf237";
+      String sha1Attendu = "17c8f8fc108ab47bb47f050d404c27d4f249f0dd";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -282,11 +282,11 @@ public class IntegrationErreurFormatTest {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("java.lang.Exception: Aucun document du sommaire ne sera intégré dans le SAE."));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("java.lang.Exception: Aucun document du sommaire ne sera traité dans le SAE."));
 
    }
 

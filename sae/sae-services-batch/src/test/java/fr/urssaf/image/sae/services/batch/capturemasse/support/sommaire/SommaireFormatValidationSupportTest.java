@@ -60,7 +60,7 @@ public class SommaireFormatValidationSupportTest {
 
    @Test
    public void testSommaireErrone() throws IOException,
-         CaptureMasseSommaireFormatValidationException {
+   CaptureMasseSommaireFormatValidationException {
 
       File ecdeDirectory = ecdeTestSommaire.getRepEcde();
       File sommaire = new File(ecdeDirectory, "sommaire.xml");
@@ -79,7 +79,7 @@ public class SommaireFormatValidationSupportTest {
       } catch (CaptureMasseSommaireFormatValidationException e) {
 
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Aucun document du sommaire ne sera intégré dans le SAE.",
+               "Aucun document du sommaire ne sera traité dans le SAE.",
                e.getMessage());
       }
 

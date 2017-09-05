@@ -83,7 +83,7 @@ public class Integration265Test {
 
    private EcdeTestSommaire ecdeTestSommaire;
 
-   private static final String LOG_WARN = "Aucun document du sommaire ne sera intégré dans le SAE.";
+   private static final String LOG_WARN = "Aucun document du sommaire ne sera traité dans le SAE.";
 
    private Logger logger;
 
@@ -172,7 +172,7 @@ public class Integration265Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
@@ -195,7 +195,7 @@ public class Integration265Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -216,7 +216,7 @@ public class Integration265Test {
       EasyMock.expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                  .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
@@ -244,7 +244,7 @@ public class Integration265Test {
             .exists());
 
       String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "51b17876ca3a54819b25873648d232ba6e4bf237";
+      String sha1Attendu = "17c8f8fc108ab47bb47f050d404c27d4f249f0dd";
 
       Assert.assertEquals(
             "le sha1 attendu et de résultat doivent etre identiques",
@@ -287,11 +287,11 @@ public class Integration265Test {
    private void checkTracabilite(UUID idTdm, URI urlSommaire) {
 
       traceAssertUtils
-            .verifieTraceCaptureMasseDansRegTechnique(
-                  idTdm,
-                  urlSommaire,
-                  Arrays
-                        .asList("java.lang.Exception: Aucun document du sommaire ne sera intégré dans le SAE."));
+      .verifieTraceCaptureMasseDansRegTechnique(
+            idTdm,
+            urlSommaire,
+            Arrays
+            .asList("java.lang.Exception: Aucun document du sommaire ne sera traité dans le SAE."));
 
    }
 
