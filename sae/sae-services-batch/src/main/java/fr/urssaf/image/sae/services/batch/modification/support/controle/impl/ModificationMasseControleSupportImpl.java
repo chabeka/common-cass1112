@@ -143,21 +143,4 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
 
    }
    
-   /**
-    * Retourne l'objet StorageMetadata de code passé en paramètre à partir 
-    * de la liste listMetadatas
-    * @param listMetadatas 
-    * @param shortCode 
-    * @return
-    */
-   private StorageMetadata getStorageMetadataByCode(List<StorageMetadata> listMetadatas, String shortCode){
-      StorageMetadata metaData = null;      
-      for (StorageMetadata storageMetadata : listMetadatas) {
-         if(shortCode.equals(storageMetadata.getShortCode())){
-            metaData = storageMetadata;
-         }
-      }
-      return metaData;
-   }
-
 }

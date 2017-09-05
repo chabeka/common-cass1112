@@ -10,6 +10,7 @@ import fr.urssaf.image.sae.metadata.rules.MetadataIsConsultableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataIsModifiableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataIsSearchableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataValueIsRequiredRule;
+import fr.urssaf.image.sae.metadata.rules.UntypedMetadataIsRequiredRule;
 import fr.urssaf.image.sae.metadata.rules.UntypedMetadataValueLengthRule;
 import fr.urssaf.image.sae.metadata.rules.UntypedMetadataValueTypeRule;
 
@@ -38,6 +39,9 @@ public class MetadataRuleFactory {
 
    @Autowired
    private UntypedMetadataValueLengthRule valueLengthRule;
+
+   @Autowired
+   private UntypedMetadataIsRequiredRule requiredValueTypeRule;
 
    /**
     * @return Une instance de la règle {@link MetadataExistingRule}
@@ -176,6 +180,26 @@ public class MetadataRuleFactory {
     */
    public final void setModifiableRule(MetadataIsModifiableRule modifiableRule) {
       this.modifiableRule = modifiableRule;
+   }
+
+   /**
+    * Getter pour requiredValueTypeRule
+    * 
+    * @return the requiredValueTypeRule
+    */
+   public UntypedMetadataIsRequiredRule getRequiredValueTypeRule() {
+      return requiredValueTypeRule;
+   }
+
+   /**
+    * Setter pour requiredValueTypeRule
+    * 
+    * @param requiredValueTypeRule
+    *           the requiredValueTypeRule to set
+    */
+   public void setRequiredValueTypeRule(
+         UntypedMetadataIsRequiredRule requiredValueTypeRule) {
+      this.requiredValueTypeRule = requiredValueTypeRule;
    }
 
 }
