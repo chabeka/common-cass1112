@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -28,7 +29,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class InterruptionTraitementMasseSupportImpl implements
-      InterruptionTraitementMasseSupport {
+InterruptionTraitementMasseSupport {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(InterruptionTraitementMasseSupportImpl.class);
@@ -94,7 +95,7 @@ public class InterruptionTraitementMasseSupportImpl implements
    @Override
    public final void interruption(final DateTime currentDate,
          InterruptionTraitementConfig config)
-         throws InterruptionTraitementException {
+               throws InterruptionTraitementException {
 
       final long diffTime = InterruptionTraitementUtils.waitTime(currentDate,
             config);
@@ -165,7 +166,8 @@ public class InterruptionTraitementMasseSupportImpl implements
             dfceManager.getConnection(Boolean.TRUE);
 
             // Reconnexion pour la couche storage
-            serviceProvider.openConnexion();
+            ((StorageServiceProviderImpl) serviceProvider)
+            .getDfceServicesManager().openConnection();
 
             // réussite de la connexion à DFCE
 

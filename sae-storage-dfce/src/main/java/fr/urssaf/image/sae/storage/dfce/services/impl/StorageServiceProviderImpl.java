@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
@@ -16,8 +16,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @Service("storageServiceProvider")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public class StorageServiceProviderImpl extends AbstractServiceProvider
-      implements StorageServiceProvider {
-   
+implements StorageServiceProvider {
+
    @Autowired
    @Qualifier("storageDocumentService")
    @SuppressWarnings("PMD.LongVariable")
@@ -27,6 +27,7 @@ public class StorageServiceProviderImpl extends AbstractServiceProvider
     * @return Les services d'insertion ,de recherche, de suppression,de
     *         récupération
     */
+   @Override
    public final StorageDocumentService getStorageDocumentService() {
       return storageDocumentService;
    }
@@ -46,18 +47,27 @@ public class StorageServiceProviderImpl extends AbstractServiceProvider
    /**
     * {@inheritDoc}
     */
-   public final void openConnexion() throws ConnectionServiceEx {
-      getDfceServicesManager().getConnection();
-      storageDocumentService
-            .setStorageDocumentServiceParameter(getDfceServicesManager()
-                  .getDFCEService());
+   @Override
+   public final void openConnexion() {
+      if (!getDfceServicesManager().isActive()) {
+         getDfceServicesManager().openConnection();
+      }
    }
 
    /**
     * {@inheritDoc}
     */
+   @Override
    public final void closeConnexion() {
       getDfceServicesManager().closeConnection();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public DFCEServicesManager getDfceServicesManager() {
+      return dfceServicesManager;
    }
 
 }

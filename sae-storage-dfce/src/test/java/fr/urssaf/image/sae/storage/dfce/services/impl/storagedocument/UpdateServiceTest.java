@@ -122,8 +122,6 @@ public class UpdateServiceTest {
          InsertionServiceEx, ConnectionServiceEx, UpdateServiceEx,
          SearchingServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
-      commonsServices.getInsertionService().setInsertionServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
                   new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));

@@ -45,15 +45,6 @@ public interface DeletionService {
    void rollBack(final String processId) throws DeletionServiceEx;
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link DeletionService}
-    */
-   <T> void setDeletionServiceParameter(T parameter);
-
-   /**
     * Réalise suppresion d'un StorageDocument, suite à un transfert,
     * à partir du critère UUID.
     * 

@@ -185,8 +185,6 @@ public class SAENoteServiceImplTest {
       typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-
-      provider.openConnexion();
    }
 
    @After

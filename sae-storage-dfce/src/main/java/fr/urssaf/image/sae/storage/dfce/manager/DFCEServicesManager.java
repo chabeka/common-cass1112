@@ -1,8 +1,8 @@
 package fr.urssaf.image.sae.storage.dfce.manager;
 
+import net.docubase.toolkit.service.ServiceProvider;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
-import net.docubase.toolkit.service.ServiceProvider;
 
 /**
  * Permet de fabriquer et détruire les services DFCE.
@@ -14,8 +14,8 @@ public interface DFCEServicesManager {
     * 
     */
    ServiceProvider getDFCEService();
-   
-   
+
+
    /**
     * 
     * @return Object pramarètres de connection à DFCE
@@ -61,4 +61,10 @@ public interface DFCEServicesManager {
     * Ferme la connexion des services DFCE.
     */
    void closeConnection();
+
+   /**
+    * 
+    * Methode permettant d'ouvrir une connexion à DFCe
+    */
+   void openConnection();
 }

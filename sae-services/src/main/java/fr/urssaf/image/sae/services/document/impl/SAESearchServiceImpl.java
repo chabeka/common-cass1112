@@ -426,8 +426,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                .buildStorageLuceneCriteria(luceneQuery, maxResult,
                      listeDesiredMetadata);
 
-         getStorageServiceProvider().openConnexion();
-
          StorageDocuments storageDocuments = getStorageServiceProvider()
                .getStorageDocumentService()
                .searchStorageDocumentByLuceneCriteria(luceneCriteria);
@@ -928,8 +926,6 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
                      nbDocumentsParPage, listeDesiredMetadata, abstractFilter,
                      lastIdDoc, codeCourtVaryingMeta);
-
-         getStorageServiceProvider().openConnexion();
 
          paginatedStorageDocuments = getStorageServiceProvider()
                .getStorageDocumentService().searchPaginatedStorageDocuments(

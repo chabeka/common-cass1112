@@ -116,6 +116,7 @@
    </bean>
    <bean id="transfertServiceProviderSupport" autowire-candidate="false" 
       class="fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport">
+     <constructor-arg ref="dfceConnectionTransfert" />
      <constructor-arg ref="transfertDFCEConnectionService" />
    </bean>
    

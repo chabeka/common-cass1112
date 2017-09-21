@@ -50,6 +50,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseReferen
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListCaptureMasseReferenceFile;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListVirtualReferenceFile;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -64,7 +65,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class PersistanceDocumentsVirtuelsStepTest {
 
    @Autowired
@@ -187,10 +188,10 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
             new ExitStatus("FAILED_NO_ROLLBACK").getExitCode(), execution
-                  .getExitStatus().getExitCode());
+            .getExitStatus().getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
             exceptions.size());
@@ -232,10 +233,10 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
-                  .getExitCode());
+            .getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
             exceptions.size());
@@ -277,10 +278,10 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
-                  .getExitCode());
+            .getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
             exceptions.size());
@@ -292,7 +293,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
    @Test
    @DirtiesContext
    public void testWriterError() throws IOException, ConnectionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
       initStorageFailed();
       initConnection();
 
@@ -351,10 +352,10 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
-                  .getExitCode());
+            .getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
             exceptions.size());
@@ -366,7 +367,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
    @Test
    @DirtiesContext
    public void testSuccess() throws IOException, ConnectionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
       initStorageSuccess();
       initConnection();
 
@@ -425,10 +426,10 @@ public class PersistanceDocumentsVirtuelsStepTest {
 
       Assert.assertEquals("le status de sortie doit etre à COMPLETED",
             ExitStatus.COMPLETED.getExitCode(), execution.getExitStatus()
-                  .getExitCode());
+            .getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il ne doit pas y avoir d'erreur dans la liste", 0,
             exceptions.size());
@@ -438,7 +439,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
    }
 
    private void initConnectionError() throws ConnectionServiceEx {
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+      .openConnection();
       EasyMock.expectLastCall().andThrow(new ConnectionServiceEx()).once();
 
       provider.closeConnexion();
@@ -449,7 +451,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
    }
 
    private void initConnection() throws ConnectionServiceEx {
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -465,7 +468,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       EasyMock.expect(
             documentService.insertVirtualStorageDocument(EasyMock
                   .anyObject(VirtualStorageDocument.class))).andThrow(
-            new InsertionServiceEx());
+                        new InsertionServiceEx());
 
       EasyMock.replay(documentService);
 
@@ -477,7 +480,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       EasyMock.expect(
             documentService.insertVirtualStorageDocument(EasyMock
                   .anyObject(VirtualStorageDocument.class))).andReturn(
-            UUID.randomUUID());
+                        UUID.randomUUID());
 
       EasyMock.replay(documentService);
 

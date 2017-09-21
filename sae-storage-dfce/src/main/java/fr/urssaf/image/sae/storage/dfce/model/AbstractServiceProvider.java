@@ -15,25 +15,9 @@ import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
  * </ul>
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-public abstract class AbstractServiceProvider extends AbstractServices {
-	@SuppressWarnings("PMD.LongVariable")
-	@Autowired
-	@Qualifier("dfceServicesManager")
-	private DFCEServicesManager dfceServicesManager;
-	/**
-	 * 
-	 * @param dfceServices
-	 *            : Les services DFCE
-	 */
-	public final void setDfceServicesManager(final DFCEServicesManager dfceServices) {
-		this.dfceServicesManager = dfceServices;
-	}
-
-	/**
-	 * 
-	 * @return Les services DFCE
-	 */
-	public final DFCEServicesManager getDfceServicesManager() {
-		return dfceServicesManager;
-	}
+public abstract class AbstractServiceProvider extends AbstractStorageServices {
+   @SuppressWarnings("PMD.LongVariable")
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   protected DFCEServicesManager dfceServicesManager;
 }

@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
-import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
@@ -33,13 +30,6 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DocumentAttachmentServiceImpl.class);
-
-   /**
-    * Service utilitaire de mutualisation du code des implémentations des
-    * services DFCE
-    */
-   @Autowired
-   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    @Autowired
    private TracesDfceSupport tracesSupport;
@@ -79,13 +69,6 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
       return storageDocumentServiceSupport.getDocumentAttachment(
             getDfceService(), getCnxParameters(), docUuid, LOGGER);
 
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   public final <T> void setDocumentAttachmentServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
    }
 
 }

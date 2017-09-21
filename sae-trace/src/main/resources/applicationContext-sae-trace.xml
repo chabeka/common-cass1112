@@ -8,20 +8,10 @@
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <context:component-scan base-package="fr.urssaf.image.sae.trace" />
-
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
+   <context:component-scan base-package="fr.urssaf.image.commons.dfce" />
    
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
-   <import resource="classpath*:/applicationContext-sae-commons.xml" />
+   <import resource="classpath*:/applicationContext-sae-commons.xml" />  
    
    <!-- Fichiers nécessaires pour la compatibilité des formats des fichiers -->
    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" >

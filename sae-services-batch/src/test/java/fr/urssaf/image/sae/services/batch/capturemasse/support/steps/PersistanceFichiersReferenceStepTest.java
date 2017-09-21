@@ -40,6 +40,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListCaptureMasseReferenceFile;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -54,7 +55,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
       "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class PersistanceFichiersReferenceStepTest {
 
    @Autowired
@@ -145,7 +146,7 @@ public class PersistanceFichiersReferenceStepTest {
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context
-            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, context);
 
@@ -156,7 +157,7 @@ public class PersistanceFichiersReferenceStepTest {
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
+      .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
             1, (exceptions.size()));
@@ -167,7 +168,7 @@ public class PersistanceFichiersReferenceStepTest {
 
    @Test
    public void testProcessorReturnError() throws IOException,
-         ConnectionServiceEx {
+   ConnectionServiceEx {
 
       initReader();
 
@@ -200,7 +201,7 @@ public class PersistanceFichiersReferenceStepTest {
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
+      .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
             1, (exceptions.size()));
@@ -242,13 +243,13 @@ public class PersistanceFichiersReferenceStepTest {
 
       Assert.assertEquals("le status de sortie doit etre correct",
             new ExitStatus("FAILED_NO_ROLLBACK").getExitCode(), execution
-                  .getExitStatus().getExitCode());
+            .getExitStatus().getExitCode());
 
       ExecutionContext context = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
+      .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
             1, (exceptions.size()));
@@ -259,7 +260,7 @@ public class PersistanceFichiersReferenceStepTest {
 
    @Test
    public void testCloseConnectionError() throws IOException,
-         ConnectionServiceEx, InsertionServiceEx {
+   ConnectionServiceEx, InsertionServiceEx {
 
       initCloseConnectionError();
 
@@ -286,7 +287,7 @@ public class PersistanceFichiersReferenceStepTest {
       ExecutionContext context = new ExecutionContext();
 
       context
-            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
       context.put(Constantes.CODE_EXCEPTION,
             new ConcurrentLinkedQueue<String>());
@@ -302,13 +303,13 @@ public class PersistanceFichiersReferenceStepTest {
 
       Assert.assertEquals("le status de sortie doit etre correct",
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
-                  .getExitCode());
+            .getExitCode());
 
       ExecutionContext execContext = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execContext
-            .get(Constantes.DOC_EXCEPTION);
+      .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
             1, (exceptions.size()));
@@ -319,7 +320,7 @@ public class PersistanceFichiersReferenceStepTest {
 
    @Test
    public void testWriteError() throws IOException, ConnectionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
 
       initWriterError();
 
@@ -338,7 +339,7 @@ public class PersistanceFichiersReferenceStepTest {
       ExecutionContext context = new ExecutionContext();
 
       context
-            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
       context.put(Constantes.CODE_EXCEPTION,
             new ConcurrentLinkedQueue<String>());
@@ -359,7 +360,7 @@ public class PersistanceFichiersReferenceStepTest {
 
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-            .get(Constantes.DOC_EXCEPTION);
+      .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
             1, (exceptions.size()));
@@ -370,7 +371,7 @@ public class PersistanceFichiersReferenceStepTest {
 
    @Test
    public void testWriteSuccess() throws IOException, ConnectionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
 
       initSuccess();
 
@@ -397,7 +398,7 @@ public class PersistanceFichiersReferenceStepTest {
       ExecutionContext context = new ExecutionContext();
 
       context
-            .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
+      .put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde().toString());
       context.put(Constantes.SOMMAIRE_FILE, sommaire.getAbsolutePath());
       context.put(Constantes.CODE_EXCEPTION,
             new ConcurrentLinkedQueue<String>());
@@ -426,7 +427,8 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initReader() throws ConnectionServiceEx {
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -436,8 +438,9 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initWriterError() throws ConnectionServiceEx,
-         InsertionServiceEx {
-      provider.openConnexion();
+   InsertionServiceEx {
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -448,7 +451,7 @@ public class PersistanceFichiersReferenceStepTest {
       EasyMock.expect(
             documentService.insertStorageReference(EasyMock
                   .anyObject(VirtualStorageReference.class))).andThrow(
-            new InsertionServiceEx()).once();
+                        new InsertionServiceEx()).once();
 
       EasyMock.replay(provider, documentService);
 
@@ -459,7 +462,8 @@ public class PersistanceFichiersReferenceStepTest {
       StorageReferenceFile ref = new StorageReferenceFile();
       ref.setUuid(UUID.randomUUID());
 
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -476,7 +480,8 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initConnectionError() throws ConnectionServiceEx {
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().andThrow(new ConnectionServiceEx()).once();
 
       provider.closeConnexion();
@@ -486,12 +491,13 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initCloseConnectionError() throws ConnectionServiceEx,
-         InsertionServiceEx {
+   InsertionServiceEx {
 
       StorageReferenceFile ref = new StorageReferenceFile();
       ref.setUuid(UUID.randomUUID());
 
-      provider.openConnexion();
+      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
+            .openConnection();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();

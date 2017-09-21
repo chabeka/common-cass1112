@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
-import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
@@ -38,9 +36,6 @@ RecycleBinService {
 
    @Autowired
    private TracesDfceSupport tracesSupport;
-
-   @Autowired
-   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    /**
     * {@inheritDoc}
@@ -91,11 +86,8 @@ RecycleBinService {
             getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
             LOGGER, tracesSupport);
 
-      StorageDocument storageDocument = BeanMapper
-            .dfceDocumentFromRecycleBinToStorageDocument(doc,
+      return storageDocumentServiceSupport.getStorageDocument(doc,
             uuidCriteria.getDesiredStorageMetadatas(), getDfceService(), false);
-
-      return storageDocument;
    }
 
    /**
@@ -111,20 +103,9 @@ RecycleBinService {
             getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
             LOGGER, tracesSupport);
 
-      StorageDocument storageDocument = BeanMapper
-            .dfceDocumentFromRecycleBinToStorageDocument(doc,
-                  uuidCriteria.getDesiredStorageMetadatas(), getDfceService(),
-                  forConsultion);
-
-      return storageDocument;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public <T> void setRecycleBinServiceParameter(T parameter) {
-      setDfceService((ServiceProvider) parameter);
+      return storageDocumentServiceSupport.getStorageDocument(doc,
+            uuidCriteria.getDesiredStorageMetadatas(), getDfceService(),
+            forConsultion);
    }
 
    /**

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,9 +85,6 @@ public class SuppressionMasseProcessorTest {
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andThrow(new QueryParseServiceEx("La syntaxe de la requête est bizarroide")).once();
 
-      mockService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
-
       EasyMock.expectLastCall().once();
 
       EasyMock.replay(mockService);
@@ -138,9 +133,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      mockService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall().once();
 
@@ -207,9 +199,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      mockService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall().once();
 
@@ -288,9 +277,6 @@ public class SuppressionMasseProcessorTest {
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
 
-      mockService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
-
       EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
@@ -362,9 +348,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      mockService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall().once();
 

@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
+import java.io.IOException;
+
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.PaginatedStorageDocuments;
@@ -74,15 +76,6 @@ public interface SearchingService {
          throws SearchingServiceEx;
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link SearchingService}
-    */
-   <T> void setSearchingServiceParameter(T parameter);
-
-   /**
     * Permet de faire une recherche paginée.
     * 
     * @param paginatedLuceneCriteria
@@ -95,8 +88,8 @@ public interface SearchingService {
     */
    PaginatedStorageDocuments searchPaginatedStorageDocuments(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
-         throws SearchingServiceEx, QueryParseServiceEx;
-   
+               throws SearchingServiceEx, QueryParseServiceEx;
+
    /**
     * Permet de faire une recherche paginée dans la corbeille.
     * 
@@ -110,5 +103,19 @@ public interface SearchingService {
     */
    PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
-         throws SearchingServiceEx, QueryParseServiceEx;
+               throws SearchingServiceEx, QueryParseServiceEx;
+
+   /**
+    * Permet de récupérer le contenu d'un document par UUID.
+    * 
+    * @param uuidCriteria
+    *           : L'UUID du document à rechercher
+    * 
+    * @throws IOException
+    *            @{@link IOException}
+    * 
+    * @return Le contenu du document recherché.
+    */
+   byte[] searchStorageDocumentContentByUUIDCriteria(UUIDCriteria uUIDCriteria)
+         throws IOException;
 }

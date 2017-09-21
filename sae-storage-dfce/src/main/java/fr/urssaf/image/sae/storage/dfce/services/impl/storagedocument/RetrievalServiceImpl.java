@@ -1,13 +1,8 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.service.ServiceProvider;
-
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +29,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 @Service
 @Qualifier("retrievalService")
 public class RetrievalServiceImpl extends AbstractServices implements
-      RetrievalService {
+RetrievalService {
    private static final Logger LOG = LoggerFactory
          .getLogger(RetrievalServiceImpl.class);
    @Autowired
@@ -44,6 +39,7 @@ public class RetrievalServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final StorageDocument retrieveStorageDocumentByUUID(
@@ -55,7 +51,6 @@ public class RetrievalServiceImpl extends AbstractServices implements
          LOG.debug("{} - UUIDCriteria du document à consulter: {}", prefixeTrc,
                uUIDCriteria.toString());
          // Fin des traces debug - entrée méthode
-         searchingService.setSearchingServiceParameter(getDfceService());
          StorageDocument storageDoc = searchingService
                .searchStorageDocumentByUUIDCriteria(uUIDCriteria);
          if (storageDoc == null) {
@@ -66,7 +61,7 @@ public class RetrievalServiceImpl extends AbstractServices implements
             LOG.debug("{} - Le document a été trouvé dans le stockage",
                   prefixeTrc);
          }
-         
+
          LOG.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
 
@@ -83,16 +78,14 @@ public class RetrievalServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final byte[] retrieveStorageDocumentContentByUUID(
          final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       try {
-         final Document docDfce = getDfceService().getSearchService()
-               .getDocumentByUUID(getBaseDFCE(), uUIDCriteria.getUuid());
-         final InputStream docContent = getDfceService().getStoreService()
-               .getDocumentFile(docDfce);
-         return IOUtils.toByteArray(docContent);
+         return searchingService
+               .searchStorageDocumentContentByUUIDCriteria(uUIDCriteria);
       } catch (IOException except) {
          throw new RetrievalServiceEx(StorageMessageHandler
                .getMessage(Constants.RTR_CODE_ERROR), except.getMessage(),
@@ -107,12 +100,12 @@ public class RetrievalServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final List<StorageMetadata> retrieveStorageDocumentMetaDatasByUUID(
          final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       try {
-         searchingService.setSearchingServiceParameter(getDfceService());
          return searchingService.searchMetaDatasByUUIDCriteria(uUIDCriteria)
                .getMetadatas();
       } catch (SearchingServiceEx srcSerEx) {
@@ -137,13 +130,6 @@ public class RetrievalServiceImpl extends AbstractServices implements
     */
    public final SearchingService getSearchingService() {
       return searchingService;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   public final <T> void setRetrievalServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
    }
 
 }

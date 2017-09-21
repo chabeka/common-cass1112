@@ -6,10 +6,13 @@ import net.docubase.toolkit.service.ged.RecordManagerService;
 import net.docubase.toolkit.service.ged.SearchService;
 import net.docubase.toolkit.service.ged.StoreService;
 
+import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
+import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
 
 /**
  * Support pour la gestion de la connexion à DFCE
@@ -19,18 +22,37 @@ import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
 @Component
 public class ServiceProviderSupport {
 
-   private ServiceProvider serviceProvider;
+   /**
+    * Provider de connexion du service DFCe
+    */
+   @Autowired
+   private ConnexionServiceProvider connexionServiceProvider;
 
+   /**
+    * Paramètres de connection
+    */
+   private final DFCEConnection dfceConnection;
+
+   /**
+    * DFCe connection service
+    */
    private final DFCEConnectionService dfceConnectionService;
 
    /**
+    * Construteur
     * 
     * @param dfceConnectionService
     *           service de connexion à DFCE
     */
    @Autowired
-   public ServiceProviderSupport(DFCEConnectionService dfceConnectionService) {
+   public ServiceProviderSupport(DFCEConnection dfceConnection,
+         DFCEConnectionService dfceConnectionService) {
 
+      Validate.notNull(dfceConnection, "'dfceConnection' is required");
+      Validate.notNull(dfceConnectionService,
+            "'dfceConnectionService' is required");
+
+      this.dfceConnection = dfceConnection;
       this.dfceConnectionService = dfceConnectionService;
    }
 
@@ -38,8 +60,15 @@ public class ServiceProviderSupport {
     * connexion à DFCE
     */
    public final void connect() {
-      serviceProvider = dfceConnectionService.openConnection();
-
+      ServiceProvider serviceProvider = connexionServiceProvider
+            .getServiceProviderByConnectionParams(dfceConnection);
+      if (serviceProvider == null
+            || (serviceProvider != null && !serviceProvider.isSessionActive())) {
+         connexionServiceProvider.removeServiceProvider(dfceConnection);
+         serviceProvider = dfceConnectionService.openConnection();
+         connexionServiceProvider.addServiceProvider(dfceConnection,
+               serviceProvider);
+      }
    }
 
    /**
@@ -49,8 +78,12 @@ public class ServiceProviderSupport {
 
       // Test du null
       // Dans le cas par exemple où la connexion à DFCE n'a pas pu être établie
-      if (serviceProvider != null) {
-         serviceProvider.disconnect();
+      if (connexionServiceProvider != null) {
+         ServiceProvider dfceService = connexionServiceProvider
+               .getServiceProviderByConnectionParams(dfceConnection);
+         if (dfceService != null) {
+            dfceService.disconnect();
+         }
       }
 
    }
@@ -60,7 +93,8 @@ public class ServiceProviderSupport {
     */
    public final RecordManagerService getRecordManagerService() {
 
-      return serviceProvider.getRecordManagerService();
+      return connexionServiceProvider.getServiceProviderByConnectionParams(
+            dfceConnection).getRecordManagerService();
    }
 
    /**
@@ -69,7 +103,8 @@ public class ServiceProviderSupport {
     * @return le {@link ArchiveService}
     */
    public final ArchiveService getArchiveService() {
-      return serviceProvider.getArchiveService();
+      return connexionServiceProvider.getServiceProviderByConnectionParams(
+            dfceConnection).getArchiveService();
    }
 
    /**
@@ -78,7 +113,8 @@ public class ServiceProviderSupport {
     * @return le {@link SearchService}
     */
    public final SearchService getSearchService() {
-      return serviceProvider.getSearchService();
+      return connexionServiceProvider.getServiceProviderByConnectionParams(
+            dfceConnection).getSearchService();
    }
 
    /**
@@ -87,6 +123,27 @@ public class ServiceProviderSupport {
     * @return le {@link StoreService}
     */
    public final StoreService getStoreService() {
-      return serviceProvider.getStoreService();
+      return connexionServiceProvider.getServiceProviderByConnectionParams(
+            dfceConnection).getStoreService();
+   }
+
+   /**
+    * Getter pour connexionServiceProvider
+    * 
+    * @return the connexionServiceProvider
+    */
+   public ConnexionServiceProvider getConnexionServiceProvider() {
+      return connexionServiceProvider;
+   }
+
+   /**
+    * Setter pour connexionServiceProvider
+    * 
+    * @param connexionServiceProvider
+    *           the connexionServiceProvider to set
+    */
+   public void setConnexionServiceProvider(
+         ConnexionServiceProvider connexionServiceProvider) {
+      this.connexionServiceProvider = connexionServiceProvider;
    }
 }

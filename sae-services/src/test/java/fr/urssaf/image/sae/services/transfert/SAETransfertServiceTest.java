@@ -151,8 +151,6 @@ public class SAETransfertServiceTest {
    public void init() throws Exception {
 
       server.resetData();
-      provider.openConnexion();
-      transfertService.openConnexion();
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
@@ -307,11 +305,6 @@ public class SAETransfertServiceTest {
       listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", "7.4.1.2.4"));
 
       try {
-         // -- Ouverture des connections DFCE
-         storageServiceProvider.openConnexion();
-         storageTransfertService.openConnexion();
-         traceServiceSupport.connect();
-
          saeTransfertService.controleDroitTransfert(idArchive);
 
          StorageDocument document = saeTransfertService

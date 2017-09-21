@@ -67,15 +67,6 @@ public interface RecycleBinService {
    void deleteStorageDocumentFromRecycleBin(final UUID uuid) throws RecycleBinServiceEx;
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link RecycleBinService}
-    */
-   <T> void setRecycleBinServiceParameter(T parameter);
-
-   /**
     * Permet de récupérer un StorageDocument de la corbeille à partir du critère « UUIDCriteria
     * * ».
     * @param uuidCriteria

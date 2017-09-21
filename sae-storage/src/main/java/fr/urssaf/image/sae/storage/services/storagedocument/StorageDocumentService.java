@@ -202,15 +202,6 @@ public interface StorageDocumentService {
    void rollBack(final String processId) throws DeletionServiceEx;
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link StorageDocumentService}
-    */
-   <T> void setStorageDocumentServiceParameter(T parameter);
-
-   /**
     * Insère le fichier de référence pour des documents virtuels virtuels
     * 
     * @param reference

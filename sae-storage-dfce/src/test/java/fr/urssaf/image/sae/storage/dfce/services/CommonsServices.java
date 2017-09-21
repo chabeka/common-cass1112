@@ -203,18 +203,6 @@ public class CommonsServices {
     */
    public final void initServicesParameters() throws ConnectionServiceEx {
       getDfceServicesManager().getConnection();
-      getInsertionService().setInsertionServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getRetrievalService().setRetrievalServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getDeletionService().setDeletionServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getSearchingService().setSearchingServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getUpdateService().setUpdateServiceParameter(
-            getDfceServicesManager().getDFCEService());
-      getRecycleBinService().setRecycleBinServiceParameter(
-            getDfceServicesManager().getDFCEService());
    }
 
    /**

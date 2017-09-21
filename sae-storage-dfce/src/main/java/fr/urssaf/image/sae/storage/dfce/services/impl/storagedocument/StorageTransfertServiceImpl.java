@@ -10,12 +10,11 @@ import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractStorageServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
@@ -33,7 +32,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertServ
 /**
  * {@inheritDoc}
  */
-public class StorageTransfertServiceImpl implements StorageTransfertService {
+public class StorageTransfertServiceImpl extends AbstractStorageServices
+implements StorageTransfertService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageTransfertServiceImpl.class);
@@ -42,7 +42,7 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * On injecte DFCEServicesManager mannuellement(xml) paramétré avec la
     * connexion DFCE de transfert pour éviter les conflits avec celle existante.
     */
-   private DFCEServicesManager dfceServiceManager;
+   private DFCEServicesManager dfceServicesManager;
 
    /**
     * On injecte DocumentsTypeList mannuellement(xml) paramétré avec la
@@ -51,9 +51,6 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
    private DocumentsTypeList typeList;
 
    private TracesDfceSupport tracesSupport;
-
-   @Autowired
-   private StorageDocumentServiceSupport storageServiceSupport;
 
    /**
     * Constructeur
@@ -70,7 +67,7 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
 
       this.typeList = typeList;
       this.tracesSupport = tracesSupport;
-      this.dfceServiceManager = dfceSercivesMgr;
+      this.dfceServicesManager = dfceSercivesMgr;
    }
 
    /**
@@ -78,12 +75,13 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * @throws InsertionIdGedExistantEx 
     */
    @Override
-   public final StorageDocument insertBinaryStorageDocument(
+   public StorageDocument insertBinaryStorageDocument(
          StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
-      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
-      return storageServiceSupport.insertBinaryStorageDocument(dfceService,
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServicesManager.getCnxParameters();
+      return storageDocumentServiceSupport.insertBinaryStorageDocument(
+            dfceService,
             cnxParams, typeList, storageDocument, LOGGER, tracesSupport);
    }
 
@@ -91,12 +89,12 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public final StorageDocument searchStorageDocumentByUUIDCriteria(
+   public StorageDocument searchStorageDocumentByUUIDCriteria(
          UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
 
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
-      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
-      return storageServiceSupport.searchStorageDocumentByUUIDCriteria(
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServicesManager.getCnxParameters();
+      return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
             dfceService, cnxParams, uUIDCriteria, LOGGER);
    }
 
@@ -104,13 +102,14 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public final void deleteStorageDocument(UUID uuid) throws DeletionServiceEx {
+   public void deleteStorageDocument(UUID uuid) throws DeletionServiceEx {
 
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
-      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServicesManager.getCnxParameters();
 
       // -- Suppression du ducument
-      storageServiceSupport.deleteStorageDocument(dfceService, cnxParams, uuid,
+      storageDocumentServiceSupport.deleteStorageDocument(dfceService,
+            cnxParams, uuid,
             LOGGER, tracesSupport);
    }
 
@@ -121,9 +120,10 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
    public void addDocumentNote(UUID docUuid, String contenu, String login,
          Date dateCreation, UUID noteUuid) throws DocumentNoteServiceEx {
 
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
 
-      storageServiceSupport.addDocumentNote(dfceService, docUuid, contenu,
+      storageDocumentServiceSupport.addDocumentNote(dfceService, docUuid,
+            contenu,
             login, dateCreation, noteUuid, LOGGER);
 
    }
@@ -133,9 +133,10 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     */
    @Override
    public List<StorageDocumentNote> getDocumentNotes(UUID docUuid) {
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
 
-      return storageServiceSupport.getDocumentNotes(dfceService, docUuid,
+      return storageDocumentServiceSupport.getDocumentNotes(dfceService,
+            docUuid,
             LOGGER);
 
    }
@@ -145,7 +146,7 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     */
    @Override
    public final void openConnexion() throws ConnectionServiceEx {
-      dfceServiceManager.getConnection();
+      dfceServicesManager.openConnection();
    }
 
    /**
@@ -153,17 +154,18 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
     */
    @Override
    public final void closeConnexion() {
-      dfceServiceManager.closeConnection();
+      dfceServicesManager.closeConnection();
    }
 
    @Override
    public void addDocumentAttachment(UUID docUuid, String docName,
          String extension, DataHandler contenu)
-         throws StorageDocAttachmentServiceEx {
+               throws StorageDocAttachmentServiceEx {
 
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
-      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
-      storageServiceSupport.addDocumentAttachment(dfceService, cnxParams,
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServicesManager.getCnxParameters();
+      storageDocumentServiceSupport.addDocumentAttachment(dfceService,
+            cnxParams,
             docUuid, docName, extension, contenu, LOGGER, tracesSupport);
 
    }
@@ -171,10 +173,18 @@ public class StorageTransfertServiceImpl implements StorageTransfertService {
    @Override
    public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
          throws StorageDocAttachmentServiceEx {
-      ServiceProvider dfceService = dfceServiceManager.getDFCEService();
-      DFCEConnection cnxParams = dfceServiceManager.getCnxParameters();
-      return storageServiceSupport.getDocumentAttachment(dfceService,
+      ServiceProvider dfceService = dfceServicesManager.getDFCEService();
+      DFCEConnection cnxParams = dfceServicesManager.getCnxParameters();
+      return storageDocumentServiceSupport.getDocumentAttachment(dfceService,
             cnxParams, docUuid, LOGGER);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final DFCEServicesManager getDfceServicesManager() {
+      return dfceServicesManager;
    }
 
 }

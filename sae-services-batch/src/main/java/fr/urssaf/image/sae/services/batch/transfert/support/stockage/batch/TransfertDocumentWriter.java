@@ -36,7 +36,7 @@ import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
  */
 @Component
 public class TransfertDocumentWriter extends AbstractDocumentWriterListener
-      implements ItemWriter<StorageDocument> {
+implements ItemWriter<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TransfertDocumentWriter.class);
@@ -77,7 +77,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-   
+
    private static volatile Integer index = 0;
 
    /**
@@ -122,7 +122,7 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
       } catch (Throwable except) {
          throw new TransfertException(
                "Erreur transfert - identifiant archivage " + document.getUuid()
-                     + " : " + except.getMessage(), except);
+               + " : " + except.getMessage(), except);
       }
       return document;
    }
@@ -141,15 +141,15 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
 
       try {
          // Récuperer l'id du traitement en cours
-         String idJob = (String) getStepExecution().getJobParameters()
+         String idJob = getStepExecution().getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);
-         
+
          UUID uuidJob = null;
          if(StringUtils.isNotEmpty(idJob)){
             // conversion
             uuidJob = UUID.fromString(idJob);
          }
-         
+
          suppressionService.moveToRecycleBeanStorageDocument(uuidJob, document);
       } catch (Throwable except) {
          throw new SuppressionException(
@@ -232,8 +232,6 @@ public class TransfertDocumentWriter extends AbstractDocumentWriterListener
 
       try {
          storageTransfertService.openConnexion();
-         traceServiceSupport.connect();
-
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",

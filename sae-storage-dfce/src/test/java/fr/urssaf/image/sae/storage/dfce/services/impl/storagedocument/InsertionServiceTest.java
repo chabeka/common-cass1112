@@ -132,9 +132,6 @@ public class InsertionServiceTest {
 
       commonsServices.getDfceServicesManager().getConnection();
 
-      commonsServices.getInsertionService().setInsertionServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
-
       final StorageDocument firstDocument = commonsServices
             .getInsertionService().insertStorageDocument(storageDocument);
 
@@ -161,8 +158,6 @@ public class InsertionServiceTest {
    public void insertTwiceSameDocument() throws IOException, ParseException,
          InsertionServiceEx, ConnectionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
-      commonsServices.getInsertionService().setInsertionServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
                   new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
@@ -228,8 +223,6 @@ public class InsertionServiceTest {
          ParseException, StorageException, NoSuchAlgorithmException {
 
       try {
-         commonsServices.getInsertionService().setInsertionServiceParameter(
-               commonsServices.getDfceServicesManager().getDFCEService());
          final SaeDocument saeDocument = commonsServices.getXmlDataService()
                .saeDocumentReader(
                      new File(Constants.XML_PATH_DOC_WITH_ERROR[7]));

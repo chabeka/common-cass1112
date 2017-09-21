@@ -35,12 +35,4 @@ public interface UpdateService {
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx;
 
-   /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link InsertionService}
-    */
-   <T> void setUpdateServiceParameter(T parameter);
 }

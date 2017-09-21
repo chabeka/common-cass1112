@@ -13,15 +13,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 public interface DocumentNoteService {
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link DeletionService}
-    */
-   <T> void setDocumentNoteServiceParameter(T parameter);
-
-   /**
     * Ajoute une note sur un document
     * 
     * @param docUuid

@@ -265,7 +265,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     */
    private UntypedDocument createUntypedDocument(
          List<UntypedMetadata> metadatas, File ecdeFile)
-         throws SAECaptureServiceEx {
+               throws SAECaptureServiceEx {
 
       // TODO vérification que le fichier extrait de l'url ECDE existe bien!
 
@@ -310,8 +310,6 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       // connexion DFCE
       UUID uuid = null;
       try {
-         serviceProvider.openConnexion();
-
          // -- On controle que l'uuid si il est founit dans les métas
          checkDocumentUuid(storageDoc, null);
 
@@ -406,7 +404,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       // -- Insertion du document à archiver dans DFCE
       UUID uuid = null;
       try {
-         serviceProvider.openConnexion();
+         // serviceProvider.openConnexion();
 
          // 160600 : désactivation de ce contrôle qui est fait plus bas niveau 
          // pour tester aussi la capture de masse

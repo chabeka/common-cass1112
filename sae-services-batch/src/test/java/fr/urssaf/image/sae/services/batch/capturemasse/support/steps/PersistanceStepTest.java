@@ -11,8 +11,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -88,9 +86,6 @@ public class PersistanceStepTest {
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
             .andReturn(storageDocument);
-
-      storageDocumentService.setStorageDocumentServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall();
 

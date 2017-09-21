@@ -13,15 +13,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachme
 public interface DocumentAttachmentService {
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link DeletionService}
-    */
-   <T> void setDocumentAttachmentServiceParameter(T parameter);
-
-   /**
     * Permet de joindre un « document attaché » à un document
     * 
     * @param docUuid

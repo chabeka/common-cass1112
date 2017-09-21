@@ -784,11 +784,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
-         // -- Ouverture des connections DFCE
-         storageServiceProvider.openConnexion();
-         storageTransfertService.openConnexion();
-         traceServiceSupport.connect();
-
          // On récupère les métadonnées du document à partir de l'UUID, avec
          // toutes les
          // métadonnées du référentiel sauf la note qui n'est pas utilise pour

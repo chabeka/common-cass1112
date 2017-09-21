@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 
 /**
@@ -30,50 +31,57 @@ import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractServices {
 
-	
-	private ServiceProvider dfceService;
+   /**
+    * Provider de connexion du service DFCe
+    */
+   @Autowired
+   private ConnexionServiceProvider connexionServiceProvider;
 
-	@Autowired
-	@Qualifier(value="dfceConnection")
-	private DFCEConnection cnxParameters;
-	/**
-	 * @param dfceService
-	 *            : Les services DFCE.
-	 */
-	public final void setDfceService(final ServiceProvider dfceService) {
-		this.dfceService = dfceService;
-	}
+   /**
+    * Parametre de connexion de DFCe
+    */
+   @Autowired
+   @Qualifier(value = "dfceConnection")
+   private DFCEConnection cnxParameters;
 
-	/**
-	 * @return Les services DFCE.
-	 */
-	public final ServiceProvider getDfceService() {
-		return dfceService;
-	}
+   /**
+    * Service utilitaire de mutualisation du code des implémentations des
+    * services DFCE
+    */
+   @Autowired
+   protected StorageDocumentServiceSupport storageDocumentServiceSupport;
 
-	
+   /**
+    * @return Les services DFCE.
+    */
+   public final ServiceProvider getDfceService() {
+      return connexionServiceProvider
+            .getServiceProviderByConnectionParams(cnxParameters);
+   }
 
-	/**
-	 * @return Les paramètres de connection
-	 */
-	public final DFCEConnection getCnxParameters() {
-		return cnxParameters;
-	}
+   /**
+    * @return Les paramètres de connection
+    */
+   public final DFCEConnection getCnxParameters() {
+      return cnxParameters;
+   }
 
-	/**
-	 * @param cnxParameters
-	 *            Les paramètres de connection
-	 */
-	public final void setCnxParameters(
-			final DFCEConnection cnxParameters) {
-		this.cnxParameters = cnxParameters;
-	}
-	
-	/**
-	 * @return Une occurrence de la base DFCE.
-	 */
-   public final Base getBaseDFCE() {
-      return StorageDocumentServiceSupport.getBaseDFCE(dfceService, cnxParameters);
+   /**
+    * @param cnxParameters
+    *           Les paramètres de connection
+    */
+   public final void setCnxParameters(final DFCEConnection cnxParameters) {
+      this.cnxParameters = cnxParameters;
+   }
+
+   /**
+    * @return Une occurrence de la base DFCE.
+    */
+   public Base getBaseDFCE() {
+      return storageDocumentServiceSupport
+            .getBaseDFCE(connexionServiceProvider
+                  .getServiceProviderByConnectionParams(cnxParameters),
+                  cnxParameters);
    }
 
 }
