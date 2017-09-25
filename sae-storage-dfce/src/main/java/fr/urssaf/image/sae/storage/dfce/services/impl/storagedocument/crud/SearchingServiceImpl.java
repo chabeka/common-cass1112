@@ -30,6 +30,7 @@ import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -50,6 +51,7 @@ import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -561,6 +563,28 @@ SearchingService {
     */
    public void setCnxParameters(DFCEConnection dfceConnection) {
       this.cnxParameters = dfceConnection;
+   }
+
+   /**
+    * Methode permettant de définir le provider de connexion
+    * 
+    * @param connexionServiceProvider
+    *           provider de connexion {@link ConnexionServiceProvider}
+    */
+   public void setConnexionServiceProvider(
+         ConnexionServiceProvider connexionServiceProvider) {
+      this.connexionServiceProvider = connexionServiceProvider;
+   }
+
+   /**
+    * Setter pour storageDocumentServiceSupport
+    * 
+    * @param storageDocumentServiceSupport
+    *           the storageDocumentServiceSupport to set
+    */
+   public void setStorageDocumentServiceSupport(
+         StorageDocumentServiceSupport storageDocumentServiceSupport) {
+      this.storageDocumentServiceSupport = storageDocumentServiceSupport;
    }
 
 }

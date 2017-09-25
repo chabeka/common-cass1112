@@ -34,7 +34,7 @@ public abstract class AbstractServices {
     * Provider de connexion du service DFCe
     */
    @Autowired
-   private ConnexionServiceProvider connexionServiceProvider;
+   protected ConnexionServiceProvider connexionServiceProvider;
 
    /**
     * Service utilitaire de mutualisation du code des implémentations des
@@ -63,8 +63,8 @@ public abstract class AbstractServices {
    public Base getBaseDFCE() {
       return storageDocumentServiceSupport
             .getBaseDFCE(connexionServiceProvider
-            .getServiceProviderByConnectionParams(getCnxParameters()),
-            getCnxParameters());
+                  .getServiceProviderByConnectionParams(getCnxParameters()),
+                  getCnxParameters());
    }
 
 }

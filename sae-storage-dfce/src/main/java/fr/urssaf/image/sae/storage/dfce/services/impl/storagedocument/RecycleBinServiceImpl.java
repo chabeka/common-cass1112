@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
@@ -138,6 +139,18 @@ RecycleBinService {
     */
    public void setCnxParameters(DFCEConnection dfceConnection) {
       this.cnxParameters = dfceConnection;
+   }
+
+   /**
+    * Methode permettant de définir le provider de connexion
+    * 
+    * @param connexionServiceProvider
+    *           provider de connexion {@link ConnexionServiceProvider}
+    */
+   public void setConnexionServiceProvider(
+         ConnexionServiceProvider connexionServiceProvider) {
+      this.connexionServiceProvider = connexionServiceProvider;
+
    }
 
 }
