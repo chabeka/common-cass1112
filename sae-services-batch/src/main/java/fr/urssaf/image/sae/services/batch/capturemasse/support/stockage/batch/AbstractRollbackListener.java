@@ -44,7 +44,7 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
 
       try {
          ((StorageServiceProviderImpl) getServiceProvider())
-               .getDfceServicesManager().openConnection();
+               .getDfceServicesManager().getConnection();
 
          /* on catch les throwable de DFCE */
       } catch (Throwable e) {

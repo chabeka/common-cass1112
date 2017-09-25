@@ -11,10 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.RecycleBinServiceEx;
@@ -28,7 +29,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
  */
 @Service
 @Qualifier("recycleBinService")
-public class RecycleBinServiceImpl extends AbstractServices implements
+public class RecycleBinServiceImpl extends AbstractCommonServices implements
 RecycleBinService {
 
    private static final Logger LOGGER = LoggerFactory
@@ -127,6 +128,16 @@ RecycleBinService {
     */
    public void setTracesSupport(TracesDfceSupport tracesSupport) {
       this.tracesSupport = tracesSupport;
+   }
+
+   /**
+    * Methode permettant de definir les parametres de connexion.
+    * 
+    * @param dfceConnection
+    *           Parametres de connexion {@link DFCEConnection}
+    */
+   public void setCnxParameters(DFCEConnection dfceConnection) {
+      this.cnxParameters = dfceConnection;
    }
 
 }

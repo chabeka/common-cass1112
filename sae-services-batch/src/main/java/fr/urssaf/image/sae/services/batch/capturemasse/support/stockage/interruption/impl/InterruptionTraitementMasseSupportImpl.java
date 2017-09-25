@@ -167,7 +167,7 @@ InterruptionTraitementMasseSupport {
 
             // Reconnexion pour la couche storage
             ((StorageServiceProviderImpl) serviceProvider)
-            .getDfceServicesManager().openConnection();
+                  .getDfceServicesManager().getConnection();
 
             // réussite de la connexion à DFCE
 

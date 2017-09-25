@@ -168,7 +168,7 @@ implements ItemReader<StorageDocument> {
                      lastIdDoc, "");
 
          ((StorageServiceProviderImpl) storageServiceProvider)
-               .getDfceServicesManager().openConnection();
+               .getDfceServicesManager().getConnection();
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchPaginatedStorageDocuments(

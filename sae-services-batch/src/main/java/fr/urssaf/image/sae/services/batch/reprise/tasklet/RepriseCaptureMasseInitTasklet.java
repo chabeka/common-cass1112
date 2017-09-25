@@ -312,7 +312,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
                            new ArrayList<AbstractFilter>(), lastIdDoc, "");
 
          ((StorageServiceProviderImpl) storageServiceProvider)
-               .getDfceServicesManager().openConnection();
+               .getDfceServicesManager().getConnection();
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchPaginatedStorageDocuments(

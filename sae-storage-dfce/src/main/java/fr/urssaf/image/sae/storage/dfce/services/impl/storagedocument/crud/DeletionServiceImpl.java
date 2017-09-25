@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @Service
 @Qualifier("deletionService")
-public class DeletionServiceImpl extends AbstractServices implements
+public class DeletionServiceImpl extends AbstractCommonServices implements
 DeletionService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DeletionServiceImpl.class);

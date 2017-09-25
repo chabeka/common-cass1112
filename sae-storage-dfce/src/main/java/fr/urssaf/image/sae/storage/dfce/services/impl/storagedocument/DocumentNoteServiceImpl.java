@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
@@ -23,8 +23,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
  */
 @Service
 @Qualifier("documentNoteService")
-public class DocumentNoteServiceImpl extends AbstractServices implements
-      DocumentNoteService {
+public class DocumentNoteServiceImpl extends AbstractCommonServices implements
+DocumentNoteService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DocumentNoteServiceImpl.class);
@@ -42,7 +42,7 @@ public class DocumentNoteServiceImpl extends AbstractServices implements
             contenu, login, dateCreation, noteUuid, LOGGER);
 
    }
-   
+
    /**
     * {@inheritDoc}
     */

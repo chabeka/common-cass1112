@@ -77,7 +77,7 @@ implements ModificationMasseControleSupport {
 
       try {
          ((StorageServiceProviderImpl) getStorageServiceProvider())
-               .getDfceServicesManager().openConnection();
+               .getDfceServicesManager().getConnection();
 
          List<StorageMetadata> storageMetadatasList = modificationService
                .controlerMetaDocumentModifie(document.getUuid(),

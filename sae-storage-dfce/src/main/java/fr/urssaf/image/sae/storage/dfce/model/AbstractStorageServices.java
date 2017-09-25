@@ -10,7 +10,7 @@ import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
  * de gestion de type storage document
  */
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
-public abstract class AbstractStorageServices extends AbstractServices {
+public abstract class AbstractStorageServices extends AbstractCommonServices {
 
    /**
     * 

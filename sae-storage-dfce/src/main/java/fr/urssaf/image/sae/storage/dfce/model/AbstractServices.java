@@ -4,7 +4,6 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.service.ServiceProvider;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
@@ -38,13 +37,6 @@ public abstract class AbstractServices {
    private ConnexionServiceProvider connexionServiceProvider;
 
    /**
-    * Parametre de connexion de DFCe
-    */
-   @Autowired
-   @Qualifier(value = "dfceConnection")
-   private DFCEConnection cnxParameters;
-
-   /**
     * Service utilitaire de mutualisation du code des implémentations des
     * services DFCE
     */
@@ -56,23 +48,14 @@ public abstract class AbstractServices {
     */
    public final ServiceProvider getDfceService() {
       return connexionServiceProvider
-            .getServiceProviderByConnectionParams(cnxParameters);
+            .getServiceProviderByConnectionParams(getCnxParameters());
    }
 
    /**
     * @return Les paramètres de connection
     */
-   public final DFCEConnection getCnxParameters() {
-      return cnxParameters;
-   }
+   public abstract DFCEConnection getCnxParameters();
 
-   /**
-    * @param cnxParameters
-    *           Les paramètres de connection
-    */
-   public final void setCnxParameters(final DFCEConnection cnxParameters) {
-      this.cnxParameters = cnxParameters;
-   }
 
    /**
     * @return Une occurrence de la base DFCE.
@@ -80,8 +63,8 @@ public abstract class AbstractServices {
    public Base getBaseDFCE() {
       return storageDocumentServiceSupport
             .getBaseDFCE(connexionServiceProvider
-                  .getServiceProviderByConnectionParams(cnxParameters),
-                  cnxParameters);
+            .getServiceProviderByConnectionParams(getCnxParameters()),
+            getCnxParameters());
    }
 
 }

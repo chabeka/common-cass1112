@@ -29,6 +29,7 @@ import org.springframework.stereotype.Service;
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -48,7 +49,7 @@ import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -76,7 +77,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 @Qualifier("searchingService")
-public class SearchingServiceImpl extends AbstractServices implements
+public class SearchingServiceImpl extends AbstractCommonServices implements
 SearchingService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SearchingServiceImpl.class);
@@ -550,6 +551,16 @@ SearchingService {
     */
    public final void setMappingService(MappingDocumentService mappingService) {
       this.mappingService = mappingService;
+   }
+
+   /**
+    * Methode permettant de definir les parametres de connexion.
+    * 
+    * @param dfceConnection
+    *           Parametres de connexion {@link DFCEConnection}
+    */
+   public void setCnxParameters(DFCEConnection dfceConnection) {
+      this.cnxParameters = dfceConnection;
    }
 
 }

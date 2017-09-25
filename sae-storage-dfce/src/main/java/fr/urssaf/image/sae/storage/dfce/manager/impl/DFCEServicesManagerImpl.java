@@ -32,10 +32,6 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
     */
    private DFCEConnection cnxParameters;
 
-   /**
-    * Service provider
-    */
-   private ServiceProvider dfceService;
 
    /**
     * Service de connection à DFCE
@@ -62,13 +58,6 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    }
 
    /**
-    * @return the service
-    */
-   public final ServiceProvider getDfceService() {
-      return dfceService;
-   }
-
-   /**
     * @param cnxParameters
     *           the cnxParameters to set
     */
@@ -89,6 +78,8 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
     */
    @Override
    public final void closeConnection() {
+      ServiceProvider dfceService = connexionServiceProvider
+            .getServiceProviderByConnectionParams(cnxParameters);
       if (dfceService.isSessionActive()) {
          dfceService.disconnect();
          connexionServiceProvider.removeServiceProvider(cnxParameters);
@@ -134,6 +125,8 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
     */
    @Override
    public final boolean isActive() {
+      ServiceProvider dfceService = connexionServiceProvider
+            .getServiceProviderByConnectionParams(cnxParameters);
       return dfceService != null && dfceService.isSessionActive();
    }
 
@@ -145,7 +138,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
       String prefixLog = "openConnection()";
       LOGGER.debug("{} - Etablissement d'une nouvelle connexion à DFCE",
             prefixLog);
-      dfceService = dfceConnectionService.openConnection();
+      ServiceProvider dfceService = dfceConnectionService.openConnection();
 
       connexionServiceProvider.addServiceProvider(cnxParameters, dfceService);
       LOGGER.debug("{} - Connexion établie", prefixLog);
@@ -157,7 +150,8 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    @Override
    public final ServiceProvider getDFCEService() {
 
-      return dfceService;
+      return connexionServiceProvider
+            .getServiceProviderByConnectionParams(cnxParameters);
    }
 
    /**

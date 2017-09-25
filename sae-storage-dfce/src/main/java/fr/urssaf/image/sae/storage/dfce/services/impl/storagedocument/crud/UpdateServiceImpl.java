@@ -22,7 +22,7 @@ import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.TagControlException;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
  * 
  */
 @Service
-public class UpdateServiceImpl extends AbstractServices implements
+public class UpdateServiceImpl extends AbstractCommonServices implements
 UpdateService {
 
    private static final Logger LOGGER = LoggerFactory

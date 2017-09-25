@@ -8,9 +8,14 @@
       http://www.springframework.org/schema/context 
       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
    
+   <bean id="transfertDFCEConnectionService" class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" autowire-candidate="false">
+      <constructor-arg ref="dfceConnectionTransfert"/>
+   </bean>
+   
    <bean id="dfceServicesManagerTransfert" autowire-candidate="false"
       class="fr.urssaf.image.sae.storage.dfce.manager.impl.DFCEServicesManagerImpl">
       <constructor-arg ref="dfceConnectionTransfert"/>
+      <constructor-arg ref="transfertDFCEConnectionService"/>
    </bean>
    
    <bean id="typeListTransfert" autowire-candidate="false"
@@ -23,11 +28,17 @@
       <constructor-arg ref="dispatcherServiceTransfer" />
    </bean>
    
+   <bean id="transfertService" autowire-candidate="false"
+      class="fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.TransfertServiceImpl">
+     <constructor-arg ref="typeListTransfert" />
+     <constructor-arg ref="tracesDfceTransfert" />
+     <constructor-arg ref="dfceConnectionTransfert" />
+   </bean>
+   
    <bean id="storageTransfertService" 
       class="fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.StorageTransfertServiceImpl">
 	  <constructor-arg ref="dfceServicesManagerTransfert" />
-	  <constructor-arg ref="typeListTransfert" />
-	  <constructor-arg ref="tracesDfceTransfert" />
+     <constructor-arg ref="transfertService" />
    </bean>
    
    <bean id="transfertCassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
@@ -36,11 +47,7 @@
 
    <!-- Keyspace Transfert -->
    <bean id="transfertKeyspace" factory-method="getKeyspace" factory-bean="transfertCassandraClientFactory" />
-  
-   <bean id="transfertDFCEConnectionService" class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" autowire-candidate="false">
-      <constructor-arg ref="dfceConnectionTransfert"/>
-   </bean>
-   
+     
    <!-- Deb: Beans dao support traces transfert -->
    
    <bean id="transfertTraceDestinataireSupportDao" class="fr.urssaf.image.sae.trace.dao.TraceDestinataireDao" autowire-candidate="false">

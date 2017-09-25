@@ -58,27 +58,28 @@ public class GestionConnexionDFCEAspect {
       try {
          objReturn = jp.proceed();
       } catch (StorageException ex) {
-         Class<?> classe = jp.getSignature().getDeclaringType();
-         jp.getTarget();
-         if (dfceServicesManager != null
-               && dfceServicesManager.getDFCEService() != null
-               && dfceServicesManager.getDFCEService().isSessionActive()) {
-            objReturn = jp.proceed();
-         } else {
+         synchronized (this) {
+            if (dfceServicesManager != null
+                  && dfceServicesManager.getDFCEService() != null
+                  && dfceServicesManager.getDFCEService().isSessionActive()) {
+               objReturn = jp.proceed();
+            } else {
+               int tentativecnx = dfceServicesManager.getCnxParameters()
+                     .getNbtentativecnx();
+               objReturn = openConnectionDFCe(jp, ex, tentativecnx,
+                     tentativecnx);
+            }
+         }
+
+      } catch (DFCEConnectionServiceException ex) {
+         synchronized (this) {
             int tentativecnx = dfceServicesManager.getCnxParameters()
                   .getNbtentativecnx();
             objReturn = openConnectionDFCe(jp, ex, tentativecnx, tentativecnx);
          }
-      } catch (DFCEConnectionServiceException ex) {
-         int tentativecnx = dfceServicesManager.getCnxParameters()
-               .getNbtentativecnx();
-         objReturn = openConnectionDFCe(jp, ex, tentativecnx, tentativecnx);
       } catch (Throwable ex) {
          throw ex;
       }
-
-      // StorageApplicationContext.getApplicationContext().getBean(
-      // "messageSource_sae_storage_dfce", DFCEServicesManager.class);
 
       LOG.debug("{} - Fin contrôle de connection aux services DFCE",
             new Object[] { LOG_PREFIX });

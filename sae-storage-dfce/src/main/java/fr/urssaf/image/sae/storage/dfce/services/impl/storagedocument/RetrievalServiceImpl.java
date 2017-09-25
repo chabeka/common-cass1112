@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @Service
 @Qualifier("retrievalService")
-public class RetrievalServiceImpl extends AbstractServices implements
+public class RetrievalServiceImpl extends AbstractCommonServices implements
 RetrievalService {
    private static final Logger LOG = LoggerFactory
          .getLogger(RetrievalServiceImpl.class);

@@ -50,7 +50,7 @@ implements StorageServiceProvider {
    @Override
    public final void openConnexion() {
       if (!getDfceServicesManager().isActive()) {
-         getDfceServicesManager().openConnection();
+         getDfceServicesManager().getConnection();
       }
    }
 

@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -46,7 +46,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
  */
 @Service
 @Qualifier("insertionService")
-public class InsertionServiceImpl extends AbstractServices implements
+public class InsertionServiceImpl extends AbstractCommonServices implements
 InsertionService {
 
    private static final Logger LOGGER = LoggerFactory
