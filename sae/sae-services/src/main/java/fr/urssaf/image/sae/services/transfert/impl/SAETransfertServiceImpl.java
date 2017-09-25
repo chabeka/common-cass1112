@@ -593,13 +593,15 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             .valueMetadataFinder(document.getMetadatas(),
                   StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
                         .getShortCode());
-      if ( StringUtils.isEmpty(idTransfertMasseInterne) ) {
+      if (idTransfertMasseInterne == null || StringUtils.isEmpty(idTransfertMasseInterne) ) {
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
                            .getShortCode(), idTraitementMasse.toString()));
-      } else {
-         String erreur = "La métadonnée idTransfertMasseInterne ne peut êre alimenté alors que le document n'a pas été transféré";
+      } else if(StringUtils.isNotEmpty(idTransfertMasseInterne)
+            // Gestion du cas particulier de suppression de doc avec un iti
+             && !idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
+         String erreur = "La métadonnée idTransfertMasseInterne ne peut être alimenté alors que le document n'a pas été transféré";
          throw new TransfertException(erreur);
       }
 
