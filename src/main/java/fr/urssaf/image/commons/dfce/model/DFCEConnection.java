@@ -20,6 +20,7 @@ public final class DFCEConnection {
    private String urlToolkit;
    private String hostName;
    private int hostPort;
+   private int nbtentativecnx;
 
    /**
     * @return le login de connexion à DFCE
@@ -199,6 +200,25 @@ public final class DFCEConnection {
     */
    public void setHostPort(int hostPort) {
       this.hostPort = hostPort;
+   }
+
+   /**
+    * Getter pour nbtentativecnx
+    * 
+    * @return the nbtentativecnx
+    */
+   public int getNbtentativecnx() {
+      return nbtentativecnx;
+   }
+
+   /**
+    * Setter pour nbtentativecnx
+    * 
+    * @param nbtentativecnx
+    *           the nbtentativecnx to set
+    */
+   public void setNbtentativecnx(int nbtentativecnx) {
+      this.nbtentativecnx = nbtentativecnx;
    }
 
 }

@@ -86,7 +86,7 @@ public final class DFCEConnectionFactory {
 
       Validate.notNull(dfceConfigurationResource,
             "'dfceConfigurationResource' is required");
-      
+
       Properties saeProperties;
       try {
          saeProperties = PropertiesUtils.load(dfceConfigurationResource
@@ -97,7 +97,7 @@ public final class DFCEConnectionFactory {
 
       return createDFCEConnectionBySAEConfiguration(saeProperties);
    }
-   
+
    /**
     * Factorisation code creation connection dfce transfert
     * @param saeProperties
@@ -105,11 +105,11 @@ public final class DFCEConnectionFactory {
     */
    private static DFCEConnection createDFCEConnectionTransfertBySAEConf(
          Properties saeProperties){
-      
+
       //-- chemin complet du fichier de configuration
       String pathConfDfceTransfert = saeProperties
-         .getProperty(DFCEConnectionParameter.TRANSFERT_DFCE_CONFIG);
-      
+            .getProperty(DFCEConnectionParameter.TRANSFERT_DFCE_CONFIG);
+
       //-- Dans tous les cas on créé une connexion dfce
       DFCEConnection dfceConnection = new DFCEConnection();
       if (StringUtils.isNotBlank(pathConfDfceTransfert)) {
@@ -117,7 +117,7 @@ public final class DFCEConnectionFactory {
       } 
       return dfceConnection;
    }
-   
+
    /**
     * Création connection dfce transfert
     * 
@@ -126,9 +126,9 @@ public final class DFCEConnectionFactory {
     * @return configuration DFCE
     */
    public static DFCEConnection createDFCEConnectionTransfertBySAEConfigurationResource(AbstractResource dfceConfResource) {
-      
+
       Validate.notNull(dfceConfResource, "'dfceConfResource' is required");
-      
+
       Properties saeProperties;
       try {
          saeProperties = PropertiesUtils.load(dfceConfResource.getInputStream());
@@ -137,7 +137,7 @@ public final class DFCEConnectionFactory {
       }
       return createDFCEConnectionTransfertBySAEConf(saeProperties);
    }
-   
+
    /**
     * Création connection dfce transfert
     * 
@@ -146,9 +146,9 @@ public final class DFCEConnectionFactory {
     */
    public static DFCEConnection createDFCEConnectionTransfertBySAEConfiguration(
          File dfceConfig) {
-      
+
       Validate.notNull(dfceConfig, "'dfceConfig' is required");
-      
+
       Properties saeProperties;
       try {
          saeProperties = PropertiesUtils.load(dfceConfig);
@@ -260,6 +260,14 @@ public final class DFCEConnectionFactory {
 
       dfceConnection.setDigestAlgo(dfceProperties
             .getProperty(DFCEConnectionParameter.DFCE_DIGEST_ALGO));
+
+      try {
+         String nbTentative = dfceProperties.getProperty(
+               DFCEConnectionParameter.DFCE_CONNEXION_TENTATIVE, "3");
+         dfceConnection.setNbtentativecnx(Integer.parseInt(nbTentative));
+      } catch (NumberFormatException exception) {
+         throw new DFCEConfigurationRuntimeException(exception);
+      }
 
       return dfceConnection;
 
