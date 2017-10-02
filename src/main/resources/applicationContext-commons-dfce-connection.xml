@@ -13,14 +13,14 @@
    <!--Instantiation du bean de connexion à la base DFCE -->
    <bean id="dfceConnection"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionBySAEConfiguration">
+      factory-method="createDFCEConnectionBySAEConfigurationResource">
       <constructor-arg ref="saeConfigResource" /> 
    </bean>
 
    <!--Instantiation du bean de connexion à la base DFCE transfert -->
    <bean id="dfceConnectionTransfert" autowire-candidate="false"
       class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionTransfertBySAEConfiguration">
+      factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
       <constructor-arg ref="saeConfigResource" />
    </bean>
 </beans>
