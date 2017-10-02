@@ -27,6 +27,12 @@
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
+   
+   <bean id="dfceConnection"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfiguration">
+      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
+   </bean>
 
    <import resource="applicationContext-sae-rnd.xml" />
 
