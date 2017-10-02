@@ -736,9 +736,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                                  idArchive.toString()));
                   }
                } else {
-                  LOG.info(
-                        "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution",
-                        "transfertDoc", idArchive.toString());
+                  message = "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution";
+                  LOG.info(message, "transfertDoc", idArchive.toString());
                   throw new ArchiveAlreadyTransferedException(
                         StringUtils.replace(message, "{0}", uuid));
                }
