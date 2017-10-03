@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.stockage.batch;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
@@ -97,7 +99,12 @@ implements ItemWriter<StorageDocument> {
       String actionType = checkActionType((StorageDocument) storageDocument);
       if (actionType != null) {
          if (actionType.equals("SUPPRESSION")) {
-            document = moveDocumentToRecycleBin((StorageDocument) storageDocument);
+        	 StorageDocument storageDoc = (StorageDocument) storageDocument;
+        	 storageDoc.getMetadatas().add(
+					new StorageMetadata(
+							Constantes.CODE_COURT_META_DATE_CORBEILLE,
+							new Date()));
+            document = moveDocumentToRecycleBin((StorageDocument) storageDoc);
          } else {
             document = transfertDocument((StorageDocument) storageDocument);
          }  
