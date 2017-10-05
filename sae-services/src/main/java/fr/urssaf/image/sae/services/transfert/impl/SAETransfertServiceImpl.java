@@ -703,12 +703,16 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throws TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
       String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
+      String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
       StorageDocument document = new StorageDocument();
 
       try {
-         
          document = recupererDocMetaTransferable(idArchive);
-
+         if(isFrozenDocument(document.getUuid())){
+        	 throw new TransfertException(
+                     StringUtils.replace(frozenDocMsgException, "{0}",
+                             idArchive.toString()));
+         }
          StorageDocument documentGNS = transfertControlePlateforme(document,
                idArchive, isReprise, idTraitementMasse);
 
@@ -957,4 +961,29 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       }
    }
+   
+   /**
+    * Contrôle si le document passé en paramètre est gelé
+    * @param UUID l'uuid du document
+    * @return true si le document est gelé
+    * @throws SearchingServiceEx 
+    */
+   private boolean isFrozenDocument(UUID uuidDoc) throws SearchingServiceEx {
+	   boolean isFrozenDocument = false;
+	   List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+	   desiredStorageMetadatas.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
+	   StorageDocument document = storageDocumentService
+	            .searchStorageDocumentByUUIDCriteria(new UUIDCriteria(uuidDoc, desiredStorageMetadatas));
+	   
+	   for (StorageMetadata meta : document.getMetadatas()) {
+            if (meta.getShortCode().equals(
+                 StorageTechnicalMetadatas.GEL.getShortCode()) ) {
+            	if(meta.getValue() == Boolean.TRUE){
+            		isFrozenDocument = true;
+            	}
+           }
+       }
+	   return isFrozenDocument;
+   }
+   
 }
