@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService"
+xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
     <xsd:element name="PingRequest">
         <xsd:annotation>
             <xsd:documentation>Requête de Ping (compatibilité ascendante)
@@ -176,7 +177,7 @@
         <xsd:sequence>
             <xsd:choice>
                 <xsd:element name="url" type="sae:ecdeUrlType"/>
-                <xsd:element name="contenu" type="xsd:base64Binary"/>
+                <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
             </xsd:choice>
         </xsd:sequence>
     </xsd:complexType>
@@ -689,7 +690,7 @@
     </xsd:complexType>
     <xsd:complexType name="consultationMTOMResponseType">
         <xsd:sequence>
-            <xsd:element name="contenu" type="xsd:base64Binary"/>
+            <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Les métadonnées associées à l'archive,
@@ -787,7 +788,7 @@
     </xsd:complexType>
     <xsd:complexType name="getDocFormatOrigineResponseType">
         <xsd:sequence>
-            <xsd:element name="contenu" type="xsd:base64Binary"/>
+            <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Les métadonnées associées au document
@@ -854,7 +855,7 @@
     </xsd:complexType>
     <xsd:complexType name="dataFileType">
         <xsd:sequence>
-            <xsd:element name="file" type="xsd:base64Binary">
+            <xsd:element name="file" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream">
                 <xsd:annotation>
                     <xsd:documentation>L'objet numérique à archiver sous la
                   forme d'un binaire.
@@ -885,7 +886,7 @@
         <xsd:sequence>
             <xsd:choice>
                 <xsd:element name="url" type="sae:urlConsultationDirecteType"/>
-                <xsd:element name="contenu" type="xsd:base64Binary"/>
+                <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             </xsd:choice>
         </xsd:sequence>
     </xsd:complexType>
@@ -1068,7 +1069,7 @@
     </xsd:complexType>
     <xsd:complexType name="consultationAffichableResponseType">
         <xsd:sequence>
-            <xsd:element name="contenu" type="xsd:base64Binary"/>
+            <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Les métadonnées associées à l'archive,
@@ -1371,7 +1372,7 @@
     </xsd:complexType>
     <xsd:complexType name="consultationGNTGNSResponseType">
         <xsd:sequence>
-            <xsd:element name="contenu" type="xsd:base64Binary"/>
+            <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xsd:element name="metadonnees" type="sae:listeMetadonneeType">
                 <xsd:annotation>
                     <xsd:documentation>Les métadonnées associées à l'archive,
