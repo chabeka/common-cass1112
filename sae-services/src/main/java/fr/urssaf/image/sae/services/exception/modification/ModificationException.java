@@ -30,4 +30,17 @@ public class ModificationException extends Exception {
    public ModificationException(String message) {
       super(message);
    }
+   
+   /**
+    * Constructeur
+    * 
+    * @param message
+    *           le message d'erreur
+    * @param exception
+    *           l'exception mère
+    */
+   public ModificationException(String message, Throwable exception) {
+      super(message, exception);
+   }
+   
 }

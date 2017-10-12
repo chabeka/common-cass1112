@@ -39,8 +39,10 @@ import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
@@ -56,6 +58,12 @@ implements ModificationMasseControleSupport {
 
    @Autowired
    private SAEModificationService modificationService;
+   
+   /**
+    * Provider de service pour l'archivage de document
+    */
+   @Autowired
+   private StorageDocumentService storageDocumentService;
 
    /**
     * {@inheritDoc}
@@ -102,6 +110,7 @@ implements ModificationMasseControleSupport {
    /**
     * {@inheritDoc}
     * @throws TraitementRepriseAlreadyDoneException 
+ * @throws SearchingServiceEx 
     */
    @Override
    public StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item)
@@ -109,9 +118,15 @@ implements ModificationMasseControleSupport {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException {
+         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException, SearchingServiceEx {
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
+      String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+      if (storageDocumentService.isFrozenDocument(item.getUuid())) {
+		throw new ModificationException(
+				StringUtils.replace(frozenDocMsgException, "{0}", item
+						.getUuid().toString()));
+	  }
 
       List<StorageMetadata> listeMetadataDocument = modificationService
             .getListeStorageMetadatas(item.getUuid());

@@ -412,5 +412,14 @@ public interface StorageDocumentService {
    PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
+   
+   
+   /**
+    * Contrôle si le document passé en paramètre est gelé
+    * @param UUID l'uuid du document
+    * @return true si le document est gelé
+    * @throws SearchingServiceEx 
+    */
+   boolean isFrozenDocument(UUID uuidDoc) throws SearchingServiceEx;
 
 }

@@ -708,7 +708,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
       try {
          document = recupererDocMetaTransferable(idArchive);
-         if(isFrozenDocument(document.getUuid())){
+         if(storageDocumentService.isFrozenDocument(document.getUuid())){
         	 throw new TransfertException(
                      StringUtils.replace(frozenDocMsgException, "{0}",
                              idArchive.toString()));
