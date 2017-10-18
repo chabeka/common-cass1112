@@ -1,6 +1,5 @@
 package fr.urssaf.image.sae.storage.services;
 
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 /**
@@ -10,28 +9,25 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
  * 
  */
 public interface StorageServiceProvider {
-	
-	/**
-	 * 
-	 * @return les services d'insertion ,de recherche,récupération.
-	 */
-	StorageDocumentService getStorageDocumentService();
 
-	
-	/**
-	 * Permet d'ouvrir une connexion
-	 * 
-	 * @throws ConnectionServiceEx
-	 *             Exception liée à la connection.
-	 */
+   /**
+    * 
+    * @return les services d'insertion ,de recherche,récupération.
+    */
+   StorageDocumentService getStorageDocumentService();
 
-	void openConnexion() throws ConnectionServiceEx;
-	/**
-	 * Permet de fermer la  connexion
-	 * 
-	 * 
-	 */
-	void closeConnexion();
-		
-	
+   /**
+    * Permet d'ouvrir une connexion
+    * 
+    */
+
+   void openConnexion();
+
+   /**
+    * Permet de fermer la connexion
+    * 
+    * 
+    */
+   void closeConnexion();
+
 }

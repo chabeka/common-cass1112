@@ -65,11 +65,4 @@ public interface RetrievalService {
 	 */
 	StorageDocument retrieveStorageDocumentByUUID(
 			final UUIDCriteria uuidCriteria) throws RetrievalServiceEx;
-	/**
-	 * 
-	 * @param <T> : Le type générique.
-	 * @param parameter : Le paramètre du service {@link RetrievalService}
-	 */
-	 <T> void setRetrievalServiceParameter(T parameter);
-
 }

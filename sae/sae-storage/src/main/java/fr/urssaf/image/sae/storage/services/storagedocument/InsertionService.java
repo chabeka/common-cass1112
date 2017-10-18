@@ -37,15 +37,6 @@ public interface InsertionService {
          throws InsertionServiceEx, InsertionIdGedExistantEx;
 
    /**
-    * 
-    * @param <T>
-    *           : Le type générique.
-    * @param parameter
-    *           : Le paramètre du service {@link InsertionService}
-    */
-   <T> void setInsertionServiceParameter(T parameter);
-
-   /**
     * Permet d'insérer en base un document unique fourni sous forme de contenu
     * binaire
     * 
