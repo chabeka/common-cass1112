@@ -1,8 +1,6 @@
-package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
+package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
 import java.util.UUID;
-
-import net.docubase.toolkit.service.ServiceProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,8 +15,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
-import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -34,8 +31,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @Service
 @Qualifier("deletionService")
-public class DeletionServiceImpl extends AbstractServices implements
-      DeletionService {
+public class DeletionServiceImpl extends AbstractCommonServices implements
+DeletionService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DeletionServiceImpl.class);
    @Autowired
@@ -44,9 +41,6 @@ public class DeletionServiceImpl extends AbstractServices implements
 
    @Autowired
    private TracesDfceSupport tracesSupport;
-   
-   @Autowired
-   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    /**
     * @param searchingService
@@ -66,11 +60,12 @@ public class DeletionServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final void deleteStorageDocument(final UUID uuid)
+   public void deleteStorageDocument(final UUID uuid)
          throws DeletionServiceEx {
-      
+
       //-- Suppression du ducument
       storageDocumentServiceSupport.deleteStorageDocument(getDfceService(), 
             getCnxParameters(), uuid, LOGGER, tracesSupport);
@@ -79,10 +74,11 @@ public class DeletionServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    @ServiceChecked
-   public final void rollBack(final String processId) throws DeletionServiceEx {
+   public void rollBack(final String processId) throws DeletionServiceEx {
       final String lucene = String.format("%s:%s", "iti", processId);
       StorageDocuments storageDocuments;
       try {
@@ -112,15 +108,8 @@ public class DeletionServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
-   public final <T> void setDeletionServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
    @Override
-   public final void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
+   public void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
 
       //-- Traces debug - entrée méthode
       String prefixeTrc = "deleteStorageDocForTransfert()";
@@ -137,12 +126,13 @@ public class DeletionServiceImpl extends AbstractServices implements
 
       } catch (FrozenDocumentException frozenExcept) {
          LOGGER
-               .debug(
-                     "{} - Une exception a été levée lors du transfert du document : {}",
-                     prefixeTrc, frozenExcept.getMessage());
+         .debug(
+               "{} - Une exception a été levée lors du transfert du document : {}",
+               prefixeTrc, frozenExcept.getMessage());
          throw new DeletionServiceEx(StorageMessageHandler
                .getMessage(Constants.DEL_CODE_ERROR),
                frozenExcept.getMessage(), frozenExcept);
       }
    }
+
 }

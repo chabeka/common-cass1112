@@ -40,6 +40,7 @@ import fr.urssaf.image.sae.services.batch.suppression.exception.SuppressionMasse
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.util.SAESearchUtil;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -144,22 +145,22 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          ChunkContext chunkContext) throws Exception {
       LOGGER.info("Début Rollback reprise archivage de masse");
       int incr = 0;
-      
+
       final StepExecution stepExecution = chunkContext.getStepContext()
             .getStepExecution();
 
-      final String ident = (String) stepExecution.getJobParameters().getString(
+      final String ident = stepExecution.getJobParameters().getString(
             Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
-      
+
       Assert.notNull(ident, "L'identifiant du job à reprendre est requis");
-      
+
       final UUID idTraitement = UUID.fromString(ident);
 
       JobRequest jobAReprendre = jobLectureService
             .getJobRequest(idTraitement);
 
       Assert.notNull(jobAReprendre, "Le job à reprendre est requis");
-      
+
       // le paramètre stocké dans la pile des travaux correspond pour les
       // traitements de capture en masse à l'URL ECDE
       String urlECDE = StringUtils.EMPTY;
@@ -187,7 +188,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       }
 
       stepExecution.getJobExecution().getExecutionContext()
-            .put(Constantes.SOMMAIRE_FILE, sommaireFile.getAbsolutePath());
+      .put(Constantes.SOMMAIRE_FILE, sommaireFile.getAbsolutePath());
 
       String batchmode = XmlReadUtils.getElementValue(sommaireFile,
             Constantes.BATCH_MODE_ELEMENT_NAME);
@@ -209,7 +210,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
             throw new RepriseException(
                   "La requete lucene de recherche des documents à supprimer est erroné : "
                         + requeteLucene,
-                  idTraitement.toString());
+                        idTraitement.toString());
          }
 
          StorageDocument doc = null;
@@ -308,9 +309,10 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
                      limit > 0 ? limit : MAX_PAR_PAGE, DESIRED_METADATAS,
-                     new ArrayList<AbstractFilter>(), lastIdDoc, "");
+                           new ArrayList<AbstractFilter>(), lastIdDoc, "");
 
-         storageServiceProvider.openConnexion();
+         ((StorageServiceProviderImpl) storageServiceProvider)
+               .getDfceServicesManager().getConnection();
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchPaginatedStorageDocuments(

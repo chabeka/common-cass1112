@@ -145,9 +145,6 @@ public class SAETransfertMasseServiceTest {
    public void init() throws Exception {
 
       server.resetData();
-      provider.openConnexion();
-      transfertService.openConnexion();
-      traceServiceSupport.connect();
 
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

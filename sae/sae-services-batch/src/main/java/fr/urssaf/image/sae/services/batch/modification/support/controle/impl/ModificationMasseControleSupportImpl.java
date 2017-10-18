@@ -36,10 +36,13 @@ import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadata
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 
 /**
@@ -48,13 +51,19 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
  */
 @Component
 public class ModificationMasseControleSupportImpl extends AbstractSAEServices
-      implements ModificationMasseControleSupport {
+implements ModificationMasseControleSupport {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ModificationMasseControleSupportImpl.class);
 
    @Autowired
    private SAEModificationService modificationService;
+   
+   /**
+    * Provider de service pour l'archivage de document
+    */
+   @Autowired
+   private StorageDocumentService storageDocumentService;
 
    /**
     * {@inheritDoc}
@@ -62,20 +71,21 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
    @Override
    public ModificationMasseControlResult controleSAEDocumentMetadatas(
          final UntypedDocument document, final File ecdeDirectory)
-         throws ReferentialRndException, UnknownCodeRndEx,
-         ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx,
-         MetadataValueNotInDictionaryEx,
-         CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx {
+               throws ReferentialRndException, UnknownCodeRndEx,
+               ArchiveInexistanteEx, ModificationException, DuplicatedMetadataEx,
+               InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+               NotSpecifiableMetadataEx, RequiredArchivableMetadataEx,
+               UnknownHashCodeEx, NotModifiableMetadataEx,
+               MetadataValueNotInDictionaryEx,
+               CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx {
       String trcPrefix = "controleSAEDocumentMetadatas()";
       LOGGER.debug("{} - début", trcPrefix);
 
       ModificationMasseControlResult result = null;
 
       try {
-         getStorageServiceProvider().openConnexion();
+         ((StorageServiceProviderImpl) getStorageServiceProvider())
+               .getDfceServicesManager().getConnection();
 
          List<StorageMetadata> storageMetadatasList = modificationService
                .controlerMetaDocumentModifie(document.getUuid(),
@@ -100,6 +110,7 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
    /**
     * {@inheritDoc}
     * @throws TraitementRepriseAlreadyDoneException 
+ * @throws SearchingServiceEx 
     */
    @Override
    public StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item)
@@ -107,9 +118,15 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException {
+         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException, SearchingServiceEx {
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
+      String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+      if (storageDocumentService.isFrozenDocument(item.getUuid())) {
+		throw new ModificationException(
+				StringUtils.replace(frozenDocMsgException, "{0}", item
+						.getUuid().toString()));
+	  }
 
       List<StorageMetadata> listeMetadataDocument = modificationService
             .getListeStorageMetadatas(item.getUuid());
@@ -117,12 +134,12 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
       StorageDocument document = modificationService.separationMetaDocumentModifie(
             item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
             trcPrefix);
-      
+
       String idModifMasseInterne = StorageMetadataUtils
             .valueMetadataFinder(listeMetadataDocument,
                   StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                        .getShortCode());
-     
+                  .getShortCode());
+
       if (StringUtils.isNotEmpty(idModifMasseInterne) && idModifMasseInterne.equals(uuidJob.toString()) ) {
          String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
          String messageFormat = StringUtils.replaceEach(message, new String[] {
@@ -135,12 +152,12 @@ public class ModificationMasseControleSupportImpl extends AbstractSAEServices
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                           .getShortCode(), uuidJob.toString()));
+                     .getShortCode(), uuidJob.toString()));
       }
       LOGGER.debug("{} - fin", trcPrefix);
 
       return document;
 
    }
-   
+
 }

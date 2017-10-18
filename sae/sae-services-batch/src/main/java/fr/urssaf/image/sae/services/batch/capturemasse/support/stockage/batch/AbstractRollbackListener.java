@@ -13,6 +13,7 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.AbstractPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -42,12 +43,13 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
       int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
 
       try {
-         getServiceProvider().openConnexion();
+         ((StorageServiceProviderImpl) getServiceProvider())
+               .getDfceServicesManager().getConnection();
 
          /* on catch les throwable de DFCE */
       } catch (Throwable e) {
 
-         String idTraitement = (String) stepExecution.getJobParameters()
+         String idTraitement = stepExecution.getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);
 
          String errorMessage = MessageFormat.format(
@@ -59,10 +61,10 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
          if (nbDocsIntegres > 0) {
 
             getLogger()
-                  .error(
+            .error(
 
-                        "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
-                        idTraitement);
+                  "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                  idTraitement);
             stepExecution.getJobExecution().getExecutionContext().put(
                   Constantes.FLAG_BUL003, Boolean.TRUE);
          }

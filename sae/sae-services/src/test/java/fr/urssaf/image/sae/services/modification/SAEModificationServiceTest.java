@@ -141,8 +141,6 @@ public class SAEModificationServiceTest {
 
       server.resetData();
 
-      provider.openConnexion();
-
       VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");

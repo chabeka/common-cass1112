@@ -184,7 +184,6 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
 
-      provider.openConnexion();
    }
 
    @After

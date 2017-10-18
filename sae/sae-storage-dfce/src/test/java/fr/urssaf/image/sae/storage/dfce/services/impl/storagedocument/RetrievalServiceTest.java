@@ -69,12 +69,6 @@ public class RetrievalServiceTest {
          InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
          ConnectionServiceEx, InsertionIdGedExistantEx {
       commonsServices.getDfceServicesManager().getConnection();
-      commonsServices.getInsertionService().setInsertionServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
-      commonsServices.getRetrievalService().setRetrievalServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
-      commonsServices.getDeletionService().setDeletionServiceParameter(
-            commonsServices.getDfceServicesManager().getDFCEService());
       // Initialisation des jeux de données UUID
       final StorageDocument document = commonsServices
             .getMockData(commonsServices.getInsertionService());

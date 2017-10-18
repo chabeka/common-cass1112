@@ -56,7 +56,6 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
                jobParameters.put(Constantes.SOMMAIRE,
                      new JobParameter(entry.getValue()));
             } else if (entry.getKey().equalsIgnoreCase(fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE)) {
-               // Permet de distinguer le traitement de reprise en cours si il a été déjà lancé
                jobParameters
                .put(fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE,
                      new JobParameter(Long.getLong(entry.getValue())));
@@ -82,6 +81,15 @@ public class RepriseMasseParametersExtractor implements JobParametersExtractor {
 
          jobParameters.put(Constantes.TRAITEMENT_REPRISE,
                new JobParameter(Boolean.TRUE.toString()));
+
+         if (jobParameters
+               .get(fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE) == null) {
+            // Permet de distinguer le traitement de reprise en cours si il a
+            // été déjà lancé
+            jobParameters.put(
+                  fr.urssaf.image.sae.commons.utils.Constantes.HEURE_REPRISE,
+                  new JobParameter(System.currentTimeMillis()));
+         }
 
          JobParameters parameters = new JobParameters(jobParameters);
          return parameters;

@@ -149,8 +149,6 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
 
       getDfceServicesManager().getConnection();
 
-      insertionService.setInsertionServiceParameter(serviceProvider);
-
       try {
          insertionService.insertStorageDocument(storageDocument);
          Assert

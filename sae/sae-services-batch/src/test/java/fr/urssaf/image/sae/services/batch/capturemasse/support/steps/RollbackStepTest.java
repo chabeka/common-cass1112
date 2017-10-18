@@ -7,8 +7,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
 import org.easymock.EasyMock;
@@ -94,9 +92,6 @@ public class RollbackStepTest {
       deletionService.deleteStorageDocument(EasyMock.anyObject(UUID.class));
 
       EasyMock.expectLastCall().times(3);
-
-      deletionService.setDeletionServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall().times(3);
 
@@ -198,9 +193,6 @@ public class RollbackStepTest {
             "une exception a lieu dans le rollback");
 
       EasyMock.expectLastCall().once().andThrow(expectedException);
-
-      deletionService.setDeletionServiceParameter(EasyMock
-            .anyObject(ServiceProvider.class));
 
       EasyMock.expectLastCall().anyTimes();
 

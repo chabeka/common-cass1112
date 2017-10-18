@@ -113,8 +113,6 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - recherche du document", trcPrefix);
 
       try {
-         this.getStorageServiceProvider().openConnexion();
-
          List<StorageMetadata> listeStorageMetaDocument = this
                .controlerMetaDocumentModifie(idArchive, metadonnees, trcPrefix,
                      "modification");

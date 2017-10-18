@@ -41,6 +41,13 @@ public class TracesDfceSupport {
    }
 
    /**
+    * Constructeur
+    */
+   public TracesDfceSupport() {
+      super();
+   }
+
+   /**
     * Trace l'événement "Dépôt d'un document dans DFCE"
     * 
     * @param idDoc
@@ -54,7 +61,7 @@ public class TracesDfceSupport {
     *           la date d'archivage DFCE
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceDepotDocumentDansDFCE(UUID idDoc, String hash,
+   public void traceDepotDocumentDansDFCE(UUID idDoc, String hash,
          String typeHash, Date dateArchivageDfce) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
@@ -103,14 +110,14 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
+               ex);
       }
 
    }
-   
-   
+
+
    /**
     * Trace l'événement "Dépôt d'un document attaché dans DFCE"
     * 
@@ -125,7 +132,7 @@ public class TracesDfceSupport {
     *           la date d'archivage DFCE
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceDepotAttachmentDansDFCE(UUID idDoc, String hash,
+   public void traceDepotAttachmentDansDFCE(UUID idDoc, String hash,
          String typeHash, Date dateArchivageDfce) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
@@ -174,15 +181,15 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document attaché dans DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document attaché dans DFCE",
+               ex);
       }
 
    }
-   
-   
-   
+
+
+
    /**
     * Trace l'événement "Mise à la corbeille d'un document dans DFCE"
     * 
@@ -197,7 +204,7 @@ public class TracesDfceSupport {
     *           la date d'archivage DFCE
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceCorbeilleDocDansDFCE(UUID idDoc, String hash,
+   public void traceCorbeilleDocDansDFCE(UUID idDoc, String hash,
          String typeHash, Date dateArchivageDfce) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
@@ -246,13 +253,13 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de mise à la corbeille de document dans DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de mise à la corbeille de document dans DFCE",
+               ex);
       }
 
    }
-   
+
 
    /**
     * Trace l'événement "Restore d'un document dans DFCE"
@@ -268,7 +275,7 @@ public class TracesDfceSupport {
     *           la date d'archivage DFCE
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceRestoreDocDansDFCE(UUID idDoc, String hash,
+   public void traceRestoreDocDansDFCE(UUID idDoc, String hash,
          String typeHash, Date dateArchivageDfce) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
@@ -317,14 +324,14 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de restore de document dans DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de restore de document dans DFCE",
+               ex);
       }
 
    }
-   
-   
+
+
    /**
     * Trace l'événement "Modification d'un document dans DFCE"
     * 
@@ -338,7 +345,7 @@ public class TracesDfceSupport {
     *           la date de modification DFCE
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceModifDocumentDansDFCE(UUID idDoc,
+   public void traceModifDocumentDansDFCE(UUID idDoc,
          List<String> modifiedMetas, List<String> deletedMetas,
          Date dateModificationDfce) {
 
@@ -391,9 +398,9 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
+               ex);
       }
 
    }
@@ -411,17 +418,17 @@ public class TracesDfceSupport {
       } else if (SecurityContextHolder.getContext().getAuthentication() == null) {
 
          LOGGER
-               .debug(
-                     "{} - SecurityContextHolder.getContext().getAuthentication() est null",
-                     prefix);
+         .debug(
+               "{} - SecurityContextHolder.getContext().getAuthentication() est null",
+               prefix);
 
       } else if (SecurityContextHolder.getContext().getAuthentication()
             .getPrincipal() == null) {
 
          LOGGER
-               .debug(
-                     "{} - SecurityContextHolder.getContext().getAuthentication().getPrincipal() est null",
-                     prefix);
+         .debug(
+               "{} - SecurityContextHolder.getContext().getAuthentication().getPrincipal() est null",
+               prefix);
 
       } else {
 
@@ -456,7 +463,7 @@ public class TracesDfceSupport {
     *           l'identifiant unique DFCE du document supprimé
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceSuppressionDocumentDeDFCE(UUID idDoc) {
+   public void traceSuppressionDocumentDeDFCE(UUID idDoc) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
       // planter cette méthode
@@ -471,7 +478,7 @@ public class TracesDfceSupport {
 
          // Code de l'événement
          traceToCreate
-               .setCodeEvt(Constants.TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE);
+         .setCodeEvt(Constants.TRACE_CODE_EVT_SUPPRESSION_DOC_DFCE);
 
          // Contexte
          traceToCreate.setContexte("SuppressionDocumentDeDFCE");
@@ -496,9 +503,9 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de suppression d'un document de DFCE",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de suppression d'un document de DFCE",
+               ex);
       }
 
    }
@@ -510,7 +517,7 @@ public class TracesDfceSupport {
     *           l'identifiant unique DFCE du document transféré
     */
    @SuppressWarnings("PMD.AvoidCatchingThrowable")
-   public final void traceTransfertDocumentDeDFCE(UUID idDoc) {
+   public void traceTransfertDocumentDeDFCE(UUID idDoc) {
 
       // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
       // planter cette méthode
@@ -549,9 +556,9 @@ public class TracesDfceSupport {
 
       } catch (Throwable ex) {
          LOGGER
-               .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace de transfert d'un document vers la GNS",
-                     ex);
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de transfert d'un document vers la GNS",
+               ex);
       }
 
    }

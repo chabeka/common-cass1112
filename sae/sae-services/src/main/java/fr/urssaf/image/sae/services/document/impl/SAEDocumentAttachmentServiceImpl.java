@@ -212,8 +212,6 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          RetrievalServiceEx, ArchiveInexistanteEx, InvalidSAETypeException,
          MappingFromReferentialException {
 
-      getStorageServiceProvider().openConnexion();
-
       // On récupère le document sur lequel on souhaite ajouter un document
       // attaché pour
       // vérifier les droits
@@ -282,8 +280,6 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
       // Fin des traces debug - entrée méthode
 
       try {
-
-         this.getStorageServiceProvider().openConnexion();
 
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = referenceDAO

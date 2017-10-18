@@ -1,6 +1,7 @@
-package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
+package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,8 +17,8 @@ import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.SortedSearchQuery;
-import net.docubase.toolkit.service.ServiceProvider;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +29,8 @@ import org.springframework.stereotype.Service;
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.droit.service.PrmdService;
@@ -47,7 +50,7 @@ import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -76,7 +79,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @Service
 @Qualifier("searchingService")
-public class SearchingServiceImpl extends AbstractServices implements
+public class SearchingServiceImpl extends AbstractCommonServices implements
 SearchingService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SearchingServiceImpl.class);
@@ -85,8 +88,6 @@ SearchingService {
 
    private static final int LIMITE = 1000;
 
-   @Autowired
-   private StorageDocumentServiceSupport storageServiceSupport;
    @Autowired
    private MetadataReferenceDAO referenceDAO;
    @Autowired
@@ -109,7 +110,7 @@ SearchingService {
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageDocuments searchStorageDocumentByLuceneCriteria(
+   public StorageDocuments searchStorageDocumentByLuceneCriteria(
          final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
          QueryParseServiceEx {
       String prefixTrace = "searchStorageDocumentByLuceneCriteria()";
@@ -164,11 +165,11 @@ SearchingService {
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageDocument searchStorageDocumentByUUIDCriteria(
+   public StorageDocument searchStorageDocumentByUUIDCriteria(
          UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
 
       // -- Recherche du document
-      return storageServiceSupport.searchStorageDocumentByUUIDCriteria(
+      return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
             getDfceService(), getCnxParameters(), uUIDCriteria, LOG);
    }
 
@@ -177,7 +178,7 @@ SearchingService {
     */
    @Override
    @ServiceChecked
-   public final StorageDocument searchMetaDatasByUUIDCriteria(
+   public StorageDocument searchMetaDatasByUUIDCriteria(
          final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
       try {
          final Document docDfce = getDfceService().getSearchService()
@@ -205,19 +206,24 @@ SearchingService {
     * {@inheritDoc}
     */
    @Override
-   public final <T> void setSearchingServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
+   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+         PaginatedLuceneCriteria paginatedLuceneCriteria)
+               throws SearchingServiceEx, QueryParseServiceEx {
+
+      return searchByIterator(paginatedLuceneCriteria, false, true);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final PaginatedStorageDocuments searchPaginatedStorageDocuments(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
-               throws SearchingServiceEx, QueryParseServiceEx {
-
-      return searchByIterator(paginatedLuceneCriteria, false, true);
+   public byte[] searchStorageDocumentContentByUUIDCriteria(
+         UUIDCriteria uUIDCriteria) throws IOException {
+      final Document docDfce = getDfceService().getSearchService()
+            .getDocumentByUUID(getBaseDFCE(), uUIDCriteria.getUuid());
+      final InputStream docContent = getDfceService().getStoreService()
+            .getDocumentFile(docDfce);
+      return IOUtils.toByteArray(docContent);
    }
 
    /**
@@ -522,7 +528,7 @@ SearchingService {
     * {@inheritDoc}
     */
    @Override
-   public final PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
+   public PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
                throws SearchingServiceEx, QueryParseServiceEx {
 
@@ -535,7 +541,7 @@ SearchingService {
     * @param referenceDAO
     *           the referenceDAO to set
     */
-   public void setReferenceDAO(MetadataReferenceDAO referenceDAO) {
+   public final void setReferenceDAO(MetadataReferenceDAO referenceDAO) {
       this.referenceDAO = referenceDAO;
    }
 
@@ -545,7 +551,40 @@ SearchingService {
     * @param mappingService
     *           the mappingService to set
     */
-   public void setMappingService(MappingDocumentService mappingService) {
+   public final void setMappingService(MappingDocumentService mappingService) {
       this.mappingService = mappingService;
    }
+
+   /**
+    * Methode permettant de definir les parametres de connexion.
+    * 
+    * @param dfceConnection
+    *           Parametres de connexion {@link DFCEConnection}
+    */
+   public void setCnxParameters(DFCEConnection dfceConnection) {
+      this.cnxParameters = dfceConnection;
+   }
+
+   /**
+    * Methode permettant de définir le provider de connexion
+    * 
+    * @param connexionServiceProvider
+    *           provider de connexion {@link ConnexionServiceProvider}
+    */
+   public void setConnexionServiceProvider(
+         ConnexionServiceProvider connexionServiceProvider) {
+      this.connexionServiceProvider = connexionServiceProvider;
+   }
+
+   /**
+    * Setter pour storageDocumentServiceSupport
+    * 
+    * @param storageDocumentServiceSupport
+    *           the storageDocumentServiceSupport to set
+    */
+   public void setStorageDocumentServiceSupport(
+         StorageDocumentServiceSupport storageDocumentServiceSupport) {
+      this.storageDocumentServiceSupport = storageDocumentServiceSupport;
+   }
+
 }

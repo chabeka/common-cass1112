@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
+package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.UUID;
 
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -23,7 +22,7 @@ import com.docubase.dfce.exception.FrozenDocumentException;
 import com.docubase.dfce.exception.TagControlException;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -38,8 +37,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
  * 
  */
 @Service
-public class UpdateServiceImpl extends AbstractServices implements
-      UpdateService {
+public class UpdateServiceImpl extends AbstractCommonServices implements
+UpdateService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(UpdateServiceImpl.class);
@@ -52,7 +51,7 @@ public class UpdateServiceImpl extends AbstractServices implements
     */
    @Override
    @ServiceChecked
-   public final void updateStorageDocument(UUID uuidJob, UUID uuid,
+   public void updateStorageDocument(UUID uuidJob, UUID uuid,
          List<StorageMetadata> modifiedMetadatas,
          List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
 
@@ -131,7 +130,7 @@ public class UpdateServiceImpl extends AbstractServices implements
             LOGGER.error("{} - Impossible de réinitialiser à l'état "
                   + "d'origine le code RND pour le document {}. "
                   + "Code d'origine : {}", new Object[] { trcPrefix,
-                  storedDocument.getUuid().toString(), rndCode });
+                        storedDocument.getUuid().toString(), rndCode });
          }
       }
 
@@ -142,8 +141,8 @@ public class UpdateServiceImpl extends AbstractServices implements
             LOGGER.error("{} - Impossible de réinitialiser à l'état "
                   + "d'origine la date de débit de conservation "
                   + "pour le document {}. Date d'origine : {}", new Object[] {
-                  trcPrefix, storedDocument.getUuid().toString(),
-                  DateFormatUtils.ISO_DATE_FORMAT.format(referenceDate) });
+                        trcPrefix, storedDocument.getUuid().toString(),
+                        DateFormatUtils.ISO_DATE_FORMAT.format(referenceDate) });
          }
       }
 
@@ -228,15 +227,6 @@ public class UpdateServiceImpl extends AbstractServices implements
       return metadata;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final <T> void setUpdateServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
-
-   }
-
    private void manageMetadata(UUID uuidJob, Document storedDocument,
          StorageMetadata metadata) {
       String trcPrefix = "manageMetadata";
@@ -254,20 +244,20 @@ public class UpdateServiceImpl extends AbstractServices implements
             .getShortCode().equals(metadata.getShortCode())) {
          if (storedDocument.getSingleCriterion(metadata.getShortCode()) == null) {
             storedDocument.addCriterion(metadata.getShortCode(),
-                  (Serializable) uuidJob.toString());
+                  uuidJob.toString());
          } else {
             storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
-                  (Serializable) uuidJob.toString());
+                  uuidJob.toString());
          }
       } // MAJ de la métadonnée pour tracer le traitement de transfert dans le doc
       else if (StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
             .getShortCode().equals(metadata.getShortCode())) {
          if (storedDocument.getSingleCriterion(metadata.getShortCode()) == null) {
             storedDocument.addCriterion(metadata.getShortCode(),
-                  (Serializable) uuidJob.toString());
+                  uuidJob.toString());
          } else {
             storedDocument.getSingleCriterion(metadata.getShortCode()).setWord(
-                  (Serializable) uuidJob.toString());
+                  uuidJob.toString());
          }
       }      
       else if (!StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION

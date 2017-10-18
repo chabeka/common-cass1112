@@ -24,6 +24,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.restore.exception.RestoreMasseSearchException;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -39,57 +40,57 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 @Component
 @Scope("step")
 public class RecycleBeanStorageDocumentReader 
-      implements ItemReader<StorageDocument> {
+implements ItemReader<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RecycleBeanStorageDocumentReader.class);
-   
+
    /**
     * Requete lucene récupéré dans le contexte du job d'exécution
     */
    @Value("#{jobExecutionContext['requeteFinale']}")
    private String requeteLucene;
-   
+
    /**
     * Service de build permettant de générer les critères de la recherche paginée.
     */
    @Autowired
    @Qualifier("buildService")
    private BuildService buildService;
-   
+
    /**
     * Service permettant d'exécuter la recherche paginée
     */
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider storageServiceProvider;
-   
+
    @Autowired
    private InterruptionTraitementMasseSupport support;
-   
+
    @Autowired
    private InterruptionTraitementConfig config;
-   
+
    /**
     * Nombre de documents par page d'itération.
     */
    private final static int MAX_PAR_PAGE = 500;
-   
+
    /**
     * Iterateur de documents.
     */
    private Iterator<StorageDocument> iterateurDoc = null;
-   
+
    /**
     * Flag indiquant s'il s'agit de la dernière itération.
     */
    private boolean lastIteration = false;
-   
+
    /**
     * Dernier identifiant de document remonté à l'itération précédente.
     */
    private UUID lastIdDoc = null;
-   
+
    /**
     * Permet de verifier s'il y a un élément suivant.
     * @return boolean
@@ -115,7 +116,7 @@ public class RecycleBeanStorageDocumentReader
       }
       return hasNext;
    }
-   
+
    /**
     * Recupere le prochain element.
     * @return StorageDocument
@@ -123,7 +124,7 @@ public class RecycleBeanStorageDocumentReader
    private StorageDocument next() {
       return iterateurDoc.next();
    }
-   
+
    /**
     * Permet de récupérer les prochains éléments.
     * @return boolean
@@ -139,19 +140,20 @@ public class RecycleBeanStorageDocumentReader
          } else {
             strIdDoc = lastIdDoc.toString();
          }
-         
+
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
          PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
                      MAX_PAR_PAGE, null, null,
                      lastIdDoc, "");
 
-         storageServiceProvider.openConnexion();
+         ((StorageServiceProviderImpl) storageServiceProvider)
+               .getDfceServicesManager().getConnection();
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchStorageDocumentsInRecycleBean(
                      paginatedLuceneCriteria);
-         
+
          // recupere les infos de la requete
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
@@ -178,8 +180,8 @@ public class RecycleBeanStorageDocumentReader
     */
    @Override
    public StorageDocument read() throws Exception, UnexpectedInputException,
-         ParseException, NonTransientResourceException {
-      
+   ParseException, NonTransientResourceException {
+
       StorageDocument doc = null;
       if (hasNext()) {
          doc = next();
@@ -189,7 +191,7 @@ public class RecycleBeanStorageDocumentReader
       }
       return doc;
    }
-   
+
    /**
     * Methode permettant de gerer la plage d'interruption.
     * @throws RestoreMasseSearchException
@@ -200,7 +202,7 @@ public class RecycleBeanStorageDocumentReader
 
       if (config != null
             && support.hasInterrupted(currentDate, config)) {
-         
+
          try {
             support.interruption(currentDate, config);
          } catch (InterruptionTraitementException e) {

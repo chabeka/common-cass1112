@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
+package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,6 @@ import javax.activation.FileDataSource;
 import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.reference.FileReference;
-import net.docubase.toolkit.service.ServiceProvider;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -29,9 +28,8 @@ import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -48,8 +46,8 @@ import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
  */
 @Service
 @Qualifier("insertionService")
-public class InsertionServiceImpl extends AbstractServices implements
-      InsertionService {
+public class InsertionServiceImpl extends AbstractCommonServices implements
+InsertionService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(InsertionServiceImpl.class);
@@ -63,9 +61,6 @@ public class InsertionServiceImpl extends AbstractServices implements
 
    @Autowired
    private TracesDfceSupport tracesSupport;
-
-   @Autowired
-   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    /**
     * @return : Le service de suppression
@@ -88,16 +83,17 @@ public class InsertionServiceImpl extends AbstractServices implements
     * {@inheritDoc}
     * @throws InsertionIdGedExistantEx 
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageDocument insertStorageDocument(
+   public StorageDocument insertStorageDocument(
          final StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       try {
          // -- ici on récupère le nom et l'extension du fichier
          final String[] file = BeanMapper.findFileNameAndExtension(
                storageDocument, StorageTechnicalMetadatas.NOM_FICHIER
-                     .getShortCode().toString());
+               .getShortCode().toString());
          LOGGER.debug("{} - Enrichissement des métadonnées : "
                + "ajout de la métadonnée NomFichier valeur : {}.{}",
                new Object[] { TRC_INSERT, file[0], file[1] });
@@ -131,9 +127,10 @@ public class InsertionServiceImpl extends AbstractServices implements
     * {@inheritDoc}
     * @throws InsertionIdGedExistantEx 
     */
+   @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageDocument insertBinaryStorageDocument(
+   public StorageDocument insertBinaryStorageDocument(
          StorageDocument storageDoc) throws InsertionServiceEx, InsertionIdGedExistantEx {
 
       // -- Insertion du document
@@ -145,17 +142,10 @@ public class InsertionServiceImpl extends AbstractServices implements
    /**
     * {@inheritDoc}
     */
-   public final <T> void setInsertionServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final StorageReferenceFile insertStorageReference(
+   public StorageReferenceFile insertStorageReference(
          VirtualStorageReference reference) throws InsertionServiceEx {
       String trcPrefix = "insertStorageReference";
       LOGGER.debug("{} - début", trcPrefix);
@@ -206,7 +196,7 @@ public class InsertionServiceImpl extends AbstractServices implements
    @Override
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
-   public final UUID insertVirtualStorageDocument(
+   public UUID insertVirtualStorageDocument(
          VirtualStorageDocument vDocument) throws InsertionServiceEx {
       String trcPrefix = "insertVirtualStorageDocument";
       LOGGER.debug("{} - début", trcPrefix);

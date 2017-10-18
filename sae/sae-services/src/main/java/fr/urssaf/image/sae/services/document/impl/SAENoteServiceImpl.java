@@ -80,8 +80,6 @@ SAENoteService {
       LOG.debug("{} - Login : {}", prefixeTrc, login);
 
       try {
-         getStorageServiceProvider().openConnexion();
-
          // On récupère la liste de toutes les méta du référentiel
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
          Map<String, MetadataReference> listeAllMeta = referenceDAO
@@ -154,9 +152,6 @@ SAENoteService {
       String prefixeTrc = "getDocumentNotes()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID du document : {}", prefixeTrc, docUuid);
-
-      getStorageServiceProvider().openConnexion();
-
       LOG.debug("{} - Sortie", prefixeTrc);
 
       return getStorageServiceProvider().getStorageDocumentService()

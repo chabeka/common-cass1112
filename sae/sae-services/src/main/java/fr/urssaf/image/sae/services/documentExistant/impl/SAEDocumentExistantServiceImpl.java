@@ -31,7 +31,6 @@ public class SAEDocumentExistantServiceImpl implements
    @Override
    public boolean documentExistant(UUID idGed) throws 
           SearchingServiceEx, ConnectionServiceEx {
-      serviceProvider.openConnexion();
       UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
             new ArrayList<StorageMetadata>());
       StorageDocument document = serviceProvider.getStorageDocumentService()

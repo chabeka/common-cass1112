@@ -4,8 +4,6 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,7 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
-import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.StorageDocAttachmentServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentAttachment;
@@ -28,18 +25,12 @@ import fr.urssaf.image.sae.storage.services.storagedocument.DocumentAttachmentSe
  */
 @Service
 @Qualifier("documentAttachmentService")
-public class DocumentAttachmentServiceImpl extends AbstractServices implements
-      DocumentAttachmentService {
+public class DocumentAttachmentServiceImpl extends AbstractCommonServices
+      implements
+DocumentAttachmentService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DocumentAttachmentServiceImpl.class);
-
-   /**
-    * Service utilitaire de mutualisation du code des implémentations des
-    * services DFCE
-    */
-   @Autowired
-   private StorageDocumentServiceSupport storageDocumentServiceSupport;
 
    @Autowired
    private TracesDfceSupport tracesSupport;
@@ -55,7 +46,7 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
    @Loggable(LogLevel.TRACE)
    public final void addDocumentAttachment(UUID docUuid, String docName,
          String extension, DataHandler contenu)
-         throws StorageDocAttachmentServiceEx {
+               throws StorageDocAttachmentServiceEx {
 
       LOGGER.debug("{} - Début ajout du document attaché",
             TRC_DOC_ATTACH_INSERT);
@@ -79,13 +70,6 @@ public class DocumentAttachmentServiceImpl extends AbstractServices implements
       return storageDocumentServiceSupport.getDocumentAttachment(
             getDfceService(), getCnxParameters(), docUuid, LOGGER);
 
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   public final <T> void setDocumentAttachmentServiceParameter(final T parameter) {
-      setDfceService((ServiceProvider) parameter);
    }
 
 }

@@ -74,8 +74,6 @@ SAESuppressionService {
       LOG.debug("{} - Début de suppression du document {}", new Object[] {
             trcPrefix, idArchive.toString() });
 
-      this.getStorageServiceProvider().openConnexion();
-
       try {
          LOG.debug("{} - recherche du document", trcPrefix);
          List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();

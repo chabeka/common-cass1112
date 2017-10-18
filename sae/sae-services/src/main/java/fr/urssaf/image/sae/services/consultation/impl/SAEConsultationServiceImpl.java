@@ -65,7 +65,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("saeConsultationService")
 public class SAEConsultationServiceImpl extends AbstractSAEServices implements
-      SAEConsultationService {
+SAEConsultationService {
    /**
     * 
     */
@@ -138,7 +138,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             idArchive);
       // Fin des traces debug - entrée méthode
-      this.getStorageServiceProvider().openConnexion();
 
       try {
 
@@ -257,7 +256,6 @@ public class SAEConsultationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
             idArchive);
       // Fin des traces debug - entrée méthode
-      this.getStorageServiceProvider().openConnexion();
 
       try {
          List<String> metadatas = manageMetaDataNames(consultParams);
