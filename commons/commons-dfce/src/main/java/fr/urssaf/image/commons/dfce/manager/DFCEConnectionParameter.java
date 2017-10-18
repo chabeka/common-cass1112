@@ -82,11 +82,16 @@ public final class DFCEConnectionParameter {
     * configuration de l'adresse du toolkit
     */
    public static final String DFCE_URL_TOOLKIT = "db.urlToolkit";
-   
+
    /**
     * Paramètre {@value #TRANSFERT_DFCE_CONFIG} indiquant le paramètre de configuration du
     * chemin complet du fichier de configuration de DFCE pour le transfert
     */
    public static final String TRANSFERT_DFCE_CONFIG = "sae.dfce.transfert.cheminFichierConfig";
 
+   /**
+    * Paramètre {@value #DFCE_CONNEXION_TENTATIVE} indiquant le paramètre de
+    * configuration du nombre de tentative de connexion à DFCE
+    */
+   public static final String DFCE_CONNEXION_TENTATIVE = "db.connexion.tentative";
 }

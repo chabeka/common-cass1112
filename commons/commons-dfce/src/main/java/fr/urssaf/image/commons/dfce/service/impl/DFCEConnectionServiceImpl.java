@@ -1,9 +1,10 @@
 package fr.urssaf.image.commons.dfce.service.impl;
 
+import net.docubase.toolkit.service.ServiceProvider;
+
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 
-import net.docubase.toolkit.service.ServiceProvider;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
 
@@ -40,5 +41,14 @@ public class DFCEConnectionServiceImpl implements DFCEConnectionService {
             this.dfceConnection.getTimeout());
 
       return dfceService;
+   }
+
+   /**
+    * Getter pour dfceConnection
+    * 
+    * @return the dfceConnection
+    */
+   public DFCEConnection getDfceConnection() {
+      return dfceConnection;
    }
 }
