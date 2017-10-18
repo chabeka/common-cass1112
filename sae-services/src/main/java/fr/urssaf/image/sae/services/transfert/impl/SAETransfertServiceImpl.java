@@ -962,28 +962,4 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       }
    }
    
-   /**
-    * Contrôle si le document passé en paramètre est gelé
-    * @param UUID l'uuid du document
-    * @return true si le document est gelé
-    * @throws SearchingServiceEx 
-    */
-   private boolean isFrozenDocument(UUID uuidDoc) throws SearchingServiceEx {
-	   boolean isFrozenDocument = false;
-	   List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
-	   desiredStorageMetadatas.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
-	   StorageDocument document = storageDocumentService
-	            .searchStorageDocumentByUUIDCriteria(new UUIDCriteria(uuidDoc, desiredStorageMetadatas));
-	   
-	   for (StorageMetadata meta : document.getMetadatas()) {
-            if (meta.getShortCode().equals(
-                 StorageTechnicalMetadatas.GEL.getShortCode()) ) {
-            	if(meta.getValue() == Boolean.TRUE){
-            		isFrozenDocument = true;
-            	}
-           }
-       }
-	   return isFrozenDocument;
-   }
-   
 }
