@@ -112,6 +112,6 @@ public final class TracesConstantes {
    /**
     * Le code de l'événement de l'échec du WS de reprise
     */
-   public static final String CODE_EVT_WS_REPRISE_KO = "WS_REPRISE|KO";
+   public static final String CODE_EVT_WS_REPRISE_KO = "WS_REPRISE_MASSE|KO";
    
 }

@@ -593,13 +593,15 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             .valueMetadataFinder(document.getMetadatas(),
                   StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
                         .getShortCode());
-      if ( StringUtils.isEmpty(idTransfertMasseInterne) ) {
+      if (idTransfertMasseInterne == null || StringUtils.isEmpty(idTransfertMasseInterne) ) {
          document.getMetadatas().add(
                new StorageMetadata(
                      StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
                            .getShortCode(), idTraitementMasse.toString()));
-      } else {
-         String erreur = "La métadonnée idTransfertMasseInterne ne peut êre alimenté alors que le document n'a pas été transféré";
+      } else if(StringUtils.isNotEmpty(idTransfertMasseInterne)
+            // Gestion du cas particulier de suppression de doc avec un iti
+             && !idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
+         String erreur = "La métadonnée idTransfertMasseInterne ne peut être alimenté alors que le document n'a pas été transféré";
          throw new TransfertException(erreur);
       }
 
@@ -703,16 +705,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throws TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
       String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
-      String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
       StorageDocument document = new StorageDocument();
 
       try {
+         
          document = recupererDocMetaTransferable(idArchive);
-         if(storageDocumentService.isFrozenDocument(document.getUuid())){
-        	 throw new TransfertException(
-                     StringUtils.replace(frozenDocMsgException, "{0}",
-                             idArchive.toString()));
-         }
+
          StorageDocument documentGNS = transfertControlePlateforme(document,
                idArchive, isReprise, idTraitementMasse);
 
@@ -738,9 +736,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                                  idArchive.toString()));
                   }
                } else {
-                  LOG.info(
-                        "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution",
-                        "transfertDoc", idArchive.toString());
+                  message = "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution";
+                  LOG.info(message, "transfertDoc", idArchive.toString());
                   throw new ArchiveAlreadyTransferedException(
                         StringUtils.replace(message, "{0}", uuid));
                }
@@ -788,6 +785,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
+         // -- Ouverture des connections DFCE
+         storageServiceProvider.openConnexion();
+         storageTransfertService.openConnexion();
+         traceServiceSupport.connect();
+
          // On récupère les métadonnées du document à partir de l'UUID, avec
          // toutes les
          // métadonnées du référentiel sauf la note qui n'est pas utilise pour
@@ -961,5 +963,4 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       }
    }
-   
 }

@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -83,6 +84,9 @@ TraitementAsynchroneService {
    @Qualifier("repriseMasseTraitement")
    private TraitementExecutionSupport repriseMasse;
 
+   @Value("${sae.traitementmasse.check.doublon.disable}")
+   private Boolean checkDoublonDisable;
+
    /**
     * 
     * @param jobLectureService
@@ -108,10 +112,15 @@ TraitementAsynchroneService {
                   parameters.getUuid() });
       byte[] jobKey = createJobKey(parameters.getType().name(),
             parameters.getJobParameters());
-      UUID jobRequestId = jobLectureService.getJobRequestIdByJobKey(jobKey);
-      if (jobRequestId != null) {
-         throw new JobRequestAlreadyExistsException(jobRequestId);
+      if (checkDoublonDisable == null
+            || (checkDoublonDisable != null && !checkDoublonDisable
+                  .booleanValue())) {
+         UUID jobRequestId = jobLectureService.getJobRequestIdByJobKey(jobKey);
+         if (jobRequestId != null) {
+            throw new JobRequestAlreadyExistsException(jobRequestId);
+         }
       }
+
       JobToCreate job = new JobToCreate();
       job.setIdJob(parameters.getUuid());
       job.setType(parameters.getType().name());
