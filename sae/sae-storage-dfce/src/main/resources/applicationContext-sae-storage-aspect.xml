@@ -14,8 +14,6 @@
       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
    
    <aop:config>
-<!--  <aop:pointcut id="exceptionConnexionDfcePointcut"
-         expression="execution(public * fr.urssaf.image.sae.storage.dfce.support.*ServiceSupport.*(..))" /> -->
      <aop:pointcut id="setConnexionManagerDfcePointcut" expression="execution(public * fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.Storage*ServiceImpl.*(..)))" />
      <aop:pointcut id="errorConnexionDfcePointcut"
          expression="execution(public * fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.*ServiceImpl.*(..)) || execution(public * fr.urssaf.image.sae.storage.dfce.support.*Support.*(..))" />
