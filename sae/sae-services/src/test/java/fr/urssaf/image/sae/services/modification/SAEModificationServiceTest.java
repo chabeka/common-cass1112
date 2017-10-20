@@ -125,8 +125,6 @@ public class SAEModificationServiceTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      provider.closeConnexion();
-
       server.resetData();
       
       if (ecde != null) {

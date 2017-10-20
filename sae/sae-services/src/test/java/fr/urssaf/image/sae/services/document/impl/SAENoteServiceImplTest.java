@@ -197,7 +197,6 @@ public class SAENoteServiceImplTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       server.resetData();
-      provider.closeConnexion();
 
       if (ecde != null) {
          // supprime le repertoire ecde

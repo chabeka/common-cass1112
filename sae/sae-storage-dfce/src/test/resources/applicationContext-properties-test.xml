@@ -30,13 +30,13 @@
       </constructor-arg>
    </bean>
 
-   <bean class="fr.urssaf.image.sae.storage.dfce.utils.PropertiesFactory"
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
    <!--Instantiation du bean de connexion à la base DFCE -->
-   <bean class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+<!--    <bean class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
       factory-method="createDFCEConnectionByDFCEConfigurationResource"
       primary="true">
       <constructor-arg>
@@ -44,8 +44,11 @@
             <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
          </bean>
       </constructor-arg>
+   </bean> -->
+
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
+      <constructor-arg ref="dfceConnection" />
    </bean>
-
-
 
 </beans>

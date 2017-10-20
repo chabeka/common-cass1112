@@ -23,9 +23,14 @@
       </constructor-arg>
    </bean>
 
-   <bean class="fr.urssaf.image.sae.trace.factory.PropertiesFactory"
+   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
+   </bean>
+   
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
+      <constructor-arg ref="dfceConnection" />
    </bean>
 
    <import resource="applicationContext-sae-trace.xml" />

@@ -206,13 +206,6 @@ public class CommonsServices {
    }
 
    /**
-    * Libère les ressources
-    */
-   public final void closeServicesParameters() {
-      getDfceServicesManager().closeConnection();
-   }
-
-   /**
     * @return La façade de services
     */
    public final StorageServiceProvider getServiceProvider() {

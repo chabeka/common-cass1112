@@ -54,11 +54,6 @@ public class RecycleBinServiceTest {
       commonsServices.initServicesParameters();
    }
 
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
-   }
-
    @Autowired
    private TraceAssertUtils traceAssertUtils;
 

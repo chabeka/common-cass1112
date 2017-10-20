@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.storage.dfce.services.provider.impl;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +31,6 @@ public class StorageServiceProviderTest {
    public void init() throws ConnectionServiceEx, IOException, ParseException {
       commonsServices.initServicesParameters();
       commonsServices.initStorageDocumens();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    /**

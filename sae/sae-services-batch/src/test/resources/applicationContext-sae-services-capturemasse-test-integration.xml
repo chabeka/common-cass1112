@@ -23,5 +23,4 @@
    <bean id="saeDocumentService" factory-bean="mockFactory" factory-method="createSaeDocumentService"
       primary="true" />
    
-
 </beans>

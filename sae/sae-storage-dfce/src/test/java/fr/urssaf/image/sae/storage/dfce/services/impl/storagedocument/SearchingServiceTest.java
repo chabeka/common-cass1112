@@ -12,7 +12,6 @@ import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.service.ged.SearchService;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,11 +50,6 @@ public class SearchingServiceTest {
    @Before
    public void init() throws ConnectionServiceEx {
       commonsServices.initServicesParameters();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    /**

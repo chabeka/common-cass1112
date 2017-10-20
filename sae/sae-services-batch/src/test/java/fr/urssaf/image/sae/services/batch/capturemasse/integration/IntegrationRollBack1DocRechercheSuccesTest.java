@@ -60,6 +60,8 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.Resultat
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
@@ -99,6 +101,10 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
+
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -210,6 +216,11 @@ public class IntegrationRollBack1DocRechercheSuccesTest {
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
             storageDocumentService).anyTimes();
+      EasyMock
+            .expect(
+                  ((StorageServiceProviderImpl) provider)
+                        .getDfceServicesManager())
+            .andReturn(dfceServicesManager).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock

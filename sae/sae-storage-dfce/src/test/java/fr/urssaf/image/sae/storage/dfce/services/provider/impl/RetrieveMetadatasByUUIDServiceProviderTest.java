@@ -6,7 +6,6 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,11 +37,6 @@ public class RetrieveMetadatasByUUIDServiceProviderTest {
    public void init() throws ConnectionServiceEx, IOException, ParseException {
       commonsServices.initServicesParameters();
       commonsServices.initStorageDocumens();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    // Ici on test la récupération du document

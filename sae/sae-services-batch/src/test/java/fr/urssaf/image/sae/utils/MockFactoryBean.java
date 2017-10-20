@@ -21,6 +21,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.rollback
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
@@ -75,9 +76,9 @@ public class MockFactoryBean {
     * 
     * @return un mock StorageServiceProvider
     */
-   public final StorageServiceProvider createStorageServiceProvider() {
+   public final StorageServiceProviderImpl createStorageServiceProvider() {
 
-      return EasyMock.createMock(StorageServiceProvider.class);
+      return EasyMock.createMock(StorageServiceProviderImpl.class);
    }
 
    /**

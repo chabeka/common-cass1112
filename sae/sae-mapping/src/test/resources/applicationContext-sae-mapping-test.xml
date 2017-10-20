@@ -35,13 +35,6 @@
       </constructor-arg>
    </bean>
 
-
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
-
    <bean id="dfceConnectionService"
       class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
       <constructor-arg ref="dfceConnection" />

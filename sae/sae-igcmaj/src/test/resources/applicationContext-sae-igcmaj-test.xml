@@ -22,10 +22,21 @@
          <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
       </constructor-arg>
    </bean>
-
-   <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
-      factory-method="load">
-      <constructor-arg ref="saeConfigResource" />
+   
+   <bean id="dfceConnectionService "
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConfig" />
+   </bean>
+   
+      <!-- Création du bean de connexion à DFCE -->
+   <bean id="dfceConfig"
+      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
+      factory-method="createDFCEConnectionByDFCEConfigurationResource">
+      <constructor-arg>
+         <bean class="org.springframework.core.io.FileSystemResource">
+            <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
+         </bean>
+      </constructor-arg>
    </bean>
    
    <import resource="applicationContext-sae-igcmaj.xml" />

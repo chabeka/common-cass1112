@@ -12,7 +12,6 @@ import java.util.Map;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -50,11 +49,6 @@ public class LuceneSimpleQueryTest {
    @Before
    public void init() throws ConnectionServiceEx {
       commonsServices.initServicesParameters();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    /**

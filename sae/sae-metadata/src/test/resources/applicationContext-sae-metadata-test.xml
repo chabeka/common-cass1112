@@ -17,10 +17,20 @@
       </property>
    </bean>
    
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.cheminFichierConfig}" />
+ <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/sae-config.properties" />
+   </bean>
+
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
    </bean>
 
    <bean id="dfceConnectionService"

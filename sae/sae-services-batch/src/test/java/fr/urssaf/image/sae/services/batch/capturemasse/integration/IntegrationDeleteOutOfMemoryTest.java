@@ -57,9 +57,11 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.NonIntegratedDocumentType;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFactory;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
+import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -97,6 +99,10 @@ public class IntegrationDeleteOutOfMemoryTest {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
+
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -211,6 +217,11 @@ public class IntegrationDeleteOutOfMemoryTest {
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
             storageDocumentService).anyTimes();
+      EasyMock
+            .expect(
+                  ((StorageServiceProviderImpl) provider)
+                        .getDfceServicesManager())
+            .andReturn(dfceServicesManager).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock

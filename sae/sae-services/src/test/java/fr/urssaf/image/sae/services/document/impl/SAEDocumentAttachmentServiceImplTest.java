@@ -196,7 +196,6 @@ public class SAEDocumentAttachmentServiceImplTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       server.resetData();
-      provider.closeConnexion();
 
       if (ecde != null) {
          try {

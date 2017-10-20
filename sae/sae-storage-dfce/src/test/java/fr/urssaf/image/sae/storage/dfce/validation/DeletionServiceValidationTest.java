@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.storage.dfce.validation;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,11 +29,6 @@ public class DeletionServiceValidationTest {
    @Before
    public void init() throws ConnectionServiceEx {
       commonsServices.initServicesParameters();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    /**

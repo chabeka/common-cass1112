@@ -46,6 +46,8 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -78,6 +80,10 @@ public class Integration203Test {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
+
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -198,6 +204,11 @@ public class Integration203Test {
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
             storageDocumentService).anyTimes();
+      EasyMock
+            .expect(
+                  ((StorageServiceProviderImpl) provider)
+                        .getDfceServicesManager())
+            .andReturn(dfceServicesManager).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock

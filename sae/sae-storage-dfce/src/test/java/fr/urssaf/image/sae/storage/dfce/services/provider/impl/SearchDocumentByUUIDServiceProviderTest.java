@@ -5,7 +5,6 @@ import java.text.ParseException;
 
 import junit.framework.Assert;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,11 +36,6 @@ public class SearchDocumentByUUIDServiceProviderTest {
    public void init() throws ConnectionServiceEx, IOException, ParseException {
       commonsServices.initServicesParameters();
       commonsServices.initStorageDocumens();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    // Ici on test la recherche d'un document

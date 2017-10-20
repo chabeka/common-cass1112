@@ -28,7 +28,7 @@ implements StorageServiceProvider {
     *         récupération
     */
    @Override
-   public final StorageDocumentService getStorageDocumentService() {
+   public StorageDocumentService getStorageDocumentService() {
       return storageDocumentService;
    }
 
@@ -39,7 +39,7 @@ implements StorageServiceProvider {
     *           : la façade des services d'insertion ,de recherche,récupération
     */
    @SuppressWarnings("PMD.LongVariable")
-   public final void setStorageDocumentService(
+   public void setStorageDocumentService(
          final StorageDocumentService storageDocumentService) {
       this.storageDocumentService = storageDocumentService;
    }
@@ -48,9 +48,9 @@ implements StorageServiceProvider {
     * {@inheritDoc}
     */
    @Override
-   public final void openConnexion() {
-      if (!getDfceServicesManager().isActive()) {
-         getDfceServicesManager().getConnection();
+   public void openConnexion() {
+      if (!dfceServicesManager.isActive()) {
+         dfceServicesManager.getConnection();
       }
    }
 
@@ -58,8 +58,8 @@ implements StorageServiceProvider {
     * {@inheritDoc}
     */
    @Override
-   public final void closeConnexion() {
-      getDfceServicesManager().closeConnection();
+   public void closeConnexion() {
+      dfceServicesManager.closeConnection();
    }
 
    /**

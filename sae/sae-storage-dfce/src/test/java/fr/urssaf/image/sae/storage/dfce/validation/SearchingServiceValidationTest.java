@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.storage.dfce.validation;
 
 import java.util.ArrayList;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,11 +31,6 @@ public class SearchingServiceValidationTest {
    @Before
    public void init() throws ConnectionServiceEx {
       commonsServices.initServicesParameters();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    /**

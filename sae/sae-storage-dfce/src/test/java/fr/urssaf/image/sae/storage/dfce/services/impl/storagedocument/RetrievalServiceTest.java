@@ -49,7 +49,6 @@ public class RetrievalServiceTest {
 
    @After
    public void end() throws Exception {
-      commonsServices.closeServicesParameters();
       serverBean.resetData();
    }
 

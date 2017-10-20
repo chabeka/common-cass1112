@@ -10,8 +10,13 @@
 
   <import resource="applicationContext-properties-test.xml" />
   
-  <import resource="applicationContext-sae-trace.xml" />
+  <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
+      <constructor-arg ref="dfceConnection" />
+   </bean>
   
+  <import resource="applicationContext-sae-trace.xml" />
+    
   <context:component-scan base-package="fr.urssaf.image.sae.webservices.support" />
   
 </beans>

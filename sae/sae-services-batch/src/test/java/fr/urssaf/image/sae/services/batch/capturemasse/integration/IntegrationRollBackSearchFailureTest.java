@@ -65,6 +65,8 @@ import fr.urssaf.image.sae.services.exception.search.MetaDataUnauthorizedToSearc
 import fr.urssaf.image.sae.services.exception.search.SAESearchServiceEx;
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.exception.search.UnknownLuceneMetadataEx;
+import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -107,6 +109,10 @@ public class IntegrationRollBackSearchFailureTest {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
+
+   @Autowired
+   @Qualifier("dfceServicesManager")
+   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -347,6 +353,11 @@ public class IntegrationRollBackSearchFailureTest {
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
             storageDocumentService).anyTimes();
+      EasyMock
+            .expect(
+                  ((StorageServiceProviderImpl) provider)
+                        .getDfceServicesManager())
+            .andReturn(dfceServicesManager).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock

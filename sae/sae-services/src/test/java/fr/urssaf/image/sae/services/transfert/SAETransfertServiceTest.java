@@ -131,10 +131,6 @@ public class SAETransfertServiceTest {
 
    @After
    public void end() throws Exception {
-
-      provider.closeConnexion();
-      transfertService.closeConnexion();
-
       server.resetData();
 
       if (uidDocGNT != null) {

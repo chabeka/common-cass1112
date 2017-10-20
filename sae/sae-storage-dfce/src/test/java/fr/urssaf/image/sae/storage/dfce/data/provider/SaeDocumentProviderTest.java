@@ -5,7 +5,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,11 +33,6 @@ public class SaeDocumentProviderTest {
    @Before
    public void init() throws ConnectionServiceEx {
       commonsServices.initServicesParameters();
-   }
-
-   @After
-   public void end() {
-      commonsServices.closeServicesParameters();
    }
 
    @Test

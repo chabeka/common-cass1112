@@ -101,7 +101,6 @@ public class InsertionServiceTest {
 
    @After
    public void after() throws Exception {
-      commonsServices.closeServicesParameters();
       AuthenticationContext.setAuthenticationToken(null);
 
       cassandraServerBean.resetData();
