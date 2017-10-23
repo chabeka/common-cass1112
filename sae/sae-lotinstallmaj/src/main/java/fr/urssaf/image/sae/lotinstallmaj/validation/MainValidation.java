@@ -229,7 +229,7 @@ public class MainValidation {
       if (MajLotServiceImpl.CASSANDRA_DFCE_170901
             .equalsIgnoreCase(nomOperation))
          return;
-      if (MajLotServiceImpl.CASSANDRA_171100.equalsIgnoreCase(nomOperation))
+      if (MajLotServiceImpl.CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation))
          return;
 
 

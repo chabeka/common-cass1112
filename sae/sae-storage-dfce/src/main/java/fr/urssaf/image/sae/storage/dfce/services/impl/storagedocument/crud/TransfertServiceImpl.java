@@ -78,7 +78,7 @@ TransfertService {
       ServiceProvider dfceService = getDfceService();
       DFCEConnection cnxParams = getCnxParameters();
       return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
-            dfceService, cnxParams, uUIDCriteria, LOGGER);
+            dfceService, cnxParams, uUIDCriteria, false, LOGGER);
    }
 
    /**

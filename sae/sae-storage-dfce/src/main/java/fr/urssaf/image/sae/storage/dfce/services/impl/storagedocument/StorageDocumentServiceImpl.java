@@ -174,7 +174,8 @@ implements StorageDocumentService {
    @Override
    public StorageDocument searchStorageDocumentByUUIDCriteria(
          final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
-      return searchingService.searchStorageDocumentByUUIDCriteria(uUIDCriteria);
+      return searchingService.searchStorageDocumentByUUIDCriteria(uUIDCriteria,
+            false);
    }
 
    /**
@@ -435,7 +436,7 @@ implements StorageDocumentService {
 		desiredStorageMetadatas.add(new StorageMetadata(
 				StorageTechnicalMetadatas.GEL.getShortCode()));
 		StorageDocument document = searchingService.searchStorageDocumentByUUIDCriteria(new UUIDCriteria(uuidDoc,
-				desiredStorageMetadatas));
+                  desiredStorageMetadatas), false);
 		
 		for (StorageMetadata meta : document.getMetadatas()) {
 			if (meta.getShortCode().equals(

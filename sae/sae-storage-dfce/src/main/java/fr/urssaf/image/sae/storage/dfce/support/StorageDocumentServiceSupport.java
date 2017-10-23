@@ -22,6 +22,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
@@ -74,6 +75,9 @@ public class StorageDocumentServiceSupport {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageDocumentServiceSupport.class);
 
+   @Value("${sae.nom.instance.plateforme}")
+   private String nomPlateforme;
+   
    /**
     * Insertion de document
     * 
@@ -374,7 +378,8 @@ public class StorageDocumentServiceSupport {
     */
    public StorageDocument searchStorageDocumentByUUIDCriteria(
          ServiceProvider dfceService, DFCEConnection cnxParams,
-         UUIDCriteria uUIDCriteria, Logger log) throws SearchingServiceEx {
+         UUIDCriteria uUIDCriteria, boolean forConsultation, Logger log)
+         throws SearchingServiceEx {
 
       try {
 
@@ -395,7 +400,8 @@ public class StorageDocumentServiceSupport {
 
          if (docDfce != null) {
             storageDoc = BeanMapper.dfceDocumentToStorageDocument(docDfce,
-                  uUIDCriteria.getDesiredStorageMetadatas(), dfceService, true);
+                  uUIDCriteria.getDesiredStorageMetadatas(), dfceService,
+                  nomPlateforme, forConsultation, true);
          }
          log.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
@@ -994,7 +1000,7 @@ public class StorageDocumentServiceSupport {
       }
 
       return BeanMapper.dfceDocumentFromRecycleBinToStorageDocument(doc,
-            desiredStorageMetadatas, dfceService, false);
+            desiredStorageMetadatas, dfceService, false, false);
    }
 
 }

@@ -41,7 +41,7 @@ public class SearchingServiceValidationTest {
    public void searchStorageDocumentByUUIDCriteriaValidation()
          throws SearchingServiceEx {
       commonsServices.getSearchingService()
-            .searchStorageDocumentByUUIDCriteria(null);
+            .searchStorageDocumentByUUIDCriteria(null, false);
    }
 
    /**

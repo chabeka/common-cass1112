@@ -82,12 +82,43 @@ public final class BeanMapper {
          final Document document, final List<StorageMetadata> desiredMetaDatas,
          final ServiceProvider serviceDFCE, boolean forConsultion)
                throws StorageException, IOException {
+      return dfceDocumentToStorageDocument(document, desiredMetaDatas,
+            serviceDFCE, StringUtils.EMPTY, forConsultion, false);
+   }
+
+   /**
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
+    * 
+    * @param document
+    *           : Le document DFCE.
+    * @param desiredMetaDatas
+    *           : Les métadonnées souhaitées.
+    * @param serviceDFCE
+    *           : Les services DFCE.
+    * @param nomPlateforme
+    *           Nom d'instance de la plateforme
+    * @param forConsultation
+    *           : Paramètre pour récupérer le contenue des documents pour la
+    *           consultation.
+    * @return une occurrence de StorageDocument
+    * @throws StorageException
+    *            : Exception levée lorsque qu'un dysfonctionnement se produit.
+    * @throws IOException
+    *            : Exception levée lorsque qu'un dysfonctionnement se produit
+    *            lors des I/O.
+    */
+   public static StorageDocument dfceDocumentToStorageDocument(
+         final Document document, final List<StorageMetadata> desiredMetaDatas,
+         final ServiceProvider serviceDFCE, String nomPlateforme,
+         boolean forConsultation, boolean isDocContentAdd)
+         throws StorageException, IOException {
       // on construit la liste des métadonnées à partir de la liste des
       // métadonnées souhaitées.
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaDatas, serviceDFCE);
+            document, desiredMetaDatas, serviceDFCE, nomPlateforme,
+            forConsultation);
       return buildStorageDocument(document, metaDatas, serviceDFCE,
-            forConsultion, false);
+            isDocContentAdd, false);
    }
 
    /**
@@ -112,14 +143,16 @@ public final class BeanMapper {
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument dfceDocumentFromRecycleBinToStorageDocument(
          final Document document, final List<StorageMetadata> desiredMetaDatas,
-         final ServiceProvider serviceDFCE, boolean forConsultion)
+         final ServiceProvider serviceDFCE, boolean forConsultion,
+         boolean isDocContentAdd)
                throws StorageException, IOException {
       // on construit la liste des métadonnées à partir de la liste des
       // métadonnées souhaitées.
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaDatas, serviceDFCE);
+            document, desiredMetaDatas, serviceDFCE, StringUtils.EMPTY,
+            forConsultion);
       return buildStorageDocument(document, metaDatas, serviceDFCE,
-            forConsultion, true);
+            isDocContentAdd, true);
    }
 
    /**
@@ -146,7 +179,7 @@ public final class BeanMapper {
          final ServiceProvider serviceDFCE) throws StorageException,
          IOException {
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaData, serviceDFCE);
+            document, desiredMetaData, serviceDFCE, StringUtils.EMPTY, false);
       return new StorageDocument(metaDatas);
    }
 
@@ -160,6 +193,9 @@ public final class BeanMapper {
     *           : Le document DFCE.
     * @param desiredMetaData
     *           : La liste des métadonnées souhaitées.
+    * @param nomPlateforme
+    *           Nom d'instance de la plateforme
+    * @param forConsultation
     * @return La liste des {@link StorageMetadata} à partir de la liste des
     *         {@link Criterion}.
     * @throws JsonProcessingException
@@ -167,7 +203,9 @@ public final class BeanMapper {
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private static List<StorageMetadata> storageMetaDatasFromCriterions(
          final Document document, final List<StorageMetadata> desiredMetaData,
-         final ServiceProvider serviceDFCE) throws JsonProcessingException {
+         final ServiceProvider serviceDFCE, String nomPlateforme,
+         boolean forConsultation)
+         throws JsonProcessingException {
       final Set<StorageMetadata> metadatas = new HashSet<StorageMetadata>();
       if (document != null) {
          final List<Criterion> criterions = document.getAllCriterions();
@@ -229,7 +267,7 @@ public final class BeanMapper {
                // retourne avec la valeur vide
                if (!found) {
                   metadatas.add(completedMetadatas(document, metadata,
-                        serviceDFCE));
+                        serviceDFCE, nomPlateforme, forConsultation));
                }
             }
 
@@ -275,7 +313,7 @@ public final class BeanMapper {
     *           : La liste des métadonnées.
     * @param serviceDFCE
     *           : Les services DFCE.
-    * @param forConsultation
+    * @param isDocContentAdd
     *           : Paramtére pour charger le contenue du document.
     * @param fromRecyclebin
     *           : True si le document provient de la corbeille, false sinon
@@ -286,13 +324,13 @@ public final class BeanMapper {
     */
    private static StorageDocument buildStorageDocument(final Document document,
          final List<StorageMetadata> listMetaData,
-         final ServiceProvider serviceDFCE, boolean forConsultation,
+         final ServiceProvider serviceDFCE, boolean isDocContentAdd,
          boolean fromRecyclebin)
                throws IOException {
       // Instance de StorageDocument
       final StorageDocument storageDocument = new StorageDocument();
       if (document != null) {
-         if (forConsultation) {
+         if (isDocContentAdd) {
             InputStream docContent = null;
             if (fromRecyclebin) {
                docContent = serviceDFCE.getRecycleBinService().getDocumentFile(
@@ -452,11 +490,15 @@ public final class BeanMapper {
     *           : le document retourné par DFCE.
     * @param metadata
     *           : La métadonnée désirés.
-    * @return
+    * @param nomPlateforme
+    *           Nom d'instance de la plateforme
+    * @param forConsultation
+    * @return Le bean {@link StorageMetadata} représentant la métadonnée traitée
     */
    // CHECKSTYLE:OFF
    private static StorageMetadata completedMetadatas(final Document document,
-         final StorageMetadata metadata, final ServiceProvider serviceDFCE) {
+         final StorageMetadata metadata, final ServiceProvider serviceDFCE,
+         String nomPlateforme, boolean forConsultation) {
       StorageMetadata metadataFound = null;
 
       final StorageTechnicalMetadatas technical = Utils
@@ -553,7 +595,13 @@ public final class BeanMapper {
          } else {
             metadataFound = new StorageMetadata(metadata.getShortCode(), false);
          }
-
+         // On ne traite la metadonnée Instance que lorsque l'on est en
+         // recherche ou consultation.
+      } else if (forConsultation
+            && technical.getShortCode().equals(
+            StorageTechnicalMetadatas.NOM_INSTANCE_PLATEFORME.getShortCode())) {
+         metadataFound = new StorageMetadata(metadata.getShortCode(),
+               nomPlateforme);
       } else {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(), "");

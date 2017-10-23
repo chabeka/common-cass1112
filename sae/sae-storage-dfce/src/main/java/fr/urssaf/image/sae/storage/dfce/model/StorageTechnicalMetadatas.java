@@ -62,7 +62,9 @@ public enum StorageTechnicalMetadatas {
    // Id de traitement de transfert de masse de document
    ID_TRANSFERT_MASSE_INTERNE("IdTransfertMasseInterne", "ifi"),
    // Id de traitement de masse interne du document
-   ID_TRAITEMENT_MASSE_INTERNE("IdTraitementMasseInterne", "iti");
+   ID_TRAITEMENT_MASSE_INTERNE("IdTraitementMasseInterne", "iti"),
+   // Nom de l'instance de la plateforme traitant le document
+   NOM_INSTANCE_PLATEFORME("Instance", "ist");
 	
 	// Le code court de la métadonnée.
 	private String shortCode;

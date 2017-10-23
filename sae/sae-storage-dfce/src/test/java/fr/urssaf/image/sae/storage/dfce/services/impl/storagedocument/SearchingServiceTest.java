@@ -69,7 +69,8 @@ public class SearchingServiceTest {
             new ArrayList<StorageMetadata>());
       
       
-      StorageDocument storeDoc = commonsServices.getSearchingService().searchStorageDocumentByUUIDCriteria(uuidCriteria);
+      StorageDocument storeDoc = commonsServices.getSearchingService()
+            .searchStorageDocumentByUUIDCriteria(uuidCriteria, false);
       
       Assert.assertNotNull("Recupération d'un document par UUID :", storeDoc.getUuid());
       commonsServices.destroyMockTest(document.getUuid(), commonsServices

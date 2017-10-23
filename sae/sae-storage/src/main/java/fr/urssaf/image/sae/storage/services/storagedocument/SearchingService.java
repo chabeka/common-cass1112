@@ -53,13 +53,17 @@ public interface SearchingService {
     * @param uuidCriteria
     *           : L'UUID du document à rechercher
     * 
+    * @param forConsultation
+    *           True si consultation, false sinon.
+    * 
     * @return un strorageDocument
     * 
     * @throws SearchingServiceEx
     *            Exception lévée lorsque la recherche ne se déroule pas bien.
     */
    StorageDocument searchStorageDocumentByUUIDCriteria(
-         final UUIDCriteria uuidCriteria) throws SearchingServiceEx;
+         final UUIDCriteria uuidCriteria, boolean forConsultation)
+         throws SearchingServiceEx;
 
    /**
     * Permet de faire une recherche des métadonnées par UUID.

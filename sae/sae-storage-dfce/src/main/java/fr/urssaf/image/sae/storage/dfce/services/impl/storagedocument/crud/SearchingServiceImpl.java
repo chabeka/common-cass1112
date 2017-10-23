@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.docubase.dfce.exception.ExceededSearchLimitException;
@@ -99,6 +100,9 @@ SearchingService {
    @Autowired
    private MappingDocumentService mappingService;
 
+   @Value("${sae.nom.instance.plateforme}")
+   private String nomPlateforme;
+
    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(
          "yyyyMMddHHmmssSSS");
    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
@@ -133,7 +137,7 @@ SearchingService {
 
             storageDocuments.add(BeanMapper.dfceDocumentToStorageDocument(
                   document, luceneCriteria.getDesiredStorageMetadatas(),
-                  getDfceService(), false));
+                  getDfceService(), nomPlateforme, true, false));
          }
       } catch (SearchQueryParseException except) {
          throw new QueryParseServiceEx(StorageMessageHandler
@@ -166,11 +170,13 @@ SearchingService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public StorageDocument searchStorageDocumentByUUIDCriteria(
-         UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
+         UUIDCriteria uUIDCriteria, boolean forConsultation)
+         throws SearchingServiceEx {
 
       // -- Recherche du document
       return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
-            getDfceService(), getCnxParameters(), uUIDCriteria, LOG);
+            getDfceService(), getCnxParameters(), uUIDCriteria,
+            forConsultation, LOG);
    }
 
    /**
@@ -316,7 +322,7 @@ SearchingService {
             Document doc = iterateur.next();
             StorageDocument storageDocument = BeanMapper
                   .dfceDocumentToStorageDocument(doc, allMeta,
-                        getDfceService(), false);
+                        getDfceService(), nomPlateforme, true, false);
             UntypedDocument untypedDocument = null;
             // Vérification des droits
             if (storageDocument != null) {
@@ -345,7 +351,7 @@ SearchingService {
                         .dfceDocumentToStorageDocument(doc,
                               paginatedLuceneCriteria
                               .getDesiredStorageMetadatas(),
-                              getDfceService(), false));
+                              getDfceService(), nomPlateforme, true, false));
                   compteur++;
                }
             } else {

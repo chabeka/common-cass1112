@@ -52,7 +52,7 @@ RetrievalService {
                uUIDCriteria.toString());
          // Fin des traces debug - entrée méthode
          StorageDocument storageDoc = searchingService
-               .searchStorageDocumentByUUIDCriteria(uUIDCriteria);
+               .searchStorageDocumentByUUIDCriteria(uUIDCriteria, true);
          if (storageDoc == null) {
             LOG.debug("{} - Le document n'a pas été trouvé dans le stockage",
                   prefixeTrc);

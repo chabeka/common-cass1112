@@ -142,7 +142,7 @@ public class UpdateServiceTest {
             .getSearchingService()
             .searchStorageDocumentByUUIDCriteria(
                   new UUIDCriteria(firstDocument.getUuid(), Arrays.asList(
-                        new StorageMetadata("itm"), new StorageMetadata("apr"))));
+                        new StorageMetadata("itm"), new StorageMetadata("apr"))), false);
       List<StorageMetadata> metadatas = storedDoc.getMetadatas();
       Assert.assertEquals("il doit y avoir deux métadonnées", 2, metadatas
             .size());
