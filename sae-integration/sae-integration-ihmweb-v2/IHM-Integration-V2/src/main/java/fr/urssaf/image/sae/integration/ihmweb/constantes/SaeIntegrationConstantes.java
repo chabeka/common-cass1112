@@ -97,4 +97,14 @@ public final class SaeIntegrationConstantes {
     */
    public static final String PKI_IGC_GAMMEIMAGE = "4";
    
+     /**
+    * PKI de l'application SAEL
+    */
+   public static final String PKI_IGC_SAEL = "5";
+   
+     /**
+    * PKI de l'application AED
+    */
+   public static final String PKI_IGC_AED = "6";   
+ 
 }

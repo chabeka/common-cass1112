@@ -30,11 +30,5 @@
       <chemin>certificats/SAEL.p12</chemin>
       <password>UElYQfePe9jg</password>
    </certificat>
-
-   <certificat>
-      <id>6</id>
-      <chemin>certificats/AED.p12</chemin>
-      <password>l4shAe74Moo5</password>
-   </certificat>
     
 </certificats>
