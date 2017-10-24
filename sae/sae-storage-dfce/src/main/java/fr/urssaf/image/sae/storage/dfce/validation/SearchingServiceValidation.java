@@ -45,15 +45,17 @@ public class SearchingServiceValidation {
    }
 
    /**
-    * Valide l'argument de la méthode {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.SearchingServiceImpl#searchStorageDocumentByUUIDCriteria(UUIDCriteria) searchStorageDocumentByUUIDCriteria}
+    * Valide l'argument de la méthode
+    * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.SearchingServiceImpl#searchStorageDocumentByUUIDCriteria(UUIDCriteria, forConsultation)
+    * searchStorageDocumentByUUIDCriteria}
     * 
     * @param uUIDCriteria
     *           : Le critère uuid.
     * 
     */
-   @Before(value = "execution( fr.urssaf.image.sae.storage.model..StorageDocument  fr.urssaf.image.sae.storage.services.storagedocument..SearchingService.searchStorageDocumentByUUIDCriteria(..)) && @annotation(fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked) && args(uUIDCriteria)")
+   @Before(value = "execution( fr.urssaf.image.sae.storage.model..StorageDocument  fr.urssaf.image.sae.storage.services.storagedocument..SearchingService.searchStorageDocumentByUUIDCriteria(..)) && @annotation(fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked) && args(uUIDCriteria, forConsultation)")
    public final void searchStorageDocumentByUUIDCriteriaValidation(
-         final UUIDCriteria uUIDCriteria) {
+         final UUIDCriteria uUIDCriteria, boolean forConsultation) {
       Validate.notNull(uUIDCriteria, StorageMessageHandler.getMessage(CODE_ERROR,
             "search.uuid.required", "search.impact", "search.uuid.action"));
 
