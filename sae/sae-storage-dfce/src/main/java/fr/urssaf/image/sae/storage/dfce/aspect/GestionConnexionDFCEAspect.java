@@ -56,8 +56,12 @@ public class GestionConnexionDFCEAspect {
       Object objReturn = null;
 
       try {
+         LOG.debug("Début JoinPoint infos : {}",
+               new Object[] { jp.toLongString() });
          objReturn = jp.proceed();
       } catch (StorageException ex) {
+         LOG.debug("GestionConnexionDFCEAspect.StorageException infos : {}",
+               new Object[] { ex.getMessage() });
          synchronized (this) {
             if (dfceServicesManager != null
                   && dfceServicesManager.getDFCEService() != null
@@ -72,6 +76,9 @@ public class GestionConnexionDFCEAspect {
          }
 
       } catch (DFCEConnectionServiceException ex) {
+         LOG.debug(
+               "GestionConnexionDFCEAspect.DFCEConnectionServiceException infos : {}",
+               new Object[] { ex.getMessage() });
          synchronized (this) {
             int tentativecnx = dfceServicesManager.getCnxParameters()
                   .getNbtentativecnx();
@@ -81,7 +88,9 @@ public class GestionConnexionDFCEAspect {
          throw ex;
       }
 
-      LOG.debug("{} - Fin contrôle de connection aux services DFCE",
+      LOG.debug("Fin JoinPoint infos : {}",
+            new Object[] { jp.toLongString() });
+      LOG.debug("{} - Fin controle de connexion aux services DFCE",
             new Object[] { LOG_PREFIX });
 
       return objReturn;
@@ -177,58 +186,71 @@ public class GestionConnexionDFCEAspect {
     *            Exception de connection
     */
    private Object openConnectionDFCe(ProceedingJoinPoint jp, Throwable ex,
-         int tentativecnxTotal, int tentativecnxRestant)
-               throws Throwable {
+         int tentativecnxTotal, int tentativecnxRestant) throws Throwable {
       String LOG_PREFIX = "openConnectionDFCe";
       if (dfceServicesManager == null) {
          throw ex;
       }
       int step = (tentativecnxTotal + 1) - tentativecnxRestant;
       int tentativecnxNew = --tentativecnxRestant;
-      try {
-         if (tentativecnxNew > 0) {
-            LOG.debug("{} - Tentative n°{}/{} de connexion à DFCE",
-                  new Object[] { LOG_PREFIX, step, tentativecnxTotal });
+
+      if (tentativecnxNew > 0) {
+         try {
             if (!dfceServicesManager.isActive()) {
+               LOG.debug("{} - Tentative n°{}/{} de connexion à DFCE",
+                     new Object[] { LOG_PREFIX, step, tentativecnxTotal });
                dfceServicesManager.openConnection();
                LOG.debug(
                      "{} - Réussite de la tentative n°{}/{} de connexion à DFCE ",
                      new Object[] { LOG_PREFIX, step, tentativecnxTotal });
-               LOG.info("{} - Connection aux services DFCe réussi",
+               LOG.info("{} - Connexion aux services DFCe réussi",
                      new Object[] { LOG_PREFIX });
                // On retente de lancer la methode en erreur uniquement lorsque
                // la connexion a pu être remise en place.
+               LOG.debug("Relance suite connexion - JoinPoint infos : {}",
+                     new Object[] { jp.toLongString() });
                return jp.proceed();
-            } else {
-               // Si la connexion est déjà active et que l'on a une exception
-               // c'est soit un soucis autre, soit que le referencement n'est
-               // pas mise à jour.
-               LOG.info("{} - Connection aux services DFCe déjà active",
-                     new Object[] { LOG_PREFIX });
             }
-         } else {
-            LOG.error(
-                  "{} - Le nombre de tentative de connexion est atteint {}/{}",
-                  new Object[] { LOG_PREFIX, tentativecnxTotal,
-                        tentativecnxTotal });
+         } catch (ConnectionServiceEx connex) {
+            LOG.debug(
+                  "{} - Echec de la tentative n°{}/{} de connexion à DFCE ",
+                  new Object[] { LOG_PREFIX, step, tentativecnxTotal });
+            if (tentativecnxNew > 0) {
+               openConnectionDFCe(jp, connex, tentativecnxTotal,
+                     tentativecnxNew);
+            }
+            LOG.error("{} - Connexion aux services DFCe à échoué",
+                  new Object[] { LOG_PREFIX });
+            throw connex;
+         } catch (StorageException storex) {
+            LOG.debug(
+                  "{} - Echec de la tentative n°{}/{} de connexion à DFCE ",
+                  new Object[] { LOG_PREFIX, step, tentativecnxTotal });
+            if (tentativecnxNew > 0) {
+               openConnectionDFCe(jp, storex, tentativecnxTotal,
+                     tentativecnxNew);
+            }
+            LOG.error("{} - Connexion aux services DFCe à échoué",
+                  new Object[] { LOG_PREFIX });
+            throw storex;
          }
-      } catch (ConnectionServiceEx connex) {
-         LOG.debug("{} - Echec de la tentative n°{}/{} de connexion à DFCE ",
-               new Object[] { LOG_PREFIX, step, tentativecnxTotal });
-         if (tentativecnxNew > 0) {
-            openConnectionDFCe(jp, connex, tentativecnxTotal, tentativecnxNew);
+
+         if (dfceServicesManager.isActive()) {
+            // Si la connexion est déjà active et que l'on a une exception
+            // c'est soit un soucis autre, soit que le referencement n'est
+            // pas mise à jour.
+            String message = "Connexion aux services DFCe déjà active";
+            LOG.info("{} - " + message, new Object[] { LOG_PREFIX });
+
+            LOG.debug("Relance connexion déjà active - JoinPoint infos : {}",
+                  new Object[] { jp.toLongString() });
+
+            return jp.proceed();
          }
-         LOG.error("{} - Connection aux services DFCe à échoué", new Object[] { LOG_PREFIX });
-         throw connex;
-      } catch (StorageException storex) {
-         LOG.debug("{} - Echec de la tentative n°{}/{} de connexion à DFCE ",
-               new Object[] { LOG_PREFIX, step, tentativecnxTotal });
-         if (tentativecnxNew > 0) {
-            openConnectionDFCe(jp, storex, tentativecnxTotal, tentativecnxNew);
-         }
-         LOG.error("{} - Connection aux services DFCe à échoué",
-               new Object[] { LOG_PREFIX });
-         throw storex;
+      } else {
+         LOG.error(
+               "{} - Le nombre de tentative de connexion est atteint {}/{}",
+               new Object[] { LOG_PREFIX, tentativecnxTotal, tentativecnxTotal });
       }
 
       throw ex;
