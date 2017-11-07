@@ -595,6 +595,8 @@
             class="org.apache.axis2.jaxws.dispatchers.MustUnderstandValidationDispatcher" />
          <handler name="LogWarnSkeletonHandler"
             class="fr.urssaf.image.sae.webservices.handler.LogWarnSkeletonHandler" />
+         <handler name="LogHandler"
+            class="fr.urssaf.image.sae.webservices.handler.LogHandler" />
       </phase>
       <phase name="RMPhase" />
       <!--  System predefined phases       -->

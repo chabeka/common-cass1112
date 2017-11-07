@@ -163,6 +163,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          SaeDroitsEtFormat saeDroitsEtFormat = this.droitService.loadSaeDroits(issuer, pagms);
          viContenuExtrait.setSaeDroits(saeDroitsEtFormat.getSaeDroits());
          viContenuExtrait.setListControlProfil(saeDroitsEtFormat.getListFormatControlProfil());
+         viContenuExtrait.setIssuer(issuer);
          //--------------------------------------
 
       } catch (FormatControlProfilNotFoundException except) {

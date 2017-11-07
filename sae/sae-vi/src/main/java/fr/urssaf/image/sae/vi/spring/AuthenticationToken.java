@@ -50,6 +50,15 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
       return getViContenuExtrait().getListControlProfil();
    }
 
+   /**
+    * Methode permettant de retourner le contrat de service.
+    * 
+    * @return Contrat de service
+    */
+   public String getIssuer() {
+      return getViContenuExtrait().getIssuer();
+   }
+
    private VIContenuExtrait getViContenuExtrait() {
       return (VIContenuExtrait) getPrincipal();
    }
