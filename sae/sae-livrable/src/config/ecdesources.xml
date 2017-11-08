@@ -15,4 +15,19 @@
       <basePath>@@ECDE_NFS_CHEMIN3@@</basePath>
       <local>@@ECDE_LOCAL_3@@</local>
    </source>
+   <source>
+      <host>@@NAS_CNP_NFS_IP1@@</host>
+      <basePath>@@NAS_CNP_NFS_CHEMIN1@@</basePath>
+      <local>@@NAS_CNP_LOCAL_1@@</local>
+   </source>
+   <source>
+      <host>@@NAS_CNP_NFS_IP2@@</host>
+      <basePath>@@NAS_CNP_NFS_CHEMIN2@@</basePath>
+      <local>@@NAS_CNP_LOCAL_2@@</local>
+   </source>
+   <source>
+      <host>@@NAS_CNP_NFS_IP3@@</host>
+      <basePath>@@NAS_CNP_NFS_CHEMIN3@@</basePath>
+      <local>@@NAS_CNP_LOCAL_3@@</local>
+   </source>
 </sources>
