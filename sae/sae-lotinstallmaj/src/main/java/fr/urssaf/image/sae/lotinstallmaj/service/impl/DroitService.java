@@ -17,12 +17,15 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl;
+import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
 import fr.urssaf.image.sae.droit.dao.PagmDao;
 import fr.urssaf.image.sae.droit.dao.PagmaDao;
 import fr.urssaf.image.sae.droit.dao.PrmdDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import fr.urssaf.image.sae.droit.dao.support.ContratServiceSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
@@ -135,6 +138,38 @@ public final class DroitService {
       }
 
      
+
+   }
+   
+   
+   public void majPagmCsPourPKINationale180300(Keyspace keyspace) {
+
+      LOG.info("Mise à jour des CS (gestion pki nationale)");
+
+      JobClockConfiguration clock = new JobClockConfiguration();
+      clock.setMaxTimeSynchroError(10000000);
+      clock.setMaxTimeSynchroWarn(2000000);
+      JobClockSupport jobClock = new JobClockSupportImpl(keyspace, clock);
+
+      ContratServiceSupport csSupport = new ContratServiceSupport(new ContratServiceDao(keyspace));
+      List<ServiceContract> listeCS = csSupport.findAll(1000);
+      
+      for (ServiceContract serviceContract : listeCS) {
+
+         List<String> listePKI = serviceContract.getListPki();
+         if (listePKI != null) {
+            
+            if (!listePKI.contains("CN=ACOSS_Reseau_des_URSSAF")) {
+               listePKI.add("CN=ACOSS_Reseau_des_URSSAF");
+            }
+            serviceContract.setListCertifsClient(listePKI);
+            csSupport.create(serviceContract, jobClock.currentCLock());
+
+         }
+         
+      }
+      
+      LOG.info("Fin mise à jour des CS");
 
    }
 

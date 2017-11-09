@@ -74,7 +74,8 @@ public final class MajLotServiceImpl implements MajLotService {
    public static final String GNT_CASSANDRA_DFCE_170202 = "GNT_CASSANDRA_DFCE_170202";
    public static final String CASSANDRA_DFCE_170900 = "CASSANDRA_DFCE_170900";
    public static final String CASSANDRA_DFCE_170901 = "CASSANDRA_DFCE_170901";
-   public static final String CASSANDRA_DFCE_180300 = "CASSANDRA_DFCE_180300";
+   public static final String GNS_CASSANDRA_DFCE_180300 = "GNS_CASSANDRA_DFCE_180300";
+   public static final String GNT_CASSANDRA_DFCE_180300 = "GNT_CASSANDRA_DFCE_180300";
 
    public static final String META_SEPA = "META_SEPA";
    public static final String META_130400 = "META_130400";
@@ -346,7 +347,16 @@ public final class MajLotServiceImpl implements MajLotService {
          updateCassandra170901();
          // Ajout nouvelles des métadonnées
          updateMetaDfce("META_170901");
-      } else if (CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
+      } else if (GNS_CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNS);
+         // Update keyspace SAE
+         updateCassandra180300();
+         // MAJ des métadonnées
+         updateMetaDfce("META_180300");
+      } else if (GNT_CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
+         // Ajout des index composites
+         addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNT);
          // Update keyspace SAE
          updateCassandra180300();
          // MAJ des métadonnées

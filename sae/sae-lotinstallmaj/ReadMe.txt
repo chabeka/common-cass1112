@@ -489,14 +489,17 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 
 
 // ------------------------------------------
-// 18) Lot 171100SAE
+// 18) Lot 180300SAE
 // ------------------------------------------
 
-18-1) Lot 171100SAE
+18-1) Lot 171803AE
 Met la base Cassandra du SAE en version 28 :
 
 - Ajout d'une colonne avec index secondaire pour la gestion des doublons dans les jobs de la pile des travaux.
-- Suppression de la taille max CodeProduitV2 + passage à 10 NumeroCheque 
+- Suppression de la taille max CodeProduitV2 + passage à 10 NumeroCheque
+- Ajout des métas : PortefeuilleComptable, SousPortefeuilleComptable, DemandeurAchat, NumeroDemandeAchat, Instance
+- Ajout d'index composite pour SICOMOR et ODP RSI
+- Modif de tous les contrats de service pour passage à la PKI Nationale 
 
-sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_171100
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_180300
 

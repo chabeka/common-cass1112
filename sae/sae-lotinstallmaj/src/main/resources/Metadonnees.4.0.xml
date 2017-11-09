@@ -3946,7 +3946,7 @@
 		<ns1:consultable>oui</ns1:consultable>
 		<ns1:defaultConsultable>non</ns1:defaultConsultable>
 		<ns1:searchable>non</ns1:searchable>
-		<ns1:internal>non</ns1:internal>
+		<ns1:internal>oui</ns1:internal>
 		<ns1:archivable>non</ns1:archivable>
 		<ns1:label>Nom d'instance de plateforme</ns1:label>
 		<ns1:description>Nom d'instance de la plateforme permettant de différencier chaque plateforme</ns1:description>

@@ -1155,6 +1155,9 @@ public class SAECassandraUpdater {
       // -- Ajout des métadonnées
       refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
       
+      // Mise à jour des contrat de service pour passage à la PKI nationale
+      droitService.majPagmCsPourPKINationale180300(saeDao.getKeyspace());
+      
       // On positionne la version à 28
       saeDao.setDatabaseVersion(VERSION_28);
    }
