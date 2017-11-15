@@ -12,7 +12,6 @@ import org.springframework.batch.core.ExitStatus;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.model.storagedocument.AbstractStorageDocument;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
@@ -38,8 +37,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       String trcPrefix = "specificInitOperations()";
 
       try {
-         ((StorageServiceProviderImpl) getServiceProvider())
-               .getDfceServicesManager().getConnection();
+         getServiceProvider().openConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {

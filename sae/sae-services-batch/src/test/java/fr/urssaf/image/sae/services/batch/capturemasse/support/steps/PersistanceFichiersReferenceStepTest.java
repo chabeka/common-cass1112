@@ -40,7 +40,6 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListCaptureMasseReferenceFile;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -427,8 +426,7 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initReader() throws ConnectionServiceEx {
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -438,9 +436,8 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initWriterError() throws ConnectionServiceEx,
-   InsertionServiceEx {
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+         InsertionServiceEx {
+      provider.openConnexion();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -462,8 +459,7 @@ public class PersistanceFichiersReferenceStepTest {
       StorageReferenceFile ref = new StorageReferenceFile();
       ref.setUuid(UUID.randomUUID());
 
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
@@ -480,8 +476,7 @@ public class PersistanceFichiersReferenceStepTest {
    }
 
    private void initConnectionError() throws ConnectionServiceEx {
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().andThrow(new ConnectionServiceEx()).once();
 
       provider.closeConnexion();
@@ -496,8 +491,7 @@ public class PersistanceFichiersReferenceStepTest {
       StorageReferenceFile ref = new StorageReferenceFile();
       ref.setUuid(UUID.randomUUID());
 
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();
