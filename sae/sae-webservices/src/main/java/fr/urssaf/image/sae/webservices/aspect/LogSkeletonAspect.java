@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import fr.cirtil.www.saeservice.EcdeUrlSommaireType;
 import fr.cirtil.www.saeservice.EcdeUrlType;
 import fr.cirtil.www.saeservice.RequeteRechercheType;
 import fr.cirtil.www.saeservice.UuidType;
@@ -133,7 +134,7 @@ public class LogSkeletonAspect {
    private void logServiceInformationServiceECDE(Object target)
          throws ParameterNotFoundException {
       Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            EcdeUrlType.class);
+            EcdeUrlType.class.toString(), EcdeUrlSommaireType.class.toString());
       if (objRet instanceof EcdeUrlType) {
          EcdeUrlType url = (EcdeUrlType) objRet;
          if (url.getEcdeUrlType() != null) {
@@ -159,7 +160,7 @@ public class LogSkeletonAspect {
    private void logServiceInformationServiceID(Object target)
          throws ParameterNotFoundException {
       Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            UuidType.class);
+            UuidType.class.toString());
       if (objRet instanceof UuidType) {
          UuidType uuid = (UuidType) objRet;
          if (uuid.getUuidType() != null) {
@@ -185,7 +186,7 @@ public class LogSkeletonAspect {
    private void logServiceInformationServiceRequete(Object target)
          throws ParameterNotFoundException {
       Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            RequeteRechercheType.class);
+            RequeteRechercheType.class.toString());
       if (objRet instanceof RequeteRechercheType) {
          RequeteRechercheType req = (RequeteRechercheType) objRet;
          if (req.getRequeteRechercheType() != null) {
@@ -233,7 +234,7 @@ public class LogSkeletonAspect {
          buf.append(" CS::" + token.getIssuer() + " - ");
       }
       Object qName = SearchObjectClassUtil.searchObjectByClass(target,
-            QName.class);
+            QName.class.toString());
       if (qName != null) {
          buf.append(qName.toString() + " - ");
       }

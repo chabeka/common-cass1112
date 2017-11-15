@@ -85,8 +85,6 @@ public class SuppressionMasseProcessorTest {
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andThrow(new QueryParseServiceEx("La syntaxe de la requête est bizarroide")).once();
 
-      EasyMock.expectLastCall().once();
-
       EasyMock.replay(mockService);
 
       JobExecution execution = launcher.launchStep(
@@ -133,8 +131,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       EasyMock.replay(mockService);
 
@@ -199,8 +195,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
             EasyMock.anyObject(UUID.class),
@@ -277,8 +271,6 @@ public class SuppressionMasseProcessorTest {
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
 
-      EasyMock.expectLastCall().once();
-
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
 
@@ -348,8 +340,6 @@ public class SuppressionMasseProcessorTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());

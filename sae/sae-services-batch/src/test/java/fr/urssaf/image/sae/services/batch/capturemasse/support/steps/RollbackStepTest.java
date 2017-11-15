@@ -93,8 +93,6 @@ public class RollbackStepTest {
 
       EasyMock.expectLastCall().times(3);
 
-      EasyMock.expectLastCall().times(3);
-
       EasyMock.replay(deletionService);
 
       ExecutionContext executionContext = new ExecutionContext();

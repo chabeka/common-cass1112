@@ -1,6 +1,8 @@
 package fr.urssaf.image.sae.commons.utils;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
 
 public class SearchObjectClassUtil {
 
@@ -10,14 +12,16 @@ public class SearchObjectClassUtil {
     * 
     * @param objAnalyse
     *           Object à analyser
-    * @param klazzSearch
-    *           Classe recherchée
+    * @param arrayKlazzSearch
+    *           Classes recherchées
     * @return Objet trouvé
     */
-   public static Object searchObjectByClass(Object objAnalyse, Class klazzSearch) {
+   public static Object searchObjectByClass(Object objAnalyse,
+         String... arrayKlazzSearch) {
+      List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
       String lofPrefix = "searchObjectByClass - ";
       Object objFind = null;
-      if (objAnalyse == null || klazzSearch == null) {
+      if (objAnalyse == null || arrayKlazzSearch == null) {
          System.out.println(lofPrefix
                + "'obj' ou 'klazzSearch' ne peut être null");
       } else {
@@ -36,22 +40,24 @@ public class SearchObjectClassUtil {
                for (Field field : klazz.getDeclaredFields()) {
                   field.setAccessible(true);
                   Object f = field.get(objAnalyse);
-                  field.setAccessible(false);
+                  if (f != null) {
+                     field.setAccessible(false);
 
-                  Class klazzFind = f.getClass();
-                  if (klazzSearch.toString().equals(klazzFind.toString())) {
-                     System.out.println(lofPrefix + "Valeur recherchée :"
-                           + klazzSearch.toString() + " - valeur trouvée : "
-                           + f.toString());
-                     return f;
-                  } else {
-                     objFind = searchObjectByClass(f, klazzSearch);
+                     Class klazzFind = f.getClass();
+                     if (listeKlazzSearch.contains(klazzFind.toString())) {
+                        System.out.println(lofPrefix + "Valeur recherchée :"
+                              + arrayKlazzSearch.toString()
+                              + " - valeur trouvée : "
+                              + f.toString());
+                        return f;
+                     } else {
+                        objFind = searchObjectByClass(f, arrayKlazzSearch);
+                     }
+
+                     if (objFind != null) {
+                        break;
+                     }
                   }
-
-                  if (objFind != null) {
-                     break;
-                  }
-
                }
             } catch (IllegalAccessException e) {
                e.printStackTrace();
