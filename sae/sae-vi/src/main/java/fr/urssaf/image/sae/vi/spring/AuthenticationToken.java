@@ -56,7 +56,7 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
     * @return Contrat de service
     */
    public String getIssuer() {
-      return getViContenuExtrait().getIssuer();
+      return getViContenuExtrait().getCodeAppli();
    }
 
    private VIContenuExtrait getViContenuExtrait() {

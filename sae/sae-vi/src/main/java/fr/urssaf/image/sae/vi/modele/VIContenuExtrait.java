@@ -20,8 +20,6 @@ public class VIContenuExtrait {
 
    private String idUtilisateur;
 
-   private String issuer;
-
    private SaeDroits saeDroits;
 
    private List<String> pagms = new ArrayList<String>();
@@ -114,20 +112,4 @@ public class VIContenuExtrait {
    public void setPagms(List<String> pagms) {
       this.pagms = pagms;
    }
-
-   /**
-    * @return the issuer
-    */
-   public String getIssuer() {
-      return issuer;
-   }
-
-   /**
-    * @param issuer
-    *           the issuer to set
-    */
-   public void setIssuer(String issuer) {
-      this.issuer = issuer;
-   }
-
 }
