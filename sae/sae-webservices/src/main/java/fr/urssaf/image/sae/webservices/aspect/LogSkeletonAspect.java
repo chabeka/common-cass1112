@@ -80,7 +80,7 @@ public class LogSkeletonAspect {
          MethodeService.CONSULTATION_GNT_GNS.getClasseMethodeRequest(),
          MethodeService.DEBLOCAGE.getClasseMethodeRequest(),
          MethodeService.REPRISE.getClasseMethodeRequest());
-   
+
    /**
     * Liste des service comprenant une requête en paramètre
     */
@@ -89,7 +89,6 @@ public class LogSkeletonAspect {
          MethodeService.RECHERCHE_NB_RES.getClasseMethodeRequest(),
          MethodeService.SUPPRESSION_MASSE.getClasseMethodeRequest(),
          MethodeService.SUPPRESSION.getClasseMethodeRequest());
-   
 
    /**
     * Méthode permettant de logger les informations des services du skeleton
@@ -116,7 +115,11 @@ public class LogSkeletonAspect {
          } catch (ParameterNotFoundException e) {
             LOG.warn(logPrefixe + e.getMessage());
             // En cas d'erreur, on logge les informations simple du service.
-            logServiceInformationServiceAutres(arg);
+            try {
+               logServiceInformationServiceAutres(arg);
+            } catch (ParameterNotFoundException e1) {
+               // Do nothing
+            }
          }
       }
 
@@ -129,22 +132,28 @@ public class LogSkeletonAspect {
     * @param target
     *           Object cible contenant l'URL ECDE
     * @throws ParameterNotFoundException
-    *            @{@link ParameterNotFoundException}
+    * @{@link ParameterNotFoundException}
     */
    private void logServiceInformationServiceECDE(Object target)
          throws ParameterNotFoundException {
-      Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            EcdeUrlType.class.toString(), EcdeUrlSommaireType.class.toString());
-      if (objRet instanceof EcdeUrlType) {
-         EcdeUrlType url = (EcdeUrlType) objRet;
-         if (url.getEcdeUrlType() != null) {
-            LOG.info(getLogInformation(target, url.toString()));
+      try {
+         Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
+               EcdeUrlType.class.toString(),
+               EcdeUrlSommaireType.class.toString());
+         if (objRet instanceof EcdeUrlType) {
+            EcdeUrlType url = (EcdeUrlType) objRet;
+            if (url.getEcdeUrlType() != null) {
+               LOG.info(getLogInformation(target, url.toString()));
+            } else {
+               throw new ParameterNotFoundException(
+                     MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            }
          } else {
-            throw new ParameterNotFoundException(
-                  MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } else {
-         throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
+      } catch (Throwable e) {
+         throw new ParameterNotFoundException(
+               MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
    }
 
@@ -155,25 +164,30 @@ public class LogSkeletonAspect {
     * @param target
     *           Object cible contenant l'UUID
     * @throws ParameterNotFoundException
-    *            @{@link ParameterNotFoundException}
+    * @{@link ParameterNotFoundException}
     */
    private void logServiceInformationServiceID(Object target)
          throws ParameterNotFoundException {
-      Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            UuidType.class.toString());
-      if (objRet instanceof UuidType) {
-         UuidType uuid = (UuidType) objRet;
-         if (uuid.getUuidType() != null) {
-            LOG.info(getLogInformation(target, uuid.getUuidType().toString()));
+      try {
+         Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
+               UuidType.class.toString());
+         if (objRet instanceof UuidType) {
+            UuidType uuid = (UuidType) objRet;
+            if (uuid.getUuidType() != null) {
+               LOG.info(getLogInformation(target, uuid.getUuidType().toString()));
+            } else {
+               throw new ParameterNotFoundException(
+                     MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            }
          } else {
-            throw new ParameterNotFoundException(
-                  MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } else {
-         throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
+      } catch (Throwable e) {
+         throw new ParameterNotFoundException(
+               MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
    }
-   
+
    /**
     * Méthode permettant de logger les informations des services utilisant une
     * requête comme paramètre
@@ -181,38 +195,45 @@ public class LogSkeletonAspect {
     * @param target
     *           Object cible contenant la requête ECDE
     * @throws ParameterNotFoundException
-    *            @{@link ParameterNotFoundException}
+    * @{@link ParameterNotFoundException}
     */
    private void logServiceInformationServiceRequete(Object target)
          throws ParameterNotFoundException {
-      Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
-            RequeteRechercheType.class.toString());
-      if (objRet instanceof RequeteRechercheType) {
-         RequeteRechercheType req = (RequeteRechercheType) objRet;
-         if (req.getRequeteRechercheType() != null) {
-            LOG.info(getLogInformation(target, req.getRequeteRechercheType()
-                  .toString()));
+      try {
+         Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
+               RequeteRechercheType.class.toString());
+         if (objRet instanceof RequeteRechercheType) {
+            RequeteRechercheType req = (RequeteRechercheType) objRet;
+            if (req.getRequeteRechercheType() != null) {
+               LOG.info(getLogInformation(target, req.getRequeteRechercheType()
+                     .toString()));
+            } else {
+               throw new ParameterNotFoundException(
+                     MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            }
          } else {
-            throw new ParameterNotFoundException(
-                  MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } else {
-         throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
+      } catch (Throwable e) {
+         throw new ParameterNotFoundException(
+               MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
    }
-   
+
    /**
     * Méthode permettant de logger les informations de tous les services qui
     * n'ont pas de paramètre particulier pouvant les différentiés des autres.
     * 
     * @param target
     *           Object cible
+    * @throws ParameterNotFoundException
     */
-   private void logServiceInformationServiceAutres(Object target) {
+   private void logServiceInformationServiceAutres(Object target)
+         throws ParameterNotFoundException {
       LOG.info(getLogInformation(target, null));
 
    }
-   
+
    /**
     * Log les informations contenu dans un objet cible.
     * 
@@ -221,28 +242,35 @@ public class LogSkeletonAspect {
     * @param valueToLog
     *           Valeur à logger
     * @return Les informations contenues dans la log
+    * @throws ParameterNotFoundException
     */
-   private String getLogInformation(Object target, String valueToLog) {
+   private String getLogInformation(Object target, String valueToLog)
+         throws ParameterNotFoundException {
       StringBuffer buf = new StringBuffer();
-      MessageContext msgCtx = MessageContext.getCurrentMessageContext();
-      if (msgCtx != null) {
-         buf.append("messageContextID::" + msgCtx.getLogCorrelationID() + " - ");
-      }
-      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
-            .getContext().getAuthentication();
-      if (token != null && token.getIssuer() != null) {
-         buf.append(" CS::" + token.getIssuer() + " - ");
-      }
-      Object qName = SearchObjectClassUtil.searchObjectByClass(target,
-            QName.class.toString());
-      if (qName != null) {
-         buf.append(qName.toString() + " - ");
-      }
-      if (valueToLog != null && !valueToLog.isEmpty()) {
-         buf.append(valueToLog);
+      try {
+         MessageContext msgCtx = MessageContext.getCurrentMessageContext();
+         if (msgCtx != null) {
+            buf.append("messageContextID::" + msgCtx.getLogCorrelationID());
+         }
+         AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+               .getContext().getAuthentication();
+         if (token != null && token.getIssuer() != null) {
+            buf.append(" - CS::" + token.getIssuer());
+         }
+         Object qName = SearchObjectClassUtil.searchObjectByClass(target,
+               QName.class.toString());
+         if (qName != null) {
+            buf.append(" - " + qName.toString());
+         }
+         if (valueToLog != null && !valueToLog.isEmpty()) {
+            buf.append(" - " + valueToLog);
+         }
+      } catch (Throwable e) {
+         throw new ParameterNotFoundException(
+               MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
 
       return buf.toString();
    }
-   
+
 }
