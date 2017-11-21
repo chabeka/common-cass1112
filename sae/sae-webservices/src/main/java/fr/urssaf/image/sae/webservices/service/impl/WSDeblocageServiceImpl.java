@@ -86,10 +86,11 @@ public class WSDeblocageServiceImpl implements WSDeblocageService {
             if (StringUtils.isNotBlank(codeTraitement)) {
                jobQueueService.deleteJobAndSemaphoreFromJobsQueues(uuidJob,
                      codeTraitement);
-               Date abortDate = new Date();
+               // recupérer la date effective de fin du traitement
+               Date endingDate = jobRequest.getEndingDate();               
                // Passer le job à l'état ABORT
                jobQueueService.changerEtatJobRequest(uuidJob,
-                     JobState.ABORT.name(), abortDate, null);
+                     JobState.ABORT.name(), endingDate, null);
             } else {
                LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse",
                      new Object[] { prefixeTrc, uuid });
