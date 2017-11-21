@@ -83,6 +83,12 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
          } catch (IOException e) {
             throw new CaptureMasseSommaireHashException(hash, hashCode,
                   typeHash);
+         } finally {
+            try {
+               content.close();
+            } catch (IOException e) {
+               LOGGER.debug("impossible de fermer le flux du fichier sommaire.xml");
+            }
          }
 
          // comparaison avec la valeur attendu

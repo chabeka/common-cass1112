@@ -108,7 +108,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       while (index < configuration.getNbreEssaiMax() && !writeFinished) {
 
          try {
-            reader.initStream();
             staxUtils.initStream(resultats);
 
             ecrireFichierResultat(reader, nombreDocsTotal, nbDocumentsIntegres,
@@ -154,20 +153,21 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       if (Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom().equals(
             batchModeTraitement)) {
-
+         reader.initStream();
          this.ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual,
                erreur, false);
-
       } else if (Constantes.BATCH_MODE.PARTIEL.getModeNom().equals(
             batchModeTraitement)) {
+         // Initialisation du reader
+         reader.initStream();
          // Lecture du sommaire pour la gestion des documents non intégrés.
          this.ecrireFichierResultatDocumentsNonIntegres(reader, isVirtual,
                erreur, listIntDocs, true);
-
          if (listIntDocs != null && !listIntDocs.isEmpty()) {
+            // Fermeture du reader
+            reader.closeStream();
             // Réinitialisation du reader
             reader.initStream();
-
             // Lecture du sommaire pour la gestion des documents intégrés.
             this.ecrireFichierResultatDocumentsIntegres(reader, isVirtual,
                   erreur, listIntDocs);
@@ -962,6 +962,9 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
     */
    private XmlReader trouverXmlEventReaderParReference(XmlReader reader,
          XMLEventReference xmlEventReference) {
+      // fermeture du flux
+      reader.closeStream();
+      // reinitialisation du flux
       reader.initStream();
       boolean baliseFind = false;
       XMLEvent xmlEvent = null;

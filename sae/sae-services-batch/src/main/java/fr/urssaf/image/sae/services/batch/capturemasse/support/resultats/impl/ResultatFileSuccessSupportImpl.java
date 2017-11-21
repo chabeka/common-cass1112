@@ -135,6 +135,7 @@ public class ResultatFileSuccessSupportImpl implements
          ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> intDocuments,
          boolean restitutionsUuids, File sommaireFile, String modeBatch) {
 
+      String trcPrefix = "creerResultat()";
       final ResultatsType resultatsType = new ResultatsType();
       resultatsType.setBatchMode(BatchModeType.fromValue(modeBatch));
       resultatsType.setInitialDocumentsCount(documentsCount);
@@ -282,6 +283,22 @@ public class ResultatFileSuccessSupportImpl implements
             throw new CaptureMasseRuntimeException(e);
          } catch (XMLStreamException e) {
             throw new CaptureMasseRuntimeException(e);
+         } finally {
+            // Fermeture du reader
+            try {
+               reader.close();
+            } catch (XMLStreamException e1) {
+               LOGGER.debug(
+                     "{} - Impossible de fermer l'objet de lecture du fichier {}",
+                     new Object[] { trcPrefix, sommaireFile.getAbsolutePath() });
+            }
+            // Fermeture du stream
+            try {
+               sommaireStream.close();
+            } catch (IOException e) {
+               LOGGER.debug("{} - Impossible de fermer le flux du fichier {}",
+                     new Object[] { trcPrefix, sommaireFile.getAbsolutePath() });
+            }
          }
 
       }
