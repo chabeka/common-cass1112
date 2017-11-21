@@ -7,7 +7,7 @@
    <parent>
       <artifactId>sae-spring-batch-admin-parent</artifactId>
       <groupId>org.springframework.batch</groupId>
-      <version>1.2.2.BUILD-SNAPSHOT</version>
+      <version>1.2.3.BUILD-SNAPSHOT</version>
       <relativePath>../sae-spring-batch-admin-parent</relativePath>
    </parent>
    <packaging>war</packaging>
@@ -18,7 +18,7 @@
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
       <commons-cassandra-spring-batch.version>0.0.6</commons-cassandra-spring-batch.version>
-      <sae.version>16.9.0.2</sae.version>
+      <sae.version>18.3.0.1-SNAPSHOT</sae.version>
    </properties>
 
 
