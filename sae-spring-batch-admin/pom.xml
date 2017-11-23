@@ -70,7 +70,7 @@
       <module>sae-spring-batch-admin-manager</module>
       <module>sae-spring-batch-admin-sample</module>
    </modules>
-   <profiles>
+ <!--   <profiles>
       <profile>
          <id>verify</id>
          <build>
@@ -113,7 +113,7 @@
                   </executions>
                </plugin>
                <plugin>
-                  <!-- After the file count, we build the sample -->
+                  After the file count, we build the sample
                   <groupId>org.apache.maven.plugins</groupId>
                   <artifactId>maven-invoker-plugin</artifactId>
                   <configuration>
@@ -209,8 +209,8 @@
                      </execution>
                   </executions>
                </plugin>
-               <plugin><!-- run `mvn package assembly:assembly` to trigger 
-                     assembly creation. see http://www.sonatype.com/books/mvnref-book/reference/assemblies-set-dist-assemblies.html -->
+               <plugin>run `mvn package assembly:assembly` to trigger 
+                     assembly creation. see http://www.sonatype.com/books/mvnref-book/reference/assemblies-set-dist-assemblies.html
                   <artifactId>maven-assembly-plugin</artifactId>
                   <inherited>false</inherited>
                   <executions>
@@ -259,7 +259,7 @@
             </plugins>
          </build>
       </profile>
-   </profiles>
+   </profiles> -->
    <build>
       <extensions>
          <extension>
@@ -319,12 +319,6 @@
             <plugin>
                <artifactId>maven-assembly-plugin</artifactId>
                <inherited>false</inherited>
-               <configuration>
-                  <descriptors>
-                     <descriptor>src/assembly/dist.xml</descriptor>
-                  </descriptors>
-                  <appendAssemblyId>false</appendAssemblyId>
-               </configuration>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>
@@ -436,17 +430,23 @@
                <descriptors>
                   <descriptor>src/assembly/dist.xml</descriptor>
                </descriptors>
-               <appendAssemblyId>false</appendAssemblyId>
             </configuration>
             <executions>
                <execution>
                   <id>make-assembly</id> <!-- this is used for inheritance merges -->
                   <phase>package</phase> <!-- bind to the packaging phase -->
                   <goals>
-                     <goal>single</goal>
+                     <goal>attached</goal>
                   </goals>
                </execution>
             </executions>
+         </plugin>
+         <!-- Déploiement réalisé uniquement à la fin du build de tous les 
+            modules, et pas module par module. -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <version>${maven-deploy-plugin.version}</version>
          </plugin>
       </plugins>
    </build>
