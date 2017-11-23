@@ -219,17 +219,6 @@
                </configuration>
             </plugin>
             <plugin>
-               <artifactId>maven-site-plugin</artifactId>
-               <version>2.0</version>
-               <dependencies>
-                  <dependency>
-                     <groupId>org.apache.maven.doxia</groupId>
-                     <artifactId>doxia-module-confluence</artifactId>
-                     <version>1.0</version>
-                  </dependency>
-               </dependencies>
-            </plugin>
-            <plugin>
                <groupId>com.springsource.bundlor</groupId>
                <artifactId>com.springsource.bundlor.maven</artifactId>
                <inherited>true</inherited>
@@ -393,6 +382,10 @@
                <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
+          <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+            </plugin>
       </plugins>
    </build>
    <reporting>
