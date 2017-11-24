@@ -443,11 +443,11 @@
          </plugin>
          <!-- Déploiement réalisé uniquement à la fin du build de tous les 
             modules, et pas module par module. -->
-         <plugin>
+<!--          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-deploy-plugin</artifactId>
             <version>${maven-deploy-plugin.version}</version>
-         </plugin>
+         </plugin> -->
       </plugins>
    </build>
    <reporting>
