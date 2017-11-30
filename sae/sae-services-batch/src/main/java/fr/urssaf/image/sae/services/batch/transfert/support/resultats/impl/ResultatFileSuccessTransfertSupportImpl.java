@@ -199,7 +199,7 @@ public class ResultatFileSuccessTransfertSupportImpl implements
                         throw new CaptureMasseRuntimeException(
                               "Le document n°"
                                     + index
-                                    + " n'a pas été trouvé dans la liste des document intégrés");
+                                    + " n'a pas été trouvé dans la liste des documents intégrés");
                      }
 
                   } else if (CHEMIN_FICHIER.equals(name)) {

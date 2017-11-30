@@ -11,6 +11,7 @@ import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1148,31 +1149,43 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       if (erreur.getListIndex().contains(index)) {
 
          final String chemin = xmlEvent.asCharacters().getData();
-
+         boolean bul001AlreadyExists = false;
+         
          Integer currIndex;
          for (int i = 0; i < erreur.getListIndex().size(); i++) {
             currIndex = erreur.getListIndex().get(i);
             if (index == currIndex.intValue()) {
-               staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
-
                String code = erreur.getListCodes().get(i);
                String messageErreur = erreur.getListException().get(i)
                      .getMessage();
-               String message;
+               String message = null;
+               boolean newTagToCreate = false;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
+                  staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
                   message = "Le document " + chemin
                         + " n'a pas été traité. Détails : " + messageErreur;
-               } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code)) {
-                  message = "Une erreur interne à l'application est survenue lors du traitement du document "
-                        + chemin + ". Détails : " + messageErreur;
+                  newTagToCreate = true;
+               } else if (Constantes.ERR_BUL001.equalsIgnoreCase(code) ) {
+                  if( StringUtils.isNotEmpty(messageErreur) || !bul001AlreadyExists){
+                     bul001AlreadyExists = true;
+                     staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
+                     message = "Une erreur interne à l'application est survenue lors du traitement du document "
+                           + chemin + ". Détails : " + messageErreur;
+                     newTagToCreate = true;
+                  }
                } else {
+                  staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
                   message = messageErreur;
+                  newTagToCreate = true;
+               }
+               if(newTagToCreate){
+                  staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
+                  staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
+                  staxUtils.addEndTag(ERREUR, PX_SOMRES, NS_SOMRES);
                }
 
-               staxUtils.createTag("code", code, PX_SOMRES, NS_SOMRES);
-               staxUtils.createTag("libelle", message, PX_SOMRES, NS_SOMRES);
-               staxUtils.addEndTag(ERREUR, PX_SOMRES, NS_SOMRES);
+               
             }
          }
       }
