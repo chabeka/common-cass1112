@@ -60,6 +60,9 @@ public class ServiceProviderSupport {
     * connexion à DFCE
     */
    public final void connect() {
+      if(connexionServiceProvider == null){
+         connexionServiceProvider = new ConnexionServiceProvider();
+      }
       ServiceProvider serviceProvider = connexionServiceProvider
             .getServiceProviderByConnectionParams(dfceConnection);
       if (serviceProvider == null

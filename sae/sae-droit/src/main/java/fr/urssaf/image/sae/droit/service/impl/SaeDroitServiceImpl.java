@@ -350,8 +350,10 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             .debug(
                   "{} - Pour chaque pagm, on vérifie que les pagma et pagmp associés existent",
                   TRC_LOAD);
-      for (String codePagm : pagms) {
-         Pagm pagm = checkPagmExists(codePagm, listPagm, idClient);
+      
+      List<Pagm> ExistingPagms = checkPagmsExists(pagms, listPagm, idClient);
+      
+      for (Pagm pagm : ExistingPagms) {
 
          Pagma pagma;
          try {
@@ -405,7 +407,9 @@ public class SaeDroitServiceImpl implements SaeDroitService {
             saeDroitEtFormat
                   .setListFormatControlProfil(listFormatControlProfil);
          }
+      
       }
+
       return saeDroitEtFormat;
    }
 
@@ -549,27 +553,60 @@ public class SaeDroitServiceImpl implements SaeDroitService {
       }
    }
 
-   private Pagm checkPagmExists(String codePagm, List<Pagm> listPagm,
+//   private Pagm checkPagmExists(String codePagm, List<Pagm> listPagm,
+//         String idClient) throws PagmNotFoundException {
+//
+//      Pagm pagm = null;
+//      boolean found = false;
+//      int index = 0;
+//      while (index < listPagm.size() && !found) {
+//         if (listPagm.get(index).getCode().equals(codePagm)) {
+//            found = true;
+//            pagm = listPagm.get(index);
+//         }
+//         index++;
+//      }
+//
+//      if (!found) {
+//         throw new PagmNotFoundException("Aucun PAGM '" + codePagm
+//               + "' n'a été trouvé pour le contrat de service " + idClient);
+//      }
+//
+//      return pagm;
+//
+//   }
+   
+   /**
+    * Retourne la liste de Pagm à partir des codes pagms passés en paramètre
+    * @param pagms
+    * @param listPagm
+    * @param idClient
+    * @return list de Pagm
+    * @throws PagmNotFoundException si aucun Pagm trouvé
+    */
+   private List<Pagm> checkPagmsExists(List<String> pagms, List<Pagm> listPagm,
          String idClient) throws PagmNotFoundException {
-
-      Pagm pagm = null;
+      
+      List<Pagm> ExistingPagms = new ArrayList<Pagm>();
       boolean found = false;
-      int index = 0;
-      while (index < listPagm.size() && !found) {
-         if (listPagm.get(index).getCode().equals(codePagm)) {
-            found = true;
-            pagm = listPagm.get(index);
+      for (String codePagm : pagms) {
+         Pagm pagm = null;
+         int index = 0;
+         while (index < listPagm.size() && !found) {
+            if (listPagm.get(index).getCode().equals(codePagm)) {
+               found = true;
+               pagm = listPagm.get(index);
+               ExistingPagms.add(pagm);
+            }
+            index++;
          }
-         index++;
       }
-
-      if (!found) {
-         throw new PagmNotFoundException("Aucun PAGM '" + codePagm
-               + "' n'a été trouvé pour le contrat de service " + idClient);
+      // Si aucun PAGM trouvé
+      if (ExistingPagms.size() == 0) {
+         throw new PagmNotFoundException("Aucun PAGM de la liste n'a été trouvé pour le contrat de service " + idClient);
       }
-
-      return pagm;
-
+      
+      return ExistingPagms;
    }
 
    private Prmd getPrmd(String codePagmp) {
