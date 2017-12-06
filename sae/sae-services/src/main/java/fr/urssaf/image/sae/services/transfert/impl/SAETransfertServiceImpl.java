@@ -770,11 +770,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
+    * @throws InsertionIdGedExistantEx 
     */
    @Override
    public final void transfertDoc(final UUID idArchive)
          throws TransfertException, ArchiveAlreadyTransferedException,
-         ArchiveInexistanteEx {
+         ArchiveInexistanteEx, InsertionIdGedExistantEx {
 
       // -- On trace le début du transfert
       String trcPrefix = "transfertDoc";
@@ -830,9 +831,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
 
          StorageDocument document = storageDocumentService
-               .searchStorageDocumentByUUIDCriteria(uuidCriteria);
+               .searchStorageDocumentByUUIDCriteria(uuidCriteria);         
+         String hashDocGNT = getHashDocument(document);
 
-         // -- Le document n'existe pas sur la GNT
+         // -- Le document n'existe pas en GNT
          if (document == null) {
             // -- On recherche le document sur la GNS
             document = storageTransfertService
@@ -856,10 +858,25 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             // -- On recherche le document sur la GNS
             StorageDocument documentGNS = storageTransfertService
                   .searchStorageDocumentByUUIDCriteria(uuidCriteria);
-
-            // -- On s'assure que le document qu'on va transférer n'existe pas
-            // sur la GNS
-            if (documentGNS == null) {
+            
+            // -- On s'assure que le document n'existe pas en GNS
+            // -- OU si il existe en GNT et GNS, on le supprime de la GNS
+            if (documentGNS == null || 
+                  (getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) ) {
+               
+               if(getHashDocument(documentGNS) != null 
+                     && getHashDocument(documentGNS).equals(hashDocGNT)) {
+                  try {
+                     storageTransfertService.deleteStorageDocument(idArchive);
+                     LOG.info("{} - Transfert - Suppression du document {} de la GNS.",
+                           "transfertDoc", idArchive.toString());
+                  } catch (DeletionServiceEx ex) {
+                     String message = "Transfert - La suppression du document {0} de la GNS a échoué.";
+                     throw new TransfertException(
+                           StringUtils.replace(message, "{0}",
+                                 idArchive.toString()));
+                  }
+               }
 
                // -- Modification des métadonnées du document pour le transfert
                updateMetaDocumentForTransfert(document);
@@ -922,12 +939,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                } catch (InsertionIdGedExistantEx e1) {
                   throw new TransfertException(erreur, e1);
                }
-            } else {
-               // -- Le document existe sur la GNS et sur la GNT
-               String uuid = idArchive.toString();
-               String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
-               throw new ArchiveAlreadyTransferedException(StringUtils.replace(
-                     message, "{0}", uuid));
+            } else if (getHashDocument(documentGNS) != null && 
+                  !getHashDocument(documentGNS).equals(hashDocGNT)){
+               // -- L'idGed du document à transférer existe déjà en GNS
+               String msg = "L'identifiant ged spécifié '%s' existe déjà en GNS et ne peut être utilisé. Transfert impossible.";
+               throw new InsertionIdGedExistantEx(String.format(msg,
+                     idArchive.toString()));
             }
 
             // -- Suppression du document transféré de la GNT
@@ -961,6 +978,28 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       } catch (RetrievalServiceEx ex) {
          throw new TransfertException(erreur, ex);
+      } catch (InsertionIdGedExistantEx ex) {
+         throw new TransfertException(erreur, ex);
       }
    }
+   
+   /**
+    * Retourne le hash du storageDocument passé en paramètre
+    * @param storageDocument document
+    * @return
+    */
+   private String getHashDocument(StorageDocument document){
+      String hashDocument = null;
+      if(document != null){
+         for (StorageMetadata metadata : document.getMetadatas()) {
+            if (metadata.getShortCode().equals(
+                  StorageTechnicalMetadatas.HASH.getShortCode())) {
+               hashDocument = metadata.getValue().toString();
+               break;
+            }
+         }
+      }      
+      return hashDocument;
+   }
+   
 }

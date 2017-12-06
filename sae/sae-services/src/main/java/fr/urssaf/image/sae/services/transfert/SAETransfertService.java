@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransfered
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -37,10 +38,11 @@ public interface SAETransfertService {
     *            Erreur levée lorsque le document a déjà été transféré
     * @throws ArchiveInexistanteEx
     *            Erreur levée lorsque l'archive n'a pas été trouvée
+    * @throws InsertionIdGedExistantEx 
     */
    @PreAuthorize("hasRole('transfert')")
    void transfertDoc(UUID idArchive) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx;
+         ArchiveAlreadyTransferedException, ArchiveInexistanteEx, InsertionIdGedExistantEx;
 
    void transfertDocMasse(StorageDocument document) throws TransfertException,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,

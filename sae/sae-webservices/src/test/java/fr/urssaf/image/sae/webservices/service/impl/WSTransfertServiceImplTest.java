@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 
@@ -60,7 +61,7 @@ public class WSTransfertServiceImplTest {
    
    @Test(expected=TransfertAxisFault.class)
    public void testTransfert_archiveInexistanteEx() 
-      throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
+      throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, InsertionIdGedExistantEx {
       
       transfertService.transfertDoc(EasyMock.anyObject(UUID.class));
       EasyMock.expectLastCall().andThrow(new ArchiveInexistanteEx("test unitaire: ArchiveInexistanteEx"));
@@ -71,7 +72,7 @@ public class WSTransfertServiceImplTest {
 
    @Test(expected=TransfertAxisFault.class)
    public void testTransfert_archiveAlreadyTransfered() 
-      throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
+      throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, InsertionIdGedExistantEx {
       
       transfertService.transfertDoc(EasyMock.anyObject(UUID.class));
       EasyMock.expectLastCall().andThrow(new ArchiveAlreadyTransferedException("test unitaire: ArchiveAlreadyTransferedException"));
@@ -82,7 +83,7 @@ public class WSTransfertServiceImplTest {
    
    @Test(expected=TransfertAxisFault.class)
    public void testTransfert_transfertException() 
-   throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx {
+   throws TransfertAxisFault, TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, InsertionIdGedExistantEx {
       
       transfertService.transfertDoc(EasyMock.anyObject(UUID.class));
       EasyMock.expectLastCall().andThrow(new TransfertException("test unitaire : TransfertException"));

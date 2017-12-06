@@ -67,6 +67,7 @@ import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransfered
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -245,7 +246,7 @@ public class SAETransfertServiceTest {
    @Test
    // @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveInexistante() throws TransfertException,
-         ArchiveAlreadyTransferedException {
+         ArchiveAlreadyTransferedException, InsertionIdGedExistantEx {
 
       // -- Appel méthode de transfert sur un doc déjà transféré
       try {
@@ -362,7 +363,7 @@ public class SAETransfertServiceTest {
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException {
+         UnknownFormatException, InsertionIdGedExistantEx {
 
       // -- Insertion d'un document de test sur la GNT
       uidDocGNT = insertDoc(testProviderGNT);
@@ -480,7 +481,7 @@ public class SAETransfertServiceTest {
          EmptyDocumentEx, RequiredArchivableMetadataEx,
          NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
          CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException {
+         ValidationExceptionInvalidFile, UnknownFormatException, InsertionIdGedExistantEx {
 
       // -- Insertion d'un document de test sur la GNT
       uidDocGNT = insertDoc(testProviderGNT);

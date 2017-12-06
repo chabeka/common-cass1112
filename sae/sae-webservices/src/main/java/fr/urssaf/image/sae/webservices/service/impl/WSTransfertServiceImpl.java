@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransfered
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 
@@ -65,6 +66,9 @@ public class WSTransfertServiceImpl implements WSTransfertService {
          throw e;
       } catch (ConnectionServiceEx e) {
          throw e;
+      }  catch (InsertionIdGedExistantEx e){
+         throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(),
+               e);
       } catch (Exception e) {
          throw new TransfertAxisFault("ErreurInterneTransfert", e.getMessage(),
                e);
