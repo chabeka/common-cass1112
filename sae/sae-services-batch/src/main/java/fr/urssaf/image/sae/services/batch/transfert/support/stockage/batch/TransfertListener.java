@@ -226,14 +226,14 @@ public class TransfertListener extends AbstractListener {
          throw exception.getCause();
 
       } catch (InterruptionTraitementException e) {
-
+         
+         String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
+               + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
+         LOGGER.warn("{} - " + messageError, trcPrefix);
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix);
 
          getStepExecution().getJobExecution().getExecutionContext()
                .put(Constantes.FLAG_BUL003, Boolean.TRUE);
-
-         String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
-               + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
 
          codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
