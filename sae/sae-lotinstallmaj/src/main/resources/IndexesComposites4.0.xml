@@ -281,8 +281,8 @@
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>
 	</ns1:indexReference>
 	<ns1:indexReference>
-		<ns1:nom>DomaineComptable-SiteComptable-CodeRnd-NumeroDemandeAchat</ns1:nom>
-		<ns1:composition>cpt:sco:SM_DOCUMENT_TYPE:nda</ns1:composition>
+		<ns1:nom>DomaineCotisant-CodeOrganismeProprietaire-MontantCheque-DateArchivage</ns1:nom>
+		<ns1:composition>cot:cop:mch:SM_ARCHIVAGE_DATE</ns1:composition>
 		<ns1:aCreerGNT>oui</ns1:aCreerGNT>
 		<ns1:aCreerGNS>oui</ns1:aCreerGNS>
 		<ns1:aIndexerVide>oui</ns1:aIndexerVide>

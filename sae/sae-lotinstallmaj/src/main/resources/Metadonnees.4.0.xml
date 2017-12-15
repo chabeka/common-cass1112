@@ -3283,29 +3283,6 @@
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
-		<ns1:longCode>DateHeureStatutWATT</ns1:longCode>
-		<ns1:shortCode>dhs</ns1:shortCode>
-		<ns1:type>Datetime</ns1:type>
-		<ns1:requiredForArchival>non</ns1:requiredForArchival>
-		<ns1:requiredForStorage>non</ns1:requiredForStorage>
-		<ns1:consultable>oui</ns1:consultable>
-		<ns1:defaultConsultable>non</ns1:defaultConsultable>
-		<ns1:searchable>oui</ns1:searchable>
-		<ns1:internal>non</ns1:internal>
-		<ns1:archivable>oui</ns1:archivable>
-		<ns1:label>Date et heure du statut du document dans WATT</ns1:label>
-		<ns1:description>Date et l'heure du statutWATT du document dans la GNT</ns1:description>
-		<ns1:hasDictionary>non</ns1:hasDictionary>
-		<ns1:isIndexed>non</ns1:isIndexed>
-		<ns1:modifiable>oui</ns1:modifiable>
-		<ns1:clientAvailable>oui</ns1:clientAvailable>
-		<ns1:leftTrimable>non</ns1:leftTrimable>
-		<ns1:rightTrimable>non</ns1:rightTrimable>
-		<ns1:transferable>non</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
-		<ns1:aModifier>non</ns1:aModifier>
-	</ns1:metaReference>
-	<ns1:metaReference>
 		<ns1:longCode>CodeDocument</ns1:longCode>
 		<ns1:shortCode>cdo</ns1:shortCode>
 		<ns1:type>String</ns1:type>
@@ -3440,13 +3417,13 @@
 		<ns1:leftTrimable>non</ns1:leftTrimable>
 		<ns1:rightTrimable>non</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
 		<ns1:longCode>DelaiPresenceRMR</ns1:longCode>
 		<ns1:shortCode>dpr</ns1:shortCode>
-		<ns1:type>Boolean</ns1:type>
+		<ns1:type>Integer</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
 		<ns1:consultable>oui</ns1:consultable>
@@ -3463,7 +3440,7 @@
 		<ns1:leftTrimable>non</ns1:leftTrimable>
 		<ns1:rightTrimable>non</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
@@ -3486,7 +3463,7 @@
 		<ns1:leftTrimable>non</ns1:leftTrimable>
 		<ns1:rightTrimable>non</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
@@ -3509,7 +3486,7 @@
 		<ns1:leftTrimable>non</ns1:leftTrimable>
 		<ns1:rightTrimable>non</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
@@ -3532,7 +3509,7 @@
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
 		<ns1:rightTrimable>oui</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
@@ -3555,7 +3532,7 @@
 		<ns1:leftTrimable>oui</ns1:leftTrimable>
 		<ns1:rightTrimable>oui</ns1:rightTrimable>
 		<ns1:transferable>oui</ns1:transferable>
-		<ns1:aCreer>non</ns1:aCreer>
+		<ns1:aCreer>oui</ns1:aCreer>
 		<ns1:aModifier>non</ns1:aModifier>
 	</ns1:metaReference>
 	<ns1:metaReference>
