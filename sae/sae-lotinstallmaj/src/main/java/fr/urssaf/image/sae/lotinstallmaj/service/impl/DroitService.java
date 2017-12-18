@@ -162,7 +162,7 @@ public final class DroitService {
             if (!listePKI.contains("CN=ACOSS_Reseau_des_URSSAF")) {
                listePKI.add("CN=ACOSS_Reseau_des_URSSAF");
             }
-            serviceContract.setListCertifsClient(listePKI);
+            serviceContract.setListPki(listePKI);
             csSupport.create(serviceContract, jobClock.currentCLock());
 
          }

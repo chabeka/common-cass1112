@@ -901,7 +901,7 @@ public final class MajLotServiceImpl implements MajLotService {
    }
 
    private void updateCassandra180300() {
-      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 170901");
+      LOG.info("Début de l'opération : mise à jour du keyspace SAE pour le lot 180300");
       // Récupération de la chaîne de connexion au cluster cassandra
       updater.updateToVersion28();
       LOG.info("Fin de l'opération : mise à jour du keyspace SAE");

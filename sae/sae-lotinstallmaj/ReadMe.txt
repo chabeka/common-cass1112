@@ -501,5 +501,6 @@ Met la base Cassandra du SAE en version 28 :
 - Ajout d'index composite pour SICOMOR et ODP RSI
 - Modif de tous les contrats de service pour passage à la PKI Nationale 
 
-sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_180300
+!! Commande pour GNT et pour GNS différentes
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_180300
 
