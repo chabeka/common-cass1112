@@ -348,20 +348,19 @@ public final class MajLotServiceImpl implements MajLotService {
          // Ajout nouvelles des métadonnées
          updateMetaDfce("META_170901");
       } else if (GNS_CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
+         // Update keyspace SAE
+         updateCassandra180300();
+         // MAJ des métadonnées
+         updateMetaDfce("META_180300");
          // Ajout des index composites
          addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNS);
+      } else if (GNT_CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
          // Update keyspace SAE
          updateCassandra180300();
          // MAJ des métadonnées
          updateMetaDfce("META_180300");
-      } else if (GNT_CASSANDRA_DFCE_180300.equalsIgnoreCase(nomOperation)) {
          // Ajout des index composites
          addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNT);
-         // Update keyspace SAE
-         updateCassandra180300();
-         // MAJ des métadonnées
-         updateMetaDfce("META_180300");
-
       } else {
 
          // Opération inconnue => log + exception runtime
