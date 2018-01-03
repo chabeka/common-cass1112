@@ -311,10 +311,8 @@ public class SAETransfertServiceTest {
                .transfertControlePlateforme(document, idArchive, false, null);
 
          if (documentGNS == null) {
-
             document = saeTransfertService.updateMetaDocumentForTransfertMasse(
                   document, listeMeta, UUID.randomUUID());
-
             saeTransfertService.transfertDocument(document);
          } else {
             // -- Le document existe sur la GNS et sur la GNT
@@ -349,6 +347,8 @@ public class SAETransfertServiceTest {
          throw new TransfertException(erreur, ex);
       } catch (TraitementRepriseAlreadyDoneException ex) {
          throw new TransfertException(erreur, ex);
+      } catch (UnknownCodeRndEx e) {
+         throw new TransfertException(erreur, e);
       }
    }
 

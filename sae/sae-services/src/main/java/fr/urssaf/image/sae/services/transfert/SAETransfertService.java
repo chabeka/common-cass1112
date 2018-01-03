@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
@@ -113,6 +114,7 @@ public interface SAETransfertService {
     * @throws ReferentialException
     *            @{@link ReferentialException}
     * @throws TransfertException
+    * @throws UnknownCodeRndEx 
     *            @{@link TransfertException}
     * 
     *            Methode permettant la modification de métadonnées avant le
@@ -121,7 +123,7 @@ public interface SAETransfertService {
    StorageDocument updateMetaDocumentForTransfertMasse(
          StorageDocument document, final List<StorageMetadata> listeMeta,
          UUID idTraitementMasse)
-         throws ReferentialException, TransfertException;
+         throws ReferentialException, TransfertException, UnknownCodeRndEx;
 
    StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
          final List<StorageMetadata> storageMetas, boolean isReprise,

@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.services.transfert.impl;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -32,8 +34,12 @@ import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.utils.Utils;
+import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
+import fr.urssaf.image.sae.rnd.service.RndService;
 import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
+import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertMasseRuntimeException;
@@ -102,6 +108,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
     */
    @Autowired
    private MetadataReferenceDAO metadataReferenceDAO;
+   
+   @Autowired
+   private RndService rndService;
 
    /**
     * Liste des évents du cycle de vie des docs par id du doc
@@ -536,12 +545,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
+    * @throws UnknownCodeRndEx 
     */
    @Override
    public final StorageDocument updateMetaDocumentForTransfertMasse(
          final StorageDocument document, final List<StorageMetadata> listeMeta,
          UUID idTraitementMasse)
-         throws ReferentialException, TransfertException {
+         throws ReferentialException, TransfertException, UnknownCodeRndEx {
 
       // -- Ajout métadonnée "DateArchivageGNT"
       Object dateArchivage = StorageMetadataUtils.valueObjectMetadataFinder(
@@ -550,6 +560,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       StorageMetadata dateArchivageGNT = new StorageMetadata(
             StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(),
             dateArchivage);
+      
+      // Récupération de la date de début de conservation
+      StorageMetadata dateDebutConservationMeta = getDateDebutConservation(document.getUuid());
+      
       document.getMetadatas().add(dateArchivageGNT);
 
       // -- Suppression des métadonnées vides (impératif api dfce)
@@ -568,7 +582,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             i--;
          }
       }
-
+      
       // modification des métadonnées avant transfert
       if (!CollectionUtils.isEmpty(listeMeta)) {
          List<StorageMetadata> metadataMasse = new ArrayList<StorageMetadata>();
@@ -585,6 +599,10 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             }
             bool = false;
          }
+         // Gestion des règles concernant le code RND
+         metadataMasse.add(dateDebutConservationMeta);
+         completeMetadatas(metadataMasse);
+         
          document.setMetadatas(metadataMasse);
       }
 
@@ -613,6 +631,82 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
 
       return document;
    }
+   
+   
+   /**
+    * Gestion de la modification du codeRND dans le transfert
+    * @param modifiedMetadatas
+    *           la liste des métadonnées à modifier
+    * @return la nouvelle liste enrichie des métadonnées
+    * @throws UnknownCodeRndEx
+    * @throws ReferentialException 
+    * @throws CodeRndInexistantException
+    */
+   private List<StorageMetadata> completeMetadatas(List<StorageMetadata> metadataMasse)
+         throws UnknownCodeRndEx, ReferentialException {
+      
+      String trcPrefix = "completeMetadatas";
+      LOG.debug("{} - début", trcPrefix);
+
+      String codeRnd = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),
+            metadataMasse);
+      
+      try {
+         if (StringUtils.isNotBlank(codeRnd)) {
+
+            Date date = (Date) getValueMetaByCode(StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode(),
+                  metadataMasse);
+            String codeActivite = rndService.getCodeActivite(codeRnd);
+            String codeFonction = rndService.getCodeFonction(codeRnd);
+
+            MetadataReference codeActiviteRef = metadataReferenceDAO
+                  .getByLongCode(SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode());
+            MetadataReference codeFonctionRef = metadataReferenceDAO
+                  .getByLongCode(SAEArchivalMetadatas.CODE_FONCTION.getLongCode());
+            MetadataReference dateFinConservationRef = metadataReferenceDAO
+                  .getByLongCode(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode());
+            
+            int duration = rndService.getDureeConservation(codeRnd);
+            if(date != null) {
+               Date dateFin = DateUtils.addDays(date, duration);
+               // MAJ de la date de fin de conservation
+               Integer indexDateFinConservation = getIndexMetaByCode(dateFinConservationRef.getShortCode(), metadataMasse);
+               if( indexDateFinConservation != null){
+                  metadataMasse.get(indexDateFinConservation).setValue(dateFin);
+               } else {
+                  metadataMasse.add(new StorageMetadata(dateFinConservationRef.getShortCode(),
+                        dateFin));
+               }
+            }
+           
+            Integer indexCodeActivite = getIndexMetaByCode(codeActiviteRef.getShortCode(), metadataMasse);
+            if( indexCodeActivite != null){
+               metadataMasse.get(indexCodeActivite).setValue(codeActivite);
+            } else {
+               metadataMasse.add(new StorageMetadata(codeActiviteRef.getShortCode(),
+                     codeActivite));
+            }
+            
+            // Maj du code Fonction
+            Integer indexCodeFonction = getIndexMetaByCode(codeFonctionRef.getShortCode(), metadataMasse);
+            if( indexCodeFonction != null){
+               metadataMasse.get(indexCodeFonction).setValue(codeFonction);
+            } else {
+               metadataMasse.add(new StorageMetadata(codeFonctionRef.getShortCode(),
+                     codeFonction));
+            }
+            
+         }
+      } catch (CodeRndInexistantException e) {
+         throw new UnknownCodeRndEx(e.getMessage(), e);
+      } catch (ReferentialException e) {
+         throw new ReferentialException(e.getMessage(), e);
+      }
+
+      LOG.debug("{} - fin", trcPrefix);
+      return metadataMasse;
+   }
+   
 
    private String getTracePreArchivageAsJson(final StorageDocument document)
          throws TransfertException {
@@ -763,6 +857,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       } catch (MappingFromReferentialException ex) {
          throw new TransfertException(erreur, ex);
+      } catch (UnknownCodeRndEx e) {
+         throw new TransfertException(erreur, e);
       }
 
       return document;
@@ -1000,6 +1096,74 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          }
       }      
       return hashDocument;
+   }
+   
+   /**
+    * Retourne la valeur de la métadonnée à partir de son code passé en paramètre
+    * @param codeMetaData
+    * @param metaDataList 
+    * @return la valeur de la métadonnée à partir de son shortCode
+    */
+   private Object getValueMetaByCode(String codeMetaData, List<StorageMetadata> metaDataList){
+      Object valueMetaData = null;
+      if(metaDataList != null){
+         for (StorageMetadata metadata : metaDataList) {
+            if (codeMetaData.equals(metadata.getShortCode())) {
+               if(StringUtils.isNotBlank(metadata.getShortCode()) ){
+                  valueMetaData = metadata.getValue();
+               } else {
+                  valueMetaData = null;
+               }
+               break;
+            }
+         }
+      }      
+      return valueMetaData;
+   }
+   
+   /**
+    * Retourne l'index de la métadonnée dans la liste à partir de son code
+    * @param indexMetaData
+    * @param metaDataList 
+    * @return la valeur de la métadonnée à partir de son shortCode
+    */
+   private Integer getIndexMetaByCode(String codeMetaData, List<StorageMetadata> metaDataList){
+      Integer indexMetaData = null;
+      if(metaDataList != null){
+         for (StorageMetadata metadata : metaDataList) {
+            if (codeMetaData.equals(metadata.getShortCode())) {
+               indexMetaData = metaDataList.indexOf(metadata);
+               break;
+            }
+         }
+      }      
+      return indexMetaData;
+   }
+   
+   /**
+    * Retourne la date de début de conservation du document passé en paramètre
+    * @param uuidDoc
+    * @return
+    * @throws TransfertException 
+    */
+   private StorageMetadata getDateDebutConservation(UUID uuidDoc) throws TransfertException{
+      
+      StorageMetadata dateDebutConservationMeta = null;
+      List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      desiredStorageMetadatas.add(new StorageMetadata(
+            StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode()));
+      try {
+         StorageDocument document = storageDocumentService.retrieveStorageDocumentByUUID(new UUIDCriteria(uuidDoc,
+               desiredStorageMetadatas));         
+         Object dateDebutConservation = StorageMetadataUtils.valueObjectMetadataFinder(
+               document.getMetadatas(), StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode());
+         dateDebutConservationMeta = new StorageMetadata(
+               StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode(),
+               dateDebutConservation);
+      } catch (RetrievalServiceEx e) {
+         throw new TransfertException(e);
+      }
+      return dateDebutConservationMeta;
    }
    
 }
