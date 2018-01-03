@@ -269,6 +269,9 @@
                   <exclude>**/Abstract*.java</exclude>
                </excludes>
                <junitArtifactName>junit:junit</junitArtifactName>
+               <!-- Configuration mémoire pour les TU -->
+               <argLine>-Xmx512m -XX:MaxPermSize=512m -XX:+UseSerialGC
+                  -XX:-UseConcMarkSweepGC</argLine>
             </configuration>
          </plugin>
          
@@ -338,17 +341,6 @@
                <useReleaseProfile>false</useReleaseProfile>
             </configuration>
          </plugin>
-
-         <!-- Configuration mémoire pour les TU -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-               <argLine>-Xmx512m -XX:MaxPermSize=512m -XX:+UseSerialGC
-                  -XX:-UseConcMarkSweepGC</argLine>
-            </configuration>
-         </plugin>
-
          <!-- Déploiement réalisé uniquement à la fin du build de tous les 
             modules, et pas module par module. -->
          <plugin>
