@@ -13,7 +13,6 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.AbstractPoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
@@ -43,8 +42,7 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
       int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
 
       try {
-         ((StorageServiceProviderImpl) getServiceProvider())
-               .getDfceServicesManager().getConnection();
+         getServiceProvider().openConnexion();
 
          /* on catch les throwable de DFCE */
       } catch (Throwable e) {
