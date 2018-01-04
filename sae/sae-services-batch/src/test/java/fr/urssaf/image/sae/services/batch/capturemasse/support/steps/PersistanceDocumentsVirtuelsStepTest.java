@@ -50,7 +50,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.model.CaptureMasseReferen
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListCaptureMasseReferenceFile;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.SaeListVirtualReferenceFile;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
@@ -439,8 +438,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
    }
 
    private void initConnectionError() throws ConnectionServiceEx {
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-      .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().andThrow(new ConnectionServiceEx()).once();
 
       provider.closeConnexion();
@@ -451,8 +449,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
    }
 
    private void initConnection() throws ConnectionServiceEx {
-      ((StorageServiceProviderImpl) provider).getDfceServicesManager()
-            .openConnection();
+      provider.openConnexion();
       EasyMock.expectLastCall().once();
 
       provider.closeConnexion();

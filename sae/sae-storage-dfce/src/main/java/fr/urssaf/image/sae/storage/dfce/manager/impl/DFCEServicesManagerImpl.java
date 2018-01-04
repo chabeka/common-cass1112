@@ -80,7 +80,7 @@ public class DFCEServicesManagerImpl implements DFCEServicesManager {
    public final void closeConnection() {
       ServiceProvider dfceService = connexionServiceProvider
             .getServiceProviderByConnectionParams(cnxParameters);
-      if (dfceService.isSessionActive()) {
+      if (dfceService != null && dfceService.isSessionActive()) {
          dfceService.disconnect();
          connexionServiceProvider.removeServiceProvider(cnxParameters);
       }

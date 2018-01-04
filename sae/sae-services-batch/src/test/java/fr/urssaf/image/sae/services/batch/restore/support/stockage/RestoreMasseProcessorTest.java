@@ -86,8 +86,6 @@ public class RestoreMasseProcessorTest {
             mockService.searchStorageDocumentsInRecycleBean(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andThrow(new QueryParseServiceEx("La syntaxe de la requête est bizarroide")).once();
 
-      EasyMock.expectLastCall().once();
-
       EasyMock.replay(mockService);
 
       JobExecution execution = launcher.launchStep(
@@ -134,8 +132,6 @@ public class RestoreMasseProcessorTest {
       EasyMock.expect(
             mockService.searchStorageDocumentsInRecycleBean(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       EasyMock.replay(mockService);
 
@@ -200,8 +196,6 @@ public class RestoreMasseProcessorTest {
       EasyMock.expect(
             mockService.searchStorageDocumentsInRecycleBean(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
@@ -276,8 +270,6 @@ public class RestoreMasseProcessorTest {
             mockService.searchStorageDocumentsInRecycleBean(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
 
-      EasyMock.expectLastCall().once();
-
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
 
@@ -347,8 +339,6 @@ public class RestoreMasseProcessorTest {
       EasyMock.expect(
             mockService.searchStorageDocumentsInRecycleBean(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());

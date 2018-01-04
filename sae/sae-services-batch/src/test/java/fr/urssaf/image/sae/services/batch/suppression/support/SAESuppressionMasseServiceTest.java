@@ -145,8 +145,6 @@ public class SAESuppressionMasseServiceTest {
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
 
-      EasyMock.expectLastCall().once();
-
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
             (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
 
@@ -184,8 +182,6 @@ public class SAESuppressionMasseServiceTest {
       EasyMock.expect(
             mockService.searchPaginatedStorageDocuments(EasyMock
                   .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
-
-      EasyMock.expectLastCall().once();
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
             EasyMock.anyObject(UUID.class),
