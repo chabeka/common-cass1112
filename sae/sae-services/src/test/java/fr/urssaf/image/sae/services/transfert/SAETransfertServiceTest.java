@@ -299,7 +299,8 @@ public class SAETransfertServiceTest {
       List<StorageMetadata> listeMeta = new ArrayList<StorageMetadata>();
       listeMeta.add(new StorageMetadata("SM_TITLE",
             "Attestation de transfert test"));
-      listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", "7.4.1.2.4"));
+      // Le codeRND peut ne pas être autorisé et bloquer le test
+      // listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", "7.4.1.2.4"));
 
       try {
          saeTransfertService.controleDroitTransfert(idArchive);

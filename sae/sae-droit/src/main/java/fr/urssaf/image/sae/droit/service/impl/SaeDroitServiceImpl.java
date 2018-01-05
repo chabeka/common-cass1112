@@ -351,7 +351,7 @@ public class SaeDroitServiceImpl implements SaeDroitService {
                   "{} - Pour chaque pagm, on vérifie que les pagma et pagmp associés existent",
                   TRC_LOAD);
       
-      List<Pagm> ExistingPagms = checkPagmsExists(pagms, listPagm, idClient);
+      List<Pagm> ExistingPagms = getExistingPagm(pagms, listPagm, idClient);
       
       for (Pagm pagm : ExistingPagms) {
 
@@ -577,28 +577,22 @@ public class SaeDroitServiceImpl implements SaeDroitService {
 //   }
    
    /**
-    * Retourne la liste de Pagm à partir des codes pagms passés en paramètre
+    * Retourne la liste des Pagm existants à partir des codes passés en paramètre
     * @param pagms
     * @param listPagm
     * @param idClient
     * @return list de Pagm
     * @throws PagmNotFoundException si aucun Pagm trouvé
     */
-   private List<Pagm> checkPagmsExists(List<String> pagms, List<Pagm> listPagm,
+   private List<Pagm> getExistingPagm(List<String> pagms, List<Pagm> listPagm,
          String idClient) throws PagmNotFoundException {
       
       List<Pagm> ExistingPagms = new ArrayList<Pagm>();
-      boolean found = false;
-      for (String codePagm : pagms) {
-         Pagm pagm = null;
-         int index = 0;
-         while (index < listPagm.size() && !found) {
-            if (listPagm.get(index).getCode().equals(codePagm)) {
-               found = true;
-               pagm = listPagm.get(index);
+      for (Pagm pagm : listPagm) {
+         for (String codePagm : pagms) {
+            if(pagm.getCode().equals(codePagm)){
                ExistingPagms.add(pagm);
             }
-            index++;
          }
       }
       // Si aucun PAGM trouvé
