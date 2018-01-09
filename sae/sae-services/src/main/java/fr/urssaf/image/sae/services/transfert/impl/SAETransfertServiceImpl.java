@@ -589,7 +589,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          Boolean bool = false;
          for (StorageMetadata meta : document.getMetadatas()) {
             for (StorageMetadata meta2 : listeMeta) {
-               if (meta.getShortCode().equals(meta2.getShortCode()) && meta.getValue() != "") {
+               if (meta.getShortCode().equals(meta2.getShortCode()) &&
+                     StringUtils.isNotBlank(meta2.getValue().toString())){
                   metadataMasse.add(meta2);
                   bool = true;
                }
