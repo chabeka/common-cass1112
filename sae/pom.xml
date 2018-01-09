@@ -655,13 +655,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        http://svn.altair.recouv/svn/gns/java/trunk/sae/
+        http://svn.altair.recouv/svn/gns/java/trunk/sae
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae
       </connection>
    </scm>
 
