@@ -156,6 +156,7 @@ public class IgcDownloadServiceImplTest {
 
    }
 
+   @Ignore
    @Test
    public void telechargeCRLs_failure() throws IgcDownloadException,
          MalformedURLException {
