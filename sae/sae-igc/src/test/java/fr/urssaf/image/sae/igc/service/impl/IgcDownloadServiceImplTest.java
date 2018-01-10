@@ -38,6 +38,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 
+@Ignore
 @SuppressWarnings( { "PMD.MethodNamingConventions",
       "PMD.VariableNamingConventions" })
 @RunWith(SpringJUnit4ClassRunner.class)
