@@ -17,6 +17,14 @@ import java.io.File;
  * 
  * */
 public class EcdeSource {
+   
+   /**
+    * Constructeur
+    * 
+    */
+   public EcdeSource() {
+
+   }
 
    /**
     * Constructeur
