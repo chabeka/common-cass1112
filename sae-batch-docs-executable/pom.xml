@@ -10,14 +10,14 @@
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-batch-docs-executable</artifactId>
    <name>sae-batch-docs-executable</name>
-   <version>17.9.0.4-SNAPSHOT</version>
+   <version>18.3.0.1</version>
    <description>Traitement de masse: import, export, delete</description>
    
    <properties>
       <junit.version>4.8.2</junit.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <sae.version>17.9.0.3</sae.version>
-      <commons.dfce.version>1.7.3-CRTL-1</commons.dfce.version>
+      <commons.dfce.version>1.7.4-CRTL-2</commons.dfce.version>
    </properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
