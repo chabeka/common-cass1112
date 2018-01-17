@@ -110,7 +110,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${javadoc.version}</version>
             <executions>
                <execution>
                   <id>attach-javadocs</id>
@@ -120,7 +119,8 @@
                </execution>
             </executions>
             <configuration>
-               <quiet>true</quiet>
+            	<javadocVersion>1.6</javadocVersion>
+                <quiet>true</quiet>
             </configuration>
          </plugin>
 
@@ -128,7 +128,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${maven-release-plugin.version}</version>
             <configuration>
                <preparationGoals>clean javadoc:jar install</preparationGoals>
                <autoVersionSubmodules>true</autoVersionSubmodules>
@@ -146,7 +145,7 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <version>${junit.version}</version>
+         <version>${junit.version}</version><!--$NO-MVN-MAN-VER$-->
          <scope>test</scope>
       </dependency>
       
