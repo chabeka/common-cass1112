@@ -438,13 +438,15 @@ implements StorageDocumentService {
 		StorageDocument document = searchingService.searchStorageDocumentByUUIDCriteria(new UUIDCriteria(uuidDoc,
                   desiredStorageMetadatas), false);
 		
-		for (StorageMetadata meta : document.getMetadatas()) {
-			if (meta.getShortCode().equals(
-					StorageTechnicalMetadatas.GEL.getShortCode())) {
-				if (meta.getValue() == Boolean.TRUE) {
-					isFrozenDocument = true;
-				}
-			}
+		if(document != null){
+		   for (StorageMetadata meta : document.getMetadatas()) {
+	         if (meta.getShortCode().equals(
+	               StorageTechnicalMetadatas.GEL.getShortCode())) {
+	            if (meta.getValue() == Boolean.TRUE) {
+	               isFrozenDocument = true;
+	            }
+	         }
+	      }
 		}
 		return isFrozenDocument;
 	}
