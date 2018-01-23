@@ -122,11 +122,13 @@ implements ModificationMasseControleSupport {
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
       String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
-      if (storageDocumentService.isFrozenDocument(item.getUuid())) {
-		throw new ModificationException(
-				StringUtils.replace(frozenDocMsgException, "{0}", item
-						.getUuid().toString()));
-	  }
+      if(item.getUuid() != null){
+         if (storageDocumentService.isFrozenDocument(item.getUuid())) {
+            throw new ModificationException(
+                  StringUtils.replace(frozenDocMsgException, "{0}", item
+                        .getUuid().toString()));
+           }
+      }
 
       List<StorageMetadata> listeMetadataDocument = modificationService
             .getListeStorageMetadatas(item.getUuid());
