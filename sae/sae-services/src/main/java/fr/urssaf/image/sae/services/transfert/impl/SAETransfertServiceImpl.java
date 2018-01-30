@@ -681,22 +681,30 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             }
            
             Integer indexCodeActivite = getIndexMetaByCode(codeActiviteRef.getShortCode(), metadataMasse);
-            if( indexCodeActivite != null){
-               metadataMasse.get(indexCodeActivite).setValue(codeActivite);
-            } else {
-               metadataMasse.add(new StorageMetadata(codeActiviteRef.getShortCode(),
-                     codeActivite));
+            
+            if (StringUtils.isNotEmpty(codeActivite)){
+               if(indexCodeActivite != null){
+                  metadataMasse.get(indexCodeActivite).setValue(codeActivite);
+               }else{
+                  metadataMasse.add(new StorageMetadata(codeActiviteRef.getShortCode(),
+                        codeActivite));
+               }
+            }else if(indexCodeActivite != null){
+               metadataMasse.remove(indexCodeActivite);
             }
             
-            // Maj du code Fonction
+            // Maj du codeFonction
             Integer indexCodeFonction = getIndexMetaByCode(codeFonctionRef.getShortCode(), metadataMasse);
-            if( indexCodeFonction != null){
-               metadataMasse.get(indexCodeFonction).setValue(codeFonction);
-            } else {
-               metadataMasse.add(new StorageMetadata(codeFonctionRef.getShortCode(),
-                     codeFonction));
-            }
-            
+            if (StringUtils.isNotEmpty(codeFonction)){
+               if( indexCodeFonction != null){
+                  metadataMasse.get(indexCodeFonction).setValue(codeFonction);
+               } else {
+                  metadataMasse.add(new StorageMetadata(codeFonctionRef.getShortCode(),
+                        codeFonction));
+               }
+            }else if(indexCodeFonction != null){
+               metadataMasse.remove(indexCodeFonction);
+            }            
          }
       } catch (CodeRndInexistantException e) {
          throw new UnknownCodeRndEx(e.getMessage(), e);
