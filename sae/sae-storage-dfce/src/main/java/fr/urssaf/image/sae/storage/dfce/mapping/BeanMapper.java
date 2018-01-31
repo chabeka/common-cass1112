@@ -98,6 +98,9 @@ public final class BeanMapper {
     * @param nomPlateforme
     *           Nom d'instance de la plateforme
     * @param forConsultation
+    *           : Paramètre pour remonter l'instance de la plateforme sur
+    *           laquelle est réalisée la recherche
+    * @param isDocContentAdd
     *           : Paramètre pour récupérer le contenue des documents pour la
     *           consultation.
     * @return une occurrence de StorageDocument
@@ -180,7 +183,14 @@ public final class BeanMapper {
          IOException {
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
             document, desiredMetaData, serviceDFCE, StringUtils.EMPTY, false);
-      return new StorageDocument(metaDatas);
+      // Création du storage document et ajout des metadonnées
+      StorageDocument storageDocument = new StorageDocument(metaDatas);
+      // Renseigne l'uuid du document
+      if (document != null) {
+         storageDocument.setUuid(document.getUuid());
+      }
+
+      return storageDocument;
    }
 
    /**
@@ -196,6 +206,8 @@ public final class BeanMapper {
     * @param nomPlateforme
     *           Nom d'instance de la plateforme
     * @param forConsultation
+    *           : Paramètre pour remonter l'instance de la plateforme sur
+    *           laquelle est réalisée la recherche.
     * @return La liste des {@link StorageMetadata} à partir de la liste des
     *         {@link Criterion}.
     * @throws JsonProcessingException

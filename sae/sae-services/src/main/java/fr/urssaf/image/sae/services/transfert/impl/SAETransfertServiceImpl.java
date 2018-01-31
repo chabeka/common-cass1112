@@ -398,7 +398,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          storageDocumentService.deleteStorageDocumentTraceTransfert(idArchive);
       } catch (DeletionServiceEx erreurSupprGNT) {
          StorageDocument documentGNT = storageDocumentService
-               .searchStorageDocumentByUUIDCriteria(uuidCriteria);
+               .searchMetaDatasByUUIDCriteria(uuidCriteria);
          if (documentGNT != null) {
             // -- Le document existe toujours dans la GNT
             try {
@@ -428,10 +428,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
       UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
 
-      StorageDocument document = storageDocumentService
-            .searchStorageDocumentByUUIDCriteria(uuidCriteria);
-
-      return document;
+      return storageDocumentService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
    }
 
    @Override
@@ -891,11 +888,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
-         // -- Ouverture des connections DFCE
-         storageServiceProvider.openConnexion();
-         storageTransfertService.openConnexion();
-         traceServiceSupport.connect();
-
          // On récupère les métadonnées du document à partir de l'UUID, avec
          // toutes les
          // métadonnées du référentiel sauf la note qui n'est pas utilise pour
@@ -1058,7 +1050,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                      .deleteStorageDocumentTraceTransfert(idArchive);
             } catch (DeletionServiceEx erreurSupprGNT) {
                StorageDocument documentGNT = storageDocumentService
-                     .searchStorageDocumentByUUIDCriteria(uuidCriteria);
+                     .searchMetaDatasByUUIDCriteria(uuidCriteria);
                if (documentGNT != null) {
                   // -- Le document existe toujours dans la GNT
                   try {
@@ -1162,10 +1154,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
       desiredStorageMetadatas.add(new StorageMetadata(
             StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode()));
       try {
-         StorageDocument document = storageDocumentService.retrieveStorageDocumentByUUID(new UUIDCriteria(uuidDoc,
-               desiredStorageMetadatas));         
-         Object dateDebutConservation = StorageMetadataUtils.valueObjectMetadataFinder(
-               document.getMetadatas(), StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode());
+         List<StorageMetadata> metadatasFind = storageDocumentService
+               .retrieveStorageDocumentMetaDatasByUUID(new UUIDCriteria(
+                     uuidDoc, desiredStorageMetadatas));
+         Object dateDebutConservation = StorageMetadataUtils
+               .valueObjectMetadataFinder(metadatasFind,
+                     StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
+                           .getShortCode());
          dateDebutConservationMeta = new StorageMetadata(
                StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode(),
                dateDebutConservation);

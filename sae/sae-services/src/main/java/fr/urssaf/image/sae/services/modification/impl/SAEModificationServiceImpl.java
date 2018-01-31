@@ -51,6 +51,7 @@ import fr.urssaf.image.sae.services.exception.modification.ModificationException
 import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -416,6 +417,55 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       }
       
       return storageDocument;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean isFrozenDocument(final List<StorageMetadata> listeStorageMeta)
+         throws ModificationException, RetrievalServiceEx {
+      if (listeStorageMeta != null && !listeStorageMeta.isEmpty()) {
+         for (StorageMetadata meta : listeStorageMeta) {
+            if (meta.getShortCode().equals(
+                  StorageTechnicalMetadatas.GEL.getShortCode())) {
+               if (meta.getValue() == Boolean.TRUE) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx {
+      // On récupère la liste de toutes les méta du référentiel sauf la
+      // Note, le Gel et la durée de conservation inutile pour les droits
+      // et générant des accès DFCE inutiles
+      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      Map<String, MetadataReference> listeAllMeta = referenceDAO
+            .getAllMetadataReferencesPourVerifDroits();
+
+      for (String mapKey : listeAllMeta.keySet()) {
+         allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+               .getShortCode()));
+      }
+
+      // Ajout de la meta GEL puisque non récupéré avant
+      allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL
+            .getShortCode()));
+
+      // Création des critéres
+      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+      // Recherche du document par critére
+      return this.getStorageServiceProvider().getStorageDocumentService()
+            .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
    }
 
 }

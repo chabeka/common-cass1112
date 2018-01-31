@@ -77,7 +77,8 @@ TransfertService {
          UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
       ServiceProvider dfceService = getDfceService();
       DFCEConnection cnxParams = getCnxParameters();
-      return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
+      return storageDocumentServiceSupport
+            .searchStorageDocumentByUUIDCriteriaWithoutDocContent(
             dfceService, cnxParams, uUIDCriteria, false, LOGGER);
    }
 

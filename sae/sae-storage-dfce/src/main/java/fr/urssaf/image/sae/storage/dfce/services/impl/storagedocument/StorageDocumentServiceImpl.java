@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
 import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
-import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.DeletionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.InsertionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.SearchingServiceImpl;
@@ -428,27 +426,4 @@ implements StorageDocumentService {
    public final DFCEServicesManager getDfceServicesManager() {
       return dfceServicesManager;
    }
-
-	@Override
-	public boolean isFrozenDocument(UUID uuidDoc) throws SearchingServiceEx {
-		boolean isFrozenDocument = false;
-		List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
-		desiredStorageMetadatas.add(new StorageMetadata(
-				StorageTechnicalMetadatas.GEL.getShortCode()));
-		StorageDocument document = searchingService.searchStorageDocumentByUUIDCriteria(new UUIDCriteria(uuidDoc,
-                  desiredStorageMetadatas), false);
-		
-		if(document != null){
-		   for (StorageMetadata meta : document.getMetadatas()) {
-	         if (meta.getShortCode().equals(
-	               StorageTechnicalMetadatas.GEL.getShortCode())) {
-	            if (meta.getValue() == Boolean.TRUE) {
-	               isFrozenDocument = true;
-	            }
-	         }
-	      }
-		}
-		return isFrozenDocument;
-	}
-	
 }

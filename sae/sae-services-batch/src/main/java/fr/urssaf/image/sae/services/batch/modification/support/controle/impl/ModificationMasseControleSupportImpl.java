@@ -119,42 +119,42 @@ implements ModificationMasseControleSupport {
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
          ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException, SearchingServiceEx {
+      StorageDocument document = null;
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
-      String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
-      if(item.getUuid() != null){
-         if (storageDocumentService.isFrozenDocument(item.getUuid())) {
-            throw new ModificationException(
-                  StringUtils.replace(frozenDocMsgException, "{0}", item
-                        .getUuid().toString()));
-           }
-      }
+      if (item != null && item.getUuid() != null) {
+         List<StorageMetadata> listeMetadataDocument = modificationService
+               .getListeStorageMetadatasWithGel(item.getUuid());
 
-      List<StorageMetadata> listeMetadataDocument = modificationService
-            .getListeStorageMetadatas(item.getUuid());
+         if (modificationService.isFrozenDocument(listeMetadataDocument)) {
+            String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+            throw new ModificationException(StringUtils.replace(
+                  frozenDocMsgException, "{0}", item.getUuid().toString()));
+         }
 
-      StorageDocument document = modificationService.separationMetaDocumentModifie(
-            item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
-            trcPrefix);
+         document = modificationService.separationMetaDocumentModifie(
+               item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
+               trcPrefix);
 
-      String idModifMasseInterne = StorageMetadataUtils
-            .valueMetadataFinder(listeMetadataDocument,
-                  StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                  .getShortCode());
+         String idModifMasseInterne = StorageMetadataUtils.valueMetadataFinder(
+               listeMetadataDocument,
+               StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                     .getShortCode());
 
-      if (StringUtils.isNotEmpty(idModifMasseInterne) && idModifMasseInterne.equals(uuidJob.toString()) ) {
-         String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
-         String messageFormat = StringUtils.replaceEach(message, new String[] {
-               "{0}", "{1}" }, new String[] { item.getUuid().toString(),
-               uuidJob.toString() });
-         LOGGER.warn(messageFormat);
-         throw new TraitementRepriseAlreadyDoneException(
-               messageFormat);
-      } else {
-         document.getMetadatas().add(
-               new StorageMetadata(
-                     StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                     .getShortCode(), uuidJob.toString()));
+         if (StringUtils.isNotEmpty(idModifMasseInterne)
+               && idModifMasseInterne.equals(uuidJob.toString())) {
+            String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
+            String messageFormat = StringUtils.replaceEach(message,
+                  new String[] { "{0}", "{1}" }, new String[] {
+                        item.getUuid().toString(), uuidJob.toString() });
+            LOGGER.warn(messageFormat);
+            throw new TraitementRepriseAlreadyDoneException(messageFormat);
+         } else {
+            document.getMetadatas().add(
+                  new StorageMetadata(
+                        StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                              .getShortCode(), uuidJob.toString()));
+         }
       }
       LOGGER.debug("{} - fin", trcPrefix);
 

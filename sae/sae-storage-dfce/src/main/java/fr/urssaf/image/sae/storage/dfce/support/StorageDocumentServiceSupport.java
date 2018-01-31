@@ -381,6 +381,36 @@ public class StorageDocumentServiceSupport {
          UUIDCriteria uUIDCriteria, boolean forConsultation, Logger log)
          throws SearchingServiceEx {
 
+      return searchStorageDocumentByUUIDCriteria(dfceService, cnxParams,
+            uUIDCriteria,
+            forConsultation, true, log);
+   }
+
+   /**
+    * Recherche de document par UUID
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uUIDCriteria
+    *           UUID du document recherché
+    * @param log
+    *           Logger
+    * @param forConsultation
+    *           : Paramètre pour remonter l'instance de la plateforme sur
+    *           laquelle est réalisée la recherche
+    * @param isDocContentAdd
+    *           : Paramètre pour récupérer le contenue des documents pour la
+    *           consultation.
+    * @return Le document trouvé
+    * @throws SearchingServiceEx
+    *            Exception levée lors d'erreur pendant la recherche
+    */
+   public StorageDocument searchStorageDocumentByUUIDCriteria(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         UUIDCriteria uUIDCriteria, boolean forConsultation,
+         boolean isDocContentAdd, Logger log) throws SearchingServiceEx {
       try {
 
          // -- Récupération base dfce
@@ -401,7 +431,7 @@ public class StorageDocumentServiceSupport {
          if (docDfce != null) {
             storageDoc = BeanMapper.dfceDocumentToStorageDocument(docDfce,
                   uUIDCriteria.getDesiredStorageMetadatas(), dfceService,
-                  nomPlateforme, forConsultation, true);
+                  nomPlateforme, forConsultation, isDocContentAdd);
          }
          log.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
@@ -419,6 +449,32 @@ public class StorageDocumentServiceSupport {
                StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
                except.getMessage(), except);
       }
+   }
+
+   /**
+    * Recherche de document par UUID sans ajout du document binaire
+    * 
+    * @param dfceService
+    *           Services de DFCE
+    * @param cnxParams
+    *           Paramétrage DFCE
+    * @param uUIDCriteria
+    *           UUID du document recherché
+    * @param log
+    *           Logger
+    * @param forConsultation
+    *           : Paramètre pour remonter l'instance de la plateforme sur
+    *           laquelle est réalisée la recherche
+    * @return Le document trouvé
+    * @throws SearchingServiceEx
+    *            Exception levée lors d'erreur pendant la recherche
+    */
+   public StorageDocument searchStorageDocumentByUUIDCriteriaWithoutDocContent(
+         ServiceProvider dfceService, DFCEConnection cnxParams,
+         UUIDCriteria uUIDCriteria, boolean forConsultation, Logger log)
+         throws SearchingServiceEx {
+      return searchStorageDocumentByUUIDCriteria(dfceService, cnxParams,
+            uUIDCriteria, forConsultation, false, log);
    }
 
    /**

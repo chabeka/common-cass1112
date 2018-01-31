@@ -23,6 +23,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -135,7 +136,7 @@ public interface SAEModificationService {
          RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, MetadataValueNotInDictionaryEx, ModificationException;
 
    /**
-    * Methode permettant de générer la liste des metadonnées storage.
+    * Méthode permettant de générer la liste des metadonnées storage.
     * 
     * @param idArchive
     *           Identifiant document
@@ -147,4 +148,35 @@ public interface SAEModificationService {
     */
    public List<StorageMetadata> getListeStorageMetadatas(UUID idArchive)
          throws ReferentialException, RetrievalServiceEx;
+
+   /**
+    * Méthode permettant de générer la liste des métadonnées storage contenant
+    * les metadonnées de modification et la métadonnée GEL.
+    * 
+    * @param idArchive
+    *           Identifiant document
+    * @return la liste des metadonnées storage
+    * @throws ReferentialException
+    * @{@link ReferentialException}
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    */
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx;
+
+   /**
+    * Contrôle si la liste de métadonnées passée en paramètre contient la
+    * métadonnée gel à true (Document gelé).
+    * 
+    * @param listeStorageMeta
+    *           liste de métadonnées
+    * @return true si le document est gelé
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    * @throws SearchingServiceEx
+    * @{@link SearchingServiceEx}
+    */
+   boolean isFrozenDocument(final List<StorageMetadata> listeStorageMeta)
+         throws ModificationException,
+         RetrievalServiceEx;
 }

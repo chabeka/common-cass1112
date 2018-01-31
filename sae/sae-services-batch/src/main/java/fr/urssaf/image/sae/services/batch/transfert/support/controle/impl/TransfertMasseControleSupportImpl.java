@@ -38,6 +38,7 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
@@ -103,7 +104,10 @@ public class TransfertMasseControleSupportImpl implements
     */
    public boolean controleSAEDocumentSuppression(UntypedDocument item)
          throws SearchingServiceEx, ConnectionServiceEx {
-      return docExistant.documentExistant(item.getUuid());
+
+      return storageServiceProvider.getStorageDocumentService()
+            .searchMetaDatasByUUIDCriteria(
+                  new UUIDCriteria(item.getUuid(), null)) != null;
    }
 
    /**

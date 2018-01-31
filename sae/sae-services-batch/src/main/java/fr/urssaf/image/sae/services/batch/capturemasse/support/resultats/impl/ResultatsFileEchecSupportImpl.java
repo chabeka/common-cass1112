@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.resultats.excepti
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlReader;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
-import fr.urssaf.image.sae.services.batch.common.model.XMLEventReference;
 
 /**
  * Implémentation du support {@link ResultatsFileEchecSupport}
@@ -581,42 +580,11 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
 
       addMetadatas(reader);
       addUUID(document);
-      XMLEventReference xmlEventRef = this.saveReaderEvent(reader.peek());
-
-      try {
-         addNumeroPageDebut(reader);
-         // Sauvegarde de l'event pour le traitement d'échec sur le nombre de
-         // page.
-         xmlEventRef = this.saveReaderEvent(reader.peek());
-      } catch (ResultatEchecLectureXMLException e) {
-         LOGGER.warn("Une erreur est survenue : " + e.getMessage());
-         reader = this.trouverXmlEventReaderParReference(reader, xmlEventRef);
-      }
-      try {
-         addNombrePages(reader);
-      } catch (ResultatEchecLectureXMLException e) {
-         LOGGER.warn("Une erreur est survenue : " + e.getMessage());
-         reader = this.trouverXmlEventReaderParReference(reader, xmlEventRef);
-      }
+      
       staxUtils.addEndTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
 
    }
 
-
-   /**
-    * Sauvegarde les informations du XmlEvent.
-    * 
-    * @param xmlEventToSaved
-    *           Event à sauvegarder.
-    * @return Le bean de sauvegarde de l'event.
-    */
-   private XMLEventReference saveReaderEvent(XMLEvent xmlEventToSaved) {
-      return new XMLEventReference(xmlEventToSaved.getLocation()
-            .getColumnNumber(), xmlEventToSaved.getLocation().getLineNumber(),
-            xmlEventToSaved.getLocation().getCharacterOffset(), xmlEventToSaved
-                  .getLocation().getPublicId(), xmlEventToSaved.getLocation()
-                  .getSystemId());
-   }
 
    /**
     * 
@@ -818,38 +786,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
    }
 
    /**
-    * Methode permettant d'ajouter la balise nombre de pages dans le fichier
-    * resultat.
-    * 
-    * @param reader
-    *           Reader du fichier référence.
-    * @throws ResultatEchecLectureXMLException
-    *            @{@link ResultatEchecLectureXMLException}
-    */
-   private void addNombrePages(XmlReader reader)
-         throws ResultatEchecLectureXMLException {
-         this.copieXmlEventReaderParNom(
-               this.trouverXmlEventReaderParNom(reader, NOMBRE_PAGES),
-               NOMBRE_PAGES);
-   }
-
-   /**
-    * Methode permettant d'ajouter la balise numéro de page début dans le
-    * fichier resultat.
-    * 
-    * @param reader
-    *           Reader du fichier référence.
-    * @throws ResultatEchecLectureXMLException
-    *            @{@link ResultatEchecLectureXMLException}
-    */
-   private void addNumeroPageDebut(XmlReader reader)
-         throws ResultatEchecLectureXMLException {
-         this.copieXmlEventReaderParNom(
-               this.trouverXmlEventReaderParNom(reader, NUMERO_PAGE_DEBUT),
-               NUMERO_PAGE_DEBUT);
-   }
-
-   /**
     * Methode permettant d'ajouter la balise UUID dans le fichier resultat.
     * 
     * @param document
@@ -948,48 +884,6 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                      .getLocalPart());
 
       }
-      return reader;
-   }
-
-   /**
-    * Methode permettant de trouver dans le reader {@link XmlReader}, l'element
-    * {@link XMLEventReference} défini comme attribut.
-    * 
-    * @param reader
-    *           {@link XmlReader}
-    * @param xmlEventReference
-    *           Reference de l'evenement
-    * @return Le reader positionné sur l'evenement de référence.
-    */
-   private XmlReader trouverXmlEventReaderParReference(XmlReader reader,
-         XMLEventReference xmlEventReference) {
-      // fermeture du flux
-      reader.closeStream();
-      // reinitialisation du flux
-      reader.initStream();
-      boolean baliseFind = false;
-      XMLEvent xmlEvent = null;
-
-      while (!baliseFind) {
-         // Parcours le sommaire.xml
-         xmlEvent = reader.peek();
-
-         baliseFind = xmlEvent.getLocation() != null
-               && xmlEventReference != null
-               && xmlEvent.getLocation().getColumnNumber() == xmlEventReference
-                     .getColumnNumber()
-               && xmlEvent.getLocation().getLineNumber() == xmlEventReference
-                     .getLineNumber()
-               && xmlEvent.getLocation().getCharacterOffset() == xmlEventReference
-                     .getCharacterOffset()
-               && xmlEvent.getLocation().getPublicId() == xmlEventReference
-                     .getPublicId()
-               && xmlEvent.getLocation().getSystemId() == xmlEventReference
-                     .getSystemId();
-
-         xmlEvent = reader.nextEvent();
-      }
-
       return reader;
    }
 
