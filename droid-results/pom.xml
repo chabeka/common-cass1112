@@ -167,7 +167,7 @@
   	</dependency>
   	<dependency>
             <groupId>uk.gov.nationalarchives</groupId>
-            <artifactId>droid-core</artifactId>
+            <artifactId>droid-core-fork</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
   	</dependency>

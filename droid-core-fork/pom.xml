@@ -8,10 +8,10 @@
         <relativePath>../droid-parent</relativePath>
     </parent>
   
-    <artifactId>droid-core</artifactId>
+    <artifactId>droid-core-fork</artifactId>
     <packaging>jar</packaging>
 
-    <name>droid-core</name>
+    <name>droid-core-fork</name>
     
     <!--scm>
         <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>

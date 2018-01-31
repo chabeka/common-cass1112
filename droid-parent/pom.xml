@@ -291,7 +291,9 @@
                     <source>${project.build.source}</source>
                     <target>${project.build.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                </configuration>
+		            <fork>true</fork>
+		            <compilerVersion>1.6</compilerVersion>
+		        </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
