@@ -8,8 +8,9 @@
 
 	<properties>
 		<pdfbox.version>1.5.0</pdfbox.version>
-		 <!-- DEFINI DANS LE POM PERE Encodage de caractères
+		 <!-- DEFINI DANS LE POM PERE Encodage de caractï¿½res
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
+        <compileSource>1.6</compileSource>
       
  	</properties>
 
@@ -73,6 +74,7 @@
 					<target>${compileSource}</target>
 					<executable>${javacPath}</executable>
 					<fork>true</fork>
+					<compilerVersion>${compileSource}</compilerVersion>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<encoding>UTF-8</encoding>
