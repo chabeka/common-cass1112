@@ -109,8 +109,6 @@ implements ModificationMasseControleSupport {
 
    /**
     * {@inheritDoc}
-    * @throws TraitementRepriseAlreadyDoneException 
- * @throws SearchingServiceEx 
     */
    @Override
    public StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item)
@@ -118,43 +116,55 @@ implements ModificationMasseControleSupport {
          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         ModificationException, ReferentialException, RetrievalServiceEx, TraitementRepriseAlreadyDoneException, SearchingServiceEx {
+         ModificationException, ReferentialException, RetrievalServiceEx,
+         TraitementRepriseAlreadyDoneException, SearchingServiceEx,
+         ArchiveInexistanteEx {
       StorageDocument document = null;
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
       if (item != null && item.getUuid() != null) {
+         UUID idArchive = item.getUuid();
          List<StorageMetadata> listeMetadataDocument = modificationService
-               .getListeStorageMetadatasWithGel(item.getUuid());
+               .getListeStorageMetadatasWithGel(idArchive);
+         if (listeMetadataDocument != null && !listeMetadataDocument.isEmpty()) {
+            if (modificationService.isFrozenDocument(listeMetadataDocument)) {
+               String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+               throw new ModificationException(StringUtils.replace(
+                     frozenDocMsgException, "{0}", idArchive.toString()));
+            }
 
-         if (modificationService.isFrozenDocument(listeMetadataDocument)) {
-            String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
-            throw new ModificationException(StringUtils.replace(
-                  frozenDocMsgException, "{0}", item.getUuid().toString()));
-         }
+            document = modificationService.separationMetaDocumentModifie(
+                  idArchive, listeMetadataDocument, item.getUMetadatas(),
+                  trcPrefix);
 
-         document = modificationService.separationMetaDocumentModifie(
-               item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
-               trcPrefix);
-
-         String idModifMasseInterne = StorageMetadataUtils.valueMetadataFinder(
-               listeMetadataDocument,
-               StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                     .getShortCode());
-
-         if (StringUtils.isNotEmpty(idModifMasseInterne)
-               && idModifMasseInterne.equals(uuidJob.toString())) {
-            String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
-            String messageFormat = StringUtils.replaceEach(message,
-                  new String[] { "{0}", "{1}" }, new String[] {
-                        item.getUuid().toString(), uuidJob.toString() });
-            LOGGER.warn(messageFormat);
-            throw new TraitementRepriseAlreadyDoneException(messageFormat);
-         } else {
-            document.getMetadatas().add(
-                  new StorageMetadata(
+            String idModifMasseInterne = StorageMetadataUtils
+                  .valueMetadataFinder(listeMetadataDocument,
                         StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                              .getShortCode(), uuidJob.toString()));
+                              .getShortCode());
+
+            if (StringUtils.isNotEmpty(idModifMasseInterne)
+                  && idModifMasseInterne.equals(uuidJob.toString())) {
+               String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
+               String messageFormat = StringUtils.replaceEach(message,
+                     new String[] { "{0}", "{1}" }, new String[] {
+                     idArchive.toString(), uuidJob.toString() });
+               LOGGER.warn(messageFormat);
+               throw new TraitementRepriseAlreadyDoneException(messageFormat);
+            } else {
+               document
+                     .getMetadatas()
+                     .add(new StorageMetadata(
+                           StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                                 .getShortCode(), uuidJob.toString()));
+            }
+         } else {
+            String message = StringUtils
+                  .replace(
+                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                        "{0}", idArchive.toString());
+            throw new ArchiveInexistanteEx(message);
          }
+
       }
       LOGGER.debug("{} - fin", trcPrefix);
 

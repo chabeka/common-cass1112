@@ -28,29 +28,31 @@ public class WSDocumentExistantServiceImpl implements WSDocumentExistantService{
 
    @SuppressWarnings("unused")
    @Override
-   public DocumentExistantResponse documentExistant(DocumentExistant request) throws DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx {
-      // TODO Auto-generated method stub
-      
+   public DocumentExistantResponse documentExistant(DocumentExistant request)
+         throws DocumentExistantAxisFault, SearchingServiceEx,
+         ConnectionServiceEx {
+
       String prefixeTrc = "copie()";
-      UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed().getUuidType());
+      UUID uuid = UUID.fromString(request.getDocumentExistant().getIdGed()
+            .getUuidType());
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", "copie()",
             uuid);
-      
-      boolean res;
-         res = saeService.documentExistant(uuid);
-         LOG.debug("{} - UUID : \"{}\"", res);
-         DocumentExistantResponse response = createDocumentExistantResponse();
-         DocumentExistantResponseType responseType = response.getDocumentExistantResponse();
-         responseType.setIsDocExist(res);
-         if (response == null) {
-            LOG.debug("{} - Valeur de retour : null", prefixeTrc);
-         } else {
-            LOG.debug("{} - Valeur de retour isDocExist: \"{}\"", prefixeTrc,
-                  response.getDocumentExistantResponse().getIsDocExist());
-         }
-         LOG.debug("{} - Sortie", prefixeTrc);
-         // Fin des traces debug - sortie méthode
-         return response;
+
+      boolean res = saeService.documentExistant(uuid);
+      LOG.debug("{} - UUID : \"{}\"", res);
+      DocumentExistantResponse response = createDocumentExistantResponse();
+      DocumentExistantResponseType responseType = response
+            .getDocumentExistantResponse();
+      responseType.setIsDocExist(res);
+      if (response == null) {
+         LOG.debug("{} - Valeur de retour : null", prefixeTrc);
+      } else {
+         LOG.debug("{} - Valeur de retour isDocExist: \"{}\"", prefixeTrc,
+               response.getDocumentExistantResponse().getIsDocExist());
+      }
+      LOG.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - sortie méthode
+      return response;
    }
    
    private static DocumentExistantResponse createDocumentExistantResponse() {

@@ -67,28 +67,49 @@ public interface ModificationMasseControleSupport {
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx, CaptureMasseSommaireDocumentNotFoundException, EmptyDocumentEx;
 
    /**
-    * <br>Service permettant de contrôler les métadonnées d'un
-    * document à modifier dans un traitement de modification de masse.</br>
-    * @param item Document à modifier.
+    * <br>
+    * Service permettant de contrôler les métadonnées d'un document à modifier
+    * dans un traitement de modification de masse.</br>
+    * 
+    * @param item
+    *           Document à modifier.
     * @return Le document modifié.
-    * @throws UnknownCodeRndEx @{@link UnknownCodeRndEx}
-    * @throws ReferentialRndException @{@link ReferentialRndException}
-    * @throws InvalidValueTypeAndFormatMetadataEx @{@link InvalidValueTypeAndFormatMetadataEx}
-    * @throws UnknownMetadataEx @{@link UnknownMetadataEx}
-    * @throws DuplicatedMetadataEx @{@link DuplicatedMetadataEx}
-    * @throws NotSpecifiableMetadataEx @{@link NotSpecifiableMetadataEx}
-    * @throws RequiredArchivableMetadataEx @{@link RequiredArchivableMetadataEx}
-    * @throws UnknownHashCodeEx @{@link UnknownHashCodeEx}
-    * @throws NotModifiableMetadataEx @{@link NotModifiableMetadataEx}
-    * @throws MetadataValueNotInDictionaryEx @{@link MetadataValueNotInDictionaryEx}
-    * @throws ModificationException @{@link ModificationException}
-    * @throws RetrievalServiceEx @{@link RetrievalServiceEx}
-    * @throws ReferentialException @{@link ReferentialException}
-    * @throws SearchingServiceEx 
+    * @throws UnknownCodeRndEx
+    *            @{@link UnknownCodeRndEx}
+    * @throws ReferentialRndException
+    *            @{@link ReferentialRndException}
+    * @throws InvalidValueTypeAndFormatMetadataEx
+    *            @{@link InvalidValueTypeAndFormatMetadataEx}
+    * @throws UnknownMetadataEx
+    *            @{@link UnknownMetadataEx}
+    * @throws DuplicatedMetadataEx
+    *            @{@link DuplicatedMetadataEx}
+    * @throws NotSpecifiableMetadataEx
+    *            @{@link NotSpecifiableMetadataEx}
+    * @throws RequiredArchivableMetadataEx
+    *            @{@link RequiredArchivableMetadataEx}
+    * @throws UnknownHashCodeEx
+    *            @{@link UnknownHashCodeEx}
+    * @throws NotModifiableMetadataEx
+    *            @{@link NotModifiableMetadataEx}
+    * @throws MetadataValueNotInDictionaryEx
+    *            @{@link MetadataValueNotInDictionaryEx}
+    * @throws ModificationException
+    *            @{@link ModificationException}
+    * @throws RetrievalServiceEx
+    *            @{@link RetrievalServiceEx}
+    * @throws ReferentialException
+    *            @{@link ReferentialException}
+    * @throws TraitementRepriseAlreadyDoneException
+    *            @{@link TraitementRepriseAlreadyDoneException}
+    * @throws SearchingServiceEx
+    *            @{@link SearchingServiceEx}
+    * @throws ArchiveInexistanteEx
+    *            @{@link ArchiveInexistanteEx}
     */
    StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item) 
          throws UnknownCodeRndEx, ReferentialRndException, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, 
          DuplicatedMetadataEx, NotSpecifiableMetadataEx, RequiredArchivableMetadataEx, UnknownHashCodeEx, NotModifiableMetadataEx, 
-         MetadataValueNotInDictionaryEx, ModificationException, RetrievalServiceEx, ReferentialException, TraitementRepriseAlreadyDoneException, SearchingServiceEx;
+         MetadataValueNotInDictionaryEx, ModificationException, RetrievalServiceEx, ReferentialException, TraitementRepriseAlreadyDoneException, SearchingServiceEx, ArchiveInexistanteEx;
 
 }

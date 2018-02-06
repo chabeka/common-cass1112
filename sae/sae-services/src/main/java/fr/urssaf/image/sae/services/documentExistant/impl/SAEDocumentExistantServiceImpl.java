@@ -34,12 +34,12 @@ public class SAEDocumentExistantServiceImpl implements
       UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
             new ArrayList<StorageMetadata>());
       StorageDocument document = serviceProvider.getStorageDocumentService()
-            .searchStorageDocumentByUUIDCriteria(uuidCrit);
-      if (document == null){
+            .searchMetaDatasByUUIDCriteria(uuidCrit);
+      if (document == null || (document != null && document.getUuid() == null)) {
          return false;
       }
-         else
-            return true;
+
+      return true;
    }
 
 }
