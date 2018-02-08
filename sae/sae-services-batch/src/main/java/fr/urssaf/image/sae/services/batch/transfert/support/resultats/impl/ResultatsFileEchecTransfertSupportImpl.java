@@ -577,25 +577,8 @@ public class ResultatsFileEchecTransfertSupportImpl implements
 
       addMetadatas(reader);
       addUUID(document);
-      XMLEventReference xmlEventRef = this.saveReaderEvent(reader.peek());
-      
-      try {
-         addNumeroPageDebut(reader);
-         // Sauvegarde de l'event pour le traitement d'échec sur le nombre de
-         // page.
-         xmlEventRef = this.saveReaderEvent(reader.peek());
-      } catch (ResultatEchecLectureXMLException e) {
-         LOGGER.warn("Une erreur est survenue : " + e.getMessage());
-         reader = this.trouverXmlEventReaderParReference(reader, xmlEventRef);
-      }
-      try {
-         addNombrePages(reader);
-      } catch (ResultatEchecLectureXMLException e) {
-         LOGGER.warn("Une erreur est survenue : " + e.getMessage());
-         reader = this.trouverXmlEventReaderParReference(reader, xmlEventRef);
-      }
+      this.saveReaderEvent(reader.peek());
 
-      
       staxUtils.addEndTag(INTEGRATED_DOCUMENT, PX_SOMRES, NS_SOMRES);
 
    }
