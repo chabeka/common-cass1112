@@ -28,7 +28,7 @@
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-        <maven-assembly-plugin.version>2.3</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
   </properties>
   
   <dependencies>
