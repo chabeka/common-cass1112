@@ -109,6 +109,10 @@
                <descriptors>
                   <descriptor>src/assembly/jar-executable.xml</descriptor>
                </descriptors>
+                <excludes>
+                    <exclude>**/archetype-resources/src/main/java/App*.*</exclude>
+                    <exclude>**/archetype-resources/src/test/java/App*.*</exclude>
+                </excludes>
             </configuration>
             <executions>
                <execution>
