@@ -72,7 +72,6 @@
 				<configuration>
 					<source>${compileSource}</source>
 					<target>${compileSource}</target>
-					<executable>${javacPath}</executable>
 					<fork>true</fork>
 					<compilerVersion>${compileSource}</compilerVersion>
 					<showDeprecation>true</showDeprecation>
