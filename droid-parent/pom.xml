@@ -31,57 +31,7 @@
       <description>POM Parent pour les projets altair</description>
       -->
    </parent>
-   
-    <organization>
-        <name>The National Archives</name>
-        <url>http://www.nationalarchives.gov.uk</url>
-    </organization>
-    
-    <developers>
-        <developer>
-            <name>Ross Spencer</name>
-        </developer>
-        <developer>
-            <name>Richard Brennan</name>
-        </developer>
-        <developer>
-            <name>Adam Retter</name>
-        </developer>
-        <developer>
-            <name>Matt Palmer</name>
-        </developer>
-        <developer>
-            <name>Richard Flitcroft</name>
-        </developer>
-        <developer>
-            <name>Alok Dash</name>
-        </developer>
-    </developers>
-  
-    <licenses>
-        <license>
-            <name>The BSD 3-Clause License</name>
-            <url>http://www.opensource.org/licenses/BSD-3-Clause</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
- 
-    <!--scm>
-        <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>
-        <developerConnection>scm:git:https://github.com/digital-preservation/droid.git</developerConnection>
-        <url>scm:git:https://github.com/digital-preservation/droid.git</url>
-    </scm-->
-    
-    <mailingLists>
-        <mailingList>
-            <name>droid-list</name>
-            <!--<post>Unused</post>-->
-            <!--<subscribe>Unused</subscribe>-->
-            <!--<unsubscribe>Unused</unsubscribe>-->
-            <archive>https://groups.google.com/forum/#!forum/droid-list</archive>
-        </mailingList>
-    </mailingLists>
-  
+          
     <properties>
         <project.build.source>1.6</project.build.source>
         <project.build.target>1.6</project.build.target>

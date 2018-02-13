@@ -62,12 +62,12 @@
     
     <dependencies>
         <dependency>
-            <groupId>fr.urssaf.image.droid.thirdparty.netbeans</groupId>
+            <groupId>uk.gov.nationalarchives.thirdparty.netbeans</groupId>
             <artifactId>org-openide-util</artifactId>
             <version>7.2</version>
         </dependency>
         <dependency>
-            <groupId>fr.urssaf.image.droid.thirdparty.netbeans</groupId>
+            <groupId>uk.gov.nationalarchives.thirdparty.netbeans</groupId>
             <artifactId>org-netbeans-swing-outline</artifactId>
             <version>7.2</version>
         </dependency>
