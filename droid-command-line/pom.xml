@@ -3,7 +3,7 @@
   
     <parent>
         <artifactId>droid-parent</artifactId>
-        <groupId>uk.gov.nationalarchives</groupId>
+        <groupId>fr.urssaf.image.droid</groupId>
         <version>6.4-SNAPSHOT</version>
   	    <relativePath>../droid-parent</relativePath>
     </parent>
@@ -73,7 +73,7 @@
                     <packageBranchRate>95</packageBranchRate>
                     <regexes>
                         <regex>
-                            <pattern>uk.gov.nationalarchives</pattern>
+                            <pattern>fr.urssaf.image.droid</pattern>
                             <branchRate>95</branchRate>
                             <lineRate>95</lineRate>
                         </regex>
@@ -112,7 +112,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>uk.gov.nationalarchives.droid.command.DroidCommandLine</mainClass>
+                            <mainClass>fr.urssaf.image.droid.droid.command.DroidCommandLine</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
                         </manifest>
@@ -139,22 +139,22 @@
   		<type>maven-plugin</type>
   	</dependency -->
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-results</artifactId>
             <version>${project.version}</version>
   	</dependency>
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-export</artifactId>
             <version>${project.version}</version>
   	</dependency>
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-report-interfaces</artifactId>
             <version>${project.version}</version>
   	</dependency>
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-report</artifactId>
             <version>${project.version}</version>
   	</dependency>

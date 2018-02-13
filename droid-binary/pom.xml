@@ -3,7 +3,7 @@
   
     <parent>
         <artifactId>droid-parent</artifactId>
-        <groupId>uk.gov.nationalarchives</groupId>
+        <groupId>fr.urssaf.image.droid</groupId>
         <version>6.4-SNAPSHOT</version>
   	    <relativePath>../droid-parent</relativePath>
     </parent>
@@ -56,13 +56,13 @@
   
     <dependencies>
         <dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-command-line</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>
         </dependency>
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-ui</artifactId>
             <version>${project.version}</version>
             <scope>runtime</scope>

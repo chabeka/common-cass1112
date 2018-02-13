@@ -10,7 +10,7 @@
     </parent>
     -->
   
-    <groupId>uk.gov.nationalarchives</groupId>
+    <groupId>fr.urssaf.image.droid</groupId>
     <artifactId>droid-parent</artifactId>
     <version>6.4-SNAPSHOT</version>
     <packaging>pom</packaging>
