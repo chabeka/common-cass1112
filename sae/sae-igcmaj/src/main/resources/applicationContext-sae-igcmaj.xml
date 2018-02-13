@@ -14,7 +14,11 @@
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
-
+   
+   <bean id="dfceConnectionService"
+      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
+      <constructor-arg ref="dfceConnection" />
+   </bean>
 
    <!-- Importation contexte SAE IGC  -->
    <import resource="applicationContext-sae-igc.xml" />
