@@ -204,7 +204,7 @@
          
       <!-- Droid -->
       <dependency>
-         <groupId>uk.gov.nationalarchives</groupId>
+         <groupId>fr.urssaf.image.droid</groupId>
          <!--
          <artifactId>droid-container</artifactId>
          -->
