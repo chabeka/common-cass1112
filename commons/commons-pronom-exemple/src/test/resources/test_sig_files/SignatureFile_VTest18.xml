@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FFSignatureFile DateCreated="2012-01-04T14:54:24" Version="55" xmlns="http://www.nationalarchives.gov.uk/pronom/SignatureFile">
+    <InternalSignatureCollection>
+        <InternalSignature ID="20" Specificity="Specific">
+            <ByteSequence Reference="BOFoffset">
+                <SubSequence MinFragLength="0" Position="1"
+                    SubSeqMaxOffset="144" SubSeqMinOffset="0">
+                    <Sequence>255044462D312E34</Sequence>
+                    <DefaultShift>9</DefaultShift>
+                    <Shift Byte="25">8</Shift>
+                    <Shift Byte="2D">4</Shift>
+                    <Shift Byte="2E">2</Shift>
+                    <Shift Byte="31">3</Shift>
+                    <Shift Byte="34">1</Shift>
+                    <Shift Byte="44">6</Shift>
+                    <Shift Byte="46">5</Shift>
+                    <Shift Byte="50">7</Shift>
+                </SubSequence>
+            </ByteSequence>
+            <ByteSequence Reference="EOFoffset">
+                <SubSequence MinFragLength="1" Position="1"
+                    SubSeqMaxOffset="64" SubSeqMinOffset="0">
+                    <Sequence>2525454F</Sequence>
+                    <DefaultShift>-6</DefaultShift>
+                    <Shift Byte="25">-1</Shift>
+                    <Shift Byte="45">-3</Shift>
+                    <Shift Byte="4F">-4</Shift>
+                    <Shift Byte="46">-5</Shift><!--
+                     <RightFragment MaxOffset="0" MinOffset="0" Position="1">46</RightFragment>
+                    <RightFragment MaxOffset="0" MinOffset="0" Position="1">460A</RightFragment>
+                    <RightFragment MaxOffset="0" MinOffset="0" Position="1">460D</RightFragment>
+                    <RightFragment MaxOffset="0" MinOffset="0" Position="1">460D00</RightFragment>
+                    <RightFragment MaxOffset="0" MinOffset="0" Position="1">460D0A</RightFragment>
+                -->
+                </SubSequence>
+            </ByteSequence>
+        </InternalSignature>
+    </InternalSignatureCollection>
+    <FileFormatCollection>
+        <FileFormat ID="617" MIMEType="application/pdf"
+            Name="Portable Document Format"
+            PUID="fmt/18" Version="1.4">
+            <InternalSignatureID>20</InternalSignatureID>
+            <Extension>pdf</Extension>
+            <HasPriorityOverFileFormatID>613</HasPriorityOverFileFormatID>
+            <HasPriorityOverFileFormatID>614</HasPriorityOverFileFormatID>
+            <HasPriorityOverFileFormatID>615</HasPriorityOverFileFormatID>
+            <HasPriorityOverFileFormatID>616</HasPriorityOverFileFormatID>
+        </FileFormat>
+    </FileFormatCollection>
+</FFSignatureFile>

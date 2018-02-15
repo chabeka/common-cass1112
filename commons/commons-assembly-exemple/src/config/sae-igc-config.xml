@@ -1,0 +1,8 @@
+<IgcConfig>
+   <repertoireACRacines>@@SAE_HOME@@/certificats/ACRacineDeConfiance</repertoireACRacines>
+   <repertoireCRL>@@SAE_HOME@@/certificats/CRL</repertoireCRL>
+   <URLTelechargementCRL>
+    for url in @@CRL_URLS@@:
+      <url>@@url@@/*.crl</url>
+   </URLTelechargementCRL>
+</IgcConfig>

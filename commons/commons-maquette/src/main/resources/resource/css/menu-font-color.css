@@ -1,0 +1,11 @@
+#container.frUrssafImageCommonsMaquette > #header.frUrssafImageCommonsMaquette > #menu a.firstrow {
+	color: cssMenuFirstRowFontColor;
+}
+
+#container.frUrssafImageCommonsMaquette > #header.frUrssafImageCommonsMaquette > #menu li a {
+	color: cssMenuLinkFontColor;
+}
+
+#container.frUrssafImageCommonsMaquette > #header.frUrssafImageCommonsMaquette > #menu li a:hover, #container.frUrssafImageCommonsMaquette > #header.frUrssafImageCommonsMaquette > #menu li a.active {
+	color: cssMenuLinkHoverFontColor;
+}
