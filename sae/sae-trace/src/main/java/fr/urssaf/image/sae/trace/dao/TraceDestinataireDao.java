@@ -130,7 +130,7 @@ public class TraceDestinataireDao extends AbstractDao<String, String> {
     * Ajoute une colonne {@value #COL_REG_SECURITE} à la ligne donnée
     * 
     * @param updater
-    *           updater de <b>TraceDestinataire</b> <li></li> <li>
+    *           updater de <b>TraceDestinataire</b>
     * @param value
     *           valeur de la colonne
     * @param clock

@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.services.exception.search;
 
 /**
- * Exception à utiliser pour les erreurs de dans la partie recherche.<BR/>
+ * Exception à utiliser pour les erreurs de dans la partie recherche.<br>
  */
 public class SAESearchServiceEx extends Exception {
 

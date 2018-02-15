@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.storage.exception;
 
 /**
- * Exception à utiliser pour les erreurs de gestion de la corbeille.<BR/>
+ * Exception à utiliser pour les erreurs de gestion de la corbeille.<br>
  * 
  */
 

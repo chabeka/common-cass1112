@@ -5,8 +5,8 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 
 /**
- * Classe abstraite contenant les éléments communs des objets métiers et objets
- * conteneurs.<br/>
+ * <br>Classe abstraite contenant les éléments communs des objets métiers et objets
+ * conteneurs.<br>
  * Elle contient les attributs :
  * <ul>
  * <li>content : Le contenu d’un document.</li>

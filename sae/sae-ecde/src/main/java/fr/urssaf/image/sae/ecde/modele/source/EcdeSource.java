@@ -27,6 +27,14 @@ public class EcdeSource {
    }
 
    /**
+   * Constructeur
+   */
+  public EcdeSource() {
+    super();
+    // TODO Auto-generated constructor stub
+  }
+
+  /**
     * Constructeur
     * 
     * @param host

@@ -200,11 +200,6 @@
          <version>${apache.commons-codec.version}</version>
       </dependency>
       <dependency>
-         <groupId>commons-lang</groupId>
-         <artifactId>commons-lang</artifactId>
-         <version>${apache.commons-lang.version}</version>
-      </dependency>
-      <dependency>
          <groupId>commons-io</groupId>
          <artifactId>commons-io</artifactId>
          <version>${apache.commons-io.version}</version> 

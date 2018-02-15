@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.services.exception.search;
 
 
 /**
- * Exception à utiliser pour les erreurs lié aux métadonnées.<BR/>
+ * Exception à utiliser pour les erreurs lié aux métadonnées.<br>
  * 
  */
 public class MetaDataUnauthorizedToSearchEx extends Exception {

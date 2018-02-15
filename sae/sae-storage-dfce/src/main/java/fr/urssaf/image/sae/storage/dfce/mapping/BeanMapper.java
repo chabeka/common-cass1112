@@ -59,7 +59,7 @@ public final class BeanMapper {
          StorageTechnicalMetadatas.NOTE.getShortCode());
 
    /**
-    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br>
     * 
     * @param document
     *           : Le document DFCE.
@@ -160,7 +160,7 @@ public final class BeanMapper {
 
    /**
     * Permet de convertir les métadonnées DFCE vers les métadonnées
-    * StorageDocument.<br/>
+    * StorageDocument.<br>
     * 
     * @param serviceDFCE
     *           : Les services DFCE.

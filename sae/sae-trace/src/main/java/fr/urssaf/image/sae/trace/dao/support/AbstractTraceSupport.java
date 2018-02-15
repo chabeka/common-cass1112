@@ -46,7 +46,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
          "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
    /**
-    * Création d'une trace dans le registre de sécurité.<br/>
+    * Création d'une trace dans le registre de sécurité.<br>
     * les champs suivants sont renseignés :
     * <ul>
     * <li>code événement</li>

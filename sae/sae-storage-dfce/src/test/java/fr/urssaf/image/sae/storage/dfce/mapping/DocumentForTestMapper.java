@@ -34,7 +34,7 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 public final class DocumentForTestMapper {
    /**
     * Permet de convertir les données du document XML vers
-    * {@link StorageDocument}.<br/>
+    * {@link StorageDocument}.<br>
     * 
     * @param saeDocument
     *           : Document à injecter pour les tests.
@@ -83,7 +83,7 @@ public final class DocumentForTestMapper {
 
    /**
     * Permet de convertir les données du document métadonnées XML vers un
-    * StorageDocument.<br/>
+    * StorageDocument.<br>
     * 
     * @param saeMetadata
     *           : document xml.

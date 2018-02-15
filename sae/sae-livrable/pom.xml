@@ -34,12 +34,6 @@
                         </descriptors>
                   </configuration>
                </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <artifactId>maven-assembly-plugin</artifactId>
-            <version>${maven-assembly-plugin.version}</version>
-            <executions>
                <execution>
                   <id>make-assembly</id>
                   <phase>package</phase>

@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.services.enrichment.xml.model;
 
 /**
- * Énumération contenant la listes des codes long des métadonnées à enrichir.<br/>
+ * Énumération contenant la listes des codes long des métadonnées à enrichir.<br>
  */
 public enum SAEArchivalMetadatas {
    // Code RND

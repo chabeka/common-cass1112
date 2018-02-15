@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.metadata.exceptions;
 
 
 /**
- * Exception à utiliser pour les erreurs lié aux indexes composites<BR/>
+ * Exception à utiliser pour les erreurs lié aux indexes composites<br>
  * 
  */
 public class IndexCompositeException extends ControlException {

@@ -21,7 +21,7 @@ public class VIAppliClientException extends VIVerificationException {
 
    /***
     * instancie le message d'exception"L'identifiant de l'organisme client
-    * présent dans le VI (<i>&lt;idOrg></i>) est invalide ou inconnu"
+    * présent dans le VI (<i>&lt;idOrg><i>) est invalide ou inconnu"
     * 
     * @param idOrg
     *           identifiant de l'organisme client

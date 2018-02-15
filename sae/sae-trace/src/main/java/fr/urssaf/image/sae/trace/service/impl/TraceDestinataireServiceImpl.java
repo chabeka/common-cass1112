@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 
 /**
- * Classe d'implémentation du support {@link TraceDestinataireService}. Cette
+ * Classe d'implémentation du support @see fr.urssaf.image.sae.trace.service.TraceDestinataireService. Cette
  * classe est un singleton et peut être accessible par le mécanisme d'injection
  * IOC avec l'annotation @Autowired
  * 

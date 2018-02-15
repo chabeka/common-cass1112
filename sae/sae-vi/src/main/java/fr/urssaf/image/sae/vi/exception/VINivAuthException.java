@@ -24,7 +24,7 @@ public class VINivAuthException extends VIVerificationException {
 
    /**
     * instancie le message d'exception Le niveau d'authentification
-    * '<i>&lt;methodAuth></i>' est incorrect
+    * '<i>&lt;methodAuth><i>' est incorrect
     * 
     * @param methodAuth
     *           niveau d'authentification

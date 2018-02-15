@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.storage.exception;
 
 /**
  * Exception à utiliser pour les erreurs de connexion qui peuvent être
- * récupérées.<BR/>
+ * récupérées.<br>
  * 
  */
 public class ConnectionServiceEx extends StorageRuntimeException {

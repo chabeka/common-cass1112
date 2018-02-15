@@ -969,7 +969,7 @@ public class ReferentielServiceUtils {
    }
 
    /**
-    * Les profils de controle pour les formats.<br/>
+    * Les profils de controle pour les formats.<br>
     * Ajout de 3 éléments pour le format fmt/354:
     * <ul>
     * <li>Identification seule</li>

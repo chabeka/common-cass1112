@@ -16,6 +16,13 @@ public class EcdeSources {
    private EcdeSource[] sources;
 
    /**
+   * Constucteur
+   */
+  public EcdeSources() {
+    super();
+  }
+
+  /**
     * @return the sources
     */
    public final EcdeSource[] getSources() {

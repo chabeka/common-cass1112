@@ -65,7 +65,7 @@ public interface SAESearchService {
     *           liste des metaDonnees desirée
     * @param maxResult
     *           nombre maximum de résultat renvoyé.<i>attention : ne pas
-    *           dépasser 5000 sous peine de saturation mémoire</i>
+    *           dépasser 5000 sous peine de saturation mémoire<i>
     * @return Une liste de document de type {@link UntypedDocument}.
     * @throws SAESearchServiceEx
     *            Exception levée lorsqu'une erreur s'est produite lors de la
