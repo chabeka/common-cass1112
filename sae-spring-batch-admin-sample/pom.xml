@@ -17,8 +17,8 @@
       <slf4j-api.version>1.6.4</slf4j-api.version>
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
-      <commons-cassandra-spring-batch.version>0.0.6</commons-cassandra-spring-batch.version>
-      <sae.version>16.9.0.2</sae.version>
+      <commons-cassandra-spring-batch.version>0.0.7-SNAPSHOT</commons-cassandra-spring-batch.version>
+      <sae.version>17.6.0.2-SNAPSHOT</sae.version>
    </properties>
 
 
