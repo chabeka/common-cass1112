@@ -190,8 +190,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${maven-compiler-plugin.version}</version>
             <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
+               <source>1.8</source>
+               <target>1.8</target>
                <encoding>UTF-8</encoding>
             </configuration>
          </plugin>
@@ -261,7 +261,7 @@
                <linkXref>false</linkXref>
                <sourceEncoding>utf-8</sourceEncoding>
                <minimumTokens>100</minimumTokens>
-               <targetJdk>1.6</targetJdk>
+               <targetJdk>1.8</targetJdk>
                <rulesets>
                   <ruleset>http://cer69-hudson2.cer69.recouv:80/pmd_rules/pmd_commons-parent.xml</ruleset>
                </rulesets>

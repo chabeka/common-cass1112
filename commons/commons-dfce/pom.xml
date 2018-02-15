@@ -4,7 +4,7 @@
 
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-dfce</artifactId>
-   <version>1.7.4-CRTL-3-SNAPSHOT</version>
+   <version>1.9.1-CRTL-1-SNAPSHOT</version>
 
    <name>commons-dfce</name>
 
@@ -24,11 +24,11 @@
 
       <!-- numéro de version des dépendances de DFCE -->
       <dfce.serialization>1.2.2</dfce.serialization>
-      <dfce.toolkit.client>1.7.4</dfce.toolkit.client>
-      <dfce.toolkit.pojo>1.7.4</dfce.toolkit.pojo>
-      <dfce.pojo>1.7.4</dfce.pojo>
-      <dfce.toolkit.service>1.7.4</dfce.toolkit.service>
-      <dfce.commons>1.7.4</dfce.commons>
+      <dfce.toolkit.client>1.9.1</dfce.toolkit.client>
+      <dfce.toolkit.pojo>1.9.1</dfce.toolkit.pojo>
+      <dfce.pojo>1.9.1</dfce.pojo>
+      <dfce.toolkit.service>1.9.1</dfce.toolkit.service>
+      <dfce.commons>1.9.1</dfce.commons>
 
       <!-- Autres versions -->
       <junit.version>4.8.2</junit.version>
@@ -43,7 +43,8 @@
       
       <spring.security.version>3.0.5.RELEASE</spring.security.version>
       <dozer.version>5.3.1</dozer.version>
-      <jackson-annotations.version>2.4.5</jackson-annotations.version>
+      <jackson-annotations.version>2.6.0</jackson-annotations.version>
+      <reflections.version>0.9.10</reflections.version>
 
    </properties>
 
@@ -279,6 +280,17 @@
          <version>${jackson-annotations.version}</version>
       </dependency>
 
+	  <!-- REFLECTIONS -->
+      <!--
+         la dépendance à reflection est uniquement utile pour l'utilisation
+         des nouveau pojo du toolkit DFCE 
+       -->
+	  <dependency>
+		 <groupId>org.reflections</groupId>
+		 <artifactId>reflections</artifactId>
+		 <version>${reflections.version}</version>
+	  </dependency>
+
    </dependencies>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -349,8 +361,9 @@
                   </goals>
                </execution>
             </executions>
-            <configuration>
+           <configuration>
                <quiet>true</quiet>
+               <additionalparam>-Xdoclint:none</additionalparam>
             </configuration>
          </plugin>
 
