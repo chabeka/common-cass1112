@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.services.exception.consultation;
 
 /**
- * Exception à utiliser pour les erreurs lié aux métadonnées.<BR/>
+ * Exception à utiliser pour les erreurs lié aux métadonnées.
  * 
  */
 public class MetaDataUnauthorizedToConsultEx extends Exception {

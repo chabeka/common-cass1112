@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.storage.exception;
 
 /**
  * Exception à utiliser pour les erreurs d'insertion qui peuvent être
- * récupérées.<BR/>
+ * récupérées.
  */
 public class InsertionServiceEx extends StorageException {
 

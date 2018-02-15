@@ -214,7 +214,7 @@ public class InsertionServiceTest {
     * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl#insertStorageDocument(StorageDocument)
     * insertStorageDocument} <br>
     * <p>
-    * Tests réaliser :<br/>
+    * Tests réaliser :
     * Insérer un document avec un RND inexistant
     */
    @Test

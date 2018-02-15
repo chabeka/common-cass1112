@@ -8,7 +8,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import fr.urssaf.image.sae.bo.model.AbstractSAECriteria;
 
 /**
- * Classe représentant le critère de recherche par requête lucène.<br/>
+ * Classe représentant le critère de recherche par requête lucène.
  * Elle contient les attributs :
  * <ul>
  * <li>limit : Le nombre de SAEDocument à retourner après la recherche.</li>

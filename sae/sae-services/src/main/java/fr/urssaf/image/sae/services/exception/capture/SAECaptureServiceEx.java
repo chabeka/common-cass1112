@@ -3,7 +3,7 @@ package fr.urssaf.image.sae.services.exception.capture;
 import fr.urssaf.image.sae.services.exception.SAEServiceException;
 
 /**
- * Exception à utiliser pour les erreurs de dans la partie capture.<BR/>
+ * Exception à utiliser pour les erreurs de dans la partie capture.
  */
 public class SAECaptureServiceEx extends SAEServiceException {
 

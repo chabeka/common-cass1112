@@ -1,5 +1,5 @@
 /**
- * Ce package contient les aspects permettant de valider les <br/>
+ * Ce package contient les aspects permettant de valider les 
  * paramètres d'entrées des différents services.
  * 
  * 

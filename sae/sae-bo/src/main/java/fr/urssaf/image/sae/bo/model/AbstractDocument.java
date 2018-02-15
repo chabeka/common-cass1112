@@ -6,7 +6,7 @@ import javax.activation.DataHandler;
 
 /**
  * Classe abstraite contenant les éléments communs des objets métiers et objets
- * conteneurs.<br/>
+ * conteneurs.
  * Elle contient les attributs :
  * <ul>
  * <li>content : Le contenu d’un document.</li>

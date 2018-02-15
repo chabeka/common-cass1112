@@ -4,7 +4,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * Classe qui représente une erreur.<br/>
+ * Classe qui représente une erreur.
  * Elle contient les attributs :
  * <ul>
  * <li>code : Le code de l'erreur</li>

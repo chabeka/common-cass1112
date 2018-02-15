@@ -53,7 +53,7 @@ public interface SaeControleMetadataService {
          MetadataValueNotInDictionaryEx;
 
    /**
-    * Cette méthode permet de faire les contrôles suivants :<br/>
+    * Cette méthode permet de faire les contrôles suivants :
     * <ul>
     * <li>vérifier que les métadonnées passées en paramètre sont spécifiables</li>
     * <li>vérifier que l'ensemble des métadonnées obligatoires lors de

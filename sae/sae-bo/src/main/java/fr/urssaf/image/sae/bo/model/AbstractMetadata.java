@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.bo.model;
 
 /**
- * Classe abstraite contenant les éléments communs des métadonnées.<br/>
+ * Classe abstraite contenant les éléments communs des métadonnées.
  * Elle contient les attributs :
  * <ul>
  * <li>longCode : Le code long de la métadonnée.</li>
