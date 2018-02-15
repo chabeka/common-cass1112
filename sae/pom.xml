@@ -722,7 +722,8 @@
                </execution>
             </executions>
             <configuration>
-               <additionalparam>-Xdoclint:none</additionalparam>
+               <quiet>true</quiet>
+               <!--additionalparam>-Xdoclint:none</additionalparam-->
             </configuration>
          </plugin>
 
