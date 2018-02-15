@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+
+   <!--
+   Sous-ensemble du fichier principal de l'artéfact.
+   
+   Il contient la définition des beans pour le job Spring Batch de capture de masse. 
+   -->
+   <bean id="modificationMasseFactory"
+      class="fr.urssaf.image.sae.services.batch.modification.factory.ModificationMasseFactory" />
+
+   <bean id="sommaireReader" scope="step"
+      class="org.springframework.batch.item.xml.StaxEventItemReader"
+      factory-bean="modificationMasseFactory" factory-method="getSommaireReader">
+      <constructor-arg value="#{jobParameters['capture.masse.sommaire']}" />
+   </bean>
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="compositeControlModificationProcessor">
+      <property name="delegates">
+         <list>
+            <ref bean="convertMetaDocumentModificationProcessor" />
+            <ref bean="controleMetaDocumentModificationProcessor" />
+         </list>
+      </property>
+   </bean>
+
+   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
+      id="compositeProcessorModification">
+      <property name="delegates">
+         <list>
+            <ref bean="convertMetaDocumentModificationProcessor" />
+            <ref bean="controleModificationDocumentProcessor" />
+         </list>
+      </property>
+   </bean>
+   
+</beans>
