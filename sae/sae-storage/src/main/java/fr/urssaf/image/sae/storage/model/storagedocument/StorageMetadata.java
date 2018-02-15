@@ -3,7 +3,7 @@ package fr.urssaf.image.sae.storage.model.storagedocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * Classe concrète représentant la métadonnée.</BR> Elle contient les attributs
+ * Classe concrète représentant la métadonnée. Elle contient les attributs
  * :
  * <ul>
  * <li>

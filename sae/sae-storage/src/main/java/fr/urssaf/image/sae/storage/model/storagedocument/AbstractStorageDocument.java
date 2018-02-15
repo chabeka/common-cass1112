@@ -4,7 +4,7 @@ import java.util.UUID;
 
 /**
  * Classe abstraite contenant les attributs communs des différents types de
- * documents destinés au stockage.</BR> Elle contient les attributs :
+ * documents destinés au stockage. Elle contient les attributs :
  * <ul>
  * <li>
  * uuid : Identifiant du document.</li>
