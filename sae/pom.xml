@@ -1,36 +1,49 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-   <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-   <groupId>fr.urssaf.image.sae</groupId>
-   <artifactId>sae</artifactId>
-   <version>18.6.0.1-SNAPSHOT</version>
+	<groupId>fr.urssaf.image.sae</groupId>
+	<artifactId>sae</artifactId>
+	<version>18.6.0.1-SNAPSHOT</version>
 
-   <packaging>pom</packaging>
+	<packaging>pom</packaging>
 
-   <name>sae</name>
+	<name>sae</name>
+   
+       <!-- Utilisation du fichier POM parent ALTAIR -->
+	<parent>
+		<groupId>fr.pnr.altair</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.1.3</version>
+      <!-- Les balise ci-dessous ne sont pas disponible sous Maven 3.1.1 
+      <packaging>pom</packaging>
+      <name>POM Parent Altair</name>
+      <description>POM Parent pour les projets altair</description>
+      -->
+	</parent>
 
-   <properties>
+	<properties>
 
       <!-- Encodage de caractères -->
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
       <!-- Version des plug-ins Maven -->
-      <maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
-      <maven-source-plugin.version>2.4</maven-source-plugin.version>
-      <maven-resources-plugin.version>2.7</maven-resources-plugin.version>
-      <maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
-      <sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
-      <maven-release-plugin.version>2.5.2</maven-release-plugin.version>
-      <aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
-      <maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
-      <maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
-      <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
-      <maven-assembly-plugin.version>2.4.1</maven-assembly-plugin.version>
-      <maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
-      <maven-replacer-plugin.version>1.5.3</maven-replacer-plugin.version>
-      <wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
-      <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-compiler-plugin.version>3.2</maven-compiler-plugin.version>
+		<maven-source-plugin.version>2.4</maven-source-plugin.version>
+		<maven-resources-plugin.version>2.7</maven-resources-plugin.version>
+		<maven-javadoc-plugin.version>2.9.1</maven-javadoc-plugin.version>
+		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
+		<maven-release-plugin.version>2.5.2</maven-release-plugin.version>
+		<aspectj-maven-plugin.version>1.10</aspectj-maven-plugin.version>
+		<maven-pmd-plugin.version>3.5</maven-pmd-plugin.version>
+		<maven-shade-plugin.version>3.0.0</maven-shade-plugin.version>
+		<maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+		<maven-assembly-plugin.version>2.4.1</maven-assembly-plugin.version>
+		<maven-surefire-plugin.version>2.20</maven-surefire-plugin.version>
+		<maven-replacer-plugin.version>1.5.3</maven-replacer-plugin.version>
+		<wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 
 
       <!--
@@ -45,7 +58,7 @@
       commons-cassandra
       ==========================================
       -->
-      <commons.cassandra>0.0.10-SNAPSHOT</commons.cassandra>
+		<commons.cassandra>0.0.10-SNAPSHOT</commons.cassandra>
 
       <!--
       Modèle de dépendance :
@@ -63,7 +76,7 @@
       commons-cassandra-spring-batch
       ==========================================
       -->
-      <commons.cassandra.spring.batch>0.0.7-SNAPSHOT</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>0.0.7-SNAPSHOT</commons.cassandra.spring.batch>
 
       <!--
       Modèle de dépendance :
@@ -81,7 +94,7 @@
       commons-dfce
       ==========================================
       -->
-      <commons.dfce>1.9.1-CRTL-1-SNAPSHOT</commons.dfce>
+		<commons.dfce>1.9.1-CRTL-1-SNAPSHOT</commons.dfce>
 
       <!--
       Modèle de dépendance :
@@ -99,7 +112,7 @@
       commons-pdfbox
       ==========================================
       -->
-      <commons-pdfbox>0.0.2-SNAPSHOT</commons-pdfbox>
+		<commons-pdfbox>0.0.2-SNAPSHOT</commons-pdfbox>
 
       <!--
       Modèle de dépendance :
@@ -117,7 +130,7 @@
       commons-droid
       ==========================================
       -->
-      <commons-droid>0.0.2-SNAPSHOT</commons-droid>
+		<commons-droid>0.0.2-SNAPSHOT</commons-droid>
 
       <!--
       Modèle de dépendance :
@@ -134,7 +147,7 @@
       commons-itext
       ==========================================
       -->
-      <commons-itext>0.0.5-SNAPSHOT</commons-itext>
+		<commons-itext>0.0.5-SNAPSHOT</commons-itext>
       
       <!--
       Modèle de dépendance :
@@ -160,7 +173,7 @@
       http://junit.org/
       ==========================================
       -->
-      <junit.version>4.12</junit.version>
+		<junit.version>4.12</junit.version>
 
       <!--
       Modèle de dépendance :
@@ -181,7 +194,7 @@
       http://www.slf4j.org/
       ==========================================
       -->
-      <org.slf4j.version>1.7.21</org.slf4j.version>
+		<org.slf4j.version>1.7.21</org.slf4j.version>
 
 
       <!--
@@ -193,10 +206,10 @@
       -->
 
       <!-- JCL (Jakarta Commons Logging) vers SLF4J -->
-      <jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
+		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
 
       <!-- Log4J vers SLF4J -->
-      <log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
+		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
 
 
       <!--
@@ -225,7 +238,7 @@
       http://logback.qos.ch/
       ==========================================
       -->
-      <logback.version>0.9.30</logback.version>
+		<logback.version>0.9.30</logback.version>
 
 
       <!--
@@ -235,9 +248,9 @@
       http://www.springsource.org/
       ==========================================
       -->
-      <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-      <spring.security.version>3.0.5.RELEASE</spring.security.version>
-      <spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.security.version>3.0.5.RELEASE</spring.security.version>
+		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
 
       <!--
       Exemples de dépendance :
@@ -292,13 +305,13 @@
       ==========================================
       -->
 
-      <apache.commons-configuration.version>1.6</apache.commons-configuration.version>
-      <apache.commons-collections.version>3.2.1</apache.commons-collections.version>
-      <apache.commons-io.version>2.5</apache.commons-io.version>
-      <apache.commons-lang.version>2.6</apache.commons-lang.version>
-      <apache.commons-codec.version>1.4</apache.commons-codec.version>
-      <apache.commons-compress.version>1.4.1</apache.commons-compress.version>
-      <apache.commons-beanutils.version>1.8.3</apache.commons-beanutils.version>
+		<apache.commons-configuration.version>1.6</apache.commons-configuration.version>
+		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
+		<apache.commons-io.version>2.5</apache.commons-io.version>
+		<apache.commons-lang.version>2.6</apache.commons-lang.version>
+		<apache.commons-codec.version>1.4</apache.commons-codec.version>
+		<apache.commons-compress.version>1.4.1</apache.commons-compress.version>
+		<apache.commons-beanutils.version>1.8.3</apache.commons-beanutils.version>
 
 
       <!--
@@ -359,7 +372,7 @@
       http://www.jdom.org/
       ==========================================
       -->
-      <org.jdom.version>1.1</org.jdom.version>
+		<org.jdom.version>1.1</org.jdom.version>
 
       <!--
       Modèle de dépendance :
@@ -379,7 +392,7 @@
       http://joda-time.sourceforge.net/
       ==========================================
       -->
-      <joda-time.version>2.0</joda-time.version>
+		<joda-time.version>2.0</joda-time.version>
 
       <!--
       Modèles de dépendance :
@@ -407,7 +420,7 @@
       http://www.jcp.org/en/jsr/detail?id=315
       ==========================================
       -->
-      <javax.servlet.version>2.5</javax.servlet.version>
+		<javax.servlet.version>2.5</javax.servlet.version>
 
       <!--
       Modèles de dépendance :
@@ -428,7 +441,7 @@
       http://www.eclipse.org/aspectj/
       ==========================================
       -->
-      <aspectj.version>1.8.9</aspectj.version>
+		<aspectj.version>1.8.9</aspectj.version>
 
       <!--
       Modèles de dépendance :
@@ -448,7 +461,7 @@
       http://ws.apache.org/axis/
       ==========================================
       -->
-      <axis2.version>1.6.1</axis2.version>
+		<axis2.version>1.6.1</axis2.version>
 
       <!--
       Modèles de dépendance :
@@ -486,7 +499,7 @@
       http://xstream.codehaus.org/
       ==========================================
       -->
-      <xstream.version>1.3.1</xstream.version>
+		<xstream.version>1.3.1</xstream.version>
 
       <!--
       Modèles de dépendance :
@@ -507,7 +520,7 @@
       http://www.easymock.org/
       ==========================================
       -->
-      <easymock.version>3.0</easymock.version>
+		<easymock.version>3.0</easymock.version>
 
       <!--
       Modèles de dépendance :
@@ -528,7 +541,7 @@
       http://www.clarkware.com/software/JUnitPerf.html
       ==========================================
       -->
-      <junitperf.version>1.9.1</junitperf.version>
+		<junitperf.version>1.9.1</junitperf.version>
 
       <!--
       Modèles de dépendance :
@@ -548,7 +561,7 @@
       http://code.google.com/p/guava-libraries/
       ==========================================
       -->
-      <guava.version>16.0</guava.version>
+		<guava.version>16.0</guava.version>
 
       <!--
       Modèles de dépendance :
@@ -572,7 +585,7 @@
       de version.
       ==========================================
       -->
-      <javassist.version>3.19.0-GA</javassist.version>
+		<javassist.version>3.19.0-GA</javassist.version>
       
       <!--
       Modèles de dépendance :
@@ -596,7 +609,7 @@
       de version.
       ==========================================
       -->
-      <bcprov-jdk16.version>140</bcprov-jdk16.version>
+		<bcprov-jdk16.version>140</bcprov-jdk16.version>
       
       <!--
       Modèles de dépendance :
@@ -609,301 +622,301 @@
       -->
 
 
-   </properties>
+	</properties>
 
 
    <!-- Les modules -->
-   <modules>
+	<modules>
 
-      <module>sae-bo</module>
-      <module>sae-igc</module>
-      <module>sae-saml</module>
-      <module>sae-format</module>
-      <module>sae-storage</module>
-      <module>sae-droit</module>
-      <module>sae-vi</module>
-      <module>sae-storage-dfce</module>
-      <module>sae-ecde</module>
-      <module>sae-metadata</module>
-      <module>sae-mapping</module>
-      <module>sae-pile-travaux</module>
-      <module>sae-services</module>
-      <module>sae-services-batch</module>
+		<module>sae-bo</module>
+		<module>sae-igc</module>
+		<module>sae-saml</module>
+		<module>sae-format</module>
+		<module>sae-storage</module>
+		<module>sae-droit</module>
+		<module>sae-vi</module>
+		<module>sae-storage-dfce</module>
+		<module>sae-ecde</module>
+		<module>sae-metadata</module>
+		<module>sae-mapping</module>
+		<module>sae-pile-travaux</module>
+		<module>sae-services</module>
+		<module>sae-services-batch</module>
 
-      <module>sae-trace</module>
-      <module>sae-trace-executable</module>
-      <module>sae-commons</module>
-      <module>sae-rnd</module>
-      <module>sae-rnd-executable</module>
+		<module>sae-trace</module>
+		<module>sae-trace-executable</module>
+		<module>sae-commons</module>
+		<module>sae-rnd</module>
+		<module>sae-rnd-executable</module>
 
-      <module>sae-igcmaj</module>
-      <module>sae-services-executable</module>
-      <module>sae-webservices</module>
-      <module>sae-dfce-admin-exploit</module>
-      <module>sae-ordonnanceur</module>
-      <module>sae-lotinstallmaj</module>
-      <module>sae-jobs-executable</module>
-      <module>sae-documents-executable</module>
+		<module>sae-igcmaj</module>
+		<module>sae-services-executable</module>
+		<module>sae-webservices</module>
+		<module>sae-dfce-admin-exploit</module>
+		<module>sae-ordonnanceur</module>
+		<module>sae-lotinstallmaj</module>
+		<module>sae-jobs-executable</module>
+		<module>sae-documents-executable</module>
 
-      <module>sae-livrable</module>
-      
-       <module>sae-integrationinstall</module>
+		<module>sae-livrable</module>
 
-   </modules>
+		<module>sae-integrationinstall</module>
+
+	</modules>
    
 
    <!-- Configuration SVN pour le plug-in maven-release -->
-   <scm>
-      <url>
+	<scm>
+		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </url>
-      <developerConnection>
+		<developerConnection>
          scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </developerConnection>
-      <connection>
+		<connection>
          scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </connection>
-   </scm>
+	</scm>
 
 
-   <build>
-      <plugins>
+	<build>
+		<plugins>
 
          <!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <version>${maven-compiler-plugin.version}</version>
-            <configuration>
-               <source>1.8</source>
-               <target>1.8</target>
-               <encoding>${project.build.sourceEncoding}</encoding>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 
 
          <!-- Dans le cas d'un packaging JAR, on demande que le JAR des sources soit également généré -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>${maven-source-plugin.version}</version>
-            <executions>
-               <execution>
-                  <id>bind-sources</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>bind-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 
          <!-- On spécifie l'encodage de caractères des ressources -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-resources-plugin</artifactId>
-            <version>${maven-resources-plugin.version}</version>
-            <configuration>
-               <encoding>${project.build.sourceEncoding}</encoding>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
 
 
          <!-- On demande la génération de la Javadoc -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>attach-javadocs</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-            <configuration>
-               <quiet>true</quiet>
-               <!--additionalparam>-Xdoclint:none</additionalparam-->
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- <quiet>true</quiet> -->
+               		<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
 
 
          <!-- On spécifie la version du plugin Maven pour Sonar -->
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>${sonar-maven-plugin.version}</version>
-         </plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+				<version>${sonar-maven-plugin.version}</version>
+			</plugin>
 
 
          <!-- Pour la gestion des release -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-release-plugin</artifactId>
-            <configuration>
-               <preparationGoals>clean javadoc:jar install</preparationGoals>
-               <autoVersionSubmodules>true</autoVersionSubmodules>
-               <useReleaseProfile>false</useReleaseProfile>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>clean javadoc:jar install</preparationGoals>
+					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<useReleaseProfile>false</useReleaseProfile>
+				</configuration>
+			</plugin>
 
          <!-- Configuration mémoire pour les TU -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <version>${maven-surefire-plugin.version}</version>
-            <configuration>
-               <argLine>-Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<configuration>
+					<argLine>-Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+				</configuration>
+			</plugin>
 
          <!-- Déploiement réalisé uniquement à la fin du build de tous les modules, et pas module par module. -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-deploy-plugin</artifactId>
-            <version>${maven-deploy-plugin.version}</version>
-            <configuration>
-               <deployAtEnd>true</deployAtEnd>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
+				<configuration>
+					<deployAtEnd>true</deployAtEnd>
+				</configuration>
+			</plugin>
 
-      </plugins>
+		</plugins>
 
 
-      <pluginManagement>
+		<pluginManagement>
 
-         <plugins>
+			<plugins>
          
             <!-- Configuration du lifecycle maven -->
-            <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <lifecycleMappingMetadata>
-                        <pluginExecutions>
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>aspectj-maven-plugin</artifactId>
-                                    <versionRange>[1.0,)</versionRange>
-                                    <goals>
-                                        <goal>test-compile</goal>
-                                        <goal>compile</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action>
-                                    <execute />
-                                </action>
-                            </pluginExecution>
-                        </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                </configuration>
-            </plugin>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>aspectj-maven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>test-compile</goal>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
 
             <!-- Compilation Aspect avec AspectJ -->
-            <plugin>
-               <groupId>org.codehaus.mojo</groupId>
-               <artifactId>aspectj-maven-plugin</artifactId>
-               <version>${aspectj-maven-plugin.version}</version>
-               <configuration>
-				 <complianceLevel>1.8</complianceLevel>
-		         <source>1.8</source>
-		         <target>1.8</target>
-		         <encoding>UTF-8</encoding>
-                 <Xlint>ignore</Xlint>
-               </configuration>
-               <executions>
-                  <execution>
-                     <goals>
-                        <goal>compile</goal>
-                        <goal>test-compile</goal>
-                     </goals>
-                  </execution>
-               </executions>
-            </plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>aspectj-maven-plugin</artifactId>
+					<version>${aspectj-maven-plugin.version}</version>
+					<configuration>
+						<complianceLevel>1.8</complianceLevel>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+						<Xlint>ignore</Xlint>
+					</configuration>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 
-         </plugins>
+			</plugins>
 
-      </pluginManagement>
+		</pluginManagement>
 
-      <extensions>
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-webdav</artifactId>
-            <version>${wagon-webdav.version}</version>
-         </extension>
-      </extensions>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>${wagon-webdav.version}</version>
+			</extension>
+		</extensions>
 
-   </build>
+	</build>
 
-   <dependencies>
+	<dependencies>
 
       <!-- JUnit -->
-      <dependency>
-         <groupId>junit</groupId>
-         <artifactId>junit</artifactId>
-         <version>${junit.version}</version><!--$NO-MVN-MAN-VER$--><!-- VERSION PLUS RECENTE DE JUNIT (Utilisation des annotations et autres) -->
-         <scope>test</scope>
-      </dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version><!--$NO-MVN-MAN-VER$--><!-- VERSION PLUS RECENTE DE JUNIT (Utilisation des annotations et autres) -->
+			<scope>test</scope>
+		</dependency>
 
       <!-- SLF4J et Logback -->
-      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-         <version>${org.slf4j.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-classic</artifactId>
-         <version>${logback.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>ch.qos.logback</groupId>
-         <artifactId>logback-core</artifactId>
-         <version>${logback.version}</version>
-      </dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${org.slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
 
-   </dependencies>
+	</dependencies>
 
 
-   <reporting>
-   
-      <plugins>
+	<reporting>
+
+		<plugins>
 
          <!-- Paramétrage de la génération des rapports PMD -->
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-pmd-plugin</artifactId>
-            <version>${maven-pmd-plugin.version}</version>
-            <configuration>
-               <linkXref>false</linkXref>
-               <sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-               <minimumTokens>100</minimumTokens>
-               <targetJdk>1.6</targetJdk>
-               <rulesets>
-                  <ruleset>http://cer69-hudson2.cer69.recouv:80/pmd_rules/pmd_sae-parent.xml</ruleset>
-               </rulesets>
-            </configuration>
-         </plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>${maven-pmd-plugin.version}</version>
+				<configuration>
+					<linkXref>false</linkXref>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<minimumTokens>100</minimumTokens>
+					<targetJdk>1.6</targetJdk>
+					<rulesets>
+						<ruleset>http://cer69-hudson2.cer69.recouv:80/pmd_rules/pmd_sae-parent.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
 
-      </plugins>
-   </reporting>
+		</plugins>
+	</reporting>
 
 
    <!-- On indique l'URL des repository Nexus, pour les versions Snapshots et Releases des artéfacts -->
-   <distributionManagement>
-      <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-   </distributionManagement>
+	<distributionManagement>
+		<repository>
+			<id>nexus</id>
+			<name>Releases</name>
+			<url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus</id>
+			<name>Snapshots</name>
+			<url>dav:http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
