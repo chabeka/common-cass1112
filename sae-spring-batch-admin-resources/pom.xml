@@ -10,7 +10,7 @@
 	</parent>
 	<artifactId>sae-spring-batch-admin-resources</artifactId>
 	<packaging>jar</packaging>
-	<name>Resources</name>
+	<name>Spring Batch Admin Resources</name>
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>

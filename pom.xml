@@ -1,38 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.springframework.batch</groupId>
+	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-spring-batch-admin</artifactId>
 	<name>SAE Spring Batch Admin</name>
 	<description>A set of services (Java, JSON) and a UI (webapp) for managing and launching Spring Batch jobs.</description>
 	<version>1.2.2.BUILD-SNAPSHOT</version>
 	<packaging>pom</packaging>
-	<scm>
-		<url>http://static.springframework.org/spring-batch-admin</url>
-		<connection>scm:git:git://github.com/SpringSource/spring-batch-admin.git</connection>
-		<developerConnection>scm:git:git://github.com/SpringSource/spring-batch-admin.git</developerConnection>
-	</scm>
-	<issueManagement>
-		<system>JIRA</system>
-		<url>http://opensource.atlassian.com/projects/spring/browse/BATCHADM</url>
-	</issueManagement>
-	<mailingLists>
-		<mailingList>
-			<name>Spring Batch Forum</name>
-			<post>http://forum.springframework.org/forumdisplay.php?f=41</post>
-			<archive>http://forum.springframework.org/forumdisplay.php?f=41</archive>
-		</mailingList>
-	</mailingLists>
-	<ciManagement>
-		<system>Bamboo</system>
-		<url>https://build.springframework.org/bamboo/browse/BATCH</url>
-	</ciManagement>
-	<licenses>
-		<license>
-			<name>Apache 2.0</name>
-			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-		</license>
-	</licenses>
+	
+	<!-- Utilisation du fichier POM parent ALTAIR -->
+	<parent>
+		<groupId>fr.pnr.altair</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.1.3</version>
+	</parent>
+	
+	<!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <url>
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-batch-admin-pic-national/
+      </url>
+      <developerConnection>
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-batch-admin-pic-national/
+      </developerConnection>
+      <connection>
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-batch-admin-pic-national/
+      </connection>
+   </scm>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- dist.* properties are used by the antrun tasks below -->
@@ -44,10 +39,6 @@
 		<dist.fileName>${dist.finalName}.zip</dist.fileName>
 		<dist.filePath>target/${dist.fileName}</dist.filePath>
 		<dist.bucketName>dist.springframework.org</dist.bucketName>
-		<!-- these properties should be in ~/.m2/settings.xml
-		<dist.accessKey>s3 access key</dist.accessKey>
-		<dist.secretKey>s3 secret key</dist.secretKey>
-		-->
 	</properties>
 	<modules>
 		<module>sae-spring-batch-admin-parent</module>
@@ -121,46 +112,6 @@
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-		<profile>
-			<id>milestone</id>
-			<distributionManagement>
-				<repository>
-					<id>spring-milestone</id>
-					<name>Spring Milestone Repository</name>
-					<url>s3://maven.springframework.org/milestone</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-		<profile>
-			<id>central</id>
-			<distributionManagement>
-				<repository>
-					<id>spring-sourceforge</id>
-					<name>Spring Sourceforge Repository</name>
-					<url>file:///${user.home}/dev/sourceforge</url>
-				</repository>
-			</distributionManagement>
-		</profile>
-		<profile>
-			<id>staging</id>
-			<properties>
-			  <dist.staging>/${java.io.tmpdir}/spring-batch-admin/dist</dist.staging>
-			</properties>
-			<distributionManagement>
-				<site>
-					<id>staging</id>
-					<url>file:///${user.dir}/target/staging</url>
-				</site>
-				<repository>
-					<id>staging</id>
-					<url>file:///${user.dir}/target/staging</url>
-				</repository>
-				<snapshotRepository>
-					<id>staging</id>
-					<url>file:///${user.dir}/target/staging</url>
-				</snapshotRepository>
-			</distributionManagement>
 		</profile>
 		<profile>
 			<id>upload</id>
@@ -443,20 +394,4 @@
 			</plugin>
 		</plugins>
 	</reporting>
-	<distributionManagement>
-		<site>
-			<id>static.springframework.org</id>
-			<url>scp://static.springframework.org/var/www/domains/springframework.org/static/htdocs/spring-batch-admin/trunk</url>
-		</site>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring Release Repository</name>
-			<url>s3://maven.springframework.org/release</url>
-		</repository>
-		<snapshotRepository>
-			<id>spring-snapshot</id>
-			<name>Spring Snapshot Repository</name>
-			<url>s3://maven.springframework.org/snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
 </project>

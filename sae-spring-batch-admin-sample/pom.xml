@@ -11,7 +11,7 @@
       <relativePath>../sae-spring-batch-admin-parent</relativePath>
    </parent>
    <packaging>war</packaging>
-   <name>Web Sample</name>
+   <name>Spring Batch Admin Web Sample</name>
 
    <properties>
       <slf4j-api.version>1.6.4</slf4j-api.version>
