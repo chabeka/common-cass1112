@@ -1,18 +1,5 @@
 package fr.urssaf.image.sae.igc.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.cert.CertificateFactory;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -21,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ch.qos.logback.core.joran.spi.Pattern;
 import fr.urssaf.image.sae.igc.exception.IgcDownloadException;
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
@@ -86,23 +74,21 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
                   String[] listeCRL = repertoire.list();
 
                   for (String crl : listeCRL) {
-                    try ( InputStream input = new FileInputStream(repTemp + "/"
-                        + crl)) {
-                      CertificateFactory certifFactory;
-                      try {
-                         certifFactory = CertificateFactory.getInstance("X.509");
-                         certifFactory.generateCRL(input);
-                      } catch (GeneralSecurityException e) {
-                         erreur = true;
-                         LOG.error(
-                               "erreur de chargement du fichier CRL: " + crl, e);
-                         ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, crl,
-                               igcConfig.getPkiIdent());
-                      }
-                    } catch (IOException e) {
-                      throw e;
-                    }
+                     InputStream input = new FileInputStream(repTemp + "/"
+                           + crl);
+                     CertificateFactory certifFactory;
+                     try {
+                        certifFactory = CertificateFactory.getInstance("X.509");
+                        certifFactory.generateCRL(input);
+                     } catch (GeneralSecurityException e) {
+                        erreur = true;
+                        LOG.error(
+                              "erreur de chargement du fichier CRL: " + crl, e);
+                        ecrireTraces(TRACE_CODE_EVT_ECHEC_CHARGEMENT_CRL, crl,
+                              igcConfig.getPkiIdent());
+                     }
                   }
+
                } catch (IOException e) {
                   erreur = true;
                   LOG.error("erreur de téléchargement des CRLs : " + url, e);
@@ -260,16 +246,16 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
       boolean resultat = false;
 
       // Declaration des flux
-      FileInputStream sourceFile = null;
-      FileOutputStream destinationFile = null;
+      java.io.FileInputStream sourceFile = null;
+      java.io.FileOutputStream destinationFile = null;
 
       try {
          // Création du fichier :
          destination.createNewFile();
 
          // Ouverture des flux
-         sourceFile = new FileInputStream(source);
-         destinationFile = new FileOutputStream(destination);
+         sourceFile = new java.io.FileInputStream(source);
+         destinationFile = new java.io.FileOutputStream(destination);
 
          // Lecture par segment de 0.5Mo
          byte buffer[] = new byte[512 * 1024];
@@ -281,9 +267,9 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
 
          // Copie réussie
          resultat = true;
-      } catch (FileNotFoundException f) {
+      } catch (java.io.FileNotFoundException f) {
 
-      } catch (IOException e) {
+      } catch (java.io.IOException e) {
 
       } finally {
          // Quoi qu'il arrive, on ferme les flux
