@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,7 +15,6 @@ import junit.framework.Assert;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.io.FileDeleteStrategy;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -83,16 +81,10 @@ public class IgcDownloadServiceImplTest {
    }
 
    @AfterClass
-   public static void afterClass() throws IOException {     
-     try {
-       Files.delete(DIRECTORY.toPath());
-     } catch (Exception e) {
-       try {
-         FileDeleteStrategy.FORCE.delete(DIRECTORY);
-       } catch (Exception ex) {
-         Assert.fail(e.getMessage());
-       }
-     }
+   public static void afterClass() throws IOException {
+
+      FileUtils.deleteDirectory(DIRECTORY);
+
    }
 
    @Test

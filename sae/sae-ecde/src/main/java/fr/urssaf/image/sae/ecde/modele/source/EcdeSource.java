@@ -18,20 +18,12 @@ import java.io.File;
  * */
 public class EcdeSource {
    
-   /**
-    * Constructeur
-    * 
-    */
-   public EcdeSource() {
-
-   }
 
    /**
    * Constructeur
    */
   public EcdeSource() {
     super();
-    // TODO Auto-generated constructor stub
   }
 
   /**
