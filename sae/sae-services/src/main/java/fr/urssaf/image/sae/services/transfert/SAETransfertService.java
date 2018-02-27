@@ -129,6 +129,6 @@ public interface SAETransfertService {
          final List<StorageMetadata> storageMetas, boolean isReprise,
          UUID idTraitementMasse) throws TransfertException,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         TraitementRepriseAlreadyDoneException;
+         TraitementRepriseAlreadyDoneException, UnknownCodeRndEx;
 
 }

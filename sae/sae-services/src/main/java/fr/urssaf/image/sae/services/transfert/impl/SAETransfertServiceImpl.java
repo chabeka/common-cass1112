@@ -803,7 +803,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          final UUID idArchive, final List<StorageMetadata> storageMetas,
          boolean isReprise, UUID idTraitementMasse)
          throws TransfertException, ArchiveAlreadyTransferedException,
-         ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
+         ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException, UnknownCodeRndEx {
       String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
       StorageDocument document = new StorageDocument();
 
@@ -822,7 +822,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                // reprend le transfert uniquement si le document contient un
                // idTransfertMasseInterne possédant la même valeur d'identifiant
                // que le traitement de masse en cours d'execution.
-               if (ckeckIdTraitementExiste(document.getMetadatas(),
+               if (ckeckIdTraitementExiste(documentGNS.getMetadatas(),
                      idTraitementMasse)) {
                   try {
                      storageTransfertService.deleteStorageDocument(idArchive);
@@ -836,8 +836,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
                                  idArchive.toString()));
                   }
                } else {
-                  message = "{} - Reprise - le document {} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution";
-                  LOG.info(message, "transfertDoc", idArchive.toString());
+                  message = "Reprise transfert de masse - le document {0} a été transféré dans la GNS par un autre traitement de masse que le traitement en cours d'exécution";
                   throw new ArchiveAlreadyTransferedException(
                         StringUtils.replace(message, "{0}", uuid));
                }
@@ -863,9 +862,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(erreur, ex);
       } catch (MappingFromReferentialException ex) {
          throw new TransfertException(erreur, ex);
-      } catch (UnknownCodeRndEx e) {
-         throw new TransfertException(erreur, e);
-      }
+      } 
 
       return document;
    }
