@@ -47,17 +47,16 @@ public class DocumentsTypeList {
     */
    public final List<String> getTypes() {
 
-      synchronized (DocumentsTypeList.class) {
-
-         if (types == null) {
-            init();
+      if (types == null) {
+         synchronized (this) {
+            if (types == null) {
+               init();
+            }
          }
-
       }
-
       return types;
-
    }
+
 
    private void init() {
 
