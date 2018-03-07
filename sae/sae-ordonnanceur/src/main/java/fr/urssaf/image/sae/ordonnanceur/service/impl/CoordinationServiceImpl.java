@@ -1,10 +1,15 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -110,7 +115,7 @@ public class CoordinationServiceImpl implements CoordinationService {
     * 
     * @return Le Job à lancer.
     * @throws AucunJobALancerException
-    *            @{@link AucunJobALancerException}
+    * @{@link AucunJobALancerException}
     */
    private JobQueue trouverJobALancer() throws AucunJobALancerException {
 
@@ -145,8 +150,9 @@ public class CoordinationServiceImpl implements CoordinationService {
          if (isJobSelectionnableALancer(jobQueue)) {
             try {
                // Etape 6 : Vérification que l'URL ECDE est toujours actif
-               if(!Constantes.REPRISE_MASSE_JN.equals(jobQueue.getType())){
-                  this.decisionService.controleDispoEcdeTraitementMasse(jobQueue);
+               if (!Constantes.REPRISE_MASSE_JN.equals(jobQueue.getType())) {
+                  this.decisionService
+                        .controleDispoEcdeTraitementMasse(jobQueue);
                }
                // Etape 7 : Positionne le sémaphore pour le traitement
                // sélectionné
@@ -286,30 +292,121 @@ public class CoordinationServiceImpl implements CoordinationService {
             }
 
          } else if (isJobLanceBloque) {
-            LOG.error(
-                  "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
+
+            // Le job semnble bloqué à l'état STARTING, on vérifie si le process
+            // tourne toujours
+            LOG.debug(
+                  "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                         + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
-                        + "date de contrôle : {})",
+                        + "date de contrôle : {}) - Vérification de l'existence du process",
                   new Object[] {
                         jobCourant.getIdJob(),
                         ordonnanceurConfiguration.getTpsMaxTraitement(),
                         DateFormatUtils.format(jobCourant.getStartingDate(),
                               FORMAT),
                         DateFormatUtils.format(currentDate, FORMAT) });
+            boolean isProcessRunning = true;
             try {
-               jobService.updateToCheckFlag(
-                     jobCourant.getIdJob(),
-                     true,
-                     "Job en cours depuis plus de "
-                           + ordonnanceurConfiguration.getTpsMaxTraitement()
-                           + " minutes (date de démarrage : "
-                           + DateFormatUtils.format(
-                                 jobCourant.getStartingDate(), FORMAT)
-                           + ", date de contrôle : "
-                           + DateFormatUtils.format(currentDate, FORMAT));
+               int pid = jobCourant.getPid();
 
-            } catch (JobInexistantException e) {
-               LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
+               ProcessBuilder pb = null;
+               if (SystemUtils.IS_OS_WINDOWS) {
+                  pb = new ProcessBuilder("cmd.exe", "/C",
+                        "tasklist /fi \"PID eq " + pid + "\"");
+               } else if (SystemUtils.IS_OS_LINUX) {
+                  pb = new ProcessBuilder("/bin/sh", "-c",
+                        "ps aux | awk '{print $2 }' | grep " + pid);
+               }
+
+               Process p = pb.start();
+               AfficheurFlux fluxSortie = new AfficheurFlux(p.getInputStream(),
+                     pid);
+               AfficheurFlux fluxErreur = new AfficheurFlux(p.getErrorStream(),
+                     pid);
+               new Thread(fluxSortie).start();
+               new Thread(fluxErreur).start();
+               p.waitFor();
+
+               isProcessRunning = fluxSortie.isProcessRunning();
+
+            } catch (IOException e) {
+
+               LOG.warn(
+                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
+                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                           + "date de contrôle : {}) - Echec vérification existence process - {}",
+                     new Object[] {
+                           jobCourant.getIdJob(),
+                           ordonnanceurConfiguration.getTpsMaxTraitement(),
+                           DateFormatUtils.format(jobCourant.getStartingDate(),
+                                 FORMAT),
+                           DateFormatUtils.format(currentDate, FORMAT),
+                           e.getMessage() });
+
+            } catch (InterruptedException e) {
+               LOG.warn(
+                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
+                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                           + "date de contrôle : {}) - Echec vérification existence process - {}",
+                     new Object[] {
+                           jobCourant.getIdJob(),
+                           ordonnanceurConfiguration.getTpsMaxTraitement(),
+                           DateFormatUtils.format(jobCourant.getStartingDate(),
+                                 FORMAT),
+                           DateFormatUtils.format(currentDate, FORMAT),
+                           e.getMessage() });
+            }
+
+            // Le process ne tourne plus, on peut indiquer que le job est bloqué
+            if (!isProcessRunning) {
+
+               LOG.debug(
+                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
+                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                           + "date de contrôle : {}) - Le process n'a pas été trouvé",
+                     new Object[] {
+                           jobCourant.getIdJob(),
+                           ordonnanceurConfiguration.getTpsMaxTraitement(),
+                           DateFormatUtils.format(jobCourant.getStartingDate(),
+                                 FORMAT),
+                           DateFormatUtils.format(currentDate, FORMAT) });
+
+               LOG.error(
+                     "Contrôler le traitement n°{}. Raison : Etat \"en cours\" "
+                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                           + "date de contrôle : {})",
+                     new Object[] {
+                           jobCourant.getIdJob(),
+                           ordonnanceurConfiguration.getTpsMaxTraitement(),
+                           DateFormatUtils.format(jobCourant.getStartingDate(),
+                                 FORMAT),
+                           DateFormatUtils.format(currentDate, FORMAT) });
+               try {
+                  jobService.updateToCheckFlag(
+                        jobCourant.getIdJob(),
+                        true,
+                        "Job en cours depuis plus de "
+                              + ordonnanceurConfiguration.getTpsMaxTraitement()
+                              + " minutes (date de démarrage : "
+                              + DateFormatUtils.format(
+                                    jobCourant.getStartingDate(), FORMAT)
+                              + ", date de contrôle : "
+                              + DateFormatUtils.format(currentDate, FORMAT));
+
+               } catch (JobInexistantException e) {
+                  LOG.warn("Impossible de modifier le Job, il n'existe pas", e);
+               }
+            } else {
+               LOG.debug(
+                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
+                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
+                           + "date de contrôle : {}) - Le process tourne toujours",
+                     new Object[] {
+                           jobCourant.getIdJob(),
+                           ordonnanceurConfiguration.getTpsMaxTraitement(),
+                           DateFormatUtils.format(jobCourant.getStartingDate(),
+                                 FORMAT),
+                           DateFormatUtils.format(currentDate, FORMAT) });
             }
          }
       }
@@ -321,4 +418,42 @@ public class CoordinationServiceImpl implements CoordinationService {
             + traitement.getIdJob();
    }
 
+}
+
+class AfficheurFlux implements Runnable {
+
+   protected volatile boolean processRunning = false;
+
+   private final InputStream inputStream;
+   private final int pid;
+
+   AfficheurFlux(InputStream inputStream, int pid) {
+      this.inputStream = inputStream;
+      this.pid = pid;
+   }
+
+   private BufferedReader getBufferedReader(InputStream is) {
+      return new BufferedReader(new InputStreamReader(is));
+   }
+
+   public boolean isProcessRunning() {
+      return processRunning;
+   }
+
+   @Override
+   public void run() {
+
+      BufferedReader br = getBufferedReader(inputStream);
+      String ligne = "";
+      try {
+         while ((ligne = br.readLine()) != null) {
+            //System.out.println(ligne);
+            if (ligne.contains(Integer.toString(pid))) {
+               processRunning = true;
+            }
+         }
+      } catch (IOException e) {
+         e.printStackTrace();
+      }
+   }
 }
