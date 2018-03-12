@@ -4,7 +4,7 @@
    
    <groupId>fr.urssaf.image.commons</groupId>
    <artifactId>commons-cassandra-spring-batch</artifactId>
-   <version>0.0.7-SNAPSHOT</version>
+   <version>1.0.1-SNAPSHOT</version>
    
    <name>commons-cassandra-spring-batch</name>
 
