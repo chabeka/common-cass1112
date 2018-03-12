@@ -1,18 +1,23 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-  
-    <parent>
-        <artifactId>droid-parent</artifactId>
-        <groupId>fr.urssaf.image.droid</groupId>
-        <version>6.4-SNAPSHOT</version>
-        <relativePath>droid-parent</relativePath>
-    </parent>
-  
+    
+       <!-- Utilisation du fichier POM parent ALTAIR -->
+   <parent>
+      <groupId>fr.pnr.altair</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.1.3</version>
+      <!-- Les balise ci-dessous ne sont pas disponible sous Maven 3.1.1 
+      <packaging>pom</packaging>
+      <name>POM Parent Altair</name>
+      <description>POM Parent pour les projets altair</description>
+      -->
+   </parent>
+    
+    <groupId>fr.urssaf.image.droid</groupId>
     <artifactId>droid</artifactId>
     <packaging>pom</packaging>
-
-    <name>droid</name>
-    
+	<name>droid</name>
+    <version>7.0-SNAPSHOT</version>
 
     
     <modules>
