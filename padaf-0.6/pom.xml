@@ -8,9 +8,25 @@
 
 	<properties>
 		<pdfbox.version>1.5.0</pdfbox.version>
-		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
+		 <!-- DEFINI DANS LE POM PERE Encodage de caract�res
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
+        <compileSource>1.6</compileSource>
+      
  	</properties>
 
+	 <!-- Utilisation du fichier POM parent ALTAIR -->
+   <parent>
+      <groupId>fr.pnr.altair</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.1.3</version>
+      <!-- Les balise ci-dessous ne sont pas disponible sous Maven 3.1.1 
+      <packaging>pom</packaging>
+      <name>POM Parent Altair</name>
+      <description>POM Parent pour les projets altair</description>
+      -->
+   </parent>
+
+   
 	   <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
@@ -52,12 +68,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.0.2</version>
+				<version>2.5.1</version>
 				<configuration>
 					<source>${compileSource}</source>
 					<target>${compileSource}</target>
-					<executable>${javacPath}</executable>
 					<fork>true</fork>
+					<compilerVersion>${compileSource}</compilerVersion>
 					<showDeprecation>true</showDeprecation>
 					<showWarnings>true</showWarnings>
 					<encoding>UTF-8</encoding>
@@ -109,6 +125,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
+				<configuration>
+            	  <javadocVersion>1.6</javadocVersion>
+                <quiet>true</quiet>
+            </configuration>
 			</plugin>
          
                   <plugin>
@@ -158,19 +178,6 @@
 			<version>${pdfbox.version}</version>
 		</dependency>
 	</dependencies>
-	
-	<distributionManagement>
-      <repository>
-         <id>nexus</id>
-         <name>Releases</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/releases</url>
-      </repository>
-      <snapshotRepository>
-         <id>nexus</id>
-         <name>Snapshots</name>
-         <url>http://cer69-nexus.cer69.recouv:8081/nexus/content/repositories/snapshots</url>
-         <uniqueVersion>false</uniqueVersion>
-      </snapshotRepository>
-   </distributionManagement>
+
 </project>
 
