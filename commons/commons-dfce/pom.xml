@@ -64,37 +64,37 @@
       <!-- DFCE -->
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-serialization</artifactId>
          <version>${dfce.serialization}</version>
       </dependency>
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-pojo</artifactId>
          <version>${dfce.pojo}</version>
       </dependency>
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-toolkit-client</artifactId>
          <version>${dfce.toolkit.client}</version>
       </dependency>
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-toolkit-pojo</artifactId>
          <version>${dfce.toolkit.pojo}</version>
       </dependency>
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-toolkit-service</artifactId>
          <version>${dfce.toolkit.service}</version>
       </dependency>
 
       <dependency>
-         <groupId>net.docubase</groupId>
+         <groupId>com.docubase</groupId>
          <artifactId>dfce-commons</artifactId>
          <version>${dfce.commons}</version>
       </dependency>
