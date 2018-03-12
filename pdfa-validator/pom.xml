@@ -6,14 +6,27 @@
   <version>0.0.1-SNAPSHOT</version>
   <description>Outil en ligne de commande permettant d'analyser la conformité d'un PDF/A par rapport aux normes.</description>
   
+  <!-- Utilisation du fichier POM parent ALTAIR -->
+   <parent>
+      <groupId>fr.pnr.altair</groupId>
+      <artifactId>parent</artifactId>
+      <version>1.1.3</version>
+      <!-- Les balise ci-dessous ne sont pas disponible sous Maven 3.1.1 
+      <packaging>pom</packaging>
+      <name>POM Parent Altair</name>
+      <description>POM Parent pour les projets altair</description>
+      -->
+   </parent>
+
+   
   <properties>
         <org.slf4j.version>1.6.1</org.slf4j.version>
         <logback.version>0.9.30</logback.version>
         <commons.pdfbox.version>0.0.1</commons.pdfbox.version>
         <junit.version>4.8.2</junit.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
         <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+        <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
   </properties>
   
   <dependencies>
@@ -66,8 +79,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${maven-compiler-plugin.version}</version>
             <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
+               <source>1.8</source>
+               <target>1.8</target>
                <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
@@ -82,6 +95,7 @@
 
          <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+             <version>${maven-assembly-plugin.version}</version>
             <configuration>
                <archive>
                   <manifest>
@@ -91,6 +105,10 @@
                <descriptors>
                   <descriptor>src/assembly/jar-executable.xml</descriptor>
                </descriptors>
+                <excludes>
+                    <exclude>**/archetype-resources/src/main/java/App*.*</exclude>
+                    <exclude>**/archetype-resources/src/test/java/App*.*</exclude>
+                </excludes>
             </configuration>
             <executions>
                <execution>
