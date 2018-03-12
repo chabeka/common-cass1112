@@ -3,15 +3,15 @@
   
     <parent>
         <artifactId>droid-parent</artifactId>
-        <groupId>uk.gov.nationalarchives</groupId>
+        <groupId>fr.urssaf.image.droid</groupId>
         <version>6.4-SNAPSHOT</version>
         <relativePath>../droid-parent</relativePath>
     </parent>
   
-    <artifactId>droid-core</artifactId>
+    <artifactId>droid-core-fork</artifactId>
     <packaging>jar</packaging>
 
-    <name>droid-core</name>
+    <name>droid-core-fork</name>
     
     <!--scm>
         <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>
@@ -38,7 +38,7 @@
   
     <dependencies>
   	<dependency>
-            <groupId>uk.gov.nationalarchives</groupId>
+            <groupId>fr.urssaf.image.droid</groupId>
             <artifactId>droid-core-interfaces</artifactId>
             <version>${project.version}</version>
   	</dependency>

@@ -3,7 +3,7 @@
   
     <parent>
         <artifactId>droid-parent</artifactId>
-        <groupId>uk.gov.nationalarchives</groupId>
+        <groupId>fr.urssaf.image.droid</groupId>
         <version>6.2-SNAPSHOT</version>
   	    <relativePath>../droid-parent</relativePath>
     </parent>
@@ -43,7 +43,7 @@
                 </configuration>
                 <dependencies>
                     <dependency>
-                        <groupId>uk.gov.nationalarchives</groupId>
+                        <groupId>fr.urssaf.image.droid</groupId>
                         <artifactId>droid-build-tools</artifactId>
                         <version>${project.version}</version>
                     </dependency>
@@ -63,7 +63,7 @@
                     <packageBranchRate>95</packageBranchRate>
                     <regexes>
                       <regex>
-                        <pattern>uk.gov.nationalarchives</pattern>
+                        <pattern>fr.urssaf.image.droid</pattern>
                         <branchRate>95</branchRate>
                         <lineRate>95</lineRate>
                       </regex>
