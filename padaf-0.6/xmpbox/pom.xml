@@ -31,7 +31,7 @@
 	</parent>
 
 	<properties>
-		<compileSource>1.6</compileSource>
+		<compileSource>1.8</compileSource>
 		<javacPath>${user.javac6}</javacPath>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
