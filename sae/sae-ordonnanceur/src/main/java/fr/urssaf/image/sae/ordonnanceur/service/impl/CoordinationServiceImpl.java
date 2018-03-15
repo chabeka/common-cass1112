@@ -1,15 +1,11 @@
 package fr.urssaf.image.sae.ordonnanceur.service.impl;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -28,6 +24,7 @@ import fr.urssaf.image.sae.ordonnanceur.service.DecisionService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobService;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
 import fr.urssaf.image.sae.ordonnanceur.support.TraitementLauncherSupport;
+import fr.urssaf.image.sae.ordonnanceur.util.ProcessChecker;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
@@ -308,26 +305,8 @@ public class CoordinationServiceImpl implements CoordinationService {
             boolean isProcessRunning = true;
             try {
                int pid = jobCourant.getPid();
-
-               ProcessBuilder pb = null;
-               if (SystemUtils.IS_OS_WINDOWS) {
-                  pb = new ProcessBuilder("cmd.exe", "/C",
-                        "tasklist /fi \"PID eq " + pid + "\"");
-               } else if (SystemUtils.IS_OS_LINUX) {
-                  pb = new ProcessBuilder("/bin/sh", "-c",
-                        "ps aux | awk '{print $2 }' | grep " + pid);
-               }
-
-               Process p = pb.start();
-               AfficheurFlux fluxSortie = new AfficheurFlux(p.getInputStream(),
-                     pid);
-               AfficheurFlux fluxErreur = new AfficheurFlux(p.getErrorStream(),
-                     pid);
-               new Thread(fluxSortie).start();
-               new Thread(fluxErreur).start();
-               p.waitFor();
-
-               isProcessRunning = fluxSortie.isProcessRunning();
+               ProcessChecker processUtils = new ProcessChecker();
+               isProcessRunning = processUtils.isProcessRunning(pid);
 
             } catch (IOException e) {
 
@@ -418,42 +397,4 @@ public class CoordinationServiceImpl implements CoordinationService {
             + traitement.getIdJob();
    }
 
-}
-
-class AfficheurFlux implements Runnable {
-
-   protected volatile boolean processRunning = false;
-
-   private final InputStream inputStream;
-   private final int pid;
-
-   AfficheurFlux(InputStream inputStream, int pid) {
-      this.inputStream = inputStream;
-      this.pid = pid;
-   }
-
-   private BufferedReader getBufferedReader(InputStream is) {
-      return new BufferedReader(new InputStreamReader(is));
-   }
-
-   public boolean isProcessRunning() {
-      return processRunning;
-   }
-
-   @Override
-   public void run() {
-
-      BufferedReader br = getBufferedReader(inputStream);
-      String ligne = "";
-      try {
-         while ((ligne = br.readLine()) != null) {
-            //System.out.println(ligne);
-            if (ligne.contains(Integer.toString(pid))) {
-               processRunning = true;
-            }
-         }
-      } catch (IOException e) {
-         e.printStackTrace();
-      }
-   }
 }
