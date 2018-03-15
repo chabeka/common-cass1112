@@ -89,6 +89,8 @@ public class SAML20Service {
 
       InputStream stream = null;
       StringBuffer buffer = new StringBuffer();
+      buffer.append("<saml2:Attribute Name=\"PAGM\">");
+      buffer.append('\n');
       String xmlPagm;
       try {
          for (String role : roles) {
@@ -96,9 +98,10 @@ public class SAML20Service {
             xmlPagm = StreamUtils.createObject(stream,
                   new String[] { "[PAGM]" }, new String[] { role });
             buffer.append(xmlPagm);
-            buffer.append('\n');
          }
-
+         buffer.append("</saml2:Attribute>");
+         buffer.append('\n');
+         
          String pagmsOk = buffer.toString();
          LOGGER.debug("Fin du pré-traitement des PAGMs. Sortie={}", pagmsOk);
          return pagmsOk;
