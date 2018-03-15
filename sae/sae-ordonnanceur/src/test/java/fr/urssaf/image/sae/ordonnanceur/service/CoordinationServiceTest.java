@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.ordonnanceur.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,6 +23,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
+import fr.urssaf.image.sae.ordonnanceur.util.ProcessChecker;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
@@ -293,7 +295,7 @@ public class CoordinationServiceTest {
    @Test
    public void lancerTraitement_failure_deja_lance_et_bloque()
          throws AucunJobALancerException, JobInexistantException,
-         JobDejaReserveException, InterruptedException {
+         JobDejaReserveException, InterruptedException, IOException {
 
       // on set le temps max de réservation à 1 minute
       configuration.setTpsMaxTraitement(1);
@@ -310,6 +312,7 @@ public class CoordinationServiceTest {
       jobRequest.setIdJob(idJob);
       jobRequest.setStartingDate(DateUtils.addMinutes(new Date(), -2));
       jobRequest.setState(JobState.STARTING);
+      jobRequest.setPid(999999999);
       jobsEnCours.add(jobRequest);
 
       EasyMock.expect(jobService.recupJobEnCours()).andReturn(jobsEnCours)
