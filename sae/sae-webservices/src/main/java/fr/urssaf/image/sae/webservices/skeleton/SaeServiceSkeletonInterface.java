@@ -1,9 +1,5 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
-import java.rmi.RemoteException;
-
-import org.apache.axis2.AxisFault;
-
 import fr.cirtil.www.saeservice.AjoutNote;
 import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
@@ -62,6 +58,7 @@ import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertMasse;
 import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
+
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -96,349 +93,373 @@ import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
 
+import org.apache.axis2.AxisFault;
+
+import java.rmi.RemoteException;
+
+
 /**
  * interface des services web du SAE
- * 
- * 
+ *
+ *
  */
 public interface SaeServiceSkeletonInterface {
+    /**
+     * endpoint de consultation
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée lors de la consultation
+     * @throws SaeAccessDeniedAxisFault
+     *            exception levée si droits insuffisants
+     */
+    ConsultationResponse consultationSecure(Consultation request)
+        throws AxisFault, SaeAccessDeniedAxisFault;
 
-   /**
-    * endpoint de consultation
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée lors de la consultation
-    * @throws SaeAccessDeniedAxisFault
-    *            exception levée si droits insuffisants
-    */
-   ConsultationResponse consultationSecure(Consultation request)
-         throws AxisFault, SaeAccessDeniedAxisFault;
+    /**
+     * endpoint de consultation avec MTOM
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée lors de la consultation
+     */
+    ConsultationMTOMResponse consultationMTOMSecure(ConsultationMTOM request)
+        throws AxisFault;
 
-   /**
-    * endpoint de consultation avec MTOM
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée lors de la consultation
-    */
-   ConsultationMTOMResponse consultationMTOMSecure(ConsultationMTOM request)
-         throws AxisFault;
+    /**
+     * endpoint de recherche
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    RechercheResponse rechercheSecure(Recherche request)
+        throws AxisFault;
 
-   /**
-    * endpoint de recherche
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   RechercheResponse rechercheSecure(Recherche request) throws AxisFault;
+    /**
+     * endpoint de la capture unitaire
+     *
+     * @param request
+     *           requete du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ArchivageUnitaireResponse archivageUnitaireSecure(ArchivageUnitaire request)
+        throws AxisFault;
 
-   /**
-    * endpoint de la capture unitaire
-    * 
-    * @param request
-    *           requete du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ArchivageUnitaireResponse archivageUnitaireSecure(ArchivageUnitaire request)
-         throws AxisFault;
+    /**
+     * endpoint de la capture unitaire avec fichier transmis
+     *
+     * @param request
+     *           requete du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ArchivageUnitairePJResponse archivageUnitairePJSecure(
+        ArchivageUnitairePJ request) throws AxisFault;
 
-   /**
-    * endpoint de la capture unitaire avec fichier transmis
-    * 
-    * @param request
-    *           requete du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ArchivageUnitairePJResponse archivageUnitairePJSecure(
-         ArchivageUnitairePJ request) throws AxisFault;
+    /**
+     * endpoint de la capture de masse
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ArchivageMasseResponse archivageMasseSecure(ArchivageMasse request,
+        String callerIP) throws AxisFault;
 
-   /**
-    * endpoint de la capture de masse
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ArchivageMasseResponse archivageMasseSecure(ArchivageMasse request,
-         String callerIP) throws AxisFault;
+    /**
+     * endpoint du ping sécurisé
+     *
+     * @param pingRequest
+     *           vide
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    PingSecureResponse pingSecure(PingSecureRequest pingRequest)
+        throws AxisFault;
 
-   /**
-    * endpoint du ping sécurisé
-    * 
-    * @param pingRequest
-    *           vide
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   PingSecureResponse pingSecure(PingSecureRequest pingRequest)
-         throws AxisFault;
+    /**
+     * endpoint du ping
+     *
+     * @param pingRequest
+     *           vide
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    PingResponse ping(PingRequest pingRequest) throws AxisFault;
 
-   /**
-    * endpoint du ping
-    * 
-    * @param pingRequest
-    *           vide
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   PingResponse ping(PingRequest pingRequest) throws AxisFault;
+    /**
+     * endpoint de la capture de masse avec hash
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
+        ArchivageMasseAvecHash request, String callerIP)
+        throws AxisFault;
 
-   /**
-    * endpoint de la capture de masse avec hash
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
-         ArchivageMasseAvecHash request, String callerIP) throws AxisFault;
+    /**
+     * endpoint de la suppression de document
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    SuppressionResponse suppressionSecure(Suppression request)
+        throws AxisFault;
 
-   /**
-    * endpoint de la suppression de document
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   SuppressionResponse suppressionSecure(Suppression request) throws AxisFault;
+    /**
+     * endpoint de la modification de document
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ModificationResponse modificationSecure(Modification request)
+        throws AxisFault;
 
-   /**
-    * endpoint de la modification de document
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ModificationResponse modificationSecure(Modification request)
-         throws AxisFault;
+    /**
+     * endpoint de la modification en masse de document
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    ModificationMasseResponse modificationMasseSecure(
+        ModificationMasse request, String callerIP) throws AxisFault;
 
-   /**
-    * endpoint de la modification en masse de document
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   ModificationMasseResponse modificationMasseSecure(ModificationMasse request,
-         String callerIP)
-         throws AxisFault;
+    /**
+     * endpoint de la récupération des métadonnées.
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+        RecuperationMetadonnees request) throws AxisFault;
 
-   /**
-    * endpoint de la récupération des métadonnées.
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   RecuperationMetadonneesResponse recuperationMetadonneesSecure(
-         RecuperationMetadonnees request) throws AxisFault;
+    /**
+     * endpoint du transfert de document
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    TransfertResponse transfertSecure(Transfert request)
+        throws AxisFault;
 
-   /**
-    * endpoint du transfert de document
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   TransfertResponse transfertSecure(Transfert request) throws AxisFault;
+    /**
+     * endpoint de consultation dans un format affichable
+     *
+     * @param request
+     *           request du web service
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée lors de la consultation
+     */
+    ConsultationAffichableResponse consultationAffichableSecure(
+        ConsultationAffichable request) throws AxisFault;
 
-   /**
-    * endpoint de consultation dans un format affichable
-    * 
-    * @param request
-    *           request du web service
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée lors de la consultation
-    */
-   ConsultationAffichableResponse consultationAffichableSecure(
-         ConsultationAffichable request) throws AxisFault;
+    /**
+     * Endpoint de la recherche de documents avec retour du nombre de résultats
+     *
+     * @param request
+     *           request du web service
+     * @return Instance de RechercheNbResResponse contenant le résultat de la
+     *         recherche
+     * @throws AxisFault
+     *            exception levée lors de la recherche
+     */
+    RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
+        throws AxisFault;
 
-   /**
-    * Endpoint de la recherche de documents avec retour du nombre de résultats
-    * 
-    * @param request
-    *           request du web service
-    * @return Instance de RechercheNbResResponse contenant le résultat de la
-    *         recherche
-    * @throws AxisFault
-    *            exception levée lors de la recherche
-    */
-   RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
-         throws AxisFault;
+    /**
+     * Endpoint de la recherche de documents par iterateur
+     *
+     * @param request
+     *           Objet contenant les paramètres de la recherche
+     * @return Instance de RechercheParIterateurResponse contenant le résultat de
+     *         la recherche
+     * @throws AxisFault
+     *            Une exception est levée lors de la recherche
+     */
+    RechercheParIterateurResponse rechercheParIterateurSecure(
+        RechercheParIterateur request) throws AxisFault;
 
-   /**
-    * Endpoint de la recherche de documents par iterateur
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la recherche
-    * @return Instance de RechercheParIterateurResponse contenant le résultat de
-    *         la recherche
-    * @throws AxisFault
-    *            Une exception est levée lors de la recherche
-    */
-   RechercheParIterateurResponse rechercheParIterateurSecure(
-         RechercheParIterateur request) throws AxisFault;
+    /**
+     * Endpoint de l'ajout d'une note à un document
+     *
+     * @param request
+     *           Objet contenant les paramètres de l'ajout
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    AjoutNoteResponse ajoutNoteSecure(AjoutNote request)
+        throws AxisFault;
 
-   /**
-    * Endpoint de l'ajout d'une note à un document
-    * 
-    * @param request
-    *           Objet contenant les paramètres de l'ajout
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   AjoutNoteResponse ajoutNoteSecure(AjoutNote request) throws AxisFault;
+    /**
+     * Endpoint du stockage unitaire
+     *
+     * @param request
+     *           Objet contenant les paramètres de la capture
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    StockageUnitaireResponse stockageUnitaireSecure(StockageUnitaire request)
+        throws AxisFault;
 
-   /**
-    * Endpoint du stockage unitaire
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la capture
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   StockageUnitaireResponse stockageUnitaireSecure(StockageUnitaire request)
-         throws AxisFault;
+    /**
+     * Endpoint de la récupération du document attaché
+     *
+     * @param request
+     *           Objet contenant les paramètres de la récupération du document
+     *           attaché
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    GetDocFormatOrigineResponse getDocFormatOrigineSecure(
+        GetDocFormatOrigine request) throws AxisFault;
 
-   /**
-    * Endpoint de la récupération du document attaché
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la récupération du document
-    *           attaché
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   GetDocFormatOrigineResponse getDocFormatOrigineSecure(
-         GetDocFormatOrigine request) throws AxisFault;
+    /**
+     * Endpoint de la restore de masse
+     *
+     * @param request
+     *           Objet contenant les paramètres de la restore de masse
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    RestoreMasseResponse restoreMasseSecure(RestoreMasse request,
+        String callerIP) throws AxisFault;
 
-   /**
-    * Endpoint de la restore de masse
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la restore de masse
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   RestoreMasseResponse restoreMasseSecure(RestoreMasse request, String callerIP)
-         throws AxisFault;
+    /**
+     * Endpoint de la suppression de masse
+     *
+     * @param request
+     *           Objet contenant les paramètres de la suppression de masse
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    SuppressionMasseResponse suppressionMasseSecure(SuppressionMasse request,
+        String callerIP) throws AxisFault;
 
-   /**
-    * Endpoint de la suppression de masse
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la suppression de masse
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   SuppressionMasseResponse suppressionMasseSecure(SuppressionMasse request,
-         String callerIP) throws AxisFault;
+    /**
+     * Endpoint de la récupération des états des traitements de masse (opération
+     * sans authentification)
+     *
+     * @param request
+     *           Objet contenant les paramètres de la récupération des états des
+     *           traitements de masse
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     */
+    EtatTraitementsMasseResponse etatTraitementsMasse(
+        EtatTraitementsMasse request, String callerIP)
+        throws AxisFault;
 
-   /**
-    * Endpoint de la récupération des états des traitements de masse (opération
-    * sans authentification)
-    * 
-    * @param request
-    *           Objet contenant les paramètres de la récupération des états des
-    *           traitements de masse
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    */
-   EtatTraitementsMasseResponse etatTraitementsMasse(
-         EtatTraitementsMasse request, String callerIP) throws AxisFault;
+    CopieResponse copieSecure(Copie request)
+        throws CopieAxisFault, SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
+            SAEConsultationServiceException, SAECaptureServiceEx,
+            ReferentialRndException, UnknownCodeRndEx, ReferentialException,
+            SAECopieServiceException, UnknownDesiredMetadataEx,
+            MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx,
+            InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+            DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+            RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+            UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+            UnknownFormatException, ValidationExceptionInvalidFile,
+            UnexpectedDomainException, InvalidPagmsCombinaisonException,
+            CaptureExistingUuuidException;
 
-   CopieResponse copieSecure(Copie request) throws CopieAxisFault,
-         SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
-         SAEConsultationServiceException, SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx, ReferentialException, SAECopieServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx, RequiredArchivableMetadataEx, NotArchivableMetadataEx, UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx, UnknownFormatException, ValidationExceptionInvalidFile, UnexpectedDomainException, InvalidPagmsCombinaisonException, CaptureExistingUuuidException;
+    DocumentExistantResponse documentExistant(DocumentExistant request)
+        throws DocumentExistantAxisFault, SearchingServiceEx,
+            ConnectionServiceEx;
 
-   DocumentExistantResponse documentExistant(DocumentExistant request)
-         throws  DocumentExistantAxisFault, SearchingServiceEx, ConnectionServiceEx;
-   
-   ConsultationGNTGNSResponse consultationGNTGNSSecure(ConsultationGNTGNS request) throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx, SAEConsultationServiceException, UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx, AxisFault, SAEConsultationAffichableParametrageException, RemoteException;
+    ConsultationGNTGNSResponse consultationGNTGNSSecure(
+        ConsultationGNTGNS request)
+        throws ConsultationAxisFault, SearchingServiceEx, ConnectionServiceEx,
+            SAEConsultationServiceException, UnknownDesiredMetadataEx,
+            MetaDataUnauthorizedToConsultEx, AxisFault,
+            SAEConsultationAffichableParametrageException, RemoteException;
 
-   /**
-    * endpoint de transfert de masse
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    */
-   TransfertMasseResponse transfertMasseSecure(
-         TransfertMasse request, String callerIP) throws AxisFault;
-   
-   /**
-    * endpoint de déblocage de job
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service
-    * @throws JobInexistantException 
-    */
-   DeblocageResponse deblocageSecure(
-         Deblocage request, String callerIP) throws AxisFault, JobInexistantException;
-   
-   /**
-    * endpoint de reprise de job
-    * 
-    * @param request
-    *           request du web service
-    * @param callerIP
-    *           adresse IP de l'appelant
-    * @return reponse du web service
-    * @throws AxisFault
-    *            exception levée dans la consommation du web service de reprise
-    * @throws JobInexistantException 
-    */
-   RepriseResponse repriseSecure(
-         Reprise request, String callerIP) throws AxisFault, JobInexistantException;
+    /**
+     * endpoint de transfert de masse
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     */
+    TransfertMasseResponse transfertMasseSecure(TransfertMasse request,
+        String callerIP) throws AxisFault;
 
+    /**
+     * endpoint de déblocage de job
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service
+     * @throws JobInexistantException
+     */
+    DeblocageResponse deblocageSecure(Deblocage request, String callerIP)
+        throws AxisFault, JobInexistantException;
+
+    /**
+     * endpoint de reprise de job
+     *
+     * @param request
+     *           request du web service
+     * @param callerIP
+     *           adresse IP de l'appelant
+     * @return reponse du web service
+     * @throws AxisFault
+     *            exception levée dans la consommation du web service de reprise
+     * @throws JobInexistantException
+     */
+    RepriseResponse repriseSecure(Reprise request, String callerIP)
+        throws AxisFault, JobInexistantException;
 }

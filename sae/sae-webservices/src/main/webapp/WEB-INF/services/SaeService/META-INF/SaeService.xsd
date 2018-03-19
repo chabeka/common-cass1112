@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService"
-xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
+<?xml version="1.0" encoding="UTF-8"?><xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://www.cirtil.fr/saeService">
     <xsd:element name="PingRequest">
         <xsd:annotation>
             <xsd:documentation>Requête de Ping (compatibilité ascendante)
@@ -177,7 +175,7 @@ xmlns:xmime="http://www.w3.org/2005/05/xmlmime">
         <xsd:sequence>
             <xsd:choice>
                 <xsd:element name="url" type="sae:ecdeUrlType"/>
-                <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+                <xsd:element name="contenu" type="xsd:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             </xsd:choice>
         </xsd:sequence>
     </xsd:complexType>
