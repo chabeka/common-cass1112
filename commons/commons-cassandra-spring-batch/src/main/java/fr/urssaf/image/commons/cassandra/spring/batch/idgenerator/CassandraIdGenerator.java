@@ -2,7 +2,7 @@ package fr.urssaf.image.commons.cassandra.spring.batch.idgenerator;
 
 import java.util.concurrent.TimeUnit;
 
-import com.netflix.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;

@@ -1,15 +1,15 @@
 package fr.urssaf.image.commons.zookeeper;
 
+import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.test.TestingServer;
 
 public class ZookeeperMutexTest {
 
@@ -27,7 +27,13 @@ public class ZookeeperMutexTest {
 
    @After
    public void clean() {
-      if (zkServer != null) zkServer.close();
+    if (zkServer != null)
+      try {
+        zkServer.close();
+      }
+      catch (IOException e) {
+        e.printStackTrace();
+      }
    }
 
    private void initZookeeperServer() throws Exception {
@@ -74,7 +80,12 @@ public class ZookeeperMutexTest {
       // On stop le serveur, et on le relance
       new Thread(new Runnable() {
             public void run() {
-               zkServer.stop();
+               try {
+                zkServer.stop();
+              }
+              catch (IOException e1) {
+                e1.printStackTrace();
+              }
                try {
                   Thread.sleep(1000);
                   zkServer = new TestingServer(zkServer.getPort(), zkServer.getTempDirectory());

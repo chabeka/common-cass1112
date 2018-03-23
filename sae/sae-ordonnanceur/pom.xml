@@ -5,10 +5,8 @@
       <version>18.8.0.1-SNAPSHOT</version>
    </parent>
    <modelVersion>4.0.0</modelVersion>
-   <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-ordonnanceur</artifactId>
    <name>sae-ordonnanceur</name>
-   <version>18.8.0.1-SNAPSHOT</version>
    <description>Gestion de la pile d'exécution des traitements asynchrones</description>
 
    <build>

@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.droit.utils;
 
 import java.util.concurrent.TimeUnit;
 
-import com.netflix.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;

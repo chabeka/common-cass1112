@@ -1,9 +1,12 @@
 package fr.urssaf.image.commons.cassandra.spring.batch.idgenerator;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.test.TestingServer;
 import org.cassandraunit.AbstractCassandraUnit4TestCase;
 import org.cassandraunit.dataset.DataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
@@ -11,9 +14,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.test.TestingServer;
 
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
@@ -38,7 +38,12 @@ public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase 
 
    @After
    public void clean() {
+    try {
       zkServer.close();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
    }
 
    private void initZookeeperServer() throws Exception {
