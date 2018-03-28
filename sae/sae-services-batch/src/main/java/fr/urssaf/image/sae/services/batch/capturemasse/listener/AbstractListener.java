@@ -92,13 +92,13 @@ public abstract class AbstractListener {
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = getStepExecution().getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
-
+   
    /**
     * @return la liste des index des références des erreurs stockée dans le
     *         contexte d'execution du job

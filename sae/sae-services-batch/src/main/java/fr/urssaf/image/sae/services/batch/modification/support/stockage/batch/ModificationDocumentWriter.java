@@ -89,14 +89,12 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
                   getIndexErreurListe().add(
                         getStepExecution().getExecutionContext().getInt(
                               Constantes.CTRL_INDEX));
-                  final String message = e.getMessage();
-                  getExceptionErreurListe().add(new Exception(message));
-                  LOGGER.error(message, e);
+                  getErrorMessageList().add(e.toString());
+                  LOGGER.warn("Ereur lors de la modification des documents dans DFCE", e);
                }
             }
 
-            LOGGER.debug(
-                  "{} - nombre de documents en attente dans le pool : {}",
+            LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
                   TRC_INSERT, poolExecutor.getQueue().size());
 
          } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
@@ -128,10 +126,11 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
             final String message = "Erreur DFCE - identifiant archivage "
                   + storageDocument.getUuid() + " : " + except.getMessage();
          if (isModePartielBatch()) {
+            Exception e = new Exception(message, except);
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(indexRun);
-            getExceptionErreurListe().add(new Exception(message));
-            LOGGER.error(message, except);
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn(message, except);
          } else {
                throw new UpdateServiceEx(new Exception(message));
          }

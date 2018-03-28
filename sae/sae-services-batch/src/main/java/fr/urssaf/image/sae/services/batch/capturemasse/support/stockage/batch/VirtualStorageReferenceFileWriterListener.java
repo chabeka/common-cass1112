@@ -57,7 +57,9 @@ public class VirtualStorageReferenceFileWriterListener extends
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
+      LOGGER.warn("Une erreur est survenue lors l'écriture des données",
+            exception);
+      getErrorMessageList().add(exception.toString());
    }
 
    @Override

@@ -122,11 +122,12 @@ public class ReplacementDocumentProcessor extends AbstractListener implements
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn("Une erreur est survenue lors de remplacement de document compressé",
+                  e);
          } else {
             throw e;
          }
-
       }
       LOGGER.debug("{} - fin", trcPrefix);
       return item;

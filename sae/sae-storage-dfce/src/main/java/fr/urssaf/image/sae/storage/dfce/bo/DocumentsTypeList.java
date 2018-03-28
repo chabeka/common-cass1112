@@ -26,7 +26,7 @@ public class DocumentsTypeList {
    /**
     * Liste des types de documents supportés
     */
-   private List<String> types;
+   private static List<String> types;
 
    private final DFCEServicesManager dfceServicesManager;
 
@@ -39,26 +39,32 @@ public class DocumentsTypeList {
    @Autowired
    public DocumentsTypeList(DFCEServicesManager dfceServicesManager) {
       this.dfceServicesManager = dfceServicesManager;
-      this.types = null;
+      if (types == null) {
+         synchronized (DocumentsTypeList.class) {
+            loadDocumentTypeList();
+         }
+      }
    }
 
    /**
     * @return la liste des documents supportés
     */
    public final List<String> getTypes() {
-
       if (types == null) {
-         synchronized (this) {
+         synchronized (DocumentsTypeList.class) {
             if (types == null) {
-               init();
+               loadDocumentTypeList();
             }
          }
       }
       return types;
    }
 
-
-   private void init() {
+   
+   /**
+    * Charge la liste des types de documents supportés
+    */
+   private void loadDocumentTypeList() {
 
       boolean startActive = dfceServicesManager.isActive();
       try {

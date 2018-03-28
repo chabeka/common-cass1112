@@ -99,8 +99,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                            getStepExecution().getExecutionContext().getInt(
                                  Constantes.CTRL_INDEX));
                   final String message = ex.getMessage();
-                     getExceptionErreurListe().add(new Exception(message));
-                  LOGGER.error(message, ex);
+                  getErrorMessageList().add(ex.toString());
+                  LOGGER.warn(message, ex);
                   }  
                }
 
@@ -133,8 +133,10 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
          synchronized (this) {
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
-               getIndexErreurListe().add(indexRun);
-               getExceptionErreurListe().add(new Exception(ex.getMessage()));
+               getIndexErreurListe().add(indexRun);               
+               getErrorMessageList().add(ex.toString());
+               LOGGER.warn("Une erreur est survenue lors de la persistance de document",
+                     ex);                
                return null;
             } else {
                throw ex;
@@ -358,8 +360,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                LOGGER.debug("{} - Document original non trouvé", trcPrefix);
             }
          } else {
-            LOGGER.debug(
-                  "{} - La map des documents compresses n'existe pas dans le contexte spring",
+            LOGGER.debug("{} - La map des documents compresses n'existe pas dans le contexte spring",
                   trcPrefix);
          }
       }
@@ -388,12 +389,10 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             CaptureMasseControlResult resultat = map.get(storageDocument
                   .getFilePath());
             if (resultat == null) {
-               LOGGER.debug(
-                     "{} - Résultat de controle non présent dans la map pour la key {}",
+               LOGGER.debug("{} - Résultat de controle non présent dans la map pour la key {}",
                      trcPrefix, storageDocument.getFilePath());
             } else {
-               LOGGER.debug(
-                     "{} - Récupération OK du résultat de controle pour le document",
+               LOGGER.debug("{} - Récupération OK du résultat de controle pour le document",
                      trcPrefix);
 
                // Récupère le nom de l'opération du WS

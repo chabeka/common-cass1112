@@ -99,8 +99,8 @@ public class ResultatsFileEchecSupportTest {
       codes.add(Constantes.ERR_BUL002);
       List<Integer> index = new ArrayList<Integer>();
       index.add(3);
-      List<Exception> exceptions = new ArrayList<Exception>();
-      exceptions.add(new Exception("la valeur x est erronée"));
+      List<String> exceptions = new ArrayList<String>();
+      exceptions.add(new Exception("la valeur x est erronée").toString());
       List<Integer> refIndex = new ArrayList<Integer>();
 
       erreur.setListCodes(codes);
@@ -201,8 +201,8 @@ public class ResultatsFileEchecSupportTest {
       codes.add(Constantes.ERR_BUL002);
       List<Integer> index = new ArrayList<Integer>();
       index.add(1);
-      List<Exception> exceptions = new ArrayList<Exception>();
-      exceptions.add(new Exception("la valeur x est erronée"));
+      List<String> exceptions = new ArrayList<String>();
+      exceptions.add(new Exception("la valeur x est erronée").toString());
       List<Integer> refIndex = new ArrayList<Integer>();
 
       erreur.setListCodes(codes);

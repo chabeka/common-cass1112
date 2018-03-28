@@ -46,13 +46,9 @@ public class ControleReferenceListener extends AbstractListener {
       getIndexReferenceErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_REF_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
-      LOGGER
-            .warn(
-                  "une erreur est survenue lors de la conversion du fichier de référence",
+      getErrorMessageList().add(exception.toString());
+      LOGGER.warn("une erreur est survenue lors de la conversion du fichier de référence",
                   exception);
-
    }
 
    /**
@@ -84,18 +80,16 @@ public class ControleReferenceListener extends AbstractListener {
    public final void logReadError(final Exception exception) {
       LOGGER.warn("une erreur interne à l'application est survenue "
             + "lors du traitement de la capture de masse", exception);
-
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexReferenceErreurListe().add(0);
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
+      getErrorMessageList().add(exception.toString());
    }
 
    @Override
    protected ExitStatus specificAfterStepOperations() {
       ExitStatus exitStatus = ExitStatus.FAILED;
 
-      if (CollectionUtils.isEmpty(getExceptionErreurListe())) {
+      if (CollectionUtils.isEmpty(getErrorMessageList())) {
          exitStatus = ExitStatus.COMPLETED;
       }
 

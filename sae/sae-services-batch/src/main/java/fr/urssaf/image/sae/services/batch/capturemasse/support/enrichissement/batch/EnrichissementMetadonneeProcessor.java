@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.enrichissement.b
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -34,6 +36,9 @@ public class EnrichissementMetadonneeProcessor implements
 
    private StepExecution stepExecution;
    private String batchMode;
+   
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(EnrichissementMetadonneeProcessor.class);
 
    /**
     * initialisation avant le début du Step
@@ -56,6 +61,9 @@ public class EnrichissementMetadonneeProcessor implements
    public final SAEDocument process(final UntypedDocument item)
          throws Exception {
 
+      String trcPrefix = "process";
+      LOGGER.debug("{} - début", trcPrefix);
+      
       try {
          // Si il y a déjà eu une erreur sur un document en mode partiel, on ne
          // cherche pas à continuer sur ce document
@@ -64,7 +72,6 @@ public class EnrichissementMetadonneeProcessor implements
                      Constantes.CTRL_INDEX)))) {
             final SAEDocument saeDocument = documentService
                   .untypedDocumentToSaeDocument(item);
-
             support.enrichirMetadonnee(saeDocument);
             return saeDocument;
          } else {
@@ -80,7 +87,8 @@ public class EnrichissementMetadonneeProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn("erreur lors de l'enrichissement de metadonnée", e);
             SAEDocument saeDocument = new SAEDocument();
             saeDocument.setUuid(item.getUuid());
             return saeDocument;
@@ -121,16 +129,16 @@ public class EnrichissementMetadonneeProcessor implements
       return (ConcurrentLinkedQueue<Integer>) jobExecution
             .get(Constantes.INDEX_EXCEPTION);
    }
-
+   
    /**
-    * @return la liste des exceptions des erreurs stockée dans le contexte
+    * @return la liste des messages des exceptions stockée dans le contexte
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
 

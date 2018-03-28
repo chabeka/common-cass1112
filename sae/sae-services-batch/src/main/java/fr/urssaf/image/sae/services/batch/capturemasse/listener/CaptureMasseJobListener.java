@@ -45,10 +45,10 @@ public class CaptureMasseJobListener {
       ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.CODE_EXCEPTION, listCodes);
 
-      ConcurrentLinkedQueue<Exception> listExceptions = new ConcurrentLinkedQueue<Exception>();
-      context.put(Constantes.DOC_EXCEPTION, listExceptions);
+      ConcurrentLinkedQueue<String> listMessageExceptions = new ConcurrentLinkedQueue<String>();
+      context.put(Constantes.DOC_EXCEPTION, listMessageExceptions);
 
-      ConcurrentLinkedQueue<Exception> listRollbackExceptions = new ConcurrentLinkedQueue<Exception>();
+      ConcurrentLinkedQueue<String> listRollbackExceptions = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
 
       ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();
@@ -65,7 +65,6 @@ public class CaptureMasseJobListener {
     */
    @AfterJob
    public final void afterJob(JobExecution jobExecution) {
-
       // Ecriture d'une trace d'échec de capture de masse, le cas échéant
       tracesSupport.traceEchecCaptureMasse(jobExecution);
 

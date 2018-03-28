@@ -69,13 +69,14 @@ public abstract class AbstractCaptureMasseTasklet implements Tasklet {
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe(
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList(
          ChunkContext chunkContext) {
       ExecutionContext jobExecution = chunkContext.getStepContext()
             .getStepExecution().getJobExecution().getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
+   
 
    /**
     * @param chunkContext

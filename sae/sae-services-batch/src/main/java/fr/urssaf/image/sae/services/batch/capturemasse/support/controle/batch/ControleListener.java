@@ -34,13 +34,11 @@ public class ControleListener extends CheckStateAfterStepListener {
     * pouvoir l'exploiter plus tard
     */
    public final void logReadError(final Exception exception) {
-      LOGGER.warn("une erreur interne à l'application est survenue "
+      LOGGER.warn("une erreur est survenue "
             + "lors du traitement de la capture de masse", exception);
-
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(0);
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
+      getErrorMessageList().add(exception.toString());
    }
 
    /**

@@ -185,19 +185,19 @@ public class TracesServicesRepriseMasseSupport {
             .append(String.format("Exception(s) Spring Batch : %s\r\n", nbEx));
       if (nbEx > 0) {
          LOGGER.debug("{} - {} exception(s) Spring Batch", prefix, nbEx);
-         addExceptions1(exceptionsSpBatch, sBuilder);
+         concatBatchErrorList(exceptionsSpBatch, sBuilder);
       } else {
          LOGGER.debug("{} - Aucune exception Spring Batch", prefix);
       }
       
       // Les exceptions survenues lors du rollback
       LOGGER.debug("{} - Traitement des exceptions du rollback", prefix);
-      ConcurrentLinkedQueue<Exception> exceptionsRoll = getRollbackExceptions(jobExecution);
+      ConcurrentLinkedQueue<String> exceptionsRoll = getRollbackExceptions(jobExecution);
       nbEx = sizeCollection(exceptionsRoll);
       sBuilder.append(String.format("Exception(s) du rollback : %s\r\n", nbEx));
       if (nbEx > 0) {
          LOGGER.debug("{} - {} exception(s) du rollback", prefix, nbEx);
-         addExceptions2(exceptionsRoll, sBuilder);
+         concatErrorMessageList(exceptionsRoll, sBuilder);
       } else {
          LOGGER.debug("{} - Aucune exception du rollback", prefix);
       }
@@ -211,63 +211,51 @@ public class TracesServicesRepriseMasseSupport {
    }
 
    /**
-    * Ajout des exceptions dans la trace.
-    * 
-    * * @pa exceptions Exceptions
-    * 
-    * @pa sBuilder builder de traceece
+    * Concaténation des exceptions dans la trace
+    * @param errorMessageList
+    * @param sBuilder
     */
-   private void addExceptions1(Iterable<Throwable> exceptions,
+   private void concatErrorMessageList(Iterable<String> errorMessageList,
          StringBuilder sBuilder) {
 
-      String stackTrace;
+      String exceptionMessage;
 
-      for (Throwable throwable : exceptions) {
-
-         stackTrace = ExceptionUtils.getFullStackTrace(throwable);
-
-         sBuilder.append(stackTrace);
-
+      for (String errorMessage : errorMessageList) {
+         exceptionMessage = errorMessage;
+         sBuilder.append(exceptionMessage);
          sBuilder.append("\r\n");
-
       }
 
    }
-   
+
    /**
-    * Ajout des exceptions dans la trace.
-    * @param exceptions Exceptions
-    * @param sBuilder builder de trace
+    * Concaténation de exceptions technique du batch dans la trace
+    * @param exceptions
+    * @param sBuilder
     */
-   private void addExceptions2(Iterable<Exception> exceptions,
+   private void concatBatchErrorList(Iterable<Throwable> exceptions,
          StringBuilder sBuilder) {
 
       String stackTrace;
-
-      for (Exception exception : exceptions) {
-
-         stackTrace = ExceptionUtils.getFullStackTrace(exception);
-
+      for (Throwable throwable : exceptions) {
+         stackTrace = ExceptionUtils.getFullStackTrace(throwable);
          sBuilder.append(stackTrace);
-
          sBuilder.append("\r\n");
-
       }
-
    }
-   
-   private ConcurrentLinkedQueue<Exception> getRollbackExceptions(
+      
+   private ConcurrentLinkedQueue<String> getRollbackExceptions(
          JobExecution jobExecution) {
-      return getListeExceptions(jobExecution, Constantes.ROLLBACK_EXCEPTION);
+      return getErrorMessageListByType(jobExecution, Constantes.ROLLBACK_EXCEPTION);
    }
    
    @SuppressWarnings("unchecked")
-   private ConcurrentLinkedQueue<Exception> getListeExceptions(
+   private ConcurrentLinkedQueue<String> getErrorMessageListByType(
          JobExecution jobExecution, String cle) {
-      ConcurrentLinkedQueue<Exception> listExceptions = null;
+      ConcurrentLinkedQueue<String> listExceptions = null;
       if ((jobExecution.getExecutionContext() != null)
             && (jobExecution.getExecutionContext().get(cle) != null)) {
-         listExceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
+         listExceptions = (ConcurrentLinkedQueue<String>) jobExecution
                .getExecutionContext().get(cle);
       }
       return listExceptions;

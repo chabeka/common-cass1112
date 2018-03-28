@@ -72,7 +72,7 @@ public class CountSommaireDocumentsTaskletTest {
       context = new ExecutionContext();
       context.put(Constantes.ID_TRAITEMENT, UUID.randomUUID().toString());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
    }
 
@@ -100,7 +100,7 @@ public class CountSommaireDocumentsTaskletTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -158,11 +158,11 @@ public class CountSommaireDocumentsTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
    }
 
    /**
@@ -198,11 +198,11 @@ public class CountSommaireDocumentsTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
    }
 
    /**

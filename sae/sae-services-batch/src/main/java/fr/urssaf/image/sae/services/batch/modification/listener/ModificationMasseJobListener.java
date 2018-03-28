@@ -48,10 +48,10 @@ public class ModificationMasseJobListener {
       ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.CODE_EXCEPTION, listCodes);
 
-      ConcurrentLinkedQueue<Exception> listExceptions = new ConcurrentLinkedQueue<Exception>();
+      ConcurrentLinkedQueue<String> listExceptions = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.DOC_EXCEPTION, listExceptions);
 
-      ConcurrentLinkedQueue<Exception> listRollbackExceptions = new ConcurrentLinkedQueue<Exception>();
+      ConcurrentLinkedQueue<String> listRollbackExceptions = new ConcurrentLinkedQueue<String>();
       context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
 
       ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();

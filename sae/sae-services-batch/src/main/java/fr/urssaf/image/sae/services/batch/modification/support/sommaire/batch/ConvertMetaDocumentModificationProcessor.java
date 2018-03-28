@@ -82,7 +82,6 @@ public class ConvertMetaDocumentModificationProcessor implements
             listUM.add(untypedMetadata);
          }
          untypedDoc.setUMetadatas(listUM);
-
          untypedDoc.setUuid(UUID.fromString(item.getValue().getObjetNumerique()
                .getUUID()));
 
@@ -92,7 +91,8 @@ public class ConvertMetaDocumentModificationProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn("erreur lors de la conversion vers un objet métier UntypedDocument", e);
          } else {
             throw e;
          }
@@ -152,10 +152,10 @@ public class ConvertMetaDocumentModificationProcessor implements
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
 }

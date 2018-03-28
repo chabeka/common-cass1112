@@ -36,7 +36,7 @@ public class CaptureMasseErreur {
    /**
     * Liste des exceptions
     */
-   private List<Exception> listException;
+   private List<String> listException;
 
    /**
     * @return the listCodes
@@ -71,7 +71,7 @@ public class CaptureMasseErreur {
    /**
     * @return the listException
     */
-   public final List<Exception> getListException() {
+   public final List<String> getListException() {
       return listException;
    }
 
@@ -79,7 +79,7 @@ public class CaptureMasseErreur {
     * @param listException
     *           the listException to set
     */
-   public final void setListException(List<Exception> listException) {
+   public final void setListException(List<String> listException) {
       this.listException = listException;
    }
 

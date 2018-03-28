@@ -84,7 +84,7 @@ public class DebutTraitementStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.SOMMAIRE, ecdeTestSommaire.getUrlEcde()
@@ -98,7 +98,7 @@ public class DebutTraitementStepTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
+      ConcurrentLinkedQueue<String> exceptions = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",

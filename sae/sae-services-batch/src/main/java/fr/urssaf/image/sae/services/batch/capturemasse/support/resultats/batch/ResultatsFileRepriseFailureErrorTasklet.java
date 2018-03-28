@@ -55,11 +55,11 @@ public class ResultatsFileRepriseFailureErrorTasklet extends AbstractCaptureMass
       final ExecutionContext context = stepContext.getStepExecution()
             .getJobExecution().getExecutionContext();
 
-      Exception erreur = getExceptionErreurListe(chunkContext).peek();
+      String erreur = getErrorMessageList(chunkContext).peek();
       if (erreur != null) {
          LOGGER.error("erreur bloquante détectée", erreur);
          stepContext.getStepExecution().getJobExecution().addFailureException(
-               erreur);
+               new Exception(erreur));
       }
 
       Object sommairePathObject = context.get(Constantes.SOMMAIRE_FILE);
@@ -71,7 +71,7 @@ public class ResultatsFileRepriseFailureErrorTasklet extends AbstractCaptureMass
          ErreurTraitement erreurTraitement = new ErreurTraitement();
          erreurTraitement.setCodeErreur(Constantes.ERR_RE_BUL001);
          erreurTraitement.setMessageErreur(StringUtils.EMPTY);
-         erreurTraitement.setException(erreur);
+         erreurTraitement.setException(new Exception(erreur));
          support.writeResultatsFile(ecdeDirectory, erreurTraitement);
 
          File resultats = new File(ecdeDirectory, "resultats.xml");

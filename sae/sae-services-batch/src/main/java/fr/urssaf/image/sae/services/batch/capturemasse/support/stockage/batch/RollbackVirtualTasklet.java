@@ -179,9 +179,9 @@ public class RollbackVirtualTasklet extends AbstractRollbackTasklet implements
          ExecutionContext executionContext = chunkContext.getStepContext()
                .getStepExecution().getJobExecution().getExecutionContext();
          if (executionContext.get(Constantes.ROLLBACK_EXCEPTION) != null) {
-            ConcurrentLinkedQueue<Exception> listExceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+            ConcurrentLinkedQueue<String> listExceptions = (ConcurrentLinkedQueue<String>) executionContext
                   .get(Constantes.ROLLBACK_EXCEPTION);
-            listExceptions.add(e);
+            listExceptions.add(e.toString());
          }
 
          status = StatusVirtual.ERROR;

@@ -88,13 +88,13 @@ public class ControleSommaireDocumentProcessor extends AbstractListener
                   .put("mapCaptureControlResult", map);
          }
       } catch (Exception e) {
-
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn("Une erreur est survenue lors de contrôle des documents", e);
          } else {
             throw e;
          }

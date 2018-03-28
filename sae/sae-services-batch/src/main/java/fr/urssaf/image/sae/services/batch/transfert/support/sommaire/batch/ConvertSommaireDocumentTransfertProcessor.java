@@ -100,17 +100,16 @@ public class ConvertSommaireDocumentTransfertProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            final String message = e.getMessage();
-            getExceptionErreurListe().add(new Exception(message));
+            getErrorMessageList().add(e.toString());
+            LOGGER.warn("Erreur du mapping de l'objet Jaxb représentant "
+                  + "le document vers un objet métier UntypedDocument", e);
          } else {
             throw e;
          }
       }
-
+      
       LOGGER.debug(
-            "{} - Fin du mapping de l'objet Jaxb représentant le sommaire.xml vers un objet métier Sommaire",
-            PREFIXE_TRC);
-
+            "{} - Fin du mapping", PREFIXE_TRC);
       return untypedDoc;
    }
 
@@ -160,11 +159,11 @@ public class ConvertSommaireDocumentTransfertProcessor implements
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
-
+   
 }

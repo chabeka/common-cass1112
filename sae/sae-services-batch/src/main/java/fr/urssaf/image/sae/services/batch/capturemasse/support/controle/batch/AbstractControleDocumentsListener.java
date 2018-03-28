@@ -38,10 +38,8 @@ public abstract class AbstractControleDocumentsListener extends
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
-      getLogger().error(
-            "une erreur est survenue lors des controles des documents",
+      getErrorMessageList().add(exception.toString());
+      getLogger().warn("une erreur est survenue lors des controles des documents",
             exception);
 
    }

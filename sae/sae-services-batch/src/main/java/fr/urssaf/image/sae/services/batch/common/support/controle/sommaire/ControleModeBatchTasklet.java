@@ -63,8 +63,8 @@ public class ControleModeBatchTasklet implements Tasklet {
          ExecutionContext jobExecution = chunkContext.getStepContext()
                .getStepExecution().getJobExecution().getExecutionContext();
          final Exception exception = new Exception("Le mode de traitement du batch a changé dans le sommaire.xml. Traitement impossible.");
-
-         ((ConcurrentLinkedQueue<Exception>) jobExecution.get(Constantes.DOC_EXCEPTION)).add(exception);
+         ((ConcurrentLinkedQueue<String>) jobExecution.get(Constantes.DOC_EXCEPTION)).add(exception.toString());
+         LOGGER.warn("erreur lors de controle du mode de traitement batch", exception);
       }
 
       LOGGER.debug(

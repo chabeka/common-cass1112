@@ -236,8 +236,8 @@ public class VerificationSupportImpl implements VerificationSupport {
                + " avec le message : " + messageErreur);
       }
 
-      List<Exception> exceptions = new ArrayList<Exception>();
-      exceptions.add(new Exception(messageErreur));
+      List<String> exceptions = new ArrayList<String>();
+      exceptions.add(new Exception(messageErreur).toString());
 
       List<Integer> listIndex = new ArrayList<Integer>();
       listIndex.add(0);

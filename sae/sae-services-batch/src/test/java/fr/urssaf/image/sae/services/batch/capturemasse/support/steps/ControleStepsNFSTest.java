@@ -136,7 +136,7 @@ public class ControleStepsNFSTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context
@@ -150,11 +150,11 @@ public class ControleStepsNFSTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
 
    }
 }

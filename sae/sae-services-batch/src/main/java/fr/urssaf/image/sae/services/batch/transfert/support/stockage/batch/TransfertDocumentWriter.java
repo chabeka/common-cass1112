@@ -189,8 +189,7 @@ implements ItemWriter<StorageDocument> {
       for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
          boolean isdocumentATraite = isDocumentATraite(index);
          // Si le document n'est pas en erreur ou dans la liste de document déjà
-         // traité (Reprise), on traite, sinon on passe au
-         // suivant.
+         // traité (Reprise), on traite, sinon on passe au suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
                   + index, storageDocument, this, getStepExecution()
@@ -204,9 +203,8 @@ implements ItemWriter<StorageDocument> {
                   getIndexErreurListe().add(
                         getStepExecution().getExecutionContext().getInt(
                               Constantes.CTRL_INDEX));
-                  final String message = e.getMessage();
-                  getExceptionErreurListe().add(new Exception(message));
-                  LOGGER.error(message, e);
+                  getErrorMessageList().add(e.toString());
+                  LOGGER.warn("Erreur lors de transfert du document en GNS", e);
                }
 
             }
@@ -243,13 +241,10 @@ implements ItemWriter<StorageDocument> {
       } catch (Throwable e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",
                trcPrefix, e);
-
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getExceptionErreurListe().add(new Exception(e.getMessage()));
-
+         getErrorMessageList().add(e.toString());
          getStepExecution().setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
-
          throw new CaptureMasseRuntimeException(e);
       }
 
@@ -264,27 +259,21 @@ implements ItemWriter<StorageDocument> {
    protected ExitStatus specificAfterStepOperations() {
       String trcPrefix = "specificAfterStepOperations()";
       ExitStatus exitStatus = super.specificAfterStepOperations();
-
       try {
          storageTransfertService.closeConnexion();
          traceServiceSupport.disconnect();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
-         getLogger().warn(
-               "{} - erreur lors de la fermeture des services de transfert",
+         getLogger().warn("{} - erreur lors de la fermeture des services de transfert",
                trcPrefix, e);
-
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getExceptionErreurListe().add(new Exception(e.getMessage()));
-
+         getErrorMessageList().add(e.toString());
          if (!isModePartielBatch()) {
             exitStatus = ExitStatus.FAILED;
          }
       }
-
       getLogger().debug("{} - fermeture du service de trace", trcPrefix);
-
       return exitStatus;
    }
 

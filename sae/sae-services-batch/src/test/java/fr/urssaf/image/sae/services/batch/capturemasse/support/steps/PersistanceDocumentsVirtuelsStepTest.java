@@ -189,11 +189,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
             new ExitStatus("FAILED_NO_ROLLBACK").getExitCode(), execution
             .getExitStatus().getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
       .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            exceptions.size());
+            messageExceptionList.size());
 
       EasyMock.verify(provider);
 
@@ -219,7 +219,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -234,11 +234,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
       .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            exceptions.size());
+            messageExceptionList.size());
 
       EasyMock.verify(provider);
 
@@ -264,7 +264,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -279,11 +279,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
       .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            exceptions.size());
+            messageExceptionList.size());
 
       EasyMock.verify(provider);
 
@@ -336,7 +336,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -353,11 +353,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
             ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
       .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            exceptions.size());
+            messageExceptionList.size());
 
       EasyMock.verify(provider, documentService);
 
@@ -410,7 +410,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -427,11 +427,11 @@ public class PersistanceDocumentsVirtuelsStepTest {
             ExitStatus.COMPLETED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
       .getExecutionContext().get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("il ne doit pas y avoir d'erreur dans la liste", 0,
-            exceptions.size());
+            messageExceptionList.size());
 
       EasyMock.verify(provider, documentService);
 
