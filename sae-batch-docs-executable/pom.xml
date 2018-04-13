@@ -19,7 +19,7 @@
 		<junit.version>4.8.2</junit.version>
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
 		<sae.version>18.8.0.1-SNAPSHOT</sae.version>
-		<commons.dfce.version>1.7.4-CRTL-2</commons.dfce.version>
+		<commons.dfce.version>1.9.1.1-SNAPSHOT</commons.dfce.version>
 		<aspectj.version>1.8.13</aspectj.version>
 		<easymock.version>3.0</easymock.version>
 		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
