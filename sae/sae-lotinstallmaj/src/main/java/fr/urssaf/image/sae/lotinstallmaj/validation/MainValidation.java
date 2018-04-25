@@ -234,6 +234,9 @@ public class MainValidation {
       if (MajLotServiceImpl.GNT_CASSANDRA_DFCE_180300
             .equalsIgnoreCase(nomOperation))
          return;
+      if (MajLotServiceImpl.CASSANDRA_DFCE_180900
+            .equalsIgnoreCase(nomOperation))
+         return;
 
       // TODO : Traiter le cas de la mise à jour de la durée de conservation de
       // 3.1.3.1.1 (en attente du JIRA CRTL-81)

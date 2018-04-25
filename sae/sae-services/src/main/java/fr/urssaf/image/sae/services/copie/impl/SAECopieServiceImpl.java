@@ -53,6 +53,7 @@ import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -71,6 +72,9 @@ public class SAECopieServiceImpl implements SAECopieService {
 
    @Autowired
    private SAECaptureService capture;
+   
+   @Autowired
+   private TracesDfceSupport tracesSupport;
 
    @Override
    public UUID copie(UUID idCopie, List<UntypedMetadata> metadata)
@@ -203,6 +207,9 @@ public class SAECopieServiceImpl implements SAECopieService {
       CaptureResult res = capture.captureBinaire(fin, dataHandler,
             untypedDocument.getFileName());
 
+      
+      tracesSupport.traceCopieDocumentDansDFCE(untypedDocument.getUuid(), res.getIdDoc());
+      
       // Retourne l'ID du document copié
       return res.getIdDoc();
    }

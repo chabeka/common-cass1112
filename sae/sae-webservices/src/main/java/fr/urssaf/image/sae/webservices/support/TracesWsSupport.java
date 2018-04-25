@@ -123,6 +123,8 @@ public class TracesWsSupport {
          result = TracesConstantes.CODE_EVT_WS_DEBLOCAGE_KO;
       } else if ("reprise".equals(nomOperation)) {
          result = TracesConstantes.CODE_EVT_WS_REPRISE_KO;
+      } else if ("copie".equals(nomOperation)) {
+         result = TracesConstantes.CODE_EVT_WS_COPIE_KO;
       }
 
       return result;

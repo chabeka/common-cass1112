@@ -55,6 +55,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_26 = 26;
    private static final int VERSION_27 = 27;
    private static final int VERSION_28 = 28;
+   private static final int VERSION_29 = 29;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1162,6 +1163,30 @@ public class SAECassandraUpdater {
       saeDao.setDatabaseVersion(VERSION_28);
    }
 
+   
+   public void updateToVersion29() {
+
+      long version = saeDao.getDatabaseVersion();
+      if (version >= VERSION_29) {
+         LOG.info("La base de données est déja en version " + version);
+         return;
+      }
+
+      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_29);
+
+      // -- On se connecte au keyspace
+      saeDao.connectToKeySpace();
+
+      InsertionDonnees donnees = new InsertionDonnees(saeDao.getKeyspace());
+
+      // Ajout des évenements
+      donnees.addReferentielEvenementV14();
+
+      // On positionne la version à 29
+      saeDao.setDatabaseVersion(VERSION_29);
+   }
+   
+   
    /**
     * Methode permettant de modifier la version de la base de données.
     * 

@@ -600,5 +600,14 @@ public class InsertionDonnees {
       LOG.info("Mise à jour du référentiel des événements");
       ReferentielServiceUtils.addReferentielEvenementV13(keyspace);
    }
+   
+   /**
+    * Référentiel des événements en V14 Ajout des évenements : <li>
+    * WS_COPIE_MASSE|KO</li>
+    */
+   public void addReferentielEvenementV14() {
+      LOG.info("Mise à jour du référentiel des événements");
+      ReferentielServiceUtils.addReferentielEvenementV14(keyspace);
+   }
 
 }

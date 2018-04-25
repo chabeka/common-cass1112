@@ -562,4 +562,61 @@ public class TracesDfceSupport {
       }
 
    }
+   
+   /**
+    * Trace l'événement "Transfert de document vers la GNS"
+    * 
+    * @param idDoc
+    *           l'identifiant unique DFCE du document transféré
+    */
+   @SuppressWarnings("PMD.AvoidCatchingThrowable")
+   public void traceCopieDocumentDansDFCE(UUID idDocOrigine, UUID idDocCopie) {
+
+      // On fait un try/catch(Throwable) pour la traçabilité ne fasse pas
+      // planter cette méthode
+      try {
+
+         // Traces
+         String prefix = "traceCopietDocumentDeDFCE()";
+         LOGGER.debug("{} - Début", prefix);
+
+         // Instantiation de l'objet TraceToCreate
+         TraceToCreate traceToCreate = new TraceToCreate();
+
+         // Code de l'événement
+         traceToCreate.setCodeEvt(Constants.TRACE_CODE_EVT_COPIE_DOC_DFCE);
+
+         // Contexte
+         traceToCreate.setContexte("CopieDocumentDansDFCE");
+
+         // Contrat de service et login
+         setInfosAuth(traceToCreate);
+
+         // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
+         // ce code
+         traceToCreate.getInfos().put("saeServeurHostname",
+               HostnameUtil.getHostname());
+         traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
+
+         // Info supplémentaire : identifiant d'archivage du document d'origine
+         traceToCreate.getInfos().put("idDoc", idDocOrigine.toString());
+         
+
+         // Info supplémentaire : identifiant d'archivage de la copie
+         traceToCreate.getInfos().put("idDocCopie", idDocCopie.toString());
+         
+         // Appel du dispatcheur
+         dispatcheurService.ajouterTrace(traceToCreate);
+
+         // Traces
+         LOGGER.debug("{} - Fin", prefix);
+
+      } catch (Throwable ex) {
+         LOGGER
+         .error(
+               "Une erreur s'est produite lors de l'écriture de la trace de copie d'un document",
+               ex);
+      }
+
+   }
 }

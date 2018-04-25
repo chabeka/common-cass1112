@@ -114,4 +114,9 @@ public final class Constants {
     * Traçabilité : code de l'événément "Restore d'un document dans DFCE"
     */
    public static final String TRACE_CODE_EVT_RESTORE_DOC_DFCE = "DFCE_RESTORE_DOC|OK";
+   
+   /**
+    * Traçabilité : code de l'événément "Copie d'un document dans DFCE"
+    */
+   public static final String TRACE_CODE_EVT_COPIE_DOC_DFCE = "DFCE_COPIE_DOC|OK";
 }
