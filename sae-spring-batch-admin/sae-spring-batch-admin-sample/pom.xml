@@ -17,8 +17,8 @@
       <slf4j-api.version>1.6.4</slf4j-api.version>
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
-      <commons-cassandra-spring-batch.version>0.0.6</commons-cassandra-spring-batch.version>
-      <sae.version>18.3.0.2</sae.version>
+      <commons-cassandra-spring-batch.version>0.0.7-SNAPSHOT</commons-cassandra-spring-batch.version>
+      <sae.version>18.8.0.1-SNAPSHOT</sae.version>
    </properties>
 
 
@@ -149,7 +149,7 @@
       <dependency>
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
-         <scope>compile</scope>
+         <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.easymock</groupId>
@@ -159,7 +159,7 @@
          <groupId>org.cassandraunit</groupId>
          <artifactId>cassandra-unit</artifactId>
          <version>1.0.3.1</version>
-         <scope>compile</scope>
+         <scope>test</scope>
          <exclusions>
             <exclusion>
                <groupId>org.slf4j</groupId>
@@ -257,6 +257,13 @@
             <version>6.1.9</version>
             <configuration>
                <contextPath>/sae-spring-batch-admin-sample</contextPath>
+            </configuration>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-deploy-plugin</artifactId>
+            <configuration>
+               <skip>true</skip>
             </configuration>
          </plugin>
       </plugins>
