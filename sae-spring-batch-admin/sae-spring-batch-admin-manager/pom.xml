@@ -9,7 +9,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
    <parent>
       <artifactId>sae-spring-batch-admin-parent</artifactId>
       <groupId>org.springframework.batch</groupId>
-      <version>1.2.3.BUILD-SNAPSHOT</version>
+      <version>1.2.3.1-SNAPSHOT</version>
       <relativePath>../sae-spring-batch-admin-parent</relativePath>
    </parent>
    <name>SAE Spring Batch Admin Manager</name>
