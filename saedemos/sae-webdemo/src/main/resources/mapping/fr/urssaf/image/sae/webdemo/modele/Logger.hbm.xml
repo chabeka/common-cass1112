@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<!-- Generated 22 d?c. 2010 14:24:37 by Hibernate Tools 3.2.2.GA -->
+<hibernate-mapping>
+    <class name="fr.urssaf.image.sae.webdemo.modele.Log" table="logger">
+        <id name="idseq" type="java.lang.Integer">
+            <column name="idseq" />
+            <generator class="identity" />
+        </id>
+        <property name="horodatage" type="timestamp">
+            <column name="horodatage" length="19" not-null="true" />
+        </property>
+        <property name="occurences" type="int">
+            <column name="occurences" not-null="true" />
+        </property>
+        <property name="probleme" type="string">
+            <column name="probleme" length="100" not-null="true" />
+        </property>
+        <property name="action" type="string">
+            <column name="action" length="50" not-null="true" />
+        </property>
+        <property name="infos" type="string">
+            <column name="infos" length="200" not-null="true" />
+        </property>
+    </class>
+</hibernate-mapping>
