@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<som:sommaire
+   xmlns:som="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <!-- Type de traitement de masse -->
+   <som:batchMode>TOUT_OU_RIEN</som:batchMode>
+   
+   <!-- Date de création du sommaire.xml -->
+   <som:dateCreation>2011-09-21</som:dateCreation>
+   
+   <!-- Description du traitement -->
+   <som:description>La description du traitement</som:description>
+   
+   <!-- Liste des documents à archiver -->
+   <!--
+   Il y a 3 documents.
+   Le 1er et le 3ème sont corrects.
+   Le 2ème ne l'est pas : les métadonnées obligatoires CodeOrganismeProprietaire et CodeRND ne sont pas présentes
+   -->
+
+   <som:documents>
+
+      <somres:document>
+      
+         <somres:objetNumerique>
+            <somres:cheminEtNomDuFichier>doc70.PDF</somres:cheminEtNomDuFichier>
+         </somres:objetNumerique>
+         
+         <somres:metadonnees>
+            <somres:metadonnee>
+               <somres:code>Titre</somres:code>
+               <somres:valeur>Attestation de vigilance</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>DateCreation</somres:code>
+               <somres:valeur>2011-09-21</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>ApplicationProductrice</somres:code>
+               <somres:valeur>ADELAIDE</somres:valeur>
+            </somres:metadonnee>                        
+            <somres:metadonnee>
+               <somres:code>CodeOrganismeProprietaire</somres:code>
+               <somres:valeur>UR750</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>CodeOrganismeGestionnaire</somres:code>
+               <somres:valeur>CER69</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>CodeRND</somres:code>
+               <somres:valeur>2.3.1.1.12</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Hash</somres:code>
+               <somres:valeur>bc6ad31335a3af36d3c157382b6ccad98a8fbe2a</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>TypeHash</somres:code>
+               <somres:valeur>SHA-1</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NbPages</somres:code>
+               <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>                        
+            <somres:metadonnee>
+               <somres:code>FormatFichier</somres:code>
+               <somres:valeur>fmt/354</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Denomination</somres:code>
+               <somres:valeur>Test 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroRecours</somres:code>
+               <somres:valeur>1</somres:valeur>
+            </somres:metadonnee>
+         </somres:metadonnees>
+         
+         <somres:numeroPageDebut>1</somres:numeroPageDebut>
+         <somres:nombreDePages>1</somres:nombreDePages>
+         
+      </somres:document>
+
+
+<!-- Le document incorrect -->
+      <somres:document>
+      
+         <somres:objetNumerique>
+            <somres:cheminEtNomDuFichier>doc77.PDF</somres:cheminEtNomDuFichier>
+         </somres:objetNumerique>
+         
+         <somres:metadonnees>
+            <somres:metadonnee>
+               <somres:code>Titre</somres:code>
+               <somres:valeur>Attestation de vigilance</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>DateCreation</somres:code>
+               <somres:valeur>2011-09-21</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>ApplicationProductrice</somres:code>
+               <somres:valeur>ADELAIDE</somres:valeur>
+            </somres:metadonnee>            
+
+<!-- Métadonnée CodeOrganismeProprietaire absente -->
+            <somres:metadonnee>
+               <somres:code>CodeOrganismeGestionnaire</somres:code>
+               <somres:valeur>CER69</somres:valeur>
+            </somres:metadonnee>
+<!-- Métadonnée CodeRND absente -->
+            <somres:metadonnee>
+               <somres:code>Hash</somres:code>
+               <somres:valeur>48da11810a23e2f0d3faad730bb3355e3d5c4ac4</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>TypeHash</somres:code>
+               <somres:valeur>SHA-1</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NbPages</somres:code>
+               <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>                        
+            <somres:metadonnee>
+               <somres:code>FormatFichier</somres:code>
+               <somres:valeur>fmt/354</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Denomination</somres:code>
+               <somres:valeur>Test 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroRecours</somres:code>
+               <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>
+         </somres:metadonnees>
+
+         <somres:numeroPageDebut>1</somres:numeroPageDebut>
+         <somres:nombreDePages>1</somres:nombreDePages>
+         
+      </somres:document>
+
+
+      <somres:document>
+      
+         <somres:objetNumerique>
+            <somres:cheminEtNomDuFichier>doc132.PDF</somres:cheminEtNomDuFichier>
+         </somres:objetNumerique>
+         
+         <somres:metadonnees>
+            <somres:metadonnee>
+               <somres:code>Titre</somres:code>
+               <somres:valeur>Attestation de vigilance</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>DateCreation</somres:code>
+               <somres:valeur>2011-09-08</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>ApplicationProductrice</somres:code>
+               <somres:valeur>ADELAIDE</somres:valeur>
+            </somres:metadonnee>                        
+            <somres:metadonnee>
+               <somres:code>CodeOrganismeProprietaire</somres:code>
+               <somres:valeur>UR750</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>CodeOrganismeGestionnaire</somres:code>
+               <somres:valeur>CER69</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>CodeRND</somres:code>
+               <somres:valeur>2.3.1.1.12</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Hash</somres:code>
+               <somres:valeur>f167d69e3a1b444539ede74c46663b35eee00d1d</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>TypeHash</somres:code>
+               <somres:valeur>SHA-1</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NbPages</somres:code>
+               <somres:valeur>2</somres:valeur>
+            </somres:metadonnee>                        
+            <somres:metadonnee>
+               <somres:code>FormatFichier</somres:code>
+               <somres:valeur>fmt/354</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>Denomination</somres:code>
+               <somres:valeur>Test 253-CaptureMasse-KO-Tor-MetadonneeObligatoireOmise</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+               <somres:code>NumeroRecours</somres:code>
+               <somres:valeur>3</somres:valeur>
+            </somres:metadonnee>
+         </somres:metadonnees>
+         
+         <somres:numeroPageDebut>1</somres:numeroPageDebut>
+         <somres:nombreDePages>1</somres:nombreDePages>
+         
+      </somres:document>
+
+   </som:documents>
+
+
+   <!-- Liste des documents virtuels à archiver -->
+   <som:documentsVirtuels />
+
+     
+</som:sommaire>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by USER USER (CIRTIL) -->
+<!--Résultat de recherche standard-->
+<sae:rechercheResponse xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ../SaeService.xsd">
+	<sae:resultats>
+		<sae:resultat>
+			<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcba</sae:idArchive>
+			<sae:metadonnees>
+				<sae:metadonnee>
+					<sae:code>code_1</sae:code>
+					<sae:valeur>valeur_1_1</sae:valeur>
+				</sae:metadonnee>
+				<sae:metadonnee>
+					<sae:code>code_2</sae:code>
+					<sae:valeur>valeur_1_2</sae:valeur>
+				</sae:metadonnee>
+				<sae:metadonnee>
+					<sae:code>code_3</sae:code>
+					<sae:valeur>valeur_1_3</sae:valeur>
+				</sae:metadonnee>
+			</sae:metadonnees>
+		</sae:resultat>
+		<sae:resultat>
+			<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcbb</sae:idArchive>
+			<sae:metadonnees>
+				<sae:metadonnee>
+					<sae:code>code_1</sae:code>
+					<sae:valeur>valeur_2_1</sae:valeur>
+				</sae:metadonnee>
+				<sae:metadonnee>
+					<sae:code>code_3</sae:code>
+					<sae:valeur>valeur_2_3</sae:valeur>
+				</sae:metadonnee>
+			</sae:metadonnees>
+		</sae:resultat>
+		<sae:resultat>
+			<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcbb</sae:idArchive>
+			<sae:metadonnees>
+				<sae:metadonnee>
+					<sae:code>code_3</sae:code>
+					<sae:valeur>valeur_3_3</sae:valeur>
+				</sae:metadonnee>
+				<sae:metadonnee>
+					<sae:code>code_4</sae:code>
+					<sae:valeur>valeur_3_4</sae:valeur>
+				</sae:metadonnee>
+			</sae:metadonnees>
+		</sae:resultat>
+	</sae:resultats>
+	<sae:resultatTronque>false</sae:resultatTronque>
+</sae:rechercheResponse>

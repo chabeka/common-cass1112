@@ -1,0 +1,2 @@
+Début de l'analyse des fichiers PDF 
+doc3.pdf --> OK

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2010 (http://www.altova.com) by USER USER (CIRTIL) -->
+<!-- L'id archive est doublé : KO ! -->
+<sae:consultation xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
+	<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcba</sae:idArchive>
+	<sae:idArchive>a1b1ff04-230a-26ff-0033-23490abcfcba</sae:idArchive>
+	<sae:urlConsultationDirecte>true</sae:urlConsultationDirecte>
+</sae:consultation>
