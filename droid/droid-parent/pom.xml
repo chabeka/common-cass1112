@@ -19,8 +19,8 @@
     <inceptionYear>2012</inceptionYear>
             
     <properties>
-        <project.build.source>1.6</project.build.source>
-        <project.build.target>1.6</project.build.target>
+        <project.build.source>1.8</project.build.source>
+        <project.build.target>1.8</project.build.target>
         <!-- DEFINI DANS LE POM PERE Encodage de caractères
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
         <project.email>pronom@nationalarchives.gsi.gov.uk</project.email>
