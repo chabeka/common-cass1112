@@ -28,10 +28,10 @@
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <jstl.version>1.2</jstl.version>
       
-      <sae.anais.framework.version>1.0.1</sae.anais.framework.version>
-      <commons.maquette.version>1.0.1</commons.maquette.version>
+      <sae.anais.framework.version>1.0.2-SNAPSHOT</sae.anais.framework.version>
+      <commons.maquette.version>1.0.2-SNAPSHOT</commons.maquette.version>
       
-      <sae.version>16.9.0.2</sae.version>
+      <sae.version>18.8.0.1-SNAPSHOT</sae.version>
       
    </properties>
    
@@ -46,8 +46,8 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
+               <source>1.8</source>
+               <target>1.8</target>
                <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
