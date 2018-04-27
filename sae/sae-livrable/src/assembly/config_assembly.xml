@@ -105,7 +105,7 @@
       <fileSet>
          <directory>src/pki/</directory>
          <includes>
-            <include>AC_RACINE_IGCN_RECOUV_2012.crt</include>
+            <include>ACOSS_Reseau_des_URSSAF.crt</include>
          </includes>
          <outputDirectory />
       </fileSet>
@@ -132,6 +132,31 @@
             <include>sae-cassandra-transfert-config.properties</include>
          </includes>
          <outputDirectory />
+      </fileSet>
+      
+     <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-batch-docs-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-batch-docs-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>purgeCorbeille.properties</include>
+         </includes>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/scripts/</directory>
+         <includes>
+            <include>sae-AR-instances-integration.sh</include>
+            <include>sae-integrationinstall.sh</include>
+         </includes>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
       </fileSet>
       
    </fileSets>
