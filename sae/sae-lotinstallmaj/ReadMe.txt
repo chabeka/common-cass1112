@@ -512,4 +512,4 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 19-1) Lot 180900SAE
 Met la base Cassandra du SAE en version 29 :
 
-- Ajout de l'évenement WS_COPIE|KO
+- Ajout de l'évenement WS_COPIE|KO et WS_COPIE|OK

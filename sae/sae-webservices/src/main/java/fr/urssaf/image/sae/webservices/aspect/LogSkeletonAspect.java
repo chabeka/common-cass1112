@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import fr.cirtil.www.saeservice.EcdeUrlSommaireType;
 import fr.cirtil.www.saeservice.EcdeUrlType;
+import fr.cirtil.www.saeservice.RequeteRechercheNbResType;
 import fr.cirtil.www.saeservice.RequeteRechercheType;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
@@ -57,7 +58,7 @@ public class LogSkeletonAspect {
          MethodeService.ARCHIVAGE_MASSE.getClasseMethodeRequest(),
          MethodeService.ARCHIVAGE_MASSE_HASH.getClasseMethodeRequest(),
          MethodeService.MODIFICATION_MASSE.getClasseMethodeRequest(),
-         MethodeService.TRANSFERT.getClasseMethodeRequest(),
+         MethodeService.STOCKAGE_UNITAIRE.getClasseMethodeRequest(),
          MethodeService.TRANSFERT_MASSE.getClasseMethodeRequest());
 
    /**
@@ -72,7 +73,6 @@ public class LogSkeletonAspect {
          MethodeService.TRANSFERT.getClasseMethodeRequest(),
          MethodeService.SUPPRESSION.getClasseMethodeRequest(),
          MethodeService.AJOUT_NOTE.getClasseMethodeRequest(),
-         MethodeService.STOCKAGE_UNITAIRE.getClasseMethodeRequest(),
          MethodeService.GET_DOC_FORMAT_ORIG.getClasseMethodeRequest(),
          MethodeService.RESTORE_MASSE.getClasseMethodeRequest(),
          MethodeService.COPIE.getClasseMethodeRequest(),
@@ -86,9 +86,13 @@ public class LogSkeletonAspect {
     */
    private List<Class> listeServiceClassRequete = Arrays.asList(
          MethodeService.RECHERCHE.getClasseMethodeRequest(),
-         MethodeService.RECHERCHE_NB_RES.getClasseMethodeRequest(),
-         MethodeService.SUPPRESSION_MASSE.getClasseMethodeRequest(),
-         MethodeService.SUPPRESSION.getClasseMethodeRequest());
+         MethodeService.SUPPRESSION_MASSE.getClasseMethodeRequest());
+   
+   /**
+    * Liste des service comprenant une requête de recherche avec nb res en paramètre
+    */
+   private List<Class> listeServiceClassRequeteNbRes = Arrays.asList(
+         MethodeService.RECHERCHE_NB_RES.getClasseMethodeRequest());
 
    /**
     * Méthode permettant de logger les informations des services du skeleton
@@ -109,6 +113,8 @@ public class LogSkeletonAspect {
                logServiceInformationServiceID(arg);
             } else if (listeServiceClassRequete.contains(jpClass)) {
                logServiceInformationServiceRequete(arg);
+            } else if (listeServiceClassRequeteNbRes.contains(jpClass)) {
+               logServiceInformationServiceRequeteNbRes(arg);
             } else {
                logServiceInformationServiceAutres(arg);
             }
@@ -211,6 +217,39 @@ public class LogSkeletonAspect {
                throw new ParameterNotFoundException(
                      MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
             }
+         } else {
+            throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
+         }
+      } catch (Throwable e) {
+         throw new ParameterNotFoundException(
+               MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+      }
+   }
+   
+   /**
+    * Méthode permettant de logger les informations des services utilisant une
+    * requête comme paramètre
+    * 
+    * @param target
+    *           Object cible contenant la requête ECDE
+    * @throws ParameterNotFoundException
+    * @{@link ParameterNotFoundException}
+    */
+   private void logServiceInformationServiceRequeteNbRes(Object target)
+         throws ParameterNotFoundException {
+      try {
+         Object objRet = SearchObjectClassUtil.searchObjectByClass(target,
+               RequeteRechercheNbResType.class.toString());
+         if (objRet instanceof RequeteRechercheNbResType) { 
+            RequeteRechercheNbResType req = (RequeteRechercheNbResType) objRet;
+            if (req.getRequeteRechercheNbResType() != null) {
+               LOG.info(getLogInformation(target, req.getRequeteRechercheNbResType()
+                     .toString()));
+            } else {
+               throw new ParameterNotFoundException(
+                     MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+            }
+            
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
