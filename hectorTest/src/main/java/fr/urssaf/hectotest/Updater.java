@@ -93,9 +93,9 @@ public class Updater {
                   ObjectSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
-            
+
          }
-            
+
       } else {
          sysout.println("Column " + columnName + " inexistante pour la key "
                + rowName + " dans la CF " + CFName);

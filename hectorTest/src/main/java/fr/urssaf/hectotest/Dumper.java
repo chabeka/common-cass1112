@@ -16,6 +16,7 @@ import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.AbstractComposite.Component;
 import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.Composite;
 import me.prettyprint.hector.api.beans.HColumn;
@@ -23,7 +24,6 @@ import me.prettyprint.hector.api.beans.HSuperColumn;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.beans.SuperSlice;
-import me.prettyprint.hector.api.beans.AbstractComposite.Component;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.ColumnQuery;
 import me.prettyprint.hector.api.query.QueryResult;
@@ -144,6 +144,10 @@ public class Dumper {
       dumpCF(CFName, count, false);
    }
 
+   public void dumpCFDoublon(String CFName, int count) throws Exception {
+      dumpCF_sliceDoublon(CFName, new byte[0], new byte[0], count, false);
+   }
+
    /**
     * Dump une column family
     * 
@@ -175,6 +179,20 @@ public class Dumper {
       QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
             .execute();
       dumpQueryResult(result, siAuMoinsUneCol);
+   }
+
+   public void dumpCF_sliceDoublon(String CFName, byte[] sliceStart,
+         byte[] sliceEnd, int count, boolean siAuMoinsUneCol) throws Exception {
+      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
+            .createRangeSlicesQuery(keyspace, bytesSerializer, bytesSerializer,
+                  bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(CFName);
+      rangeSlicesQuery.setRange(sliceStart, sliceEnd, false, count);
+      rangeSlicesQuery.setRowCount(count);
+      QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
+            .execute();
+      dumpQueryDoublonResult(result, siAuMoinsUneCol);
    }
 
    public void dumpCF(String CFName, byte[] key) throws Exception {
@@ -279,6 +297,19 @@ public class Dumper {
             + nbRowsAvecCols);
    }
 
+   private void dumpQueryDoublonResult(
+         QueryResult<OrderedRows<byte[], byte[], byte[]>> result,
+         boolean siAuMoinsUneCol) throws Exception {
+      OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
+      sysout.println("Count " + orderedRows.getCount());
+      sysout.println();
+      long nbRowsAvecCols = dumpRows(orderedRows, siAuMoinsUneCol);
+      sysout.println();
+      sysout.println("Count " + orderedRows.getCount());
+      sysout.println("Count des lignes avec au moins 1 colonne : "
+            + nbRowsAvecCols);
+   }
+
    private long dumpRows(Iterable<Row<byte[], byte[], byte[]>> orderedRows,
          boolean siAuMoinsUneCol) throws Exception {
       int result = 0;
@@ -305,11 +336,11 @@ public class Dumper {
             }
 
             dumpColumns(columns);
-            
+
             sysout.println();
 
          }
-         
+
       }
       return result;
    }

@@ -141,7 +141,7 @@ public class DumpTest {
       while (true) {
          byte[] previousUUID = dumper.getColumnValue("DocInfo",
                uuidToDocInfoKey(uuid), ConvertHelper
-                     .stringToBytes("PREVIOUS_LOG_ARCHIVE_UUID"));
+               .stringToBytes("PREVIOUS_LOG_ARCHIVE_UUID"));
          uuid = new String(previousUUID);
          sysout.println("UUID : " + uuid);
          if (previousUUID == null)
@@ -724,10 +724,10 @@ public class DumpTest {
                ObjectInputStream ois = new ObjectInputStream(bis);
                Map<String, ArrayList<String>> map = (Map) ois.readObject();
                // sysout.println(map);
-               String siren = (String) map.get("srn").get(0);
-               String title = (String) map.get("SM_TITLE").get(0);
-               String date = (String) map.get("SM_ARCHIVAGE_DATE").get(0);
-               String uuid = (String) map.get("SM_UUID").get(0);
+               String siren = map.get("srn").get(0);
+               String title = map.get("SM_TITLE").get(0);
+               String date = map.get("SM_ARCHIVAGE_DATE").get(0);
+               String uuid = map.get("SM_UUID").get(0);
                if (!docs.containsKey(title))
                   docs.put(title, new ArrayList<String>());
                docs.get(title).add(
@@ -769,7 +769,7 @@ public class DumpTest {
       // ConvertHelper.stringToHex("SAE") + "'";
       String query = "select * from Documents where Key ='"
             + ConvertHelper
-                  .stringToHex("dd258958-24ff-486e-84b8-4f6b2714aaff_v1") + "'";
+            .stringToHex("dd258958-24ff-486e-84b8-4f6b2714aaff_v1") + "'";
       // String query = "select * from SystemEventLog WHERE KEY >'" +
       // ConvertHelper.stringToHex("20110819000000000") + "' LIMIT 100";
       // String query = "select * from DocEventLogByTime WHERE KEY >'" +
@@ -795,7 +795,7 @@ public class DumpTest {
    public void testUpdate() {
       ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<String, String>(
             keyspace, "myColFamily", StringSerializer.get(), StringSerializer
-                  .get());
+            .get());
       ColumnFamilyUpdater<String, String> updater = template
             .createUpdater("a key");
       updater.setString("domain", "www.datastax.com");
@@ -843,7 +843,12 @@ public class DumpTest {
 
    @Test
    public void testDumpJobInstance() throws Exception {
-      dumper.dumpCF("JobInstance", 50);
+      dumper.dumpCF("JobInstance", 10000);
+   }
+
+   @Test
+   public void getDumpJobInstanceDoublon() throws Exception {
+      dumper.dumpCFDoublon("JobInstance", 10000);
    }
 
    @Test
@@ -871,7 +876,7 @@ public class DumpTest {
       dumper.printColumnNameInHex = true;
       dumper.dumpCF("SystemEventLogByTimeSerialized", 50);
    }
-   
+
    @Test
    public void testProvoquerSoapFaultErreurInterneConsultation() throws Exception {
 
@@ -881,12 +886,12 @@ public class DumpTest {
 
       // Modifier ici l'UUID du document
       String uuid = "1F86D287-E0C5-4857-9C49-06AF584E1199";
-      
+
       byte[] fileUuid = uuidToFileUUID(uuid);
       if (fileUuid == null)
          throw new Exception("Pas de fileUUID trouvé pour cet uuid : " + uuid);
       String stringFileUuid = ConvertHelper.getReadableUTF8String(fileUuid);
-      
+
       String key = stringFileUuid.toLowerCase();
       System.out.println("fileUUID key: " + key);
 
