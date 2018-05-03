@@ -73,7 +73,7 @@ public class DumpTest {
       //servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
       //servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
       //servers = "hwi54saecas1.cve.recouv:9160";  // CNH
-      servers = "cer69imageint9.cer69.recouv:9160";
+      // servers = "cer69imageint9.cer69.recouv:9160";
       //servers = "cer69imageint10.cer69.recouv:9160";
       //servers = "10.203.34.39:9160";    // Noufnouf
       //servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
@@ -81,6 +81,10 @@ public class DumpTest {
       // servers = "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160";
       //servers = "cer69-saeint3.cer69.recouv:9160";
       // servers = "cnp69pprodsaecas1.cer69.recouv:9160,cnp69pprodsaecas2.cer69.recouv:9160,cnp69pprodsaecas3.cer69.recouv:9160";
+      // servers =
+      // "cnp6gntcvecas1.cve.recouv:9160,cnp3gntcvecas1.cve.recouv:9160,cnp7gntcvecas1.cve.recouv:9160";
+      // Charge GNT
+      servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
       
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
@@ -619,7 +623,7 @@ public class DumpTest {
 
    @Test
    public void testDumpIndexReference() throws Exception {
-      dumper.dumpCF("IndexReference", 15);
+      dumper.dumpCF("IndexReference", 2000);
    }
 
    @Test
@@ -848,7 +852,7 @@ public class DumpTest {
 
    @Test
    public void getDumpJobInstanceDoublon() throws Exception {
-      dumper.dumpCFDoublon("JobInstance", 10000);
+      dumper.dumpCFDoublon("JobInstance", "jobInstanceId", 50000);
    }
 
    @Test

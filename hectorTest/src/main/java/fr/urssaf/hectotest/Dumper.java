@@ -8,7 +8,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import me.prettyprint.cassandra.model.CqlRows;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
@@ -144,8 +146,10 @@ public class Dumper {
       dumpCF(CFName, count, false);
    }
 
-   public void dumpCFDoublon(String CFName, int count) throws Exception {
-      dumpCF_sliceDoublon(CFName, new byte[0], new byte[0], count, false);
+   public void dumpCFDoublon(String CFName, String columnToCompare, int count)
+         throws Exception {
+      dumpCF_sliceDoublon(CFName, columnToCompare, new byte[0], new byte[0],
+            count, false);
    }
 
    /**
@@ -181,8 +185,9 @@ public class Dumper {
       dumpQueryResult(result, siAuMoinsUneCol);
    }
 
-   public void dumpCF_sliceDoublon(String CFName, byte[] sliceStart,
-         byte[] sliceEnd, int count, boolean siAuMoinsUneCol) throws Exception {
+   public void dumpCF_sliceDoublon(String CFName, String columnToCompare,
+         byte[] sliceStart, byte[] sliceEnd, int count, boolean siAuMoinsUneCol)
+         throws Exception {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(keyspace, bytesSerializer, bytesSerializer,
@@ -192,7 +197,7 @@ public class Dumper {
       rangeSlicesQuery.setRowCount(count);
       QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
             .execute();
-      dumpQueryDoublonResult(result, siAuMoinsUneCol);
+      dumpQueryDoublonResult(result, columnToCompare, siAuMoinsUneCol);
    }
 
    public void dumpCF(String CFName, byte[] key) throws Exception {
@@ -299,15 +304,170 @@ public class Dumper {
 
    private void dumpQueryDoublonResult(
          QueryResult<OrderedRows<byte[], byte[], byte[]>> result,
-         boolean siAuMoinsUneCol) throws Exception {
+         String columnToCompare, boolean siAuMoinsUneCol) throws Exception {
       OrderedRows<byte[], byte[], byte[]> orderedRows = result.get();
-      sysout.println("Count " + orderedRows.getCount());
+      sysout.println("Total Rows :" + orderedRows.getCount());
       sysout.println();
-      long nbRowsAvecCols = dumpRows(orderedRows, siAuMoinsUneCol);
+      long nbRowsAvecCols = dumpRowsDoublons(orderedRows, columnToCompare,
+            siAuMoinsUneCol);
       sysout.println();
-      sysout.println("Count " + orderedRows.getCount());
       sysout.println("Count des lignes avec au moins 1 colonne : "
             + nbRowsAvecCols);
+   }
+
+   private long dumpRowsDoublons(
+         OrderedRows<byte[], byte[], byte[]> orderedRows,
+         String columnToCompare, boolean siAuMoinsUneCol) throws Exception {
+      int result = 0;
+      Set<String> rowsKeysUniquesString = null;
+      Set<String> rowsColumnsUniquesString = new HashSet<String>();
+      Set<Long> rowsKeysUniquesLong = null;
+      if (printKeyInHex) {
+         rowsKeysUniquesString = new HashSet<String>();
+      } else if (printKeyInLong) {
+         rowsKeysUniquesLong = new HashSet<Long>();
+      } else {
+         rowsKeysUniquesString = new HashSet<String>();
+      }
+
+      Set<Row<byte[], byte[], byte[]>> rowsDoubles = new HashSet<Row<byte[], byte[], byte[]>>();
+      for (Row<byte[], byte[], byte[]> row : orderedRows) {
+         // On divise les rows en deux groupes.
+         if (printKeyInHex) {
+            String key = ConvertHelper.getHexString(row.getKey());
+            if (!rowsKeysUniquesString.isEmpty()
+                  && rowsKeysUniquesString.contains(key)) {
+               rowsDoubles.add(row);
+            } else {
+               rowsKeysUniquesString.add(key);
+            }
+         } else if (printKeyInLong) {
+            Long key = LongSerializer.get().fromBytes(row.getKey());
+            if (!rowsKeysUniquesLong.isEmpty()
+                  && rowsKeysUniquesLong.contains(key)) {
+               rowsDoubles.add(row);
+            } else {
+               rowsKeysUniquesLong.add(key);
+            }
+         } else {
+            String key = ConvertHelper.getReadableUTF8String(row.getKey());
+            if (!rowsKeysUniquesString.isEmpty()
+                  && rowsKeysUniquesString.contains(key)) {
+               rowsDoubles.add(row);
+            } else {
+               rowsKeysUniquesString.add(key);
+            }
+         }
+
+         ColumnSlice<byte[], byte[]> columnSlice = row.getColumnSlice();
+         List<HColumn<byte[], byte[]>> columns = columnSlice.getColumns();
+
+         for (HColumn<byte[], byte[]> column : columns) {
+            String s = org.apache.commons.lang.StringUtils.EMPTY;
+            if (printColumnNameInHex) {
+               s = ConvertHelper.getHexString(column.getName());
+            } else if (printColumnNameInComposite) {
+               Composite comp = new CompositeSerializer().fromBytes(column
+                     .getName());
+               int i = 0;
+               for (Component<?> c : comp.getComponents()) {
+                  ByteBuffer buffer = (ByteBuffer) c.getValue();
+                  if (buffer == null)
+                     s += "(null)";
+                  else {
+                     byte[] bytes = new byte[buffer.remaining()];
+                     buffer.get(bytes);
+                     if (compositeDisplayTypeMapper != null
+                           && compositeDisplayTypeMapper[i++] == true) {
+                        s += ConvertHelper.getHexString(bytes);
+                     } else {
+                        s += ConvertHelper.getReadableUTF8String(bytes);
+                     }
+                  }
+               }
+            } else {
+               s = ConvertHelper.getReadableUTF8String(column.getName());
+            }
+            if (columnToCompare != null && columnToCompare.equals(s)) {
+
+               byte[] value = column.getValue();
+
+               if (deserializeValue) {
+                  ByteArrayInputStream bis = new ByteArrayInputStream(value);
+                  ObjectInputStream ois = new ObjectInputStream(bis);
+                  Object o = ois.readObject();
+                  s += " - DeseriazedValue : " + o.toString();
+               } else {
+                  if (value.length > maxValueLenght) {
+                     byte[] dst = new byte[maxValueLenght];
+                     System.arraycopy(value, 0, dst, 0, maxValueLenght);
+                     value = dst;
+                  }
+                  // int ttl = column.getTtl();
+                  // s += " - ttl : " + ttl;
+                  String stringValue = ConvertHelper
+                        .getReadableUTF8String(value);
+                  s += " - StringValue : " + stringValue;
+                  if (value.length <= 4) {
+                     int intValue = ConvertHelper.byteArrayToInt(value, 0);
+                     s += " - IntValue : " + intValue;
+                  } else if (value.length <= 8) {
+                     long longValue = ConvertHelper.byteArrayToLong(value);
+                     s += " - longValue : " + longValue;
+                     Date date = new java.util.Date(longValue);
+                     DateFormat dateFormat = new SimpleDateFormat(
+                           "dd/MM/yyyy HH:mm:ss");
+                     s += " - dateValue : '" + dateFormat.format(date) + "'";
+                  }
+                  String hexValue = ConvertHelper.getHexString(value);
+                  s += " - hexValue : " + hexValue;
+               }
+
+               if (!rowsColumnsUniquesString.isEmpty()
+                     && rowsColumnsUniquesString.contains(s)) {
+                  rowsDoubles.add(row);
+                  sysout.println("Doublon sur colonne (value) : " + s);
+               } else {
+                  rowsColumnsUniquesString.add(s);
+               }
+            }
+         }
+      }
+
+      sysout.println("-------------------------- ");
+      sysout.println("-------------------------- ");
+      sysout.println("ROWS DOUBLES : " + rowsDoubles.size());
+      sysout.println("-------------------------- ");
+      sysout.println("-------------------------- ");
+      for (Row<byte[], byte[], byte[]> row : rowsDoubles) {
+
+         ColumnSlice<byte[], byte[]> columnSlice = row.getColumnSlice();
+         List<HColumn<byte[], byte[]>> columns = columnSlice.getColumns();
+         if (columns.size() > 0) {
+            result++;
+         }
+
+         if ((!siAuMoinsUneCol) || (siAuMoinsUneCol && (columns.size() > 0))) {
+
+            if (printKeyInHex) {
+               String key = ConvertHelper.getHexString(row.getKey());
+               sysout.println("Key (hex) : " + key);
+            } else if (printKeyInLong) {
+               Long key = LongSerializer.get().fromBytes(row.getKey());
+               sysout.println("Key (long) : " + key);
+            } else {
+               String key = ConvertHelper.getReadableUTF8String(row.getKey());
+               sysout.println("Key : " + key);
+            }
+
+            dumpColumns(columns);
+
+            sysout.println();
+
+         }
+      }
+
+      return result;
    }
 
    private long dumpRows(Iterable<Row<byte[], byte[], byte[]>> orderedRows,

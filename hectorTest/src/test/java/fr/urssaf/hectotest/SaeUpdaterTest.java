@@ -68,7 +68,6 @@ public class SaeUpdaterTest {
       // "cnp69intgntcas1.gidn.recouv:9160,cnp69intgntcas2.gidn.recouv:9160,cnp69intgntcas3.gidn.recouv:9160";
 
       servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
-
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
@@ -92,7 +91,7 @@ public class SaeUpdaterTest {
    @Test
    public void testUpdateParametersVersionBDD() throws Exception {
       updater.updateColumn("Parameters", "parameters", "versionBDD",
-            Long.valueOf(24));
+            Long.valueOf(27));
    }
 
    @Test
@@ -107,7 +106,7 @@ public class SaeUpdaterTest {
             "PURGE_CORBEILLE_DATE_DEBUT_PURGE",
             DateUtils.addDays(new Date(), -20), ObjectSerializer.get());
    }
-
+   
    @Test
    public void testUpdateParametersDureeRetentionCorbeille() throws Exception {
       updater.updateColumn("Parameters", "parametresCorbeille",
@@ -118,6 +117,14 @@ public class SaeUpdaterTest {
    public void testAddDroitUnitaire() throws Exception {
       updater.addColumn("DroitActionUnitaire", "transfert", "description",
             "transfert d'un document entre la GNT et la GNS");
+      updater.addColumn("DroitActionUnitaire", "reprise_masse", "description",
+            "reprise de traitement de masse");
+      updater.addColumn("DroitActionUnitaire", "transfert", "description",
+            "transfert");
    }
 
+   @Test
+   public void testdeleteMetadata() throws Exception {
+      updater.deleteRows("Metadata", "000000000000");
+   }
 }

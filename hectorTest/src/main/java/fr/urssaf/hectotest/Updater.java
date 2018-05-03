@@ -121,4 +121,16 @@ public class Updater {
       Assert.assertTrue(cfTmpl.queryColumns(rowName).getColumnNames()
             .contains(columnName));
    }
+
+   public void deleteRows(String CFName, String rowName) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, CFName, StringSerializer.get(), StringSerializer.get());
+      if (rowName != null) {
+         cfTmpl.deleteRow(rowName);
+
+      }
+
+      Assert.assertNull(cfTmpl.queryColumns(rowName).getKey());
+
+   }
 }

@@ -54,7 +54,7 @@ public class SaeDumpTest {
       //servers = "cer69-saeint3.cer69.recouv";
       
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
-      servers = "cer69imageint9.cer69.recouv:9160";
+      // servers = "cer69imageint9.cer69.recouv:9160";
       
       // INTEGRATION CLIENTE
       // -------------------
@@ -81,6 +81,10 @@ public class SaeDumpTest {
       // --------
       //servers = "cnp3saecvecas1.cve.recouv";
       
+      // CSPP MIG
+      // --------
+      servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
+
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());

@@ -48,17 +48,24 @@ public class BatchDumpTest {
 
       // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
-      servers = "cer69imageint9.cer69.recouv:9160";
+      // servers = "cer69imageint9.cer69.recouv:9160";
       // servers = "cer69imageint10.cer69.recouv:9160";
       // servers = "10.203.34.39:9160"; // Noufnouf
       // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
       // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
+      servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
       
       CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
             servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
+      // cluster = HFactory.getOrCreateCluster("Docubase", hostConfigurator);
+      // keyspace = HFactory.createKeyspace("Batch", cluster, ccl,
+      // FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
+      //
+      // sysout = new PrintStream(System.out, true, "UTF-8");
+
       cluster = HFactory.getOrCreateCluster("Docubase", hostConfigurator);
-      keyspace = HFactory.createKeyspace("Batch", cluster, ccl,
+      keyspace = HFactory.createKeyspace("Docubase", cluster, ccl,
             FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
@@ -70,8 +77,14 @@ public class BatchDumpTest {
 
    @Test
    public void testDumpJobInstance() throws Exception {
-      dumper.printKeyInLong = true;
-      dumper.dumpCF("JobInstance", 25);
+      // dumper.printKeyInHex = true;
+      dumper.dumpCF("JobInstance", 5000);
+   }
+
+   @Test
+   public void testDumpJobInstanceDoublons() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.dumpCFDoublon("JobInstance", "jobInstanceId", 50000);
    }
 
    @Test
