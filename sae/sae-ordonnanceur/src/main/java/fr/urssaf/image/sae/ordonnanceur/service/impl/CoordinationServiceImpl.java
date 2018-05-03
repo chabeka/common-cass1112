@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
@@ -58,6 +59,8 @@ public class CoordinationServiceImpl implements CoordinationService {
    private final DFCESupport dfceSuppport;
 
    private static final String FORMAT = "dd/MM/yyyy HH'h'mm ss's' SSS'ms'";
+
+   protected volatile boolean processRunning = false;
 
    /**
     * 
@@ -304,10 +307,7 @@ public class CoordinationServiceImpl implements CoordinationService {
                         DateFormatUtils.format(currentDate, FORMAT) });
             boolean isProcessRunning = true;
             try {
-               int pid = jobCourant.getPid();
-               ProcessChecker processUtils = new ProcessChecker();
-               isProcessRunning = processUtils.isProcessRunning(pid);
-
+               isProcessRunning = verificationProcessRunning(jobCourant.getPid());
             } catch (IOException e) {
 
                LOG.warn(
@@ -390,6 +390,38 @@ public class CoordinationServiceImpl implements CoordinationService {
          }
       }
 
+   }
+
+   public boolean verificationProcessRunning(int pid) throws IOException,
+         InterruptedException {
+      ProcessBuilder pb = null;
+      if (SystemUtils.IS_OS_WINDOWS) {
+         pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
+               + pid + "\" 2>&1");
+      } else if (SystemUtils.IS_OS_LINUX) {
+         pb = new ProcessBuilder("/bin/sh", "-c",
+               "ps aux | awk '{print $2 }' | grep " + pid + " 2>&1");
+      }
+
+      Process p = pb.start();
+
+      ProcessChecker processUtils = new ProcessChecker(processRunning,
+            p.getInputStream());
+
+      Thread verifProcess = new Thread(processUtils,
+            "Vérification existence process job masse");
+      verifProcess.start();
+
+      p.waitFor();
+
+      return isProcessRunning();
+   }
+
+   /**
+    * @return the processRunning
+    */
+   public boolean isProcessRunning() {
+      return processRunning;
    }
 
    private String toString(JobQueue traitement) {

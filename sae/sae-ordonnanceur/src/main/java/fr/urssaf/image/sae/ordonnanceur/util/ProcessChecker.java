@@ -17,41 +17,19 @@ public class ProcessChecker implements Runnable {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ProcessChecker.class);
 
-   protected volatile boolean processRunning = false;
-   private InputStream inputStream = null;
+   protected volatile boolean processRunning;
+   private InputStream inputStream;
    private int pid = 0;
 
-   Thread verifProcess;
+   public ProcessChecker(boolean processRunning, InputStream inputStream) {
+      this.processRunning = processRunning;
+      this.inputStream = inputStream;
+   }
 
    private BufferedReader getBufferedReader(InputStream is) {
       return new BufferedReader(new InputStreamReader(is));
    }
 
-   public boolean isProcessRunning(int pid) throws IOException,
-         InterruptedException {
-
-      ProcessBuilder pb = null;
-      if (SystemUtils.IS_OS_WINDOWS) {
-         pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
-               + pid + "\" 2>&1");
-      } else if (SystemUtils.IS_OS_LINUX) {
-         pb = new ProcessBuilder("/bin/sh", "-c",
-               "ps aux | awk '{print $2 }' | grep " + pid + " 2>&1");
-      }
-
-      Process p = pb.start();
-
-      this.pid = pid;
-      this.inputStream = p.getInputStream();
-
-      verifProcess = new Thread(this,
-            "Vérification existence process job masse");
-      verifProcess.start();
-
-      p.waitFor();
-
-      return processRunning;
-   }
 
    @Override
    public void run() {
@@ -75,4 +53,5 @@ public class ProcessChecker implements Runnable {
          e.printStackTrace();
       }
    }
+
 }
