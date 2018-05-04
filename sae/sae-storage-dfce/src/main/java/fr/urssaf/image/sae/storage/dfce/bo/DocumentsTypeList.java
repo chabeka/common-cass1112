@@ -28,7 +28,7 @@ public class DocumentsTypeList {
     */
    private static List<String> types;
 
-   private final DFCEServicesManager dfceServicesManager;
+   private DFCEServicesManager dfceServicesManager;
 
    /**
     * Consturcteur
@@ -39,13 +39,14 @@ public class DocumentsTypeList {
    @Autowired
    public DocumentsTypeList(DFCEServicesManager dfceServicesManager) {
       this.dfceServicesManager = dfceServicesManager;
-      if (types == null) {
-         synchronized (DocumentsTypeList.class) {
-            loadDocumentTypeList();
-         }
-      }
+//      if (types == null) {
+//         synchronized (DocumentsTypeList.class) {
+//            loadDocumentTypeList();
+//         }
+//      }
    }
-
+   
+   
    /**
     * @return la liste des documents supportés
     */
@@ -59,12 +60,15 @@ public class DocumentsTypeList {
       }
       return types;
    }
-
    
+   public void setTypes(List<String> types) {
+      this.types = types;
+   }
+
    /**
     * Charge la liste des types de documents supportés
     */
-   private void loadDocumentTypeList() {
+   public void loadDocumentTypeList() {
 
       boolean startActive = dfceServicesManager.isActive();
       try {
@@ -73,16 +77,19 @@ public class DocumentsTypeList {
             dfceServicesManager.getConnection();
          }
 
-         Set<LifeCycleRule> lifeCycleRules = dfceServicesManager
-               .getDFCEService().getStorageAdministrationService()
-               .getAllLifeCycleRules();
+         if(dfceServicesManager.getDFCEService() !=null) {
+            
+            Set<LifeCycleRule> lifeCycleRules = dfceServicesManager
+                  .getDFCEService().getStorageAdministrationService()
+                  .getAllLifeCycleRules();
 
-         types = new ArrayList<String>();
+            types = new ArrayList<String>();
 
-         for (LifeCycleRule rule : lifeCycleRules) {
-            types.add(rule.getDocumentType());
+            for (LifeCycleRule rule : lifeCycleRules) {
+               types.add(rule.getDocumentType());
+            }
          }
-
+         
       } catch (ConnectionServiceEx exception) {
          throw new DocumentTypeException("impossible de se connecter à DFCE",
                exception);
@@ -92,5 +99,5 @@ public class DocumentsTypeList {
          }
       }
    }
-
+   
 }
