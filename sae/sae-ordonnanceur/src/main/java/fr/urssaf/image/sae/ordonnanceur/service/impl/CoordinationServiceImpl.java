@@ -60,8 +60,6 @@ public class CoordinationServiceImpl implements CoordinationService {
 
    private static final String FORMAT = "dd/MM/yyyy HH'h'mm ss's' SSS'ms'";
 
-   protected volatile boolean processRunning = false;
-
    /**
     * 
     * @param decisionService
@@ -405,8 +403,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       Process p = pb.start();
 
-      ProcessChecker processUtils = new ProcessChecker(processRunning,
-            p.getInputStream());
+      ProcessChecker processUtils = new ProcessChecker(p.getInputStream());
 
       Thread verifProcess = new Thread(processUtils,
             "Vérification existence process job masse");
@@ -414,14 +411,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       p.waitFor();
 
-      return isProcessRunning();
-   }
-
-   /**
-    * @return the processRunning
-    */
-   public boolean isProcessRunning() {
-      return processRunning;
+      return processUtils.isProcessRunning();
    }
 
    private String toString(JobQueue traitement) {

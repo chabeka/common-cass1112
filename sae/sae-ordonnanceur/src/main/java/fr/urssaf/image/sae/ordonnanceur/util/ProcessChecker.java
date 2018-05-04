@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.ordonnanceur.util;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -17,12 +16,11 @@ public class ProcessChecker implements Runnable {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(ProcessChecker.class);
 
-   protected volatile boolean processRunning;
+   protected volatile boolean processRunning = false;
    private InputStream inputStream;
    private int pid = 0;
 
-   public ProcessChecker(boolean processRunning, InputStream inputStream) {
-      this.processRunning = processRunning;
+   public ProcessChecker(InputStream inputStream) {
       this.inputStream = inputStream;
    }
 
@@ -47,11 +45,19 @@ public class ProcessChecker implements Runnable {
                processRunning = true;
             }
          }
-      } catch (IOException e) {
+      } catch (Exception e) {
          LOGGER.warn(
                "ProcessUtils - échec vérification existence du job de masse", e);
-         e.printStackTrace();
+         processRunning = true;
+
       }
+   }
+
+   /**
+    * @return the processRunning
+    */
+   public boolean isProcessRunning() {
+      return processRunning;
    }
 
 }
