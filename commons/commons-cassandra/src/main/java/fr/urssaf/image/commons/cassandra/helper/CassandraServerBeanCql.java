@@ -12,25 +12,29 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Cluster.Builder;
+import com.datastax.driver.core.Session;
+
 import fr.urssaf.image.commons.cassandra.model.MemoryDataSet;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
-import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.factory.HFactory;
 
 /**
  * Classe utilitaire facilitant la création d'un serveur cassandra local par un
  * bean spring.
  */
-public class CassandraServerBean implements InitializingBean, DisposableBean {
+public class CassandraServerBeanCql implements InitializingBean, DisposableBean {
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(CassandraServerBean.class);
+                                                 .getLogger(CassandraServerBeanCql.class);
 
   private static final int WAIT_MAX_TRY = 12;
 
   private static final long WAIT_MS = 1000;
 
   private static final String TEST_CLUSTER_NAME = "TestCluster";
+
+  private final String KEYSPACE_TU = "\"KEYSPACE_TU\"";
 
   private String[] dataSets;
 
@@ -39,6 +43,8 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
   private String hosts = null;
 
   private Cluster testCluster = null;
+
+  private Session testSession = null;
 
   /**
    * Indique quel jeu de données cassandraUnit doit être utilisé lors de
@@ -112,7 +118,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     LOG.debug("CassandraServerBean : reseting data...");
 
     System.setProperty("cassandra.unsafesystem", "true");
-    EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+    EmbeddedCassandraServerHelper.startEmbeddedCassandra(200000L);
 
     // On attend que le serveur soit prêt
     waitForServer();
@@ -122,8 +128,8 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
     // Charge les données
     final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME,
-                                                 "localhost:9171");
-    dataLoader.load(dataSet);
+                                                 "localhost:9142");
+    // dataLoader.load(dataSet);
 
   }
 
@@ -135,11 +141,12 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
    * @throws InterruptedException
    *           : on a été interrompu
    */
+  @SuppressWarnings("resource")
   private void waitForServer() throws InterruptedException {
     Cluster cluster = getTestCluster();
     for (int i = 0; i < WAIT_MAX_TRY; i++) {
       try {
-        cluster.describeKeyspaces();
+        cluster.getClusterName();
         break;
       }
       catch (final Exception e) {
@@ -149,7 +156,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
         Thread.sleep(WAIT_MS);
         LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");
         try {
-          HFactory.shutdownCluster(testCluster);
+          testCluster.close();
         }
         catch (final Exception ex) {
           LOG.debug(
@@ -166,8 +173,15 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
                                                                                        getHosts());
       hostConfigurator.setMaxActive(1);
-      testCluster = HFactory.getOrCreateCluster(TEST_CLUSTER_NAME,
-                                                hostConfigurator);
+
+      final Builder testBuilder = Cluster.builder()
+                                         .addContactPoints("localhost")
+                                         .withClusterName(TEST_CLUSTER_NAME)
+                                         .withPort(9142);
+      testCluster = Cluster.buildFrom(testBuilder);
+      final Session session = testCluster.connect();
+      session.execute("CREATE KEYSPACE IF NOT EXISTS " + KEYSPACE_TU + " WITH replication={'class' : 'SimpleStrategy', 'replication_factor':1};");
+      testSession = session;
     }
     return testCluster;
   }
@@ -177,7 +191,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
    */
   public final void shutdownTestCluster() {
     if (testCluster != null) {
-      HFactory.shutdownCluster(testCluster);
+      testCluster.close();
     }
   }
 
@@ -205,7 +219,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
       // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
       // serveur cassandra local
       // ne se lance pas assez rapidement)
-      return "localhost:9171,localhost:9171,localhost:9171";
+      return "localhost:9142,localhost:9142,localhost:9142";
     } else {
       return hosts;
     }
@@ -245,6 +259,20 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     // Renvoie l'objet Dataset fusionné
     return dataSetResult;
 
+  }
+
+  /**
+   * @return the testSession
+   */
+  public Session getTestSession() {
+    return testSession;
+  }
+
+  /**
+   * @return the kEYSPACE_TU
+   */
+  public String getKEYSPACE_TU() {
+    return KEYSPACE_TU;
   }
 
 }
