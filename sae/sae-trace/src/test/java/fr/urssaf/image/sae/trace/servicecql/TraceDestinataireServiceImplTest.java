@@ -13,6 +13,7 @@ import java.util.NoSuchElementException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,8 +21,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.daocql.service.ITraceDestinataireCqlService;
+import fr.urssaf.image.sae.trace.daocql.service.support.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
+import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 import junit.framework.Assert;
 
 /**
@@ -32,12 +34,18 @@ import junit.framework.Assert;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class TraceDestinataireServiceImplTest {
   @Autowired
-  ITraceDestinataireCqlService tracedestinataireservice;
+  @Qualifier("cqlServiceImpl")
+  TraceDestinaireService tracedestinataireservice;
+
+  @Autowired
+  TraceDestinataireCqlSupport tracesupprot;
 
   private final List<String> list = Arrays.asList("date", "contrat");
 
   @Test
   public void create_new_trace_and_find_it_with_succes() {
+
+    final List<TraceDestinataire> traces = tracesupprot.findAll();
     final String code = "TEST|CREATE";
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt(code);
@@ -46,8 +54,8 @@ public class TraceDestinataireServiceImplTest {
     dest.put(TraceDestinataireEnum.HIST_ARCHIVE.name(), list);
     trace.setDestinataires(dest);
 
-    tracedestinataireservice.create(trace, new Date().getTime());
-    final TraceDestinataire traceFromDB = tracedestinataireservice.findById(code).get();
+    tracesupprot.create(trace, new Date().getTime());
+    final TraceDestinataire traceFromDB = tracesupprot.findById(code);
 
     Assert.assertEquals("le code événement doit etre correct",
                         code,
@@ -75,7 +83,7 @@ public class TraceDestinataireServiceImplTest {
 
   @Test(expected = TraceRuntimeException.class)
   public void create_new_trace_with_bad_code() {
-    final List<TraceDestinataire> allTraces = tracedestinataireservice.findAll();
+    final List<TraceDestinataire> allTraces = tracesupprot.findAll();
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt("WS_REPRISE_MASSE|KO");
 
@@ -83,7 +91,7 @@ public class TraceDestinataireServiceImplTest {
     dest.put("BAD_CODE|KO", list);
     trace.setDestinataires(dest);
 
-    tracedestinataireservice.create(trace, new Date().getTime());
+    tracesupprot.create(trace, new Date().getTime());
 
   }
 
@@ -98,12 +106,12 @@ public class TraceDestinataireServiceImplTest {
     final Map<String, List<String>> dest = new HashMap<String, List<String>>();
     dest.put(TraceDestinataireEnum.HIST_ARCHIVE.name(), list);
     trace.setDestinataires(dest);
-    tracedestinataireservice.create(trace, new Date().getTime());
+    tracesupprot.create(trace, new Date().getTime());
 
-    tracedestinataireservice.delete(code, new Date().getTime());
+    tracesupprot.delete(code, new Date().getTime());
 
     try {
-      tracedestinataireservice.findById(code).get();
+      tracesupprot.findById(code);
       Assert.fail("une exception " + NoSuchElementException.class.getName()
           + " est attendue");
 
