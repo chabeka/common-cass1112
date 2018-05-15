@@ -17,26 +17,44 @@ public class ProcessChecker implements Runnable {
          .getLogger(ProcessChecker.class);
 
    protected volatile boolean processRunning = false;
-   private InputStream inputStream;
+   private final InputStream inputStream;
+   private final InputStream errorStream;
    private int pid = 0;
 
-   public ProcessChecker(InputStream inputStream) {
+   public ProcessChecker(InputStream inputStream, InputStream errorStream,
+         int pid) {
       this.inputStream = inputStream;
+      this.errorStream = errorStream;
+      this.pid = pid;
    }
 
    private BufferedReader getBufferedReader(InputStream is) {
       return new BufferedReader(new InputStreamReader(is));
    }
 
-
    @Override
    public void run() {
 
       BufferedReader br = getBufferedReader(inputStream);
+
+      BufferedReader brerror = getBufferedReader(errorStream);
+
       String ligne = "";
+      String ligneError = "";
       try {
+         while ((ligneError = brerror.readLine()) != null) {
+            if (!ligneError.isEmpty()) {
+               processRunning = true;
+               LOGGER.warn(
+                     "ProcessUtils - échec vérification existence du job de masse (execution commande)");
+               throw new RuntimeException(
+                     "Une erreur a eu lieu lors de l'execution de la commande de vérification de l'existence du process");
+            }
+         }
+
          while ((ligne = br.readLine()) != null) {
-            // Sous Windows, risque de faux positif, mais ne concerne que les postes de dev
+            // Sous Windows, risque de faux positif, mais ne concerne que les
+            // postes de dev
             if (SystemUtils.IS_OS_WINDOWS
                   && ligne.contains(Integer.toString(pid))) {
                processRunning = true;
@@ -49,7 +67,8 @@ public class ProcessChecker implements Runnable {
          LOGGER.warn(
                "ProcessUtils - échec vérification existence du job de masse", e);
          processRunning = true;
-
+         throw new RuntimeException(
+               "Une erreur a eu lieu lors de la vérification de l'existence du process");
       }
    }
 

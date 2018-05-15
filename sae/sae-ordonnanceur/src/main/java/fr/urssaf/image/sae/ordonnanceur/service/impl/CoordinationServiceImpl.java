@@ -246,7 +246,6 @@ public class CoordinationServiceImpl implements CoordinationService {
    private void controlePile(List<JobRequest> jobsEnCours) {
       Date currentDate;
       for (JobRequest jobCourant : jobsEnCours) {
-
          currentDate = new Date();
 
          boolean isJobReserveBloque = JobState.RESERVED.equals(jobCourant
@@ -305,9 +304,9 @@ public class CoordinationServiceImpl implements CoordinationService {
                         DateFormatUtils.format(currentDate, FORMAT) });
             boolean isProcessRunning = true;
             try {
-               isProcessRunning = verificationProcessRunning(jobCourant.getPid());
-            } catch (IOException e) {
-
+               isProcessRunning = verificationProcessRunning(jobCourant
+                     .getPid());
+            } catch (Exception e) {
                LOG.warn(
                      "Le traitement n°{} semble bloqué à l'état \"en cours\" "
                            + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
@@ -320,18 +319,23 @@ public class CoordinationServiceImpl implements CoordinationService {
                            DateFormatUtils.format(currentDate, FORMAT),
                            e.getMessage() });
 
-            } catch (InterruptedException e) {
-               LOG.warn(
-                     "Le traitement n°{} semble bloqué à l'état \"en cours\" "
-                           + "depuis plus de {} minutes (date de démarrage du traitement : {}, "
-                           + "date de contrôle : {}) - Echec vérification existence process - {}",
-                     new Object[] {
-                           jobCourant.getIdJob(),
-                           ordonnanceurConfiguration.getTpsMaxTraitement(),
-                           DateFormatUtils.format(jobCourant.getStartingDate(),
-                                 FORMAT),
-                           DateFormatUtils.format(currentDate, FORMAT),
-                           e.getMessage() });
+               // On met un message sur le job mais sans changer le flag car on
+               // ne sait pas si le process existe
+               try {
+                  jobService.updateToCheckFlag(
+                        jobCourant.getIdJob(),
+                        false,
+                        "Job en cours depuis plus de "
+                              + ordonnanceurConfiguration.getTpsMaxTraitement()
+                              + " minutes (date de démarrage : "
+                              + DateFormatUtils.format(
+                                    jobCourant.getStartingDate(), FORMAT)
+                              + ", date de contrôle : "
+                              + DateFormatUtils.format(currentDate, FORMAT)
+                              + " - ECHEC vérification existence process !!");
+               } catch (JobInexistantException ex) {
+                  LOG.warn("Impossible de modifier le Job, il n'existe pas", ex);
+               }
             }
 
             // Le process ne tourne plus, on peut indiquer que le job est bloqué
@@ -387,23 +391,28 @@ public class CoordinationServiceImpl implements CoordinationService {
             }
          }
       }
-
    }
 
    public boolean verificationProcessRunning(int pid) throws IOException,
          InterruptedException {
       ProcessBuilder pb = null;
       if (SystemUtils.IS_OS_WINDOWS) {
+         // pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
+         // + pid + "\" 2>&1");
          pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
-               + pid + "\" 2>&1");
+               + pid + "\"");
+
       } else if (SystemUtils.IS_OS_LINUX) {
+         // pb = new ProcessBuilder("/bin/sh", "-c",
+         // "ps aux | awk '{print $2 }' | greps " + pid + " 2>&1");
          pb = new ProcessBuilder("/bin/sh", "-c",
-               "ps aux | awk '{print $2 }' | grep " + pid + " 2>&1");
+               "ps aux | awk '{print $2 }' | greps " + pid);
       }
 
       Process p = pb.start();
 
-      ProcessChecker processUtils = new ProcessChecker(p.getInputStream());
+      ProcessChecker processUtils = new ProcessChecker(p.getInputStream(),
+            p.getErrorStream(), pid);
 
       Thread verifProcess = new Thread(processUtils,
             "Vérification existence process job masse");
