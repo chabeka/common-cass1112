@@ -4,6 +4,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.SystemUtils;
@@ -304,8 +309,7 @@ public class CoordinationServiceImpl implements CoordinationService {
                         DateFormatUtils.format(currentDate, FORMAT) });
             boolean isProcessRunning = true;
             try {
-               isProcessRunning = verificationProcessRunning(jobCourant
-                     .getPid());
+               isProcessRunning = verificationProcessRunning(jobCourant);
             } catch (Exception e) {
                LOG.warn(
                      "Le traitement n°{} semble bloqué à l'état \"en cours\" "
@@ -393,34 +397,59 @@ public class CoordinationServiceImpl implements CoordinationService {
       }
    }
 
-   public boolean verificationProcessRunning(int pid) throws IOException,
-         InterruptedException {
+   public boolean verificationProcessRunning(JobRequest jobCourant) throws IOException,
+         InterruptedException, ExecutionException {
+      int delay = 1000;
       ProcessBuilder pb = null;
       if (SystemUtils.IS_OS_WINDOWS) {
          // pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
          // + pid + "\" 2>&1");
          pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
-               + pid + "\"");
+               + jobCourant + "\"");
 
       } else if (SystemUtils.IS_OS_LINUX) {
          // pb = new ProcessBuilder("/bin/sh", "-c",
          // "ps aux | awk '{print $2 }' | greps " + pid + " 2>&1");
          pb = new ProcessBuilder("/bin/sh", "-c",
-               "ps aux | awk '{print $2 }' | greps " + pid);
+               "ps aux | awk '{print $2 }' | greps " + jobCourant);
       }
 
+      // Lancement de la commande de vérification du process
       Process p = pb.start();
 
+      // Initialisation du scheduler de thread
+      ScheduledExecutorService scheduler = Executors
+            .newSingleThreadScheduledExecutor();
+
+      // Initialisation du Thread de contrôle du résultat de la vérification du
+      // process
       ProcessChecker processUtils = new ProcessChecker(p.getInputStream(),
-            p.getErrorStream(), pid);
+            p.getErrorStream(), jobCourant.getPid());
 
-      Thread verifProcess = new Thread(processUtils,
-            "Vérification existence process job masse");
-      verifProcess.start();
+      Future<Boolean> result = scheduler.schedule(processUtils, delay,
+            TimeUnit.MILLISECONDS);
 
+      // On vérifie que la commande de vérification du process soit bien
+      // terminée
       p.waitFor();
 
-      return processUtils.isProcessRunning();
+      // On attend que le thread contenu dans le pool de thread soit exécuté
+      while (!result.isDone() && !result.isCancelled()) {
+         String.format(
+               "Le traitement n°{} est en cours de vérification (date de démarrage du traitement : {}, "
+                     + "date de contrôle : {})",
+               new Object[] {
+                     jobCourant.getIdJob(),
+                     ordonnanceurConfiguration.getTpsMaxTraitement(),
+                     DateFormatUtils.format(jobCourant.getStartingDate(),
+                           FORMAT), DateFormatUtils.format(new Date(), FORMAT) });
+         // Attend le temps du delay que le thread de vérification se termine.
+         // Evite de logger trop souvent le message ci-dessus
+         Thread.sleep(delay);
+      }
+      
+      // Récupération du resultat de la vérification
+      return result.get();
    }
 
    private String toString(JobQueue traitement) {

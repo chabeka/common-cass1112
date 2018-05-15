@@ -3,12 +3,13 @@ package fr.urssaf.image.sae.ordonnanceur.util;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.SystemUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ProcessChecker implements Runnable {
+public class ProcessChecker implements Callable<Boolean> {
 
    /**
     * Logger.
@@ -33,7 +34,7 @@ public class ProcessChecker implements Runnable {
    }
 
    @Override
-   public void run() {
+   public Boolean call() throws Exception {
 
       BufferedReader br = getBufferedReader(inputStream);
 
@@ -70,12 +71,7 @@ public class ProcessChecker implements Runnable {
          throw new RuntimeException(
                "Une erreur a eu lieu lors de la vérification de l'existence du process");
       }
-   }
 
-   /**
-    * @return the processRunning
-    */
-   public boolean isProcessRunning() {
       return processRunning;
    }
 
