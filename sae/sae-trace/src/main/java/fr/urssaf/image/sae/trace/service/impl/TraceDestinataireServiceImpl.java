@@ -14,16 +14,21 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.daocql.support.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 
 /**
- * Classe d'implémentation du support {@link ITraceDestinataireCqlService}. Cette
+ * Classe d'implémentation du support {@link ITraceDestinataireService}. Cette
  * classe est un singleton et peut être accessible par le mécanisme d'injection
  * IOC avec l'annotation @Autowired
  */
 @Service
 @Qualifier("serviceImpl")
 public class TraceDestinataireServiceImpl implements TraceDestinaireService {
+
+  public TraceDestinataireSupport traceDestinataireSupport;
+
+  public TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
   private static final String FIN_LOG = "{} - fin";
 
@@ -32,34 +37,43 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
   private static final Logger LOGGER = LoggerFactory
                                                     .getLogger(TraceDestinataireServiceImpl.class);
 
-  private final TraceDestinataireSupport destSupport;
+  public boolean flagCql;
 
   /**
    * Constructeur
-   * 
-   * @param destSupport
-   *          Support de la classe DAO TraceRegTechniqueDao
+   *
+   * @param traceDestinataireSupport
+   *          Support de la classe DAO TraceDestinataireDao
+   * @param traceDestinataireCqlSupport
+   *          Support de la classe DAO TraceDestinataireCqlDao
    */
   @Autowired
-  public TraceDestinataireServiceImpl(final TraceDestinataireSupport destSupport) {
-    super();
-    this.destSupport = destSupport;
+  public TraceDestinataireServiceImpl(final TraceDestinataireSupport traceDestinataireSupport,
+                                      final TraceDestinataireCqlSupport traceDestinataireCqlSupport) {
+    this.traceDestinataireSupport = traceDestinataireSupport;
+    this.traceDestinataireCqlSupport = traceDestinataireCqlSupport;
   }
 
   /**
    * {@inheritDoc}
    */
   @Override
-  public final List<String> getCodeEvenementByTypeTrace(final String typeTrace) {
+  public List<String> getCodeEvenementByTypeTrace(final String typeTrace) {
 
     final String prefix = "getCodeEvenementByTypeTrace()";
     LOGGER.debug(DEBUT_LOG, prefix);
 
-    final List<TraceDestinataire> listeTraceDestinataire = destSupport.findAll();
+    List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
+
+    if (flagCql) {
+      listeTraceDestinataire = traceDestinataireSupport.findAll();
+    } else {
+      listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
+    }
+
     final List<String> listeCodeEvenement = new ArrayList<String>();
 
     for (final TraceDestinataire traceDestinataire : listeTraceDestinataire) {
-
       if (traceDestinataire.getDestinataires().containsKey(typeTrace)) {
         listeCodeEvenement.add(traceDestinataire.getCodeEvt());
       }
@@ -68,7 +82,6 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     LOGGER.debug(FIN_LOG, prefix);
 
     return listeCodeEvenement;
-
   }
 
 }

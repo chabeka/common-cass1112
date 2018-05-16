@@ -21,7 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.daocql.service.support.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.daocql.support.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 import junit.framework.Assert;

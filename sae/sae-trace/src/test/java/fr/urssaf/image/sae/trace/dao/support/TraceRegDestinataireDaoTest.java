@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -110,6 +111,20 @@ public class TraceRegDestinataireDaoTest {
     trace.setDestinataires(dest);
 
     support.create(trace, new Date().getTime());
+  }
+
+  @Test
+  public void findAll() {
+    final TraceDestinataire trace = new TraceDestinataire();
+    trace.setCodeEvt("TEST|CREATE");
+    final Map<String, List<String>> map = new HashMap<String, List<String>>();
+    final List<String> listString = new ArrayList<>();
+    listString.add("TEST LIST");
+    map.put("HIST_ARCHIVE", listString);
+    trace.setDestinataires(map);
+    support.create(trace, new Date().getTime());
+    final List<TraceDestinataire> traces = support.findAll();
+    Assert.assertNotNull(traces);
   }
 
 }
