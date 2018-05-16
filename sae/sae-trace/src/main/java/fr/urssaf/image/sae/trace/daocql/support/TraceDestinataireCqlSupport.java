@@ -1,7 +1,7 @@
 /**
  *
  */
-package fr.urssaf.image.sae.trace.daocql.service.support;
+package fr.urssaf.image.sae.trace.daocql.support;
 
 import java.util.List;
 import java.util.Map;
