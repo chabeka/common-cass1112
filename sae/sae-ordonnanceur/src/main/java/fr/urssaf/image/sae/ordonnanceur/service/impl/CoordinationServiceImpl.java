@@ -403,15 +403,15 @@ public class CoordinationServiceImpl implements CoordinationService {
       ProcessBuilder pb = null;
       if (SystemUtils.IS_OS_WINDOWS) {
          // pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
-         // + pid + "\" 2>&1");
+         // + jobCourant.getPid() + "\" 2>&1");
          pb = new ProcessBuilder("cmd.exe", "/C", "tasklist /fi \"PID eq "
-               + jobCourant + "\"");
+               + jobCourant.getPid() + "\"");
 
       } else if (SystemUtils.IS_OS_LINUX) {
          // pb = new ProcessBuilder("/bin/sh", "-c",
-         // "ps aux | awk '{print $2 }' | greps " + pid + " 2>&1");
+         // "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid() + " 2>&1");
          pb = new ProcessBuilder("/bin/sh", "-c",
-               "ps aux | awk '{print $2 }' | greps " + jobCourant);
+               "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid());
       }
 
       // Lancement de la commande de vérification du process
@@ -435,7 +435,7 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       // On attend que le thread contenu dans le pool de thread soit exécuté
       while (!result.isDone() && !result.isCancelled()) {
-         String.format(
+         LOG.debug(
                "Le traitement n°{} est en cours de vérification (date de démarrage du traitement : {}, "
                      + "date de contrôle : {})",
                new Object[] {

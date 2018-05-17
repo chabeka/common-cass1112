@@ -35,6 +35,8 @@ public class ProcessChecker implements Callable<Boolean> {
 
    @Override
    public Boolean call() throws Exception {
+      
+      
 
       BufferedReader br = getBufferedReader(inputStream);
 
@@ -49,7 +51,7 @@ public class ProcessChecker implements Callable<Boolean> {
                LOGGER.warn(
                      "ProcessUtils - échec vérification existence du job de masse (execution commande)");
                throw new RuntimeException(
-                     "Une erreur a eu lieu lors de l'execution de la commande de vérification de l'existence du process");
+                     "Une erreur a eu lieu lors de l'execution de la commande de vérification de l'existence du process : " + ligneError);
             }
          }
 
@@ -64,6 +66,7 @@ public class ProcessChecker implements Callable<Boolean> {
                processRunning = true;
             }
          }
+         
       } catch (Exception e) {
          LOGGER.warn(
                "ProcessUtils - échec vérification existence du job de masse", e);
