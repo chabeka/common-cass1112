@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Suppression des fichiers de log des traitements de masse qui ont plus de 10 jours
+find /hawai/logs/sae/ -name 'sae_services_executable*.log' -mtime +10 | xargs rm -f
+
+# Redemarrage de l'ordonnanceur du SAE
+service sae-ordonnanceur restart
+
