@@ -15,7 +15,6 @@
    <fileSets>
 
       <fileSet>
-
          <directory>src/config/</directory>
          <includes>
             <include>LifeCycleRule.xml</include>
@@ -90,7 +89,6 @@
    </fileSets>
 
    <files>
-
       <file>
          <source>
             ${project.parent.basedir}/sae-dfce-admin-exploit/target/sae-dfce-admin-exploit-${version}.jar
@@ -136,7 +134,6 @@
          <outputDirectory>sae-rnd-executable</outputDirectory>
          <destName>sae-rnd-executable.jar</destName>
       </file>
-
    </files>
 
 </assembly>

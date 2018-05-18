@@ -182,6 +182,12 @@
        </file>
    
        <file>
+         <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall-${version}.jar</source>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
+         <destName>sae-integrationinstall.jar</destName>
+       </file>
+   
+       <file>
          <source>${project.parent.basedir}/sae-webservices/target/sae-webservices-${version}.war</source>
          <outputDirectory/>
          <destName>sae.war</destName>
