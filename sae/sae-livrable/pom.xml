@@ -54,6 +54,23 @@
                </execution>
             </executions>
          </plugin>
+         <!-- PLUGIN HAWAI/FEDEX -->
+		<plugin>
+			<groupId>fr.acoss.industrialisation.maven</groupId>
+			<artifactId>hawai-maven-plugin</artifactId>
+			<configuration>
+				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
+				<fedex>false</fedex>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>livraison</goal>
+					</goals>
+					<phase>deploy</phase>
+				</execution>
+			</executions>
+		</plugin>
       </plugins>
 
    </build>
