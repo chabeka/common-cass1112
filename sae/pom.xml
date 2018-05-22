@@ -421,6 +421,25 @@
 				<version>${maven-deploy-plugin.version}</version>
 			</plugin>
 
+			<plugin>
+				<groupId>fr.acoss.industrialisation.maven</groupId>
+				<artifactId>hawai-maven-plugin</artifactId>
+				<version>${hawai-maven-plugin.version}</version>
+				<configuration>
+					<projectName>ged</projectName>
+					<hawaiVersion>hawai6</hawaiVersion>
+					<fedex>false</fedex>
+					<skip>true</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>livraison</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 
 
@@ -518,24 +537,6 @@
 					<version>${axis2-maven-plugin.version}</version>
 				</plugin>
 
-				<plugin>
-					<groupId>fr.acoss.industrialisation.maven</groupId>
-					<artifactId>hawai-maven-plugin</artifactId>
-					<version>${hawai-maven-plugin.version}</version>
-					<configuration>
-						<projectName>ged</projectName>
-						<hawaiVersion>hawai6</hawaiVersion>
-						<fedex>false</fedex>
-						<skip>true</skip>
-					</configuration>
-					<executions>
-						<execution>
-							<goals>
-								<goal>livraison</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
 			</plugins>
 
 		</pluginManagement>
