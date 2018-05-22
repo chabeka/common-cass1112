@@ -90,14 +90,6 @@
 				<fedex>false</fedex>
 				<skip>false</skip>
 			</configuration>
-			<executions>
-				<execution>
-					<goals>
-						<goal>livraison</goal>
-					</goals>
-					<phase>deploy</phase>
-				</execution>
-			</executions>
 		</plugin>
 
       </plugins>

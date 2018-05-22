@@ -115,14 +115,6 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
 				<fedex>false</fedex>
 				<skip>false</skip>
 			</configuration>
-			<executions>
-				<execution>
-					<goals>
-						<goal>livraison</goal>
-					</goals>
-					<phase>deploy</phase>
-				</execution>
-			</executions>
 		</plugin>
 
       </plugins>
