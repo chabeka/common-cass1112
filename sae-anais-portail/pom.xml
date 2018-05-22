@@ -151,7 +151,7 @@
 					<projectName>ged</projectName>
 					<hawaiVersion>hawai6</hawaiVersion>
 					<fedex>false</fedex>
-					<applicationName>${project.build.finalName}</applicationName>
+					<applicationName>${project.name}</applicationName>
 					<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
 				</configuration>
 				<executions>

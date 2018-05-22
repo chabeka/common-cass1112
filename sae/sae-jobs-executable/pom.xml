@@ -98,7 +98,7 @@
 			<groupId>fr.acoss.industrialisation.maven</groupId>
 			<artifactId>hawai-maven-plugin</artifactId>
 			<configuration>
-				<applicationName>${project.build.finalName}</applicationName>
+				<applicationName>${project.name}</applicationName>
 				<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
