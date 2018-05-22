@@ -106,6 +106,23 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
             </executions>
          </plugin>
 
+		<plugin>
+			<groupId>fr.acoss.industrialisation.maven</groupId>
+			<artifactId>hawai-maven-plugin</artifactId>
+			<configuration>
+				<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
+				<fedex>false</fedex>
+			</configuration>
+			<executions>
+				<execution>
+					<goals>
+						<goal>livraison</goal>
+					</goals>
+					<phase>deploy</phase>
+				</execution>
+			</executions>
+		</plugin>
+
       </plugins>
 
    </build>

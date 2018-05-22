@@ -31,6 +31,8 @@
 		<wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
 		<maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
 		<axis2-maven-plugin.version>1.7.7</axis2-maven-plugin.version>
+		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
+		
       <!--
       =========================================================
       Version des dépendances des librairies réutilisables Image
@@ -303,10 +305,8 @@
 		<module>sae-lotinstallmaj</module>
 		<module>sae-jobs-executable</module>
 		<module>sae-documents-executable</module>
-
-		<module>sae-livrable</module>
-
 		<module>sae-integrationinstall</module>
+		<module>sae-livrable</module>
 
 	</modules>
    
@@ -426,9 +426,8 @@
 
 		<pluginManagement>
 
-			<plugins>
-         
-            <!-- Configuration du lifecycle maven -->
+			<plugins>       
+            	<!-- Configuration du lifecycle maven -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -483,7 +482,7 @@
 					</configuration>
 				</plugin>
 
-            <!-- Compilation Aspect avec AspectJ -->
+            	<!-- Compilation Aspect avec AspectJ -->
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>aspectj-maven-plugin</artifactId>
@@ -505,7 +504,7 @@
 					</executions>
 				</plugin>
             
-           <!-- GESTION EXTENSION MAR AXIS2 -->
+           		<!-- GESTION EXTENSION MAR AXIS2 -->
 				<plugin>
 					<groupId>org.apache.axis2</groupId>
 					<artifactId>axis2-mar-maven-plugin</artifactId>
@@ -519,6 +518,15 @@
 					<version>${axis2-maven-plugin.version}</version>
 				</plugin>
 
+				<plugin>
+					<groupId>fr.acoss.industrialisation.maven</groupId>
+					<artifactId>hawai-maven-plugin</artifactId>
+					<version>${hawai-maven-plugin.version}</version>
+					<configuration>
+						<projectName>ged</projectName>
+						<hawaiVersion>hawai6</hawaiVersion>
+					</configuration>
+				</plugin>
 			</plugins>
 
 		</pluginManagement>
