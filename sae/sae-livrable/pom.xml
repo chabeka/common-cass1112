@@ -62,10 +62,9 @@
 				<projectName>ged</projectName>
 				<hawaiVersion>hawai6</hawaiVersion>
 				<applicationName>data-sae</applicationName>
-				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
+				<applicationBinFileName>${project.build.finalName}-data_sae.tar.gz</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
-				<updateApplicationVersion>false</updateApplicationVersion>
 			</configuration>
 		</plugin>
       </plugins>
