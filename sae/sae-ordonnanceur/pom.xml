@@ -89,7 +89,6 @@
 				<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
-				<updateApplicationVersion>false</updateApplicationVersion>
 			</configuration>
 			<executions>
 				<execution>

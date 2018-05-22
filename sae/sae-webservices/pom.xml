@@ -188,7 +188,6 @@
 				<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
-				<updateApplicationVersion>false</updateApplicationVersion>
 			</configuration>
 			<executions>
 				<execution>
