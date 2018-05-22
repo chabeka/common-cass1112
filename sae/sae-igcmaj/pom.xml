@@ -113,6 +113,7 @@ Le programme peut par exemple être exécuté sous forme de tâche planifiée, a
 				<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
+				<updateApplicationVersion>false</updateApplicationVersion>
 			</configuration>
 			<executions>
 				<execution>
