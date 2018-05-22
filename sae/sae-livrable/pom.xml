@@ -63,7 +63,7 @@
 				<hawaiVersion>hawai6</hawaiVersion>
 				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
 				<fedex>false</fedex>
-				<skip>true</skip>
+				<skip>false</skip>
 			</configuration>
 			<executions>
 				<execution>

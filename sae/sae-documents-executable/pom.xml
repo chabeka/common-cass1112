@@ -179,6 +179,7 @@
 			<configuration>
 				<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 				<fedex>false</fedex>
+				<skip>false</skip>
 			</configuration>
 			<executions>
 				<execution>

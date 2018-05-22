@@ -525,6 +525,8 @@
 					<configuration>
 						<projectName>ged</projectName>
 						<hawaiVersion>hawai6</hawaiVersion>
+						<fedex>false</fedex>
+						<skip>true</skip>
 					</configuration>
 				</plugin>
 			</plugins>
