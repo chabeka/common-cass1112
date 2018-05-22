@@ -397,8 +397,8 @@ public class CoordinationServiceImpl implements CoordinationService {
       }
    }
 
-   public boolean verificationProcessRunning(JobRequest jobCourant) throws IOException,
-         InterruptedException, ExecutionException {
+   public boolean verificationProcessRunning(JobRequest jobCourant)
+         throws IOException, InterruptedException, ExecutionException {
       int delay = 1000;
       ProcessBuilder pb = null;
       if (SystemUtils.IS_OS_WINDOWS) {
@@ -409,7 +409,8 @@ public class CoordinationServiceImpl implements CoordinationService {
 
       } else if (SystemUtils.IS_OS_LINUX) {
          // pb = new ProcessBuilder("/bin/sh", "-c",
-         // "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid() + " 2>&1");
+         // "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid() +
+         // " 2>&1");
          pb = new ProcessBuilder("/bin/sh", "-c",
                "ps aux | awk '{print $2 }' | grep " + jobCourant.getPid());
       }
@@ -440,14 +441,13 @@ public class CoordinationServiceImpl implements CoordinationService {
                      + "date de contrôle : {})",
                new Object[] {
                      jobCourant.getIdJob(),
-                     ordonnanceurConfiguration.getTpsMaxTraitement(),
                      DateFormatUtils.format(jobCourant.getStartingDate(),
                            FORMAT), DateFormatUtils.format(new Date(), FORMAT) });
          // Attend le temps du delay que le thread de vérification se termine.
          // Evite de logger trop souvent le message ci-dessus
          Thread.sleep(delay);
       }
-      
+
       // Récupération du resultat de la vérification
       return result.get();
    }
