@@ -23,9 +23,9 @@
 		<maven-dependency-plugin.version>3.1.0</maven-dependency-plugin.version>
 		<sae-anais-portail.version>1.0.11-SNAPSHOT</sae-anais-portail.version>
 		<sae-ihm-web-exploit.version>1.0.22-SNAPSHOT</sae-ihm-web-exploit.version>
-		<sae.version>18.8.0.1-SNAPSHOT</sae.version>
+		<sae.version>18.9.1-SNAPSHOT</sae.version>
 		<sae-ihm-web-exploit-livrable.version>1.0.6-SNAPSHOT</sae-ihm-web-exploit-livrable.version>
-		<hawai-maven-plugin.version>5.0.0-SNAPSHOT</hawai-maven-plugin.version>
+		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
 
 	<build>

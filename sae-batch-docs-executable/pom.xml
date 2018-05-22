@@ -12,13 +12,13 @@
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-batch-docs-executable</artifactId>
 	<name>sae-batch-docs-executable</name>
-	<version>18.8.0.1-SNAPSHOT</version>
+	<version>18.9.1-SNAPSHOT</version>
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
 		<junit.version>4.8.2</junit.version>
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<sae.version>18.8.0.1-SNAPSHOT</sae.version>
+		<sae.version>18.9.1-SNAPSHOT</sae.version>
 		<commons.dfce.version>1.9.4-SNAPSHOT</commons.dfce.version>
 		<aspectj.version>1.8.13</aspectj.version>
 		<easymock.version>3.0</easymock.version>
@@ -286,6 +286,26 @@
 				</executions>
 			</plugin>
 
+			<!-- PLUGIN HAWAI/FEDEX -->
+			<plugin>
+				<groupId>fr.acoss.industrialisation.maven</groupId>
+				<artifactId>hawai-maven-plugin</artifactId>
+				<configuration>
+					<projectName>ged</projectName>
+					<hawaiVersion>hawai6</hawaiVersion>
+					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
+					<fedex>false</fedex>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>livraison</goal>
+						</goals>
+						<phase>deploy</phase>
+					</execution>
+				</executions>
+			</plugin>
+		
 		</plugins>
 
 	</build>
