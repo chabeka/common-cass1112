@@ -29,6 +29,7 @@
                      <goal>attached</goal>
                   </goals>
                   <configuration>
+                  		<finalName>${project.name}-data_sae-${project.version}</finalName>
                         <descriptors>
                             <descriptor>src/assembly/config_tar-gz.xml</descriptor>
                         </descriptors>
