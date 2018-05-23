@@ -33,6 +33,7 @@
                         <descriptors>
                             <descriptor>src/assembly/config_tar-gz.xml</descriptor>
                         </descriptors>
+                        <appendAssemblyId>false</appendAssemblyId>
                   </configuration>
                </execution>
             </executions>
@@ -63,7 +64,7 @@
 				<projectName>ged</projectName>
 				<hawaiVersion>hawai6</hawaiVersion>
 				<applicationName>data-sae</applicationName>
-				<applicationBinFileName>${project.build.finalName}-data_sae.tar.gz</applicationBinFileName>
+				<applicationBinFileName>${project.name}-data_sae-${project.version}.tar.gz</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
 			</configuration>
