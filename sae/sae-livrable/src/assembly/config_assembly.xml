@@ -196,7 +196,7 @@
        
        <!-- Le Tar GZ précédemment crée -->
        <file>
-         <source>target/sae-livrable-${version}-data_sae.tar.gz</source>
+         <source>target/sae-livrable-data_sae-${version}.tar.gz</source>
          <outputDirectory/>
          <destName>data_sae.tar.gz</destName>
        </file>
