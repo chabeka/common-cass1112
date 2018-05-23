@@ -4,10 +4,10 @@
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
 
-   <id>tar.gz</id>
+   <id>dir</id>
 
    <formats>
-      <format>tar.gz</format>
+      <format>dir</format>
    </formats>
 
    <includeBaseDirectory>false</includeBaseDirectory>
@@ -149,15 +149,7 @@
       <fileSet>
          <directory>src/script</directory>
          <includes>
-            <include>maintenance_gnt</include>
-         </includes>
-         <outputDirectory />
-      </fileSet>
-      
-      <fileSet>
-         <directory>src/script</directory>
-         <includes>
-            <include>maintenance_sae</include>
+            <include>maintenance_ged</include>
          </includes>
          <outputDirectory />
       </fileSet>
@@ -252,64 +244,5 @@
          </includes>
          <outputDirectory>sae-compression-jbig2</outputDirectory>
       </fileSet>
-      
    </fileSets>
-      
-  <!-- <files>
-   
-      <file>
-         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable-${version}.jar</source>
-         <outputDirectory>sae-documents-executable</outputDirectory>
-         <destName>sae-documents-executable.jar</destName>
-       </file>
-      
-       <file>
-         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur-${version}.jar</source>
-         <outputDirectory>sae-ordonnanceur</outputDirectory>
-         <destName>sae-ordonnanceur.jar</destName>
-       </file>
-       
-       <file>
-         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj-${version}.jar</source>
-         <outputDirectory>sae-lotinstallmaj</outputDirectory>
-         <destName>sae-lotinstallmaj.jar</destName>
-       </file>
-   
-       <file>
-         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices-${version}.war</source>
-         <outputDirectory/>
-         <destName>sae.war</destName>
-       </file>
-       
-       <file>
-         <source>target/sae-livrable-${version}-data_sae.tar.gz</source>
-         <outputDirectory/>
-         <destName>data_sae.tar.gz</destName>
-       </file>
-    
-   </files>
-
-   <dependencySets>
-       <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <outputFileNameMapping>
-            ${artifact.artifactId}.${artifact.extension}
-         </outputFileNameMapping>
-         <includes>
-            <include>fr.urssaf.image.sae:sae-ihm-web-exploit</include>
-         </includes>
-      </dependencySet>
-            <dependencySet>
-         <useProjectArtifact>false</useProjectArtifact>
-         <outputFileNameMapping>
-            ${artifact.artifactId}-ihmwebexploit.${artifact.extension}
-         </outputFileNameMapping>
-         <includes>
-            <include>fr.urssaf.image.saedemos:sae-anais-portail</include>
-         </includes>
-      </dependencySet> 
-   </dependencySets>-->
-
-
-
 </assembly>
