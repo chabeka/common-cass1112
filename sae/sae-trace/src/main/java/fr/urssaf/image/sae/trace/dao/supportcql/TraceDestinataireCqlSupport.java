@@ -1,8 +1,10 @@
 /**
  *
  */
-package fr.urssaf.image.sae.trace.daocql.support;
+package fr.urssaf.image.sae.trace.dao.supportcql;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -168,6 +170,13 @@ public class TraceDestinataireCqlSupport {
    * {@inheritDoc}
    */
   public List<TraceDestinataire> findAll() {
-    return destinatairecqldao.findAllWithMapper();
+    final Iterator<TraceDestinataire> it = destinatairecqldao.findAllWithMapper();
+    final List<TraceDestinataire> list = new ArrayList<TraceDestinataire>();
+    while (it.hasNext()) {
+
+      list.add(it.next());
+
+    }
+    return list;
   }
 }

@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import com.datastax.driver.mapping.annotations.PartitionKey;
-
 /**
  * Classe de modèle générique pour les CF des traces
  */
@@ -15,7 +13,6 @@ public class TraceIndex {
   /**
    * Identifiant de la trace
    */
-  @PartitionKey
   private UUID identifiant;
 
   /**
@@ -45,7 +42,7 @@ public class TraceIndex {
 
   /**
    * Constructeur
-   * 
+   *
    * @param exploitation
    *          trace d'exploitation
    */

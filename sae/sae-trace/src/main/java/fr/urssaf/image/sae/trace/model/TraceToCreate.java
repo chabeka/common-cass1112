@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.model;
 
@@ -16,212 +16,229 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Formulaire d'une trace à créer. Ce modèle sert essentiellement au dispatcheur
  * de traces.
- * 
  */
 public class TraceToCreate {
 
-   private static final int BUFFER_MIN_SIZE = 26;
+  private static final int BUFFER_MIN_SIZE = 26;
 
-   /** Contexte de la trace */
-   private String contexte;
+  /** Contexte de la trace */
+  private String contexte;
 
-   /** Code de l'événement */
-   private String codeEvt;
+  /** Code de l'événement */
+  private String codeEvt;
 
-   /** Action à entreprendre */
-   private String action;
+  /** Action à entreprendre */
+  private String action;
 
-   /** Trace technique de l'exception */
-   private String stracktrace;
+  /** Trace technique de l'exception */
+  private String stracktrace;
 
-   /** Login de l'utilisateur */
-   private String login;
+  /** Login de l'utilisateur */
+  private String login;
 
-   /** Code du contrat de service */
-   private String contrat;
+  /** Code du contrat de service */
+  private String contrat;
 
-   /** Le ou les PAGM */
-   private List<String> pagms = new ArrayList<String>();
+  /** Le ou les PAGM */
+  private List<String> pagms = new ArrayList<String>();
 
-   /** Informations supplémentaires sur la trace */
-   private Map<String, Object> infos = new HashMap<String, Object>();
+  /** Informations supplémentaires sur la trace */
+  private Map<String, Object> infos = new HashMap<String, Object>();
 
-   /**
-    * @return le Contexte de la trace
-    */
-   public final String getContexte() {
-      return contexte;
-   }
+  /** informations supplémentaires de la trace */
+  private Map<String, String> infosCql = new HashMap<>();
 
-   /**
-    * @param contexte
-    *           Contexte de la trace
-    */
-   public final void setContexte(String contexte) {
-      this.contexte = contexte;
-   }
+  /**
+   * @return the infosCql
+   */
+  public Map<String, String> getInfosCql() {
+    return infosCql;
+  }
 
-   /**
-    * @return le Code de l'événement
-    */
-   public final String getCodeEvt() {
-      return codeEvt;
-   }
+  /**
+   * @param infosCql
+   *          the infosCql to set
+   */
+  public void setInfosCql(final Map<String, String> infosCql) {
+    this.infosCql = infosCql;
+  }
 
-   /**
-    * @param codeEvt
-    *           Code de l'événement
-    */
-   public final void setCodeEvt(String codeEvt) {
-      this.codeEvt = codeEvt;
-   }
+  /**
+   * @return le Contexte de la trace
+   */
+  public final String getContexte() {
+    return contexte;
+  }
 
-   /**
-    * @return l'Action à entreprendre
-    */
-   public final String getAction() {
-      return action;
-   }
+  /**
+   * @param contexte
+   *          Contexte de la trace
+   */
+  public final void setContexte(final String contexte) {
+    this.contexte = contexte;
+  }
 
-   /**
-    * @param action
-    *           Action à entreprendre
-    */
-   public final void setAction(String action) {
-      this.action = action;
-   }
+  /**
+   * @return le Code de l'événement
+   */
+  public final String getCodeEvt() {
+    return codeEvt;
+  }
 
-   /**
-    * @return la Trace technique de l'exception
-    */
-   public final String getStracktrace() {
-      return stracktrace;
-   }
+  /**
+   * @param codeEvt
+   *          Code de l'événement
+   */
+  public final void setCodeEvt(final String codeEvt) {
+    this.codeEvt = codeEvt;
+  }
 
-   /**
-    * @param stracktrace
-    *           Trace technique de l'exception
-    */
-   public final void setStracktrace(String stracktrace) {
-      this.stracktrace = stracktrace;
-   }
+  /**
+   * @return l'Action à entreprendre
+   */
+  public final String getAction() {
+    return action;
+  }
 
-   /**
-    * @return le Login de l'utilisateur
-    */
-   public final String getLogin() {
-      return login;
-   }
+  /**
+   * @param action
+   *          Action à entreprendre
+   */
+  public final void setAction(final String action) {
+    this.action = action;
+  }
 
-   /**
-    * @param login
-    *           Login de l'utilisateur
-    */
-   public final void setLogin(String login) {
-      this.login = login;
-   }
+  /**
+   * @return la Trace technique de l'exception
+   */
+  public final String getStracktrace() {
+    return stracktrace;
+  }
 
-   /**
-    * @return le Code du contrat de service
-    */
-   public final String getContrat() {
-      return contrat;
-   }
+  /**
+   * @param stracktrace
+   *          Trace technique de l'exception
+   */
+  public final void setStracktrace(final String stracktrace) {
+    this.stracktrace = stracktrace;
+  }
 
-   /**
-    * @param contrat
-    *           Code du contrat de service
-    */
-   public final void setContrat(String contrat) {
-      this.contrat = contrat;
-   }
+  /**
+   * @return le Login de l'utilisateur
+   */
+  public final String getLogin() {
+    return login;
+  }
 
-   /**
-    * @return les Informations supplémentaires sur la trace
-    */
-   public final Map<String, Object> getInfos() {
-      return infos;
-   }
+  /**
+   * @param login
+   *          Login de l'utilisateur
+   */
+  public final void setLogin(final String login) {
+    this.login = login;
+  }
 
-   /**
-    * @param infos
-    *           Informations supplémentaires sur la trace
-    */
-   public final void setInfos(Map<String, Object> infos) {
-      this.infos = infos;
-   }
+  /**
+   * @return le Code du contrat de service
+   */
+  public final String getContrat() {
+    return contrat;
+  }
 
-   /**
-    * Le ou les PAGM
-    * 
-    * @return Le ou les PAGM
-    */
-   public final List<String> getPagms() {
-      return pagms;
-   }
+  /**
+   * @param contrat
+   *          Code du contrat de service
+   */
+  public final void setContrat(final String contrat) {
+    this.contrat = contrat;
+  }
 
-   /**
-    * Le ou les PAGM
-    * 
-    * @param pagms
-    *           Le ou les PAGM
-    */
-   public final void setPagms(List<String> pagms) {
-      this.pagms = pagms;
-   }
+  /**
+   * @return les Informations supplémentaires sur la trace
+   */
+  public final Map<String, Object> getInfos() {
+    return infos;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String toString() {
+  /**
+   * @param infos
+   *          Informations supplémentaires sur la trace
+   */
+  public final void setInfos(final Map<String, Object> infos) {
+    this.infos = infos;
+  }
 
-      StringBuffer buffer = new StringBuffer(BUFFER_MIN_SIZE);
-      buffer.append("code evenement:");
-      buffer.append(this.codeEvt);
+  /**
+   * Le ou les PAGM
+   *
+   * @return Le ou les PAGM
+   */
+  public final List<String> getPagms() {
+    return pagms;
+  }
 
-      if (StringUtils.isNotBlank(this.action)) {
-         buffer.append(";action:");
-         buffer.append(this.action);
+  /**
+   * Le ou les PAGM
+   *
+   * @param pagms
+   *          Le ou les PAGM
+   */
+  public final void setPagms(final List<String> pagms) {
+    this.pagms = pagms;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String toString() {
+
+    final StringBuffer buffer = new StringBuffer(BUFFER_MIN_SIZE);
+    buffer.append("code evenement:");
+    buffer.append(this.codeEvt);
+
+    if (StringUtils.isNotBlank(this.action)) {
+      buffer.append(";action:");
+      buffer.append(this.action);
+    }
+
+    if (StringUtils.isNotBlank(this.contexte)) {
+      buffer.append(";contexte:");
+      buffer.append(this.contexte);
+    }
+
+    if (StringUtils.isNotBlank(this.contrat)) {
+      buffer.append(";contrat:");
+      buffer.append(this.contrat);
+    }
+
+    if (CollectionUtils.isNotEmpty(this.pagms)) {
+      buffer.append(";pagms:");
+      buffer.append(this.pagms);
+    }
+
+    if (StringUtils.isNotBlank(this.login)) {
+      buffer.append(";login:");
+      buffer.append(this.login);
+    }
+
+    if (StringUtils.isNotBlank(this.stracktrace)) {
+      buffer.append(";stacktrace:");
+      buffer.append(this.stracktrace);
+    }
+
+    if (MapUtils.isNotEmpty(this.infos)) {
+      final List<String> keys = new ArrayList<String>(this.infos.keySet());
+      Collections.sort(keys);
+      for (final String key : keys) {
+        buffer.append(';');
+        buffer.append(key);
+        buffer.append(':');
+        buffer.append(this.infos.get(key));
       }
+    }
 
-      if (StringUtils.isNotBlank(this.contexte)) {
-         buffer.append(";contexte:");
-         buffer.append(this.contexte);
-      }
-
-      if (StringUtils.isNotBlank(this.contrat)) {
-         buffer.append(";contrat:");
-         buffer.append(this.contrat);
-      }
-
-      if (CollectionUtils.isNotEmpty(this.pagms)) {
-         buffer.append(";pagms:");
-         buffer.append(this.pagms);
-      }
-
-      if (StringUtils.isNotBlank(this.login)) {
-         buffer.append(";login:");
-         buffer.append(this.login);
-      }
-
-      if (StringUtils.isNotBlank(this.stracktrace)) {
-         buffer.append(";stacktrace:");
-         buffer.append(this.stracktrace);
-      }
-
-      if (MapUtils.isNotEmpty(this.infos)) {
-         List<String> keys = new ArrayList<String>(this.infos.keySet());
-         Collections.sort(keys);
-         for (String key : keys) {
-            buffer.append(';');
-            buffer.append(key);
-            buffer.append(':');
-            buffer.append(this.infos.get(key));
-         }
-      }
-
-      return buffer.toString();
-   }
+    return buffer.toString();
+  }
 
 }

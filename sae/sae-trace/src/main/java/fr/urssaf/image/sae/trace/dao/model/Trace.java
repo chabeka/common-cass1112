@@ -10,8 +10,6 @@ import java.util.UUID;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 
-import com.datastax.driver.mapping.annotations.PartitionKey;
-
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
@@ -21,7 +19,6 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 public class Trace {
 
   /** Identifiant de la trace */
-  @PartitionKey
   private final UUID identifiant;
 
   /** Date de création de la trace */
@@ -41,6 +38,9 @@ public class Trace {
 
   /** informations supplémentaires de la trace */
   private Map<String, Object> infos;
+
+  /** informations supplémentaires de la trace */
+  private Map<String, String> infosCql;
 
   /**
    * Constructeur
@@ -194,6 +194,21 @@ public class Trace {
       tDate = new Date(date.getTime());
     }
     return tDate;
+  }
+
+  /**
+   * @return the infosCql
+   */
+  public Map<String, String> getInfosCql() {
+    return infosCql;
+  }
+
+  /**
+   * @param infosCql
+   *          the infosCql to set
+   */
+  public void setInfosCql(final Map<String, String> infosCql) {
+    this.infosCql = infosCql;
   }
 
 }

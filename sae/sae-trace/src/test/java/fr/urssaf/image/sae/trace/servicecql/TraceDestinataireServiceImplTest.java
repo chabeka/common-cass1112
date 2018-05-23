@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.UUID;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +21,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.daocql.support.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import junit.framework.Assert;
 
 /**
@@ -39,6 +41,9 @@ public class TraceDestinataireServiceImplTest {
 
   @Autowired
   TraceDestinataireCqlSupport tracesupprot;
+
+  @Autowired
+  TimeUUIDEtTimestampSupport timeuuid;
 
   private final List<String> list = Arrays.asList("date", "contrat");
 
@@ -97,6 +102,9 @@ public class TraceDestinataireServiceImplTest {
 
   @Test
   public void create_delete_with_success() {
+    final Date date = DateRegUtils.getDateWithoutTime();
+    final UUID id = timeuuid.buildUUIDFromDate(date);
+    System.out.println(id);
     final String code = "TEST|DELETE";
     final String colName = TraceDestinataireEnum.HIST_ARCHIVE.name();
 
@@ -110,22 +118,8 @@ public class TraceDestinataireServiceImplTest {
 
     tracesupprot.delete(code, new Date().getTime());
 
-    try {
-      tracesupprot.findById(code);
-      Assert.fail("une exception " + NoSuchElementException.class.getName()
-          + " est attendue");
+    final TraceDestinataire TraceDest = tracesupprot.findById(code);
+    Assert.assertNull("L'objet doit etre null", TraceDest);
 
-    }
-    catch (final NoSuchElementException exception) {
-
-      Assert
-            .assertEquals("la trace d'origine doit etre correcte",
-                          NoSuchElementException.class,
-                          exception.getClass());
-    }
-    catch (final Exception exception) {
-      Assert.fail("une exception " + NoSuchElementException.class.getName()
-          + " est attendue");
-    }
   }
 }

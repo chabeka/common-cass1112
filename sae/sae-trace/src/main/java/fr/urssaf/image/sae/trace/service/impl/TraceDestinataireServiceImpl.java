@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
-import fr.urssaf.image.sae.trace.daocql.support.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 
 /**
