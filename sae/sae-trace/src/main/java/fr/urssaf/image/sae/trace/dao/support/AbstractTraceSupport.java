@@ -24,7 +24,6 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
-import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
@@ -98,10 +97,6 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
 
     if (StringUtils.isNotBlank(trace.getLogin())) {
       getDao().writeColumnLogin(updater, trace.getLogin(), clock);
-    }
-
-    if (trace.getInfos() != null) {
-      getDao().writeColumnInfos(updater, trace.getInfos(), clock);
     }
 
     // ajout des informations spécifiques à cette trace
@@ -359,12 +354,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
                                     .getString(TraceRegTechniqueDao.COL_CONTRAT_SERVICE));
       trace.setLogin(result.getString(TraceRegTechniqueDao.COL_LOGIN));
 
-      byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
-      if (bValue != null) {
-        trace.setInfos(MapSerializer.get().fromBytes(bValue));
-      }
-
-      bValue = result.getByteArray(TraceRegTechniqueDao.COL_PAGMS);
+      final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_PAGMS);
       if (bValue != null) {
         trace.setPagms(ListSerializer.get().fromBytes(bValue));
       }

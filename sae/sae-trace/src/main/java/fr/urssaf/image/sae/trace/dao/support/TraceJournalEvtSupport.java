@@ -14,11 +14,13 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDocDao;
+import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexDocIterator;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -75,6 +77,9 @@ public class TraceJournalEvtSupport extends
                                            final ColumnFamilyUpdater<UUID, String> updater, final TraceJournalEvt trace,
                                            final long clock) {
 
+    if (trace.getInfos() != null) {
+      getDao().writeColumnInfos(updater, trace.getInfos(), clock);
+    }
     getDao().writeColumnContext(updater, trace.getContexte(), clock);
 
   }
@@ -139,6 +144,10 @@ public class TraceJournalEvtSupport extends
   @Override
   protected final void completeTraceFromResult(final TraceJournalEvt trace,
                                                final ColumnFamilyResult<UUID, String> result) {
+    byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+    if (bValue != null) {
+      trace.setInfos(MapSerializer.get().fromBytes(bValue));
+    }
     trace.setContexte(result.getString(TraceJournalEvtDao.COL_CONTEXT));
   }
 

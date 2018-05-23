@@ -15,6 +15,7 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -64,6 +65,9 @@ public class TraceRegSecuriteSupport extends
                                      final ColumnFamilyUpdater<UUID, String> updater, final TraceRegSecurite trace,
                                      final long clock) {
 
+    if (trace.getInfos() != null) {
+      getDao().writeColumnInfos(updater, trace.getInfos(), clock);
+    }
     getDao().writeColumnContexte(updater, trace.getContexte(), clock);
 
   }
@@ -128,6 +132,10 @@ public class TraceRegSecuriteSupport extends
   @Override
   protected void completeTraceFromResult(final TraceRegSecurite trace,
                                          final ColumnFamilyResult<UUID, String> result) {
+    final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+    if (bValue != null) {
+      trace.setInfos(MapSerializer.get().fromBytes(bValue));
+    }
     trace.setContexte(result.getString(TraceRegTechniqueDao.COL_CONTEXTE));
   }
 
