@@ -293,6 +293,7 @@
 				<configuration>
 					<projectName>ged</projectName>
 					<hawaiVersion>hawai6</hawaiVersion>
+					<applicationName>${project.name}</applicationName>
 					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 					<fedex>false</fedex>
 				</configuration>
