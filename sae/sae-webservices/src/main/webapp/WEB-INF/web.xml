@@ -23,6 +23,10 @@
       <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
    </listener>
    
+   <listener>
+      <listener-class>fr.urssaf.image.sae.webservices.lintener.SaeServletContextListener</listener-class>
+   </listener>
+   
    <!-- Ou utilisation de la servlet ContextLoaderServlet-->
    <!--<servlet>
       <servlet-name>context</servlet-name>

@@ -39,11 +39,6 @@ public class DocumentsTypeList {
    @Autowired
    public DocumentsTypeList(DFCEServicesManager dfceServicesManager) {
       this.dfceServicesManager = dfceServicesManager;
-//      if (types == null) {
-//         synchronized (DocumentsTypeList.class) {
-//            loadDocumentTypeList();
-//         }
-//      }
    }
    
    
@@ -61,10 +56,6 @@ public class DocumentsTypeList {
       return types;
    }
    
-   public void setTypes(List<String> types) {
-      this.types = types;
-   }
-
    /**
     * Charge la liste des types de documents supportés
     */
