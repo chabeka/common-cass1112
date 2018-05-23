@@ -299,6 +299,7 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>deploy</phase>
 						<goals>
 							<goal>livraison</goal>
 						</goals>
