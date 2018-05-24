@@ -33,7 +33,7 @@
           http://serveur/repertoire/*.crl
       -->
       <URLTelechargementCRL>
-        <url>@@SAE_PKIVALAED_CRL@@</url>
+        <url>GED.PKIVALAED_CRL</url>
       </URLTelechargementCRL>
             
       <!--
@@ -48,7 +48,7 @@
          utilise pour signer le VI.
       -->
      <issuers>
-       <issuer>@@SAE_PKIVALAED_ISSUER@@</issuer>
+       <issuer>GED.PKIVALAED_ISSUER</issuer>
      </issuers>
         
    </IgcConfig>
@@ -64,13 +64,13 @@
       <repertoireCRL>@@SAE_HOME@@/certificats/PKI_NAT/CRL/</repertoireCRL>
       
       <URLTelechargementCRL>
-         <url>@@SAE_PKINAT_CRL@@</url>
+         <url>GED.PKINAT_CRL</url>
       </URLTelechargementCRL>
 
       <activerTelechargementCRL>true</activerTelechargementCRL>
 
       <issuers>
-         <issuer>@@SAE_PKINAT_ISSUER@@</issuer>
+         <issuer>GED.PKINAT_ISSUER</issuer>
       </issuers>
         
    </IgcConfig>
