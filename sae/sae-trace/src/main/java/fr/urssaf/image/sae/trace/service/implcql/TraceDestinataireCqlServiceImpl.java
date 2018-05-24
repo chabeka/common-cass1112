@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.trace.daocql.service.impl;
+package fr.urssaf.image.sae.trace.service.implcql;
 
 import java.util.ArrayList;
 import java.util.Iterator;
