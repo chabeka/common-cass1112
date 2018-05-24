@@ -16,6 +16,7 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import com.datastax.driver.mapping.annotations.PartitionKey;
 
 /**
  * TODO (AC75095028) Description du type
@@ -78,7 +79,7 @@ public class QueryUtils {
     Assert.notNull(delete, "delete statement must not be null");
     Assert.notNull(entity, "entity must not be null");
 
-    final Field keyField = ColumnUtil.getKeyField(clazz);
+    final Field keyField = ColumnUtil.getKeyField(clazz, PartitionKey.class);
     final String keyName = keyField.getName();
     for (final Field field : Utils.getEntityFileds(clazz)) {
       try {
@@ -138,7 +139,7 @@ public class QueryUtils {
     Assert.notNull(select, "select statement must not be null");
     Assert.notNull(entity, "entity must not be null");
 
-    final Field keyField = ColumnUtil.getKeyField(clazz);
+    final Field keyField = ColumnUtil.getKeyField(clazz, PartitionKey.class);
     final String keyName = keyField.getName();
     for (final Field field : Utils.getEntityFileds(clazz)) {
       try {

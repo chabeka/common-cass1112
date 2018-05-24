@@ -27,12 +27,12 @@ public class QueryUtilsTest {
   @Test
   public void get_simple_key_field_name() {
     // test de recupération de la l'id sur la classe contenant la clé de partition
-    final Field partitionkey = ColumnUtil.getKeyField(Test1.class);
+    final Field partitionkey = ColumnUtil.getKeyField(Test1.class, PartitionKey.class);
     final String keyName = partitionkey.getName();
     Assert.assertEquals("identifiant", keyName);
 
     // test de recupération de la clé depuis la classe héritant de la classe contenant la clé de partition
-    final Field partitionkeyTest2 = ColumnUtil.getKeyField(Test2.class);
+    final Field partitionkeyTest2 = ColumnUtil.getKeyField(Test2.class, PartitionKey.class);
     final String keyNameTest2 = partitionkeyTest2.getName();
     Assert.assertEquals("identifiant", keyNameTest2);
   }

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.commons.dao;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public interface IGenericDAO<T, ID> {
    *          entité à sauvegarder
    * @return l'entité sauvegardée
    */
-  <S extends T> S save(S entity);
+  T save(T entity);
 
   /**
    * Sauvegarde l'entité T fournie en utilisant le {@link com.datastax.driver.mapping.Mapper} de datastax
@@ -40,7 +41,7 @@ public interface IGenericDAO<T, ID> {
    *          entité à sauvegarder
    * @return l'entité sauvegardée
    */
-  <S extends T> S saveWithMapper(final S entity);
+  T saveWithMapper(final T entity);
 
   /**
    * Sauvegarde la liste des entités T fournies
@@ -49,7 +50,7 @@ public interface IGenericDAO<T, ID> {
    *          les entités à sauvegarder
    * @return les entités sauvegardées
    */
-  <S extends T> List<S> saveAll(Iterable<S> entites);
+  List<T> saveAll(Iterable<T> entites);
 
   /**
    * Verifie l'existance d'une entité T par son ID (key)
@@ -142,7 +143,7 @@ public interface IGenericDAO<T, ID> {
    * @param entitées
    *          à supprimer
    */
-  void deleteAll(final Iterable<? extends T> entities);
+  void deleteAll(final Iterable<T> entities);
 
   /**
    * Retourne le nombre d'entité de la table correspondante
@@ -157,9 +158,9 @@ public interface IGenericDAO<T, ID> {
    * @param entities
    *          la liste des entitées T à sauvegarder
    */
-  void insertWithBatch(final Iterable<? extends T> entities);
+  void insertWithBatch(final Iterable<T> entities);
 
-  void insertWithBatchStatement(final Iterable<? extends T> entities);
+  void insertWithBatchStatement(final Iterable<T> entities);
 
   void insertWithBatchStatement(final BatchStatement statement);
 
@@ -168,5 +169,11 @@ public interface IGenericDAO<T, ID> {
    *
    * @return la {@link List} de type T
    */
-  List<T> findAllWithMapper();
+  Iterator<T> findAllWithMapper();
+
+  /**
+   * @param id
+   * @return
+   */
+  Iterator<T> IterableFindById(ID id);
 }

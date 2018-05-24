@@ -10,14 +10,16 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.datastax.driver.core.BatchStatement;
-import com.datastax.driver.core.CodecRegistry;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.Statement;
@@ -28,15 +30,14 @@ import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.core.querybuilder.Truncate;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
+import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.google.common.collect.Lists;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
-import fr.urssaf.image.sae.commons.context.JsonCodec;
 import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.commons.utils.ColumnUtil;
 import fr.urssaf.image.sae.commons.utils.QueryUtils;
 import fr.urssaf.image.sae.commons.utils.Utils;
-import me.prettyprint.cassandra.utils.Assert;
 
 /**
  * TODO (AC75095028) Description du type
@@ -52,6 +53,8 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   protected Class<? extends T> daoType;
 
   protected Mapper<T> mapper;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOImpl.class);
 
   @SuppressWarnings("unchecked")
   public GenericDAOImpl() {
@@ -96,9 +99,6 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
       } else {
         mapper = (Mapper<T>) manager.mapper(daoType);
       }
-      final JsonCodec<Map> myJsonCodec = new JsonCodec<Map>(Map.class);
-      final CodecRegistry myCodecRegistry = ccf.getCluster().getConfiguration().getCodecRegistry();
-      myCodecRegistry.register(myJsonCodec);
     }
     return mapper;
   }
@@ -117,10 +117,10 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public <S extends T> List<S> saveAll(final Iterable<S> entites) {
+  public List<T> saveAll(final Iterable<T> entites) {
 
-    final List<S> listEntites = new ArrayList<>();
-    for (final S entity : entites) {
+    final List<T> listEntites = new ArrayList<>();
+    for (final T entity : entites) {
       save(entity);
       listEntites.add(entity);
     }
@@ -132,9 +132,9 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    */
   @SuppressWarnings("unchecked")
   @Override
-  public List<T> findAllWithMapper() {
+  public Iterator<T> findAllWithMapper() {
     final Statement st = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-    return getMapper().map(getSession().execute(st)).all();
+    return getMapper().map(getSession().execute(st)).iterator();
   }
 
   /**
@@ -153,10 +153,10 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   @SuppressWarnings("unchecked")
   @Override
   public List<T> findAllWithMapperById(final Iterable<ID> ids) {
-    Assert.noneNull(ids, "La liste des ids ne peut être null");
+    Objects.requireNonNull(ids, "La liste des ids ne peut être null");
     final List<ID> idsEntity = Lists.newArrayList(ids);
     final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getKeyField(daoType);
+    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
     final String keyName = keyField.getName();
     select.where(in(keyName, idsEntity));
     return getMapper().map(getSession().execute(select)).all();
@@ -168,7 +168,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * @param batch
    */
   @Override
-  public void insertWithBatch(final Iterable<? extends T> entities) {
+  public void insertWithBatch(final Iterable<T> entities) {
     final String batch = QueryUtils.createInsertBatch(daoType, entities, getTypeArgumentsName());
     getSession().execute(batch);
   }
@@ -177,7 +177,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public void insertWithBatchStatement(final Iterable<? extends T> entities) {
+  public void insertWithBatchStatement(final Iterable<T> entities) {
     final BatchStatement statement = new BatchStatement();
     for (final T entity : entities) {
       final Insert insert = QueryBuilder.insertInto(getTypeArgumentsName());
@@ -200,7 +200,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public <S extends T> S save(final S entity) {
+  public T save(final T entity) {
     final Insert insert = QueryBuilder.insertInto(ccf.getKeyspace(), getTypeArgumentsName());
     final List<Field> fields = Utils.getEntityFileds(daoType);
     QueryUtils.createInsert(fields, insert, entity);
@@ -212,7 +212,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public <S extends T> S saveWithMapper(final S entity) {
+  public T saveWithMapper(final T entity) {
     getMapper().save(entity);
     return entity;
   }
@@ -222,8 +222,9 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    */
   @Override
   public Optional<T> findWithMapperById(final ID id) {
+    Objects.requireNonNull(id, "L'identifiant ne peut être null");
     final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getKeyField(daoType);
+    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
     final String keyName = keyField.getName();
     select.where(eq(keyName, id));
     final ResultSet result = getSession().execute(select);
@@ -234,11 +235,24 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public ResultSet findById(final ID id) {
-    Assert.notNull(id, " l'id est requis");
+  public Iterator<T> IterableFindById(final ID id) {
     final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getKeyField(daoType);
-    Assert.notNull(keyField, "Le field ne peut être null");
+    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
+    final String keyName = keyField.getName();
+    select.where(eq(keyName, id));
+    final ResultSet result = getSession().execute(select);
+    return getMapper().map(result).iterator();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public ResultSet findById(final ID id) {
+    Objects.requireNonNull(id, " l'id est requis");
+    final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
+    Objects.requireNonNull(keyField, "Le field ne peut être null");
     final String keyName = keyField.getName();
     select.where(eq(keyName, id));
     final ResultSet result = getSession().execute(select);
@@ -266,8 +280,9 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    */
   @Override
   public void deleteById(final ID id) {
+    Objects.requireNonNull(id, " l'id est requis");
     final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getKeyField(daoType);
+    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
     final String keyName = keyField.getName();
     delete.where(eq(keyName, id));
     getMapper().map(getSession().execute(delete));
@@ -279,6 +294,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   @SuppressWarnings("unchecked")
   @Override
   public void deleteWithMapper(final T entity) {
+    Objects.requireNonNull(entity, " l'entity est requis");
     getMapper().delete(entity);
   }
 
@@ -296,7 +312,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    * {@inheritDoc}
    */
   @Override
-  public void deleteAll(final Iterable<? extends T> entities) {
+  public void deleteAll(final Iterable<T> entities) {
     for (final T entity : entities) {
       delete(entity);
     }

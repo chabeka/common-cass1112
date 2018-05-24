@@ -11,10 +11,10 @@ public class ColumnUtil {
    * @param persistenceClass
    * @return
    */
-  public static Field getKeyField(final Class persistenceClass) {
-    final Field field = getField(persistenceClass, PartitionKey.class);
+  public static Field getKeyField(final Class persistenceClass, final Class annotation) {
+    final Field field = getField(persistenceClass, annotation);
     if (field == null) {
-      return getField(persistenceClass.getSuperclass(), PartitionKey.class);
+      return getField(persistenceClass.getSuperclass(), annotation);
     }
     return field;
   }
@@ -39,7 +39,7 @@ public class ColumnUtil {
    * @return
    */
   public static String getSimpleKeyFieldName(final Class object) {
-    final Field keyField = ColumnUtil.getKeyField(object);
+    final Field keyField = ColumnUtil.getKeyField(object, PartitionKey.class);
     final String keyName = keyField.getName();
     return keyName;
   }
