@@ -259,7 +259,7 @@
 					<contextPath>/sae-spring-batch-admin-sample</contextPath>
 				</configuration>
 			</plugin>
-         <!-- PLUGIN HAWAI/FEDEX -->
+         	<!-- PLUGIN HAWAI/FEDEX -->
 			<plugin>
 				<groupId>fr.acoss.industrialisation.maven</groupId>
 				<artifactId>hawai-maven-plugin</artifactId>
@@ -272,6 +272,7 @@
 				</configuration>
 				<executions>
 					<execution>
+						<phase>deploy</phase>
 						<goals>
 							<goal>livraison</goal>
 						</goals>
