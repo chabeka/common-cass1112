@@ -61,8 +61,8 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   }
 
   @Override
-  Iterator<TraceRegTechniqueIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed) {
-    return indexDao.findByDateInterval(DateRegUtils.getJournee(dateStar), DateRegUtils.getJournee(dateEnd));
+  Iterator<TraceRegTechniqueIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed, final Integer limit) {
+    return indexDao.findByDateInterval(DateRegUtils.getJournee(dateStar), DateRegUtils.getJournee(dateEnd), reversed, limit);
   }
 
   @Override
@@ -77,7 +77,11 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
 
   @Override
   TraceRegTechniqueIndexCql getIndexFromTrace(final TraceRegTechniqueCql trace) {
-    return new TraceRegTechniqueIndexCql(trace);
+    final TraceRegTechniqueIndexCql index = new TraceRegTechniqueIndexCql(trace);
+    // date en string sous la forme de YYYYMMJJ sans les heures et les secondes
+    final String journee = DateRegUtils.getJournee(index.getTimestamp());
+    index.setIdentifiantIndex(journee);
+    return index;
   }
 
   @Override
@@ -103,6 +107,14 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   @Override
   String getDateFormat() {
     return DATE_FORMAT;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  String getIndexId(final TraceRegTechniqueIndexCql trace) {
+    return trace.getIdentifiantIndex();
   }
 
 }

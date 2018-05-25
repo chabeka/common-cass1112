@@ -82,7 +82,11 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    */
   @Override
   protected final TraceJournalEvtIndexCql getIndexFromTrace(final TraceJournalEvtCql trace) {
-    return new TraceJournalEvtIndexCql(trace);
+    final TraceJournalEvtIndexCql index = new TraceJournalEvtIndexCql(trace);
+    // date en string sous la forme de YYYYMMJJ sans les heures et les secondes
+    final String journee = DateRegUtils.getJournee(index.getTimestamp());
+    index.setIdentifiantIndex(journee);
+    return index;
 
   }
 
@@ -127,10 +131,10 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  Iterator<TraceJournalEvtIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed) {
+  Iterator<TraceJournalEvtIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed, final Integer limit) {
     final String jourStar = DateRegUtils.getJournee(dateStar);
     final String journEnd = DateRegUtils.getJournee(dateEnd);
-    return indexjDao.findByDateInterval(jourStar, journEnd);
+    return indexjDao.findByDateInterval(jourStar, journEnd, reversed, limit);
   }
 
   /**
@@ -169,7 +173,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    */
   public final void addIndexDoc(final TraceJournalEvtCql trace, final String idDoc, final long clock) {
     final TraceJournalEvtIndexDocCql traceJournal = new TraceJournalEvtIndexDocCql(trace);
-    traceJournal.setIdentifiant(idDoc);
+    traceJournal.setIdentifiantIndex(idDoc);
     indexjDocDao.saveWithMapper(traceJournal);
   }
 
@@ -214,6 +218,14 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
   @Override
   IGenericIndexCqlDao<TraceJournalEvtIndexCql, String> getIndexDao() {
     return indexjDao;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  String getIndexId(final TraceJournalEvtIndexCql trace) {
+    return trace.getIdentifiantIndex();
   }
 
 }

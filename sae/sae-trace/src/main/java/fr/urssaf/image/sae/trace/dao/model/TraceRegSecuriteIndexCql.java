@@ -3,13 +3,19 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 /**
  * TODO (AC75095028) Description du type
  */
 @Table(name = "traceregsecuriteindexcql")
-public class TraceRegSecuriteIndexCql extends TraceIndexCql {
+public class TraceRegSecuriteIndexCql extends TraceIndex {
+
+  @PartitionKey
+  @Column(name = "identifiantindex")
+  private String identifiantIndex;
 
   /** Contexte de la trace */
   private String contexte;
@@ -36,6 +42,21 @@ public class TraceRegSecuriteIndexCql extends TraceIndexCql {
     super(exploitation);
     this.contexte = exploitation.getContexte();
     this.contrat = exploitation.getContratService();
+  }
+
+  /**
+   * @return the identifiantIndex
+   */
+  public String getIdentifiantIndex() {
+    return identifiantIndex;
+  }
+
+  /**
+   * @param identifiantIndex
+   *          the identifiantIndex to set
+   */
+  public void setIdentifiantIndex(final String identifiantIndex) {
+    this.identifiantIndex = identifiantIndex;
   }
 
   /**

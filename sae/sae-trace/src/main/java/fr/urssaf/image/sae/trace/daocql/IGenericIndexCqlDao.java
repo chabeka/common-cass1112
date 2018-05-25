@@ -16,5 +16,5 @@ public interface IGenericIndexCqlDao<T, ID> extends IGenericDAO<T, ID> {
 
   Iterator<T> findByDateCreatedAfter(ID id);
 
-  Iterator<T> findByDateInterval(String dateStar, String dateEnd);
+  Iterator<T> findByDateInterval(String dateStar, String dateEnd, final boolean reversed, Integer limit);
 }

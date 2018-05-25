@@ -71,7 +71,8 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
    * @param clock
    *          horloge de la création
    */
-  public final void create(final T trace, final long clock) {
+
+  public void create(final T trace, final long clock) {
 
     // Trace applicative
     final String prefix = "create()";

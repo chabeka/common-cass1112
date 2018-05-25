@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
-import fr.urssaf.image.sae.trace.dao.model.TraceIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.model.PurgeType;
-import fr.urssaf.image.sae.trace.service.RegServiceCql;
+import fr.urssaf.image.sae.trace.service.RegService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
@@ -30,8 +30,8 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  * @param <I>
  *          Index des traces
  */
-public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends TraceIndexCql>
-                                                 implements RegServiceCql<T, I> {
+public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends TraceIndex>
+                                                 implements RegService<T, I> {
 
   private static final String FIN_LOG = "{} - Fin";
 
@@ -70,8 +70,9 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
    * {@inheritDoc}
    */
   @Override
-  public final Optional<T> lecture(final UUID identifiant) {
-    return getSupport().find(identifiant);
+  public final T lecture(final UUID identifiant) {
+    final Optional<T> tOp = getSupport().find(identifiant);
+    return tOp.get();
   }
 
   /**

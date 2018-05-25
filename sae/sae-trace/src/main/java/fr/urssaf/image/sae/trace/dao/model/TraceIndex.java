@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.Column;
+
 /**
  * Classe de modèle générique pour les CF des traces
  */
@@ -28,6 +30,7 @@ public class TraceIndex {
   /**
    * Code événement
    */
+  @Column(name = "codeevt")
   private String codeEvt;
 
   /** Le ou les PAGM */

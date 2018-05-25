@@ -76,7 +76,7 @@ public class TraceUtils {
       Optional<TraceJournalEvtCql> trace;
       if (CollectionUtils.isNotEmpty(listTraces)) {
         for (final TraceJournalEvtIndexCql evt : listTraces) {
-          trace = support.find(evt.getTraceId());
+          trace = support.find(evt.getIdentifiant());
           if (trace.isPresent()) {
             traceFileSupport.ecrireTrace(staxUtils, trace.get());
           }

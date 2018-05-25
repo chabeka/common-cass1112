@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.trace.dao.model.TraceIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -34,8 +34,8 @@ import fr.urssaf.image.sae.trace.utils.TraceUtils;
  */
 @Repository
 public class JournalEvtCqlServiceImpl extends
-                                           AbstractTraceServiceCqlImpl<TraceJournalEvtCql, TraceJournalEvtIndexCql>
-                                           implements ITraceJournalEvtCqlService<TraceJournalEvtCql, TraceIndexCql> {
+                                      AbstractTraceServiceCqlImpl<TraceJournalEvtCql, TraceJournalEvtIndexCql>
+                                      implements ITraceJournalEvtCqlService<TraceJournalEvtCql, TraceIndex> {
 
   private static final String FIN_LOG = "{} - Fin";
 
@@ -70,7 +70,7 @@ public class JournalEvtCqlServiceImpl extends
    */
   @Autowired
   public JournalEvtCqlServiceImpl(final TraceJournalEvtCqlSupport support, final JobClockSupport clockSupport, final LoggerSupport loggerSupport,
-                                       final TraceFileSupport traceFileSupport) {
+                                  final TraceFileSupport traceFileSupport) {
     super();
     this.supportcql = support;
     this.clockSupport = clockSupport;

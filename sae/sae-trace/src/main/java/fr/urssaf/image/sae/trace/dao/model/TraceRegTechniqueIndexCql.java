@@ -1,61 +1,84 @@
 package fr.urssaf.image.sae.trace.dao.model;
 
-public class TraceRegTechniqueIndexCql extends TraceIndexCql {
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
 
-	   /** Contexte de la trace */
-	   private String contexte;
-	   
-	   /**
-	    * Code du contrat de service
-	    */
-	   private String contrat;
+public class TraceRegTechniqueIndexCql extends TraceIndex {
 
-	   /**
-	    * constructeur par défaut
-	    */
-	   public TraceRegTechniqueIndexCql() {
-	      super();
-	   }
+  @PartitionKey
+  @Column(name = "identifiantindex")
+  private String identifiantIndex;
 
-	   /**
-	    * Constructeur
-	    * 
-	    * @param exploitation
-	    *           trace technique
-	    */
-	   public TraceRegTechniqueIndexCql(TraceRegTechniqueCql exploitation) {
-	      super(exploitation);
-	      this.contexte = exploitation.getContexte();
-	      this.contrat = exploitation.getContratService();
-	   }
+  /** Contexte de la trace */
+  private String contexte;
 
-	   /**
-	    * @return le Contexte de la trace
-	    */
-	   public final String getContexte() {
-	      return contexte;
-	   }
+  /**
+   * Code du contrat de service
+   */
+  private String contrat;
 
-	   /**
-	    * @param contexte
-	    *           Contexte de la trace
-	    */
-	   public final void setContexte(String contexte) {
-	      this.contexte = contexte;
-	   }
+  /**
+   * constructeur par défaut
+   */
+  public TraceRegTechniqueIndexCql() {
+    super();
+  }
 
-	   /**
-	    * @return the contrat
-	    */
-	   public String getContrat() {
-	      return contrat;
-	   }
+  /**
+   * Constructeur
+   *
+   * @param exploitation
+   *          trace technique
+   */
+  public TraceRegTechniqueIndexCql(final TraceRegTechniqueCql exploitation) {
+    super(exploitation);
+    this.contexte = exploitation.getContexte();
+    this.contrat = exploitation.getContratService();
+  }
 
-	   /**
-	    * @param contrat the contrat to set
-	    */
-	   public void setContrat(String contrat) {
-	      this.contrat = contrat;
-	   }
+  /**
+   * @return the identifiantIndex
+   */
+  public String getIdentifiantIndex() {
+    return identifiantIndex;
+  }
 
-	}
+  /**
+   * @param identifiantIndex
+   *          the identifiantIndex to set
+   */
+  public void setIdentifiantIndex(final String identifiantIndex) {
+    this.identifiantIndex = identifiantIndex;
+  }
+
+  /**
+   * @return le Contexte de la trace
+   */
+  public final String getContexte() {
+    return contexte;
+  }
+
+  /**
+   * @param contexte
+   *          Contexte de la trace
+   */
+  public final void setContexte(final String contexte) {
+    this.contexte = contexte;
+  }
+
+  /**
+   * @return the contrat
+   */
+  public String getContrat() {
+    return contrat;
+  }
+
+  /**
+   * @param contrat
+   *          the contrat to set
+   */
+  public void setContrat(final String contrat) {
+    this.contrat = contrat;
+  }
+
+}

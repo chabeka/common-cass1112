@@ -86,9 +86,9 @@ public class TraceJournalEvtCqlSupportTest {
   @Test
   public void testCreateFindSuccess() {
 
-    final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
+    final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addYears(DATE, -3));
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, new Date().getTime());
+    cqlsupport.create(trace, DateUtils.addYears(DATE, -3).getTime());
 
     final Optional<TraceJournalEvtCql> securiteOp = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
@@ -152,7 +152,7 @@ public class TraceJournalEvtCqlSupportTest {
   }
 
   private TraceJournalEvtCql createTrace(final UUID uuid) {
-    final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DATE);
+    final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DateUtils.addYears(DATE, -3));
     trace.setContexte(CONTEXT);
     trace.setCodeEvt(CODE_EVT);
     trace.setContratService(CONTRAT);

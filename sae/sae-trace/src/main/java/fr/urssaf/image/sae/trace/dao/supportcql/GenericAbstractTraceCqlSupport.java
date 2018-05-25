@@ -17,15 +17,14 @@ import org.slf4j.Logger;
 
 import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
-import fr.urssaf.image.sae.trace.dao.model.TraceIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
 
 /**
  * TODO (AC75095028) Description du type
  */
-public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndexCql> {
+public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndex> {
 
   private final SimpleDateFormat dateFormat = new SimpleDateFormat(
                                                                    "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
@@ -56,10 +55,6 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     final I index = getIndexFromTrace(trace);
 
     final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
-
-    // date en string sous la forme de YYYYMMJJ sans les heures et les secondes
-    final String journee = DateRegUtils.getJournee(index.getTimestamp());
-    index.setIdentifiant(journee);
     getIndexDao().saveWithMapper(index);
 
     /*
@@ -166,7 +161,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   public List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
                              final boolean reversed) {
 
-    final Iterator<I> iterator = getIterator(startDate, endDate, reversed);
+    final Iterator<I> iterator = getIterator(startDate, endDate, reversed, maxCount);
 
     List<I> list = null;
 
@@ -183,11 +178,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
       throw ex;
     }
 
-    int count = 0;
-    while (iterator.hasNext() && count < maxCount) {
-      list.add(iterator.next());
-      count++;
-    }
+    /*
+     * int count = 0;
+     * while (iterator.hasNext() && count < maxCount) {
+     * list.add(iterator.next());
+     * count++;
+     * }
+     */
 
     return list;
   }
@@ -204,7 +201,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   long deleteRecords(final Iterator<I> iterator, final long clock) {
     long result = 0;
     while (iterator.hasNext()) {
-      getDao().deleteById(iterator.next().getTraceId());
+      getDao().deleteById(getIndexId(iterator.next()));
       result++;
     }
     return result;
@@ -230,7 +227,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          </ul>
    * @return l'iterateur
    */
-  abstract Iterator<I> getIterator(Date dateStar, Date dateEnd, boolean reversed);
+  abstract Iterator<I> getIterator(Date dateStar, Date dateEnd, final boolean reversed, final Integer limit);
 
   /**
    * @return le dao utilisé pour les traces
@@ -257,6 +254,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le nom du registre
    */
   abstract String getRegistreName();
+
+  /**
+   * Retourne l'identifiant de l'index
+   *
+   * @return le nom du registre
+   */
+  abstract String getIndexId(I trace);
 
   /**
    * @param timestamp

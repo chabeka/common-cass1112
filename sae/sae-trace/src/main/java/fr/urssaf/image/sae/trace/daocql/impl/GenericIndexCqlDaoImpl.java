@@ -59,7 +59,7 @@ public class GenericIndexCqlDaoImpl<T, ID> extends GenericDAOImpl<T, ID> impleme
    * {@inheritDoc}
    */
   @Override
-  public Iterator<T> findByDateInterval(final String dateStar, final String dateEnd) {
+  public Iterator<T> findByDateInterval(final String dateStar, final String dateEnd, final boolean reversed, final Integer limit) {
     Objects.requireNonNull(dateStar, "La date de debut ne peut etre null");
     Objects.requireNonNull(dateStar, "La date de fin ne peut etre null");
 
@@ -79,7 +79,14 @@ public class GenericIndexCqlDaoImpl<T, ID> extends GenericDAOImpl<T, ID> impleme
     sb.append(QueryBuilder.token(keyName));
     sb.append(" <= ");
     sb.append("token");
-    sb.append("('" + dateEnd + "');");
+    sb.append("('" + dateEnd + "')");
+    if (reversed) {
+      sb.append(" ORDER BY DESC ");
+    }
+    if (limit != null) {
+      sb.append(" LIMIT " + 3);
+    }
+    sb.append(";");
 
     return getMapper().map(getSession().execute(sb.toString())).all().iterator();
   }

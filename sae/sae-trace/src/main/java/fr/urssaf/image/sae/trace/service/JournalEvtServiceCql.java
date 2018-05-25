@@ -11,7 +11,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
 /**
  * Services du journal des événements du SAE
  */
-public interface JournalEvtServiceCql extends RegServiceCql<TraceJournalEvtCql, TraceJournalEvtIndexCql> {
+public interface JournalEvtServiceCql extends RegService<TraceJournalEvtCql, TraceJournalEvtIndexCql> {
 
   /**
    * Exporte l'ensemble des traces du jour donné sous format XML
