@@ -110,7 +110,7 @@ public class TransfertListener extends AbstractListener {
    public final void logReadError(final Exception exception) {
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
       LOGGER.warn("Erreur lors de la lecture du fichier", exception);
    }
 
@@ -130,7 +130,7 @@ public class TransfertListener extends AbstractListener {
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
       LOGGER.warn("Erreur lors du transfert de document", exception);
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
    }
 
    /**
@@ -229,7 +229,7 @@ public class TransfertListener extends AbstractListener {
 
          codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
-         errorMessageList.add(new Exception(messageError, e).toString());
+         errorMessageList.add(messageError);
 
          status = ExitStatus.FAILED;
 
@@ -248,7 +248,7 @@ public class TransfertListener extends AbstractListener {
          
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         errorMessageList.add(new Exception(message, e).toString());
+         errorMessageList.add(message);
 
          status = ExitStatus.FAILED;
       }

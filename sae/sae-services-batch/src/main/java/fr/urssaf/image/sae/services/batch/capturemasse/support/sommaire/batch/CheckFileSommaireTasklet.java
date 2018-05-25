@@ -114,7 +114,7 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
    private void addException(ChunkContext chunkContext, Exception paramException) {
       final Exception exception = new Exception(paramException.getMessage());
 
-      getErrorMessageList(chunkContext).add(exception.toString());
+      getErrorMessageList(chunkContext).add(exception.getMessage());
 
    }
    

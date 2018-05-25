@@ -55,7 +55,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
       getLogger().warn("erreur lors de la lecture du fichier", exception);
    }
 
@@ -79,7 +79,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          getIndexErreurListe().add(
                getStepExecution().getExecutionContext().getInt(
                      Constantes.CTRL_INDEX));
-         getErrorMessageList().add(exception.toString());
+         getErrorMessageList().add(exception.getMessage());
       }
    }
 
@@ -231,7 +231,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
                   + "qui auraient pu être stockées et de relancer la capture.";
             status = new ExitStatus("FAILED_NO_ROLLBACK");
          }
-         errorMessageList.add(new Exception(messageError, e).toString());
+         errorMessageList.add(messageError);
          getLogger().warn(messageError, e);
 
       } catch (Exception e) {

@@ -63,7 +63,7 @@ public class ProcessorConvertMetier extends AbstractListener implements
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
             String message = "Une erreur est survenue lors de contrôle du document {0}";
-            getErrorMessageList().add(e.toString());
+            getErrorMessageList().add(e.getMessage());
             LOGGER.warn(StringUtils.replace(message,"{0}", item.getUuid().toString()),
                   e);
             StorageDocument storageDoc = new StorageDocument();

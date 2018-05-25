@@ -59,7 +59,7 @@ public class VirtualStorageReferenceFileWriterListener extends
                   Constantes.CTRL_INDEX));
       LOGGER.warn("Une erreur est survenue lors l'écriture des données",
             exception);
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
    }
 
    @Override

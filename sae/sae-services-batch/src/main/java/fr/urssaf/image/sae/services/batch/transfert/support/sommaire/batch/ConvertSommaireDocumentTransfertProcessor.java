@@ -100,7 +100,7 @@ public class ConvertSommaireDocumentTransfertProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getErrorMessageList().add(e.toString());
+            getErrorMessageList().add(e.getMessage());
             LOGGER.warn("Erreur du mapping de l'objet Jaxb représentant "
                   + "le document vers un objet métier UntypedDocument", e);
          } else {

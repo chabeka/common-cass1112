@@ -94,7 +94,7 @@ public class ModificationListener extends AbstractListener {
    public final void logReadError(final Exception exception) {
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
       LOGGER.warn("Erreur lors de la lecture du fichier", exception);
    }
 
@@ -114,7 +114,7 @@ public class ModificationListener extends AbstractListener {
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
       LOGGER.warn("Erreur lors du traitement de modification", exception);
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
    }
 
    /**
@@ -232,7 +232,7 @@ public class ModificationListener extends AbstractListener {
 
          codes.add(Constantes.ERR_MO_BUL001);
          index.add(exception.getIndex());
-         errorMessageList.add((new Exception(messageError, e)).toString());
+         errorMessageList.add(messageError);
          status = ExitStatus.FAILED;
       } catch (Exception e) {
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
@@ -244,7 +244,7 @@ public class ModificationListener extends AbstractListener {
          }
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         errorMessageList.add((new Exception(message, e)).toString());
+         errorMessageList.add(message);
          status = ExitStatus.FAILED;
       }
       return status;

@@ -52,8 +52,7 @@ public class CheckEcdePermissionAfterStepListener {
 
    private void addMessageException(StepExecution stepExecution,
          Throwable paramException) {
-      final Exception exception = new Exception(paramException.getMessage());
-      getMessageExceptions(stepExecution).add(exception.toString());
+      getMessageExceptions(stepExecution).add(paramException.getMessage());
    }
 
    private boolean ecdePermissionValid(Throwable exception) {

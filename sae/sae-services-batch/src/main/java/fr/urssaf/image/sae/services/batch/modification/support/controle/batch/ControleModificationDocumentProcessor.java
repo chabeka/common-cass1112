@@ -66,10 +66,9 @@ public class ControleModificationDocumentProcessor extends AbstractListener
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            Exception exception = new Exception("Une erreur est survenue lors de contrôle des documents", e);
-            getErrorMessageList().add(exception.toString());
-            LOGGER.warn(exception.getMessage(),
-                  e);
+            final String message = e.getMessage();
+            getErrorMessageList().add(message);
+            LOGGER.warn(message, e);
          } else {
             throw e;
          }

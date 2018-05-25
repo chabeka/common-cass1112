@@ -72,7 +72,7 @@ public class EnrichissementStorageDocumentProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getErrorMessageList().add(e.toString());
+            getErrorMessageList().add(e.getMessage());
             LOGGER.warn("Une erreur est survenue à l'ajout de donnée au storageDocument avant archivage",
                   e);
             return item;

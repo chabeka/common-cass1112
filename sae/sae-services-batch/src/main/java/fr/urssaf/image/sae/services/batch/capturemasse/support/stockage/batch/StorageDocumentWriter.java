@@ -99,7 +99,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
                            getStepExecution().getExecutionContext().getInt(
                                  Constantes.CTRL_INDEX));
                   final String message = ex.getMessage();
-                  getErrorMessageList().add(ex.toString());
+                  getErrorMessageList().add(message);
                   LOGGER.warn(message, ex);
                   }  
                }
@@ -134,7 +134,7 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
             if (isModePartielBatch()) {
                getCodesErreurListe().add(Constantes.ERR_BUL002);
                getIndexErreurListe().add(indexRun);               
-               getErrorMessageList().add(ex.toString());
+               getErrorMessageList().add(ex.getMessage());
                LOGGER.warn("Une erreur est survenue lors de la persistance de document",
                      ex);                
                return null;

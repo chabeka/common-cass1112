@@ -127,18 +127,18 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
          context.put(Constantes.BATCH_MODE_NOM_REDIRECT, batchmodeRedirection);
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
-         getErrorMessageList(chunkContext).add(e.toString());
+         getErrorMessageList(chunkContext).add(e.getMessage());
          logFailedValidationSommaire(e);
       } catch (CaptureMasseRuntimeException e) {
-         getErrorMessageList(chunkContext).add(e.toString());
+         getErrorMessageList(chunkContext).add(e.getMessage());
          logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireHashException e) {
-         getErrorMessageList(chunkContext).add(e.toString());
+         getErrorMessageList(chunkContext).add(e.getMessage());
          logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireTypeHashException e) {
          logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireFileNotFoundException e) {
-         getErrorMessageList(chunkContext).add(e.toString());
+         getErrorMessageList(chunkContext).add(e.getMessage());
          logFailedValidationSommaire(e);
       }
 

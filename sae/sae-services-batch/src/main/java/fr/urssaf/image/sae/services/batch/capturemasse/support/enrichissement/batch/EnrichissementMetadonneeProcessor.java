@@ -87,7 +87,7 @@ public class EnrichissementMetadonneeProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getErrorMessageList().add(e.toString());
+            getErrorMessageList().add(e.getMessage());
             LOGGER.warn("erreur lors de l'enrichissement de metadonnée", e);
             SAEDocument saeDocument = new SAEDocument();
             saeDocument.setUuid(item.getUuid());

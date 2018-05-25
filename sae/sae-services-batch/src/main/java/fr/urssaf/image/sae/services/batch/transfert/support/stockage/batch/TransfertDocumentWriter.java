@@ -203,7 +203,7 @@ implements ItemWriter<StorageDocument> {
                   getIndexErreurListe().add(
                         getStepExecution().getExecutionContext().getInt(
                               Constantes.CTRL_INDEX));
-                  getErrorMessageList().add(e.toString());
+                  getErrorMessageList().add(e.getMessage());
                   LOGGER.warn("Erreur lors de transfert du document en GNS", e);
                }
 
@@ -243,7 +243,7 @@ implements ItemWriter<StorageDocument> {
                trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getErrorMessageList().add(e.toString());
+         getErrorMessageList().add(e.getMessage());
          getStepExecution().setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
          throw new CaptureMasseRuntimeException(e);
       }
@@ -268,7 +268,7 @@ implements ItemWriter<StorageDocument> {
                trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getErrorMessageList().add(e.toString());
+         getErrorMessageList().add(e.getMessage());
          if (!isModePartielBatch()) {
             exitStatus = ExitStatus.FAILED;
          }

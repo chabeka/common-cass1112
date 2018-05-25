@@ -38,7 +38,7 @@ public class ControleListener extends CheckStateAfterStepListener {
             + "lors du traitement de la capture de masse", exception);
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(0);
-      getErrorMessageList().add(exception.toString());
+      getErrorMessageList().add(exception.getMessage());
    }
 
    /**

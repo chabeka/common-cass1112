@@ -32,7 +32,7 @@ public class RepriseCaptureMasseInitListener {
 
       if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
-            getErrorMessageList(stepExecution).add(((Exception) throwable).toString());
+            getErrorMessageList(stepExecution).add(throwable.getMessage());
             LOGGER.warn(getLogMessage(), throwable);
          }
 

@@ -89,7 +89,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
                   getIndexErreurListe().add(
                         getStepExecution().getExecutionContext().getInt(
                               Constantes.CTRL_INDEX));
-                  getErrorMessageList().add(e.toString());
+                  getErrorMessageList().add(e.getMessage());
                   LOGGER.warn("Ereur lors de la modification des documents dans DFCE", e);
                }
             }
@@ -129,7 +129,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
             Exception e = new Exception(message, except);
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(indexRun);
-            getErrorMessageList().add(e.toString());
+            getErrorMessageList().add(e.getMessage());
             LOGGER.warn(message, except);
          } else {
                throw new UpdateServiceEx(new Exception(message));
