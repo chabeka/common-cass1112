@@ -142,8 +142,8 @@
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
 							<fedex>true</fedex>
-<!-- 							<applicationName>dfce-webapp</applicationName>
-							<applicationBinFileName>dfce-webapp.war</applicationBinFileName> -->
+ 							<applicationName>dfce-webapp</applicationName>
+							<applicationBinFileName>dfce-webapp.war</applicationBinFileName>
 							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
 							<onlyUpdateProjectVersionLastDigit>true</onlyUpdateProjectVersionLastDigit>
 						</configuration>
