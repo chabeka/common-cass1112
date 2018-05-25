@@ -250,6 +250,7 @@
 
 	</dependencies>
 	<build>
+		<finalName>sae-spring-batch-admin</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
