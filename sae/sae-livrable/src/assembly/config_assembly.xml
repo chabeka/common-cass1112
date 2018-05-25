@@ -164,31 +164,31 @@
    <files>
    
       <file>
-         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable.jar</source>
          <outputDirectory>sae-documents-executable</outputDirectory>
          <destName>sae-documents-executable.jar</destName>
        </file>
       
        <file>
-         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur.jar</source>
          <outputDirectory>sae-ordonnanceur</outputDirectory>
          <destName>sae-ordonnanceur.jar</destName>
        </file>
        
        <file>
-         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj.jar</source>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
          <destName>sae-lotinstallmaj.jar</destName>
        </file>
    
        <file>
-         <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall.jar</source>
          <outputDirectory>sae-integrationinstall</outputDirectory>
          <destName>sae-integrationinstall.jar</destName>
        </file>
    
        <file>
-         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices-${version}.war</source>
+         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices.war</source>
          <outputDirectory/>
          <destName>sae.war</destName>
        </file>
