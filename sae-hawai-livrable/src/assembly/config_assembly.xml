@@ -20,6 +20,7 @@
             <include>sae-ihm-web-exploit-config-environnement.xml</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <fileSet>
@@ -28,6 +29,7 @@
             <include>sae-ihm-web-exploit-config-generale.properties</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <fileSet>
@@ -36,6 +38,7 @@
             <include>sae-ihm-web-exploit-config-maquette.properties</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <fileSet>
@@ -44,6 +47,7 @@
             <include>sae-ihm-web-exploit-droits.xml</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <!--  Fichier de configuration du portail Anais -->
@@ -53,6 +57,7 @@
             <include>sae-anais-portail-config-maquette-ihmwebexploit.properties</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-anais-portail</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <fileSet>
@@ -61,6 +66,7 @@
             <include>sae-anais-portail-ihmwebexploit.properties</include>
          </includes>
          <outputDirectory>sae-ihm-web-exploit/config-sae-anais-portail</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       <!--
          Copie des fichiers de configurations pour le portail de
@@ -72,6 +78,7 @@
             <include>ecdesources.xml</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
             
       <fileSet>
@@ -80,6 +87,7 @@
             <include>sae-dfce-config.properties</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -88,6 +96,7 @@
             <include>sae-dfce-transfert-config.properties</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -96,6 +105,7 @@
             <include>sae-config.properties</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -104,6 +114,7 @@
             <include>sae-igc-config.xml</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -112,6 +123,7 @@
             <include>pseudo_IGCA.crt</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -120,6 +132,7 @@
             <include>AC_RACINE_IGCN_RECOUV_2012.crt</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -128,6 +141,7 @@
             <include>ACOSS_Reseau_des_URSSAF.crt</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
             
       <fileSet>
@@ -136,6 +150,7 @@
             <include>sae-cassandra-config.properties</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -144,6 +159,7 @@
             <include>sae-cassandra-transfert-config.properties</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -152,6 +168,7 @@
             <include>maintenance_ged</include>
          </includes>
          <outputDirectory />
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -160,6 +177,7 @@
             <include>addMetadatas.properties</include>
          </includes>
          <outputDirectory>sae-documents-executable</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -168,6 +186,7 @@
             <include>addMetadatasJournaux.properties</include>
          </includes>
          <outputDirectory>sae-documents-executable</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -176,6 +195,7 @@
             <include>logback-sae-documents-executable.xml</include>
          </includes>
          <outputDirectory>sae-documents-executable</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -184,6 +204,7 @@
             <include>logback-sae-lotinstallmaj.xml</include>
          </includes>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
 
       <fileSet>
@@ -192,6 +213,7 @@
             <include>logback-sae-ordonnanceur.xml</include>
          </includes>
          <outputDirectory>sae-ordonnanceur</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -200,6 +222,7 @@
             <include>sae-ordonnanceur.sh</include>
          </includes>
          <outputDirectory>sae-ordonnanceur</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -208,6 +231,7 @@
             <include>logback-sae-batch-docs-executable.xml</include>
          </includes>
          <outputDirectory>sae-batch-docs-executable</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -216,6 +240,7 @@
             <include>purgeCorbeille.properties</include>
          </includes>
          <outputDirectory>sae-documents-executable</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -225,6 +250,7 @@
             <include>sae-integrationinstall.sh</include>
          </includes>
          <outputDirectory>sae-integrationinstall</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -233,6 +259,7 @@
             <include>control-center.properties</include>
          </includes>
          <outputDirectory>dfce-control-center</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
       
       <fileSet>
@@ -243,6 +270,7 @@
             <include>run.sh</include>
          </includes>
          <outputDirectory>sae-compression-jbig2</outputDirectory>
+         <lineEnding>unix</lineEnding>
       </fileSet>
    </fileSets>
 </assembly>

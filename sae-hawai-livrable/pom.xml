@@ -21,7 +21,9 @@
 		<maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
 		<maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 		<maven-dependency-plugin.version>3.1.0</maven-dependency-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
+		<maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
 		<sae.version>18.9.1-SNAPSHOT</sae.version>
 		<sae-anais-portail.version>1.0.11-SNAPSHOT</sae-anais-portail.version>
 		<sae-ihm-web-exploit.version>1.0.22-SNAPSHOT</sae-ihm-web-exploit.version>
@@ -121,6 +123,30 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>custom-resources</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/checkout</outputDirectory>
+							<overwrite>true</overwrite>							
+							<resources>
+								<resource>
+									<directory>target\${project.build.finalName}-dir</directory>
+								</resource>
+							</resources>
+							<encoding>UTF-8</encoding>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 
 	</build>
@@ -140,6 +166,12 @@
 			<classifier>zip</classifier>
 			<type>zip</type>
 		</dependency>
+		<dependency>
+		  <groupId>com.docubase</groupId>
+		  <artifactId>dfce-webapp</artifactId>
+		  <version>1.9.4</version>
+		  <type>war</type>
+		</dependency>		
 	</dependencies>
 
 	<profiles>
@@ -154,17 +186,34 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-scm-plugin</artifactId>
-						<version>1.9.5</version>
+						<version>${maven-scm-plugin.version}</version>
 						<configuration>
-							
-							<connectionType>connection</connectionType>
+							<basedir>${project.build.directory}/checkout</basedir>
+							<connectionUrl>scm:svn:http://svn.hawai.recouv/apps-v6/hwi_ged/trunk/bin</connectionUrl>
 						</configuration>
 						<executions>
 							<execution>
+								<id>checkout</id>
 								<goals>
-									<goal>scm:checkin</goal>
+									<goal>checkout</goal>
 								</goals>
-								<phase>deploy</phase>
+								<phase>verify</phase>
+							</execution>
+							<execution>
+								<id>commit</id>
+								<goals>
+									<!--<goal>add</goal>-->
+									<goal>checkin</goal>
+								</goals>
+								<phase>install</phase>
+								<configuration>
+									<workingDirectory>target/checkout</workingDirectory>
+									<pushChanges>true</pushChanges>
+									<message>Auto-commit livraion MOE GEDNAT</message>
+									<includes>*,**/*.*</includes>
+									<excludes>download.fedex,version.properties</excludes>	
+									<connectionUrl>scm:svn:http://svn.hawai.recouv/apps-v6/hwi_ged/trunk/bin</connectionUrl>						
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -175,14 +224,16 @@
 						<configuration>
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
-							<fedex>true</fedex>
+							<fedex>false</fedex>
+							<applicationName>dfce-webapp</applicationName>
+							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>					
 						</configuration>
 						<executions>
 							<execution>
 								<goals>
 									<goal>livraison</goal>
 								</goals>
-								<phase>deploy</phase>
+								<phase>install</phase>
 							</execution>
 						</executions>
 					</plugin>
