@@ -224,7 +224,7 @@
 						<configuration>
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
-							<fedex>false</fedex>
+							<fedex>true</fedex>
 							<applicationName>dfce-webapp</applicationName>
 							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>					
 						</configuration>
