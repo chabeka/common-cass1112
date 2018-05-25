@@ -6,12 +6,12 @@
 
 GED_CONCERNEE="$2"
 
-PROG_NAME=@@PROJECT_NAME@@-integrationinstall
+PROG_NAME=@PROJECT_NAME@-integrationinstall
 
 # Les sorties sont redirig�es dans ce fichier. 
 # Ce n'est pas un fichier de log � proprement parl�
 # car les logs applicatifs sont g�r�s via logback.
-OUT_FILE="@@LOGS_PATH@@/$PROG_NAME.out"
+OUT_FILE="@LOGS_PATH@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
 LOCK_FILE="/var/lock/subsys/$PROG_NAME"

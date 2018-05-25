@@ -6,12 +6,12 @@
 
 SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @@SAE_HOME@@/sae-ordonnanceur/sae-ordonnanceur.jar @@SAE_HOME@@/sae-config.properties"
 
-PROG_NAME=@@PROJECT_NAME@@-ordonnanceur
+PROG_NAME=@PROJECT_NAME@-ordonnanceur
 
 # Les sorties sont redirigées dans ce fichier. 
 # Ce n'est pas un fichier de log à proprement parlé
 # car les logs applicatifs sont gérés via logback.
-OUT_FILE="@@LOGS_PATH@@/$PROG_NAME.out"
+OUT_FILE="@LOGS_PATH@/$PROG_NAME.out"
 
 PID_FILE="/var/run/$PROG_NAME.pid"
 LOCK_FILE="/var/lock/subsys/$PROG_NAME"

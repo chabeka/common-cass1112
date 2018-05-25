@@ -28,7 +28,7 @@
    
    
    
-   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
+   <property name="LOGS_FOLDER" value="@LOGS_PATH@" />
    
    <property name="LOGS_FILENAME_PREFIXE" value="sae_documents_batch_import_export_suppression" />
    

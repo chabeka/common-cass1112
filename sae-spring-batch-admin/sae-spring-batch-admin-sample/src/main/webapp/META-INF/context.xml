@@ -6,7 +6,7 @@
    -->   
    
    <Environment name="SAE_Fichier_Configuration_Cassandra" type="java.lang.String"
-      value="@@SAE_HOME@@/sae-cassandra-config.properties" />
+      value="@SAE_HOME@/sae-cassandra-config.properties" />
       
    <!-- 
    Configuration Windows (poste de developpeur) (exemple)
