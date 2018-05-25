@@ -46,24 +46,7 @@
 
 	<build>
 		<plugins>
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>${maven-assembly-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>attached</goal>
-						</goals>
-						<configuration>
-							<descriptors>
-								<descriptor>src/assembly/config_assembly.xml</descriptor>
-							</descriptors>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+			
          <!--
          Pour la gestion des release
          -->
@@ -75,78 +58,6 @@
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<useReleaseProfile>false</useReleaseProfile>
 				</configuration>
-			</plugin>
-			
-         <!--
-         Extraire les livrables de sae-livrable
-         -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>${maven-dependency-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>unpack</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>unpack</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>fr.urssaf.image.sae</groupId>
-									<artifactId>sae-livrable</artifactId>
-									<version>${sae.version}</version>
-									<classifier>zip</classifier>
-									<type>zip</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/sae-livrable</outputDirectory>
-									<includes>**/*.*</includes>
-									<excludes></excludes>
-								</artifactItem>
-								<artifactItem>
-									<groupId>fr.urssaf.image.sae</groupId>
-									<artifactId>sae-ihm-web-exploit-livrable</artifactId>
-									<version>${sae-ihm-web-exploit-livrable.version}</version>
-									<classifier>zip</classifier>
-									<type>zip</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}/sae-ihm-web-exploit-livrable</outputDirectory>
-									<includes>**/*.*</includes>
-									<excludes></excludes>
-								</artifactItem>
-							</artifactItems>
-							<includes>**/*.*</includes>
-							<excludes></excludes>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>${maven-resources-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>custom-resources</id>
-						<phase>install</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/checkout</outputDirectory>
-							<overwrite>true</overwrite>							
-							<resources>
-								<resource>
-									<directory>target\${project.build.finalName}-dir</directory>
-								</resource>
-							</resources>
-							<encoding>UTF-8</encoding>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 
@@ -168,22 +79,143 @@
 			<type>zip</type>
 		</dependency>
 		<dependency>
-		  <groupId>com.docubase</groupId>
-		  <artifactId>dfce-webapp</artifactId>
-		  <version>1.9.4</version>
-		  <type>war</type>
-		</dependency>		
+			<groupId>com.docubase</groupId>
+			<artifactId>dfce-webapp</artifactId>
+			<version>1.9.4</version>
+			<type>war</type>
+		</dependency>
 	</dependencies>
 
 	<profiles>
 		<profile>
-      <!-- permet de livrer lors d'un deploy (utile en release)  -->
+      		<!-- permet de lancer la création du RPM dans FEDEX -->
 			<id>livraison</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<version>${hawai-maven-plugin.version}</version>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<fedex>true</fedex>
+							<applicationName>dfce-webapp</applicationName>
+							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>livraison</goal>
+								</goals>
+								<phase>install</phase>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+      	<!-- permet d'ajouter les fichiers de configuration de SAE dans le /bin du repo SVN d'Hawaï et de lancer la création du RPM dans FEDEX   -->
+			<id>livraisonFull</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-assembly-plugin</artifactId>
+						<version>${maven-assembly-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>make-assembly</id>
+								<phase>package</phase>
+								<goals>
+									<goal>attached</goal>
+								</goals>
+								<configuration>
+									<descriptors>
+										<descriptor>src/assembly/config_assembly.xml</descriptor>
+									</descriptors>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+			         <!--
+         Extraire les livrables de sae-livrable
+         -->
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-dependency-plugin</artifactId>
+						<version>${maven-dependency-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>unpack</id>
+								<phase>prepare-package</phase>
+								<goals>
+									<goal>unpack</goal>
+								</goals>
+								<configuration>
+									<artifactItems>
+										<artifactItem>
+											<groupId>fr.urssaf.image.sae</groupId>
+											<artifactId>sae-livrable</artifactId>
+											<version>${sae.version}</version>
+											<classifier>zip</classifier>
+											<type>zip</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/sae-livrable</outputDirectory>
+											<includes>**/*.*</includes>
+											<excludes></excludes>
+										</artifactItem>
+										<artifactItem>
+											<groupId>fr.urssaf.image.sae</groupId>
+											<artifactId>sae-ihm-web-exploit-livrable</artifactId>
+											<version>${sae-ihm-web-exploit-livrable.version}</version>
+											<classifier>zip</classifier>
+											<type>zip</type>
+											<overWrite>false</overWrite>
+											<outputDirectory>${project.build.directory}/sae-ihm-web-exploit-livrable</outputDirectory>
+											<includes>**/*.*</includes>
+											<excludes></excludes>
+										</artifactItem>
+									</artifactItems>
+									<includes>**/*.*</includes>
+									<excludes></excludes>
+									<overWriteReleases>false</overWriteReleases>
+									<overWriteSnapshots>true</overWriteSnapshots>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven-resources-plugin.version}</version>
+						<executions>
+							<execution>
+								<id>custom-resources</id>
+								<phase>install</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.build.directory}/checkout</outputDirectory>
+									<overwrite>true</overwrite>
+									<resources>
+										<resource>
+											<directory>target\${project.build.finalName}-dir</directory>
+										</resource>
+									</resources>
+									<encoding>UTF-8</encoding>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-scm-plugin</artifactId>
@@ -212,8 +244,8 @@
 									<pushChanges>true</pushChanges>
 									<message>Auto-commit livraion MOE GEDNAT</message>
 									<includes>*,**/*.*</includes>
-									<excludes>download.fedex,version.properties</excludes>	
-									<connectionUrl>scm:svn:http://svn.hawai.recouv/apps-v6/hwi_ged/trunk/bin</connectionUrl>						
+									<excludes>download.fedex,version.properties</excludes>
+									<connectionUrl>scm:svn:http://svn.hawai.recouv/apps-v6/hwi_ged/trunk/bin</connectionUrl>
 								</configuration>
 							</execution>
 						</executions>
@@ -227,7 +259,7 @@
 							<hawaiVersion>hawai6</hawaiVersion>
 							<fedex>true</fedex>
 							<applicationName>dfce-webapp</applicationName>
-							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>					
+							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>
 						</configuration>
 						<executions>
 							<execution>
