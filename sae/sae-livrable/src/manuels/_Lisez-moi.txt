@@ -12,7 +12,7 @@ Exemples :
    c:/hawai/data/sae
    
 
-GED.DFCE_BASE_NAME
+@GED.DFCE_BASE_NAME@
 Le nom de la base DFCE.
 Exemples :
   SAE-TEST
@@ -26,7 +26,7 @@ Exemples :
   C:/hawai/logs/sae
 
 
-GED.CM_JAVA_OPTS
+@GED.CM_JAVA_OPTS@
 Les paramètres supplémentaires à fournir à la JVM dans laquelle s'exécute une capture de masse.
 L'objectif est d'y mettre le paramétrage mémoire.
 Par exemple, on peut mettre "-Xms500m -Xmx2500m" pour indiquer que la JVM démarre avec 500 Mo de RAM,
@@ -35,20 +35,20 @@ Le valeur du token doit être à vide à partir du lot 120510, dans lequel la ca
 a été optimisée et n'a plus besoin de cette configuration. 
 
 
-GED.PKIVALAED_CRL
+@GED.PKIVALAED_CRL@
 L'URL du point de distribution des CRL de la PKI de validation AED.
 La valeur par défaut doit être :
 http://cer69idxpkival1.cer69.recouv/*.crl
 
 
-GED.PKIVALAED_ISSUER
+@GED.PKIVALAED_ISSUER@
 Pour la PKI de validation AED, le pattern du CN de l'issuer du certificat de
 signature du VI.
 La valeur par défaut doit être :
 CN=AC Applications
 
 
-GED.PKINAT_CRL
+@GED.PKINAT_CRL@
 L'URL du point de distribution des CRL de la PKI nationale.
 La valeur par défaut doit être :
 http://pkipubcrl.cnp.recouv/*.crl
@@ -56,7 +56,7 @@ Sur une plateforme d'intégration/validation, on pourra par exemple se brancher
 plutôt sur la PKI nationale de test.
 
 
-GED.PKINAT_ISSUER
+@GED.PKINAT_ISSUER@
 Pour la PKI nationale, le pattern du CN de l'issuer du certificat de
 signature du VI.
 La valeur par défaut doit être :
