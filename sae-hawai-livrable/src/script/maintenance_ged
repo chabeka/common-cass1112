@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Suppression des fichiers de log des traitements de masse qui ont plus de 10 jours
-find /hawai/logs/GED/ -name 'sae_services_executable*.log' -mtime +10 | xargs rm -f
+find /hawai/logs/@PROJECT_NAME@/ -name 'sae_services_executable*.log' -mtime +10 | xargs rm -f
 
 # Redemarrage de l'ordonnanceur du GED
-service GED-ordonnanceur restart
+service @PROJECT_NAME@-ordonnanceur restart
 

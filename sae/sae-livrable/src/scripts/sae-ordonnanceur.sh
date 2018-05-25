@@ -4,7 +4,7 @@
 
 . /etc/rc.d/init.d/functions
 
-SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@@SAE_HOME@@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @@SAE_HOME@@/sae-ordonnanceur/sae-ordonnanceur.jar @@SAE_HOME@@/sae-config.properties"
+SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@SAE_HOME@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @SAE_HOME@/sae-ordonnanceur/sae-ordonnanceur.jar @SAE_HOME@/sae-config.properties"
 
 PROG_NAME=@PROJECT_NAME@-ordonnanceur
 

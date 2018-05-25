@@ -24,6 +24,7 @@
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
+		<!--VERSION BINAIRE A MODIFIER AVANT LANCEMENT DU BUILD  -->
 		<sae.version>18.9.1-SNAPSHOT</sae.version>
 		<sae-anais-portail.version>1.0.11-SNAPSHOT</sae-anais-portail.version>
 		<sae-ihm-web-exploit.version>1.0.22-SNAPSHOT</sae-ihm-web-exploit.version>
