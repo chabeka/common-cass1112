@@ -29,7 +29,7 @@
                      <goal>attached</goal>
                   </goals>
                   <configuration>
-                  		<finalName>${project.name}-data_sae-${project.version}</finalName>
+                  		<finalName>data_sae</finalName>
                         <descriptors>
                             <descriptor>src/assembly/config_tar-gz.xml</descriptor>
                         </descriptors>
@@ -64,7 +64,7 @@
 				<projectName>ged</projectName>
 				<hawaiVersion>hawai6</hawaiVersion>
 				<applicationName>data-sae</applicationName>
-				<applicationBinFileName>${project.name}-data_sae-${project.version}.tar.gz</applicationBinFileName>
+				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
 				<fedex>false</fedex>
 				<skip>false</skip>
 			</configuration>
