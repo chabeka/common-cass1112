@@ -46,7 +46,7 @@
 	</scm>
 
 	<build>
-		<finalName>dfce-webapp</finalName>
+		<finalName>sae-hawai-livrable</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -90,12 +90,6 @@
 			<classifier>zip</classifier>
 			<type>zip</type>
 		</dependency>
-		<dependency>
-			<groupId>com.docubase</groupId>
-			<artifactId>dfce-webapp</artifactId>
-			<version>${dfce-webapp.version}</version>
-			<type>war</type>
-		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -108,44 +102,16 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-dependency-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>copy</id>
-								<phase>package</phase>
-								<goals>
-									<goal>copy</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>com.docubase</groupId>
-									<artifactId>dfce-webapp</artifactId>
-									<version>${dfce-webapp.version}</version>
-									<type>war</type>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.build.directory}</outputDirectory>
-									<destFileName>dfce-webapp.war</destFileName>
-								</artifactItem>
-							</artifactItems>
-							<overWriteReleases>false</overWriteReleases>
-							<overWriteSnapshots>true</overWriteSnapshots>
-						</configuration>
-					</plugin>
-					<plugin>
 						<groupId>fr.acoss.industrialisation.maven</groupId>
 						<artifactId>hawai-maven-plugin</artifactId>
 						<version>${hawai-maven-plugin.version}</version>
 						<configuration>
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
-							<fedex>false</fedex>
- 							<applicationName>dfce-webapp</applicationName>
-							<applicationBinFileName>dfce-webapp.war</applicationBinFileName>
-							<ignoreDownloadFedexFile>false</ignoreDownloadFedexFile>
+							<fedex>true</fedex>
+ 							<applicationName>sae-hawai-livrable</applicationName>
+ 							<applicationBinFileName>sae-hawai-livrable.pom</applicationBinFileName>
+							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
 							<onlyUpdateProjectVersionLastDigit>true</onlyUpdateProjectVersionLastDigit>
 						</configuration>
 						<executions>
@@ -187,8 +153,8 @@
 						</executions>
 					</plugin>
 			         <!--
-         Extraire les livrables de sae-livrable
-         -->
+			         Extraire les livrables de sae-livrable
+			         -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-dependency-plugin</artifactId>
@@ -299,8 +265,10 @@
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
 							<fedex>true</fedex>
-							<applicationName>dfce-webapp</applicationName>
-							<applicationBinFileName>${project.build.directory}/dfce-webapp-${dfce-webapp.version}.war</applicationBinFileName>
+ 							<applicationName>sae-hawai-livrable</applicationName>
+ 							<applicationBinFileName>sae-hawai-livrable.pom</applicationBinFileName>
+							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
+							<onlyUpdateProjectVersionLastDigit>true</onlyUpdateProjectVersionLastDigit>
 						</configuration>
 						<executions>
 							<execution>
