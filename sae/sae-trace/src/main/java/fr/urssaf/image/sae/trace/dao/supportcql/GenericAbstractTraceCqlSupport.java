@@ -19,7 +19,6 @@ import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
 
 /**
  * TODO (AC75095028) Description du type
@@ -124,9 +123,10 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          date à laquelle rechercher les traces
    * @return la liste des traces techniques
    */
-  public List<I> findByDate(final Date date) {
+  public List<I> findByDate(final Date date, final Integer limite) {
 
     List<I> list = null;
+    final int count = 0;
     final Iterator<I> iterator = getIterator(date);
 
     if (iterator.hasNext()) {
@@ -134,57 +134,12 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     }
 
     while (iterator.hasNext()) {
-      list.add(iterator.next());
-    }
-
-    return list;
-  }
-
-  /**
-   * recherche et retourne la liste des traces pour un intervalle de dates
-   * données
-   *
-   * @param startDate
-   *          date de début de recherche
-   * @param endDate
-   *          date de fin de recherche
-   * @param maxCount
-   *          nombre maximal d'enregistrements à retourner
-   * @param reversed
-   *          booleen indiquant si l'ordre décroissant doit etre appliqué<br>
-   *          <ul>
-   *          <li>true : ordre décroissant</li>
-   *          <li>false : ordre croissant</li>
-   *          </ul>
-   * @return la liste des traces d'exploitation
-   */
-  public List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
-                             final boolean reversed) {
-
-    final Iterator<I> iterator = getIterator(startDate, endDate, reversed, maxCount);
-
-    List<I> list = null;
-
-    try {
-      if (iterator.hasNext()) {
-        list = new ArrayList<I>();
+      if (limite == null) {
+        list.add(iterator.next());
+      } else if (limite != null && count < limite) {
+        list.add(iterator.next());
       }
     }
-    catch (final HInvalidRequestException ex) {
-      getLogger()
-                 .warn(
-                       " - Echec de la requête Cassandra. Date de début : {}. UUID début : {}. Date de fin : {}. UUID fin : {}.",
-                       new Object[] {dateFormat.format(startDate), dateFormat.format(endDate),});
-      throw ex;
-    }
-
-    /*
-     * int count = 0;
-     * while (iterator.hasNext() && count < maxCount) {
-     * list.add(iterator.next());
-     * count++;
-     * }
-     */
 
     return list;
   }
@@ -213,21 +168,6 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return l'iterateur
    */
   abstract Iterator<I> getIterator(Date id);
-
-  /**
-   * @param dateStar
-   *          identifiant unique de départ
-   * @param dateEnd
-   *          identifiant unique de fin
-   * @param reversed
-   *          booleen indiquant si l'ordre décroissant doit etre appliqué<br>
-   *          <ul>
-   *          <li>true : ordre décroissant</li>
-   *          <li>false : ordre croissant</li>
-   *          </ul>
-   * @return l'iterateur
-   */
-  abstract Iterator<I> getIterator(Date dateStar, Date dateEnd, final boolean reversed, final Integer limit);
 
   /**
    * @return le dao utilisé pour les traces

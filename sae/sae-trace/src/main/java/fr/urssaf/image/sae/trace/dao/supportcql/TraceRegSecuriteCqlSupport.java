@@ -142,14 +142,6 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  Iterator<TraceRegSecuriteIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed, final Integer limit) {
-    return indexDao.findByDateInterval(DateRegUtils.getJournee(dateStar), DateRegUtils.getJournee(dateEnd), reversed, limit);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   String getIndexId(final TraceRegSecuriteIndexCql trace) {
     return trace.getIdentifiantIndex();
   }

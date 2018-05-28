@@ -14,9 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -86,18 +84,14 @@ public class TraceJournalEvtCqlSupportTest {
   @Test
   public void testCreateFindSuccess() {
 
-    final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addYears(DATE, -3));
+    final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, DateUtils.addYears(DATE, -3).getTime());
+    cqlsupport.create(trace, DATE.getTime());
 
     final Optional<TraceJournalEvtCql> securiteOp = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
     checkBean(securiteOp.get(), uuid);
 
-    final List<TraceJournalEvtIndexCql> list = cqlsupport.findByDate(DATE);
-    Assert.assertNotNull("la liste recherchée ne doit pas etre nulle", list);
-    Assert.assertEquals("le nombre d'éléments de la liste doit etre correct", 1, list.size());
-    checkBeanIndex(list.get(0), uuid);
   }
 
   @Test
@@ -111,10 +105,6 @@ public class TraceJournalEvtCqlSupportTest {
 
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
-
-    final List<TraceJournalEvtIndexCql> list = cqlsupport.findByDate(DATE);
-    Assert.assertTrue("aucun index ne doit etre present, donc aucune trace",
-                      CollectionUtils.isEmpty(list));
 
     Assert.assertEquals("Le nombre de traces purgées est incorrect",
                         1L,
@@ -133,26 +123,10 @@ public class TraceJournalEvtCqlSupportTest {
     final TraceJournalEvtCql exploitation = exploitationOpt.get();
     checkBean(exploitation, uuid);
 
-    List<TraceJournalEvtIndexCql> list = cqlsupport.findByDates(DateUtils.addYears(DATE, -2),
-                                                                DateUtils.addYears(DATE, -1),
-                                                                MAX_LIST_SIZE,
-                                                                false);
-
-    Assert.assertNull("aucun enregistrement ne doit etre retourné", list);
-    list = cqlsupport.findByDates(DateUtils.addHours(DATE, -1),
-                                  DateUtils
-                                           .addHours(DATE, 1),
-                                  MAX_LIST_SIZE,
-                                  false);
-    Assert.assertNotNull("la liste recherchée ne doit pas etre nulle", list);
-    Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-                        1,
-                        list.size());
-    checkBeanIndex(list.get(0), uuid);
   }
 
   private TraceJournalEvtCql createTrace(final UUID uuid) {
-    final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DateUtils.addYears(DATE, -3));
+    final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DATE);
     trace.setContexte(CONTEXT);
     trace.setCodeEvt(CODE_EVT);
     trace.setContratService(CONTRAT);

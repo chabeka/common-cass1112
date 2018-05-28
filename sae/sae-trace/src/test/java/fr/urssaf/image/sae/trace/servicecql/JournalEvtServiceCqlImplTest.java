@@ -40,8 +40,6 @@ public class JournalEvtServiceCqlImplTest {
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
-  private static final String DATE_ERROR = "The date must not be null";
-
   @Test
   public void testLectureIdentifiantObligatoire() {
 
@@ -113,13 +111,17 @@ public class JournalEvtServiceCqlImplTest {
 
     try {
       service
-             .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
+             .lecture(DateUtils.addYears(new Date(), -2), new Date(), 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }
     catch (final IllegalArgumentException exception) {
-      Assert.assertEquals(MESSAGE_OK, DATE_DEB_INF_DATE_FIN, exception
-                                                                      .getMessage());
+      Assert.assertEquals(MESSAGE_OK,
+                          StringUtils.replace(MESSAGE_ERREUR,
+                                              ARG_0,
+                                              "limite"),
+                          exception
+                                   .getMessage());
 
     }
     catch (final Exception exception) {
@@ -196,17 +198,22 @@ public class JournalEvtServiceCqlImplTest {
   @Test
   public void testHasRecordsDebutObligatoire() {
 
-     try {
-        service.hasRecords(null);
-        Assert.fail(ILLEGAL_EXPECTED);
+    try {
+      service.hasRecords(null);
+      Assert.fail(ILLEGAL_EXPECTED);
 
-     } catch (IllegalArgumentException exception) {
-        Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-              ARG_0, "date"), exception.getMessage());
+    }
+    catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK,
+                          StringUtils.replace(MESSAGE_ERREUR,
+                                              ARG_0,
+                                              "date"),
+                          exception.getMessage());
 
-     } catch (Exception exception) {
-        Assert.fail(ILLEGAL_EXPECTED);
-     }
+    }
+    catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
 
   }
 

@@ -131,16 +131,6 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  Iterator<TraceJournalEvtIndexCql> getIterator(final Date dateStar, final Date dateEnd, final boolean reversed, final Integer limit) {
-    final String jourStar = DateRegUtils.getJournee(dateStar);
-    final String journEnd = DateRegUtils.getJournee(dateEnd);
-    return indexjDao.findByDateInterval(jourStar, journEnd, reversed, limit);
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   TraceJournalEvtCql createNewInstance(final UUID idTrace, final Date timestamp) {
     return new TraceJournalEvtCql(idTrace, timestamp);
   }

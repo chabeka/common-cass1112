@@ -87,7 +87,7 @@ public class JournalEvtCqlServiceImpl extends
     final String trcPrefix = "export()";
     LOGGER.debug(DEBUT_LOG, trcPrefix);
 
-    final List<TraceJournalEvtIndexCql> listTraces = getSupport().findByDate(date);
+    final List<TraceJournalEvtIndexCql> listTraces = getSupport().findByDate(date, null);
 
     String path = null;
     final String sDate = DateFormatUtils.format(date, PATTERN_DATE);

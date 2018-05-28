@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -80,7 +79,7 @@ public class TraceRegTechniqueCqlSupportTest {
     final Optional<TraceRegTechniqueCql> securiteOp = support.find(uuid);
     Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
 
-    final List<TraceRegTechniqueIndexCql> list = support.findByDate(DATE);
+    final List<TraceRegTechniqueIndexCql> list = support.findByDate(DATE, null);
     Assert.assertNotNull("la liste recherchée ne doit pas etre nulle", list);
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -98,7 +97,7 @@ public class TraceRegTechniqueCqlSupportTest {
     final Optional<TraceRegTechniqueCql> securiteOp = support.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOp.isPresent());
 
-    final List<TraceRegTechniqueIndexCql> list = support.findByDate(DATE);
+    final List<TraceRegTechniqueIndexCql> list = support.findByDate(DATE, null);
     Assert.assertTrue("aucun index ne doit etre present, donc aucune trace",
                       CollectionUtils.isEmpty(list));
 
@@ -118,23 +117,6 @@ public class TraceRegTechniqueCqlSupportTest {
     Assert.assertTrue("L'objet doit etre non null", exploitationOpt.isPresent());
     checkBean(exploitationOpt.get(), uuid);
 
-    List<TraceRegTechniqueIndexCql> list = support.findByDates(DateUtils
-                                                                        .addHours(DATE, -2),
-                                                               DateUtils.addHours(DATE, -1),
-                                                               MAX_LIST_SIZE,
-                                                               false);
-
-    Assert.assertNull("aucun enregistrement ne doit etre retourné", list);
-    list = support.findByDates(DateUtils.addHours(DATE, -1),
-                               DateUtils
-                                        .addHours(DATE, 1),
-                               MAX_LIST_SIZE,
-                               false);
-    Assert.assertNotNull("la liste recherchée ne doit pas etre nulle", list);
-    Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-                        1,
-                        list.size());
-    checkBeanIndex(list.get(0), uuid);
   }
 
   private void checkBean(final TraceRegTechniqueCql securite, final UUID uuid) {

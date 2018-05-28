@@ -107,16 +107,15 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
     int countLeft = limite;
     List<I> result;
     final List<I> values = new ArrayList<I>();
-    Date currentDate, startDate, endDate;
+    Date currentDate;
+    // final Date startDate, endDate;
 
     do {
       currentDate = dates.get(index);
-      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-      endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+      // startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      // endDate = DateRegUtils.getEndDate(currentDate, dates.get(dates.size() - 1));
 
-      result = getSupport()
-                           .findByDates(startDate, endDate, countLeft, false);
+      result = getSupport().findByDate(currentDate, limite);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
@@ -135,15 +134,15 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
     int countLeft = limite;
     List<I> result;
     final List<I> values = new ArrayList<I>();
-    Date currentDate, startDate, endDate;
+    Date currentDate;
+    // Date startDate, endDate;
 
     do {
       currentDate = dates.get(index);
-      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-      endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+      // startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      // endDate = DateRegUtils.getEndDate(currentDate, dates.get(dates.size() - 1));
 
-      result = getSupport().findByDates(startDate, endDate, countLeft, true);
+      result = getSupport().findByDate(currentDate, limite);
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);

@@ -67,26 +67,7 @@ public class GenericIndexCqlDaoImpl<T, ID> extends GenericDAOImpl<T, ID> impleme
     final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
     final String keyName = keyField.getName();
     final StringBuilder sb = new StringBuilder();
-    sb.append(select.getQueryString().substring(0, select.getQueryString().length() - 1));
-    sb.append(" WHERE ");
-    // starDate
-    sb.append(QueryBuilder.token(keyName));
-    sb.append(" >= ");
-    sb.append("token");
-    sb.append("('" + dateStar + "')");
-    // endDate token
-    sb.append(" AND ");
-    sb.append(QueryBuilder.token(keyName));
-    sb.append(" <= ");
-    sb.append("token");
-    sb.append("('" + dateEnd + "')");
-    if (reversed) {
-      sb.append(" ORDER BY DESC ");
-    }
-    if (limit != null) {
-      sb.append(" LIMIT " + 3);
-    }
-    sb.append(";");
+    // TODO
 
     return getMapper().map(getSession().execute(sb.toString())).all().iterator();
   }
