@@ -12,7 +12,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
  * Services du journal des événements du SAE
  * 
  */
-public interface JournalEvtService extends RegService<TraceJournalEvt, TraceJournalEvtIndex> {
+public interface JournalEvtService extends RegServiceThrift<TraceJournalEvt, TraceJournalEvtIndex> {
 
    /**
     * Exporte l'ensemble des traces du jour donné sous format XML

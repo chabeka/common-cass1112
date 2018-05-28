@@ -11,5 +11,5 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
  * 
  */
 public interface RegTechniqueService extends
-      RegService<TraceRegTechnique, TraceRegTechniqueIndex> {
+      RegServiceThrift<TraceRegTechnique, TraceRegTechniqueIndex> {
 }

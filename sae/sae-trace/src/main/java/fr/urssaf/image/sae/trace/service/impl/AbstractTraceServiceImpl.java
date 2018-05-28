@@ -17,7 +17,7 @@ import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.model.PurgeType;
-import fr.urssaf.image.sae.trace.service.RegService;
+import fr.urssaf.image.sae.trace.service.RegServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  *          Index des traces
  */
 public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceIndex>
-                                              implements RegService<T, I> {
+                                              implements RegServiceThrift<T, I> {
 
   private static final String FIN_LOG = "{} - Fin";
 

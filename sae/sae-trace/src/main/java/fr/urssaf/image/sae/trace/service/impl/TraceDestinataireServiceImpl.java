@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
@@ -26,6 +27,8 @@ import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
 @Qualifier("serviceImpl")
 public class TraceDestinataireServiceImpl implements TraceDestinaireService {
 
+  private final String cfName = "tracedestinataire";
+
   public TraceDestinataireSupport traceDestinataireSupport;
 
   public TraceDestinataireCqlSupport traceDestinataireCqlSupport;
@@ -36,8 +39,6 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
 
   private static final Logger LOGGER = LoggerFactory
                                                     .getLogger(TraceDestinataireServiceImpl.class);
-
-  public boolean flagCql;
 
   /**
    * Constructeur
@@ -64,11 +65,15 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     LOGGER.debug(DEBUT_LOG, prefix);
 
     List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
 
-    if (flagCql) {
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
       listeTraceDestinataire = traceDestinataireSupport.findAll();
-    } else {
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
 
     final List<String> listeCodeEvenement = new ArrayList<String>();

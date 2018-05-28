@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.PurgeService;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
-import fr.urssaf.image.sae.trace.service.RegService;
+import fr.urssaf.image.sae.trace.service.RegServiceThrift;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.service.StatusService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
@@ -103,7 +103,7 @@ public class PurgeServiceImpl implements PurgeService {
          if (minDate.before(maxDate)) {
 
             @SuppressWarnings("unchecked")
-            RegService servicePurge;
+            RegServiceThrift servicePurge;
             if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
                servicePurge = exploitService;
 
@@ -211,7 +211,7 @@ public class PurgeServiceImpl implements PurgeService {
    }
 
    @SuppressWarnings("unchecked")
-   private void purge(RegService servicePurge, Date minDate, Date maxDate,
+   private void purge(RegServiceThrift servicePurge, Date minDate, Date maxDate,
          PurgeType typePurge) {
 
       String prefix = "purge()";

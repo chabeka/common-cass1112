@@ -11,6 +11,6 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
  * 
  */
 public interface RegSecuriteService extends
-      RegService<TraceRegSecurite, TraceRegSecuriteIndex> {
+      RegServiceThrift<TraceRegSecurite, TraceRegSecuriteIndex> {
 
 }
