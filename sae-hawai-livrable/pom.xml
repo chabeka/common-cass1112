@@ -26,7 +26,7 @@
 		<maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
 		<!--VERSION BINAIRE A MODIFIER AVANT LANCEMENT DU BUILD  -->
 		<sae.version>18.9.1-SNAPSHOT</sae.version>
-		<dfce-webapp.version>1.9.4</dfce-webapp.version>
+		<dfce-webapp.version>1.9.5</dfce-webapp.version>
 		<sae-anais-portail.version>1.0.11-SNAPSHOT</sae-anais-portail.version>
 		<sae-ihm-web-exploit.version>1.0.22-SNAPSHOT</sae-ihm-web-exploit.version>
 		<sae-ihm-web-exploit-livrable.version>1.0.6-SNAPSHOT</sae-ihm-web-exploit-livrable.version>
@@ -46,6 +46,7 @@
 	</scm>
 
 	<build>
+		<finalName>dfce-webapp</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -141,7 +142,7 @@
 						<configuration>
 							<projectName>ged</projectName>
 							<hawaiVersion>hawai6</hawaiVersion>
-							<fedex>true</fedex>
+							<fedex>false</fedex>
  							<applicationName>dfce-webapp</applicationName>
 							<applicationBinFileName>dfce-webapp.war</applicationBinFileName>
 							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
@@ -299,7 +300,7 @@
 							<hawaiVersion>hawai6</hawaiVersion>
 							<fedex>true</fedex>
 							<applicationName>dfce-webapp</applicationName>
-							<applicationBinFileName>${project.build.directory}/dfce-webapp-1.9.4.war</applicationBinFileName>
+							<applicationBinFileName>${project.build.directory}/dfce-webapp-${dfce-webapp.version}.war</applicationBinFileName>
 						</configuration>
 						<executions>
 							<execution>
