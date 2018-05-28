@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -58,6 +59,10 @@ public final class CassandraCQLClientFactory implements DisposableBean {
   private String keyspace;
 
   CassandraServerBeanCql server;
+
+  private Thread apiThread;
+
+  public HashMap<String, String> listeCfsModes;
 
   /**
    * Constructeur utilisé pour le transfert.
@@ -150,7 +155,6 @@ public final class CassandraCQLClientFactory implements DisposableBean {
   private void initCassandra(final CassandraServerBeanCql cassandraServer,
                              final String keyspaceName, final String userName, final String password)
       throws InterruptedException {
-    // LOG.debug("Creation d'un client cassandra utilisant les serveurs suivants : " + cassandraServer.getHosts());
     final QueryOptions qo = new QueryOptions().setConsistencyLevel(ConsistencyLevel.QUORUM);
     final PoolingOptions poolingOptions = new PoolingOptions();
 
@@ -173,8 +177,16 @@ public final class CassandraCQLClientFactory implements DisposableBean {
     }
     this.keyspace = keyspaceName;
     this.server = cassandraServer;
-    // final CodecRegistry myCodecRegistry = this.cluster.getConfiguration().getCodecRegistry();
 
+    // On initialise aussi le thread permettant de vérifier le mode de gestion des APIs
+    if (apiThread != null) {
+      // Dans le cas ou le Thread existe on vérifie son état avant de faire un start
+      if (!apiThread.isAlive()) {
+        apiThread.start();
+      }
+    } else {
+      apiThread = new Thread(new CassandraApiGestion());
+    }
   }
 
   /**
