@@ -11,7 +11,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-hawai-livrable</artifactId>
-	<version>18.9.1-SNAPSHOT</version>
+	<version>1.9.5-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>sae-hawai-livrable</name>
 	<description>Projet de création de livrable pour les environnements Hawaï</description>
@@ -145,7 +145,7 @@
 							<fedex>false</fedex>
  							<applicationName>dfce-webapp</applicationName>
 							<applicationBinFileName>dfce-webapp.war</applicationBinFileName>
-							<ignoreDownloadFedexFile>true</ignoreDownloadFedexFile>
+							<ignoreDownloadFedexFile>false</ignoreDownloadFedexFile>
 							<onlyUpdateProjectVersionLastDigit>true</onlyUpdateProjectVersionLastDigit>
 						</configuration>
 						<executions>
