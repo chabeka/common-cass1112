@@ -46,18 +46,18 @@ public class DaoTest {
 
     // initialisation de la table destinataire
     destinatairedao.deleteAll();
-    Iterator<TraceDestinataire> new_traces = destinatairedao.findAllWithMapper();
+    Iterator<TraceDestinataire> new_traces = (Iterator<TraceDestinataire>) destinatairedao.findAllWithMapper();
     Assert.assertTrue(!new_traces.hasNext());
     while (new_traces.hasNext()) {
       final TraceDestinataire trace = new_traces.next();
       destinatairedao.saveAll(traces);
-      new_traces = destinatairedao.findAllWithMapper();
+      new_traces = (Iterator<TraceDestinataire>) destinatairedao.findAllWithMapper();
     }
   }
 
   @Test
   public void migration_of_trace_destinataire_from_new_version_to_older() {
-    final Iterator<TraceDestinataire> new_traces = destinatairedao.findAllWithMapper();
+    final Iterator<TraceDestinataire> new_traces = (Iterator<TraceDestinataire>) destinatairedao.findAllWithMapper();
 
     while (new_traces.hasNext()) {
       support.create(new_traces.next(), new Date().getTime());

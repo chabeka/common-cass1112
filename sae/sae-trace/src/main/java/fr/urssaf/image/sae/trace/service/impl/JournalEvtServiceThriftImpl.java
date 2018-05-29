@@ -20,7 +20,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -30,6 +30,7 @@ import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
+import fr.urssaf.image.sae.trace.service.JournalEvtServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
 import fr.urssaf.image.sae.trace.utils.StaxUtils;
@@ -40,10 +41,9 @@ import javanet.staxutils.IndentingXMLEventWriter;
  * est un singleton et peut être accessible par le mécanisme d'injection IOC
  * avec l'annotation @Autowired
  */
-@Service
+@Component
 public class JournalEvtServiceThriftImpl extends
-                                         AbstractTraceServiceImpl<TraceJournalEvt, TraceJournalEvtIndex> implements
-                                         JournalEvtService {
+                                         AbstractTraceServiceImpl<TraceJournalEvt, TraceJournalEvtIndex> implements JournalEvtServiceThrift {
 
   private static final String FIN_LOG = "{} - Fin";
 

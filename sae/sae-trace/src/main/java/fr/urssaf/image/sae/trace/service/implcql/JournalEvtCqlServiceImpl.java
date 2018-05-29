@@ -15,7 +15,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
@@ -32,7 +32,7 @@ import fr.urssaf.image.sae.trace.utils.TraceUtils;
 /**
  * TODO (AC75095028) Description du type
  */
-@Repository
+@Component
 public class JournalEvtCqlServiceImpl extends
                                       AbstractTraceServiceCqlImpl<TraceJournalEvtCql, TraceJournalEvtIndexCql>
                                       implements ITraceJournalEvtCqlService<TraceJournalEvtCql, TraceIndex> {
