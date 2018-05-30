@@ -150,6 +150,14 @@
          <outputDirectory>sae-documents-executable</outputDirectory>
       </fileSet>
       
+     <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-integrationinstall.xml</include>
+         </includes>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
+      </fileSet>
+      
       <fileSet>
          <directory>src/scripts/</directory>
          <includes>

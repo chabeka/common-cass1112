@@ -54,7 +54,7 @@
    
    
    <!-- Niveau general pour l'application -->
-   <root level="DEBUG">
+   <root level="INFO">
       <appender-ref ref="log-file" />
    </root>
    
