@@ -1,6 +1,6 @@
 #!/bin/bash
 # 
-# description: Lance ou arrête les outils du SAE.
+# description: Lance ou arrete les outils du SAE.
  
 # Source function library
 . /etc/rc.d/init.d/functions
@@ -9,7 +9,7 @@ GED_CONCERNEE="$2"
  
 PROG_TOMCAT="tomcat"
 PROG_ZOOKEEPER="zookeeper"
-PROG_SAE_ORDONNANCEUR="sae-ordonnanceur"
+PROG_SAE_ORDONNANCEUR="gns-ordonnanceur"
 PROG_GNT_ORDONNANCEUR="gnt-ordonnanceur"
 PID_FILE_SAE_ORDONNANCEUR="/var/run/$PROG_SAE_ORDONNANCEUR.pid"
 PID_FILE_GNT_ORDONNANCEUR="/var/run/$PROG_GNT_ORDONNANCEUR.pid"
@@ -112,7 +112,7 @@ start(){
 			fi
 		fi
 	else
-        echo -n "L'ordonnanceur n'a pas pu être arrête car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
+        echo -n "L'ordonnanceur n'a pas pu ï¿½tre arrï¿½te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
     fi
 }
  
@@ -131,7 +131,7 @@ stop(){
 		RETVAL=$(service $PROG_TOMCAT status)
 		echo -n "$RETVAL"
 		if [ "$RETVAL" = "[HAWAI] - Status du service TOMCAT : stop" ]; then
-			#echo -n "$PROG_TOMCAT arrête"
+			#echo -n "$PROG_TOMCAT arrï¿½te"
 			success "OK"
 			echo -e "\n"
 			sleep 5
@@ -157,7 +157,7 @@ stop(){
 		RETVAL=$(service $PROG_ZOOKEEPER status)
 		echo -n "$RETVAL"
 		if [ $"$RETVAL" = "[HAWAI] - Status du service ZOOKEEPER : stop" ]; then
-			#echo -n "$PROG_ZOOKEEPER arrête"
+			#echo -n "$PROG_ZOOKEEPER arrï¿½te"
 			success "OK"
 			echo -e "\n"
 			sleep 5
@@ -179,7 +179,7 @@ stop(){
 			sleep 5
 			echo -n "Verification $PROG_GNT_ORDONNANCEUR stop "
 			if [ ! -e $LOCK_FILE_GNT_ORDONNANCEUR ]; then
-				#echo -n "$PROG_GNT_ORDONNANCEUR arrête"
+				#echo -n "$PROG_GNT_ORDONNANCEUR arrï¿½te"
 				success "OK"
 				echo -e "\n"
 				sleep 5
@@ -202,7 +202,7 @@ stop(){
 			sleep 5
 			echo -n "Verification $PROG_SAE_ORDONNANCEUR stop "
 			if [ ! -e $LOCK_FILE_SAE_ORDONNANCEUR ]; then
-				#echo -n "$PROG_SAE_ORDONNANCEUR arrête"
+				#echo -n "$PROG_SAE_ORDONNANCEUR arrï¿½te"
 				success "OK"
 				echo -e "\n"
 				sleep 5
@@ -214,7 +214,7 @@ stop(){
 			fi
 		fi
 	else
-        echo -n "L'ordonnanceur n'a pas pu être arrête car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
+        echo -n "L'ordonnanceur n'a pas pu ï¿½tre arrï¿½te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
     fi
 }
  
@@ -238,7 +238,7 @@ status(){
 		elif [ ! -e $LOCK_FILE_GNT_ORDONNANCEUR ]; then
 			echo "L'ordonnanceur GNT n'est pas demarre."
 		else
-			echo "L'ordonnanceur GNT est dans un état instable. Veuillez détuire le process manuellement svp."
+			echo "L'ordonnanceur GNT est dans un ï¿½tat instable. Veuillez dï¿½tuire le process manuellement svp."
 		fi
 		
     elif [ "GNS" = "$GED_CONCERNEE" ]; then
@@ -248,10 +248,10 @@ status(){
 		elif [ ! -e $LOCK_FILE_SAE_ORDONNANCEUR ]; then
 			echo "L'ordonnanceur SAE n'est pas demarre."
 		else
-			echo "L'ordonnanceur SAE est dans un état instable. Veuillez détuire le process manuellement svp."
+			echo "L'ordonnanceur SAE est dans un ï¿½tat instable. Veuillez dï¿½tuire le process manuellement svp."
 		fi
 	else
-        echo -n "L'ordonnanceur n'a pas pu être arrête car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
+        echo -n "L'ordonnanceur n'a pas pu ï¿½tre arrï¿½te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
     fi
 }
  
