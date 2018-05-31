@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -68,8 +69,11 @@ public class ConvertSommaireDocumentTransfertProcessor implements
 
       try {
 
-         untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
-               .getObjetNumerique().getUUID()));
+         if(StringUtils.isNotBlank(itemTransfert.getValue()
+               .getObjetNumerique().getUUID())){
+            untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
+                  .getObjetNumerique().getUUID().trim()));
+         }
 
          if (itemTransfert.getValue().getMetadonnees() != null) {
             if (itemTransfert.getValue().getMetadonnees().getMetadonnee() != null

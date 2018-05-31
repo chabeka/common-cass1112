@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -82,9 +83,11 @@ public class ConvertMetaDocumentModificationProcessor implements
             listUM.add(untypedMetadata);
          }
          untypedDoc.setUMetadatas(listUM);
-         untypedDoc.setUuid(UUID.fromString(item.getValue().getObjetNumerique()
-               .getUUID()));
-
+         if(StringUtils.isNotBlank(item.getValue().getObjetNumerique()
+               .getUUID())){
+            untypedDoc.setUuid(UUID.fromString(item.getValue().getObjetNumerique()
+                  .getUUID().trim()));
+         }
       } catch (Exception e) {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
