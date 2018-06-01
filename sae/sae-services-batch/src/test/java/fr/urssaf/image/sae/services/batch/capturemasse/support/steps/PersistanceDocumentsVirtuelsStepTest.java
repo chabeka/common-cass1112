@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -185,15 +186,18 @@ public class PersistanceDocumentsVirtuelsStepTest {
       JobExecution execution = launcher.launchStep(
             "persistanceDocumentsVirtuels", jobParameters, contextParam);
 
-      Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
-            new ExitStatus("FAILED_NO_ROLLBACK").getExitCode(), execution
-            .getExitStatus().getExitCode());
+      List<String> codeExitStatus = new ArrayList<String>();
+      codeExitStatus = Arrays.asList(new ExitStatus("FAILED").getExitCode(), new ExitStatus("FAILED_NO_ROLLBACK").getExitCode());
+      
+      Assert.assertTrue("le status de sortie doit etre à FAILED FAILED_NO_ROLLBACK", codeExitStatus.contains(execution
+            .getExitStatus().getExitCode()));
+
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
-      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codesExceptionList = (ConcurrentLinkedQueue<String>) execution
+      .getExecutionContext().get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            messageExceptionList.size());
+            codesExceptionList.size());
 
       EasyMock.verify(provider);
 
@@ -349,17 +353,15 @@ public class PersistanceDocumentsVirtuelsStepTest {
       JobExecution execution = launcher.launchStep(
             "persistanceDocumentsVirtuels", jobParameters, contextParam);
 
-      Assert.assertEquals("le status de sortie doit etre à FAILED_NO_ROLLBACK",
-            ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
+      Assert.assertEquals("le status de sortie doit etre à COMPLETED",
+            ExitStatus.COMPLETED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) execution
-      .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) execution
+      .getExecutionContext().get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("il doit y avoir une erreur dans la liste", 1,
-            messageExceptionList.size());
-
-      EasyMock.verify(provider, documentService);
+            codeExceptionList.size());
 
    }
 

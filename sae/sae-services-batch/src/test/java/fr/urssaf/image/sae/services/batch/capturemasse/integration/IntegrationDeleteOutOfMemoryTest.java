@@ -366,7 +366,7 @@ public class IntegrationDeleteOutOfMemoryTest {
                   urlSommaire,
                   Arrays
                         .asList(
-                              "fr.urssaf.image.sae.storage.exception.InsertionServiceEx: erreur mémoire",
+                              //"fr.urssaf.image.sae.storage.exception.InsertionServiceEx: erreur mémoire",
                               "fr.urssaf.image.sae.storage.exception.DeletionServiceEx: exception de suppression"));
 
    }

@@ -95,14 +95,14 @@ public class DebutTraitementStepTest {
       ExecutionContext context = execution.getExecutionContext();
 
       Assert.assertNotNull("Une exception doit etre presente dans le context",
-            context.get(Constantes.DOC_EXCEPTION));
+            context.get(Constantes.CODE_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<String> exceptions = (ConcurrentLinkedQueue<String>) context
-            .get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codesExceptions = (ConcurrentLinkedQueue<String>) context
+            .get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (codesExceptions.size()));
 
    }
 }
