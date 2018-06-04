@@ -43,6 +43,7 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
   @Override
   public final List<I> lecture(final Date dateDebut, final Date dateFin, final int limite,
                                final boolean reversed) {
+
     final String prefix = "lecture()";
     getLogger().debug(DEBUT_LOG, prefix);
 
@@ -89,10 +90,11 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
                                             prefix,
                                             PurgeType.PURGE_EVT,
                                             DateRegUtils.getJournee(date));
+
     final long nbTracesPurgees = getSupport().delete(dateIndex,
                                                      getClockSupport().currentCLock());
-    getLoggerSupport()
-                      .logPurgeJourneeFin(getLogger(),
+
+    getLoggerSupport().logPurgeJourneeFin(getLogger(),
                                           prefix,
                                           PurgeType.PURGE_EVT,
                                           DateRegUtils.getJournee(date),
@@ -177,8 +179,7 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
                        "{} - Aucune trace trouvée pour la journée du {}",
                        new Object[] {
                                      trcPrefix,
-                                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                      .format(date)});
+                                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH).format(date)});
     }
 
     getLogger().debug(FIN_LOG, trcPrefix);

@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
@@ -57,17 +56,9 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    */
   @Override
   Iterator<TraceRegSecuriteIndexCql> getIterator(final Date date) {
-    Date dateJ = null;
     final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
     final String journee = DateRegUtils.getJournee(date);
-    try {
-      dateJ = dateFormat.parse(journee);
-    }
-    catch (final ParseException e) {
-      LOGGER.error("Le parsin de la date fournie est impossible");
-      e.printStackTrace();
-    }
-    return indexDao.IterableFindById(dateJ);
+    return indexDao.IterableFindById(journee);
   }
 
   /**
@@ -82,7 +73,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  IGenericDAO<TraceRegSecuriteIndexCql, Date> getIndexDao() {
+  IGenericDAO<TraceRegSecuriteIndexCql, String> getIndexDao() {
     return indexDao;
   }
 
@@ -142,8 +133,8 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  String getIndexId(final TraceRegSecuriteIndexCql trace) {
-    return trace.getIdentifiantIndex();
+  UUID getTraceId(final TraceRegSecuriteIndexCql trace) {
+    return trace.getIdentifiant();
   }
 
 }

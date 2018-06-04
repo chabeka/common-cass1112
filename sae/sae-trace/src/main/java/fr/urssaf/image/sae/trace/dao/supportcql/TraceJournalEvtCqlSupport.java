@@ -214,8 +214,8 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  String getIndexId(final TraceJournalEvtIndexCql trace) {
-    return trace.getIdentifiantIndex();
+  UUID getTraceId(final TraceJournalEvtIndexCql trace) {
+    return trace.getIdentifiant();
   }
 
 }

@@ -9,7 +9,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
 /**
  * Services du registre de sécurité
  */
-public interface IRegSecuriteServiceCql extends
+public interface RegSecuriteServiceCql extends
                                         RegService<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> {
 
 }

@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.service.IRegTechniqueServiceCql;
+import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 @Service
 public class RegTechniqueCqlServiceImpl extends
                                         AbstractTraceServiceCqlImpl<TraceRegTechniqueCql, TraceRegTechniqueIndexCql>
-                                        implements IRegTechniqueServiceCql {
+                                        implements RegTechniqueServiceCql {
 
   private final TraceRegTechniqueCqlSupport support;
 

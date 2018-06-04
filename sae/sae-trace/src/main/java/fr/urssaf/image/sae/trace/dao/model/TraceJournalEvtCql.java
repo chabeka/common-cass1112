@@ -79,9 +79,13 @@ public class TraceJournalEvtCql extends Trace {
       // on récupère toutes les infos
       if (listInfos.size() == 1
           && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
-        // infos.putAll(trace.getInfos().);
+        for (final java.util.Map.Entry<String, Object> entry : trace.getInfos().entrySet()) {
+          infos.put(entry.getKey(), entry.getValue().toString());
+        }
+
       }
     }
+
   }
 
   /**

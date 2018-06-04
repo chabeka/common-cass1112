@@ -12,9 +12,30 @@ import fr.urssaf.image.sae.commons.dao.IGenericDAO;
  */
 public interface IGenericIndexCqlDao<T, ID> extends IGenericDAO<T, ID> {
 
-  Iterator<T> findByDateCreatedBefore(ID id);
+  /**
+   * Retourne tous les index crée avant cette date
+   * 
+   * @param id
+   * @return
+   */
+  Iterator<T> findByDateCreatedBeforeId(ID id);
 
-  Iterator<T> findByDateCreatedAfter(ID id);
+  /**
+   * Retourne tous les index créé après cette date
+   * 
+   * @param id
+   * @return
+   */
+  Iterator<T> findByDateCreatedAfterId(ID id);
 
+  /**
+   * Retourne tous les index créé dans l'interval des dates debut et fin
+   * 
+   * @param dateStar
+   * @param dateEnd
+   * @param reversed
+   * @param limit
+   * @return
+   */
   Iterator<T> findByDateInterval(String dateStar, String dateEnd, final boolean reversed, Integer limit);
 }

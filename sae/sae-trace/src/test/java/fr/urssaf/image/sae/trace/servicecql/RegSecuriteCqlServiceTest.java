@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.service.IRegSecuriteServiceCql;
+import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -32,7 +32,7 @@ public class RegSecuriteCqlServiceTest {
   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
 
   @Autowired
-  private IRegSecuriteServiceCql service;
+  private RegSecuriteServiceCql service;
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 

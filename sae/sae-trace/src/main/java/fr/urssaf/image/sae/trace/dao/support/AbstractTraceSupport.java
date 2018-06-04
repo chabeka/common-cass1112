@@ -32,6 +32,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
@@ -201,47 +202,78 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
   }
 
   /**
+   * Recherche et retourne la liste des traces à une date donnée
+   *
+   * @param date
+   *          date à laquelle rechercher les traces
+   * @return la liste des traces techniques
+   */
+  public final Iterator<I> findByDateIterator(final Date date) {
+    final SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
+    sliceQuery.setKey(DateRegUtils.getJournee(date));
+
+    final Iterator<I> iterator = getIterator(sliceQuery);
+    return iterator;
+  }
+
+  /**
    * Retourne l'ensemble des destinataires des traces
    *
    * @return l'ensemble des destinataires des traces
    */
   public final List<T> findAll() {
+    UUID startKey = null;
+    int i = 1;
+    int count = 0;
+    int total = 0;
 
-    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-    final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-                                                                            .createRangeSlicesQuery(getDao().getKeyspace(),
+    do {
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
+                                                                              .createRangeSlicesQuery(getDao().getKeyspace(),
+                                                                                                      getDao().getRowKeySerializer(),
+                                                                                                      getDao().getColumnKeySerializer(),
+                                                                                                      bytesSerializer);
+      rangeSlicesQuery.setColumnFamily(getDao().getColumnFamilyName());
+      rangeSlicesQuery.setRange(
+                                StringUtils.EMPTY,
+                                StringUtils.EMPTY,
+                                false,
+                                AbstractDao.DEFAULT_MAX_COLS);
+      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+      rangeSlicesQuery.setKeys(startKey, null);
+      QueryResult<OrderedRows<UUID, String, byte[]>> queryResult;
+      queryResult = rangeSlicesQuery.execute();
+
+      final OrderedRows<UUID, String, byte[]> orderedRows = queryResult.get();
+      count = orderedRows.getCount();
+      total += count - 1;
+      i++;
+      System.out.println("count" + count * i);
+      System.out.println(total);
+      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+      // son utilisation
+      final QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
+      final ColumnFamilyResultWrapper<UUID, String> result = converter
+                                                                      .getColumnFamilyResultWrapper(queryResult,
                                                                                                     getDao().getRowKeySerializer(),
                                                                                                     getDao().getColumnKeySerializer(),
                                                                                                     bytesSerializer);
-    rangeSlicesQuery.setColumnFamily(getDao().getColumnFamilyName());
-    rangeSlicesQuery.setRange(
-                              StringUtils.EMPTY,
-                              StringUtils.EMPTY,
-                              false,
-                              AbstractDao.DEFAULT_MAX_COLS);
-    rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-    QueryResult<OrderedRows<UUID, String, byte[]>> queryResult;
-    queryResult = rangeSlicesQuery.execute();
+      final Row<UUID, String, byte[]> lastRow = queryResult.get().peekLast();
+      startKey = lastRow.getKey();
+      // On itère sur le résultat
+      final HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
+                                                                                           result);
 
-    // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-    // son utilisation
-    final QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
-    final ColumnFamilyResultWrapper<UUID, String> result = converter
-                                                                    .getColumnFamilyResultWrapper(queryResult,
-                                                                                                  getDao().getRowKeySerializer(),
-                                                                                                  getDao().getColumnKeySerializer(),
-                                                                                                  bytesSerializer);
+      final List<T> list = new ArrayList<T>();
+      for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
 
-    // On itère sur le résultat
-    final HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
-                                                                                         result);
-    final List<T> list = new ArrayList<T>();
-    for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
+        list.add(getTraceFromResult(row));
 
-      list.add(getTraceFromResult(row));
+      }
+    } while (AbstractDao.DEFAULT_MAX_COLS == count);
 
-    }
-    return list;
+    return null;
 
   }
 

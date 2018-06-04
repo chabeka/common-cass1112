@@ -4,12 +4,17 @@
 package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
 import com.datastax.driver.mapping.annotations.Table;
 
+import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
@@ -61,6 +66,25 @@ public class TraceRegSecuriteCql extends Trace {
 
     super(trace, listInfos, idTrace, timestamp);
     this.contexte = trace.getContexte();
+
+    if (CollectionUtils.isNotEmpty(listInfos)
+        && MapUtils.isNotEmpty(trace.getInfos())) {
+      this.infos = new HashMap<String, String>();
+      for (final String info : listInfos) {
+        if (trace.getInfos().get(info) != null) {
+          this.infos.put(info, trace.getInfos().get(info).toString());
+        }
+      }
+
+      // on récupère toutes les infos
+      if (listInfos.size() == 1
+          && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
+        for (final java.util.Map.Entry<String, Object> entry : trace.getInfos().entrySet()) {
+          infos.put(entry.getKey(), entry.getValue().toString());
+        }
+
+      }
+    }
 
   }
 

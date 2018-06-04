@@ -3,12 +3,20 @@
  */
 package fr.urssaf.image.sae.trace.servicecql;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,16 +26,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
-import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
+import fr.urssaf.image.sae.trace.service.JournalEvtServiceCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
-public class RegTechniqueCqlServiceDatasTest {
+public class JournalEvtCqlServiceDatasTest {
 
   private static final Date DATE = new Date();
 
@@ -42,8 +50,6 @@ public class RegTechniqueCqlServiceDatasTest {
   private static final String VALUE = "valeur";
 
   private static final String KEY = "clé";
-
-  private static final String STACK = "stacktrace";
 
   private static final String LOGIN = "LE LOGIN";
 
@@ -60,13 +66,13 @@ public class RegTechniqueCqlServiceDatasTest {
   }
 
   @Autowired
-  private RegTechniqueServiceCql service;
+  private JournalEvtServiceCql service;
 
   @Autowired
-  private CassandraServerBean server;
+  private CassandraServerBeanCql server;
 
   @Autowired
-  private TraceRegTechniqueCqlSupport support;
+  private TraceJournalEvtCqlSupport support;
 
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
@@ -84,10 +90,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addDays(DATE, -3);
     final Date dateFin = DateUtils.addDays(DATE, -2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   10,
-                                                                   true);
+    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
+                                                                 dateFin,
+                                                                 10,
+                                                                 true);
     Assert.assertNull("il ne doit y avoir aucun résultat", result);
   }
 
@@ -98,10 +104,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addDays(DATE, -2);
     final Date dateFin = DateUtils.addDays(DATE, 2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   1,
-                                                                   true);
+    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
+                                                                 dateFin,
+                                                                 1,
+                                                                 true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -117,14 +123,15 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DATE;
     final Date dateEnd = DATE_SUP;
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
+                                                                 dateEnd,
+                                                                 10,
+                                                                 true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
                         result.size());
+
     Assert.assertTrue("le premier enregistrement doit etre le plus ancien",
                       result.get(0).getContexte().contains("DATE_INF"));
     Assert.assertTrue("le deuxième enregistrement doit etre le plus récent",
@@ -141,10 +148,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
+                                                                 dateEnd,
+                                                                 10,
+                                                                 true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
@@ -165,11 +172,9 @@ public class RegTechniqueCqlServiceDatasTest {
   @Test
   public void testGetBean() {
     createTraces();
-
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
-    final TraceRegTechniqueCql result = service.lecture(uuid);
-
+    final TraceJournalEvtCql result = service.lecture(uuid);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertNotNull("l'objet doit etre trouvé", result);
     Assert.assertEquals("l'action doit etre correcte",
@@ -192,9 +197,6 @@ public class RegTechniqueCqlServiceDatasTest {
                                                                                          .getInfos().size());
     Assert.assertTrue("les infos supplémentaire doivent une clé correcte",
                       result.getInfos().keySet().contains(KEY));
-    Assert.assertEquals("la stack trace doit etre valide",
-                        STACK + suffixe,
-                        result.getStacktrace());
     Assert
           .assertEquals(
                         "les infos supplémentaire doivent contenir une valeur correcte élément",
@@ -210,8 +212,10 @@ public class RegTechniqueCqlServiceDatasTest {
     service.purge(DATE_JOUR_PRECEDENT);
     service.purge(DATE);
 
-    List<TraceRegTechniqueIndexCql> result = service.lecture(
-                                                             DATE_JOUR_PRECEDENT, DATE, 100, false);
+    List<TraceJournalEvtIndexCql> result = service.lecture(DATE_JOUR_PRECEDENT,
+                                                           DATE,
+                                                           100,
+                                                           false);
     Assert.assertNull(
                       "il ne doit plus rester de traces pour les deux jours donnés",
                       result);
@@ -224,6 +228,90 @@ public class RegTechniqueCqlServiceDatasTest {
     Assert.assertTrue("il doit s'agir de la trace du jour +1", result.get(0)
                                                                      .getCodeEvt()
                                                                      .contains("DATE_JOUR_SUIVANT"));
+    // TODO test si l'index a été suprimé
+
+  }
+
+  @Test
+  public void testHasRecordsTheDayBefore() {
+    createTrace(DATE, " [DATE]");
+
+    final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
+
+    Assert.assertFalse("il ne doit pas y avoir de trace", hasRecords);
+
+  }
+
+  @Test
+  public void testHasRecords() {
+    createTrace(DATE, " [DATE]");
+
+    final boolean hasRecords = service.hasRecords(DATE);
+
+    Assert.assertTrue("il doit y avoir une trace", hasRecords);
+
+  }
+
+  @Test
+  public void testHasRecordsAucun() {
+
+    final boolean hasRecords = service.hasRecords(DATE);
+
+    Assert.assertFalse("il ne pas doit y avoir une trace", hasRecords);
+
+  }
+
+  @Test
+  public void testExport() throws IOException {
+
+    final Calendar calendar = new GregorianCalendar();
+    calendar.set(Calendar.YEAR, 2013);
+    calendar.set(Calendar.MONTH, 3);
+    calendar.set(Calendar.DATE, 15);
+    calendar.set(Calendar.AM_PM, Calendar.AM);
+    calendar.set(Calendar.HOUR, 11);
+    calendar.set(Calendar.MINUTE, 45);
+    calendar.set(Calendar.SECOND, 50);
+
+    createTrace(calendar.getTime(), " [DATE]", UUID
+                                                   .fromString("1b163270-80bd-11e2-8148-005056c00008"));
+
+    final String dirPath = System.getProperty("java.io.tmpdir");
+    final File tempDirectory = new File(dirPath);
+    final File repertoire = new File(tempDirectory, "export");
+    repertoire.mkdir();
+
+    final String path = service
+                               .export(calendar.getTime(),
+                                       repertoire.getAbsolutePath(),
+                                       "6f5e4930-80cc-11e2-8759-005056c00008",
+                                       "00000");
+
+    final String sha1Attendu = "61d37fcf05a3ea89ad02653a412e5147d8b8b9d6";
+    final String sha1Obtenu = calculeSha1(new File(path));
+
+    FileUtils.deleteDirectory(repertoire);
+
+    Assert.assertEquals(
+                        "le sha1 doit etre correct : le fichier doit etre correct",
+                        sha1Attendu,
+                        sha1Obtenu);
+
+  }
+
+  private String calculeSha1(final File file) throws IOException {
+
+    final FileInputStream fis = new FileInputStream(file);
+    try {
+
+      return DigestUtils.shaHex(fis);
+
+    }
+    finally {
+      if (fis != null) {
+        fis.close();
+      }
+    }
 
   }
 
@@ -236,15 +324,27 @@ public class RegTechniqueCqlServiceDatasTest {
   }
 
   private void createTrace(final Date date, final String suffixe) {
-    final TraceRegTechniqueCql trace = new TraceRegTechniqueCql(timeUUIDSupport
-                                                                               .buildUUIDFromDate(date),
-                                                                date);
+    final TraceJournalEvtCql trace = new TraceJournalEvtCql(timeUUIDSupport
+                                                                           .buildUUIDFromDate(date),
+                                                            date);
     trace.setContexte(CONTEXTE + suffixe);
     trace.setCodeEvt(CODE_EVT + suffixe);
     trace.setContratService(CONTRAT + suffixe);
     trace.setLogin(LOGIN + suffixe);
-    trace.setStacktrace(STACK + suffixe);
     trace.setInfos(INFOS);
+    trace.setPagms(Arrays.asList("PAGM " + suffixe));
+
+    support.create(trace, new Date().getTime());
+  }
+
+  private void createTrace(final Date date, final String suffixe, final UUID id) {
+    final TraceJournalEvtCql trace = new TraceJournalEvtCql(id, date);
+    trace.setContexte(CONTEXTE + suffixe);
+    trace.setCodeEvt(CODE_EVT + suffixe);
+    trace.setContratService(CONTRAT + suffixe);
+    trace.setLogin(LOGIN + suffixe);
+    trace.setInfos(INFOS);
+    trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
     support.create(trace, new Date().getTime());
   }

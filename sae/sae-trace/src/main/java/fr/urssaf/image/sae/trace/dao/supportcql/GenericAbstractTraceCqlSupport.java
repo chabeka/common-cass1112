@@ -81,6 +81,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          horloge de la suppression
    * @return le nombre de traces purgées
    */
+  @SuppressWarnings("unchecked")
   public long delete(final Date date, final long clock) {
     long nbTracesPurgees = 0;
 
@@ -107,11 +108,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          identifiant de la trace
    * @return la trace de sécurité
    */
+  @SuppressWarnings("unchecked")
   public Optional<T> find(final UUID identifiant) {
     return getDao().findWithMapperById(identifiant);
   }
 
   // TODO A Supprimer
+  @SuppressWarnings("unchecked")
   public Iterator<T> findAll() {
     return getDao().findAllWithMapper();
   }
@@ -153,10 +156,11 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          l'horloge de la suppression
    * @return le nombre d'enregistrements supprimés
    */
+  @SuppressWarnings("unchecked")
   long deleteRecords(final Iterator<I> iterator, final long clock) {
     long result = 0;
     while (iterator.hasNext()) {
-      getDao().deleteById(getIndexId(iterator.next()));
+      getDao().deleteById(getTraceId(iterator.next()));
       result++;
     }
     return result;
@@ -200,7 +204,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *
    * @return le nom du registre
    */
-  abstract String getIndexId(I trace);
+  abstract UUID getTraceId(I trace);
 
   /**
    * @param timestamp

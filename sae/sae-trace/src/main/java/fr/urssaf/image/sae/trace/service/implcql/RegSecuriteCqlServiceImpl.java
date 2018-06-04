@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
-import fr.urssaf.image.sae.trace.service.IRegSecuriteServiceCql;
+import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 @Service
 public class RegSecuriteCqlServiceImpl extends
                                        AbstractTraceServiceCqlImpl<TraceRegSecuriteCql, TraceRegSecuriteIndexCql>
-                                       implements IRegSecuriteServiceCql {
+                                       implements RegSecuriteServiceCql {
 
   private final TraceRegSecuriteCqlSupport support;
 

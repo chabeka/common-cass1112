@@ -9,6 +9,6 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
 /**
  * Services du registre de surveillance technique
  */
-public interface IRegTechniqueServiceCql extends
-                                         RegService<TraceRegTechniqueCql, TraceRegTechniqueIndexCql> {
+public interface RegTechniqueServiceCql extends
+                                        RegService<TraceRegTechniqueCql, TraceRegTechniqueIndexCql> {
 }

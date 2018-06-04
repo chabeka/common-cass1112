@@ -187,7 +187,7 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
   /**
    * @return le support permettant la réalisation des opérations
    */
-  public abstract AbstractTraceSupport<T, I> getSupport();
+  protected abstract AbstractTraceSupport<T, I> getSupport();
 
   /**
    * @return le support de log

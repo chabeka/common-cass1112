@@ -18,16 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
-import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
+import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
-public class RegTechniqueCqlServiceDatasTest {
+public class RegSecuriteCqlServiceDatasTest {
 
   private static final Date DATE = new Date();
 
@@ -42,8 +42,6 @@ public class RegTechniqueCqlServiceDatasTest {
   private static final String VALUE = "valeur";
 
   private static final String KEY = "clé";
-
-  private static final String STACK = "stacktrace";
 
   private static final String LOGIN = "LE LOGIN";
 
@@ -60,13 +58,13 @@ public class RegTechniqueCqlServiceDatasTest {
   }
 
   @Autowired
-  private RegTechniqueServiceCql service;
+  private RegSecuriteServiceCql service;
 
   @Autowired
-  private CassandraServerBean server;
+  private CassandraServerBeanCql server;
 
   @Autowired
-  private TraceRegTechniqueCqlSupport support;
+  private TraceRegSecuriteCqlSupport support;
 
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
@@ -84,10 +82,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addDays(DATE, -3);
     final Date dateFin = DateUtils.addDays(DATE, -2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
+                                                                  dateFin,
+                                                                  10,
+                                                                  true);
     Assert.assertNull("il ne doit y avoir aucun résultat", result);
   }
 
@@ -98,10 +96,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addDays(DATE, -2);
     final Date dateFin = DateUtils.addDays(DATE, 2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   1,
-                                                                   true);
+    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
+                                                                  dateFin,
+                                                                  1,
+                                                                  true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -117,14 +115,15 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DATE;
     final Date dateEnd = DATE_SUP;
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
+                                                                  dateEnd,
+                                                                  10,
+                                                                  true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
                         result.size());
+
     Assert.assertTrue("le premier enregistrement doit etre le plus ancien",
                       result.get(0).getContexte().contains("DATE_INF"));
     Assert.assertTrue("le deuxième enregistrement doit etre le plus récent",
@@ -141,10 +140,10 @@ public class RegTechniqueCqlServiceDatasTest {
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
+                                                                  dateEnd,
+                                                                  10,
+                                                                  true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
@@ -165,11 +164,9 @@ public class RegTechniqueCqlServiceDatasTest {
   @Test
   public void testGetBean() {
     createTraces();
-
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
-    final TraceRegTechniqueCql result = service.lecture(uuid);
-
+    final TraceRegSecuriteCql result = service.lecture(uuid);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertNotNull("l'objet doit etre trouvé", result);
     Assert.assertEquals("l'action doit etre correcte",
@@ -192,9 +189,6 @@ public class RegTechniqueCqlServiceDatasTest {
                                                                                          .getInfos().size());
     Assert.assertTrue("les infos supplémentaire doivent une clé correcte",
                       result.getInfos().keySet().contains(KEY));
-    Assert.assertEquals("la stack trace doit etre valide",
-                        STACK + suffixe,
-                        result.getStacktrace());
     Assert
           .assertEquals(
                         "les infos supplémentaire doivent contenir une valeur correcte élément",
@@ -210,8 +204,10 @@ public class RegTechniqueCqlServiceDatasTest {
     service.purge(DATE_JOUR_PRECEDENT);
     service.purge(DATE);
 
-    List<TraceRegTechniqueIndexCql> result = service.lecture(
-                                                             DATE_JOUR_PRECEDENT, DATE, 100, false);
+    List<TraceRegSecuriteIndexCql> result = service.lecture(DATE_JOUR_PRECEDENT,
+                                                            DATE,
+                                                            100,
+                                                            false);
     Assert.assertNull(
                       "il ne doit plus rester de traces pour les deux jours donnés",
                       result);
@@ -227,6 +223,26 @@ public class RegTechniqueCqlServiceDatasTest {
 
   }
 
+  @Test
+  public void testHasRecordsTheDayBefore() {
+    createTrace(DATE, " [DATE]");
+
+    final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
+
+    Assert.assertFalse("il ne doit pas y avoir de trace", hasRecords);
+
+  }
+
+  @Test
+  public void testHasRecords() {
+    createTrace(DATE, " [DATE]");
+
+    final boolean hasRecords = service.hasRecords(DATE);
+
+    Assert.assertTrue("il doit y avoir une trace", hasRecords);
+
+  }
+
   private void createTraces() {
     createTrace(DATE, " [DATE]");
     createTrace(DATE_INF, " [DATE_INF]");
@@ -236,14 +252,13 @@ public class RegTechniqueCqlServiceDatasTest {
   }
 
   private void createTrace(final Date date, final String suffixe) {
-    final TraceRegTechniqueCql trace = new TraceRegTechniqueCql(timeUUIDSupport
-                                                                               .buildUUIDFromDate(date),
-                                                                date);
+    final TraceRegSecuriteCql trace = new TraceRegSecuriteCql(timeUUIDSupport
+                                                                             .buildUUIDFromDate(date),
+                                                              date);
     trace.setContexte(CONTEXTE + suffixe);
     trace.setCodeEvt(CODE_EVT + suffixe);
     trace.setContratService(CONTRAT + suffixe);
     trace.setLogin(LOGIN + suffixe);
-    trace.setStacktrace(STACK + suffixe);
     trace.setInfos(INFOS);
 
     support.create(trace, new Date().getTime());
