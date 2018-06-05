@@ -31,8 +31,6 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
 
   private static final String REG_SECURITE_NAME = "registre de sécurité";
 
-  private static final String DATE_FORMAT = "yyyyMMdd";
-
   private final ITraceRegSecuriteCqlDao dao;
 
   private final ITraceRegSecuriteIndexCqlDao indexDao;
@@ -119,14 +117,6 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
   @Override
   Logger getLogger() {
     return LOGGER;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  String getDateFormat() {
-    return DATE_FORMAT;
   }
 
   /**

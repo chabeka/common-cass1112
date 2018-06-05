@@ -121,11 +121,11 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
+        // recalcul du nombre d'items restant à ajouter à la liste
         countLeft = limite - values.size();
       }
       index++;
-    } while (index < dates.size() && countLeft > 0
-        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+    } while (index < dates.size() && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
   }
@@ -148,11 +148,11 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
 
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
+        // recalcul du nombre d'items restant à ajouter à la liste
         countLeft = limite - values.size();
       }
       index--;
-    } while (index >= 0 && countLeft > 0
-        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+    } while (index >= 0 && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
   }

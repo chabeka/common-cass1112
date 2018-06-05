@@ -3,8 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -20,7 +18,6 @@ import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
-import fr.urssaf.image.sae.trace.daocql.IGenericIndexCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
@@ -35,7 +32,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
 
   private static final String JOURNAL_EVT_NAME = "journal des événements";
 
-  private static final String DATE_FORMAT = "yyyyMMdd";
+  // private static final String DATE_FORMAT = "yyyyMMdd";
 
   private final ITraceJournalEvtCqlDao tracejdao;
 
@@ -99,21 +96,11 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
   }
 
   /**
-   * @return the dateFormat
-   */
-
-  @Override
-  public String getDateFormat() {
-    return DATE_FORMAT;
-  }
-
-  /**
    * {@inheritDoc}
    */
   @Override
   public Iterator<TraceJournalEvtIndexCql> getIterator(final Date date) {
-    final Date dateJ = null;
-    final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
+
     final String journee = DateRegUtils.getJournee(date);
     /*
      * try {
@@ -206,7 +193,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    * {@inheritDoc}
    */
   @Override
-  IGenericIndexCqlDao<TraceJournalEvtIndexCql, String> getIndexDao() {
+  IGenericDAO<TraceJournalEvtIndexCql, String> getIndexDao() {
     return indexjDao;
   }
 

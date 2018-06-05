@@ -16,7 +16,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
-import fr.urssaf.image.sae.trace.daocql.service.ITraceJournalEvtCqlService;
 
 /**
  * TODO (AC75095028) Description du type
@@ -25,8 +24,6 @@ import fr.urssaf.image.sae.trace.daocql.service.ITraceJournalEvtCqlService;
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class TraceJournalEvtCqlServiceImplTest {
-  @Autowired
-  ITraceJournalEvtCqlService taceservice;
 
   @Autowired
   TraceJournalEvtSupport tracesupport;
@@ -36,7 +33,7 @@ public class TraceJournalEvtCqlServiceImplTest {
   private static final Date DATE = new Date();
 
   @Test
-  public void migration_of_trace_journal_from_older_to_new_version() {
+  public void migration_of_trace_journal_from_thrift_to_cql() {
     // tracesupport.getTraceIterator();
     final List<TraceJournalEvt> traces = tracesupport.findAll();
     final TraceJournalEvt trace = tracesupport.find(java.util.UUID.fromString("bbf93e40-dd1f-16e0-bfaa-f8b156a582f1"));

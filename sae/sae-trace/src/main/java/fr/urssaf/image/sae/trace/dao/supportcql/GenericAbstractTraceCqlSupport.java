@@ -28,6 +28,8 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   private final SimpleDateFormat dateFormat = new SimpleDateFormat(
                                                                    "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
+  private static final String DATE_FORMAT = "yyyyMMdd";
+
   /**
    * Création d'une trace dans le registre de sécurité.
    * les champs suivants sont renseignés :
@@ -148,6 +150,30 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   }
 
   /**
+   * recherche et retourne la liste des traces pour un intervalle de dates
+   * données
+   *
+   * @param startDate
+   *          date de début de recherche
+   * @param endDate
+   *          date de fin de recherche
+   * @param maxCount
+   *          nombre maximal d'enregistrements à retourner
+   * @param reversed
+   *          booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+   *          <ul>
+   *          <li>true : ordre décroissant</li>
+   *          <li>false : ordre croissant</li>
+   *          </ul>
+   * @return la liste des traces d'exploitation
+   */
+  public final List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
+                                   final boolean reversed) {
+    // getIndexDao().find
+    return null;
+  }
+
+  /**
    * Suppression des traces dans les registres ou journaux
    *
    * @param iterator
@@ -164,6 +190,14 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
       result++;
     }
     return result;
+  }
+
+  /**
+   * @return the dateFormat
+   */
+
+  public String getDateFormat() {
+    return DATE_FORMAT;
   }
 
   /**
@@ -224,10 +258,5 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return le logger concerné
    */
   abstract Logger getLogger();
-
-  /**
-   * @return
-   */
-  abstract String getDateFormat();
 
 }
