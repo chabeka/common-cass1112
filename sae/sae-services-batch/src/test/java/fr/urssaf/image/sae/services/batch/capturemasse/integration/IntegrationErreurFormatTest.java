@@ -267,11 +267,11 @@ public class IntegrationErreurFormatTest {
 
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
-      Assert.assertEquals("un message attendu", 1, loggingEvents.size());
+      Assert.assertEquals("un message attendu", 2, loggingEvents.size());
 
       ILoggingEvent event = loggingEvents.get(0);
 
-      Assert.assertEquals("le log doit être de niveau ERROR", Level.ERROR,
+      Assert.assertEquals("le log doit être de niveau ERROR", Level.WARN,
             event.getLevel());
 
       boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);

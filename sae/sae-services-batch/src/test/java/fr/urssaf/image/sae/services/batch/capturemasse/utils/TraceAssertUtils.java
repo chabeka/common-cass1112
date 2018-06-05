@@ -122,7 +122,7 @@ public final class TraceAssertUtils {
             Assert
                   .fail(String
                         .format(
-                              "La stacktrace ne contient pas l'attendu.\r\nAttendu : %s\r\nObtenu : %s\r\n",
+                              "La stacktrace ne contient pas l'attendu \r\nAttendu : %s\r\n Obtenu : %s\r\n",
                               partieStack, trace.getStacktrace()));
          }
       }
