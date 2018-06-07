@@ -14,8 +14,10 @@ import java.util.HashMap;
  */
 public final class ModeGestionAPI {
 
+  // Cette HashMap est celle que toute classe peut obtenir de façon publique
   public static HashMap<String, String> listeCfsModes = new HashMap<>();
 
+  // Cette interface est le référencement des modes de fonctionnement API
   public static interface MODE_API {
     String HECTOR = "HECTOR";
 

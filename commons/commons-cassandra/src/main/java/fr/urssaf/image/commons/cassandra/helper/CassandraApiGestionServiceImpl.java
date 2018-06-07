@@ -6,16 +6,21 @@ package fr.urssaf.image.commons.cassandra.helper;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * @author AC75007648
@@ -25,20 +30,45 @@ import com.datastax.driver.core.querybuilder.Select;
  *         C'est un thread qui scrute à intervalle régulier (5 min) le contenu d'une CF en BDD
  *         pour en déterminer le mode à adopter
  */
-public class CassandraApiGestion extends Thread {
+public class CassandraApiGestionServiceImpl {
 
+  // Spring tire le client CQL factory pour effectuer la requête
   @Autowired
   protected CassandraCQLClientFactory ccf;
 
+  // Comme pour les services CQL le nom de la CF est présente ici
   private final String cfName = "modeapi";
 
+  // Ajout du logger pour obtenir des traces si nécessaires
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(CassandraApiGestion.class);
+                                                    .getLogger(CassandraApiGestionServiceImpl.class);
+
+  private final LoadingCache<String, HashMap<String, String>> modeApisList;
+
+  @Autowired
+  public CassandraApiGestionServiceImpl(@Value("${sae.api.gestion.profil.cache}") final int value,
+                                    @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
+    modeApisList = CacheBuilder.newBuilder()
+                               .refreshAfterWrite(value,
+                                                  TimeUnit.MINUTES)
+                               .build(
+                                      new CacheLoader<String, HashMap<String, String>>() {
+
+                                        @Override
+                                        public HashMap<String, String> load(final String identifiant) throws FileNotFoundException {
+                                          return getApiModeFromConfiguration();
+                                        }
+                                      });
+
+    if (initCacheOnStartup) {
+      populateCache();
+    }
+  }
 
   /**
    * Méthode de récupératio en BDD du mode de gestion API
    *
-   * @return
+   * @return HashMap<String, String>
    * @throws FileNotFoundException
    */
   public HashMap<String, String> getApiModeFromConfiguration() throws FileNotFoundException {
@@ -54,6 +84,12 @@ public class CassandraApiGestion extends Thread {
       // Injection de la Row dans la HashMap
       listeCfsModes.put(row.getString(0), row.getString(1));
     }
+    try {
+      ModeGestionAPI.setListeCfsModes(modeApisList.get(cfName));
+    }
+    catch (final ExecutionException e) {
+      e.printStackTrace();
+    }
     // On retourne la HashMap
     return listeCfsModes;
   }
@@ -63,17 +99,10 @@ public class CassandraApiGestion extends Thread {
    * 5 min d'intervalle pour laisser le temps à chaque serveur
    * de se mettre à jour
    */
-  @Override
-  public void run() {
+  public void populateCache() {
     try {
       // On set la HashMap public avec le contenu retourné par le méthode du dessus
-      ModeGestionAPI.setListeCfsModes(getApiModeFromConfiguration());
-      // On impose une latence de 5 min pour que tous les serveurs d'application
-      // se mettent à jour selon le contenu de la base
-      Thread.sleep(TimeUnit.MINUTES.toMillis(5));
-    }
-    catch (final InterruptedException e) {
-      LOGGER.error(e.getMessage());
+      modeApisList.put(cfName, getApiModeFromConfiguration());
     }
     catch (final FileNotFoundException e) {
       LOGGER.error(e.getMessage());

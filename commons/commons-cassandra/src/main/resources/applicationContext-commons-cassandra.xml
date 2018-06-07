@@ -44,6 +44,10 @@
       <property name="dataSet" value="${cassandra.dataset}"/>
    </bean>
    
+   </bean>
+      <bean id="cassandraApiGestion" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionService">
+   </bean>
+   
    <!-- configuration du clock -->
    <bean id="jobClockConfiguration"
       class="fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration">
