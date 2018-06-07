@@ -204,7 +204,7 @@
 
       <!-- sae-anais-framework -->
 		<dependency>
-			<groupId>fr.urssaf.image.saedemos</groupId>
+			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-anais-framework</artifactId>
 			<version>${sae.anais.framework.version}</version>
 		</dependency>
