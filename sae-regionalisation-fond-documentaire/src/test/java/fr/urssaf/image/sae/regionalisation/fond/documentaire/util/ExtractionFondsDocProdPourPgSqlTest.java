@@ -57,8 +57,11 @@ public class ExtractionFondsDocProdPourPgSqlTest {
       // Paramétrage du TU
       // TODO: à adapter selon le besoin
       String repertoireSortie = "c:/divers";
-      int dateArchivageDebut = 20120101;
-      int dateArchivageFin = 20140505;
+//      int dateArchivageDebut = 20120101;
+//      int dateArchivageFin = 20161226;
+      int dateArchivageDebut = 20161225;
+      int dateArchivageFin = 20170108;
+
       boolean unFichierParMois = false;
       
       
