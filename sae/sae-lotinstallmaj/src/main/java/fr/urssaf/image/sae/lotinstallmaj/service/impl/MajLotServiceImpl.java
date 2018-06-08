@@ -517,6 +517,8 @@ public final class MajLotServiceImpl implements MajLotService {
          addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNT);
          // Ajout des index composites GNT_CASSANDRA_DFCE_170202
          addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNT);
+         // Ajout des index composites GNT_CASSANDRA_DFCE_180300
+         addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNT);
 
       } else if (APPL_CONCERNEE.GNS.equals(gedConcernee)) {
          // Ajout des index composites GNS_CASSANDRA_DFCE_160600
@@ -525,6 +527,8 @@ public final class MajLotServiceImpl implements MajLotService {
          addIndexesCompositeToDfce("META_160601", APPL_CONCERNEE.GNS);
          // Ajout des index composites GNS_CASSANDRA_DFCE_170202
          addIndexesCompositeToDfce("META_170202", APPL_CONCERNEE.GNS);
+         // Ajout des index composites GNS_CASSANDRA_DFCE_180300
+         addIndexesCompositeToDfce("META_180300", APPL_CONCERNEE.GNS);
       }
       // CASSANDRA_DFCE_160900
       updateMetaDfce("META_160900");
@@ -532,6 +536,9 @@ public final class MajLotServiceImpl implements MajLotService {
       updateMetaDfce("META_160901");
       // CASSANDRA_DFCE_170901
       updateMetaDfce("META_170901");
+      // CASSANDRA_DFCE_180300
+      updateMetaDfce("META_180300");
+               
    }
 
    /**
