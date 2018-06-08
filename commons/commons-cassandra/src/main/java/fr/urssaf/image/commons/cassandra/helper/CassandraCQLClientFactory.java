@@ -177,16 +177,6 @@ public final class CassandraCQLClientFactory implements DisposableBean {
     }
     this.keyspace = keyspaceName;
     this.server = cassandraServer;
-
-    // On initialise aussi le thread permettant de vérifier le mode de gestion des APIs
-    if (apiThread != null) {
-      // Dans le cas ou le Thread existe on vérifie son état avant de faire un start
-      if (!apiThread.isAlive()) {
-        apiThread.start();
-      }
-    } else {
-      apiThread = new Thread(new CassandraApiGestion());
-    }
   }
 
   /**

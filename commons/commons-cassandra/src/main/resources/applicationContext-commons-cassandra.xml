@@ -43,8 +43,6 @@
       <property name="hosts" value="${cassandra.hosts.cql}" />
       <property name="dataSet" value="${cassandra.dataset}"/>
    </bean>
-   
-   </bean>
       <bean id="cassandraApiGestion" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionService">
    </bean>
    
