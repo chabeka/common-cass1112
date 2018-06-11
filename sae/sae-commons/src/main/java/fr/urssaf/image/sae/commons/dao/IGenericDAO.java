@@ -105,7 +105,7 @@ public interface IGenericDAO<T, ID> {
    *
    * @return {@link ResultSet} contenant toutes les entitées
    */
-  ResultSet findAll();
+  Iterator<T> findAll();
 
   /**
    * Supprime l'entité T avec l'ID
@@ -176,4 +176,11 @@ public interface IGenericDAO<T, ID> {
    * @return
    */
   Iterator<T> IterableFindById(ID id);
+
+  /**
+   * Retourne un iterateur sur les colonnes des anciennes CF
+   * 
+   * @return
+   */
+  Iterator<T> iterablefindAll(String cfName, final String keyspace);
 }
