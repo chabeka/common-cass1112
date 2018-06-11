@@ -42,8 +42,7 @@ import javanet.staxutils.IndentingXMLEventWriter;
  * avec l'annotation @Autowired
  */
 @Component
-public class JournalEvtServiceThriftImpl extends
-                                         AbstractTraceServiceImpl<TraceJournalEvt, TraceJournalEvtIndex> implements JournalEvtServiceThrift {
+public class JournalEvtServiceThriftImpl implements JournalEvtServiceThrift {
 
   private static final String FIN_LOG = "{} - Fin";
 
@@ -280,4 +279,10 @@ public class JournalEvtServiceThriftImpl extends
                                                                        final UUID idDoc) {
     return traceJournalEvtSupport.findByIdDoc(idDoc);
   }
+
+  @Override
+  public TraceJournalEvt lecture(final UUID identifiant) {
+    return getSupport().find(identifiant);
+  }
+
 }

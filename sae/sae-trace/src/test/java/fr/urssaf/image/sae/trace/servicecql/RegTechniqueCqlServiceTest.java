@@ -14,7 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -38,13 +39,15 @@ public class RegTechniqueCqlServiceTest {
   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
 
   @Autowired
-  private RegTechniqueServiceCql service;
+  private RegTechniqueService service;
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
+  private static final String cfName = "traceregtechnique";
+
   @Test
   public void testLectureIdentifiantObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.lecture(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -66,7 +69,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.lecture(null, null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -88,7 +91,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateFinObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.lecture(new Date(), null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -110,7 +113,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutInfDateFin() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
              .lecture(DateUtils.addHours(new Date(), 2), new Date(), 0, true);
@@ -131,7 +134,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureDateDebutEqDateFin() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       final Date date = new Date();
       service.lecture(date, date, 0, true);
@@ -152,7 +155,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testLectureLimiteObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
              .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
@@ -175,7 +178,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testPurgeDateDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.purge(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -197,7 +200,7 @@ public class RegTechniqueCqlServiceTest {
 
   @Test
   public void testHasRecordsDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.hasRecords(null);
       Assert.fail(ILLEGAL_EXPECTED);

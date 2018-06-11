@@ -8,17 +8,17 @@ import java.util.UUID;
 import org.slf4j.Logger;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
-import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
 /**
  * @author AC75007648
  */
-public interface RegSecuriteServiceCql {
+public interface RegSecuriteServiceThrift {
 
-  GenericAbstractTraceCqlSupport<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> getSupport();
+  AbstractTraceSupport<TraceRegSecurite, TraceRegSecuriteIndex> getSupport();
 
   /**
    * @return le support de log
@@ -42,6 +42,6 @@ public interface RegSecuriteServiceCql {
    *          identifiant de la trace
    * @return Trace correspondant à l'identifiant
    */
-  TraceRegSecuriteCql lecture(UUID identifiant);
+  TraceRegSecurite lecture(UUID identifiant);
 
 }

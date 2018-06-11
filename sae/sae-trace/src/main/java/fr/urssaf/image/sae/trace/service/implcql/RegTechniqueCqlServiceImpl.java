@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.trace.service.implcql;
 
+import java.util.Optional;
+import java.util.UUID;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +16,8 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
+import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
 /**
@@ -23,9 +26,7 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
  * avec l'annotation @Autowired
  */
 @Service
-public class RegTechniqueCqlServiceImpl extends
-                                        AbstractTraceServiceCqlImpl<TraceRegTechniqueCql, TraceRegTechniqueIndexCql>
-                                        implements RegTechniqueServiceCql {
+public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
 
   private final TraceRegTechniqueCqlSupport support;
 
@@ -85,5 +86,15 @@ public class RegTechniqueCqlServiceImpl extends
   @Override
   public GenericAbstractTraceCqlSupport<TraceRegTechniqueCql, TraceRegTechniqueIndexCql> getSupport() {
     return support;
+  }
+
+  /*
+   * (non-Javadoc)
+   * @see fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql#lecture(java.util.UUID)
+   */
+  @Override
+  public TraceRegTechniqueCql lecture(final UUID identifiant) {
+    final Optional<TraceRegTechniqueCql> traceOpt = this.support.find(identifiant);
+    return traceOpt.get();
   }
 }

@@ -1,23 +1,22 @@
 /**
  *
  */
-package fr.urssaf.image.sae.trace.service.implcql;
+package fr.urssaf.image.sae.trace.service.impl;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
-import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
-import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
+import fr.urssaf.image.sae.trace.dao.support.TraceRegSecuriteSupport;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
-import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
+import fr.urssaf.image.sae.trace.service.RegSecuriteServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
 /**
@@ -25,17 +24,17 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
  * est un singleton et peut être accessible par le mécanisme d'injection IOC
  * avec l'annotation @Autowired
  */
-@Component
-public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
+@Service
+public class RegSecuriteThriftServiceImpl implements RegSecuriteServiceThrift {
 
-  private final TraceRegSecuriteCqlSupport support;
+  private final TraceRegSecuriteSupport support;
 
   private final JobClockSupport clockSupport;
 
   private final LoggerSupport loggerSupport;
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(RegSecuriteCqlServiceImpl.class);
+                                                    .getLogger(RegSecuriteThriftServiceImpl.class);
 
   /**
    * @param support
@@ -46,8 +45,8 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
    *          Support pour l'écriture des traces applicatives
    */
   @Autowired
-  public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support,
-                                   final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
+  public RegSecuriteThriftServiceImpl(final TraceRegSecuriteSupport support,
+                                      final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
     super();
     this.support = support;
     this.clockSupport = clockSupport;
@@ -57,7 +56,6 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
   /**
    * {@inheritDoc}
    */
-  @Override
   public JobClockSupport getClockSupport() {
     return clockSupport;
   }
@@ -65,7 +63,6 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
   /**
    * {@inheritDoc}
    */
-  @Override
   public Logger getLogger() {
     return LOGGER;
   }
@@ -73,7 +70,6 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
   /**
    * {@inheritDoc}
    */
-  @Override
   public LoggerSupport getLoggerSupport() {
     return loggerSupport;
   }
@@ -81,15 +77,12 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
   /**
    * {@inheritDoc}
    */
-  @Override
-  public GenericAbstractTraceCqlSupport<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> getSupport() {
+  public AbstractTraceSupport<TraceRegSecurite, TraceRegSecuriteIndex> getSupport() {
     return support;
   }
 
-  @Override
-  public TraceRegSecuriteCql lecture(final UUID identifiant) {
-    final Optional<TraceRegSecuriteCql> traceOpt = this.support.find(identifiant);
-    return traceOpt.get();
+  public TraceRegSecurite lecture(final UUID identifiant) {
+    return getSupport().find(identifiant);
   }
 
 }

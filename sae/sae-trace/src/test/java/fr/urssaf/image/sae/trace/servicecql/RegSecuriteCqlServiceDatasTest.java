@@ -18,12 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
-import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
+import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -51,6 +53,8 @@ public class RegSecuriteCqlServiceDatasTest {
 
   private static final String CONTEXTE = "contexte";
 
+  private static final String cfName = "traceregsecurite";
+
   private static final Map<String, String> INFOS;
   static {
     INFOS = new HashMap<String, String>();
@@ -58,10 +62,10 @@ public class RegSecuriteCqlServiceDatasTest {
   }
 
   @Autowired
-  private RegSecuriteServiceCql service;
+  private RegSecuriteService service;
 
   @Autowired
-  private CassandraServerBeanCql server;
+  private CassandraServerBean server;
 
   @Autowired
   private TraceRegSecuriteCqlSupport support;
@@ -76,30 +80,32 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testAucunRetourBorneInferieure() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
     final Date dateStart = DateUtils.addDays(DATE, -3);
     final Date dateFin = DateUtils.addDays(DATE, -2);
 
-    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
-                                                                  dateFin,
-                                                                  10,
-                                                                  true);
+    final List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
+                                                               dateFin,
+                                                               10,
+                                                               true);
     Assert.assertNull("il ne doit y avoir aucun résultat", result);
   }
 
   @Test
   public void testRetourUnSeulElementLimite() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
     final Date dateFin = DateUtils.addDays(DATE, 2);
 
-    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
-                                                                  dateFin,
-                                                                  1,
-                                                                  true);
+    final List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
+                                                               dateFin,
+                                                               1,
+                                                               true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -110,15 +116,16 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DATE;
     final Date dateEnd = DATE_SUP;
 
-    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
-                                                                  dateEnd,
-                                                                  10,
-                                                                  true);
+    final List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
+                                                               dateEnd,
+                                                               10,
+                                                               true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
@@ -135,15 +142,16 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-    final List<TraceRegSecuriteIndexCql> result = service.lecture(dateStart,
-                                                                  dateEnd,
-                                                                  10,
-                                                                  true);
+    final List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
+                                                               dateEnd,
+                                                               10,
+                                                               true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
@@ -163,10 +171,11 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
-    final TraceRegSecuriteCql result = service.lecture(uuid);
+    final TraceRegSecurite result = service.lecture(uuid);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertNotNull("l'objet doit etre trouvé", result);
     Assert.assertEquals("l'action doit etre correcte",
@@ -199,15 +208,16 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT);
     service.purge(DATE);
 
-    List<TraceRegSecuriteIndexCql> result = service.lecture(DATE_JOUR_PRECEDENT,
-                                                            DATE,
-                                                            100,
-                                                            false);
+    List<TraceRegSecuriteIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
+                                                         DATE,
+                                                         100,
+                                                         false);
     Assert.assertNull(
                       "il ne doit plus rester de traces pour les deux jours donnés",
                       result);
@@ -225,6 +235,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsTheDayBefore() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
@@ -235,6 +246,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testHasRecords() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE);

@@ -19,11 +19,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
-import fr.urssaf.image.sae.trace.service.RegTechniqueServiceCql;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -53,6 +55,8 @@ public class RegTechniqueCqlServiceDatasTest {
 
   private static final String CONTEXTE = "contexte";
 
+  private static final String cfName = "traceregtechnique";
+
   private static final Map<String, String> INFOS;
   static {
     INFOS = new HashMap<String, String>();
@@ -60,7 +64,7 @@ public class RegTechniqueCqlServiceDatasTest {
   }
 
   @Autowired
-  private RegTechniqueServiceCql service;
+  private RegTechniqueService service;
 
   @Autowired
   private CassandraServerBean server;
@@ -78,30 +82,32 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testAucunRetourBorneInferieure() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
     final Date dateStart = DateUtils.addDays(DATE, -3);
     final Date dateFin = DateUtils.addDays(DATE, -2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegTechniqueIndex> result = service.lecture(dateStart,
+                                                                dateFin,
+                                                                10,
+                                                                true);
     Assert.assertNull("il ne doit y avoir aucun résultat", result);
   }
 
   @Test
   public void testRetourUnSeulElementLimite() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
     final Date dateFin = DateUtils.addDays(DATE, 2);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateFin,
-                                                                   1,
-                                                                   true);
+    final List<TraceRegTechniqueIndex> result = service.lecture(dateStart,
+                                                                dateFin,
+                                                                1,
+                                                                true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -112,15 +118,16 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DATE;
     final Date dateEnd = DATE_SUP;
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegTechniqueIndex> result = service.lecture(dateStart,
+                                                                dateEnd,
+                                                                10,
+                                                                true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
@@ -136,15 +143,16 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-    final List<TraceRegTechniqueIndexCql> result = service.lecture(dateStart,
-                                                                   dateEnd,
-                                                                   10,
-                                                                   true);
+    final List<TraceRegTechniqueIndex> result = service.lecture(dateStart,
+                                                                dateEnd,
+                                                                10,
+                                                                true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
@@ -164,11 +172,12 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
-    final TraceRegTechniqueCql result = service.lecture(uuid);
+    final TraceRegTechnique result = service.lecture(uuid);
 
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertNotNull("l'objet doit etre trouvé", result);
@@ -205,13 +214,14 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT);
     service.purge(DATE);
 
-    List<TraceRegTechniqueIndexCql> result = service.lecture(
-                                                             DATE_JOUR_PRECEDENT, DATE, 100, false);
+    List<TraceRegTechniqueIndex> result = service.lecture(
+                                                          DATE_JOUR_PRECEDENT, DATE, 100, false);
     Assert.assertNull(
                       "il ne doit plus rester de traces pour les deux jours donnés",
                       result);

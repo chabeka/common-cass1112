@@ -17,7 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.service.implcql.JournalEvtCqlServiceImpl;
+import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceImpl;
+import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -36,12 +37,16 @@ public class JournalEvtServiceCqlImplTest {
   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
 
   @Autowired
-  private JournalEvtCqlServiceImpl service;
+  private JournalEvtServiceImpl service;
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
+  public String cfName = "tracejournalevt";
+
   @Test
   public void testLectureIdentifiantObligatoire() {
+
+    GestionModeApiTest.setModeApiCql(cfName);
 
     try {
       service.lecture(null);
@@ -64,7 +69,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.lecture(null, null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -86,7 +91,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateFinObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.lecture(new Date(), null, 0, true);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -108,7 +113,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutInfDateFin() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
              .lecture(DateUtils.addYears(new Date(), -2), new Date(), 0, true);
@@ -132,7 +137,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureDateDebutEqDateFin() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       final Date date = new Date();
       service.lecture(date, date, 0, true);
@@ -152,7 +157,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testLectureLimiteObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service
              .lecture(new Date(), DateUtils.addHours(new Date(), 2), 0, true);
@@ -175,7 +180,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testPurgeDateDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.purge(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -197,7 +202,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testHasRecordsDebutObligatoire() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.hasRecords(null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -219,6 +224,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportDateObligatoire() {
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.export(null, null, null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -239,6 +245,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireObligatoire() {
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.export(new Date(), null, null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -259,6 +266,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportIdObligatoire() {
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.export(new Date(), "fichier", null, null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -279,6 +287,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportHashObligatoire() {
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.export(new Date(), "fichier", "c", null);
       Assert.fail(ILLEGAL_EXPECTED);
@@ -299,6 +308,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireExisteObligatoire() {
+    GestionModeApiTest.setModeApiCql(cfName);
     try {
       service.export(new Date(), "fichierInexistant", "c", "d");
       Assert.fail(ILLEGAL_EXPECTED);
@@ -316,7 +326,7 @@ public class JournalEvtServiceCqlImplTest {
 
   @Test
   public void testExportRepertoireIsRepertoireObligatoire() throws IOException {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     final File file = File.createTempFile("repertoire", ".tmp");
 
     try {

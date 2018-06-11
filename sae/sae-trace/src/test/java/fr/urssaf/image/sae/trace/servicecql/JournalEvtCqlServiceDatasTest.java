@@ -27,11 +27,13 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
-import fr.urssaf.image.sae.trace.service.JournalEvtServiceCql;
+import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
@@ -59,6 +61,8 @@ public class JournalEvtCqlServiceDatasTest {
 
   private static final String CONTEXTE = "contexte";
 
+  private static final String cfName = "tracejournalevt";
+
   private static final Map<String, String> INFOS;
   static {
     INFOS = new HashMap<String, String>();
@@ -66,7 +70,7 @@ public class JournalEvtCqlServiceDatasTest {
   }
 
   @Autowired
-  private JournalEvtServiceCql service;
+  private JournalEvtService service;
 
   @Autowired
   private CassandraServerBeanCql server;
@@ -84,30 +88,32 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testAucunRetourBorneInferieure() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
     final Date dateStart = DateUtils.addDays(DATE, -3);
     final Date dateFin = DateUtils.addDays(DATE, -2);
 
-    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
-                                                                 dateFin,
-                                                                 10,
-                                                                 true);
+    final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                              dateFin,
+                                                              10,
+                                                              true);
     Assert.assertNull("il ne doit y avoir aucun résultat", result);
   }
 
   @Test
   public void testRetourUnSeulElementLimite() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
     final Date dateFin = DateUtils.addDays(DATE, 2);
 
-    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
-                                                                 dateFin,
-                                                                 1,
-                                                                 true);
+    final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                              dateFin,
+                                                              1,
+                                                              true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         1,
@@ -118,15 +124,16 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DATE;
     final Date dateEnd = DATE_SUP;
 
-    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
-                                                                 dateEnd,
-                                                                 10,
-                                                                 true);
+    final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                              dateEnd,
+                                                              10,
+                                                              true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         3,
@@ -143,15 +150,16 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-    final List<TraceJournalEvtIndexCql> result = service.lecture(dateStart,
-                                                                 dateEnd,
-                                                                 10,
-                                                                 true);
+    final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                              dateEnd,
+                                                              10,
+                                                              true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,
@@ -171,10 +179,11 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
-    final TraceJournalEvtCql result = service.lecture(uuid);
+    final TraceJournalEvt result = service.lecture(uuid);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertNotNull("l'objet doit etre trouvé", result);
     Assert.assertEquals("l'action doit etre correcte",
@@ -207,15 +216,16 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT);
     service.purge(DATE);
 
-    List<TraceJournalEvtIndexCql> result = service.lecture(DATE_JOUR_PRECEDENT,
-                                                           DATE,
-                                                           100,
-                                                           false);
+    List<TraceJournalEvtIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
+                                                        DATE,
+                                                        100,
+                                                        false);
     Assert.assertNull(
                       "il ne doit plus rester de traces pour les deux jours donnés",
                       result);
@@ -234,6 +244,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsTheDayBefore() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
@@ -244,6 +255,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecords() {
+    GestionModeApiTest.setModeApiCql(cfName);
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE);
@@ -254,7 +266,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsAucun() {
-
+    GestionModeApiTest.setModeApiCql(cfName);
     final boolean hasRecords = service.hasRecords(DATE);
 
     Assert.assertFalse("il ne pas doit y avoir une trace", hasRecords);
@@ -263,6 +275,8 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testExport() throws IOException {
+
+    GestionModeApiTest.setModeApiCql(cfName);
 
     final Calendar calendar = new GregorianCalendar();
     calendar.set(Calendar.YEAR, 2013);

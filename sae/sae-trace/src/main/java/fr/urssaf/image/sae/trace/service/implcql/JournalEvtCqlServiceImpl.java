@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
@@ -35,9 +35,7 @@ import fr.urssaf.image.sae.trace.utils.TraceUtils;
  * TODO (AC75095028) Description du type
  */
 @Component
-public class JournalEvtCqlServiceImpl extends
-                                      AbstractTraceServiceCqlImpl<TraceJournalEvtCql, TraceJournalEvtIndexCql>
-                                      implements JournalEvtServiceCql {
+public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
   private static final String FIN_LOG = "{} - Fin";
 
@@ -47,10 +45,6 @@ public class JournalEvtCqlServiceImpl extends
                                                     .getLogger(JournalEvtCqlServiceImpl.class);
 
   private static final String PATTERN_DATE = "yyyyMMdd";
-
-  private static final String INDENTATION = "    ";
-
-  private static final String ERREUR_FLUX = "erreur de fermeture du flux ";
 
   private final TraceJournalEvtCqlSupport supportcql;
 
@@ -175,7 +169,14 @@ public class JournalEvtCqlServiceImpl extends
    * @return Liste des traces
    */
   public final List<TraceJournalEvtIndexDocCql> getTraceJournalEvtByIdDoc(
-                                                                       final UUID idDoc) {
+                                                                          final UUID idDoc) {
     return supportcql.findByIdDoc(idDoc);
   }
+
+  @Override
+  public TraceJournalEvtCql lecture(final UUID identifiant) {
+    final Optional<TraceJournalEvtCql> traceOpt = this.supportcql.find(identifiant);
+    return traceOpt.get();
+  }
+
 }

@@ -17,7 +17,6 @@ import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.model.PurgeType;
-import fr.urssaf.image.sae.trace.service.RegServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
@@ -29,8 +28,7 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  * @param <I>
  *          Index des traces
  */
-public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceIndex>
-                                              implements RegServiceThrift<T, I> {
+public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceIndex> {
 
   private static final String FIN_LOG = "{} - Fin";
 
@@ -39,7 +37,6 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
   /**
    * {@inheritDoc}
    */
-  @Override
   public final List<I> lecture(final Date dateDebut, final Date dateFin, final int limite,
                                final boolean reversed) {
     final String prefix = "lecture()";
@@ -68,7 +65,6 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
   /**
    * {@inheritDoc}
    */
-  @Override
   public final T lecture(final UUID identifiant) {
     return getSupport().find(identifiant);
   }
@@ -76,7 +72,6 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
   /**
    * {@inheritDoc}
    */
-  @Override
   public final void purge(final Date date) {
     final String prefix = "purge()";
     getLogger().debug(DEBUT_LOG, prefix);
@@ -157,7 +152,6 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
   /**
    * {@inheritDoc}
    */
-  @Override
   public final boolean hasRecords(final Date date) {
 
     final String trcPrefix = "hasRecords()";
