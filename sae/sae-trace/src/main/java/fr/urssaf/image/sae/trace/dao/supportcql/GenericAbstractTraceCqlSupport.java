@@ -13,12 +13,14 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 
 import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
 /**
  * TODO (AC75095028) Description du type
@@ -31,15 +33,17 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
   private static final String DATE_FORMAT = "yyyyMMdd";
 
   /**
-   * Création d'une trace dans le registre de sécurité.
+   * Création d'une trace dans le registre
    * les champs suivants sont renseignés :
    * <ul>
    * <li>code événement</li>
    * <li>timestamp</li>
    * <li>contrat de service</li>
+   * <li>contrat</li>
    * <li>pagms</li>
    * <li>login</li>
    * <li>infos</li>
+   * <li>action</li>
    * </ul>
    * Les informations complémentaires sont à saisir dans la méthode
    *
@@ -72,6 +76,14 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
     // Trace applicative
 
+  }
+
+  public void saveAllTraces(final Iterable<T> entites) {
+    getDao().saveAll(entites);
+  }
+
+  public void saveAllIndex(final Iterable<I> entites) {
+    getIndexDao().saveAll(entites);
   }
 
   /**
@@ -115,10 +127,13 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return getDao().findWithMapperById(identifiant);
   }
 
-  // TODO A Supprimer
   @SuppressWarnings("unchecked")
   public Iterator<T> findAll() {
     return getDao().findAllWithMapper();
+  }
+
+  public Iterator<I> findAllIndex() {
+    return getIndexDao().findAllWithMapper();
   }
 
   /**
@@ -167,10 +182,32 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          </ul>
    * @return la liste des traces d'exploitation
    */
+
   public final List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
                                    final boolean reversed) {
-    // getIndexDao().find
-    return null;
+
+    final List<Date> dates = DateRegUtils.getListFromDates(startDate, endDate);
+
+    int index = 0;
+    final List<I> list = new ArrayList<>();
+    Iterator<I> it;
+
+    Date currentDate;
+
+    do {
+      currentDate = dates.get(index);
+      final String dateStr = DateRegUtils.getJournee(currentDate);
+
+      it = getIndexDao().IterableFindById(dateStr);
+
+      while (it.hasNext() && list.size() < maxCount) {
+        list.add(it.next());
+      }
+
+      index++;
+    } while (index < dates.size() && list.size() < maxCount && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
+    return list;
   }
 
   /**

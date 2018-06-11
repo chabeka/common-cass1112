@@ -63,7 +63,7 @@ public class TraceDestinataireCqlSupport {
   }
 
   /**
-   * Création d'une colonne
+   * Création d'une trace destinataire
    *
    * @param trace
    *          trace à créer
@@ -75,10 +75,10 @@ public class TraceDestinataireCqlSupport {
   }
 
   /**
-   * Méthode de suppression d'une ligne
+   * Méthode de suppression d'une trace destinataire
    *
    * @param code
-   *          identifiant de la ligne
+   *          identifiant de la trace
    * @param clock
    *          horloge de suppression
    */

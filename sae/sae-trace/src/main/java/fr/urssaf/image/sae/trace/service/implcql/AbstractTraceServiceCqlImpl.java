@@ -110,12 +110,9 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
     List<I> result;
     final List<I> values = new ArrayList<I>();
     Date currentDate;
-    // final Date startDate, endDate;
 
     do {
       currentDate = dates.get(index);
-      // startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-      // endDate = DateRegUtils.getEndDate(currentDate, dates.get(dates.size() - 1));
 
       result = getSupport().findByDate(currentDate, limite);
 
@@ -137,12 +134,9 @@ public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends Tra
     List<I> result;
     final List<I> values = new ArrayList<I>();
     Date currentDate;
-    // Date startDate, endDate;
 
     do {
       currentDate = dates.get(index);
-      // startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-      // endDate = DateRegUtils.getEndDate(currentDate, dates.get(dates.size() - 1));
 
       result = getSupport().findByDate(currentDate, limite);
 
