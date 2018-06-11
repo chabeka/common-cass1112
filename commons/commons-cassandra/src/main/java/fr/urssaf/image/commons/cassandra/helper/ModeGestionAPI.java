@@ -58,8 +58,9 @@ public final class ModeGestionAPI {
     // passée en paramètre comme clé
     if (listeCfsModes.containsKey(cfName)) {
       return listeCfsModes.get(cfName);
+    } else {
+      // Sinon par défaut on renvoit le fonctionnement avec Hector
+      return MODE_API.HECTOR;
     }
-    // Sinon on retourne un champ vide
-    return "";
   }
 }
