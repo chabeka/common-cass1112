@@ -1,7 +1,6 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.cassandraunit.DataLoader;
 import org.cassandraunit.dataset.DataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.cassandraunit.model.ColumnFamilyModel;
@@ -105,6 +104,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
    */
   public final void resetData(final String... newDataSets) throws Exception {
 
+    // startLocal = false;
     if (!startLocal) {
       return;
     }
@@ -115,15 +115,15 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     EmbeddedCassandraServerHelper.startEmbeddedCassandra();
 
     // On attend que le serveur soit prêt
-    waitForServer();
+    // waitForServer();
 
     // Fusionne les DataSets
-    final DataSet dataSet = mergeDataSets(newDataSets);
+    // final DataSet dataSet = mergeDataSets(newDataSets);
 
     // Charge les données
-    final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME,
-                                                 "localhost:9171");
-    dataLoader.load(dataSet);
+    // final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
+
+    // dataLoader.load(dataSet, false);
 
   }
 
@@ -229,8 +229,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
     // Boucle sur le reste des DataSet
     // Et fusionne les CF avec celles du premier DataSet
-    for (int i = 1; i < dataSets.length; i++) {
-      final String dataSet = dataSets[i];
+    for (final String dataSet : dataSets) {
       final ClassPathXmlDataSet dataSetObj = new ClassPathXmlDataSet(dataSet);
       if (!StringUtils.equals(dataSetObj.getKeyspace().getName(),
                               dataSetResult.getKeyspace().getName())) {

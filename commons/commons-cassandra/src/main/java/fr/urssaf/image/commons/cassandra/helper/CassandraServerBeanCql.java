@@ -1,8 +1,9 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.cassandraunit.DataLoader;
+import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.DataSet;
+import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.cassandraunit.model.ColumnFamilyModel;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
@@ -25,8 +26,7 @@ import me.prettyprint.cassandra.service.CassandraHostConfigurator;
  */
 public class CassandraServerBeanCql implements InitializingBean, DisposableBean {
 
-  private static final Logger LOG = LoggerFactory
-                                                 .getLogger(CassandraServerBeanCql.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBeanCql.class);
 
   private static final int WAIT_MAX_TRY = 12;
 
@@ -34,7 +34,7 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
 
   private static final String TEST_CLUSTER_NAME = "TestCluster";
 
-  private final String KEYSPACE_TU = "\"KEYSPACE_TU\"";
+  public static final String KEYSPACE_TU = "KEYSPACETU";
 
   private String[] dataSets;
 
@@ -123,13 +123,8 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
     // On attend que le serveur soit prêt
     waitForServer();
 
-    // Fusionne les DataSets
-    final DataSet dataSet = mergeDataSets(newDataSets);
-
-    // Charge les données
-    final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME,
-                                                 "localhost:9142");
-    // dataLoader.load(dataSet);
+    final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
+    cqlDataLoader.load(new ClassPathCQLDataSet("cassandra-local-datasets/migration-cqldata.cql", true, true, KEYSPACE_TU));
 
   }
 
@@ -150,18 +145,14 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
         break;
       }
       catch (final Exception e) {
-        LOG
-           .debug("CassandraServerBean : waiting for server (" + i
-               + ")...");
+        LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");
         Thread.sleep(WAIT_MS);
         LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");
         try {
           testCluster.close();
         }
         catch (final Exception ex) {
-          LOG.debug(
-                    "CassandraServerBean : error while shutdowning cluster",
-                    ex);
+          LOG.debug("CassandraServerBean : error while shutdowning cluster", ex);
         }
         cluster = getTestCluster();
       }
@@ -180,9 +171,11 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
                                          .withPort(9142);
       testCluster = Cluster.buildFrom(testBuilder);
       final Session session = testCluster.connect();
-      session.execute("CREATE KEYSPACE IF NOT EXISTS " + KEYSPACE_TU + " WITH replication={'class' : 'SimpleStrategy', 'replication_factor':1};");
+      // session.execute("CREATE KEYSPACE IF NOT EXISTS " + KEYSPACE_TU + " WITH replication={'class' : 'SimpleStrategy', 'replication_factor':1};");
       testSession = session;
     }
+    testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
+    testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
     return testCluster;
   }
 
@@ -246,10 +239,8 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
     for (int i = 1; i < dataSets.length; i++) {
       final String dataSet = dataSets[i];
       final ClassPathXmlDataSet dataSetObj = new ClassPathXmlDataSet(dataSet);
-      if (!StringUtils.equals(dataSetObj.getKeyspace().getName(),
-                              dataSetResult.getKeyspace().getName())) {
-        throw new IllegalArgumentException(
-                                           "Les KeySpace des datasets sont différents !");
+      if (!StringUtils.equals(dataSetObj.getKeyspace().getName(), dataSetResult.getKeyspace().getName())) {
+        throw new IllegalArgumentException("Les KeySpace des datasets sont différents !");
       }
       for (final ColumnFamilyModel cfm : dataSetObj.getColumnFamilies()) {
         dataSetResult.getColumnFamilies().add(cfm);
@@ -269,9 +260,9 @@ public class CassandraServerBeanCql implements InitializingBean, DisposableBean 
   }
 
   /**
-   * @return the kEYSPACE_TU
+   * @return the keyspaceTu
    */
-  public String getKEYSPACE_TU() {
+  public String getKeyspaceTu() {
     return KEYSPACE_TU;
   }
 

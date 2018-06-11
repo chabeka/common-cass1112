@@ -164,6 +164,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
                     .setConnectionsPerHost(HostDistance.REMOTE, 1, 1);
       this.session = cassandraServer.getTestSession();
       this.cluster = cassandraServer.getTestSession().getCluster();
+      this.keyspace = CassandraServerBeanCql.KEYSPACE_TU;
 
     } else {
       final List<InetSocketAddress> adresses = getInetSocketAddressList(cassandraServer);
@@ -174,8 +175,9 @@ public final class CassandraCQLClientFactory implements DisposableBean {
                             .withQueryOptions(qo)
                             .build();
       this.session = this.cluster.connect(keyspaceName);
+      this.keyspace = keyspaceName;
     }
-    this.keyspace = keyspaceName;
+
     this.server = cassandraServer;
   }
 
@@ -292,6 +294,16 @@ public final class CassandraCQLClientFactory implements DisposableBean {
   }
 
   /**
+   * @param keyspace
+   *          the keyspace to set
+   */
+  public void setKeyspace(final String keyspace) {
+    if (getStartLocal()) {
+      this.keyspace = keyspace;
+    }
+  }
+
+  /**
    * @return the cluster
    */
   public Cluster getCluster() {
@@ -305,4 +317,14 @@ public final class CassandraCQLClientFactory implements DisposableBean {
     return server;
   }
 
+  /**
+   * @return
+   */
+  public boolean getStartLocal() {
+    boolean startLocal = false;
+    if (server != null && server.getStartLocal()) {
+      startLocal = true;
+    }
+    return startLocal;
+  }
 }
