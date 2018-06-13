@@ -35,7 +35,7 @@ public class UtilsTraceMapper {
    *          la trace CQL
    * @return Trace Thrift
    */
-  public static TraceJournalEvt createTraceThriftFromCqlTrace(final TraceJournalEvtCql traceCql) {
+  public static TraceJournalEvt createTraceThriftFromCql(final TraceJournalEvtCql traceCql) {
     final TraceJournalEvt tr = new TraceJournalEvt(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -57,7 +57,7 @@ public class UtilsTraceMapper {
    *          la Trace Thrift
    * @return Trace Cql
    */
-  public static TraceJournalEvtCql createTraceCqlFromCqlThrift(final TraceJournalEvt traceThrift) {
+  public static TraceJournalEvtCql createTraceCqlFromThrift(final TraceJournalEvt traceThrift) {
     final TraceJournalEvtCql tr = new TraceJournalEvtCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -72,7 +72,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegSecurite createTraceRegSecuriteThriftFromCqlTrace(final TraceRegSecuriteCql traceCql) {
+  public static TraceRegSecurite createTraceRegSecuriteThriftFromCql(final TraceRegSecuriteCql traceCql) {
     final TraceRegSecurite tr = new TraceRegSecurite(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -87,7 +87,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegSecuriteCql createTraceRegSecuCqlFromCqlThrift(final TraceRegSecurite traceThrift) {
+  public static TraceRegSecuriteCql createTraceRegSecuCqlFromThrift(final TraceRegSecurite traceThrift) {
     final TraceRegSecuriteCql tr = new TraceRegSecuriteCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -102,7 +102,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegTechnique createTraceRegTechniqueThriftFromCqlTrace(final TraceRegTechniqueCql traceCql) {
+  public static TraceRegTechnique createTraceRegTechniqueThriftFromCql(final TraceRegTechniqueCql traceCql) {
     final TraceRegTechnique tr = new TraceRegTechnique(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -118,7 +118,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegTechniqueCql createTraceRegTechniqueCqlFromCqlThrift(final TraceRegTechnique traceThrift) {
+  public static TraceRegTechniqueCql createTraceRegTechniqueCqlFromThrift(final TraceRegTechnique traceThrift) {
     final TraceRegTechniqueCql tr = new TraceRegTechniqueCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -134,7 +134,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegExploitation createTraceRegExploitationThriftFromCqlTrace(final TraceRegExploitationCql traceCql) {
+  public static TraceRegExploitation createTraceRegExploitationThriftFromCql(final TraceRegExploitationCql traceCql) {
     final TraceRegExploitation tr = new TraceRegExploitation(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContratService(traceCql.getContratService());
@@ -148,7 +148,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegExploitationCql createTraceRegTechniqueCqlFromCqlThrift(final TraceRegExploitation traceThrift) {
+  public static TraceRegExploitationCql createTraceRegExploitationCqlFromThrift(final TraceRegExploitation traceThrift) {
     final TraceRegExploitationCql tr = new TraceRegExploitationCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContratService(traceThrift.getContratService());

@@ -103,7 +103,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
       // ON MAP
       final TraceRegSecuriteCql tracecql = this.regSecuriteCqlService.lecture(identifiant);
-      return UtilsTraceMapper.createTraceRegSecuriteThriftFromCqlTrace(tracecql);
+      return UtilsTraceMapper.createTraceRegSecuriteThriftFromCql(tracecql);
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.regSecuriteThriftService.lecture(identifiant);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {

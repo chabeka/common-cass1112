@@ -104,7 +104,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
       // ON MAP
       final TraceRegTechniqueCql tracecql = this.regTechniqueServiceCql.lecture(identifiant);
-      return UtilsTraceMapper.createTraceRegTechniqueThriftFromCqlTrace(tracecql);
+      return UtilsTraceMapper.createTraceRegTechniqueThriftFromCql(tracecql);
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.regTechniqueServiceThrift.lecture(identifiant);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
