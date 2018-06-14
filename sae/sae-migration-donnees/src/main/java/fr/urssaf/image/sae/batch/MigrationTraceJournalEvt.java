@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,20 +21,30 @@ import com.datastax.driver.core.Row;
 
 import fr.urssaf.image.sae.trace.commons.TraceFieldsName;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
+import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDocDao;
 import fr.urssaf.image.sae.trace.dao.model.GenericType;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /**
  * TODO (AC75095028) Description du type
@@ -44,10 +56,18 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
   TraceJournalEvtIndexDao indexthrift;
 
   @Autowired
+  ITraceJournalEvtIndexDocCqlDao indexDocDaocql;
+
+  @Autowired
+  TraceJournalEvtIndexDocDao indexDocDaothrift;
+
+  @Autowired
   private TraceJournalEvtSupport supportJThrift;
 
   @Autowired
   private TraceJournalEvtCqlSupport supportcql;
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationTraceJournalEvt.class);
 
   /**
    * Utilisation de cql uniquement
@@ -55,6 +75,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * à partir du type {@link GenericType} qui permet de wrapper les colonnes
    */
   public int migrationFromThriftToCql() {
+
+    LOGGER.debug(" migrationFromThriftToCql start");
 
     final Iterator<GenericType> listT = genericdao.iterablefindAll("TraceJournalEvt", keyspace);
 
@@ -107,9 +129,9 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         if (listToSave.size() == 10000) {
           nb = nb + listToSave.size();
 
-          // supportcql.saveAllTraces(listToSave);
+          supportcql.saveAllTraces(listToSave);
           listToSave = new ArrayList<>();
-          System.out.println(" Temp i : " + nb);
+          // System.out.println(" Temp i : " + nb);
         }
 
       }
@@ -158,10 +180,11 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       listToSave.add(tracejevt);
 
       nb = nb + listToSave.size();
-      // supportcql.saveAllTraces(listToSave);
+      supportcql.saveAllTraces(listToSave);
       listToSave = new ArrayList<>();
     }
-    System.out.println(" Totale : " + nb);
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" migrationFromThriftToCql end");
     return nb;
   }
 
@@ -169,15 +192,22 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * Migration des données de la CF cql vers thrift
    */
   public int migrationFromCqlToThrift() {
+
+    LOGGER.debug(" migrationFromCqlToThrift start");
+
     final Iterator<TraceJournalEvtCql> tracej = supportcql.findAll();
     int nb = 0;
     while (tracej.hasNext()) {
-      final TraceJournalEvt traceTrhift = createTraceThriftFromCqlTrace(tracej.next());
+      final TraceJournalEvt traceTrhift = UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracej.next());
       final Date date = tracej.next().getTimestamp();
       final Long times = date != null ? date.getTime() : 0;
       supportJThrift.create(traceTrhift, times);
       nb++;
     }
+
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" migrationFromCqlToThrift end");
+
     return nb;
   }
 
@@ -186,6 +216,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    */
   public int migrationIndexFromCqlToThrift() {
 
+    LOGGER.debug(" migrationIndexFromCqlToThrift start");
     int nb = 0;
     final Iterator<TraceJournalEvtIndexCql> it = supportcql.findAllIndex();
     while (it.hasNext()) {
@@ -201,7 +232,10 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
       nb++;
     }
-    System.out.println(" Totale : " + nb);
+
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" migrationIndexFromCqlToThrift end");
+
     return nb;
   }
 
@@ -209,6 +243,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
    * Migration de la CF index du journal de thritf vers la CF cql
    */
   public int migrationIndexFromThriftToCql() {
+
+    LOGGER.debug(" migrationIndexFromThriftToCql start");
 
     int nb = 0;
     final List<Date> dates = DateRegUtils.getListFromDates(DateUtils.addYears(DATE, -18), DateUtils.addYears(DATE, 1));
@@ -231,33 +267,92 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
         listTemp = new ArrayList<>();
       }
     }
-    System.out.println(" Totale : " + nb);
+
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" migrationIndexFromThriftToCql end");
+
     return nb;
   }
 
-  // classe utilitaire
+  /**
+   * Migration de la CF INDEX DOC du journal de thrift vers cql
+   *
+   * @throws Exception
+   */
+  public int migrationIndexDocFromThriftToCql() throws Exception {
+
+    LOGGER.debug(" migrationIndexDocFromThriftToCql start");
+
+    final StringSerializer stringSerializer = StringSerializer.get();
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+                                                                              .createRangeSlicesQuery(indexDocDaothrift.getKeyspace(),
+                                                                                                      stringSerializer,
+                                                                                                      stringSerializer,
+                                                                                                      bytesSerializer);
+    rangeSlicesQuery.setColumnFamily("TraceJournalEvtIndexDoc");
+    final int blockSize = 1000;
+    String startKey = "";
+    int totalKey = 1;
+    int count;
+    int nbRows = 0;
+    do {
+      rangeSlicesQuery.setRange("", "", false, 1);
+      rangeSlicesQuery.setKeys(startKey, "");
+      rangeSlicesQuery.setRowCount(blockSize);
+      rangeSlicesQuery.setReturnKeysOnly();
+      final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
+                                                                                      .execute();
+
+      final OrderedRows<String, String, byte[]> orderedRows = result.get();
+      count = orderedRows.getCount();
+      // On enlève 1, car sinon à chaque itération, la startKey serait
+      // comptée deux fois.
+      totalKey += count - 1;
+      nbRows = totalKey;
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final me.prettyprint.hector.api.beans.Row<String, String, byte[]> lastRow = orderedRows.peekLast();
+      startKey = lastRow.getKey();
+
+      for (final me.prettyprint.hector.api.beans.Row<String, String, byte[]> row : orderedRows) {
+
+        final List<TraceJournalEvtIndexDoc> list = supportJThrift.findByIdDoc(java.util.UUID.fromString(row.getKey()));
+        for (final TraceJournalEvtIndexDoc tr : list) {
+          indexDocDaocql.save(UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(tr, row.getKey()));
+          nbRows++;
+        }
+      }
+
+    } while (count == blockSize);
+
+    LOGGER.debug(" Nb total de cle dans la CF: " + totalKey);
+    LOGGER.debug(" Nb total d'entrées dans la CF : " + nbRows);
+    LOGGER.debug(" migrationIndexFromThriftToCql end");
+
+    return totalKey;
+
+  }
 
   /**
-   * Créér une {@link TraceJournalEvt} à partir d'une trace {@link TraceJournalEvtCql}
-   *
-   * @param traceCql
-   *          la {@link TraceJournalEvtCql}
-   * @return la trace {@link TraceJournalEvt}
+   * Migration de la CF INDEX DOC du journal de cql vers thrift
    */
-  public TraceJournalEvt createTraceThriftFromCqlTrace(final TraceJournalEvtCql traceCql) {
-    final TraceJournalEvt tr = new TraceJournalEvt(traceCql.getIdentifiant(), traceCql.getTimestamp());
-    tr.setCodeEvt(traceCql.getCodeEvt());
-    tr.setContratService(traceCql.getContratService());
-    tr.setLogin(traceCql.getLogin());
-    tr.setPagms(traceCql.getPagms());
-    final Map<String, Object> infos = new HashMap<>();
-    for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue());
-    }
-    tr.setInfos(infos);
-    tr.setContexte(traceCql.getContexte());
+  public int migrationIndexDocFromCqlToThrift() {
 
-    return tr;
+    LOGGER.debug(" migrationIndexDocFromCqlToThrift start");
+
+    int nb = 0;
+    final Iterator<TraceJournalEvtIndexDocCql> it = indexDocDaocql.findAll();
+    while (it.hasNext()) {
+      final TraceJournalEvtIndexDocCql indexCql = it.next();
+      final TraceJournalEvtIndexDoc index = UtilsTraceMapper.createTraceIndexDocFromCqlToThrift(indexCql);
+      supportJThrift.addIndexDoc(index, indexCql.getIdentifiantIndex().toString(), index.getTimestamp().getTime());
+      nb++;
+    }
+
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" migrationIndexDocFromCqlToThrift end");
+
+    return nb;
   }
 
   /**

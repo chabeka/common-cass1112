@@ -13,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
 
@@ -42,6 +43,7 @@ import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 /**
  * TODO (AC75095028) Description du type
  */
+@Component
 public class MigrationTraceRegSecurite extends MigrationTrace {
 
   @Autowired
