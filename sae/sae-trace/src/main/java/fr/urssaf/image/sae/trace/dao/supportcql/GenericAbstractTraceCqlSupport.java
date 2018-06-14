@@ -3,7 +3,6 @@
  */
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -52,6 +51,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @param clock
    *          horloge de la création
    */
+  @SuppressWarnings("unchecked")
   public void create(final T trace, final long clock) {
 
     getDao().saveWithMapper(trace);
@@ -59,7 +59,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     // création de l'index
     final I index = getIndexFromTrace(trace);
 
-    final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
+    // final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
     getIndexDao().saveWithMapper(index);
 
     /*
@@ -78,10 +78,12 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
 
   }
 
+  @SuppressWarnings("unchecked")
   public void saveAllTraces(final Iterable<T> entites) {
     getDao().saveAll(entites);
   }
 
+  @SuppressWarnings("unchecked")
   public void saveAllIndex(final Iterable<I> entites) {
     getIndexDao().saveAll(entites);
   }
@@ -132,6 +134,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     return getDao().findAllWithMapper();
   }
 
+  @SuppressWarnings("unchecked")
   public Iterator<I> findAllIndex() {
     return getIndexDao().findAllWithMapper();
   }
@@ -183,6 +186,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    * @return la liste des traces d'exploitation
    */
 
+  @SuppressWarnings("unchecked")
   public final List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
                                    final boolean reversed) {
 

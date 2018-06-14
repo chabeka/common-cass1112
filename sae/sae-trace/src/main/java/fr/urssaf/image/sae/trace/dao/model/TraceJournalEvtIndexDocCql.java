@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.Map;
+import java.util.UUID;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
@@ -11,7 +12,7 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
 
   @PartitionKey
   @Column(name = "identifiantindex")
-  private String identifiantIndex;
+  private UUID identifiantIndex;
 
   /**
    * Contexte de l'évenement
@@ -50,7 +51,7 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
   /**
    * @return the identifiantIndex
    */
-  public String getIdentifiantIndex() {
+  public UUID getIdentifiantIndex() {
     return identifiantIndex;
   }
 
@@ -58,7 +59,7 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
    * @param identifiantIndex
    *          the identifiantIndex to set
    */
-  public void setIdentifiantIndex(final String identifiantIndex) {
+  public void setIdentifiantIndex(final UUID identifiantIndex) {
     this.identifiantIndex = identifiantIndex;
   }
 

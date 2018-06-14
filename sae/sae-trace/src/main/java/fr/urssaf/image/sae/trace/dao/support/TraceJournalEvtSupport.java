@@ -22,9 +22,16 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.beans.Row;
+import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
@@ -144,7 +151,7 @@ public class TraceJournalEvtSupport extends
   @Override
   protected final void completeTraceFromResult(final TraceJournalEvt trace,
                                                final ColumnFamilyResult<UUID, String> result) {
-    byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+    final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
     if (bValue != null) {
       trace.setInfos(MapSerializer.get().fromBytes(bValue));
     }
@@ -198,6 +205,26 @@ public class TraceJournalEvtSupport extends
   }
 
   /**
+   * Ajout d’un index sur l’identifiant de document
+   *
+   * @param trace
+   *          Trace du journal des événements
+   * @param idDoc
+   *          Identifiant du document
+   * @param clock
+   *          Horloge de création
+   */
+  public final void addIndexDoc(final TraceJournalEvtIndexDoc indexdoc, final String idDoc, final long clock) {
+    final ColumnFamilyUpdater<String, UUID> updater = indexDocDao
+                                                                 .createUpdater(idDoc);
+    indexDocDao.writeColumn(updater,
+                            indexdoc.getIdentifiant(),
+                            indexdoc,
+                            clock);
+    indexDocDao.update(updater);
+  }
+
+  /**
    * Recherche des traces du journal des événements par identifiant du document
    *
    * @param idDoc
@@ -236,6 +263,52 @@ public class TraceJournalEvtSupport extends
     final Mutator<String> mutator = indexDocDao.createMutator();
     indexDocDao.deleteIndex(mutator, idDoc.toString(), clock);
     mutator.execute();
+  }
+
+  public final int findAll() throws Exception {
+
+    final StringSerializer stringSerializer = StringSerializer.get();
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+                                                                              .createRangeSlicesQuery(indexDao.getKeyspace(),
+                                                                                                      stringSerializer,
+                                                                                                      stringSerializer,
+                                                                                                      bytesSerializer);
+    rangeSlicesQuery.setColumnFamily("TraceJournalEvtIndexDoc");
+    final int blockSize = 1000;
+    String startKey = "";
+    int total = 1;
+    int count;
+    int nbTotal = 0;
+    do {
+      rangeSlicesQuery.setRange("", "", false, 1);
+      rangeSlicesQuery.setKeys(startKey, "");
+      rangeSlicesQuery.setRowCount(blockSize);
+      rangeSlicesQuery.setReturnKeysOnly();
+      final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
+                                                                                      .execute();
+
+      final OrderedRows<String, String, byte[]> orderedRows = result.get();
+      count = orderedRows.getCount();
+      // On enlève 1, car sinon à chaque itération, la startKey serait
+      // comptée deux fois.
+      total += count - 1;
+      nbTotal = total;
+      // Parcours des rows pour déterminer la dernière clé de l'ensemble
+      final Row<String, String, byte[]> lastRow = orderedRows.peekLast();
+      startKey = lastRow.getKey();
+
+      if (total < 2000) {
+        for (final Row<String, String, byte[]> row : orderedRows) {
+
+          System.out.println(row.getKey());
+          final List<TraceJournalEvtIndexDoc> list = findByIdDoc(java.util.UUID.fromString(row.getKey()));
+          System.out.println("Nombre de colonnes : " + list.size());
+        }
+      }
+    } while (count == blockSize);
+    System.out.println("end");
+    return total;
   }
 
 }

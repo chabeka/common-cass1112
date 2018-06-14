@@ -115,7 +115,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
       final TraceJournalEvtCql tracecql = this.journalEvtCqlService.lecture(identifiant);
-      return UtilsTraceMapper.createTraceThriftFromCql(tracecql);
+      return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.journalEvtServiceThrift.lecture(identifiant);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {

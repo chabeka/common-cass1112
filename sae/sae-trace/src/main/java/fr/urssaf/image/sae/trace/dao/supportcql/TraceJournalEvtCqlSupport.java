@@ -150,7 +150,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    */
   public final void addIndexDoc(final TraceJournalEvtCql trace, final String idDoc, final long clock) {
     final TraceJournalEvtIndexDocCql traceJournal = new TraceJournalEvtIndexDocCql(trace);
-    traceJournal.setIdentifiantIndex(idDoc);
+    traceJournal.setIdentifiantIndex(java.util.UUID.fromString(idDoc));
     indexjDocDao.saveWithMapper(traceJournal);
   }
 
@@ -165,7 +165,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
   public final List<TraceJournalEvtIndexDocCql> findByIdDoc(final UUID idDoc) {
 
     List<TraceJournalEvtIndexDocCql> traces = null;
-    final Iterator<TraceJournalEvtIndexDocCql> iterator = indexjDocDao.IterableFindById(idDoc.toString());
+    final Iterator<TraceJournalEvtIndexDocCql> iterator = indexjDocDao.IterableFindById(idDoc);
     if (iterator.hasNext()) {
       traces = new ArrayList<TraceJournalEvtIndexDocCql>();
       while (iterator.hasNext()) {
@@ -186,7 +186,7 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
    *          Horloge de création
    */
   public final void deleteIndexDoc(final UUID idDoc, final long clock) {
-    indexjDocDao.deleteById(idDoc.toString());
+    indexjDocDao.deleteById(idDoc);
   }
 
   /**

@@ -15,9 +15,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.AbstractTraceDao;
 import fr.urssaf.image.sae.trace.dao.AbstractTraceIndexDao;
 import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
@@ -26,18 +23,11 @@ import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
-import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
@@ -214,67 +204,6 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
 
     final Iterator<I> iterator = getIterator(sliceQuery);
     return iterator;
-  }
-
-  /**
-   * Retourne l'ensemble des destinataires des traces
-   *
-   * @return l'ensemble des destinataires des traces
-   */
-  public final List<T> findAll() {
-    UUID startKey = null;
-    int i = 1;
-    int count = 0;
-    int total = 0;
-
-    do {
-      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      final RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-                                                                              .createRangeSlicesQuery(getDao().getKeyspace(),
-                                                                                                      getDao().getRowKeySerializer(),
-                                                                                                      getDao().getColumnKeySerializer(),
-                                                                                                      bytesSerializer);
-      rangeSlicesQuery.setColumnFamily(getDao().getColumnFamilyName());
-      rangeSlicesQuery.setRange(
-                                StringUtils.EMPTY,
-                                StringUtils.EMPTY,
-                                false,
-                                AbstractDao.DEFAULT_MAX_COLS);
-      rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-      rangeSlicesQuery.setKeys(startKey, null);
-      QueryResult<OrderedRows<UUID, String, byte[]>> queryResult;
-      queryResult = rangeSlicesQuery.execute();
-
-      final OrderedRows<UUID, String, byte[]> orderedRows = queryResult.get();
-      count = orderedRows.getCount();
-      total += count - 1;
-      i++;
-      System.out.println("count" + count * i);
-      System.out.println(total);
-      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-      // son utilisation
-      final QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
-      final ColumnFamilyResultWrapper<UUID, String> result = converter
-                                                                      .getColumnFamilyResultWrapper(queryResult,
-                                                                                                    getDao().getRowKeySerializer(),
-                                                                                                    getDao().getColumnKeySerializer(),
-                                                                                                    bytesSerializer);
-      final Row<UUID, String, byte[]> lastRow = queryResult.get().peekLast();
-      startKey = lastRow.getKey();
-      // On itère sur le résultat
-      final HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
-                                                                                           result);
-
-      final List<T> list = new ArrayList<T>();
-      for (final ColumnFamilyResult<UUID, String> row : resultIterator) {
-
-        list.add(getTraceFromResult(row));
-
-      }
-    } while (AbstractDao.DEFAULT_MAX_COLS == count);
-
-    return null;
-
   }
 
   /**

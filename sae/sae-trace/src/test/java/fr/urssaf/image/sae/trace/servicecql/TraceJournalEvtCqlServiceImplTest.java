@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.trace.servicecql;
 
 import java.util.Date;
-import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,7 +34,6 @@ public class TraceJournalEvtCqlServiceImplTest {
   @Test
   public void migration_of_trace_journal_from_thrift_to_cql() {
     // tracesupport.getTraceIterator();
-    final List<TraceJournalEvt> traces = tracesupport.findAll();
     final TraceJournalEvt trace = tracesupport.find(java.util.UUID.fromString("bbf93e40-dd1f-16e0-bfaa-f8b156a582f1"));
 
     System.out.println("end");

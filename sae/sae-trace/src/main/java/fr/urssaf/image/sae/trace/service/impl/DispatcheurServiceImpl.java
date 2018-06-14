@@ -321,7 +321,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRefExploit);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
         TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
-        traceCql = UtilsTraceMapper.createTraceRegExploitationCqlFromThrift(traceExploit);
+        traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
         exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
         exploitSupport.create(traceExploit, clockSupport.currentCLock());
@@ -339,7 +339,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegSecu);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
         TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
-        traceCql = UtilsTraceMapper.createTraceRegSecuCqlFromThrift(traceSecurite);
+        traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
         secuCqlSupport.create(traceCql, clockSupport.currentCLock());
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
         secuSupport.create(traceSecurite, clockSupport.currentCLock());
@@ -358,7 +358,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegTech);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
         TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
-        traceCql = UtilsTraceMapper.createTraceRegTechniqueCqlFromThrift(traceTechnique);
+        traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
         techCqlSupport.create(traceCql, clockSupport.currentCLock());
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
         techSupport.create(traceTechnique, clockSupport.currentCLock());
@@ -380,7 +380,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameEvt);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
         TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
-        traceCql = UtilsTraceMapper.createTraceCqlFromThrift(traceTechnique);
+        traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
         evtCqlSupport.create(traceCql, currentCLock);
         final Map<String, Object> mapInfos = trace.getInfos();
         if (MapUtils.isNotEmpty(mapInfos)) {

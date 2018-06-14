@@ -10,6 +10,8 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
@@ -35,7 +37,7 @@ public class UtilsTraceMapper {
    *          la trace CQL
    * @return Trace Thrift
    */
-  public static TraceJournalEvt createTraceThriftFromCql(final TraceJournalEvtCql traceCql) {
+  public static TraceJournalEvt createTraceJournalEvtFromCqlToThrift(final TraceJournalEvtCql traceCql) {
     final TraceJournalEvt tr = new TraceJournalEvt(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -57,7 +59,7 @@ public class UtilsTraceMapper {
    *          la Trace Thrift
    * @return Trace Cql
    */
-  public static TraceJournalEvtCql createTraceCqlFromThrift(final TraceJournalEvt traceThrift) {
+  public static TraceJournalEvtCql createTraceJournalEvtFromThriftToCql(final TraceJournalEvt traceThrift) {
     final TraceJournalEvtCql tr = new TraceJournalEvtCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -72,7 +74,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegSecurite createTraceRegSecuriteThriftFromCql(final TraceRegSecuriteCql traceCql) {
+  public static TraceRegSecurite createTraceRegSecuriteFromCqlToThrift(final TraceRegSecuriteCql traceCql) {
     final TraceRegSecurite tr = new TraceRegSecurite(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -87,7 +89,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegSecuriteCql createTraceRegSecuCqlFromThrift(final TraceRegSecurite traceThrift) {
+  public static TraceRegSecuriteCql createTraceRegSecuFromThriftToCql(final TraceRegSecurite traceThrift) {
     final TraceRegSecuriteCql tr = new TraceRegSecuriteCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -102,7 +104,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegTechnique createTraceRegTechniqueThriftFromCql(final TraceRegTechniqueCql traceCql) {
+  public static TraceRegTechnique createTraceRegTechniqueFromCqlToThrift(final TraceRegTechniqueCql traceCql) {
     final TraceRegTechnique tr = new TraceRegTechnique(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
@@ -118,7 +120,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegTechniqueCql createTraceRegTechniqueCqlFromThrift(final TraceRegTechnique traceThrift) {
+  public static TraceRegTechniqueCql createTraceRegTechniqueFromThriftToCql(final TraceRegTechnique traceThrift) {
     final TraceRegTechniqueCql tr = new TraceRegTechniqueCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
@@ -134,7 +136,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegExploitation createTraceRegExploitationThriftFromCql(final TraceRegExploitationCql traceCql) {
+  public static TraceRegExploitation createTraceRegExploitationFromCqlToThrift(final TraceRegExploitationCql traceCql) {
     final TraceRegExploitation tr = new TraceRegExploitation(traceCql.getIdentifiant(), traceCql.getTimestamp());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContratService(traceCql.getContratService());
@@ -148,7 +150,7 @@ public class UtilsTraceMapper {
     return tr;
   }
 
-  public static TraceRegExploitationCql createTraceRegExploitationCqlFromThrift(final TraceRegExploitation traceThrift) {
+  public static TraceRegExploitationCql createTraceRegExploitationFromThriftToCql(final TraceRegExploitation traceThrift) {
     final TraceRegExploitationCql tr = new TraceRegExploitationCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContratService(traceThrift.getContratService());
@@ -270,6 +272,63 @@ public class UtilsTraceMapper {
     tr.setPagms(index.getPagms());
     tr.setAction(index.getAction());
     tr.setTimestamp(index.getTimestamp());
+    return tr;
+  }
+
+  /**
+   * Créer un index {@link TraceJournalEvtIndexDoc} à partir d'une trace {@link TraceJournalEvtIndexDocCql}
+   *
+   * @param index
+   *          {@link TraceJournalEvtIndexCql}
+   * @return un {@link TraceJournalEvtIndex}
+   */
+  public static TraceJournalEvtIndexDoc createTraceIndexDocFromCqlToThrift(final TraceJournalEvtIndexDocCql index) {
+    final TraceJournalEvtIndexDoc tr = new TraceJournalEvtIndexDoc();
+    tr.setIdentifiant(index.getIdentifiant());
+    tr.setCodeEvt(index.getCodeEvt());
+    tr.setLogin(index.getLogin());
+    tr.setPagms(index.getPagms());
+    tr.setTimestamp(index.getTimestamp());
+
+    tr.setContexte(index.getContexte());
+    tr.setContratService(index.getContratService());
+    final Map<String, Object> infos = new HashMap<>();
+    if (index.getInfos() != null && !index.getInfos().isEmpty()) {
+      for (final Map.Entry<String, String> entry : index.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue());
+      }
+    }
+    tr.setInfos(infos);
+
+    return tr;
+  }
+
+  /**
+   * Créer un index {@link TraceJournalEvtIndexDoc} à partir d'une trace {@link TraceJournalEvtIndexDocCql}
+   *
+   * @param index
+   *          {@link TraceJournalEvtIndexCql}
+   * @return un {@link TraceJournalEvtIndex}
+   */
+  public static TraceJournalEvtIndexDocCql createTraceIndexDocFromCqlToThrift(final TraceJournalEvtIndexDoc index, final String idDoc) {
+    final TraceJournalEvtIndexDocCql tr = new TraceJournalEvtIndexDocCql();
+    tr.setIdentifiantIndex(java.util.UUID.fromString(idDoc));
+    tr.setIdentifiant(index.getIdentifiant());
+    tr.setCodeEvt(index.getCodeEvt());
+    tr.setLogin(index.getLogin());
+    tr.setPagms(index.getPagms());
+    tr.setTimestamp(index.getTimestamp());
+
+    tr.setContexte(index.getContexte());
+    tr.setContratService(index.getContratService());
+    final Map<String, String> infos = new HashMap<>();
+    if (index.getInfos() != null && !index.getInfos().isEmpty()) {
+      for (final Map.Entry<String, Object> entry : index.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue().toString());
+      }
+    }
+    tr.setInfos(infos);
+
     return tr;
   }
 }
