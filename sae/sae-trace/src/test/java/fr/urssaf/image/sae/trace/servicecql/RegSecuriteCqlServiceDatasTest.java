@@ -142,16 +142,22 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
-    GestionModeApiTest.setModeApiCql(cfName);
-    createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
     final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
+    List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
+                                                         dateEnd,
+                                                         10,
+                                                         true);
+    Assert.assertNull("il ne doit pas y avoir de resultat", result);
 
-    final List<TraceRegSecuriteIndex> result = service.lecture(dateStart,
-                                                               dateEnd,
-                                                               10,
-                                                               true);
+    GestionModeApiTest.setModeApiCql(cfName);
+    createTraces();
+
+    result = service.lecture(dateStart,
+                             dateEnd,
+                             10,
+                             true);
     Assert.assertNotNull("il doit y avoir un résultat");
     Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
                         5,

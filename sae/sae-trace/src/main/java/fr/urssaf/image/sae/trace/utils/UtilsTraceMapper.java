@@ -39,7 +39,8 @@ public class UtilsTraceMapper {
    */
   public static TraceJournalEvt createTraceJournalEvtFromCqlToThrift(final TraceJournalEvtCql traceCql) {
     final TraceJournalEvt tr = new TraceJournalEvt(traceCql.getIdentifiant(), traceCql.getTimestamp());
-    tr.setCodeEvt(traceCql.getCodeEvt());
+
+    tr.setCodeEvt(traceCql.getCodeEvt() == null ? "NULL" : traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
     tr.setLogin(traceCql.getLogin());
@@ -61,14 +62,17 @@ public class UtilsTraceMapper {
    */
   public static TraceJournalEvtCql createTraceJournalEvtFromThriftToCql(final TraceJournalEvt traceThrift) {
     final TraceJournalEvtCql tr = new TraceJournalEvtCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
+    // tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue().toString());
+    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+      for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue().toString());
+      }
     }
     tr.setInfos(infos);
     return tr;
@@ -76,14 +80,17 @@ public class UtilsTraceMapper {
 
   public static TraceRegSecurite createTraceRegSecuriteFromCqlToThrift(final TraceRegSecuriteCql traceCql) {
     final TraceRegSecurite tr = new TraceRegSecurite(traceCql.getIdentifiant(), traceCql.getTimestamp());
+    // tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue());
+    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+      for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue());
+      }
     }
     tr.setInfos(infos);
     return tr;
@@ -91,14 +98,17 @@ public class UtilsTraceMapper {
 
   public static TraceRegSecuriteCql createTraceRegSecuFromThriftToCql(final TraceRegSecurite traceThrift) {
     final TraceRegSecuriteCql tr = new TraceRegSecuriteCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
+    // tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue().toString());
+    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+      for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue().toString());
+      }
     }
     tr.setInfos(infos);
     return tr;
@@ -106,14 +116,17 @@ public class UtilsTraceMapper {
 
   public static TraceRegTechnique createTraceRegTechniqueFromCqlToThrift(final TraceRegTechniqueCql traceCql) {
     final TraceRegTechnique tr = new TraceRegTechnique(traceCql.getIdentifiant(), traceCql.getTimestamp());
+    // tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContexte(traceCql.getContexte());
     tr.setContratService(traceCql.getContratService());
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue());
+    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+      for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue());
+      }
     }
     tr.setInfos(infos);
     tr.setStacktrace(traceCql.getStacktrace());
@@ -122,14 +135,17 @@ public class UtilsTraceMapper {
 
   public static TraceRegTechniqueCql createTraceRegTechniqueFromThriftToCql(final TraceRegTechnique traceThrift) {
     final TraceRegTechniqueCql tr = new TraceRegTechniqueCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
+    // tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContexte(traceThrift.getContexte());
     tr.setContratService(traceThrift.getContratService());
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue().toString());
+    if (traceThrift != null && traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+      for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue().toString());
+      }
     }
     tr.setInfos(infos);
     tr.setStacktrace(traceThrift.getStacktrace());
@@ -138,13 +154,16 @@ public class UtilsTraceMapper {
 
   public static TraceRegExploitation createTraceRegExploitationFromCqlToThrift(final TraceRegExploitationCql traceCql) {
     final TraceRegExploitation tr = new TraceRegExploitation(traceCql.getIdentifiant(), traceCql.getTimestamp());
+    tr.setAction(traceCql.getAction());
     tr.setCodeEvt(traceCql.getCodeEvt());
     tr.setContratService(traceCql.getContratService());
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue());
+    if (traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+      for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue());
+      }
     }
     tr.setInfos(infos);
     return tr;
@@ -152,13 +171,16 @@ public class UtilsTraceMapper {
 
   public static TraceRegExploitationCql createTraceRegExploitationFromThriftToCql(final TraceRegExploitation traceThrift) {
     final TraceRegExploitationCql tr = new TraceRegExploitationCql(traceThrift.getIdentifiant(), traceThrift.getTimestamp());
+    tr.setAction(traceThrift.getAction());
     tr.setCodeEvt(traceThrift.getCodeEvt());
     tr.setContratService(traceThrift.getContratService());
     tr.setLogin(traceThrift.getLogin());
     tr.setPagms(traceThrift.getPagms());
     final Map<String, String> infos = new HashMap<>();
-    for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue().toString());
+    if (traceThrift.getInfos() != null && !traceThrift.getInfos().isEmpty()) {
+      for (final Map.Entry<String, Object> entry : traceThrift.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue().toString());
+      }
     }
     tr.setInfos(infos);
     return tr;
@@ -175,6 +197,7 @@ public class UtilsTraceMapper {
    */
   public static TraceJournalEvtIndexCql createJournalIndexFromThriftToCql(final TraceJournalEvtIndex index) {
     final TraceJournalEvtIndexCql tr = new TraceJournalEvtIndexCql();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -193,6 +216,7 @@ public class UtilsTraceMapper {
    */
   public static TraceJournalEvtIndex createTraceJournalIndexFromCqlToThrift(final TraceJournalEvtIndexCql index) {
     final TraceJournalEvtIndex tr = new TraceJournalEvtIndex();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -205,6 +229,7 @@ public class UtilsTraceMapper {
 
   public static TraceRegSecuriteIndexCql createTraceRegSecuIndexFromThriftToCql(final TraceRegSecuriteIndex index) {
     final TraceRegSecuriteIndexCql tr = new TraceRegSecuriteIndexCql();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -217,6 +242,7 @@ public class UtilsTraceMapper {
 
   public static TraceRegSecuriteIndex createTraceRegSecuIndexFromCqlToThrift(final TraceRegSecuriteIndexCql index) {
     final TraceRegSecuriteIndex tr = new TraceRegSecuriteIndex();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -229,6 +255,7 @@ public class UtilsTraceMapper {
 
   public static TraceRegTechniqueIndexCql createTraceRegTechniqueIndexFromThriftToCql(final TraceRegTechniqueIndex index) {
     final TraceRegTechniqueIndexCql tr = new TraceRegTechniqueIndexCql();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());
@@ -241,6 +268,7 @@ public class UtilsTraceMapper {
 
   public static TraceRegTechniqueIndex createTraceRegTechniqueIndexFromCqlToThrift(final TraceRegTechniqueIndexCql index) {
     final TraceRegTechniqueIndex tr = new TraceRegTechniqueIndex();
+    // tr.setAction(index.getAction());
     tr.setIdentifiant(index.getIdentifiant());
     tr.setCodeEvt(index.getCodeEvt());
     tr.setContexte(index.getContexte());

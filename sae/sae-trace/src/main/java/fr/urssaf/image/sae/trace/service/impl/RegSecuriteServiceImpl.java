@@ -211,7 +211,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   private List<TraceRegSecuriteIndex> findNormalOrder(final List<Date> dates, final int limite) {
     int index = 0;
     int countLeft = limite;
-    final List<TraceRegSecuriteIndex> result = new ArrayList<>();
+    List<TraceRegSecuriteIndex> result = new ArrayList<>();
     final List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
     Date currentDate, startDate, endDate;
 
@@ -223,16 +223,18 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDates(startDate, endDate, countLeft, true);
-        for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
-          final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
-          result.add(indexThrift);
+        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
+            final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
+            result.add(indexThrift);
+          }
         }
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        return this.regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                      endDate,
-                                                                      countLeft,
-                                                                      true);
+        result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
+                                                                        endDate,
+                                                                        countLeft,
+                                                                        true);
       } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
@@ -241,6 +243,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
         countLeft = limite - values.size();
+        result.clear();
       }
       index++;
     } while (index < dates.size() && countLeft > 0
@@ -253,7 +256,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
     int index = dates.size() - 1;
     int countLeft = limite;
-    final List<TraceRegSecuriteIndex> result = new ArrayList<>();
+    List<TraceRegSecuriteIndex> result = new ArrayList<>();
     final List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
     Date currentDate, startDate, endDate;
 
@@ -265,16 +268,18 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDates(startDate, endDate, countLeft, true);
-        for (final TraceRegSecuriteIndexCql traceJournalEvtIndexCql : resultCql) {
-          final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceJournalEvtIndexCql);
-          result.add(indexThrift);
+        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceRegSecuriteIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
         }
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        return this.regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                      endDate,
-                                                                      countLeft,
-                                                                      true);
+        result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
+                                                                        endDate,
+                                                                        countLeft,
+                                                                        true);
       } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
@@ -283,6 +288,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
         countLeft = limite - values.size();
+        result.clear();
       }
       index--;
     } while (index >= 0 && countLeft > 0

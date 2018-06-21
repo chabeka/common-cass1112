@@ -204,7 +204,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
   private List<TraceRegTechniqueIndex> findNormalOrder(final List<Date> dates, final int limite) {
     int index = 0;
     int countLeft = limite;
-    final List<TraceRegTechniqueIndex> result = new ArrayList<>();
+    List<TraceRegTechniqueIndex> result = new ArrayList<>();
     final List<TraceRegTechniqueIndex> values = new ArrayList<TraceRegTechniqueIndex>();
     Date currentDate, startDate, endDate;
 
@@ -216,16 +216,18 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDates(startDate, endDate, countLeft, true);
-        for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
-          final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
-          result.add(indexThrift);
+        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
         }
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        return this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
-                                                                       endDate,
-                                                                       countLeft,
-                                                                       true);
+        result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
+                                                                         endDate,
+                                                                         countLeft,
+                                                                         true);
       } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
@@ -234,6 +236,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
         countLeft = limite - values.size();
+        result.clear();
       }
       index++;
     } while (index < dates.size() && countLeft > 0
@@ -246,7 +249,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
     int index = dates.size() - 1;
     int countLeft = limite;
-    final List<TraceRegTechniqueIndex> result = new ArrayList<>();
+    List<TraceRegTechniqueIndex> result = new ArrayList<>();
     final List<TraceRegTechniqueIndex> values = new ArrayList<TraceRegTechniqueIndex>();
     Date currentDate, startDate, endDate;
 
@@ -258,16 +261,18 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDates(startDate, endDate, countLeft, true);
-        for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
-          final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
-          result.add(indexThrift);
+        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
         }
       } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        return this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
-                                                                       endDate,
-                                                                       countLeft,
-                                                                       true);
+        result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
+                                                                         endDate,
+                                                                         countLeft,
+                                                                         true);
       } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
@@ -276,6 +281,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
       if (CollectionUtils.isNotEmpty(result)) {
         values.addAll(result);
         countLeft = limite - values.size();
+        result.clear();
       }
       index--;
     } while (index >= 0 && countLeft > 0

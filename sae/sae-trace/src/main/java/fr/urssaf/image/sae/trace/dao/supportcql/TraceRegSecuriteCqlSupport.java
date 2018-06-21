@@ -53,7 +53,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
-  Iterator<TraceRegSecuriteIndexCql> getIterator(final Date date) {
+  public Iterator<TraceRegSecuriteIndexCql> getIterator(final Date date) {
     final DateFormat dateFormat = new SimpleDateFormat(getDateFormat());
     final String journee = DateRegUtils.getJournee(date);
     return indexDao.IterableFindById(journee);

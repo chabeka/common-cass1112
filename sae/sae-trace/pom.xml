@@ -44,6 +44,14 @@
 
    <dependencies>
       
+              <dependency>
+            <groupId>org.cassandraunit</groupId>
+            <artifactId>cassandra-unit</artifactId>
+            <classifier>shaded</classifier>
+            <version>3.1.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        
       <!-- commons-dfce -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>

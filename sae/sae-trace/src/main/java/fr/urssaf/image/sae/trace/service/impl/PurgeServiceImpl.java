@@ -244,6 +244,8 @@ public class PurgeServiceImpl implements PurgeService {
         ((RegExploitationService) servicePurge).purge(date);
       } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
         ((RegSecuriteService) servicePurge).purge(date);
+      } else if (PurgeType.PURGE_EVT.equals(typePurge)) {
+        ((JournalEvtService) servicePurge).purge(date);
       } else {
         ((RegTechniqueService) servicePurge).purge(date);
       }

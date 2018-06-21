@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceImpl;
+import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,7 +37,7 @@ public class JournalEvtServiceCqlImplTest {
   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
 
   @Autowired
-  private JournalEvtServiceImpl service;
+  private JournalEvtService service;
 
   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 

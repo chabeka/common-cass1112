@@ -246,7 +246,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          la requête concernée
    * @return l'iterateur
    */
-  abstract Iterator<I> getIterator(Date id);
+  public abstract Iterator<I> getIterator(Date id);
 
   /**
    * @return le dao utilisé pour les traces

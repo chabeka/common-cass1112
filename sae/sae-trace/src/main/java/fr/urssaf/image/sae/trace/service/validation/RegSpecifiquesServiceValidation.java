@@ -31,10 +31,6 @@ public class RegSpecifiquesServiceValidation {
       + CLASS_NAME + "export(*,*,*,*))"
       + " && args(date, repertoire, identifiant, hash)";
 
-  private static final String EXPORT_METHOD_CQL = "execution(java.lang.String "
-      + "fr.urssaf.image.sae.trace.service.implcql.JournalEvtCqlServiceImpl.export(*,*,*,*))"
-      + " && args(date, repertoire, identifiant, hash)";
-
   /**
    * Réalise la validation de la méthode lecture
    *

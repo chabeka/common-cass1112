@@ -231,7 +231,7 @@ public class JournalEvtCqlServiceDatasTest {
                       result);
 
     result = service.lecture(DATE,
-                             DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1),
+                             DateUtils.addDays(DATE_JOUR_SUIVANT, 1),
                              100,
                              false);
     Assert.assertEquals("il ne doit y avoir qu'une trace", 1, result.size());

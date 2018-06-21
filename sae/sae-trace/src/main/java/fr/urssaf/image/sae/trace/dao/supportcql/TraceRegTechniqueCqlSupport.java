@@ -41,7 +41,7 @@ public class TraceRegTechniqueCqlSupport extends GenericAbstractTraceCqlSupport<
   }
 
   @Override
-  Iterator<TraceRegTechniqueIndexCql> getIterator(final Date date) {
+  public Iterator<TraceRegTechniqueIndexCql> getIterator(final Date date) {
     final String journee = DateRegUtils.getJournee(date);
     return indexDao.IterableFindById(journee);
   }
