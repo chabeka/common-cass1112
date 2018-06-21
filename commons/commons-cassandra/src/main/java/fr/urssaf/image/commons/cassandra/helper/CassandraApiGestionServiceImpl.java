@@ -47,7 +47,7 @@ public class CassandraApiGestionServiceImpl {
 
   @Autowired
   public CassandraApiGestionServiceImpl(@Value("${sae.api.gestion.profil.cache}") final int value,
-                                    @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
+                                        @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
     modeApisList = CacheBuilder.newBuilder()
                                .refreshAfterWrite(value,
                                                   TimeUnit.MINUTES)

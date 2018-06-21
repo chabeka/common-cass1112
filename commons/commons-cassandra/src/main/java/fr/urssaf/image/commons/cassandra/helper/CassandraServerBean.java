@@ -1,6 +1,7 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.cassandraunit.DataLoader;
 import org.cassandraunit.dataset.DataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.cassandraunit.model.ColumnFamilyModel;
@@ -31,7 +32,11 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
   private static final String TEST_CLUSTER_NAME = "TestCluster";
 
+  public static final String KEYSPACE_TU = "KEYSPACE_TU";
+
   private String[] dataSets;
+
+  private final DataSet dataSetLoader = null;
 
   private boolean startLocal = false;
 
@@ -112,18 +117,20 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
     LOG.debug("CassandraServerBean : reseting data...");
 
     System.setProperty("cassandra.unsafesystem", "true");
-    EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+    EmbeddedCassandraServerHelper.startEmbeddedCassandra(200000L);
 
     // On attend que le serveur soit prêt
-    // waitForServer();
+    waitForServer();
 
     // Fusionne les DataSets
-    // final DataSet dataSet = mergeDataSets(newDataSets);
+    // dataSetLoader = mergeDataSets(newDataSets);
 
     // Charge les données
-    // final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
+    final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
 
-    // dataLoader.load(dataSet, false);
+    final String dataSet = newDataSets[0];
+    // dataLoader.load(dataSetLoader, false);
+    dataLoader.load(new ClassPathXmlDataSet("cassandra-local-all-dataset-sae.xml"));
 
   }
 
@@ -246,4 +253,10 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
   }
 
+  /**
+   * @return the keyspaceTu
+   */
+  public String getKeyspaceTu() {
+    return KEYSPACE_TU;
+  }
 }
