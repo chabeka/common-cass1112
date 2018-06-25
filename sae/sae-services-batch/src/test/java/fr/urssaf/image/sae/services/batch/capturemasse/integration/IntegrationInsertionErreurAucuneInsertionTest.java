@@ -420,7 +420,7 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
 
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
-      Assert.assertEquals("une seule trace SAE", 1, loggingEvents.size());
+      Assert.assertEquals("une seule trace SAE", 2, loggingEvents.size());
 
       Assert.assertEquals("l'erreur doit etre de niveau WARN", Level.WARN,
             loggingEvents.get(0).getLevel());

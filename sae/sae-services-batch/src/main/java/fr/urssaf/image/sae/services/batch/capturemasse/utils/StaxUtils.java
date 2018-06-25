@@ -8,7 +8,7 @@ import javax.xml.stream.XMLStreamException;
  * Interface permettant de réaliser les opérations d'écriture de fichiers XML
  * volumineux.
  * <i><u>NB. Cette interface a été réalisée pour pouvoir simuler les cas de coupure
- * réseau lors de l'écriture du fichier de résultat.</u></i>
+ * réseau lors de l'écriture du fichier de résultat.</u><i>
  * 
  * 
  */

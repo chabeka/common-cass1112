@@ -27,7 +27,7 @@ public final class ContextFactory {
     * Ici le fichier de configuration du contexte doit contenir des références
     * vers le bean du fichier dynamque de configuration avec la balise : <br>
     * <br>
-    * <code>&lt;ref bean="saeConfigResource" /></code> <br>
+    * <code>&lt;ref bean="saeConfigResource"</code> <br>
     * <br>
     * 
     * @param contextConfig

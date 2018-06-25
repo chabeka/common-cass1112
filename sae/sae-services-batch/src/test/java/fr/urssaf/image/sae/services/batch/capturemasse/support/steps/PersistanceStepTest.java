@@ -127,7 +127,7 @@ public class PersistanceStepTest {
          context.put(Constantes.INDEX_EXCEPTION,
                new ConcurrentLinkedQueue<Integer>());
          context.put(Constantes.DOC_EXCEPTION,
-               new ConcurrentLinkedQueue<Exception>());
+               new ConcurrentLinkedQueue<String>());
          context.put(Constantes.INDEX_REF_EXCEPTION,
                new ConcurrentLinkedQueue<Integer>());
 

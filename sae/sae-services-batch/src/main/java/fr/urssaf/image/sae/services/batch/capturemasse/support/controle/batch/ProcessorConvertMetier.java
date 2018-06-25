@@ -3,6 +3,9 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.controle.batch;
 
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,9 @@ public class ProcessorConvertMetier extends AbstractListener implements
 
    @Autowired
    private MappingDocumentService mappingService;
+   
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(ProcessorConvertMetier.class);  
 
    /**
     * {@inheritDoc}
@@ -31,6 +37,9 @@ public class ProcessorConvertMetier extends AbstractListener implements
    @Override
    public final StorageDocument process(final SAEDocument item)
          throws Exception {
+      
+      String trcPrefix = "process";
+      LOGGER.debug("{} - début", trcPrefix);
 
       try {
          // Si il y a déjà eu une erreur sur un document en mode partiel, on ne
@@ -49,23 +58,21 @@ public class ProcessorConvertMetier extends AbstractListener implements
          }
       } catch (Exception e) {
          if (isModePartielBatch()) {
-
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
-            
+            String message = "Une erreur est survenue lors de contrôle du document {0}";
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn(StringUtils.replace(message,"{0}", item.getUuid().toString()),
+                  e);
             StorageDocument storageDoc = new StorageDocument();
             storageDoc.setUuid(item.getUuid());
             return storageDoc;
-
          } else {
             throw e;
          }
-
       }
-
    }
 
    /**

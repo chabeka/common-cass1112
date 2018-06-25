@@ -245,7 +245,7 @@ public class SAETransfertMasseServiceTest {
    @Test
    @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveInexistante() throws TransfertException,
-         ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
+         ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException, UnknownCodeRndEx {
 
       // -- Appel méthode de transfert sur un doc déjà transféré
       try {

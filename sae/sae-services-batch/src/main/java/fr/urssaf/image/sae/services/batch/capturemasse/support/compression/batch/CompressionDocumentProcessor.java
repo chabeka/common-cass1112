@@ -91,13 +91,13 @@ public class CompressionDocumentProcessor extends AbstractListener implements
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Une erreur est survenue lors de la compression de document",
+                  e);
          } else {
             throw e;
          }
-
       }
-
       LOGGER.debug("{} - fin", trcPrefix);
       return item;
    }

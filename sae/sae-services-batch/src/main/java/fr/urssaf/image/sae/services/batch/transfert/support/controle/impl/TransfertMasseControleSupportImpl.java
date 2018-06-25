@@ -105,9 +105,16 @@ public class TransfertMasseControleSupportImpl implements
    public boolean controleSAEDocumentSuppression(UntypedDocument item)
          throws SearchingServiceEx, ConnectionServiceEx {
 
-      return storageServiceProvider.getStorageDocumentService()
+      StorageDocument storageDocument = storageServiceProvider.getStorageDocumentService()
             .searchMetaDatasByUUIDCriteria(
-                  new UUIDCriteria(item.getUuid(), null)) != null;
+                  new UUIDCriteria(item.getUuid(), null));
+      
+      if(storageDocument!=null && storageDocument.getUuid() !=null){
+         return true;
+      }else {
+         return false;
+      }
+
    }
 
    /**

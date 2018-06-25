@@ -1328,4 +1328,34 @@ public class ReferentielServiceUtils {
 
    }
 
+   
+   /**
+    * Référentiel des événements en V14 Ajout des évenements : <li>
+    * WS_COPIE|KO</li>
+    */
+   public static void addReferentielEvenementV14(Keyspace keyspace) {
+      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+            keyspace, "TraceDestinataire", StringSerializer.get(),
+            StringSerializer.get());
+
+      ColumnFamilyUpdater<String, String> updater;
+
+      List<String> allInfos = Arrays.asList("all_infos");
+      
+      // DFCE_COPIE_DOC|OK
+      // dans le journal des événements SAE avec all_infos
+      updater = cfTmpl.createUpdater("DFCE_COPIE_DOC|OK");
+      CassandraUtils.addColumn(JOURN_EVT, allInfos, StringSerializer.get(),
+            ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+      // WS_COPIE|KO
+      // dans le registre de surveillance technique avec all_infos
+      updater = cfTmpl.createUpdater("WS_COPIE|KO");
+      CassandraUtils.addColumn("REG_TECHNIQUE", allInfos,
+            StringSerializer.get(), ListSerializer.get(), updater);
+      cfTmpl.update(updater);
+
+   }
+
 }

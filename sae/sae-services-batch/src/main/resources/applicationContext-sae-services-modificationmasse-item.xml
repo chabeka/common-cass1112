@@ -24,7 +24,7 @@
       <property name="delegates">
          <list>
             <ref bean="convertMetaDocumentModificationProcessor" />
-            <ref bean="controleMetaDocumentModificationProcessor" />
+            <!--  <ref bean="controleMetaDocumentModificationProcessor" /> -->
          </list>
       </property>
    </bean>

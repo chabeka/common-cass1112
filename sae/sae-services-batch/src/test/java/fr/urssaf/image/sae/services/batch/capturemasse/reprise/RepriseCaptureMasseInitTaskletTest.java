@@ -202,7 +202,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       context = new ExecutionContext();
       context.put(Constantes.ID_TRAITEMENT, idJob.toString());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
       idJobReprendre = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
@@ -290,7 +290,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
@@ -357,7 +357,7 @@ public class RepriseCaptureMasseInitTaskletTest {
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT,
             new JobParameter(idJob.toString()));
@@ -428,17 +428,17 @@ public class RepriseCaptureMasseInitTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> errorMessageList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (errorMessageList.size()));
 
       Assert.assertEquals(
             "Une erreur interne à l'application est survenue lors de la reprise du traitement de masse "
                   + idJobReprendre
                   + ". Détails : Le mode du batch n'est pas reconnu",
-            exceptions.element().getMessage());
+                  errorMessageList.element());
    }
 
    /**
@@ -482,17 +482,17 @@ public class RepriseCaptureMasseInitTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> errorMessageList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (errorMessageList.size()));
 
       Assert.assertEquals(
             "Une erreur interne à l'application est survenue lors de la reprise du traitement de masse "
                   + idJobReprendre
                   + ". Détails : Le mode du batch n'est pas reconnu",
-            exceptions.element().getMessage());
+            errorMessageList.element());
    }
 
    /**
@@ -533,16 +533,16 @@ public class RepriseCaptureMasseInitTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> errorMessageList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (errorMessageList.size()));
 
       Assert.assertEquals(
             "Le fichier sommaire " + ecdeTestSommaire.getUrlEcde()
                   + " est introuvable",
-            exceptions.element().getMessage());
+            errorMessageList.element());
    }
 
    /**
@@ -581,14 +581,14 @@ public class RepriseCaptureMasseInitTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> errorMessageList = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (errorMessageList.size()));
 
       Assert.assertEquals("L'identifiant du job à reprendre est requis",
-            exceptions.element().getMessage());
+            errorMessageList.element());
    }
 
    /**

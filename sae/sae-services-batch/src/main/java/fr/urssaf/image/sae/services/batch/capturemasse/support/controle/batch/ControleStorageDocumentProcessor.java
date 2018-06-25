@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.controle.batch;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,18 @@ public class ControleStorageDocumentProcessor extends AbstractListener
 
    @Autowired
    private CaptureMasseControleSupport support;
+   
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(ControleStorageDocumentProcessor.class);
 
    /**
     * {@inheritDoc}
     */
    @Override
    public final SAEDocument process(final SAEDocument item) throws Exception {
+      
+      String trcPrefix = "process";
+      LOGGER.debug("{} - début", trcPrefix);
 
       try {
          // Si il y a déjà eu une erreur sur un document en mode partiel, on ne
@@ -50,20 +58,18 @@ public class ControleStorageDocumentProcessor extends AbstractListener
          String path = ecdeDirectory.getAbsolutePath() + File.separator
                + "documents" + File.separator + item.getFilePath();
          item.setFilePath(path);
-
       } catch (Exception e) {
          if (isModePartielBatch()) {
-
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
-
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Une erreur est survenue lors de contrôle des documents",
+                  e);
          } else {
             throw e;
          }
-
       }
       return item;
    }

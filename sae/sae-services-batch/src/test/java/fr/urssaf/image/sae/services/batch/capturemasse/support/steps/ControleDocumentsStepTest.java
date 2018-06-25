@@ -80,7 +80,7 @@ public class ControleDocumentsStepTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context
@@ -95,11 +95,11 @@ public class ControleDocumentsStepTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
 
    }
 
@@ -133,7 +133,7 @@ public class ControleDocumentsStepTest {
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
 
       Map<String, JobParameter> map = new HashMap<String, JobParameter>();
       map.put(Constantes.SOMMAIRE, new JobParameter(ecdeTestSommaire
@@ -144,11 +144,11 @@ public class ControleDocumentsStepTest {
       ExecutionContext context = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) context
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
 
    }
 

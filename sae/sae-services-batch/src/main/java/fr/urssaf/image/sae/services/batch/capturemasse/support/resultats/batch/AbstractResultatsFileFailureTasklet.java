@@ -46,8 +46,8 @@ AbstractCaptureMasseTasklet {
       CaptureMasseErreur erreur = new CaptureMasseErreur();
       erreur.setListCodes(new ArrayList<String>(
             getCodesErreurListe(chunkContext)));
-      erreur.setListException(new ArrayList<Exception>(
-            getExceptionErreurListe(chunkContext)));
+      erreur.setListException(new ArrayList<String>(
+            getErrorMessageList(chunkContext)));
       erreur.setListIndex(new ArrayList<Integer>(
             getIndexErreurListe(chunkContext)));
       erreur.setListRefIndex(new ArrayList<Integer>(
@@ -75,7 +75,7 @@ AbstractCaptureMasseTasklet {
       ConcurrentLinkedQueue<?> listIntDocs = getIntegratedDocuments();
       if (isModeToutOuRien && CollectionUtils.isNotEmpty(listIntDocs)) {
          erreur.getListCodes().set(0, Constantes.ERR_BUL003);
-         erreur.getListException().set(0, new Exception(LIBELLE_BUL003));
+         erreur.getListException().set(0, new Exception(LIBELLE_BUL003).toString());
       }
 
       final File ecdeDirectory = sommaireFile.getParentFile();

@@ -504,3 +504,12 @@ Met la base Cassandra du SAE en version 28 :
 !! Commande pour GNT et pour GNS différentes
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties GNS_CASSANDRA_DFCE_180300
 
+
+// ------------------------------------------
+// 19) Lot 180900SAE
+// ------------------------------------------
+
+19-1) Lot 180900SAE
+Met la base Cassandra du SAE en version 29 :
+
+- Ajout de l'évenement WS_COPIE|KO et WS_COPIE|OK

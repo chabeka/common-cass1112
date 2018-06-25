@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -141,7 +142,7 @@ public class PersistanceFichiersReferenceStepTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context
@@ -155,11 +156,11 @@ public class PersistanceFichiersReferenceStepTest {
             context.get(Constantes.DOC_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) context
       .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (messageExceptionList.size()));
 
       EasyMock.verify(provider);
 
@@ -186,7 +187,7 @@ public class PersistanceFichiersReferenceStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -199,11 +200,11 @@ public class PersistanceFichiersReferenceStepTest {
       ExecutionContext context = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-      .get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) context
+      .get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (codeExceptionList.size()));
 
       EasyMock.verify(provider);
 
@@ -229,7 +230,7 @@ public class PersistanceFichiersReferenceStepTest {
       contextParam.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       contextParam.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       contextParam.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -240,18 +241,20 @@ public class PersistanceFichiersReferenceStepTest {
       JobExecution execution = launcher.launchStep(
             "persistanceFichiersReference", jobParameters, contextParam);
 
-      Assert.assertEquals("le status de sortie doit etre correct",
-            new ExitStatus("FAILED_NO_ROLLBACK").getExitCode(), execution
-            .getExitStatus().getExitCode());
-
+      List<String> codeExitStatus = new ArrayList<String>();
+      codeExitStatus = Arrays.asList(new ExitStatus("FAILED").getExitCode(), new ExitStatus("FAILED_NO_ROLLBACK").getExitCode());
+      
+      Assert.assertTrue("le status de sortie doit etre à FAILED ou FAILED_NO_ROLLBACK", codeExitStatus.contains(execution
+            .getExitStatus().getExitCode()));
+      
       ExecutionContext context = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-      .get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) context
+      .get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (codeExceptionList.size()));
 
       EasyMock.verify(provider);
 
@@ -293,7 +296,7 @@ public class PersistanceFichiersReferenceStepTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -301,17 +304,17 @@ public class PersistanceFichiersReferenceStepTest {
             "persistanceFichiersReference", jobParameters, context);
 
       Assert.assertEquals("le status de sortie doit etre correct",
-            ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
+            ExitStatus.COMPLETED.getExitCode(), execution.getExitStatus()
             .getExitCode());
 
       ExecutionContext execContext = execution.getExecutionContext();
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) execContext
-      .get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) execContext
+      .get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (codeExceptionList.size()));
 
       EasyMock.verify(provider, documentService);
 
@@ -345,7 +348,7 @@ public class PersistanceFichiersReferenceStepTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 
@@ -355,14 +358,14 @@ public class PersistanceFichiersReferenceStepTest {
       context = execution.getExecutionContext();
 
       Assert.assertNotNull("Une exception doit etre presente dans le context",
-            context.get(Constantes.DOC_EXCEPTION));
+            context.get(Constantes.CODE_EXCEPTION));
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) context
-      .get(Constantes.DOC_EXCEPTION);
+      ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) context
+      .get(Constantes.CODE_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
-            1, (exceptions.size()));
+            1, (codeExceptionList.size()));
 
       EasyMock.verify(provider, documentService);
 
@@ -404,7 +407,7 @@ public class PersistanceFichiersReferenceStepTest {
       context.put(Constantes.INDEX_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
 

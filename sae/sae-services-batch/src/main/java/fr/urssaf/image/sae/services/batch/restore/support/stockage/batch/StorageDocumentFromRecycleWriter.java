@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.item.ItemWriter;
@@ -16,6 +17,7 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.restore.support.stockage.multithreading.RestorePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.restore.support.stockage.multithreading.RestoreRunnable;
+import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
@@ -139,10 +141,11 @@ public class StorageDocumentFromRecycleWriter implements
     * @throws ReferentialException
     * @throws IOException 
     * @throws StorageException 
+    * @throws ArchiveInexistanteEx 
     */
    public List<StorageMetadata> getMetadatasDocFromRecycleBean(
          StorageDocument storageDocument) throws ReferentialException,
-         StorageException, IOException {
+         StorageException, IOException, ArchiveInexistanteEx {
 
       String prefixeTrc= "getMetadatasDocFromRecycleBean()";
       
@@ -153,8 +156,17 @@ public class StorageDocumentFromRecycleWriter implements
             null);
     
       try {
-         metadatasStorageDoc = serviceProvider.getStorageDocumentService()
-               .getStorageDocumentFromRecycleBin(uuidCriteria).getMetadatas();
+         
+         if(serviceProvider.getStorageDocumentService()
+               .getStorageDocumentFromRecycleBin(uuidCriteria) !=null){
+            metadatasStorageDoc = serviceProvider.getStorageDocumentService()
+                  .getStorageDocumentFromRecycleBin(uuidCriteria).getMetadatas();
+         }else {
+            
+            String message = "Le document {0} n'existe pas en corbeille.";
+            throw new ArchiveInexistanteEx(StringUtils.replace(message,
+                  "{0}", storageDocument.getUuid().toString()));
+         }
          
       } catch (RecycleBinServiceEx frozenExcept) {
          LOGGER.debug(

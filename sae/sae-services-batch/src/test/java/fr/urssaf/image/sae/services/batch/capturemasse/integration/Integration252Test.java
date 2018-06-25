@@ -292,7 +292,7 @@ public class Integration252Test {
 
       ILoggingEvent event = loggingEvents.get(0);
 
-      Assert.assertEquals("le log doit être de niveau ERROR", Level.ERROR,
+      Assert.assertEquals("le log doit être de niveau WARNING", Level.WARN,
             event.getLevel());
 
       boolean messageFound = LogUtils.logContainsMessage(event, LOG_WARN);

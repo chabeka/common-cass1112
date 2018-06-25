@@ -678,7 +678,6 @@ public class ParametersServiceImpl implements ParametersService {
    /**
     * {@inheritDoc}
     * 
-    * @throws ParameterNotFoundException
     */
    @Override
    public Date getPurgeCorbeilleDateDebutPurge()

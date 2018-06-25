@@ -90,8 +90,9 @@ public class ControleDocumentSommaireTransfertProcessor extends
 						getIndexErreurListe().add(
 								getStepExecution().getExecutionContext()
 										.getInt(Constantes.CTRL_INDEX));
-						final String message = e.getMessage();
-						getExceptionErreurListe().add(new Exception(message));
+						getErrorMessageList().add(e.getMessage());
+						LOGGER.warn("Une erreur est survenue lors de contrôle des documents",
+		                  e);
 					} else {
 						throw e;
 					}
@@ -103,9 +104,11 @@ public class ControleDocumentSommaireTransfertProcessor extends
 							getStepExecution().getExecutionContext().getInt(
 									Constantes.CTRL_INDEX));
 					final String message = "Le document {0} n'existe pas. Suppression impossible.";
-					getExceptionErreurListe().add(
-							new Exception(StringUtils.replace(message, "{0}",
-									uuidString)));
+					getErrorMessageList().add(StringUtils.replace(message, "{0}",
+                   uuidString));
+					LOGGER.warn(StringUtils.replace(message, "{0}",
+	                   uuidString),  new ArchiveInexistanteEx(StringUtils.replace(message,
+	                         "{0}", uuidString)));
 				} else {
 					String message = "Le document {0} n'existe pas. Suppression impossible.";
 					throw new ArchiveInexistanteEx(StringUtils.replace(message,
@@ -122,6 +125,7 @@ public class ControleDocumentSommaireTransfertProcessor extends
 									StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
 											.getShortCode());
 
+					// Si document existe en corbeille et a été supprimé par la transfert à reprendre
 					if (StringUtils.isNotEmpty(idTransfertMasseInterne)
 							&& idTransfertMasseInterne.equals(idTraitementMasse
 									.toString())) {
@@ -134,21 +138,54 @@ public class ControleDocumentSommaireTransfertProcessor extends
 						getIndexRepriseDoneListe().add(
 								getStepExecution().getExecutionContext()
 										.getInt(Constantes.CTRL_INDEX));
-					} else {
+					}
+					// Sinon, Si le document a déjà été supprimé par un transfert différent
+					else if(StringUtils.isNotEmpty(idTransfertMasseInterne)) {
+					   // On retourne une exception ArchiveInexistanteEx
+					   getCodesErreurListe().add(Constantes.ERR_BUL002);
+	               getIndexErreurListe().add(
+	                     getStepExecution().getExecutionContext().getInt(
+	                           Constantes.CTRL_INDEX));
+	               final String message = "Le document {0} n'existe pas. Suppression impossible.";
+	               getErrorMessageList().add(StringUtils.replace(message, "{0}",
+	                   uuidString));
+	               LOGGER.warn(StringUtils.replace(message, "{0}",
+	                      uuidString),  new ArchiveInexistanteEx(StringUtils.replace(message,
+	                            "{0}", uuidString)));
+					}
+					else {
 						document.getMetadatas()
 								.add(new StorageMetadata(
 										StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
 												.getShortCode(),
 										idTraitementMasse.toString()));
 					}
-				} catch (Exception e) {
+				}
+				catch (ArchiveInexistanteEx e) {
+               if (isModePartielBatch()) {
+                  getCodesErreurListe().add(Constantes.ERR_BUL002);
+                  getIndexErreurListe().add(
+                        getStepExecution().getExecutionContext()
+                              .getInt(Constantes.CTRL_INDEX));
+                  final String message = "Le document {0} n'existe pas. Suppression impossible.";
+                  getErrorMessageList().add(StringUtils.replace(message, "{0}",
+                      uuidString));
+                  LOGGER.warn(StringUtils.replace(message, "{0}",
+                         uuidString),  new ArchiveInexistanteEx(StringUtils.replace(message,
+                               "{0}", uuidString)));
+               } else {
+                  throw e;
+               }
+            }
+				catch (Exception e) {
 					if (isModePartielBatch()) {
 						getCodesErreurListe().add(Constantes.ERR_BUL002);
 						getIndexErreurListe().add(
 								getStepExecution().getExecutionContext()
 										.getInt(Constantes.CTRL_INDEX));
 						final String message = "Une exception a eu lieu lors de la récupération des métadonnées du document de la corbeille";
-						getExceptionErreurListe().add(new Exception(message));
+						getErrorMessageList().add(message);
+						LOGGER.warn(message, e);
 					} else {
 						throw e;
 					}
@@ -175,7 +212,8 @@ public class ControleDocumentSommaireTransfertProcessor extends
 							getStepExecution().getExecutionContext().getInt(
 									Constantes.CTRL_INDEX));
 					final String message = e.getMessage();
-					getExceptionErreurListe().add(new Exception(message));
+					getErrorMessageList().add(message);
+					LOGGER.warn(message, e);
 				} else {
 					throw e;
 				}
@@ -187,7 +225,8 @@ public class ControleDocumentSommaireTransfertProcessor extends
 						getStepExecution().getExecutionContext().getInt(
 								Constantes.CTRL_INDEX));
 				final String message = "BatchTypeAction inconnu.";
-				getExceptionErreurListe().add(new Exception(message));
+				getErrorMessageList().add(message);
+				LOGGER.warn(message, new Exception(message));				
 				document = null;
 			} else {
 				String message = "BatchTypeAction inconnu.";

@@ -67,7 +67,7 @@ public class UntypedRangeMetadata extends AbstractMetadata {
     *           : Le long court de la métadonnée métier.
     * @param valeurMin
     *           : La valeur minimum de la métadonnée.
-    * @param valeurMin
+    * @param valeurMax
     *           : La valeur maximum de la métadonnée.
     */
 

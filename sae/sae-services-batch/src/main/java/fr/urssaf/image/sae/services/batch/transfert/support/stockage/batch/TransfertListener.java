@@ -110,9 +110,8 @@ public class TransfertListener extends AbstractListener {
    public final void logReadError(final Exception exception) {
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
-      LOGGER.warn("erreur lors de la lecture du fichier", exception);
+      getErrorMessageList().add(exception.getMessage());
+      LOGGER.warn("Erreur lors de la lecture du fichier", exception);
    }
 
    /**
@@ -126,14 +125,12 @@ public class TransfertListener extends AbstractListener {
    @OnProcessError
    public final void logProcessError(final Object documentType,
          final Exception exception) {
-
-      LOGGER.warn("erreur lors du traitement de transfert", exception);
-
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
+      LOGGER.warn("Erreur lors du transfert de document", exception);
+      getErrorMessageList().add(exception.getMessage());
    }
 
    /**
@@ -176,17 +173,14 @@ public class TransfertListener extends AbstractListener {
       ExitStatus status = getStepExecution().getExitStatus();
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
-
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
-
-      if (CollectionUtils.isEmpty(exceptions)) {
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+      if (CollectionUtils.isEmpty(errorMessageList)) {
          status = ExitStatus.COMPLETED;
       } else {
          status = ExitStatus.FAILED;
       }
 
       executor.shutdown();
-
       executor.waitFinishInsertion();
 
       final ConcurrentLinkedQueue<UUID> list = this.getIntegratedDocuments();
@@ -217,27 +211,25 @@ public class TransfertListener extends AbstractListener {
 
       ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
       ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
       ExitStatus status;
 
       try {
-
          throw exception.getCause();
-
       } catch (InterruptionTraitementException e) {
          
          String messageError = "Le transfert de masse en mode 'Partiel' a été interrompue. "
                + "Une procédure d'exploitation doit être initialisée afin de rejouer le traitement en echec.";
          LOGGER.warn("{} - " + messageError, trcPrefix);
-         LOGGER.warn("{} - " + e.getMessage(), trcPrefix);
+         LOGGER.warn("{} - " + e.toString(), trcPrefix);
 
          getStepExecution().getJobExecution().getExecutionContext()
                .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
          codes.add(Constantes.ERR_TR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(messageError));
+         errorMessageList.add(messageError);
 
          status = ExitStatus.FAILED;
 
@@ -252,12 +244,13 @@ public class TransfertListener extends AbstractListener {
             message = exception.getCause().getMessage();
          }
 
+         LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
+         
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(message, e));
+         errorMessageList.add(message);
 
          status = ExitStatus.FAILED;
-
       }
 
       return status;

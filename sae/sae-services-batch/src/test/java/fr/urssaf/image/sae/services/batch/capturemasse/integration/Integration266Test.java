@@ -270,7 +270,7 @@ public class Integration266Test {
             idTdm,
             urlSommaire,
             Arrays
-            .asList("Exception(s) sur les documents : 2", "java.lang.Exception: Le fichier document doc70.PDF est introuvable"));
+            .asList("Exception(s) sur les documents : 2", "Le fichier document doc70.PDF est introuvable")); //java.lang.Exception: 
 
    }
 

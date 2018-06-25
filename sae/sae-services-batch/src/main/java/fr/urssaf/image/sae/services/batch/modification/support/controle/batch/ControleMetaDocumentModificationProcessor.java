@@ -59,9 +59,9 @@ public class ControleMetaDocumentModificationProcessor extends AbstractListener
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            final String message = e.getMessage();
-            getExceptionErreurListe().add(new Exception(message));
-            LOGGER.error(message, e);
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Une erreur est survenue lors de contrôle des documents",
+                  e);
          } else {
             throw e;
          }

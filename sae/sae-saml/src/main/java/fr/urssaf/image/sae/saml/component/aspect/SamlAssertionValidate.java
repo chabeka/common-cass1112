@@ -82,10 +82,10 @@ public class SamlAssertionValidate {
     * {@link IllegalArgumentException}<br>
     * Les messages de l'exception levée sont les suivants:
     * <ul>
-    * <li>paramètre non renseigné :"Le paramètre [<i>&lt;nom du paramètre></i>] n'est pas renseigné alors qu'il est obligatoire"
+    * <li>paramètre non renseigné :"Le paramètre [<i>&lt;nom du paramètre><i>] n'est pas renseigné alors qu'il est obligatoire"
     * </li>
     * <li>attribut non renseigné :
-    * "Il faut renseigner [<i>&lt;nom de l'attribut></i>]"</li>
+    * "Il faut renseigner [<i>&lt;nom de l'attribut><i>]"</li>
     * <li>PAGM non renseigné : "Il faut spécifier au moins un PAGM"</li>
     * </ul>
     * <br>
@@ -167,7 +167,7 @@ public class SamlAssertionValidate {
     * <br>
     * l'unique paramètre 'assertionSaml' est vérifié. la méthode lève
     * {@link IllegalArgumentException} si le paramètre n'est pas renseigné<br>
-    * message de l'exception non renseigné :"Le paramètre [<i>&lt;nom du paramètre></i>] n'est pas renseigné alors qu'il est obligatoire"
+    * message de l'exception non renseigné :"Le paramètre [<i>&lt;nom du paramètre><i>] n'est pas renseigné alors qu'il est obligatoire"
     * 
     * 
     * @param joinPoint
@@ -189,7 +189,7 @@ public class SamlAssertionValidate {
     * <br>
     * les différents paramètres doivent être renseignés. la méthode lève
     * {@link IllegalArgumentException} si le paramètre n'est pas renseigné<br>
-    * message de l'exception non renseigné :"Le paramètre [<i>&lt;nom du paramètre></i>] n'est pas renseigné alors qu'il est obligatoire"
+    * message de l'exception non renseigné :"Le paramètre [<i>&lt;nom du paramètre><i>] n'est pas renseigné alors qu'il est obligatoire"
     * 
     * 
     * @param joinPoint

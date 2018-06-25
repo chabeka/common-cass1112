@@ -41,7 +41,7 @@ public class CheckEcdePermissionAfterStepListener {
 
          EcdePermissionException exception = (EcdePermissionException) failureExceptions
                .get(0).getCause().getCause();
-         addException(stepExecution, exception.getCause());
+         addMessageException(stepExecution, exception.getCause());
 
          exitStatus = new ExitStatus("FAILED_FIN_BLOQUANT");
 
@@ -50,12 +50,9 @@ public class CheckEcdePermissionAfterStepListener {
       return exitStatus;
    }
 
-   private void addException(StepExecution stepExecution,
+   private void addMessageException(StepExecution stepExecution,
          Throwable paramException) {
-      final Exception exception = new Exception(paramException.getMessage());
-
-      getExceptions(stepExecution).add(exception);
-
+      getMessageExceptions(stepExecution).add(paramException.getMessage());
    }
 
    private boolean ecdePermissionValid(Throwable exception) {
@@ -70,10 +67,11 @@ public class CheckEcdePermissionAfterStepListener {
       return valid;
    }
 
-   @SuppressWarnings("unchecked")
-   private ConcurrentLinkedQueue<Exception> getExceptions(
-         StepExecution stepExecution) {
-      return (ConcurrentLinkedQueue<Exception>) stepExecution.getJobExecution()
-            .getExecutionContext().get(Constantes.DOC_EXCEPTION);
-   }
+    @SuppressWarnings("unchecked")
+    private ConcurrentLinkedQueue<String> getMessageExceptions(
+          StepExecution stepExecution) {
+       return (ConcurrentLinkedQueue<String>) stepExecution.getJobExecution()
+             .getExecutionContext().get(Constantes.DOC_EXCEPTION);
+    }
+   
 }

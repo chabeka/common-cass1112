@@ -114,4 +114,9 @@ public final class TracesConstantes {
     */
    public static final String CODE_EVT_WS_REPRISE_KO = "WS_REPRISE_MASSE|KO";
    
+   /**
+    * Le code de l'événement de l'échec du WS de copie
+    */
+   public static final String CODE_EVT_WS_COPIE_KO = "WS_COPIE|KO";
+   
 }

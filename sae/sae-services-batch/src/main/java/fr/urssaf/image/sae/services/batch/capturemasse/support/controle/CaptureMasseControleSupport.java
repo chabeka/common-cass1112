@@ -49,11 +49,11 @@ public interface CaptureMasseControleSupport {
     * <li>Vérification que les métadonnées sont autorisées à l'archivage</li>
     * <li>Vérification que les métadonnées obligatoires à l'archivage sont bien
     * spécifiées</li>
-    * <li>Vérification que la métadonnée <i>TypeHash</i> indique un algorithme
+    * <li>Vérification que la métadonnée <i>TypeHash<i> indique un algorithme
     * de hashage connu</li>
-    * <li>Vérification que le <i>hash</i> du fichier est identique à la valeur
-    * de la métadonnée <i>hash</i></li>
-    * <li>Vérification que la valeur de la métadonnée <i>CodeRND</i> est
+    * <li>Vérification que le <i>hash<i> du fichier est identique à la valeur
+    * de la métadonnée <i>hash<i></li>
+    * <li>Vérification que la valeur de la métadonnée <i>CodeRND<i> est
     * référencée dans le <b>SAE</b></li>
     * </ul>
     * 

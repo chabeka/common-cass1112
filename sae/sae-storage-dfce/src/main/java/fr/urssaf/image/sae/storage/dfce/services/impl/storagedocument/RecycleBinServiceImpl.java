@@ -87,9 +87,13 @@ RecycleBinService {
       Document doc = storageDocumentServiceSupport.getDocumentFromRecycleBin(
             getDfceService(), getCnxParameters(), uuidCriteria.getUuid(),
             LOGGER, tracesSupport);
-
-      return storageDocumentServiceSupport.getStorageDocument(doc,
-            uuidCriteria.getDesiredStorageMetadatas(), getDfceService(), false);
+      
+      if(doc != null){
+         return storageDocumentServiceSupport.getStorageDocument(doc,
+               uuidCriteria.getDesiredStorageMetadatas(), getDfceService(), false);
+      }else {
+         return null;
+      }
    }
 
    /**

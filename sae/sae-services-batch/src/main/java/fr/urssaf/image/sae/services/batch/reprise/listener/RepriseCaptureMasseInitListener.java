@@ -32,7 +32,7 @@ public class RepriseCaptureMasseInitListener {
 
       if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
-            getExceptionErreurListe(stepExecution).add((Exception) throwable);
+            getErrorMessageList(stepExecution).add(throwable.getMessage());
             LOGGER.warn(getLogMessage(), throwable);
          }
 
@@ -52,11 +52,11 @@ public class RepriseCaptureMasseInitListener {
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe(
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList(
          StepExecution stepExecution) {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
 

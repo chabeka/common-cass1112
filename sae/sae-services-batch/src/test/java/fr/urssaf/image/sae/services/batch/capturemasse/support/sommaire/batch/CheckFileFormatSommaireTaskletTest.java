@@ -72,7 +72,7 @@ public class CheckFileFormatSommaireTaskletTest {
       context = new ExecutionContext();
       context.put(Constantes.ID_TRAITEMENT, UUID.randomUUID().toString());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
       ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
    }
 
@@ -103,7 +103,7 @@ public class CheckFileFormatSommaireTaskletTest {
       context.put(Constantes.INDEX_REF_EXCEPTION,
             new ConcurrentLinkedQueue<Integer>());
       context.put(Constantes.DOC_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+            new ConcurrentLinkedQueue<String>());
 
       mapParameter.put(Constantes.ID_TRAITEMENT, new JobParameter(UUID
             .randomUUID().toString()));
@@ -159,7 +159,7 @@ public class CheckFileFormatSommaireTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> exceptions = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",
@@ -199,7 +199,7 @@ public class CheckFileFormatSommaireTaskletTest {
 
       ExecutionContext executionContext = execution.getExecutionContext();
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) executionContext
+      ConcurrentLinkedQueue<String> exceptions = (ConcurrentLinkedQueue<String>) executionContext
             .get(Constantes.DOC_EXCEPTION);
 
       Assert.assertEquals("la liste des exceptions doit contenir un élément",

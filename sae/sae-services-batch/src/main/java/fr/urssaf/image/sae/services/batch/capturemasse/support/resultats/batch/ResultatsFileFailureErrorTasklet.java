@@ -22,7 +22,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ErreurTraitement;
 
 /**
- * Tasklet décriture du fichier resultats.xml en cas d'erreur bloquante
+ * Tasklet d'écriture du fichier resultats.xml en cas d'erreur bloquante
  * 
  */
 @Component
@@ -48,11 +48,11 @@ public class ResultatsFileFailureErrorTasklet extends AbstractCaptureMasseTaskle
       final ExecutionContext context = stepContext.getStepExecution()
             .getJobExecution().getExecutionContext();
 
-      Exception erreur = getExceptionErreurListe(chunkContext).peek();
+      String erreur = getErrorMessageList(chunkContext).peek();
       if (erreur != null) {
          LOGGER.error("erreur bloquante détectée", erreur);
          stepContext.getStepExecution().getJobExecution().addFailureException(
-               erreur);
+              new Exception(erreur));
       }
 
       Object sommairePathObject = context.get(Constantes.SOMMAIRE_FILE);
@@ -66,7 +66,7 @@ public class ResultatsFileFailureErrorTasklet extends AbstractCaptureMasseTaskle
          erreurTraitement.setCodeErreur("SAE-EC-SOM001");
          erreurTraitement
                .setMessageErreur("Le fichier sommaire n'est pas valide. Détails : ");
-         erreurTraitement.setException(erreur);
+         erreurTraitement.setException(new Exception(erreur));
          support.writeResultatsFile(ecdeDirectory, erreurTraitement);
 
          File resultats = new File(ecdeDirectory, "resultats.xml");

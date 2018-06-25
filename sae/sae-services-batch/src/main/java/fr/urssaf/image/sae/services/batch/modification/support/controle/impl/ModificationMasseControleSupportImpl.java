@@ -103,7 +103,6 @@ implements ModificationMasseControleSupport {
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
-
       return result;
    }
 
@@ -111,65 +110,65 @@ implements ModificationMasseControleSupport {
     * {@inheritDoc}
     */
    @Override
-   public StorageDocument controleSAEDocumentModification(UUID uuidJob, UntypedDocument item)
-         throws UnknownCodeRndEx, ReferentialRndException,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx, 
+   public StorageDocument controleSAEDocumentModification(UUID uuidJob,
+         UntypedDocument item) throws UnknownCodeRndEx,
+         ReferentialRndException, InvalidValueTypeAndFormatMetadataEx,
+         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, UnknownHashCodeEx,
          NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
          ModificationException, ReferentialException, RetrievalServiceEx,
          TraitementRepriseAlreadyDoneException, SearchingServiceEx,
          ArchiveInexistanteEx {
-      StorageDocument document = null;
+
       String trcPrefix = "controleSAEDocumentModification()";
       LOGGER.debug("{} - début", trcPrefix);
-      if (item != null && item.getUuid() != null) {
+      StorageDocument document = null;
+      // Gestion de document gelé
+      if (item != null && item.getUuid() != null){
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
          UUID idArchive = item.getUuid();
          List<StorageMetadata> listeMetadataDocument = modificationService
                .getListeStorageMetadatasWithGel(idArchive);
-         if (listeMetadataDocument != null && !listeMetadataDocument.isEmpty()) {
-            if (modificationService.isFrozenDocument(listeMetadataDocument)) {
-               String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
-               throw new ModificationException(StringUtils.replace(
-                     frozenDocMsgException, "{0}", idArchive.toString()));
-            }
+         if (modificationService.isFrozenDocument(listeMetadataDocument)) {
+            throw new ModificationException(StringUtils.replace(
+                  frozenDocMsgException, "{0}", idArchive.toString()));
+         }
+      }
 
+      try {
+         List<StorageMetadata> listeMetadataDocument = modificationService
+               .controlerMetaDocumentModifie(item.getUuid(),
+                     item.getUMetadatas(), trcPrefix, "modification_masse");
+         
+         if(listeMetadataDocument!= null && !listeMetadataDocument.isEmpty()){
             document = modificationService.separationMetaDocumentModifie(
-                  idArchive, listeMetadataDocument, item.getUMetadatas(),
+                  item.getUuid(), listeMetadataDocument, item.getUMetadatas(),
                   trcPrefix);
 
-            String idModifMasseInterne = StorageMetadataUtils
-                  .valueMetadataFinder(listeMetadataDocument,
-                        StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
-                              .getShortCode());
+            String idModifMasseInterne = StorageMetadataUtils.valueMetadataFinder(
+                  listeMetadataDocument, StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
+                        .getShortCode());
 
             if (StringUtils.isNotEmpty(idModifMasseInterne)
                   && idModifMasseInterne.equals(uuidJob.toString())) {
                String message = "Le document {0} a déjà été modifié par le traitement de masse en cours ({1})";
                String messageFormat = StringUtils.replaceEach(message,
                      new String[] { "{0}", "{1}" }, new String[] {
-                     idArchive.toString(), uuidJob.toString() });
+                           item.getUuid().toString(), uuidJob.toString() });
                LOGGER.warn(messageFormat);
                throw new TraitementRepriseAlreadyDoneException(messageFormat);
             } else {
-               document
-                     .getMetadatas()
-                     .add(new StorageMetadata(
+               document.getMetadatas().add(
+                     new StorageMetadata(
                            StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE
                                  .getShortCode(), uuidJob.toString()));
             }
-         } else {
-            String message = StringUtils
-                  .replace(
-                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                        "{0}", idArchive.toString());
-            throw new ArchiveInexistanteEx(message);
          }
-
-      }
+      } catch (ConnectionServiceEx e) {
+         throw new ModificationException(e);
+      } 
       LOGGER.debug("{} - fin", trcPrefix);
-
       return document;
-
    }
 
 }

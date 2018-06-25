@@ -92,12 +92,10 @@ public class ModificationListener extends AbstractListener {
     */
    @OnReadError
    public final void logReadError(final Exception exception) {
-
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
-      LOGGER.warn("erreur lors de la lecture du fichier", exception);
+      getErrorMessageList().add(exception.getMessage());
+      LOGGER.warn("Erreur lors de la lecture du fichier", exception);
    }
 
    /**
@@ -111,14 +109,12 @@ public class ModificationListener extends AbstractListener {
    @OnProcessError
    public final void logProcessError(final Object documentType,
          final Exception exception) {
-
-      LOGGER.warn("erreur lors du traitement de modification", exception);
-
       getCodesErreurListe().add(Constantes.ERR_BUL002);
       getIndexErreurListe().add(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX));
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
+      LOGGER.warn("Erreur lors du traitement de modification", exception);
+      getErrorMessageList().add(exception.getMessage());
    }
 
    /**
@@ -174,10 +170,9 @@ public class ModificationListener extends AbstractListener {
       ExitStatus status = getStepExecution().getExitStatus();
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
-
-      if (CollectionUtils.isEmpty(exceptions)) {
+      if (CollectionUtils.isEmpty(errorMessageList)) {
          status = ExitStatus.COMPLETED;
       } else {
          status = ExitStatus.FAILED;
@@ -200,9 +195,7 @@ public class ModificationListener extends AbstractListener {
             .getInsertionMasseException();
 
       if (exception != null) {
-
          status = gestionException(exception);
-
       }
 
       return status;
@@ -215,14 +208,10 @@ public class ModificationListener extends AbstractListener {
 
       ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
       ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
-
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
       ExitStatus status;
-
       try {
-
          throw exception.getCause();
-
       } catch (InterruptionTraitementException e) {
 
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix);
@@ -232,7 +221,6 @@ public class ModificationListener extends AbstractListener {
          String codeTraitement = (String) getStepExecution().getJobParameters()
                .getString(Constantes.CODE_TRAITEMENT);
          LOGGER.error(
-
                "Le sémaphore du code traitement {} du traitement de masse n°{} doit être libéré par une procédure d'exploitation",
                codeTraitement, idTraitement);
 
@@ -244,29 +232,21 @@ public class ModificationListener extends AbstractListener {
 
          codes.add(Constantes.ERR_MO_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(messageError));
-
+         errorMessageList.add(messageError);
          status = ExitStatus.FAILED;
-
       } catch (Exception e) {
-
          LOGGER.warn("{} - " + e.getMessage(), trcPrefix, e);
-
          String message;
          if (exception.getCause() == null) {
             message = exception.getMessage();
          } else {
             message = exception.getCause().getMessage();
          }
-
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(message, e));
-
+         errorMessageList.add(message);
          status = ExitStatus.FAILED;
-
       }
-
       return status;
    }
 }

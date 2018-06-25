@@ -5,6 +5,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.enrichissement.b
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
@@ -26,6 +28,9 @@ public class EnrichissementStorageDocumentProcessor implements
 
    @Autowired
    private EnrichissementStorageDocumentSupport support;
+   
+   private static final Logger LOGGER = LoggerFactory
+         .getLogger(EnrichissementStorageDocumentProcessor.class);
 
    private StepExecution stepExecution;
    private String uuid;
@@ -52,21 +57,28 @@ public class EnrichissementStorageDocumentProcessor implements
     */
    @Override
    public final StorageDocument process(StorageDocument item) throws Exception {
+      
+      String trcPrefix = "process";
+      LOGGER.debug("{} - début", trcPrefix);
+      
+      LOGGER.debug("{} - ItemProcessor renseignant la métadonnée IdTraitementMasseInterne pour le document",
+            trcPrefix);
+      
       try {
          return support.enrichirDocument(item, uuid);
       } catch (Exception e) {
-
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Une erreur est survenue à l'ajout de donnée au storageDocument avant archivage",
+                  e);
             return item;
          } else {
             throw e;
          }
-
       }
 
    }
@@ -102,14 +114,14 @@ public class EnrichissementStorageDocumentProcessor implements
    }
    
    /**
-    * @return la liste des exceptions des erreurs stockée dans le contexte
+    * @return la liste des messages des exceptions stockée dans le contexte
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
 }

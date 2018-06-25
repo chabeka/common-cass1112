@@ -39,6 +39,9 @@ public class ControleModificationDocumentProcessor extends AbstractListener
    @Override
    public final StorageDocument process(final UntypedDocument item) throws Exception {
       
+      String trcPrefix = "process";
+      LOGGER.debug("{} - début", trcPrefix);
+      
       StorageDocument document = null;
       
       // Récuperer l'id du traitement en cours
@@ -50,10 +53,9 @@ public class ControleModificationDocumentProcessor extends AbstractListener
          // conversion
          uuidJob = UUID.fromString(idJob);
       }
-      
-      
       try {
          document = support.controleSAEDocumentModification(uuidJob, item);
+         
       } catch (TraitementRepriseAlreadyDoneException e1){
          getIndexRepriseDoneListe().add(
              getStepExecution().getExecutionContext().getInt(
@@ -65,8 +67,8 @@ public class ControleModificationDocumentProcessor extends AbstractListener
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
             final String message = e.getMessage();
-            getExceptionErreurListe().add(new Exception(message));
-            LOGGER.error(message, e);
+            getErrorMessageList().add(message);
+            LOGGER.warn(message, e);
          } else {
             throw e;
          }

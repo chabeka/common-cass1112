@@ -117,9 +117,9 @@ public final class CheckDataUtils {
 
    /**
     * Compare deux objets dynamiquement des types :<br>
-    * <i>{@link Integer}</i><br>
-    * <i>{@link Date}</i><br>
-    * <i>{@link String}</i><br>
+    * <i>{@link Integer}<i><br>
+    * <i>{@link Date}<i><br>
+    * <i>{@link String}<i><br>
     * 
     * @param firstObject
     *           : Le premier Objet

@@ -316,6 +316,10 @@ public class CaptureMasseControleSupportImpl implements
 
       try {
          rndService.getTypeDocument(valeurMetadata);
+         if(rndService.isCloture(valeurMetadata)) {
+            throw new UnknownCodeRndEx("Le code RND " + valeurMetadata
+                  + " n'est pas autorisé à l'archivage (code clôturé).");
+         }
       } catch (CodeRndInexistantException e) {
          throw new UnknownCodeRndEx(e.getMessage(), e.getCause());
       }

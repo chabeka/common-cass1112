@@ -484,9 +484,13 @@ public class SAEControlesCaptureServiceImpl implements
       InputStream stream = null;
 
       try {
-         stream = content.getInputStream();
-         if (stream.read() == -1) {
+         if(content == null){
             isOk = false;
+         }else {
+            stream = content.getInputStream();
+            if (stream.read() == -1) {
+               isOk = false;
+            }
          }
 
       } catch (IOException exception) {

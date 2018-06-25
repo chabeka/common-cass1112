@@ -74,19 +74,18 @@ public class ControleCompressionDocumentProcessor extends AbstractListener
                   .put("documentsToCompress", documentsToCompress);
          }
       } catch (Exception e) {
-
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   getStepExecution().getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Une erreur est survenue lors de contrôle de compression",
+                  e);
          } else {
             throw e;
          }
-
       }
-
       LOGGER.debug("{} - fin", trcPrefix);
       return item;
    }

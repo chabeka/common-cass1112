@@ -1050,8 +1050,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
             currIndex = erreur.getListIndex().get(i);
             if (index == currIndex.intValue()) {
                String code = erreur.getListCodes().get(i);
-               String messageErreur = erreur.getListException().get(i)
-                     .getMessage();
+               String messageErreur = erreur.getListException().get(i);
                String message = null;
                boolean newTagToCreate = false;
 
@@ -1104,8 +1103,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);
-               String messageErreur = erreur.getListException().get(i)
-                     .getMessage();
+               String messageErreur = erreur.getListException().get(i);
                String message;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {
@@ -1145,8 +1143,7 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
                staxUtils.addStartTag(ERREUR, PX_SOMRES, NS_SOMRES);
 
                String code = erreur.getListCodes().get(i);
-               String messageErreur = erreur.getListException().get(i)
-                     .getMessage();
+               String messageErreur = erreur.getListException().get(i);
                String message;
 
                if (Constantes.ERR_BUL002.equalsIgnoreCase(code)) {

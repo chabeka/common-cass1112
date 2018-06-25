@@ -18,7 +18,7 @@ public interface StatusService {
     * 
     * @param typePurge
     *           Purge dont il faut vérifier le statut
-    * @return un indicateur d'exécution de la purge :<br />
+    * @return un indicateur d'exécution de la purge :<br>
     *         <ul>
     *         <li>true si la purge est en cours</li>
     *         <li>false sinon</li>
@@ -32,7 +32,7 @@ public interface StatusService {
     * 
     * @param typeJournalisation
     *           Journalisation dont il faut vérifier le statut
-    * @return un indicateur d'exécution de la journalisation :<br />
+    * @return un indicateur d'exécution de la journalisation :<br>
     *         <ul>
     *         <li>true si la purge est en cours</li>
     *         <li>false sinon</li>

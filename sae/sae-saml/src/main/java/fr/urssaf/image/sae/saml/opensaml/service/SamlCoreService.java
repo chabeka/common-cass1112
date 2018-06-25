@@ -93,9 +93,9 @@ public class SamlCoreService {
     * 
     * <pre>
     * 
-    * &lt;saml:AuthnStatement AuthnInstant="<i><b>[authnInstant]</b></i>" SessionIndex="<i><b>[sessionIndex]</b></i>">
+    * &lt;saml:AuthnStatement AuthnInstant="<i><b>[authnInstant]</b><i>" SessionIndex="<i><b>[sessionIndex]</b><i>">
     *         &lt;saml:AuthnContext>
-    *             &lt;saml:AuthnContextClassRef><i><b>[classrefValue]</b></i>&lt;/saml:AuthnContextClassRef>
+    *             &lt;saml:AuthnContextClassRef><i><b>[classrefValue]</b><i>&lt;/saml:AuthnContextClassRef>
     *         &lt;/saml:AuthnContext>
     * &lt;/saml:AuthnStatement>
     * 
@@ -134,9 +134,9 @@ public class SamlCoreService {
     * 
     * <pre>
     * 
-    * &lt;saml:Conditions NotBefore="<i><b>[notBefore]</b></i>" NotOnOrAfter="<i><b>[notOnOrAfter]</b></i>">
+    * &lt;saml:Conditions NotBefore="<i><b>[notBefore]</b><i>" NotOnOrAfter="<i><b>[notOnOrAfter]</b><i>">
     *         &lt;saml:AudienceRestriction>
-    *             &lt;saml:Audience><i><b>[audienceURI]</b></i>&lt;/saml:Audience>
+    *             &lt;saml:Audience><i><b>[audienceURI]</b><i>&lt;/saml:Audience>
     *         &lt;/saml:AudienceRestriction>
     * &lt;/saml:Conditions>
     * 
@@ -173,8 +173,8 @@ public class SamlCoreService {
     * <pre>
     * 
     * &lt;saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" 
-    *                    ID="<i><b>[i]</b></i>" 
-    *                    IssueInstant="<i><b>[issueInstant]</b></i>" 
+    *                    ID="<i><b>[i]</b><i>" 
+    *                    IssueInstant="<i><b>[issueInstant]</b><i>" 
     *                    Version="2.0">
     * 
     * &lt;/saml:Assertion>
@@ -203,7 +203,7 @@ public class SamlCoreService {
     * 
     * <pre>
     * 
-    * &lt;saml:Issuer><i><b>[value]</b></i>&lt;/saml:Issuer>
+    * &lt;saml:Issuer><i><b>[value]</b><i>&lt;/saml:Issuer>
     * 
     * </pre>
     * 
@@ -225,9 +225,9 @@ public class SamlCoreService {
     * <pre>
     * 
     * &lt;saml:Subject>
-    *         &lt;saml:NameID Format="<i><b>[subjectFormat2]</b></i>"><i><b>[subjectId2]</b></i>&lt;/saml:NameID>
+    *         &lt;saml:NameID Format="<i><b>[subjectFormat2]</b><i>"><i><b>[subjectId2]</b><i>&lt;/saml:NameID>
     *         &lt;saml:SubjectConfirmation Method="urn:oasis:names:tc:SAML:2.0:cm:bearer">
-    *             &lt;saml:SubjectConfirmationData NotOnOrAfter="<i><b>[notOnOrAfter]</b></i>" Recipient="<i><b>[recipient]</b></i>"/>
+    *             &lt;saml:SubjectConfirmationData NotOnOrAfter="<i><b>[notOnOrAfter]</b><i>" Recipient="<i><b>[recipient]</b><i>"/>
     *         &lt;/saml:SubjectConfirmation>
     * &lt;/saml:Subject>
     * 

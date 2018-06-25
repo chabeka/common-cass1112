@@ -28,8 +28,8 @@ public final class URLUtils {
          .compile("href=\"[^>]*\">");
 
    /**
-    * Cette méthode renvoie les urls des liens &lt;a href='[<b>url</b>]'/>
-    * contenu dans une page html <i>lien</i> &lt;/a>
+    * Cette méthode renvoie les urls des liens &lt;a href='[<b>url</b>]'
+    * contenu dans une page html <i>lien<i> &lt;/a
     * 
     * @param url
     *           lien de la page html

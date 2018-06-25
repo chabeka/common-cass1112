@@ -6,7 +6,6 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multith
 import java.util.UUID;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.AbstractDocumentWriterListener;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch.StorageDocumentWriter;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.exception.InsertionMasseRuntimeException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 

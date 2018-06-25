@@ -40,8 +40,8 @@ public abstract class AbstractResultatsFileFailureTransfertTasklet extends
       CaptureMasseErreur erreur = new CaptureMasseErreur();
       erreur.setListCodes(new ArrayList<String>(
             getCodesErreurListe(chunkContext)));
-      erreur.setListException(new ArrayList<Exception>(
-            getExceptionErreurListe(chunkContext)));
+      erreur.setListException(new ArrayList<String>(
+            getErrorMessageList(chunkContext)));
       erreur.setListIndex(new ArrayList<Integer>(
             getIndexErreurListe(chunkContext)));
       erreur.setListRefIndex(new ArrayList<Integer>(

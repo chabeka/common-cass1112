@@ -55,8 +55,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       getCodesErreurListe().add(Constantes.ERR_BUL001);
       getIndexErreurListe().add(getStepExecution().getReadCount());
-      getExceptionErreurListe().add(new Exception(exception.getMessage()));
-
+      getErrorMessageList().add(exception.getMessage());
       getLogger().warn("erreur lors de la lecture du fichier", exception);
    }
 
@@ -73,7 +72,6 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          final Exception exception) {
 
       getLogger().warn("erreur lors du traitement de persistance", exception);
-
       if (!(isModePartielBatch() && getIndexErreurListe().contains(
             getStepExecution().getExecutionContext().getInt(
                   Constantes.CTRL_INDEX)))) {
@@ -81,7 +79,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          getIndexErreurListe().add(
                getStepExecution().getExecutionContext().getInt(
                      Constantes.CTRL_INDEX));
-         getExceptionErreurListe().add(new Exception(exception.getMessage()));
+         getErrorMessageList().add(exception.getMessage());
       }
    }
 
@@ -149,9 +147,9 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       final JobExecution jobExecution = getStepExecution().getJobExecution();
 
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
-      if (CollectionUtils.isNotEmpty(exceptions) && !this.isModePartielBatch()) {
+      if (CollectionUtils.isNotEmpty(errorMessageList) && !this.isModePartielBatch()) {
          // on peut être en cas d'erreur sans rollback : exemple erreur de
          // connexion à la base
          if (!FAILED_NO_RB.equals(status.getExitCode())) {
@@ -195,7 +193,7 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
 
       ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
       ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      ConcurrentLinkedQueue<Exception> exceptions = getExceptionErreurListe();
+      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
       ExitStatus status;
 
@@ -233,8 +231,8 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
                   + "qui auraient pu être stockées et de relancer la capture.";
             status = new ExitStatus("FAILED_NO_ROLLBACK");
          }
-
-         exceptions.add(new Exception(messageError));
+         errorMessageList.add(messageError);
+         getLogger().warn(messageError, e);
 
       } catch (Exception e) {
 
@@ -246,11 +244,11 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
          } else {
             message = exception.getCause().getMessage();
          }
-
          codes.add(Constantes.ERR_BUL001);
          index.add(exception.getIndex());
-         exceptions.add(new Exception(message, e));
-
+         errorMessageList.add(message);
+         getLogger().warn(message, e);
+         
          if (this.isModePartielBatch()) {
             status = new ExitStatus("COMPLETED");
          } else {

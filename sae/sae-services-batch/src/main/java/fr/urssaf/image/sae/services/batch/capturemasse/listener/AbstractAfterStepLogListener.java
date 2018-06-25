@@ -23,7 +23,6 @@ public abstract class AbstractAfterStepLogListener {
 
    /**
     * Action réalisée après le step
-    * 
     * @param stepExecution
     *           le stepExecution
     * @return le status de sortie
@@ -34,7 +33,6 @@ public abstract class AbstractAfterStepLogListener {
       ExitStatus status = stepExecution.getExitStatus();
 
       if (CollectionUtils.isNotEmpty(stepExecution.getFailureExceptions())) {
-
          for (Throwable throwable : stepExecution.getFailureExceptions()) {
             getLogger().warn(getLogMessage(), throwable);
          }
@@ -43,17 +41,15 @@ public abstract class AbstractAfterStepLogListener {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
 
-      ConcurrentLinkedQueue<Exception> exceptions = (ConcurrentLinkedQueue<Exception>) jobExecution
+      ConcurrentLinkedQueue<String> messageExceptionList = (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
 
-      if (CollectionUtils.isEmpty(exceptions)) {
+      if (CollectionUtils.isEmpty(messageExceptionList)) {
          status = ExitStatus.COMPLETED;
       } else {
          status = ExitStatus.FAILED;
       }
-
       return status;
-
    }
 
    /**

@@ -42,16 +42,12 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
       } catch (Throwable e) {
          getLogger().warn("{} - erreur de connexion à DFCE", trcPrefix, e);
-
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getExceptionErreurListe().add(new Exception(e.getMessage()));
-
+         getErrorMessageList().add(e.getMessage());
          getStepExecution().setExitStatus(new ExitStatus("FAILED_NO_ROLLBACK"));
-
          throw new CaptureMasseRuntimeException(e);
       }
-
       getLogger().debug("{} - ouverture de la connexion DFCE", trcPrefix);
    }
 
@@ -77,10 +73,9 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          getLogger().warn(
                "{} - erreur lors de la fermeture de la base de données",
                trcPrefix, e);
-
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
-         getExceptionErreurListe().add(new Exception(e.getMessage()));
+         getErrorMessageList().add(e.getMessage());
 
          if (!isModePartielBatch()) {
             exitStatus = ExitStatus.FAILED;

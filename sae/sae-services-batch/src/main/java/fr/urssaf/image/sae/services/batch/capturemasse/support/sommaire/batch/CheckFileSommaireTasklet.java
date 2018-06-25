@@ -82,15 +82,17 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
 
          } catch (CaptureMasseSommaireEcdeURLException exception) {
             storedException = exception;
-
+            logFailedCheckEcde(exception);
          } catch (CaptureMasseSommaireFileNotFoundException exception) {
             storedException = exception;
-
+            logFailedCheckEcde(exception);
          } catch (CaptureMasseEcdeWriteFileException exception) {
             storedException = exception;
-
+            logFailedCheckEcde(exception);
          } catch (CaptureMasseRuntimeException exception) {
             storedException = exception;
+            logFailedCheckEcde(exception);
+            
          } finally {
 
             if (!checked) {
@@ -112,10 +114,10 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
    private void addException(ChunkContext chunkContext, Exception paramException) {
       final Exception exception = new Exception(paramException.getMessage());
 
-      getExceptionErreurListe(chunkContext).add(exception);
+      getErrorMessageList(chunkContext).add(exception.getMessage());
 
    }
-
+   
    private void pause(int index) {
 
       String trcPrefix = "pause()";
@@ -138,4 +140,9 @@ public class CheckFileSommaireTasklet extends AbstractCaptureMasseTasklet {
                new Object[] { trcPrefix, index + 1 });
       }
    }
+   
+   private void logFailedCheckEcde(Exception e){
+      LOGGER.warn("Erreur lors de la vérification les droits d'écriture dans l'ECDE", e);
+   }
+   
 }

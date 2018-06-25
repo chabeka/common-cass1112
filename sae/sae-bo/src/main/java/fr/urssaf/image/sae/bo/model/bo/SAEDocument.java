@@ -10,7 +10,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import fr.urssaf.image.sae.bo.model.AbstractDocument;
 
 /**
- * <br>Classe représentant un document c'est-à-dire un tableau de byte correspondant
+ * Classe représentant un document c'est-à-dire un tableau de byte correspondant
  * au contenu du document et la liste des métadonnées(liste de paires (code,
  * valeur) dont les valeurs sont typées).
  * Elle contient les attributs :

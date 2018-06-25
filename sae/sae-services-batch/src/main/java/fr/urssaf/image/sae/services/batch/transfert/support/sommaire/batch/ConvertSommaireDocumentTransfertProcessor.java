@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -68,8 +69,11 @@ public class ConvertSommaireDocumentTransfertProcessor implements
 
       try {
 
-         untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
-               .getObjetNumerique().getUUID()));
+         if(StringUtils.isNotBlank(itemTransfert.getValue()
+               .getObjetNumerique().getUUID())){
+            untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
+                  .getObjetNumerique().getUUID().trim()));
+         }
 
          if (itemTransfert.getValue().getMetadonnees() != null) {
             if (itemTransfert.getValue().getMetadonnees().getMetadonnee() != null
@@ -100,17 +104,16 @@ public class ConvertSommaireDocumentTransfertProcessor implements
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            final String message = e.getMessage();
-            getExceptionErreurListe().add(new Exception(message));
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("Erreur du mapping de l'objet Jaxb représentant "
+                  + "le document vers un objet métier UntypedDocument", e);
          } else {
             throw e;
          }
       }
-
+      
       LOGGER.debug(
-            "{} - Fin du mapping de l'objet Jaxb représentant le sommaire.xml vers un objet métier Sommaire",
-            PREFIXE_TRC);
-
+            "{} - Fin du mapping", PREFIXE_TRC);
       return untypedDoc;
    }
 
@@ -160,11 +163,11 @@ public class ConvertSommaireDocumentTransfertProcessor implements
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
-
+   
 }

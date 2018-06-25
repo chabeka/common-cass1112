@@ -127,24 +127,19 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
          context.put(Constantes.BATCH_MODE_NOM_REDIRECT, batchmodeRedirection);
 
       } catch (CaptureMasseSommaireFormatValidationException e) {
-         final Exception exception = new Exception(e.getMessage());
-         getExceptionErreurListe(chunkContext).add(exception);
-
+         getErrorMessageList(chunkContext).add(e.getMessage());
+         logFailedValidationSommaire(e);
       } catch (CaptureMasseRuntimeException e) {
-         final Exception exception = new Exception(e.getMessage());
-         getExceptionErreurListe(chunkContext).add(exception);
-
+         getErrorMessageList(chunkContext).add(e.getMessage());
+         logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireHashException e) {
-         final Exception exception = new Exception(e.getMessage());
-         getExceptionErreurListe(chunkContext).add(exception);
-
+         getErrorMessageList(chunkContext).add(e.getMessage());
+         logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireTypeHashException e) {
-         final Exception exception = new Exception(e.getMessage());
-         getExceptionErreurListe(chunkContext).add(exception);
-
+         logFailedValidationSommaire(e);
       } catch (CaptureMasseSommaireFileNotFoundException e) {
-         final Exception exception = new Exception(e.getMessage());
-         getExceptionErreurListe(chunkContext).add(exception);
+         getErrorMessageList(chunkContext).add(e.getMessage());
+         logFailedValidationSommaire(e);
       }
 
       LOGGER.debug("{} - Fin de méthode", TRC_EXEC);
@@ -206,4 +201,9 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
       LOGGER.debug("{} - Fin de validation unicité IdGed des documents",
             TRC_EXEC);
    }
+   
+   private void logFailedValidationSommaire(Exception e){
+      LOGGER.warn("Erreur lors de la validation du fichier sommaire", e);
+   }
+   
 }

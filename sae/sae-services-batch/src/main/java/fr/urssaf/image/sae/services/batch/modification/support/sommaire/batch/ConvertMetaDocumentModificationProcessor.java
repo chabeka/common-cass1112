@@ -10,6 +10,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
@@ -82,17 +83,19 @@ public class ConvertMetaDocumentModificationProcessor implements
             listUM.add(untypedMetadata);
          }
          untypedDoc.setUMetadatas(listUM);
-
-         untypedDoc.setUuid(UUID.fromString(item.getValue().getObjetNumerique()
-               .getUUID()));
-
+         if(StringUtils.isNotBlank(item.getValue().getObjetNumerique()
+               .getUUID())){
+            untypedDoc.setUuid(UUID.fromString(item.getValue().getObjetNumerique()
+                  .getUUID().trim()));
+         }
       } catch (Exception e) {
          if (isModePartielBatch()) {
             getCodesErreurListe().add(Constantes.ERR_BUL002);
             getIndexErreurListe().add(
                   stepExecution.getExecutionContext().getInt(
                         Constantes.CTRL_INDEX));
-            getExceptionErreurListe().add(new Exception(e.getMessage()));
+            getErrorMessageList().add(e.getMessage());
+            LOGGER.warn("erreur lors de la conversion vers un objet métier UntypedDocument", e);
          } else {
             throw e;
          }
@@ -152,10 +155,10 @@ public class ConvertMetaDocumentModificationProcessor implements
     *         d'execution du job
     */
    @SuppressWarnings("unchecked")
-   protected final ConcurrentLinkedQueue<Exception> getExceptionErreurListe() {
+   protected final ConcurrentLinkedQueue<String> getErrorMessageList() {
       ExecutionContext jobExecution = stepExecution.getJobExecution()
             .getExecutionContext();
-      return (ConcurrentLinkedQueue<Exception>) jobExecution
+      return (ConcurrentLinkedQueue<String>) jobExecution
             .get(Constantes.DOC_EXCEPTION);
    }
 }
