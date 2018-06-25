@@ -4,6 +4,27 @@
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
         <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <dependent-module archiveName="sae-anais-framework-1.0.2-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-anais-framework/sae-anais-framework">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-vi-18.9.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-vi/sae-vi">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-saml-18.9.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-saml/sae-saml">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-droit-18.9.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-droit/sae-droit">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="commons-cassandra-1.0.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/commons-cassandra/commons-cassandra">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-commons-18.9.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-commons/sae-commons">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="sae-bo-18.9.1-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/sae-bo/sae-bo">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="sae-anais-portail"/>
         <property name="java-output-path"/>
     </wb-module>
