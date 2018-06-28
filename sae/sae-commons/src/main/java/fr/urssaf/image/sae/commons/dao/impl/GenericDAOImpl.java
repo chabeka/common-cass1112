@@ -18,6 +18,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 
 import com.datastax.driver.core.BatchStatement;
 import com.datastax.driver.core.ResultSet;
@@ -29,6 +30,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.core.querybuilder.Truncate;
 import com.datastax.driver.mapping.Mapper;
+import com.datastax.driver.mapping.Mapper.Option;
 import com.datastax.driver.mapping.MappingManager;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.google.common.collect.Lists;
@@ -40,7 +42,6 @@ import fr.urssaf.image.sae.commons.dao.IGenericDAO;
 import fr.urssaf.image.sae.commons.utils.ColumnUtil;
 import fr.urssaf.image.sae.commons.utils.QueryUtils;
 import fr.urssaf.image.sae.commons.utils.Utils;
-import me.prettyprint.cassandra.utils.Assert;
 
 /**
  * TODO (AC75095028) Description du type
@@ -223,6 +224,26 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    */
   @Override
   public T saveWithMapper(final T entity) {
+    getMapper().save(entity);
+    return entity;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public T saveWithMapper(final T entity, final int ttl) {
+    getMapper().setDefaultSaveOptions(Option.ttl(ttl));
+    getMapper().save(entity);
+    return entity;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public T saveWithMapper(final T entity, final int ttl, final long clock) {
+    getMapper().setDefaultSaveOptions(Option.ttl(ttl), Option.timestamp(clock));
     getMapper().save(entity);
     return entity;
   }

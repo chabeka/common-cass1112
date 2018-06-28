@@ -179,8 +179,23 @@ public interface IGenericDAO<T, ID> {
 
   /**
    * Retourne un iterateur sur les colonnes des anciennes CF
-   * 
+   *
    * @return
    */
   Iterator<T> iterablefindAll(String cfName, final String keyspace);
+
+  /**
+   * @param entity
+   * @param ttl
+   * @return
+   */
+  T saveWithMapper(T entity, int ttl);
+
+  /**
+   * @param entity
+   * @param ttl
+   * @param clock
+   * @return
+   */
+  T saveWithMapper(T entity, int ttl, long clock);
 }
