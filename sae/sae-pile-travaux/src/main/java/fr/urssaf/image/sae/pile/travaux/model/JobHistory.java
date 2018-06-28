@@ -8,51 +8,57 @@ import java.util.Date;
  * <li><code>trace</code>: message de la trace</li>
  * <li><code>date</code>: date de la trace</li>
  * </ul>
- * 
- * 
  */
 public class JobHistory {
 
-   private String trace;
+  private String trace;
 
-   private Date date;
+  private Date date;
 
-   /**
-    * @return the trace
-    */
-   public final String getTrace() {
-      return trace;
-   }
+  /**
+  * 
+  */
+  public JobHistory() {
+    super();
+    // TODO Auto-generated constructor stub
+  }
 
-   /**
-    * @param trace
-    *           the trace to set
-    */
-   public final void setTrace(String trace) {
-      this.trace = trace;
-   }
+  /**
+   * @return the trace
+   */
+  public final String getTrace() {
+    return trace;
+  }
 
-   /**
-    * @return the date
-    */
-   public final Date getDate() {
-      return getDateCopy(date);
-   }
+  /**
+   * @param trace
+   *          the trace to set
+   */
+  public final void setTrace(final String trace) {
+    this.trace = trace;
+  }
 
-   /**
-    * @param date
-    *           the date to set
-    */
-   public final void setDate(Date date) {
-      this.date = getDateCopy(date);
-   }
+  /**
+   * @return the date
+   */
+  public final Date getDate() {
+    return getDateCopy(date);
+  }
 
-   private Date getDateCopy(Date date) {
-      Date tDate = null;
-      if (date != null) {
-         tDate = new Date(date.getTime());
-      }
-      return tDate;
-   }
+  /**
+   * @param date
+   *          the date to set
+   */
+  public final void setDate(final Date date) {
+    this.date = getDateCopy(date);
+  }
+
+  private Date getDateCopy(final Date date) {
+    Date tDate = null;
+    if (date != null) {
+      tDate = new Date(date.getTime());
+    }
+    return tDate;
+  }
 
 }
