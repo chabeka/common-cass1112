@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.pile.travaux.support;
 
 import java.util.UUID;
 
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.mutation.Mutator;
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
@@ -75,4 +76,12 @@ public class JobHistorySupport {
       mutator.execute();
 
    }
+
+  /**
+   * @return
+   */
+  public ColumnFamilyTemplate<UUID, UUID> getJobHistoryTmpl() {
+    // TODO Auto-generated method stub
+    return jobHistoryDao.getJobHistoryTmpl();
+  }
 }

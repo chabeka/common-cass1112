@@ -23,7 +23,9 @@ public class JobsQueueSupportCql {
    */
   private static final String JOBS_WAITING_KEY = "jobsWaiting";
 
+
   private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
+
 
   private final IJobsQueueDaoCql jobsQueueDaoCql;
 

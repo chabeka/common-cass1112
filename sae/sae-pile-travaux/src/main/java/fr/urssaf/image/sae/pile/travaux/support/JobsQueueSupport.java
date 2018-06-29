@@ -5,12 +5,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -407,4 +409,19 @@ public class JobsQueueSupport {
          mutator.execute();
       }
    }
+
+  /**
+   * @return
+   */
+  public SliceQuery<String, UUID, String> createSliceQuery() {
+    return jobsQueueDao.createSliceQuery();
+  }
+
+  /**
+   * @return
+   */
+  public ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
+    // TODO Auto-generated method stub
+    return jobsQueueDao.getJobsQueueTmpl();
+  }
 }
