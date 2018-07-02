@@ -19,12 +19,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    <modelVersion>4.0.0</modelVersion>
 
-   <!--
-      parent> <groupId>org.apache</groupId>
-      <artifactId>apache</artifactId> <version>10</version>
-      <relativePath /> </parent -->
-
-
    <artifactId>pdfbox-reactor</artifactId>
    <groupId>org.apache.pdfbox</groupId>
    <version>1.8.1.1-SNAPSHOT</version>
@@ -41,9 +35,9 @@
    
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/PDFbox-1.8</url>
-      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/PDFbox-1.8</developerConnection>
-      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/PDFbox-1.8</connection>
+      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</url>
+      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</developerConnection>
+      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</connection>
    </scm>
 
    <properties>
@@ -63,12 +57,6 @@
       <module>app</module>
       <module>examples</module>
    </modules>
-
-   <!--
-      build> <plugins> <plugin>
-      <artifactId>maven-deploy-plugin</artifactId> <configuration>
-      <skip>true</skip> </configuration> </plugin> </plugins> </build -->
-
 
    <build>
       <pluginManagement>
@@ -150,7 +138,6 @@
                <artifactId>maven-javadoc-plugin</artifactId>
                <version>${javadoc.version}</version>
 	            <configuration>
-	                <!-- <quiet>true</quiet> -->
 					<additionalparam>-Xdoclint:none</additionalparam>
 	            </configuration>
             </plugin>

@@ -28,10 +28,5 @@
          </plugin>
       </plugins>
   </build>
-    <!--scm>
-        <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>
-        <developerConnection>scm:git:https://github.com/digital-preservation/droid.git</developerConnection>
-        <url>scm:git:https://github.com/digital-preservation/droid.git</url>
-    </scm-->
   
 </project>

@@ -36,13 +36,13 @@
     <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-droid
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-droid
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-droid
       </connection>
    </scm>
 

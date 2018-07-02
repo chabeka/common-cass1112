@@ -38,13 +38,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-padaf
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-padaf
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons-padaf
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </connection>
    </scm>
 
@@ -100,7 +100,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${javadoc.version}</version>
             <executions>
                <execution>
                   <id>attach-javadocs</id>

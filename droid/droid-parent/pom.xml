@@ -21,9 +21,6 @@
     <properties>
         <project.build.source>1.8</project.build.source>
         <project.build.target>1.8</project.build.target>
-        <!-- DEFINI DANS LE POM PERE Encodage de caractères
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
-        <project.email>pronom@nationalarchives.gsi.gov.uk</project.email>
         <spring.version>2.5.6.SEC03</spring.version>
         <hibernate.version>3.4.0.GA</hibernate.version>
         <derby.version>10.8.2.2</derby.version>
@@ -162,64 +159,7 @@
                 <configuration>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
-            </plugin>
-            <!--<plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <inherited>true</inherited>
-                <configuration>
-                    <header>../droid-parent/header.txt</header>
-                    <failIfMissing>true</failIfMissing>
-                    <aggregate>true</aggregate> if this module references other modules, then check those too
-                    <strictCheck>true</strictCheck>
-                    <properties>
-                        <year>${project.inceptionYear}</year>
-                        <organisation>${project.organization.name}</organisation>
-                        <email>${project.email}</email>
-                    </properties>
-                    <encoding>${project.build.sourceEncoding}</encoding>
-                    <excludes>
-                    	<exclude>.travis.yml</exclude>
-                        <exclude>header.txt</exclude>
-                        <exclude>LICENSE</exclude>
-                        <exclude>src-header.txt</exclude>
-                        <exclude>**/test_sig_files/**</exclude>  TODO move test sig files to the src/test/resources folder
-                        <exclude>**/DROID_SignatureFile_*.xml</exclude>
-                        <exclude>**/container-signature*.xml</exclude>
-                        <exclude>**/tmp/**</exclude>
-                        <exlcude>**/profiles/**</exlcude>
-                        <exclude>**/droid-test-db/**</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>check-headers</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
-            <!--
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>buildnumber-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>validate</phase>
-                        <goals>
-                            <goal>create</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <getRevisionOnlyOnce>true</getRevisionOnlyOnce>
-                    <doCheck>false</doCheck>
-                    <doUpdate>false</doUpdate>
-                </configuration>
-            </plugin>
-            -->
+            </plugin>        
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -342,37 +282,7 @@
 		     </resource>
 		  </resources> 
     </build>
-    
-    <!--<profiles>
-        <profile>
-          <id>release-sign-artifacts</id>
-          <activation>
-            <property>
-            
-              <name>performRelease</name>
-              <value>true</value>
-            </property>
-          </activation>
-          <build>
-            <plugins>
-              <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <executions>
-                  <execution>
-                    <id>sign-artifacts</id>
-                    <phase>verify</phase>
-                    <goals>
-                      <goal>sign</goal>
-                    </goals>
-                  </execution>
-                </executions>
-              </plugin>
-            </plugins>
-          </build>
-        </profile>
-      </profiles>-->
-    
+        
     <dependencyManagement>
         <dependencies>
             <dependency>
