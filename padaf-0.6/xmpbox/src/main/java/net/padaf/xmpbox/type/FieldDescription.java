@@ -34,16 +34,23 @@ public class FieldDescription {
 	protected String description;
 
 	/**
-	 * Constructor of a FieldDescription in order to be use in automatic
-	 * SchemaDescriptionBulding
-	 * 
-	 * @param name
-	 *            Name of the field described
-	 * @param valueType
-	 *            The type of the field described
-	 * @param description
-	 *            The description of the field described
-	 */
+   * no-args constructor
+   */
+  public FieldDescription() {
+    super();
+  }
+
+  /**
+   * Constructor of a FieldDescription in order to be use in automatic
+   * SchemaDescriptionBulding
+   * 
+   * @param name
+   *          Name of the field described
+   * @param valueType
+   *          The type of the field described
+   * @param description
+   *          The description of the field described
+   */
 	public FieldDescription(String name, String valueType, String description) {
 		this.name = name;
 		this.valueType = valueType;

@@ -43,16 +43,30 @@
 	<build>
 		<pluginManagement>
 			<plugins>
+				<!-- Configuration du lifecycle maven -->
 				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>1.0-beta-1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.1</version>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
 					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>javacc-maven-plugin</artifactId>
+										<version>2.6</version>
+										<versionRange>[2.6,)</versionRange>
+										<goals>
+											<goal>javacc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>
 			</plugins>
