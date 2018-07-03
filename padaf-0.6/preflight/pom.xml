@@ -62,6 +62,10 @@
 					<include>project.version</include>
 				</includes>
 	        </testResource>
+	        <testResource>
+	            <directory>src/test/resources</directory>
+				<filtering>true</filtering>
+	        </testResource>
     	</testResources>
 		<plugins>
 			<plugin>
