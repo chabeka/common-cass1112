@@ -7,13 +7,13 @@ import java.util.List;
 
 import javax.activation.FileDataSource;
 
-import junit.framework.Assert;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+
+import junit.framework.Assert;
 
 @RunWith(Parameterized.class)
 public class TestInvalidDirectory {
@@ -57,8 +57,15 @@ public class TestInvalidDirectory {
     if ("${user.pdfa.invalid}".equals(pdfPath)) {pdfPath=null;}
     if (pdfPath!=null) {
       directory = new File(pdfPath);
-      if (!directory.exists()) throw new Exception ("directory does not exists : "+directory.getAbsolutePath());
-      if (!directory.isDirectory()) throw new Exception ("not a directory : "+directory.getAbsolutePath());
+      try {
+        if (!directory.exists())
+          throw new Exception("directory does not exists : " + directory.getAbsolutePath());
+        if (!directory.isDirectory())
+          throw new Exception("not a directory : " + directory.getAbsolutePath());
+      }
+      catch (Exception e) {
+        System.err.println("System property 'pdfa.invalid' defined but have a bad define of directory, will not run TestInvalidDirectory");
+      }
     } else {
       System.err.println("System property 'pdfa.invalid' not defined, will not run TestValidaDirectory");
     }
