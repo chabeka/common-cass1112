@@ -65,6 +65,7 @@ public class TestInvalidDirectory {
       }
       catch (Exception e) {
         System.err.println("System property 'pdfa.invalid' defined but have a bad define of directory, will not run TestInvalidDirectory");
+        directory = null;
       }
     } else {
       System.err.println("System property 'pdfa.invalid' not defined, will not run TestValidaDirectory");
