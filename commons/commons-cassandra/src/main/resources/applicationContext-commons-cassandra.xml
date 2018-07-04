@@ -44,6 +44,7 @@
       <property name="dataSet" value="${cassandra.dataset}"/>
    </bean>
    <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
+   		<constructor-arg ref="cassandraCQLClientFactory" />
    		<constructor-arg name="value" value="${sae.api.gestion.profil.cache}" />
     	<constructor-arg name="initCacheOnStartup" value="${sae.api.gestion.profil.initCacheOnStartup}" />
    </bean>

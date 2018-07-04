@@ -6,7 +6,6 @@ package fr.urssaf.image.commons.cassandra.helper;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -33,7 +32,7 @@ import com.google.common.cache.LoadingCache;
 public class CassandraApiGestionServiceImpl {
 
   // Spring tire le client CQL factory pour effectuer la requête
-  @Autowired
+  // @Autowired
   protected CassandraCQLClientFactory ccf;
 
   // Comme pour les services CQL le nom de la CF est présente ici
@@ -46,8 +45,9 @@ public class CassandraApiGestionServiceImpl {
   private final LoadingCache<String, HashMap<String, String>> modeApisList;
 
   @Autowired
-  public CassandraApiGestionServiceImpl(@Value("${sae.api.gestion.profil.cache}") final int value,
+  public CassandraApiGestionServiceImpl(final CassandraCQLClientFactory cassandraCQLClientFactory, @Value("${sae.api.gestion.profil.cache}") final int value,
                                         @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
+    this.ccf = cassandraCQLClientFactory;
     modeApisList = CacheBuilder.newBuilder()
                                .refreshAfterWrite(value,
                                                   TimeUnit.MINUTES)
@@ -84,12 +84,7 @@ public class CassandraApiGestionServiceImpl {
       // Injection de la Row dans la HashMap
       listeCfsModes.put(row.getString(0), row.getString(1));
     }
-    try {
-      ModeGestionAPI.setListeCfsModes(modeApisList.get(cfName));
-    }
-    catch (final ExecutionException e) {
-      e.printStackTrace();
-    }
+    ModeGestionAPI.setListeCfsModes(listeCfsModes);
     // On retourne la HashMap
     return listeCfsModes;
   }
@@ -101,7 +96,7 @@ public class CassandraApiGestionServiceImpl {
    */
   public void populateCache() {
     try {
-      // On set la HashMap public avec le contenu retourné par le méthode du dessus
+      // On set la HashMap public avec le contenu retourné par la méthode du dessus
       modeApisList.put(cfName, getApiModeFromConfiguration());
     }
     catch (final FileNotFoundException e) {
