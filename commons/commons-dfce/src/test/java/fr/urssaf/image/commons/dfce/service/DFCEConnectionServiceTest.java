@@ -50,9 +50,9 @@ public class DFCEConnectionServiceTest {
             + " doit être active!", serviceProvider.isSessionActive());
 
       Base base = serviceProvider.getBaseAdministrationService().getBase(
-            "SAE-INT");
+            "GNT-DEV");
 
-      Assert.assertNotNull("La base SAE-TEST doit être exister!", base);
+      Assert.assertNotNull("La base GNT-DEV doit exister!", base);
 
    }
 

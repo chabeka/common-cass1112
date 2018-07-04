@@ -19,15 +19,17 @@ public class DFCEConnectionFactoryTest {
 
    private static final String PASSWORD_VALUE = "DOCUBASE";
 
-   private static final String URL_VALUE = "http://cer69-ds4int:8080/dfce-webapp/toolkit/";
-   private static final String URL_VALUE_TRANSFERT = "http://cer69-saeint3:8080/dfce-webapp/toolkit/";
+  private static final String URL_VALUE = "http://hwi31devgntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
 
-   private static final String URL_SECURE_VALUE = "https://cer69-ds4int:8080/dfce-webapp/toolkit/";
+  private static final String URL_VALUE_TRANSFERT = "http://hwi31devgnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+
+  private static final String URL_SECURE_VALUE = "https://hwi31devgntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
 
    private static final String EXPECTED_MESSAGE = "le message de l'exception est inattendu";
 
-   private static final String HOST_NAME = "cer69-ds4int";
-   private static final String HOST_NAME_TRANSFERT = "cer69-saeint3";
+  private static final String HOST_NAME = "hwi31devgntv6boappli1.gidn.recouv";
+
+  private static final String HOST_NAME_TRANSFERT = "hwi31devgnsv6boappli1.gidn.recouv";
 
    private static final int HOST_PORT = 8080;
 
@@ -37,15 +39,17 @@ public class DFCEConnectionFactoryTest {
 
    private static final int TIMEOUT = 30000;
 
-   private static final String URL_TOOLKIT = "http://cer69-ds4int.cer69.recouv:8080/dfce-webapp/toolkit/";
-   private static final String URL_TOOLKIT_TRANSFERT = "http://cer69-saeint3.cer69.recouv:8080/dfce-webapp/toolkit/";
+  private static final String URL_TOOLKIT = "http://hwi31devgntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+
+  private static final String URL_TOOLKIT_TRANSFERT = "http://hwi31devgnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
 
    private static final boolean CHECK_HASH = true;
 
    private static final String DIGEST_ALGO = "SHA-1";
 
-   private static final String BASE_NAME = "SAE-TEST";
-   private static final String BASE_NAME_TRANSFERT = "SAE-INT";
+  private static final String BASE_NAME = "GNT-DEV";
+
+  private static final String BASE_NAME_TRANSFERT = "GNT-DEV";
    
    private final static String CHEMIN_SAE_CONFIG = "src/test/resources/config/sae-config-test.properties";
    private final static String CHEMIN_DFCE_CONFIG = "src/test/resources/config/dfce-config-test.properties";
