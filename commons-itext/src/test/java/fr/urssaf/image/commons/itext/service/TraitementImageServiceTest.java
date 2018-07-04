@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.itextpdf.text.exceptions.InvalidPdfException;
+
 import fr.urssaf.image.commons.itext.exception.ExtractionException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -83,7 +85,7 @@ public class TraitementImageServiceTest {
          Assert.fail("Une exception aurait du être levée car le fichier est inexistant");
          
       } catch (ExtractionException e) {
-         Assert.assertTrue("L'exception n'est pas celle attendue", RuntimeException.class.isAssignableFrom(e.getCause().getClass()));
+        Assert.assertTrue("L'exception n'est pas celle attendue", InvalidPdfException.class.isAssignableFrom(e.getCause().getClass()));
       } catch (IOException e) {
          Assert.fail(e.getMessage());
       } finally {
@@ -140,7 +142,7 @@ public class TraitementImageServiceTest {
          Assert.fail("Une exception aurait du être levée car le fichier est inexistant");
          
       } catch (ExtractionException e) {
-         Assert.assertTrue("L'exception n'est pas celle attendue", RuntimeException.class.isAssignableFrom(e.getCause().getClass()));
+         Assert.assertTrue("L'exception n'est pas celle attendue", InvalidPdfException.class.isAssignableFrom(e.getCause().getClass()));
       } catch (IOException e) {
          Assert.fail(e.getMessage());
       } finally {

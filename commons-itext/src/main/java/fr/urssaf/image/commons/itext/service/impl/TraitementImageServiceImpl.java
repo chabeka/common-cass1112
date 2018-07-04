@@ -160,7 +160,7 @@ public class TraitementImageServiceImpl implements TraitementImageService {
          inputStream.close();
 
       } catch (IOException e) {
-         throw new ExtractionException(e.getCause());
+      throw new ExtractionException(e);
       }
 
       LOGGER.debug("{} - fin", trcPrefix);
