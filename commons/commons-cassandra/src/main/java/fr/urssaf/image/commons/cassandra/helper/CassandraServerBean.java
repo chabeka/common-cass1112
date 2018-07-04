@@ -130,7 +130,8 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 
     final String dataSet = newDataSets[0];
     // dataLoader.load(dataSetLoader, false);
-    dataLoader.load(new ClassPathXmlDataSet("cassandra-local-all-dataset-sae.xml"));
+    final DataSet ds = new ClassPathXmlDataSet(dataSet);
+    dataLoader.load(new ClassPathXmlDataSet(dataSet));
 
   }
 
