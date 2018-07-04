@@ -32,376 +32,369 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * masse uniquement</li>
  * <li><code>pid</code>: PID du processus qui exécute le traitement de masse</li>
  * </ul>
- * 
- * 
- * 
  */
 public class JobRequest {
 
-   private UUID idJob;
+  private UUID idJob;
 
-   private String type;
+  private String type;
 
-   private String parameters;
+  private String parameters;
 
-   private JobState state;
+  private JobState state;
 
-   private String reservedBy;
+  private String reservedBy;
 
-   private Date creationDate;
+  private Date creationDate;
 
-   private Date reservationDate;
+  private Date reservationDate;
 
-   private Date startingDate;
+  private Date startingDate;
 
-   private Date endingDate;
+  private Date endingDate;
 
-   private String message;
+  private String message;
 
-   private String saeHost;
+  private String saeHost;
 
-   private String clientHost;
+  private String clientHost;
 
-   private Integer docCount;
+  private Integer docCount;
 
-   private Integer docCountTraite;
+  private Integer docCountTraite;
 
-   private Integer pid;
+  private Integer pid;
 
-   private Boolean toCheckFlag;
+  private Boolean toCheckFlag;
 
-   private String toCheckFlagRaison;
+  private String toCheckFlagRaison;
 
-   private VIContenuExtrait viExtrait;
+  private VIContenuExtrait viExtrait;
 
-   private Map<String, String> jobParameters;
+  private Map<String, String> jobParameters;
 
-   private byte[] jobKey;
+  private byte[] jobKey;
 
-   /**
-    * @return the idJob
-    */
-   public final UUID getIdJob() {
-      return idJob;
-   }
+  /**
+   * @return the idJob
+   */
+  public final UUID getIdJob() {
+    return idJob;
+  }
 
-   /**
-    * @param idJob
-    *           the idJob to set
-    */
-   public final void setIdJob(UUID idJob) {
-      this.idJob = idJob;
-   }
+  /**
+   * @param idJob
+   *          the idJob to set
+   */
+  public final void setIdJob(final UUID idJob) {
+    this.idJob = idJob;
+  }
 
-   /**
-    * @return the type
-    */
-   public final String getType() {
-      return type;
-   }
+  /**
+   * @return the type
+   */
+  public final String getType() {
+    return type;
+  }
 
-   /**
-    * @param type
-    *           the type to set
-    */
-   public final void setType(String type) {
-      this.type = type;
-   }
+  /**
+   * @param type
+   *          the type to set
+   */
+  public final void setType(final String type) {
+    this.type = type;
+  }
 
-   /**
-    * @return the parameters
-    */
-   public final String getParameters() {
-      return parameters;
-   }
+  /**
+   * @return the parameters
+   */
+  public final String getParameters() {
+    return parameters;
+  }
 
-   /**
-    * @param parameters
-    *           the parameters to set
-    */
-   public final void setParameters(String parameters) {
-      this.parameters = parameters;
-   }
+  /**
+   * @param parameters
+   *          the parameters to set
+   */
+  public final void setParameters(final String parameters) {
+    this.parameters = parameters;
+  }
 
-   /**
-    * @return the state of the jobRequest
-    */
-   public final JobState getState() {
-      return state;
-   }
+  /**
+   * @return the state of the jobRequest
+   */
+  public final JobState getState() {
+    return state;
+  }
 
-   /**
-    * @param state
-    *           the state to set
-    */
-   public final void setState(JobState state) {
-      this.state = state;
-   }
+  /**
+   * @param state
+   *          the state to set
+   */
+  public final void setState(final JobState state) {
+    this.state = state;
+  }
 
-   /**
-    * @return the reservedBy
-    */
-   public final String getReservedBy() {
-      return reservedBy;
-   }
+  /**
+   * @return the reservedBy
+   */
+  public final String getReservedBy() {
+    return reservedBy;
+  }
 
-   /**
-    * @param reservedBy
-    *           the reservedBy to set
-    */
-   public final void setReservedBy(String reservedBy) {
-      this.reservedBy = reservedBy;
-   }
+  /**
+   * @param reservedBy
+   *          the reservedBy to set
+   */
+  public final void setReservedBy(final String reservedBy) {
+    this.reservedBy = reservedBy;
+  }
 
-   /**
-    * @return the creationDate
-    */
-   public final Date getCreationDate() {
-      // On ne renvoie pas la date directement, car c'est un objet mutable
-      return creationDate == null ? null : new Date(creationDate.getTime());
-   }
+  /**
+   * @return the creationDate
+   */
+  public final Date getCreationDate() {
+    // On ne renvoie pas la date directement, car c'est un objet mutable
+    return creationDate == null ? null : new Date(creationDate.getTime());
+  }
 
-   /**
-    * @param creationDate
-    *           the creationDate to set
-    */
-   public final void setCreationDate(Date creationDate) {
-      this.creationDate = creationDate == null ? null : new Date(creationDate
-            .getTime());
-   }
+  /**
+   * @param creationDate
+   *          the creationDate to set
+   */
+  public final void setCreationDate(final Date creationDate) {
+    this.creationDate = creationDate == null ? null : new Date(creationDate
+                                                                           .getTime());
+  }
 
-   /**
-    * @return the reservationDate
-    */
-   public final Date getReservationDate() {
-      // On ne renvoie pas la date directement, car c'est un objet mutable
-      return reservationDate == null ? null : new Date(reservationDate
-            .getTime());
-   }
+  /**
+   * @return the reservationDate
+   */
+  public final Date getReservationDate() {
+    // On ne renvoie pas la date directement, car c'est un objet mutable
+    return reservationDate == null ? null : new Date(reservationDate
+                                                                    .getTime());
+  }
 
-   /**
-    * @param reservationDate
-    *           the reservationDate to set
-    */
-   public final void setReservationDate(Date reservationDate) {
-      this.reservationDate = reservationDate == null ? null : new Date(
-            reservationDate.getTime());
-   }
+  /**
+   * @param reservationDate
+   *          the reservationDate to set
+   */
+  public final void setReservationDate(final Date reservationDate) {
+    this.reservationDate = reservationDate == null ? null : new Date(
+                                                                     reservationDate.getTime());
+  }
 
-   /**
-    * @return the startingDate
-    */
-   public final Date getStartingDate() {
-      // On ne renvoie pas la date directement, car c'est un objet mutable
-      return startingDate == null ? null : new Date(startingDate.getTime());
-   }
+  /**
+   * @return the startingDate
+   */
+  public final Date getStartingDate() {
+    // On ne renvoie pas la date directement, car c'est un objet mutable
+    return startingDate == null ? null : new Date(startingDate.getTime());
+  }
 
-   /**
-    * @param startingDate
-    *           the startingDate to set
-    */
-   public final void setStartingDate(Date startingDate) {
-      this.startingDate = startingDate == null ? null : new Date(startingDate
-            .getTime());
-   }
+  /**
+   * @param startingDate
+   *          the startingDate to set
+   */
+  public final void setStartingDate(final Date startingDate) {
+    this.startingDate = startingDate == null ? null : new Date(startingDate
+                                                                           .getTime());
+  }
 
-   /**
-    * @return the endingDate
-    */
-   public final Date getEndingDate() {
-      // On ne renvoie pas la date directement, car c'est un objet mutable
-      return endingDate == null ? null : new Date(endingDate.getTime());
-   }
+  /**
+   * @return the endingDate
+   */
+  public final Date getEndingDate() {
+    // On ne renvoie pas la date directement, car c'est un objet mutable
+    return endingDate == null ? null : new Date(endingDate.getTime());
+  }
 
-   /**
-    * @param endingDate
-    *           the endingDate to set
-    */
-   public final void setEndingDate(Date endingDate) {
-      this.endingDate = endingDate == null ? null : new Date(endingDate
-            .getTime());
-   }
+  /**
+   * @param endingDate
+   *          the endingDate to set
+   */
+  public final void setEndingDate(final Date endingDate) {
+    this.endingDate = endingDate == null ? null : new Date(endingDate
+                                                                     .getTime());
+  }
 
-   /**
-    * @param message
-    *           : message de compte-rendu du traitement
-    */
-   public final void setMessage(String message) {
-      this.message = message;
-   }
+  /**
+   * @param message
+   *          : message de compte-rendu du traitement
+   */
+  public final void setMessage(final String message) {
+    this.message = message;
+  }
 
-   /**
-    * 
-    * @return message de compte-rendu du traitement
-    */
-   public final String getMessage() {
-      return message;
-   }
+  /**
+   * @return message de compte-rendu du traitement
+   */
+  public final String getMessage() {
+    return message;
+  }
 
-   /**
-    * @return le nom de machine ou l'IP de la machine SAE ayant traité la
-    *         demande
-    */
-   public final String getSaeHost() {
-      return saeHost;
-   }
+  /**
+   * @return le nom de machine ou l'IP de la machine SAE ayant traité la
+   *         demande
+   */
+  public final String getSaeHost() {
+    return saeHost;
+  }
 
-   /**
-    * @param saeHost
-    *           le nom de machine ou l'IP de la machine SAE ayant traité la
-    *           demande
-    * 
-    */
-   public final void setSaeHost(String saeHost) {
-      this.saeHost = saeHost;
-   }
+  /**
+   * @param saeHost
+   *          le nom de machine ou l'IP de la machine SAE ayant traité la
+   *          demande
+   */
+  public final void setSaeHost(final String saeHost) {
+    this.saeHost = saeHost;
+  }
 
-   /**
-    * @return le nom de machine ou l'IP de la machine cliente ayant traité la
-    *         demande
-    */
-   public final String getClientHost() {
-      return clientHost;
-   }
+  /**
+   * @return le nom de machine ou l'IP de la machine cliente ayant traité la
+   *         demande
+   */
+  public final String getClientHost() {
+    return clientHost;
+  }
 
-   /**
-    * @param clientHost
-    *           le nom de machine ou l'IP de la machine cliente ayant traité la
-    *           demande
-    */
-   public final void setClientHost(String clientHost) {
-      this.clientHost = clientHost;
-   }
+  /**
+   * @param clientHost
+   *          le nom de machine ou l'IP de la machine cliente ayant traité la
+   *          demande
+   */
+  public final void setClientHost(final String clientHost) {
+    this.clientHost = clientHost;
+  }
 
-   /**
-    * @return le nombre de documents présents dans le fichier sommaire
-    */
-   public final Integer getDocCount() {
-      return docCount;
-   }
+  /**
+   * @return le nombre de documents présents dans le fichier sommaire
+   */
+  public final Integer getDocCount() {
+    return docCount;
+  }
 
-   /**
-    * @param docCount
-    *           le nombre de documents présents dans le fichier sommaire
-    */
-   public final void setDocCount(Integer docCount) {
-      this.docCount = docCount;
-   }
+  /**
+   * @param docCount
+   *          le nombre de documents présents dans le fichier sommaire
+   */
+  public final void setDocCount(final Integer docCount) {
+    this.docCount = docCount;
+  }
 
-   /**
-    * @return le process ID du traitement
-    */
-   public final Integer getPid() {
-      return pid;
-   }
+  /**
+   * @return le process ID du traitement
+   */
+  public final Integer getPid() {
+    return pid;
+  }
 
-   /**
-    * @param pid
-    *           le process ID du traitement
-    */
-   public final void setPid(Integer pid) {
-      this.pid = pid;
-   }
+  /**
+   * @param pid
+   *          le process ID du traitement
+   */
+  public final void setPid(final Integer pid) {
+    this.pid = pid;
+  }
 
-   /**
-    * @return the toCheckFlag
-    */
-   public final Boolean getToCheckFlag() {
-      return toCheckFlag;
-   }
+  /**
+   * @return the toCheckFlag
+   */
+  public final Boolean getToCheckFlag() {
+    return toCheckFlag;
+  }
 
-   /**
-    * @param toCheckFlag
-    *           the toCheckFlag to set
-    */
-   public final void setToCheckFlag(Boolean toCheckFlag) {
-      this.toCheckFlag = toCheckFlag;
-   }
+  /**
+   * @param toCheckFlag
+   *          the toCheckFlag to set
+   */
+  public final void setToCheckFlag(final Boolean toCheckFlag) {
+    this.toCheckFlag = toCheckFlag;
+  }
 
-   /**
-    * @return the toCheckFlagRaison
-    */
-   public final String getToCheckFlagRaison() {
-      return toCheckFlagRaison;
-   }
+  /**
+   * @return the toCheckFlagRaison
+   */
+  public final String getToCheckFlagRaison() {
+    return toCheckFlagRaison;
+  }
 
-   /**
-    * @param toCheckFlagRaison
-    *           the toCheckFlagRaison to set
-    */
-   public final void setToCheckFlagRaison(String toCheckFlagRaison) {
-      this.toCheckFlagRaison = toCheckFlagRaison;
-   }
+  /**
+   * @param toCheckFlagRaison
+   *          the toCheckFlagRaison to set
+   */
+  public final void setToCheckFlagRaison(final String toCheckFlagRaison) {
+    this.toCheckFlagRaison = toCheckFlagRaison;
+  }
 
-   /**
-    * @return le contenu du VI
-    */
-   public final VIContenuExtrait getVi() {
-      return viExtrait;
-   }
+  /**
+   * @return le contenu du VI
+   */
+  public final VIContenuExtrait getVi() {
+    return viExtrait;
+  }
 
-   /**
-    * @param viExtrait
-    *           le contenu du VI
-    */
-   public final void setVi(VIContenuExtrait viExtrait) {
-      this.viExtrait = viExtrait;
-   }
+  /**
+   * @param viExtrait
+   *          le contenu du VI
+   */
+  public final void setVi(final VIContenuExtrait viExtrait) {
+    this.viExtrait = viExtrait;
+  }
 
-   /**
-    * 
-    * @return jobParameters
-    *                Objet contenant tous les paramètres du job
-    */
-   public final Map<String, String> getJobParameters() {
-      return jobParameters;
-   }
+  /**
+   * @return jobParameters
+   *         Objet contenant tous les paramètres du job
+   */
+  public final Map<String, String> getJobParameters() {
+    return jobParameters;
+  }
 
-   /**
-    * 
-    * @param jobParameters
-    *              Objet contenant tous les paramètres du job
-    */
-   public final void setJobParameters(Map<String, String> jobParameters) {
-      this.jobParameters = jobParameters;
-   }
+  /**
+   * @param jobParameters
+   *          Objet contenant tous les paramètres du job
+   */
+  public final void setJobParameters(final Map<String, String> jobParameters) {
+    this.jobParameters = jobParameters;
+  }
 
-   /**
-    * Getter pour jobKey
-    * 
-    * @return the jobKey
-    */
-   public byte[] getJobKey() {
-      return jobKey;
-   }
+  /**
+   * Getter pour jobKey
+   * 
+   * @return the jobKey
+   */
+  public byte[] getJobKey() {
+    return jobKey;
+  }
 
-   /**
-    * Setter pour jobKey
-    * 
-    * @param jobKey
-    *           the jobKey to set
-    */
-   public void setJobKey(byte[] jobKey) {
-      this.jobKey = jobKey;
-   }
+  /**
+   * Setter pour jobKey
+   * 
+   * @param jobKey
+   *          the jobKey to set
+   */
+  public void setJobKey(final byte[] jobKey) {
+    this.jobKey = jobKey;
+  }
 
-   /**
-    * Getter pour docCountTraite
-    * 
-    * @return the docCountTraite
-    */
-   public Integer getDocCountTraite() {
-      return docCountTraite;
-   }
+  /**
+   * Getter pour docCountTraite
+   * 
+   * @return the docCountTraite
+   */
+  public Integer getDocCountTraite() {
+    return docCountTraite;
+  }
 
-   /**
-    * Setter pour docCountTraite
-    * 
-    * @param docCountTraite
-    *           the docCountTraite to set
-    */
-   public void setDocCountTraite(Integer docCountTraite) {
-      this.docCountTraite = docCountTraite;
-   }
+  /**
+   * Setter pour docCountTraite
+   * 
+   * @param docCountTraite
+   *          the docCountTraite to set
+   */
+  public void setDocCountTraite(final Integer docCountTraite) {
+    this.docCountTraite = docCountTraite;
+  }
 
 }

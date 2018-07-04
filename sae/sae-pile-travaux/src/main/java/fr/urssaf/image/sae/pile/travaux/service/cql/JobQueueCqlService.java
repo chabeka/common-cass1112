@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.pile.travaux.servicethrift;
+package fr.urssaf.image.sae.pile.travaux.service.cql;
 
 import java.util.Date;
 import java.util.List;
@@ -16,7 +16,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
  * 
  * 
  */
-public interface JobQueueThriftService {
+public interface JobQueueCqlService {
 
    /**
     * Ajoute un traitement dans la pile des travaux

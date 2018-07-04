@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.pile.travaux.service.cql.impl;
 
 import java.util.Date;
 
-import fr.urssaf.image.sae.pile.travaux.servicecql.OperationPileTravauxCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;
 
 /**
  * @author AC75007648

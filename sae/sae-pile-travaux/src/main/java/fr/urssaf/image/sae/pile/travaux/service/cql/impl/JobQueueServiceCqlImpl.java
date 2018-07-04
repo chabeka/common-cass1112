@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
-import fr.urssaf.image.sae.pile.travaux.servicecql.JobQueueCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.JobQueueCqlService;
 
 /**
  * @author AC75007648

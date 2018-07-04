@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
@@ -16,6 +18,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
 /**
  * Support pour l'utilisation de {@link JobsQueueDao}
  */
+@Component
 public class JobsQueueSupportCql {
 
   /**
@@ -23,19 +26,18 @@ public class JobsQueueSupportCql {
    */
   private static final String JOBS_WAITING_KEY = "jobsWaiting";
 
-
   private static final int TTL = 2592000; // 2592000 secondes, soit 30 jours
 
-
-  private final IJobsQueueDaoCql jobsQueueDaoCql;
+  @Autowired
+  private IJobsQueueDaoCql jobsQueueDaoCql;
 
   /**
    * @param jobsQueueDao
    *          DAO de la colonne famille JobsQueue
    */
-  public JobsQueueSupportCql(final IJobsQueueDaoCql jobsQueueDaoCql) {
+  public JobsQueueSupportCql() {
 
-    this.jobsQueueDaoCql = jobsQueueDaoCql;
+    // this.jobsQueueDaoCql = jobsQueueDaoCql;
 
   }
 
@@ -123,7 +125,7 @@ public class JobsQueueSupportCql {
   }
 
   /**
-   * Met à jour le travail afin qu’il soit à nouveau éligible au lancement par
+   * Met à jour le Job afin qu’il soit à nouveau éligible au lancement par
    * l’ordonnanceur en le replaçant dans la liste des jobs en attente
    *
    * @param idJob
@@ -190,6 +192,20 @@ public class JobsQueueSupportCql {
     }
   }
 
+  public Iterator<JobQueueCql> getUnreservedJobRequest() {
+    return jobsQueueDaoCql.getUnreservedJobRequest();
+  }
+
+  public List<JobQueueCql> getNonTerminatedSimpleJobs(final String hostname) {
+
+    final List<JobQueueCql> listJQ = new ArrayList<>();
+    final Iterator<JobQueueCql> it = jobsQueueDaoCql.getNonTerminatedSimpleJobs(hostname);
+    while (it.hasNext()) {
+      listJQ.add(it.next());
+    }
+    return listJQ;
+  }
+
   /**
    * @param idJob
    * @param type
@@ -204,4 +220,5 @@ public class JobsQueueSupportCql {
     jobQueue.setJobParameters(jobParameters);
     return jobQueue;
   }
+
 }

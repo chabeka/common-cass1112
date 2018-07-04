@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
-import fr.urssaf.image.sae.pile.travaux.servicecql.OperationPileTravauxCqlService;
-import fr.urssaf.image.sae.pile.travaux.servicethrift.OperationPileTravauxThriftService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.OperationPileTravauxThriftService;
 
 /**
  * @author AC75007648

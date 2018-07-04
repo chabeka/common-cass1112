@@ -1,9 +1,13 @@
 package fr.urssaf.image.sae.pile.travaux.support;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
@@ -12,17 +16,19 @@ import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
 /**
  * Support pour l'utilisation de {@link JobHistoryDao}
  */
+@Component
 public class JobHistorySupportCql {
 
-  private final IJobHistoryDaoCql jobHistoryDaoCql;
+  @Autowired
+  private IJobHistoryDaoCql jobHistoryDaoCql;
 
   /**
    * @param jobHistoryDao
    *          DAO de la colonne famille JobHistory
    */
-  public JobHistorySupportCql(final IJobHistoryDaoCql jobHistoryDaoCql) {
+  public JobHistorySupportCql() {
 
-    this.jobHistoryDaoCql = jobHistoryDaoCql;
+    // this.jobHistoryDaoCql = jobHistoryDaoCql;
 
   }
 
@@ -72,5 +78,13 @@ public class JobHistorySupportCql {
    */
   public final void supprimerHistorique(final UUID idJob, final long clock) {
     jobHistoryDaoCql.deleteById(idJob);
+  }
+
+  public Iterator<JobHistoryCql> getJobHistory(final UUID idJob) {
+    return jobHistoryDaoCql.IterableFindById(idJob);
+  }
+
+  public Iterator<JobHistoryCql> findAll() {
+    return jobHistoryDaoCql.findAll();
   }
 }

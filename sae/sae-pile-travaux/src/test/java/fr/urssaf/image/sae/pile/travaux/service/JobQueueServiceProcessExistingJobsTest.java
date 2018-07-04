@@ -61,7 +61,7 @@ public class JobQueueServiceProcessExistingJobsTest {
    * dataSet-avec-job-sae-pile-travaux.xml un job avec un parametre à la place
    * du jobParameter. Après le chargement on ajout un nouveau job avec un job
    * parameter et on traite les deux jobs. les deux jobs doivent être traités
-   * 
+   *
    * @throws JobDejaReserveException
    * @throws JobInexistantException
    * @throws LockTimeoutException

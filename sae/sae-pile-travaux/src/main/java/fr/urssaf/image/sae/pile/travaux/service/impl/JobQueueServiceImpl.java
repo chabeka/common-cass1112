@@ -18,8 +18,8 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import fr.urssaf.image.sae.pile.travaux.servicecql.JobQueueCqlService;
-import fr.urssaf.image.sae.pile.travaux.servicethrift.JobQueueThriftService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.JobQueueCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.JobQueueThriftService;
 
 /**
  * @author AC75007648

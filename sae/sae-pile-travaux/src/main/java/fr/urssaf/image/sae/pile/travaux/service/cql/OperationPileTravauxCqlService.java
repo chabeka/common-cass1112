@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.pile.travaux.servicethrift;
+package fr.urssaf.image.sae.pile.travaux.service.cql;
 
 import java.util.Date;
 
@@ -9,7 +9,7 @@ import java.util.Date;
  * Service centralisant les traitements sur la pile des travaux
  * 
  */
-public interface OperationPileTravauxThriftService {
+public interface OperationPileTravauxCqlService {
 
    /**
     * Purge la pile des travaux et l'historique associé (Suppression des jobs

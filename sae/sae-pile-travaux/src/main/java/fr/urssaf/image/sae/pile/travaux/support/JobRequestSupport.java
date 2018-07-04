@@ -3,6 +3,9 @@ package fr.urssaf.image.sae.pile.travaux.support;
 import java.util.Date;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
@@ -16,17 +19,19 @@ import me.prettyprint.hector.api.mutation.Mutator;
 /**
  * Support pour l'utilisation de {@link JobRequestDao}
  */
+@Component
 public class JobRequestSupport {
 
-  private final JobRequestDao jobRequestDao;
+  @Autowired
+  private JobRequestDao jobRequestDao;
 
   /**
    * @param jobRequestDao
    *          DAO de la colonne famille JobRequest
    */
-  public JobRequestSupport(final JobRequestDao jobRequestDao) {
+  public JobRequestSupport() {
 
-    this.jobRequestDao = jobRequestDao;
+    // this.jobRequestDao = jobRequestDao;
   }
 
   /**
