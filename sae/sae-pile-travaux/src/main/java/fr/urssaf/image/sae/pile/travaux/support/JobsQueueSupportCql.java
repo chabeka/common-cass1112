@@ -221,4 +221,8 @@ public class JobsQueueSupportCql {
     return jobQueue;
   }
 
+  public void supprimerJobDeJobsQueues(final UUID id) {
+    this.jobsQueueDaoCql.deleteById(id);
+  }
+
 }
