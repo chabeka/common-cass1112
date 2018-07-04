@@ -18,9 +18,7 @@ import org.springframework.util.Assert;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.commons.utils.Constantes;
-import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
-import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
@@ -30,7 +28,8 @@ import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
-import fr.urssaf.image.sae.pile.travaux.servicethrift.JobQueueThriftService;
+import fr.urssaf.image.sae.pile.travaux.service.impl.JobQueueServiceImpl;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.JobQueueThriftService;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupport;
@@ -54,12 +53,12 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
 
   private final JobLectureService jobLectureService;
 
-  private final JobRequestDao jobRequestDao;
+  // private final JobRequestDao jobRequestSupport;
 
   private final JobRequestSupport jobRequestSupport;
 
   private static final Logger LOG = LoggerFactory
-                                                 .getLogger(JobQueueServiceThriftImpl.class);
+                                                 .getLogger(JobQueueServiceImpl.class);
 
   /**
    * @param jobRequestDao
@@ -76,19 +75,19 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
    *          support pour l'utilisation de {@link ZookeeperMutex}
    */
   @Autowired
-  public JobQueueServiceThriftImpl(final JobRequestDao jobRequestDao,
-                                   final JobsQueueDao jobsQueueDao, final JobClockSupport jobClockSupport,
-                                   final JobHistoryDao jobHistoryDao, final JobLectureService jobLectureService,
+  public JobQueueServiceThriftImpl(final JobRequestSupport jobRequestSupport,
+                                   final JobsQueueSupport jobsQueueSupport, final JobClockSupport jobClockSupport,
+                                   final JobHistorySupport jobHistorySupport, final JobLectureService jobLectureService,
                                    final CuratorFramework curatorClient) {
 
     this.curatorClient = curatorClient;
     this.jobClockSupport = jobClockSupport;
     this.jobLectureService = jobLectureService;
-    this.jobRequestDao = jobRequestDao;
+    // this.jobRequestSupport = jobRequestDao;
 
-    this.jobRequestSupport = new JobRequestSupport(jobRequestDao);
-    this.jobsQueueSupport = new JobsQueueSupport(jobsQueueDao);
-    this.jobHistorySupport = new JobHistorySupport(jobHistoryDao);
+    this.jobRequestSupport = jobRequestSupport;
+    this.jobsQueueSupport = jobsQueueSupport;
+    this.jobHistorySupport = jobHistorySupport;
 
   }
 
@@ -150,8 +149,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     // TODO: Vérifier que le job est à l'état STARTING
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -265,8 +264,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
       // TODO: Vérifier que le job est à l'état CREATED
 
       // Lecture du job
-      final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                        .getJobRequestTmpl().queryColumns(idJob);
+      final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                            .getJobRequestTmpl().queryColumns(idJob);
 
       // Récupération de la colonne "state"
       final HColumn<?, ?> columnState = result
@@ -399,8 +398,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     // TODO: Vérifier que le job est à l'état RESERVED
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -463,8 +462,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération du timestamp courant de la colonne "pid", si elle est
     // présente
@@ -514,8 +513,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération du timestamp courant de la colonne "docCount", si elle est
     // présente
@@ -572,8 +571,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération du timestamp courant de la colonne "docCount", si elle est
     // présente
@@ -627,8 +626,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération du timestamp courant de la colonne "toCheckFlag", si elle
     // est
@@ -683,8 +682,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -726,8 +725,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -801,7 +800,6 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
    * @param clock
    *          horloge.
    */
-  @SuppressWarnings("deprecation")
   private void addJobQueue(final JobToCreate jobToCreate, Long clock) {
 
     if (clock == null) {
@@ -845,8 +843,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -871,8 +869,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
     }
 
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(uuidJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(uuidJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result
@@ -894,8 +892,8 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
   public final void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate,
                                           final String message) {
     // Lecture du job
-    final ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-                                                                      .getJobRequestTmpl().queryColumns(idJob);
+    final ColumnFamilyResult<UUID, String> result = this.jobRequestSupport
+                                                                          .getJobRequestTmpl().queryColumns(idJob);
 
     // Récupération de la colonne "state"
     final HColumn<?, ?> columnState = result

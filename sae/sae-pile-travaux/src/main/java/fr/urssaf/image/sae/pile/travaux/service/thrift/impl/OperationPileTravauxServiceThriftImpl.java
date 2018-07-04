@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
-import fr.urssaf.image.sae.pile.travaux.servicecql.OperationPileTravauxCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;
 import me.prettyprint.hector.api.Keyspace;
 
 /**

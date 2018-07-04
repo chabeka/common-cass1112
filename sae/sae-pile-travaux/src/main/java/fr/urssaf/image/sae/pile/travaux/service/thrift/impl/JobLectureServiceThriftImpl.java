@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
-import fr.urssaf.image.sae.pile.travaux.servicethrift.JobLectureThriftService;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.JobLectureThriftService;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupport;
