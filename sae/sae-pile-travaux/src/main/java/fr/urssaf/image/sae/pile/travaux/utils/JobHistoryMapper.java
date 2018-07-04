@@ -43,4 +43,13 @@ public class JobHistoryMapper {
     return (uuid.timestamp() - NUM_100NS_INTERVALS_SINCE_UUID_EPOCH) / 10000;
   }
 
+  public static List<JobHistory> mapListJobHistoryCqlToListJobHistory(final List<JobHistoryCql> jobsHistoryCql) {
+    final List<JobHistory> jobsHistory = new ArrayList<>();
+
+    for (final JobHistoryCql jobHistoryCql : jobsHistoryCql) {
+      jobsHistory.addAll(JobHistoryMapper.mapJobHistoryCqlToThrift(jobHistoryCql));
+    }
+    return jobsHistory;
+  }
+
 }

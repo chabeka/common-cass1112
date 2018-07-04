@@ -19,6 +19,8 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
 import fr.urssaf.image.sae.pile.travaux.service.thrift.JobLectureThriftService;
+import fr.urssaf.image.sae.pile.travaux.utils.JobHistoryMapper;
+import fr.urssaf.image.sae.pile.travaux.utils.JobsQueueMapper;
 import me.prettyprint.hector.api.Keyspace;
 
 /**
@@ -58,7 +60,7 @@ public class JobLectureServiceImpl implements JobLectureService {
   public Iterator<JobQueue> getUnreservedJobRequestIterator() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      return this.jobLectureCqlService.getUnreservedJobRequestIterator();
+      return JobsQueueMapper.mapIteratorJobQueueToIteratorJobQueueCql(this.jobLectureCqlService.getUnreservedJobRequestIterator());
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.jobLectureThriftService.getUnreservedJobRequestIterator();
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
@@ -72,7 +74,7 @@ public class JobLectureServiceImpl implements JobLectureService {
   public List<JobQueue> getNonTerminatedSimpleJobs(final String hostname) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      return this.jobLectureCqlService.getNonTerminatedSimpleJobs(hostname);
+      return JobsQueueMapper.mapListJobQueueToListJobQueueCql(this.jobLectureCqlService.getNonTerminatedSimpleJobs(hostname));
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.jobLectureThriftService.getNonTerminatedSimpleJobs(hostname);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
@@ -100,7 +102,7 @@ public class JobLectureServiceImpl implements JobLectureService {
   public List<JobHistory> getJobHistory(final UUID idJob) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      return this.jobLectureCqlService.getJobHistory(idJob);
+      return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(this.jobLectureCqlService.getJobHistory(idJob));
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.jobLectureThriftService.getJobHistory(idJob);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {

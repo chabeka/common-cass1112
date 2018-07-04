@@ -53,8 +53,6 @@ public class JobQueueServiceThriftImpl implements JobQueueThriftService {
 
   private final JobLectureService jobLectureService;
 
-  // private final JobRequestDao jobRequestSupport;
-
   private final JobRequestSupport jobRequestSupport;
 
   private static final Logger LOG = LoggerFactory
