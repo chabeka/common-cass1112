@@ -36,7 +36,7 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
- * @author AC75007648
+ * Implémentation du service {@link JobQueueCqlService}
  */
 @Service
 public class JobQueueServiceCqlImpl implements JobQueueCqlService {
@@ -61,6 +61,14 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
   private static final Logger LOG = LoggerFactory
                                                  .getLogger(JobQueueServiceImpl.class);
 
+  /**
+   * @param jobRequestSupportCql
+   * @param jobsQueueSupportCql
+   * @param jobClockSupport
+   * @param jobHistorySupportCql
+   * @param jobLectureCqlService
+   * @param curatorClient
+   */
   @Autowired
   public JobQueueServiceCqlImpl(final JobRequestSupportCql jobRequestSupportCql,
                                 final JobsQueueSupportCql jobsQueueSupportCql, final JobClockSupport jobClockSupport,

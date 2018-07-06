@@ -18,7 +18,8 @@ import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlServi
 import me.prettyprint.hector.api.Keyspace;
 
 /**
- * @author AC75007648
+ * Implémentation du service {@link OperationPileTravauxCqlService} Classe
+ * singleton, accessible par l'annotation Autowired
  */
 @Service
 public class OperationPileTravauxServiceCqlImpl implements OperationPileTravauxCqlService {

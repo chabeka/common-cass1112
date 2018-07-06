@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 import me.prettyprint.hector.api.Keyspace;
 
 /**
- * @author AC75007648
+ * Implémentation du service {@link JobLectureCqlService}
  */
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
@@ -36,8 +36,16 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
   private final JobHistorySupportCql jobHistorySupportCql;
 
+  /**
+   * Valeur de la clé pour les jobs en attente de réservation
+   */
   private static final int MAX_ALL_JOBS = 200;
 
+  /**
+   * @param jobHistorySupportCql
+   * @param jobRequestSupportCql
+   * @param jobsQueueSupportCql
+   */
   @Autowired
   public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
                                   final JobsQueueSupportCql jobsQueueSupportCql) {
@@ -134,9 +142,6 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
     return listJR;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public final boolean isJobResettable(final JobRequest job) {
     final String state = job.getState().toString();
@@ -146,9 +151,6 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
     return false;
   }
 
-  /**
-   * {@inheritDoc}
-   */
   @Override
   public final boolean isJobRemovable(final JobRequest job) {
     final String state = job.getState().toString();
