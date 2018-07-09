@@ -180,49 +180,49 @@ public class MaquetteParserLeftColHelperTest {
             .append("<div id=\"leftcol\"><h3 class=\"boxTitle\" id=\"app-title\">Application</h3>"
                   + "\r\n");
       sbDecore
-            .append("<p class=\"boxContent\" id=\"app\" title=\"Informations relatives &agrave; l'application courante\">"
+            .append("<p class=\"boxContent\" id=\"app\" title=\"Informations relatives &Atilde;&nbsp; l'application courante\">"
                   + "\r\n");
       sbDecore
-            .append("<span id=\"app-name\" title=\"Nom de l'application\">nom appli &lt;&eacute;&gt;</span><br />"
+            .append("<span id=\"app-name\" title=\"Nom de l'application\">nom appli &lt;&Atilde;&copy;&gt;</span><br />"
                   + "\r\n");
       sbDecore
-            .append("<span id=\"app-version\" title=\"Version de l'application\">0.1a &lt;&agrave;&gt;</span><br />"
+            .append("<span id=\"app-version\" title=\"Version de l'application\">0.1a &lt;&Atilde;&nbsp;&gt;</span><br />"
                   + "\r\n");
       sbDecore.append("</p>" + "\r\n");
       sbDecore
             .append("<h3 class=\"boxTitle\" id=\"user-title\">Utilisateur</h3>"
                   + "\r\n");
       sbDecore
-            .append("<p class=\"boxContent\" id=\"user\" title=\"Informations relatives &agrave; l'utilisateur identifi&eacute;\">"
+            .append("<p class=\"boxContent\" id=\"user\" title=\"Informations relatives &Atilde;&nbsp; l'utilisateur identifi&Atilde;&copy;\">"
                   + "\r\n");
       sbDecore
-            .append("<span id=\"user-name\" title=\"Pr&eacute;nom Nom de l'utilisateur\">Utilisateur 1 &lt;&eacute;&gt;</span><br />"
+            .append("<span id=\"user-name\" title=\"Pr&Atilde;&copy;nom Nom de l'utilisateur\">Utilisateur 1 &lt;&Atilde;&copy;&gt;</span><br />"
                   + "\r\n");
       sbDecore
-            .append("<span id=\"user-rights\" title=\"Droits affect&eacute;s &agrave; l'utilisateur\">Consultation &lt;&agrave;&gt;</span><br />"
+            .append("<span id=\"user-rights\" title=\"Droits affect&Atilde;&copy;s &Atilde;&nbsp; l'utilisateur\">Consultation &lt;&Atilde;&nbsp;&gt;</span><br />"
                   + "\r\n");
       sbDecore.append("</p>" + "\r\n");
       sbDecore
-            .append("<h3 class=\"boxTitle\" id=\"logout-title\">D&eacute;connexion</h3>"
+            .append("<h3 class=\"boxTitle\" id=\"logout-title\">D&Atilde;&copy;connexion</h3>"
                   + "\r\n");
       sbDecore
-            .append("<p class=\"boxContent\" id=\"logout\" title=\"Bo&icirc;te de d&eacute;connexion\">"
+            .append("<p class=\"boxContent\" id=\"logout\" title=\"Bo&Atilde;&reg;te de d&Atilde;&copy;connexion\">"
                   + "\r\n");
       sbDecore
             .append("<input id=\"logout-user\" class=\"logout-user\" type=\"button\" value=\"D&eacute;connexion\" onclick=\"deconnexion.do\" tabindex=\"0\" /></p>"
                   + "\r\n");
       sbDecore
-            .append("<h3 class=\"boxTitle\" id=\"boiteGauchePerso1-title\">Title Bo&icirc;te 1</h3>"
+            .append("<h3 class=\"boxTitle\" id=\"boiteGauchePerso1-title\">Title Bo&Atilde;&reg;te 1</h3>"
                   + "\r\n");
       sbDecore
-            .append("<p class=\"boxContent\" id=\"boiteGauchePerso1\" title=\"Desc Bo&icirc;te 1\">"
+            .append("<p class=\"boxContent\" id=\"boiteGauchePerso1\" title=\"Desc Bo&Atilde;&reg;te 1\">"
                   + "\r\n");
       sbDecore.append("contenu 1</p>" + "\r\n");
       sbDecore
-            .append("<h3 class=\"boxTitle\" id=\"boiteGauchePerso2-title\">Title Bo&icirc;te 2</h3>"
+            .append("<h3 class=\"boxTitle\" id=\"boiteGauchePerso2-title\">Title Bo&Atilde;&reg;te 2</h3>"
                   + "\r\n");
       sbDecore
-            .append("<p class=\"boxContent\" id=\"boiteGauchePerso2\" title=\"Desc Bo&icirc;te 2\">"
+            .append("<p class=\"boxContent\" id=\"boiteGauchePerso2\" title=\"Desc Bo&Atilde;&reg;te 2\">"
                   + "\r\n");
       sbDecore.append("contenu 2</p>" + "\r\n");
       sbDecore.append("</div>" + "\r\n");
