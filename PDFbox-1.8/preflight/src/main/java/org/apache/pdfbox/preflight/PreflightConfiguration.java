@@ -23,6 +23,7 @@ package org.apache.pdfbox.preflight;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.pdfbox.preflight.action.ActionManagerFactory;
@@ -92,7 +93,7 @@ public class PreflightConfiguration {
 	 */
 	private boolean lazyValidation = false;
 
-	private Map<String, Class<? extends ValidationProcess>> processes = new HashMap<String, Class<? extends ValidationProcess>>();
+  private Map<String, Class<? extends ValidationProcess>> processes = new LinkedHashMap<String, Class<? extends ValidationProcess>>();
 	// TODO use annotation to mark these validation processes as inner page validation and factorize the access method
 	private Map<String, Class<? extends ValidationProcess>> innerProcesses = new HashMap<String, Class<? extends ValidationProcess>>();
 
@@ -114,16 +115,15 @@ public class PreflightConfiguration {
 	public static PreflightConfiguration createPdfA1BConfiguration() {
 		PreflightConfiguration configuration = new PreflightConfiguration();
 
+    configuration.replaceProcess(FILE_SPECIF_PROCESS, FileSpecificationValidationProcess.class);
 		configuration.replaceProcess(CATALOG_PROCESS, CatalogValidationProcess.class);
-		configuration.replaceProcess(FILE_SPECIF_PROCESS, FileSpecificationValidationProcess.class);
+    configuration.replaceProcess(ACRO_FORM_PROCESS, AcroFormValidationProcess.class);
+    configuration.replaceProcess(XREF_PROCESS, XRefValidationProcess.class);
+    configuration.replaceProcess(PAGES_TREE_PROCESS, PageTreeValidationProcess.class);
 		configuration.replaceProcess(TRAILER_PROCESS, TrailerValidationProcess.class);
-		configuration.replaceProcess(XREF_PROCESS, XRefValidationProcess.class);
-		configuration.replaceProcess(ACRO_FORM_PROCESS, AcroFormValidationProcess.class);
-		configuration.replaceProcess(BOOKMARK_PROCESS, BookmarkValidationProcess.class);
-		configuration.replaceProcess(PAGES_TREE_PROCESS, PageTreeValidationProcess.class);
+    configuration.replaceProcess(STREAM_PROCESS, StreamValidationProcess.class);
 		configuration.replaceProcess(META_DATA_PROCESS, MetadataValidationProcess.class);
-
-		configuration.replaceProcess(STREAM_PROCESS, StreamValidationProcess.class);
+    configuration.replaceProcess(BOOKMARK_PROCESS, BookmarkValidationProcess.class);
 
 		configuration.replacePageProcess(PAGE_PROCESS, SinglePageValidationProcess.class);
 		configuration.replacePageProcess(EXTGSTATE_PROCESS, ExtGStateValidationProcess.class);
