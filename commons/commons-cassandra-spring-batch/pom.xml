@@ -21,7 +21,6 @@
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
       <sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
-      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
       
       <!-- Version de commons-cassandra -->
       <commons-cassandra.version>1.0.1-SNAPSHOT</commons-cassandra.version>

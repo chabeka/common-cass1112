@@ -26,7 +26,6 @@
 		<maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
 		<maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
 		<sonar.maven.plugin.version>1.0-beta-2</sonar.maven.plugin.version>
-		<maven.release.plugin.version>2.2.1</maven.release.plugin.version>
 
 		<junit.version>4.8.2</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>

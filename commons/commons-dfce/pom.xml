@@ -22,8 +22,6 @@
       <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-      <!-- DEFINI DANS LE POM PERE  maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version-->
-      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 
       <!-- numéro de version des dépendances de DFCE -->
       <dfce.serialization>1.2.2</dfce.serialization>
@@ -357,7 +355,6 @@
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-release-plugin</artifactId>
-            <version>${maven-release-plugin.version}</version>
             <configuration>
                <preparationGoals>clean javadoc:jar install</preparationGoals>
                <autoVersionSubmodules>true</autoVersionSubmodules>

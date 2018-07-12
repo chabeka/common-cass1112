@@ -22,7 +22,6 @@
       <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
       <maven-source-plugin.version>2.1.2</maven-source-plugin.version>
       <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-      <maven-release-plugin.version>2.2.1</maven-release-plugin.version>
 
       <!-- numéro de version de dépendance de itext -->
       <!-- cette version est une version en AGPL v3 -->
