@@ -21,7 +21,7 @@
 
    <artifactId>pdfbox-reactor</artifactId>
    <groupId>org.apache.pdfbox</groupId>
-   <version>1.8.1.1-SNAPSHOT</version>
+   <version>1.8.1.1</version>
    <packaging>pom</packaging>
 
    <name>PDFBox reactor</name>
@@ -35,9 +35,9 @@
    
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</url>
-      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</developerConnection>
-      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</connection>
+      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/pdfbox-reactor-1.8.1.1</url>
+      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/pdfbox-reactor-1.8.1.1</developerConnection>
+      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/pdfbox-reactor-1.8.1.1</connection>
    </scm>
 
    <properties>
