@@ -4,7 +4,7 @@
 	<artifactId>padaf</artifactId>
 	<name>Padaf</name>
 	<packaging>pom</packaging>
-	<version>0.6.3.2</version>
+	<version>0.6.3.3-SNAPSHOT</version>
 
 	<properties>
 		<pdfbox.version>1.5.0</pdfbox.version>
@@ -22,13 +22,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/padaf-0.6.3.2
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/padaf-0.6.3.2
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/padaf-0.6.3.2
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
       </connection>
 	</scm>
 
