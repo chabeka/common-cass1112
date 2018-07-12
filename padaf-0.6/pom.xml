@@ -156,20 +156,6 @@
 		<module>preflight</module>
 	</modules>
 
-	<reporting>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${javadoc.version}</version>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
-				</configuration>
-			</plugin>
-		</plugins>
-
-	</reporting>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
