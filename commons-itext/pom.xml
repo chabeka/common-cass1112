@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-itext</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 
 	<name>commons-itext</name>
 
@@ -39,13 +39,13 @@
   <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-itext-1.0.1
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-itext
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-itext-1.0.1
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-itext
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-itext-1.0.1
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-itext
       </connection>
 	</scm>
 
