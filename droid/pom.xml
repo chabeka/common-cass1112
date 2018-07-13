@@ -12,7 +12,7 @@
 	<artifactId>droid</artifactId>
 	<packaging>pom</packaging>
 	<name>droid</name>
-	<version>7.0</version>
+	<version>7.1-SNAPSHOT</version>
 
 
 	<modules>
@@ -35,13 +35,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
       </connection>
 	</scm>
 

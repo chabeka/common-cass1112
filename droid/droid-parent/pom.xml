@@ -4,13 +4,13 @@
 
 	<parent>
 		<groupId>fr.urssaf.image.droid</groupId>
-		<version>7.0</version>
+		<version>7.1-SNAPSHOT</version>
 		<artifactId>droid</artifactId>
 	</parent>
 
 	<groupId>fr.urssaf.image.droid</groupId>
 	<artifactId>droid-parent</artifactId>
-	<version>7.0</version>
+	<version>7.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>droid-parent</name>
