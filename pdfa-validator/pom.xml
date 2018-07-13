@@ -134,6 +134,13 @@
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>

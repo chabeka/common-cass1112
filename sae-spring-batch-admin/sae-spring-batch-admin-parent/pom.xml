@@ -18,17 +18,17 @@
 	</parent>
 
 	<!-- Configuration SVN pour le plug-in maven-release -->
-   <scm>
-      <url>
+	<scm>
+		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
       </url>
-      <developerConnection>
+		<developerConnection>
          scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
       </developerConnection>
-      <connection>
+		<connection>
          scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
       </connection>
-   </scm>
+	</scm>
 
 	<properties>
 		<maven.test.failure.ignore>true</maven.test.failure.ignore>
@@ -81,14 +81,9 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>2.0</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.apache.maven.doxia</groupId>
-							<artifactId>doxia-module-confluence</artifactId>
-							<version>1.0</version>
-						</dependency>
-					</dependencies>
+		            <configuration>
+		               	<skipDeploy>true</skipDeploy>
+		            </configuration>
 				</plugin>
 				<plugin>
 					<groupId>com.springsource.bundlor</groupId>

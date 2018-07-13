@@ -440,7 +440,13 @@
 					</execution>
 				</executions>
 			</plugin>
-
+            <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <configuration>
+               		<skipDeploy>true</skipDeploy>
+               </configuration>              
+            </plugin>
 		</plugins>
 
 
