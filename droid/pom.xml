@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
     
        <!-- Utilisation du fichier POM parent ALTAIR -->
@@ -13,7 +12,7 @@
 	<artifactId>droid</artifactId>
 	<packaging>pom</packaging>
 	<name>droid</name>
-	<version>7.0-SNAPSHOT</version>
+	<version>7.0</version>
 
 
 	<modules>
@@ -36,13 +35,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/droid
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/droid-7.0
       </connection>
 	</scm>
 

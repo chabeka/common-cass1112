@@ -4,7 +4,7 @@
     <parent>
         <artifactId>droid-parent</artifactId>
         <groupId>fr.urssaf.image.droid</groupId>
-        <version>7.0-SNAPSHOT</version>
+        <version>7.0</version>
         <relativePath>../droid-parent</relativePath>
     </parent>
   
