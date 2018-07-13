@@ -384,7 +384,20 @@
 					<useReleaseProfile>false</useReleaseProfile>
 				</configuration>
 			</plugin>
-
+			<plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-site-plugin</artifactId>
+               <dependencies>
+                  <dependency>
+                     <groupId>org.apache.maven.wagon</groupId>
+                     <artifactId>wagon-ssh</artifactId>
+                     <version>1.0</version>
+                  </dependency>
+               </dependencies>
+               <configuration>
+               		<skipDeploy>true</skipDeploy>
+               </configuration>
+            </plugin>
 		</plugins>
 	</build>
 
