@@ -35,10 +35,10 @@
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
 		<jstl.version>1.2</jstl.version>
 
-		<sae.anais.framework.version>1.0.2-SNAPSHOT</sae.anais.framework.version>
-		<commons.maquette.version>1.0.2-SNAPSHOT</commons.maquette.version>
+		<sae.anais.framework.version>1.0.2</sae.anais.framework.version>
+		<commons.maquette.version>2.0.1</commons.maquette.version>
 
-		<sae.version>18.9.1-SNAPSHOT</sae.version>
+		<sae.version>18.9.1</sae.version>
 
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>

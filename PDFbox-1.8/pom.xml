@@ -184,6 +184,9 @@
                      <version>1.0</version>
                   </dependency>
                </dependencies>
+               <configuration>
+               		<skipDeploy>true</skipDeploy>
+               </configuration>
             </plugin>
             <plugin>
                <groupId>org.apache.maven.plugins</groupId>

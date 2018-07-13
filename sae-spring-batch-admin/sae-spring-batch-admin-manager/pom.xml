@@ -18,7 +18,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
       <slf4j-api.version>1.6.4</slf4j-api.version>
       <logback.version>1.0.0</logback.version>
       <hector.version>1.0-3</hector.version>
-      <commons-cassandra-spring-batch.version>0.0.7-SNAPSHOT</commons-cassandra-spring-batch.version>
+      <commons-cassandra-spring-batch.version>1.0.1</commons-cassandra-spring-batch.version>
    </properties>
 
    <dependencies>
