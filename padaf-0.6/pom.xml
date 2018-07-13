@@ -150,6 +150,9 @@
                      <version>1.0</version>
                   </dependency>
                </dependencies>
+               <configuration>
+               		<skipDeploy>true</skipDeploy>
+               </configuration>
             </plugin>
 		</plugins>
 
