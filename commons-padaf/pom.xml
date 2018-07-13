@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-padaf</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2-SNAPSHOT</version>
 
 	<name>commons-padaf</name>
 
@@ -34,13 +34,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-padaf-1.0.1
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-padaf-1.0.1
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-padaf-1.0.1
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-padaf
       </connection>
 	</scm>
 
