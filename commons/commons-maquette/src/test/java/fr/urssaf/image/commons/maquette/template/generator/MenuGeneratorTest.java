@@ -133,7 +133,7 @@ public class MenuGeneratorTest {
       sbExpected.append("</li>");
       sbExpected.append("<li>");
       sbExpected
-            .append("<a href='C2L3_link' title='C2L3_description_&lt;&Atilde;&copy;&Atilde;&nbsp;' tabindex='9999'>C2L3_titre_&lt;&Atilde;&copy;&Atilde;&nbsp;</a>");
+            .append("<a href='C2L3_link' title='C2L3_description_&lt;&eacute;&agrave;' tabindex='9999'>C2L3_titre_&lt;&eacute;&agrave;</a>");
       sbExpected.append("</li>");
       sbExpected.append("</ul>");
       sbExpected.append("</li>");
