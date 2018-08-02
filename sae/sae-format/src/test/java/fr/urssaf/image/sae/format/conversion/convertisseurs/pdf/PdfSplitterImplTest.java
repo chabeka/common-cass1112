@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.format.conversion.convertisseurs.pdf;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.IOUtils;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -19,7 +17,7 @@ import fr.urssaf.image.commons.itext.exception.FormatConversionException;
 import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageException;
 import fr.urssaf.image.commons.itext.service.FormatConversionService;
 import fr.urssaf.image.sae.format.conversion.exceptions.ConversionParametrageException;
-import fr.urssaf.image.sae.format.conversion.exceptions.ConversionRuntimeException;
+import junit.framework.Assert;
 
 /**
  * 
@@ -65,21 +63,6 @@ public class PdfSplitterImplTest {
             Integer.valueOf(0));
 
       Assert.fail("Une erreur de paramètrage aurait du apparaitre");
-   }
-
-   @Test(expected = ConversionRuntimeException.class)
-   public void convertirFichierFile_erreurRuntime()
-         throws ConversionParametrageException, IOException {
-
-      // Récupération du fichier de test depuis les ressources
-      ClassPathResource ressource = new ClassPathResource(
-            "/conversion/fichierCorrompu.pdf");
-
-      // Appel de la méthode à tester
-      pdfSplitterImpl.convertirFichier(ressource.getFile(), null,
-            Integer.valueOf(0));
-
-      Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
    @Test
@@ -143,24 +126,6 @@ public class PdfSplitterImplTest {
             .valueOf(0));
 
       Assert.fail("Une erreur de paramètrage aurait du apparaitre");
-   }
-
-   @Test(expected = ConversionRuntimeException.class)
-   public void convertirFichierByte_erreurRuntime()
-         throws ConversionParametrageException, IOException {
-
-      // Récupération du fichier de test depuis les ressources
-      ClassPathResource ressource = new ClassPathResource(
-            "/conversion/fichierCorrompu.pdf");
-
-      byte[] fichier = IOUtils.toByteArray(new FileInputStream(ressource
-            .getFile()));
-
-      // Appel de la méthode à tester
-      pdfSplitterImpl.convertirFichier(fichier, null, Integer
-            .valueOf(0));
-
-      Assert.fail("Une erreur Runtime aurait du apparaitre");
    }
    
    @Test
