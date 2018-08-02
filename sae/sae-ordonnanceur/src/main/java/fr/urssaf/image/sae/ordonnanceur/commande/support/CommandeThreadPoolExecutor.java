@@ -75,7 +75,6 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
       Assert.state(intervalle >= 1,
             "'intervalle' must be greater than or equal to 1.");
-
    }
 
    /**
@@ -84,14 +83,9 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     */
    @Override
    protected final void terminated() {
-
       super.terminated();
-
       // les Threads sont bien tous terminés, on libère le verrou
-      synchronized (this) {
-         this.notifyAll();
-      }
-
+      this.notifyAll();
    }
 
    /**
@@ -100,7 +94,6 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     */
    @Override
    public final void shutdown() {
-
       LOG.debug("{} - le pool des commandes est en train de s'arrêter",
             "shutdown()");
 
@@ -116,24 +109,21 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
    /**
     * Méthode pour attendre la fin de l'exécution du traitement en cours
     */
-   public final void waitFinish() {
-
-      // mise en attente pour s'assurer que tous les Threads actifs ou en
-      // attente soient bien terminés
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
+  public final void waitFinish() {
+    // mise en attente pour s'assurer que tous les Threads actifs ou en
+    // attente soient bien terminés
+    while (!this.isTerminated()) {
+      try {
+        this.wait();
       }
+      catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
 
-      LOG.debug("{} - le pool des commandes est à l'état terminé",
-            "waitFinish()");
-   }
+    LOG.debug("{} - le pool des commandes est à l'état terminé",
+              "waitFinish()");
+  }
 
    /**
     * Surcharge de la méthode

@@ -64,18 +64,16 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
-   public final void waitFinishAddMetadata() {
-
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+  public final void waitFinishAddMetadata() {
+    while (!this.isTerminated()) {
+      try {
+        this.wait();
       }
-   }
+      catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+  }
 
    /**
     * {@inheritDoc}
@@ -83,9 +81,7 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
    @Override
    protected final void terminated() {
       super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
+      this.notifyAll();
    }
 
    /**

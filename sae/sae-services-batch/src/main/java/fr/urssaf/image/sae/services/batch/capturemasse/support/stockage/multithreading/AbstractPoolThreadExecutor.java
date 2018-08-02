@@ -67,23 +67,20 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */
-   public final void waitFinishInsertion() {
+  public final void waitFinishInsertion() {
+    while (!this.isTerminated()) {
 
-      synchronized (this) {
+      try {
 
-         while (!this.isTerminated()) {
+        this.wait();
 
-            try {
-
-               this.wait();
-
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
       }
-   }
+      catch (InterruptedException e) {
+
+        throw new IllegalStateException(e);
+      }
+    }
+  }
 
    /**
     * {@inheritDoc}
@@ -91,10 +88,7 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
    @Override
    protected final void terminated() {
       super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-
+      this.notifyAll();
    }
 
    /**

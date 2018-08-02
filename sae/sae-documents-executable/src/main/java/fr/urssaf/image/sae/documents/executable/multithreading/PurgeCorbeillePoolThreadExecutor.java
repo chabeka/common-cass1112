@@ -65,18 +65,16 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
-   public final void waitFinishPurgeCorbeille() {
-
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+  public final void waitFinishPurgeCorbeille() {
+    while (!this.isTerminated()) {
+      try {
+        this.wait();
       }
-   }
+      catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+  }
 
    /**
     * {@inheritDoc}
@@ -84,9 +82,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    @Override
    protected final void terminated() {
       super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
+      this.notifyAll();
    }
 
    /**

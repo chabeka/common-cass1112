@@ -87,23 +87,16 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */
-   public final void waitFinishSuppression() {
-
-      synchronized (this) {
-
-         while (!this.isTerminated()) {
-
-            try {
-
-               this.wait();
-
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
+  public final void waitFinishSuppression() {
+    while (!this.isTerminated()) {
+      try {
+        this.wait();
       }
-   }
+      catch (InterruptedException e) {
+        throw new IllegalStateException(e);
+      }
+    }
+  }
 
    /**
     * {@inheritDoc}
@@ -111,10 +104,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    @Override
    protected final void terminated() {
       super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-
+      this.notifyAll();
    }
 
    /**

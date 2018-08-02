@@ -87,23 +87,20 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */
-   public final void waitFinishRestore() {
+  public final void waitFinishRestore() {
+    while (!this.isTerminated()) {
 
-      synchronized (this) {
+      try {
 
-         while (!this.isTerminated()) {
+        this.wait();
 
-            try {
-
-               this.wait();
-
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
       }
-   }
+      catch (InterruptedException e) {
+
+        throw new IllegalStateException(e);
+      }
+    }
+  }
 
    /**
     * {@inheritDoc}
@@ -111,10 +108,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
    @Override
    protected final void terminated() {
       super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-
+      this.notifyAll();
    }
 
    /**
