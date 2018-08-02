@@ -32,7 +32,7 @@ public class CycleVieSupportTest {
    private static final String VALUE = "valeur";
    private static final String KEY = "clé";
 
-   private static final String LOGIN = "LE LOGIN";
+   private static final String LOGIN = "_ADMIN";
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
    private static final String ACTION = "action";
@@ -89,7 +89,6 @@ public class CycleVieSupportTest {
       trace.setAction(ACTION);
       trace.setCodeEvt(CODE_EVT);
       trace.setContrat(CONTRAT);
-      trace.setLogin(LOGIN);
       trace.setInfos(INFOS);
 
       support.create(trace);

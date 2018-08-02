@@ -32,6 +32,9 @@ public class CycleVieServiceDatasTest {
    private static final String VALUE = "valeur";
    private static final String KEY = "clé";
 
+  private static final String TYPE_EVT = "CUSTOM";
+
+  private static final String USERNAME = "_ADMIN";
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
    private static final String ACTION = "action";
@@ -61,46 +64,38 @@ public class CycleVieServiceDatasTest {
    }
 
    @Test
-   public void testCreation() {
-      Date startDate = new Date();
-   
-      UUID uuid = UUID.randomUUID();
-      createTrace(uuid);
-      Date endDate = new Date();
+  public void testCreation() {
+    Date startDate = new Date();
 
-      // on fixe les bornes inférieure à la première trace de la journée
-      startDate = DateUtils.truncate(startDate, Calendar.DATE);
-      //.addMinutes(startDate, -5);
-      //Date dateStart = DateUtils.Date dateFin = DateUtils.addMinutes(endDate, 5);
-      endDate = DateUtils.addDays(endDate, 1);
-      endDate = DateUtils.truncate(endDate, Calendar.DATE);
+    UUID uuid = UUID.randomUUID();
+    createTrace(uuid);
+    Date endDate = new Date();
 
-      List<DfceTraceDoc> result = service
-            .lecture(startDate, endDate, 10, true);
-      
-      Assert.assertNotNull("il doit y avoir un résultat", result);
-      
-      boolean traceOK = false;
-      for (DfceTraceDoc dfceTraceDoc : result) {
-         if (dfceTraceDoc.getLogin() != null) {
-            if (dfceTraceDoc.getLogin().equals(uuid.toString())) {
-               traceOK = true;
-            }
-         }
+    endDate = DateUtils.addDays(endDate, 1);
+    endDate = DateUtils.truncate(endDate, Calendar.DATE);
+
+    List<DfceTraceDoc> result = service
+                                       .lecture(startDate, endDate, 10, true);
+
+    Assert.assertNotNull("il doit y avoir un résultat", result);
+    Assert.assertEquals("il doit y avoir qu'un seul résultat", 1, result.size());
+    boolean traceOK = false;
+    for (DfceTraceDoc dfceTraceDoc : result) {
+      if (TYPE_EVT.equals(dfceTraceDoc.getTypeEvt()) && USERNAME.equals(dfceTraceDoc.getLogin())) {
+        traceOK = true;
       }
-      
-      Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
-   }
+    }
+
+    Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
+  }
 
 
 
    private void createTrace(UUID uuid) {
-
       TraceToCreate trace = new TraceToCreate();
       trace.setAction(ACTION);
       trace.setCodeEvt(CODE_EVT);
       trace.setContrat(CONTRAT);
-      trace.setLogin(uuid.toString());
       trace.setInfos(INFOS);
 
       support.create(trace);

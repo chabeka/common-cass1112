@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,9 @@ public class HistEvenementServiceDatasTest {
    private static final String VALUE = "valeur";
    private static final String KEY = "clé";
 
+  private static final String KEY_UUID = "UUID";
+
+   private static final String USERNAME = "_ADMIN";
    private static final String LOGIN = "LE LOGIN";
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
@@ -84,30 +88,30 @@ public class HistEvenementServiceDatasTest {
    }
 
    @Test
-   public void testRetourUnSeulElementLimite() {
-      Date dateDebut = new Date();
-      UUID uuid = UUID.randomUUID();
-      createTrace(uuid, "");
-      Date dateFin = new Date();
+  public void testRetourUnSeulElementLimite() {
+    Date dateDebut = new Date();
+    UUID uuid = UUID.randomUUID();
+    createTrace(uuid, "");
+    Date dateFin = new Date();
 
-      dateDebut = DateUtils.truncate(dateDebut, Calendar.DATE);
-      dateFin = DateUtils.addDays(dateFin, 1);
-      dateFin = DateUtils.truncate(dateFin, Calendar.DATE);
-      
-      List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
+    dateFin = DateUtils.addDays(dateFin, 1);
+    dateFin = DateUtils.truncate(dateFin, Calendar.DATE);
 
-      Assert.assertNotNull("il doit y avoir un résultat", result);
-      boolean traceOK = false;
-      for (DfceTraceSyst dfceTraceSys : result) {
-         if (dfceTraceSys.getLogin() != null) {
-            if (dfceTraceSys.getLogin().equals(uuid.toString())) {
-               traceOK = true;
-            }
-         }
+    List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
+
+    Assert.assertNotNull("il doit y avoir un résultat", result);
+    Assert.assertEquals("il doit y avoir qu'un seul résultat", 1, result.size());
+    boolean traceOK = false;
+    for (DfceTraceSyst dfceTraceSys : result) {
+      List<String> arrays = Arrays.asList(dfceTraceSys.getTypeEvt().split(";"));
+      String stringToCompare = KEY_UUID + ":" + uuid;
+      if (arrays.contains(stringToCompare)) {
+        traceOK = true;
       }
-      
-      Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
-   }
+    }
+
+    Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
+  }
 
    /*
    @Test
@@ -132,15 +136,14 @@ public class HistEvenementServiceDatasTest {
       createTrace(DATE_JOUR_PRECEDENT, " [DATE_JOUR_PRECEDENT]");
    }
 */
-   private void createTrace(UUID uuid, String suffixe) {
+  private void createTrace(UUID uuid, String suffixe) {
+    INFOS.put(KEY_UUID, uuid);
+    TraceToCreate trace = new TraceToCreate();
+    trace.setAction(ACTION + suffixe);
+    trace.setCodeEvt(CODE_EVT + suffixe);
+    trace.setContrat(CONTRAT + suffixe);
+    trace.setInfos(INFOS);
 
-      TraceToCreate trace = new TraceToCreate();
-      trace.setAction(ACTION + suffixe);
-      trace.setCodeEvt(CODE_EVT + suffixe);
-      trace.setContrat(CONTRAT + suffixe);
-      trace.setInfos(INFOS);
-      trace.setLogin(uuid.toString());
-
-      support.create(trace);
-   }
+    support.create(trace);
+  }
 }
