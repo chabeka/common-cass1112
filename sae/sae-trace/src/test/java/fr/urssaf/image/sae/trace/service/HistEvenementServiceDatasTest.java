@@ -100,7 +100,7 @@ public class HistEvenementServiceDatasTest {
     List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
 
     Assert.assertNotNull("il doit y avoir un résultat", result);
-    Assert.assertEquals("il doit y avoir qu'un seul résultat", 1, result.size());
+
     boolean traceOK = false;
     for (DfceTraceSyst dfceTraceSys : result) {
       List<String> arrays = Arrays.asList(dfceTraceSys.getTypeEvt().split(";"));

@@ -78,7 +78,7 @@ public class CycleVieServiceDatasTest {
                                        .lecture(startDate, endDate, 10, true);
 
     Assert.assertNotNull("il doit y avoir un résultat", result);
-    Assert.assertEquals("il doit y avoir qu'un seul résultat", 1, result.size());
+
     boolean traceOK = false;
     for (DfceTraceDoc dfceTraceDoc : result) {
       if (TYPE_EVT.equals(dfceTraceDoc.getTypeEvt()) && USERNAME.equals(dfceTraceDoc.getLogin())) {
