@@ -8,6 +8,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -39,6 +42,10 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
    private final InterruptionTraitementMasseSupport support;
    private final InterruptionTraitementConfig config;
 
+  final Lock lock = new ReentrantLock();
+
+  final Condition waitCondition = lock.newCondition();
+
    /**
     * Constructeur
     * 
@@ -69,15 +76,16 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     */
   public final void waitFinishInsertion() {
     while (!this.isTerminated()) {
-
+      lock.lock();
       try {
-
-        this.wait();
-
+        waitCondition.await();
       }
       catch (InterruptedException e) {
 
         throw new IllegalStateException(e);
+      }
+      finally {
+        lock.unlock();
       }
     }
   }
@@ -87,9 +95,13 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     */
    @Override
   protected final void terminated() {
+    lock.lock();
     super.terminated();
-    synchronized (this) {
-      this.notifyAll();
+    try {
+      waitCondition.signalAll();
+    }
+    finally {
+      lock.unlock();
     }
   }
 

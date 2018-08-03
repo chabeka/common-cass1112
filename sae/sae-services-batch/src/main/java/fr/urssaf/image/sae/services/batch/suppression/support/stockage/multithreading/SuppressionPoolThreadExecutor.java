@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -37,6 +40,10 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    private final InterruptionTraitementConfig config;
 
    private SuppressionMasseRuntimeException exception;
+
+  final Lock lock = new ReentrantLock();
+
+  final Condition waitCondition = lock.newCondition();
 
    private static final String PREFIX_TRACE = "SuppressionPoolExecutor()";
    
@@ -87,13 +94,18 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */
-  public final void waitFinishSuppression() {
+  public final void waitFinishInsertion() {
     while (!this.isTerminated()) {
+      lock.lock();
       try {
-        this.wait();
+        waitCondition.await();
       }
       catch (InterruptedException e) {
+
         throw new IllegalStateException(e);
+      }
+      finally {
+        lock.unlock();
       }
     }
   }
@@ -103,9 +115,13 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     */
    @Override
   protected final void terminated() {
+    lock.lock();
     super.terminated();
-    synchronized (this) {
-      this.notifyAll();
+    try {
+      waitCondition.signalAll();
+    }
+    finally {
+      lock.unlock();
     }
   }
 
