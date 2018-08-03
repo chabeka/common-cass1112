@@ -102,10 +102,12 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     * {@inheritDoc}
     */
    @Override
-   protected final void terminated() {
-      super.terminated();
+  protected final void terminated() {
+    super.terminated();
+    synchronized (this) {
       this.notifyAll();
-   }
+    }
+  }
 
    /**
     * @param exception

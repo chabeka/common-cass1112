@@ -86,10 +86,12 @@ public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
     * {@inheritDoc}
     */
    @Override
-   protected final void terminated() {
-      super.terminated();
+  protected final void terminated() {
+    super.terminated();
+    synchronized (this) {
       this.notifyAll();
-   }
+    }
+  }
 
    /**
     * @param exception
