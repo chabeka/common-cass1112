@@ -78,7 +78,7 @@ public class StorageDocumentToRecycleListener {
 
             executor.shutdown();
 
-            executor.waitFinishSuppression();
+            executor.waitFinishInsertion();
             
             final SuppressionMasseRuntimeException exception = executor
                   .getSuppressionMasseException();
