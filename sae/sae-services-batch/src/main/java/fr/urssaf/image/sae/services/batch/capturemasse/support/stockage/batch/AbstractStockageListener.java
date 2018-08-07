@@ -187,78 +187,85 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
    }
 
    private ExitStatus stockageListener(
-         AbstractInsertionMasseRuntimeException exception) {
+                                      AbstractInsertionMasseRuntimeException exception) {
 
-      String trcPrefix = "stockageListener()";
+    String trcPrefix = "stockageListener()";
 
-      ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
-      ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
-      ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
+    ConcurrentLinkedQueue<String> codes = getCodesErreurListe();
+    ConcurrentLinkedQueue<Integer> index = getIndexErreurListe();
+    ConcurrentLinkedQueue<String> errorMessageList = getErrorMessageList();
 
-      ExitStatus status;
+    ExitStatus status;
 
-      try {
+    try {
 
-         throw exception.getCause();
+      throw exception.getCause();
 
-      } catch (InterruptionTraitementException e) {
+    }
+    catch (InterruptionTraitementException e) {
 
-         getLogger().warn("{} - " + e.getMessage(), "stockageListener()");
+      getLogger().warn("{} - " + e.getMessage(), "stockageListener()");
 
-         String idTraitement = (String) getStepExecution().getJobParameters()
-               .getString(Constantes.ID_TRAITEMENT);
-         getLogger()
-               .error(
+      String idTraitement = (String) getStepExecution().getJobParameters()
+                                                       .getString(Constantes.ID_TRAITEMENT);
+      getLogger()
+                 .error(
 
-                     "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation.",
-                     idTraitement);
+                        "Le traitement de masse n°{} doit faire l'objet d'une reprise par une procédure d'exploitation.",
+                        idTraitement);
 
-         getStepExecution().getJobExecution().getExecutionContext()
-               .put(Constantes.FLAG_BUL003, Boolean.TRUE);
+      getStepExecution().getJobExecution()
+                        .getExecutionContext()
+                        .put(Constantes.FLAG_BUL003, Boolean.TRUE);
 
-         codes.add(Constantes.ERR_BUL003);
-         codes.add(Constantes.ERR_BUL003);
-         index.add(exception.getIndex());
-         String messageError;
-         
-         if (this.isModePartielBatch()) {
-            messageError = "La capture de masse en mode 'Partiel' a été interrompue. "
-                  + "Une procédure de rerprise doit être réalisée pour terminer le stockage de documents.";
-            status = new ExitStatus("COMPLETED");
-         } else {
-            messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
-                  + "Une procédure de reprise doit être réalisée afin de supprimer les données "
-                  + "qui auraient pu être stockées et de relancer la capture.";
-            status = new ExitStatus("FAILED_NO_ROLLBACK");
-         }
-         errorMessageList.add(messageError);
-         getLogger().warn(messageError, e);
+      codes.add(Constantes.ERR_BUL003);
+      codes.add(Constantes.ERR_BUL003);
+      index.add(exception.getIndex());
+      String messageError;
 
-      } catch (Exception e) {
+      if (this.isModePartielBatch()) {
+        messageError = "La capture de masse en mode 'Partiel' a été interrompue. "
+            + "Une procédure de rerprise doit être réalisée pour terminer le stockage de documents.";
+        status = new ExitStatus("COMPLETED");
+      } else {
+        messageError = "La capture de masse en mode 'Tout ou rien' a été interrompue. "
+            + "Une procédure de reprise doit être réalisée afin de supprimer les données "
+            + "qui auraient pu être stockées et de relancer la capture.";
+        status = new ExitStatus("FAILED_NO_ROLLBACK");
+      }
+      errorMessageList.add(messageError);
+      getLogger().warn(messageError, e);
 
-         getLogger().warn("{} - " + e.getMessage(), trcPrefix, e);
+    }
+    catch (Exception e) {
 
-         String message;
-         if (exception.getCause() == null) {
-            message = exception.getMessage();
-         } else {
-            message = exception.getCause().getMessage();
-         }
-         codes.add(Constantes.ERR_BUL001);
-         index.add(exception.getIndex());
-         errorMessageList.add(message);
-         getLogger().warn(message, e);
-         
-         if (this.isModePartielBatch()) {
-            status = new ExitStatus("COMPLETED");
-         } else {
-            status = ExitStatus.FAILED;
-         }
+      getLogger().warn("{} - " + e.getMessage(), trcPrefix, e);
 
+      String message;
+      if (exception.getCause() == null) {
+        message = exception.getMessage();
+      } else {
+        message = exception.getCause().getMessage();
+      }
+      codes.add(Constantes.ERR_BUL001);
+      index.add(exception.getIndex());
+      if (message != null) {
+        errorMessageList.add(message);
+        getLogger().warn(message, e);
+      } else {
+        getLogger().warn("Une erreur est survenue", e);
       }
 
-      return status;
-   }
+      if (this.isModePartielBatch()) {
+        status = new ExitStatus("COMPLETED");
+      } else {
+        status = ExitStatus.FAILED;
+      }
+
+    }
+
+    return status;
+  }
 
    /**
     * @return la liste identifiants des documents traités
