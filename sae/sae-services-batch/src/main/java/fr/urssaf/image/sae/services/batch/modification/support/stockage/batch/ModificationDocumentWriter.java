@@ -95,7 +95,8 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
             }
 
             LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-                  TRC_INSERT, poolExecutor.getQueue().size());
+                     TRC_INSERT,
+                  "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : " + poolExecutor.getActiveCount());
 
          } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
             poolExecutor.getIntegratedDocuments().add(

@@ -108,7 +108,8 @@ public class StorageDocumentWriter extends AbstractDocumentWriterListener
 
          index++;
          LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-               TRC_INSERT, poolExecutor.getQueue().size());
+                   TRC_INSERT,
+                   "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : " + poolExecutor.getActiveCount());
          }
 
       // Reinitialisation du compteur si prochain passage.
