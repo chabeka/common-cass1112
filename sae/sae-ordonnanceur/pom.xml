@@ -1,9 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>sae</artifactId>
 		<groupId>fr.urssaf.image.sae</groupId>
-		<version>18.9.1-SNAPSHOT</version>
+		<version>18.9.1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sae-ordonnanceur</artifactId>
@@ -122,7 +121,7 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-ecde</artifactId>
-			<version>18.9.1-SNAPSHOT</version>
+			<version>18.9.1</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.thoughtworks.xstream</groupId>
@@ -133,12 +132,12 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-pile-travaux</artifactId>
-			<version>18.9.1-SNAPSHOT</version>
+			<version>18.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-trace</artifactId>
-			<version>18.9.1-SNAPSHOT</version>
+			<version>18.9.1</version>
 		</dependency>
       
        <!-- Pont entre Log4J et SLF4J -->
