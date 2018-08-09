@@ -49,52 +49,58 @@ public class GestionConnexionDFCEAspect {
     *            Exception
     */
    public final Object gererConnexionDFCE(ProceedingJoinPoint jp)
-         throws Throwable {
-      String LOG_PREFIX = "gererConnexionDFCE";
-      LOG.debug("{} - Gestion de connection aux services DFCE",
-            new Object[] { LOG_PREFIX });
-      Object objReturn = null;
+      throws Throwable {
+    String LOG_PREFIX = "gererConnexionDFCE";
+    LOG.debug("{} - Gestion de connection aux services DFCE",
+              new Object[] {LOG_PREFIX});
+    Object objReturn = null;
 
-      try {
-         LOG.debug("Début JoinPoint infos : {}",
-               new Object[] { jp.toLongString() });
-         objReturn = jp.proceed();
-      } catch (StorageException ex) {
-         LOG.debug("GestionConnexionDFCEAspect.StorageException infos : {}",
-               new Object[] { ex.getMessage() });
-         synchronized (this) {
-            if (dfceServicesManager != null
-                  && dfceServicesManager.getDFCEService() != null
-                  && dfceServicesManager.getDFCEService().isSessionActive()) {
-               objReturn = jp.proceed();
-            } else {
-               int tentativecnx = dfceServicesManager.getCnxParameters()
-                     .getNbtentativecnx();
-               objReturn = openConnectionDFCe(jp, ex, tentativecnx,
-                     tentativecnx);
-            }
-         }
-
-      } catch (DFCEConnectionServiceException ex) {
-         LOG.debug(
-               "GestionConnexionDFCEAspect.DFCEConnectionServiceException infos : {}",
-               new Object[] { ex.getMessage() });
-         synchronized (this) {
-            int tentativecnx = dfceServicesManager.getCnxParameters()
-                  .getNbtentativecnx();
-            objReturn = openConnectionDFCe(jp, ex, tentativecnx, tentativecnx);
-         }
-      } catch (Throwable ex) {
-         throw ex;
+    try {
+      LOG.debug("Début JoinPoint infos : {}",
+                new Object[] {jp.toLongString()});
+      objReturn = jp.proceed();
+    }
+    catch (StorageException ex) {
+      LOG.debug("GestionConnexionDFCEAspect.StorageException infos : {}",
+                new Object[] {ex.getMessage()});
+      synchronized (this) {
+        if (dfceServicesManager == null) {
+          throw ex;
+        }
+        if (dfceServicesManager != null
+            && (dfceServicesManager.getDFCEService() == null
+                || !dfceServicesManager.getDFCEService().isSessionActive())) {
+          int tentativecnx = dfceServicesManager.getCnxParameters()
+                                                .getNbtentativecnx();
+          objReturn = openConnectionDFCe(jp,
+                                         ex,
+                                         tentativecnx,
+                                         tentativecnx);
+        }
       }
+      objReturn = jp.proceed();
+    }
+    catch (DFCEConnectionServiceException ex) {
+      LOG.debug(
+                "GestionConnexionDFCEAspect.DFCEConnectionServiceException infos : {}",
+                new Object[] {ex.getMessage()});
+      synchronized (this) {
+        int tentativecnx = dfceServicesManager.getCnxParameters()
+                                              .getNbtentativecnx();
+        objReturn = openConnectionDFCe(jp, ex, tentativecnx, tentativecnx);
+      }
+    }
+    catch (Throwable ex) {
+      throw ex;
+    }
 
-      LOG.debug("Fin JoinPoint infos : {}",
-            new Object[] { jp.toLongString() });
-      LOG.debug("{} - Fin controle de connexion aux services DFCE",
-            new Object[] { LOG_PREFIX });
+    LOG.debug("Fin JoinPoint infos : {}",
+              new Object[] {jp.toLongString()});
+    LOG.debug("{} - Fin controle de connexion aux services DFCE",
+              new Object[] {LOG_PREFIX});
 
-      return objReturn;
-   }
+    return objReturn;
+  }
 
    /**
     * 
