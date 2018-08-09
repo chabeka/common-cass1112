@@ -3,6 +3,9 @@ package fr.urssaf.image.sae.documents.executable.multithreading;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,10 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     * applicative).
     */
    private int pasExecution;
+
+  final Lock lock = new ReentrantLock();
+
+  final Condition waitCondition = lock.newCondition();
 
    /**
     * Construteur.
@@ -66,11 +73,16 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     */
   public final void waitFinishAddMetadata() {
     while (!this.isTerminated()) {
+      lock.lock();
       try {
-        this.wait();
+        waitCondition.await();
       }
       catch (InterruptedException e) {
+
         throw new IllegalStateException(e);
+      }
+      finally {
+        lock.unlock();
       }
     }
   }
@@ -80,8 +92,14 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void terminated() {
-      super.terminated();
-      this.notifyAll();
+    lock.lock();
+    super.terminated();
+    try {
+      waitCondition.signalAll();
+    }
+    finally {
+      lock.unlock();
+    }
    }
 
    /**
