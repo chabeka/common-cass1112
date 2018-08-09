@@ -12,9 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.note.Note;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -74,11 +71,12 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.note.Note;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -110,9 +108,6 @@ public class SAETransfertServiceTest {
 
    @Autowired
    private JobClockSupport jobClockSupport;
-
-   @Autowired
-   private ServiceProviderSupport traceServiceSupport;
 
    @Autowired
    @Qualifier("SAEServiceTestProvider")

@@ -4,6 +4,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,6 +56,10 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
    private final ApplicationContext context;
 
+  final Lock lock = new ReentrantLock();
+
+  final Condition waitCondition = lock.newCondition();
+
    /**
     * Le nombre de commande exécutable en parallèle est fixé à
     * {@value #CORE_POOL_SIZE}
@@ -82,11 +89,16 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     * Il s'agit d'arrêter proprement les traitements en cours.
     */
    @Override
-   protected final void terminated() {
-      super.terminated();
-      // les Threads sont bien tous terminés, on libère le verrou
-      this.notifyAll();
-   }
+  protected final void terminated() {
+    lock.lock();
+    super.terminated();
+    try {
+      waitCondition.signalAll();
+    }
+    finally {
+      lock.unlock();
+    }
+  }
 
    /**
     * Surcharge de la méthode {@link ScheduledThreadPoolExecutor#shutdown()}<br>
@@ -110,14 +122,17 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     * Méthode pour attendre la fin de l'exécution du traitement en cours
     */
   public final void waitFinish() {
-    // mise en attente pour s'assurer que tous les Threads actifs ou en
-    // attente soient bien terminés
     while (!this.isTerminated()) {
+      lock.lock();
       try {
-        this.wait();
+        waitCondition.await();
       }
       catch (InterruptedException e) {
+
         throw new IllegalStateException(e);
+      }
+      finally {
+        lock.unlock();
       }
     }
 

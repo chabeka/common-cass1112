@@ -14,6 +14,7 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -46,6 +47,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml", 
       "/applicationContext-sae-services-capturemasse-test-mock-droits.xml" })
+@Ignore
 public class CaptureMasseCompressionSupportTest {
    
    private static final Logger LOG = LoggerFactory
