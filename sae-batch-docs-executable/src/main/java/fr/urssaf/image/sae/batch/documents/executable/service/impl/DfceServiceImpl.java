@@ -3,14 +3,6 @@ package fr.urssaf.image.sae.batch.documents.executable.service.impl;
 import java.io.InputStream;
 import java.util.Iterator;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.search.SearchQuery;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.ged.SearchService;
-import net.docubase.toolkit.service.ged.StoreService;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +11,15 @@ import com.docubase.dfce.exception.SearchQueryParseException;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
 import fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl;
+import fr.urssaf.image.sae.batch.documents.executable.exception.ParametreRuntimeException;
 import fr.urssaf.image.sae.batch.documents.executable.service.DfceService;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.search.SearchQuery;
+import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.SearchService;
+import net.docubase.toolkit.service.ged.StoreService;
 
 /**
  * Classe d'implémentation du service <b>DfceService</b>. Cette classe est un
@@ -60,7 +60,6 @@ public class DfceServiceImpl implements DfceService {
    /**
     * {@inheritDoc}
     */
-   @Override
    public final void ouvrirConnexion() {
       LOGGER.debug("Ouverture de la connexion à DFCE");
       this.serviceProvider = getDfceConnectionService().openConnection();
@@ -69,7 +68,6 @@ public class DfceServiceImpl implements DfceService {
    /**
     * {@inheritDoc}
     */
-   @Override
    public final void fermerConnexion() {
       LOGGER.debug("Fermeture de la connexion à DFCE");
       getServiceProvider().disconnect();
@@ -80,7 +78,6 @@ public class DfceServiceImpl implements DfceService {
     * 
     * @throws SearchQueryParseException
     */
-   @Override
    public final Iterator<Document> executerRequete(final String requeteLucene)
          throws SearchQueryParseException {
       LOGGER.debug("Exécution de la requête lunèce : {}", requeteLucene);
@@ -97,13 +94,15 @@ public class DfceServiceImpl implements DfceService {
    /**
     * {@inheritDoc}
     */
-   @Override
-   public final InputStream recupererContenu(final Document document) {
-      LOGGER.debug("Récupération du contenu du document : {}", document
-            .getUuid());
-      final StoreService storeService = getServiceProvider().getStoreService();
-      return storeService.getDocumentFile(document);
-   }
+  public final InputStream recupererContenu(final Document document) {
+    if (document == null) {
+      throw new ParametreRuntimeException("Le document ne peut être null");
+    }
+    LOGGER.debug("Récupération du contenu du document : {}", document
+                                                                     .getUuid());
+    final StoreService storeService = getServiceProvider().getStoreService();
+    return storeService.getDocumentFile(document);
+  }
 
    /**
     * Permet de récupérer le service permettant de réaliser la connexion à DFCE.
@@ -147,7 +146,6 @@ public class DfceServiceImpl implements DfceService {
     * 
     * @return DFCEConnection
     */
-   @Override
    public final DFCEConnection getDfceConnection() {
       return dfceConnection;
    }
