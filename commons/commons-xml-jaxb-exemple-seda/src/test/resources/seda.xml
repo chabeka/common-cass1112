@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ArchiveObject xmlns="fr:gouv:ae:archive:draft:standard_echange_v0.2" xmlns:ns2="http://www.w3.org/2000/09/xmldsig#">
-    <Name languageID="FR">Mon archive 1</Name>
-    <Document>
-        <Attachment filename="myDoc.tif" uri="uri"/>
-    </Document>
-</ArchiveObject>
