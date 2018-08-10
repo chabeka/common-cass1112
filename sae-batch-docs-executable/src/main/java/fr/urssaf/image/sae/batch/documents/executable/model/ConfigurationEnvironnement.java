@@ -10,15 +10,126 @@ import java.util.List;
  */
 public class ConfigurationEnvironnement {
 
-   /**
-    * Nom associé à la configuration
-    */
-   private final String nom;
+  /**
+   * Nom associé à la configuration
+   */
+  private String nom;
 
    /**
-    * 
-    * @return le nom associé à la configuration
-    */
+   * @param nom
+   *          the nom to set
+   */
+  public void setNom(String nom) {
+    this.nom = nom;
+  }
+
+  /**
+   * @param zookeeperHost
+   *          the zookeeperHost to set
+   */
+  public void setZookeeperHost(String zookeeperHost) {
+    this.zookeeperHost = zookeeperHost;
+  }
+
+  /**
+   * @param zookeeperNameSpace
+   *          the zookeeperNameSpace to set
+   */
+  public void setZookeeperNameSpace(String zookeeperNameSpace) {
+    this.zookeeperNameSpace = zookeeperNameSpace;
+  }
+
+  /**
+   * @param cassandraHost
+   *          the cassandraHost to set
+   */
+  public void setCassandraHost(String cassandraHost) {
+    this.cassandraHost = cassandraHost;
+  }
+
+  /**
+   * @param cassandraUserName
+   *          the cassandraUserName to set
+   */
+  public void setCassandraUserName(String cassandraUserName) {
+    this.cassandraUserName = cassandraUserName;
+  }
+
+  /**
+   * @param cassandraPwd
+   *          the cassandraPwd to set
+   */
+  public void setCassandraPwd(String cassandraPwd) {
+    this.cassandraPwd = cassandraPwd;
+  }
+
+  /**
+   * @param cassandraKeySpace
+   *          the cassandraKeySpace to set
+   */
+  public void setCassandraKeySpace(String cassandraKeySpace) {
+    this.cassandraKeySpace = cassandraKeySpace;
+  }
+
+  /**
+   * @param dfceAddress
+   *          the dfceAddress to set
+   */
+  public void setDfceAddress(URL dfceAddress) {
+    this.dfceAddress = dfceAddress;
+  }
+
+  /**
+   * @param dfceLogin
+   *          the dfceLogin to set
+   */
+  public void setDfceLogin(String dfceLogin) {
+    this.dfceLogin = dfceLogin;
+  }
+
+  /**
+   * @param dfcePwd
+   *          the dfcePwd to set
+   */
+  public void setDfcePwd(String dfcePwd) {
+    this.dfcePwd = dfcePwd;
+  }
+
+  /**
+   * @param dfceBaseName
+   *          the dfceBaseName to set
+   */
+  public void setDfceBaseName(String dfceBaseName) {
+    this.dfceBaseName = dfceBaseName;
+  }
+
+  /**
+   * @param dfceTimeout
+   *          the dfceTimeout to set
+   */
+  public void setDfceTimeout(String dfceTimeout) {
+    this.dfceTimeout = dfceTimeout;
+  }
+
+  /**
+   * @param dfceSecure
+   *          the dfceSecure to set
+   */
+  public void setDfceSecure(String dfceSecure) {
+    this.dfceSecure = dfceSecure;
+  }
+
+  /**
+   * @param parametres
+   *          the parametres to set
+   */
+  public void setParametres(List<String> parametres) {
+    this.parametres = parametres;
+  }
+
+  /**
+   * @return le nom associé à la configuration
+   */
    public final String getNom() {
       return nom;
    }
@@ -27,12 +138,19 @@ public class ConfigurationEnvironnement {
     * URL des services Web SaeService ex :
     * http://localhost/sae-webservices/services/SaeService
     */
-   private final URI urlWs;
+  private URI urlWs;
 
    /**
-    * 
-    * @return l'URL des services Web SaeService
-    */
+   * @param urlWs
+   *          the urlWs to set
+   */
+  public void setUrlWs(URI urlWs) {
+    this.urlWs = urlWs;
+  }
+
+  /**
+   * @return l'URL des services Web SaeService
+   */
    public final URI getUrlWs() {
       return urlWs;
    }
@@ -42,7 +160,7 @@ public class ConfigurationEnvironnement {
     * peuvent être spécifiés. Le format est le suivant :
     * dns1:port,dns2;port,dn3:port
     */
-   private final String zookeeperHost;
+  private String zookeeperHost;
 
    /**
     * 
@@ -55,7 +173,7 @@ public class ConfigurationEnvironnement {
    /**
     * NameSpace(s) zookeeper
     */
-   private final String zookeeperNameSpace;
+  private String zookeeperNameSpace;
 
    /**
     * 
@@ -69,33 +187,33 @@ public class ConfigurationEnvironnement {
     * DNS ou IP des serveurs Cassandra. Plusieurs DNS/IP peuvent être spécifiés.
     * Le format est le suivant : dns1:port,dns2;port,dn3:port
     */
-   private final String cassandraHost;
+  private String cassandraHost;
 
    /**
     * 
     * @return DNS ou IP des serveurs Cassandra
     */
-   public final String getCassandraHost() {
+  public String getCassandraHost() {
       return cassandraHost;
    }
 
    /**
     * Utilisateur Cassandra
     */
-   private final String cassandraUserName;
+  private String cassandraUserName;
 
    /**
     * 
     * @return Utilisateur Cassandra
     */
-   public final String getCassandraUserName() {
+  public String getCassandraUserName() {
       return cassandraUserName;
    }
 
    /**
     * Mot de passe Cassandra
     */
-   private final String cassandraPwd;
+  private String cassandraPwd;
 
    /**
     * 
@@ -108,7 +226,7 @@ public class ConfigurationEnvironnement {
    /**
     * Nom du KeySpace Cassandra
     */
-   private final String cassandraKeySpace;
+  private String cassandraKeySpace;
 
    /**
     * 
@@ -121,7 +239,7 @@ public class ConfigurationEnvironnement {
    /**
     * Adresse de connexion à DFCE
     */
-   private final URL dfceAddress;
+  private URL dfceAddress;
 
    /**
     * @return the dfceAddress
@@ -133,7 +251,7 @@ public class ConfigurationEnvironnement {
    /**
     * Login de connexion à DFCE
     */
-   private final String dfceLogin;
+  private String dfceLogin;
 
    /**
     * @return the dfceLogin
@@ -145,7 +263,7 @@ public class ConfigurationEnvironnement {
    /**
     * Mot de passe de connexion à DFCE
     */
-   private final String dfcePwd;
+  private String dfcePwd;
 
    /**
     * @return the dfcePwd
@@ -157,7 +275,7 @@ public class ConfigurationEnvironnement {
    /**
     * Nom de la base DFCE
     */
-   private final String dfceBaseName;
+  private String dfceBaseName;
 
    /**
     * @return the dfceBaseName
@@ -169,7 +287,7 @@ public class ConfigurationEnvironnement {
    /**
     * Timeout DFCE
     */
-   private final String dfceTimeout;
+  private String dfceTimeout;
 
    /**
     * @return the timeout
@@ -181,7 +299,7 @@ public class ConfigurationEnvironnement {
    /**
     * Secure mode DFCE
     */
-   private final String dfceSecure;
+  private String dfceSecure;
    
    /**
     * @return the dfceSecure
@@ -193,12 +311,12 @@ public class ConfigurationEnvironnement {
    /**
     * Liste des paramètres pour la recherche dans la pile des travaux
     */
-   private final List<String> parametres;
+  private List<String> parametres;
 
    /**
     * @return the listeParametres
     */
-   public final List<String> getParametres() {
+  public List<String> getParametres() {
       return parametres;
    }
 
@@ -257,6 +375,11 @@ public class ConfigurationEnvironnement {
       this.dfceSecure = dfceSecure;
    }
 
-
+  /**
+  * 
+  */
+  public ConfigurationEnvironnement() {
+    super();
+  }
 
 }
