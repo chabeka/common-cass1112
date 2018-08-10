@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>18.9.2</version>
+      <version>18.9.3-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services-executable</artifactId>
-   <version>18.9.2</version>
+   <version>18.9.3-SNAPSHOT</version>
    
    <name>sae-services-executable</name>
    
@@ -109,12 +109,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>18.9.2</version>
+         <version>18.9.3-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-batch</artifactId>
-         <version>18.9.2</version>
+         <version>18.9.3-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->
