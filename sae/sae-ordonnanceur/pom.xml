@@ -2,7 +2,7 @@
 	<parent>
 		<artifactId>sae</artifactId>
 		<groupId>fr.urssaf.image.sae</groupId>
-		<version>18.9.2-SNAPSHOT</version>
+		<version>18.9.2</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sae-ordonnanceur</artifactId>
@@ -121,7 +121,7 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-ecde</artifactId>
-			<version>18.9.2-SNAPSHOT</version>
+			<version>18.9.2</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.thoughtworks.xstream</groupId>
@@ -132,12 +132,12 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-pile-travaux</artifactId>
-			<version>18.9.2-SNAPSHOT</version>
+			<version>18.9.2</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-trace</artifactId>
-			<version>18.9.2-SNAPSHOT</version>
+			<version>18.9.2</version>
 		</dependency>
       
        <!-- Pont entre Log4J et SLF4J -->
