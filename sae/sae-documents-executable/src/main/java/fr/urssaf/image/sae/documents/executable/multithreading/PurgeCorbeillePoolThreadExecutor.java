@@ -3,9 +3,6 @@ package fr.urssaf.image.sae.documents.executable.multithreading;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,18 +32,14 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
     */
    private int pasExecution;
 
-  final Lock lock = new ReentrantLock();
-
-  final Condition waitCondition = lock.newCondition();
-
    /**
     * Construteur.
-    * 
+    *
     * @param parametres
     *           parametres
     */
    public PurgeCorbeillePoolThreadExecutor(
-         final PurgeCorbeilleParametres parametres) {
+                                           final PurgeCorbeilleParametres parametres) {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
             TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(
                   parametres.getTailleQueue()), new DiscardPolicy());
@@ -58,7 +51,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
 
       // -- On incrémente le compteur d’éléments traités
@@ -72,40 +65,19 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
-  public final void waitFinishPurgeCorbeille() {
-    while (!this.isTerminated()) {
-      lock.lock();
+   public final void waitFinishPurgeCorbeille() {
       try {
-        waitCondition.await();
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
       }
-      catch (InterruptedException e) {
-
-        throw new IllegalStateException(e);
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
-      finally {
-        lock.unlock();
-      }
-    }
-  }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-    lock.lock();
-    super.terminated();
-    try {
-      waitCondition.signalAll();
-    }
-    finally {
-      lock.unlock();
-    }
    }
+
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -114,7 +86,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -125,7 +97,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -135,7 +107,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traiter pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

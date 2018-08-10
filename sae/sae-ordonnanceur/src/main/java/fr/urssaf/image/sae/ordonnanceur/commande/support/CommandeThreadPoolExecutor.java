@@ -4,9 +4,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,10 +31,10 @@ import fr.urssaf.image.sae.ordonnanceur.util.RandomUtils;
  * <code>scheduleWithFixedDelay(Runnable command, long initialDelay, long period, TimeUnit unit)</code>
  * </li>
  * </ul>
- * 
+ *
  * Seules les traitements de type {@link LancementTraitement} peuvent être
  * exécutés
- * 
+ *
  */
 @Component
 public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
@@ -56,22 +53,19 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
 
    private final ApplicationContext context;
 
-  final Lock lock = new ReentrantLock();
-
-  final Condition waitCondition = lock.newCondition();
 
    /**
     * Le nombre de commande exécutable en parallèle est fixé à
     * {@value #CORE_POOL_SIZE}
-    * 
+    *
     * @param configuration
     *           configuration de l'ordonnanceur
     * @param context
     *           contexte de l'application
     */
    @Autowired
-   public CommandeThreadPoolExecutor(OrdonnanceurConfiguration configuration,
-         ApplicationContext context) {
+   public CommandeThreadPoolExecutor(final OrdonnanceurConfiguration configuration,
+                                     final ApplicationContext context) {
       super(CORE_POOL_SIZE);
 
       Assert.notNull(configuration, "'configuration' is required");
@@ -84,21 +78,6 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
             "'intervalle' must be greater than or equal to 1.");
    }
 
-   /**
-    * Surcharge de la méthode {@link ScheduledThreadPoolExecutor#terminated()}<br>
-    * Il s'agit d'arrêter proprement les traitements en cours.
-    */
-   @Override
-  protected final void terminated() {
-    lock.lock();
-    super.terminated();
-    try {
-      waitCondition.signalAll();
-    }
-    finally {
-      lock.unlock();
-    }
-  }
 
    /**
     * Surcharge de la méthode {@link ScheduledThreadPoolExecutor#shutdown()}<br>
@@ -121,24 +100,16 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
    /**
     * Méthode pour attendre la fin de l'exécution du traitement en cours
     */
-  public final void waitFinish() {
-    while (!this.isTerminated()) {
-      lock.lock();
+   public final void waitFinish() {
       try {
-        waitCondition.await();
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
       }
-      catch (InterruptedException e) {
-
-        throw new IllegalStateException(e);
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
-      finally {
-        lock.unlock();
-      }
-    }
-
-    LOG.debug("{} - le pool des commandes est à l'état terminé",
-              "waitFinish()");
-  }
+      LOG.debug("{} - le pool des commandes est à l'état terminé",
+            "waitFinish()");
+   }
 
    /**
     * Surcharge de la méthode
@@ -149,7 +120,7 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     */
    @Override
    protected final <V> RunnableScheduledFuture<V> decorateTask(
-         Runnable runnable, RunnableScheduledFuture<V> task) {
+                                                               final Runnable runnable, final RunnableScheduledFuture<V> task) {
 
       if (runnable instanceof LancementTraitement) {
 
@@ -171,7 +142,7 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     */
    @Override
    protected final <V> RunnableScheduledFuture<V> decorateTask(
-         Callable<V> callable, RunnableScheduledFuture<V> task) {
+                                                               final Callable<V> callable, final RunnableScheduledFuture<V> task) {
 
       if (callable instanceof LancementTraitement) {
 
@@ -193,7 +164,7 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
     * exemple : relancer le traitement de lancement des traitements de masse
     */
    @Override
-   protected final void afterExecute(Runnable runnable, Throwable throwable) {
+   protected final void afterExecute(final Runnable runnable, final Throwable throwable) {
 
       super.afterExecute(runnable, throwable);
 
@@ -202,16 +173,16 @@ public class CommandeThreadPoolExecutor extends ScheduledThreadPoolExecutor {
          // si le pool n'est pas en train de s'arrêter on programme un
          // nouveau traitement
          // le lancement du traitement est ici aléatoire
-         int min = intervalle;
-         int max = min * 2;
-         int waitTime = RandomUtils.random(min, max);
+         final int min = intervalle;
+         final int max = min * 2;
+         final int waitTime = RandomUtils.random(min, max);
 
          LOG
-               .debug(
-                     "{} - prochaine tentative de lancement d'un traitement dans {} secondes",
-                     PREFIX_LOG, waitTime);
+         .debug(
+                "{} - prochaine tentative de lancement d'un traitement dans {} secondes",
+                PREFIX_LOG, waitTime);
 
-         LancementTraitement traitement = new LancementTraitement(context);
+         final LancementTraitement traitement = new LancementTraitement(context);
 
          this.schedule(traitement, waitTime, TimeUnit.SECONDS);
 
