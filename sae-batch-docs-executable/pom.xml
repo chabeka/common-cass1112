@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
    
     <!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
@@ -12,7 +11,7 @@
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-batch-docs-executable</artifactId>
 	<name>sae-batch-docs-executable</name>
-	<version>18.9.1-SNAPSHOT</version>
+	<version>18.9.1</version>
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
@@ -31,13 +30,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-batch-docs-executable/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-18.9.1
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-18.9.1
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-batch-docs-executable-18.9.1
       </connection>
 	</scm>
 
