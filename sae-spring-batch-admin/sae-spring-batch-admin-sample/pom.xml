@@ -32,15 +32,15 @@
 			<version>${commons-cassandra-spring-batch.version}</version>
 			<exclusions>
 				<exclusion>
-					<groupId>org.springframework.batch</groupId>
+					<groupId>fr.urssaf.image.sae</groupId>
 					<artifactId>spring-batch-integration</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.springframework.batch</groupId>
+					<groupId>fr.urssaf.image.sae</groupId>
 					<artifactId>spring-batch-admin-manager</artifactId>
 				</exclusion>
 				<exclusion>
-					<groupId>org.springframework.batch</groupId>
+					<groupId>fr.urssaf.image.sae</groupId>
 					<artifactId>spring-batch-admin-resources</artifactId>
 				</exclusion>
 			</exclusions>
@@ -236,12 +236,12 @@
 			<artifactId>spring-batch-infrastructure</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.batch</groupId>
+			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-spring-batch-admin-manager</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>org.springframework.batch</groupId>
+			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-spring-batch-admin-resources</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
