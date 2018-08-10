@@ -159,6 +159,7 @@
 						<goals>
 							<goal>livraison</goal>
 						</goals>
+						<phase>deploy</phase>
 					</execution>
 				</executions>
 			</plugin>
