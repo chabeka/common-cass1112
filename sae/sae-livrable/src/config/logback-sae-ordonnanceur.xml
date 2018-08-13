@@ -27,7 +27,7 @@
    -->
    
    
-   <property name="LOGS_FOLDER" value="@@LOGS_PATH@@" />
+   <property name="LOGS_FOLDER" value="@LOGS_PATH@" />
    
    <property name="LOGS_FILENAME_PREFIXE" value="sae_ordonnanceur" />
    
