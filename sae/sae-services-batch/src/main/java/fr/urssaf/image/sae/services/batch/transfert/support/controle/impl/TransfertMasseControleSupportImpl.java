@@ -35,6 +35,7 @@ import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -105,13 +106,13 @@ public class TransfertMasseControleSupportImpl implements
    public boolean controleSAEDocumentSuppression(UntypedDocument item)
          throws SearchingServiceEx, ConnectionServiceEx {
 
-      StorageDocument storageDocument = storageServiceProvider.getStorageDocumentService()
-            .searchMetaDatasByUUIDCriteria(
+      StorageDocument storageDocument = storageServiceProvider
+            .getStorageDocumentService().searchMetaDatasByUUIDCriteria(
                   new UUIDCriteria(item.getUuid(), null));
-      
-      if(storageDocument!=null && storageDocument.getUuid() !=null){
+
+      if (storageDocument != null && storageDocument.getUuid() != null) {
          return true;
-      }else {
+      } else {
          return false;
       }
 
@@ -123,10 +124,9 @@ public class TransfertMasseControleSupportImpl implements
     */
    @Override
    public StorageDocument controleSAEDocumentTransfert(UntypedDocument item,
-         UUID idTraitementMasse)
-         throws ReferentialException, SearchingServiceEx,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         TransfertException, InvalidSAETypeException,
+         UUID idTraitementMasse) throws ReferentialException,
+         SearchingServiceEx, ArchiveAlreadyTransferedException,
+         ArchiveInexistanteEx, TransfertException, InvalidSAETypeException,
          MappingFromReferentialException, UnknownMetadataEx,
          DuplicatedMetadataEx, InvalidValueTypeAndFormatMetadataEx,
          RequiredArchivableMetadataEx, MetadataValueNotInDictionaryEx,
@@ -146,7 +146,8 @@ public class TransfertMasseControleSupportImpl implements
     */
    @Override
    public StorageDocument controleSAEDocumentRepriseTransfert(
-         UntypedDocument item, UUID idTraitementMasse) throws ReferentialException, SearchingServiceEx,
+         UntypedDocument item, UUID idTraitementMasse)
+         throws ReferentialException, SearchingServiceEx,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
          TransfertException, InvalidSAETypeException,
          MappingFromReferentialException, UnknownMetadataEx,
@@ -218,9 +219,10 @@ public class TransfertMasseControleSupportImpl implements
       List<StorageMetadata> storageMetas = new ArrayList<StorageMetadata>();
       if (!CollectionUtils.isEmpty(item.getUMetadatas())) {
          if (!item.getBatchActionType().equals("SUPPRESSION")) {
-            controleModification.checkSaeMetadataForTransfertMasse(item.getUMetadatas());
+            controleModification.checkSaeMetadataForTransfertMasse(item
+                  .getUMetadatas());
          }
-         
+
          try {
             List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
                   .untypedMetadatasToSaeMetadatas(item.getUMetadatas());
@@ -241,4 +243,18 @@ public class TransfertMasseControleSupportImpl implements
       return document;
 
    }
+
+   /**
+    * {@inheritDoc}
+    * 
+    * @throws RetrievalServiceEx
+    * @throws ReferentialException
+    */
+   @Override
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx {
+
+      return transfertService.getListeStorageMetadatasWithGel(idArchive);
+   }
+
 }

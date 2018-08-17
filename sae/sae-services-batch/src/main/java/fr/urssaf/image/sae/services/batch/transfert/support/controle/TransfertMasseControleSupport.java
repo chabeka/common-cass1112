@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.controle;
 
+import java.util.List;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
@@ -21,8 +22,10 @@ import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransfered
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Interface de controle pour le transfert de masse
@@ -135,4 +138,20 @@ public interface TransfertMasseControleSupport {
          ReferentialRndException, UnknownCodeRndEx, NotSpecifiableMetadataEx,
          UnknownHashCodeEx, NotModifiableMetadataEx,
          TraitementRepriseAlreadyDoneException;
+   
+   /**
+    * Méthode permettant de générer la liste des métadonnées storage contenant
+    * les metadonnées de modification et la métadonnée GEL.
+    * 
+    * @param idArchive
+    *           Identifiant document
+    * @return la liste des metadonnées storage
+    * @throws ReferentialException
+    * @{@link ReferentialException}
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    */
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx;
+   
 }

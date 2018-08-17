@@ -23,7 +23,6 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
-import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.exception.UpdateServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -76,6 +75,8 @@ public interface SAEModificationService {
     * @throws MetadataValueNotInDictionaryEx
     *            La valeur d'au moins une des métadannées n'appartient pas au
     *            dictionnaire rattaché
+    * @throws RetrievalServiceEx 
+    * @throws ReferentialException 
     */
    @PreAuthorize("hasRole('modification')")
    void modification(UUID idArchive, List<UntypedMetadata> metadonnees)
@@ -84,7 +85,7 @@ public interface SAEModificationService {
          RequiredArchivableMetadataEx, ReferentialRndException,
          UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
          ModificationException, ArchiveInexistanteEx,
-         MetadataValueNotInDictionaryEx;
+         MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx;
 
    /**
     * Controle des metadatas à modifier pour un identifiant de document donné.
@@ -164,19 +165,4 @@ public interface SAEModificationService {
    public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
          throws ReferentialException, RetrievalServiceEx;
 
-   /**
-    * Contrôle si la liste de métadonnées passée en paramètre contient la
-    * métadonnée gel à true (Document gelé).
-    * 
-    * @param listeStorageMeta
-    *           liste de métadonnées
-    * @return true si le document est gelé
-    * @throws RetrievalServiceEx
-    * @{@link RetrievalServiceEx}
-    * @throws SearchingServiceEx
-    * @{@link SearchingServiceEx}
-    */
-   boolean isFrozenDocument(final List<StorageMetadata> listeStorageMeta)
-         throws ModificationException,
-         RetrievalServiceEx;
 }

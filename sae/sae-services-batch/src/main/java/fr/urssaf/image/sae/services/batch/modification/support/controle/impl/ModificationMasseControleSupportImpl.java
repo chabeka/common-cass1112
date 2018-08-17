@@ -124,12 +124,12 @@ implements ModificationMasseControleSupport {
       LOGGER.debug("{} - début", trcPrefix);
       StorageDocument document = null;
       // Gestion de document gelé
-      if (item != null && item.getUuid() != null){
+      if (item != null && item.getUuid() != null) {
          String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
          UUID idArchive = item.getUuid();
          List<StorageMetadata> listeMetadataDocument = modificationService
                .getListeStorageMetadatasWithGel(idArchive);
-         if (modificationService.isFrozenDocument(listeMetadataDocument)) {
+         if (isFrozenDocument(listeMetadataDocument)) {
             throw new ModificationException(StringUtils.replace(
                   frozenDocMsgException, "{0}", idArchive.toString()));
          }

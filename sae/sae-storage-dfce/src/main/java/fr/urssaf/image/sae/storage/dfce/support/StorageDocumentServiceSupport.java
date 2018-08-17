@@ -731,7 +731,11 @@ public class StorageDocumentServiceSupport {
          InputStream docStream = contenu.getInputStream();
          Document doc = dfceService.getStoreService().addAttachment(docUuid,
                docName, extension, false, hash, docStream);
-
+//         storeAttachment(documentUUID, new AttachmentModel(), originalFilename, extension, encrypt, digest, in);
+//         Document doc = dfceService.getStoreService().storeAttachment(docUuid, new AttachmentModel(), docName, extension, 
+//               false, hash, docStream);
+//         dfceService.getStoreService().storeAttachment(docUuid, new Attachment(), false, hash, docStream);
+         
          // Trace l'événement "Dépôt d'un document attaché dans DFCE"
          Set<Attachment> listeAttach = doc.getAttachments();
          for (Attachment attachment : listeAttach) {

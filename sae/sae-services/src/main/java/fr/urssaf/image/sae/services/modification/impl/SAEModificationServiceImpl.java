@@ -97,6 +97,8 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
+    * @throws RetrievalServiceEx 
+    * @throws ReferentialException 
     * 
     */
    @Override
@@ -107,7 +109,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          RequiredArchivableMetadataEx, ReferentialRndException,
          UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
          ModificationException, ArchiveInexistanteEx,
-         MetadataValueNotInDictionaryEx {
+         MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
       String trcPrefix = "modification";
       LOG.debug("{} - début", trcPrefix);
 
@@ -117,6 +119,16 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
          List<StorageMetadata> listeStorageMetaDocument = this
                .controlerMetaDocumentModifie(idArchive, metadonnees, trcPrefix,
                      "modification");
+         
+         // Gestion de document gelé
+         if (idArchive != null) {
+            String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";            
+            List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
+            if (isFrozenDocument(listeMetadataDocument)) {
+               throw new ModificationException(StringUtils.replace(
+                     frozenDocMsgException, "{0}", idArchive.toString()));
+            }
+         }
          
          StorageDocument document = this.separationMetaDocumentModifie(idArchive, listeStorageMetaDocument, metadonnees, trcPrefix);  
          
@@ -417,25 +429,6 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       }
       
       return storageDocument;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public boolean isFrozenDocument(final List<StorageMetadata> listeStorageMeta)
-         throws ModificationException, RetrievalServiceEx {
-      if (listeStorageMeta != null && !listeStorageMeta.isEmpty()) {
-         for (StorageMetadata meta : listeStorageMeta) {
-            if (meta.getShortCode().equals(
-                  StorageTechnicalMetadatas.GEL.getShortCode())) {
-               if (meta.getValue() == Boolean.TRUE) {
-                  return true;
-               }
-            }
-         }
-      }
-      return false;
    }
 
    /**

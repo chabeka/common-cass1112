@@ -15,6 +15,7 @@ import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -28,6 +29,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.webservices.exception.ModificationAxisFault;
 import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
 import fr.urssaf.image.sae.webservices.service.WSModificationService;
@@ -123,6 +125,13 @@ public class WSModificationServiceImpl implements WSModificationService {
       } catch (MetadataValueNotInDictionaryEx exception) {
          throw new ModificationAxisFault("ModificationMetadonneeDictionnaire",
                exception.getMessage(), exception);
+         
+      } catch (ReferentialException e) {
+         throw new ModificationAxisFault("ModificationMetadonneeReferential",
+               e.getMessage(), e);
+      } catch (RetrievalServiceEx e) {
+         throw new ModificationAxisFault("ModificationMetadonneeReferential",
+               e.getMessage(), e);
       }
 
       ModificationResponse response = ObjectModificationFactory

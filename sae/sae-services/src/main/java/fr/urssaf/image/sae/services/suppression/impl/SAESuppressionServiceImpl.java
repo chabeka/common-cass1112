@@ -30,6 +30,7 @@ import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -88,6 +89,18 @@ SAESuppressionService {
          List<StorageMetadata> listeStorageMeta = this
                .getStorageServiceProvider().getStorageDocumentService()
                .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
+         
+         // On vérifie si le document n'est pas gelé
+         if (idArchive != null) {
+            String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+            
+            List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
+            if (isFrozenDocument(listeMetadataDocument)) {
+               throw new SuppressionException(StringUtils.replace(
+                     frozenDocMsgException, "{0}", idArchive.toString()));
+            }
+         }
+         
          if (listeStorageMeta.size() == 0) {
             String message = StringUtils
                   .replace(
@@ -130,6 +143,40 @@ SAESuppressionService {
       LOG.debug("{} - Suppression du document {} terminée", new Object[] {
             trcPrefix, idArchive.toString() });
       LOG.debug("{} - fin", trcPrefix);
+   }
+   
+   /**
+    * Méthode permettant de générer la liste des métadonnées storage contenant la métadonnée GEL
+    * 
+    * @param idArchive
+    * @return
+    * @throws ReferentialException
+    * @throws RetrievalServiceEx
+    */
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx {
+      // On récupère la liste de toutes les méta du référentiel sauf la
+      // Note, le Gel et la durée de conservation inutile pour les droits
+      // et générant des accès DFCE inutiles
+      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      Map<String, MetadataReference> listeAllMeta = referenceDAO
+            .getAllMetadataReferencesPourVerifDroits();
+
+      for (String mapKey : listeAllMeta.keySet()) {
+         allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+               .getShortCode()));
+      }
+
+      // Ajout de la meta GEL puisque non récupéré avant
+      allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL
+            .getShortCode()));
+
+      // Création des critéres
+      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+      // Recherche du document par critére
+      return this.getStorageServiceProvider().getStorageDocumentService()
+            .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
    }
 
 }

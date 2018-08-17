@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.restore.support.stockage.batch.StorageDocumentFromRecycleWriter;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -74,6 +75,17 @@ public class ControleDocumentSommaireTransfertProcessor extends
 			idTraitementMasse = UUID.fromString(getStepExecution()
 					.getJobParameters().getString(Constantes.ID_TRAITEMENT));
 		}
+		
+		// -- On vérifie si le document n'est pas gelé
+      if (item.getUuid() != null) {
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";            
+         List<StorageMetadata> listeMetadataDocument = support.getListeStorageMetadatasWithGel(item.getUuid());
+         if (isFrozenDocument(listeMetadataDocument)) {
+            throw new TransfertException(StringUtils.replace(
+                  frozenDocMsgException, "{0}", uuidString));
+         }
+      }
+		
 		if (item.getBatchActionType().equals("SUPPRESSION")) {
 			boolean isExiste = support.controleSAEDocumentSuppression(item);
 			if (isExiste) {
@@ -251,5 +263,5 @@ public class ControleDocumentSommaireTransfertProcessor extends
 	protected ExitStatus specificAfterStepOperations() {
 		return getStepExecution().getExitStatus();
 	}
-
+	
 }

@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.listener;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.springframework.batch.core.ExitStatus;
@@ -12,6 +13,10 @@ import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ExecutionContext;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
+import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Méthodes de base pour les listener
@@ -176,4 +181,32 @@ public abstract class AbstractListener {
    public String getBatchMode() {
       return batchMode;
    }
+
+   /**
+    * Contrôle si la liste de métadonnées passée en paramètre contient la
+    * métadonnée gel à true (Document gelé).
+    * 
+    * @param listeStorageMeta
+    *           liste de métadonnées
+    * @return true si le document est gelé
+    * @throws RetrievalServiceEx
+    * @{@link RetrievalServiceEx}
+    * @throws SearchingServiceEx
+    * @{@link SearchingServiceEx}
+    */
+   public boolean isFrozenDocument(List<StorageMetadata> listeStorageMeta)
+         throws RetrievalServiceEx {
+      if (listeStorageMeta != null && !listeStorageMeta.isEmpty()) {
+         for (StorageMetadata meta : listeStorageMeta) {
+            if (meta.getShortCode().equals(
+                  StorageTechnicalMetadatas.GEL.getShortCode())) {
+               if (meta.getValue() == Boolean.TRUE) {
+                  return true;
+               }
+            }
+         }
+      }
+      return false;
+   }
+   
 }

@@ -949,6 +949,17 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
             }
          } else {
             // -- Le document existe en GNT
+            
+            // -- On vérifie si le document n'est pas gelé
+            if (idArchive != null) {
+               String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";            
+               List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
+               if (isFrozenDocument(listeMetadataDocument)) {
+                  throw new TransfertException(StringUtils.replace(
+                        frozenDocMsgException, "{0}", idArchive.toString()));
+               }
+            }
+            
             // -- On recherche le document sur la GNS
             StorageDocument documentGNS = storageTransfertService
                   .searchStorageDocumentByUUIDCriteria(uuidCriteria);
@@ -1165,6 +1176,36 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements
          throw new TransfertException(e);
       }
       return dateDebutConservationMeta;
+   }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+         throws ReferentialException, RetrievalServiceEx {
+      // On récupère la liste de toutes les méta du référentiel sauf la
+      // Note, le Gel et la durée de conservation inutile pour les droits
+      // et générant des accès DFCE inutiles
+      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
+            .getAllMetadataReferencesPourVerifDroits();
+
+      for (String mapKey : listeAllMeta.keySet()) {
+         allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+               .getShortCode()));
+      }
+
+      // Ajout de la meta GEL puisque non récupéré avant
+      allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL
+            .getShortCode()));
+
+      // Création des critéres
+      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+
+      // Recherche du document par critére
+      return this.getStorageServiceProvider().getStorageDocumentService()
+            .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
    }
    
 }
