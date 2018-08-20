@@ -43,7 +43,6 @@ import junit.framework.Assert;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml", 
       "/applicationContext-sae-services-capturemasse-test-mock-droits.xml" })
-@Ignore
 public class CompressionDocumentProcessorTest {
 
    private static final Logger LOG = LoggerFactory

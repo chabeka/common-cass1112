@@ -191,7 +191,7 @@ public class SAETransfertMasseServiceTest {
    
 
    @Test
-   @Ignore("Mis en commentaire le temps de la release")
+//   @Ignore("Mis en commentaire le temps de la release")
    public void testSuccess() throws ConnectionServiceEx, IOException,
          ParseException, TransfertException, ArchiveAlreadyTransferedException,
          ArchiveInexistanteEx, SAECaptureServiceEx, ReferentialRndException,
@@ -243,7 +243,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   @Ignore("Mis en commentaire le temps de la release")
+//   @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveInexistante() throws TransfertException,
          ArchiveAlreadyTransferedException, ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException, UnknownCodeRndEx {
 
@@ -268,7 +268,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   @Ignore("Mis en commentaire le temps de la release")
+//   @Ignore("Mis en commentaire le temps de la release")
    public void testArchiveDejaTransferee() throws ConnectionServiceEx,
          IOException, ParseException {
 
@@ -300,7 +300,7 @@ public class SAETransfertMasseServiceTest {
    }
    
    @Test
-   @Ignore("Mis en commentaire le temps de la release")
+//   @Ignore("Mis en commentaire le temps de la release")
    public void testTransfertNoteSuccess() throws ConnectionServiceEx,
          IOException, ParseException, TransfertException,
          ArchiveAlreadyTransferedException, ArchiveInexistanteEx,

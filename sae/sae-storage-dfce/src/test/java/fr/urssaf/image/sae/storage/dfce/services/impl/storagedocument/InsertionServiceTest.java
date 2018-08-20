@@ -257,7 +257,6 @@ public class InsertionServiceTest {
     * </p>
     */
    @Test
-   @Ignore
    public void insertVirtualReferenceFile() throws IOException, ParseException,
          StorageException, NoSuchAlgorithmException {
 
