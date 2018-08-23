@@ -159,7 +159,7 @@ public class SAETransfertMasseServiceTest {
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
       String[] roles = new String[] { "modification", "recherche",
-            "suppression", "transfert", "archivage_unitaire" };
+            "suppression", "transfert", "archivage_unitaire", "transfert_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression", saePrmds);
@@ -167,6 +167,7 @@ public class SAETransfertMasseServiceTest {
       saeDroits.put("recherche", saePrmds);
       saeDroits.put("transfert", saePrmds);
       saeDroits.put("archivage_unitaire", saePrmds);
+      saeDroits.put("transfert_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
 
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
@@ -217,7 +218,7 @@ public class SAETransfertMasseServiceTest {
       try {
          StorageDocument document = saeTransfertService
                .controleDocumentTransfertMasse(
-               uidDocGNT, listeMeta, false, null);
+               uidDocGNT, listeMeta, false, UUID.randomUUID());
       
          saeTransfertService.transfertDocMasse(document);
 
@@ -326,7 +327,7 @@ public class SAETransfertMasseServiceTest {
       try {
          StorageDocument document = saeTransfertService
                .controleDocumentTransfertMasse(
-               uidDocGNT, null, false, null);
+               uidDocGNT, null, false, UUID.randomUUID());
 
          saeTransfertService.transfertDocMasse(document);
 
