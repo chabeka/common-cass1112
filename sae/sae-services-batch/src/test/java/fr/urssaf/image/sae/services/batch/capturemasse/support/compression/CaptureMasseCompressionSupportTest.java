@@ -14,7 +14,6 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -596,9 +595,7 @@ public class CaptureMasseCompressionSupportTest {
       metadata.setValue("SHA-1");
       document.getUMetadatas().add(metadata);
       
-      String os = System.getProperty("os.name");
-      // change l'os
-      System.setProperty("os.name", "Mon-OS-Super-Bien");
+    LOG.info("OS actuel : " + System.getProperty("os.name"));
       
       // calcul le chemin du document compressé
       String cheminDocCompresse = ecdeDirectory.getAbsolutePath() + File.separator 
@@ -625,8 +622,6 @@ public class CaptureMasseCompressionSupportTest {
       Assert.assertEquals("Le hash du fichier n'est pas celui attendu", "4bf2ddbd82d5fd38e821e6aae434ac989972a043", compressedDoc.getHash());
       Assert.assertEquals("Le nom du fichier n'est pas celui attendu", "attestation_consultation.pdf", compressedDoc.getOriginalName());
       
-      // remet l'os original
-      System.setProperty("os.name", os);
    }
    
    @Test
@@ -666,9 +661,7 @@ public class CaptureMasseCompressionSupportTest {
       metadata.setValue("ALGO-INCONNU");
       document.getUMetadatas().add(metadata);
       
-      String os = System.getProperty("os.name");
-      // change l'os
-      System.setProperty("os.name", "Mon-OS-Super-Bien");
+    LOG.info("OS actuel : " + System.getProperty("os.name"));
       
       try {
          // Cas 2 : compression d'un plus petit document comportant des images
@@ -679,8 +672,6 @@ public class CaptureMasseCompressionSupportTest {
          Assert.assertEquals("Une autre exception était attendue",  NoSuchAlgorithmException.class.getName(), e.getCause().getClass().getName());
       }
       
-      // remet l'os original
-      System.setProperty("os.name", os);
    }
    
    @Test
@@ -696,10 +687,9 @@ public class CaptureMasseCompressionSupportTest {
       metadata.setValue("SHA-1");
       document.getUMetadatas().add(metadata);
       
-      String os = System.getProperty("os.name");
-      // change l'os
-      System.setProperty("os.name", "Linux");
       
+    LOG.info("OS actuel : " + System.getProperty("os.name"));
+
       try {
          // Cas 2 : compression d'un plus petit document comportant des images
          captureMasseCompressionSupport.compresserDocument(document, ecdeDirectory);
@@ -710,9 +700,6 @@ public class CaptureMasseCompressionSupportTest {
          // d'ou l'erreur FileNotFoundException
          Assert.assertEquals("Une autre exception était attendue",  FileNotFoundException.class.getName(), e.getCause().getClass().getName());
       }
-      
-      // remet l'os original
-      System.setProperty("os.name", os);
       
    }
 }
