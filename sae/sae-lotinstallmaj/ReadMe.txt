@@ -512,4 +512,13 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 19-1) Lot 180900SAE
 Met la base Cassandra du SAE en version 29 :
 
-- Ajout de l'évenement WS_COPIE|KO et WS_COPIE|OK
+- Ajout de l'évenement WS_COPIE|KO et DFCE_COPIE_DOC|OK
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_180900
+
+19-2) Lot 180901SAE
+Met la base Cassandra du SAE en version 30 :
+
+- Passage de la métadonnée NumeroLot sur 40 caractères au lieu de 30
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_180901

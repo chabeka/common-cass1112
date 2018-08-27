@@ -50,7 +50,7 @@ public final class RefMetaInitialisationService {
    private static final String XSD_INDEXES_COMPOSITES = "/xsd/metadata/IndexesComposites.xsd";
 
    // A MODIFIER LORS DES EVOLUTIONS DE FICHIERS !!
-   private static final String FICHIER_METADONNEES = "Metadonnees.4.0.xml";
+   private static final String FICHIER_METADONNEES = "Metadonnees.4.1.xml";
    private static final String NOM_FICHIER_INDEX_COMPOSITE = "IndexesComposites4.1.xml";
 
    private static final Logger LOG = LoggerFactory
