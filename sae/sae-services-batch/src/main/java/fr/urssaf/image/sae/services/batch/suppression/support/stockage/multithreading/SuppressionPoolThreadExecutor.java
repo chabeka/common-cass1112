@@ -91,37 +91,15 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
       this.shutdownNow();
    }
 
-   /**
-    * Attend que l'ensemble des threads aient bien terminé leur travail
-    */
+  /**
+   * Attend que l'ensemble des threads aient bien terminé leur travail
+   */
   public final void waitFinishInsertion() {
-    while (!this.isTerminated()) {
-      lock.lock();
-      try {
-        waitCondition.await();
-      }
-      catch (InterruptedException e) {
-
-        throw new IllegalStateException(e);
-      }
-      finally {
-        lock.unlock();
-      }
-    }
-  }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-  protected final void terminated() {
-    lock.lock();
-    super.terminated();
     try {
-      waitCondition.signalAll();
+      this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
     }
-    finally {
-      lock.unlock();
+    catch (final InterruptedException e) {
+      throw new IllegalStateException(e);
     }
   }
 
