@@ -688,7 +688,9 @@ public class CaptureMasseCompressionSupportTest {
       document.getUMetadatas().add(metadata);
       
       
-    LOG.info("OS actuel : " + System.getProperty("os.name"));
+      String os = System.getProperty("os.name");
+      // change l'os
+      System.setProperty("os.name", "Linux");
 
       try {
          // Cas 2 : compression d'un plus petit document comportant des images
@@ -701,5 +703,7 @@ public class CaptureMasseCompressionSupportTest {
          Assert.assertEquals("Une autre exception était attendue",  FileNotFoundException.class.getName(), e.getCause().getClass().getName());
       }
       
+      // remet l'os original
+      System.setProperty("os.name", os);
    }
 }
