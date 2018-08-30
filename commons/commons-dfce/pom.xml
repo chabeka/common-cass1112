@@ -22,6 +22,7 @@
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
 
       <!-- numéro de version des dépendances de DFCE -->
 		<dfce.serialization>1.2.2</dfce.serialization>
@@ -299,6 +300,7 @@
 				<inherited>true</inherited>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>${aspectj-maven-plugin.version}</version>
 				<configuration>
 					<argumentFileName>builddef-commons-dfce.lst</argumentFileName>
 				</configuration>
