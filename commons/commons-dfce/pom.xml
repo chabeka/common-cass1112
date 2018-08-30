@@ -42,7 +42,7 @@
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
 		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
 		<cassandra-all.version>1.2.18</cassandra-all.version>
-
+		<aspectj.version>1.8.13</aspectj.version>
 		<spring.security.version>3.0.5.RELEASE</spring.security.version>
 		<dozer.version>5.3.1</dozer.version>
 		<jackson-annotations.version>2.4.5</jackson-annotations.version>
@@ -284,6 +284,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Pour la compilation aspectJ -->
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
 	</dependencies>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -303,7 +309,19 @@
 				<version>${aspectj-maven-plugin.version}</version>
 				<configuration>
 					<argumentFileName>builddef-commons-dfce.lst</argumentFileName>
+					<complianceLevel>1.8</complianceLevel>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+					<showWeaveInfo>true</showWeaveInfo>	
 				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 			
 			<!--
@@ -320,7 +338,6 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-		
 		
 			<!--
 			Dans le cas d'un packaging JAR, on demande que le JAR des
@@ -395,5 +412,35 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>aspectj-maven-plugin</artifactId>
+										<versionRange>[1.11,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+											<goal>test-compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 </project>
