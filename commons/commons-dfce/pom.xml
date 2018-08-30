@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-dfce</artifactId>
-	<version>1.9.6-SNAPSHOT</version>
+	<version>1.9.6</version>
 
 	<name>commons-dfce</name>
 
@@ -287,9 +287,9 @@
 
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
-		<url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-dfce</url>
-		<developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-dfce</developerConnection>
-		<connection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-dfce</connection>
+		<url>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-dfce-1.9.6</url>
+		<developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-dfce-1.9.6</developerConnection>
+		<connection>scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-dfce-1.9.6</connection>
 	</scm>
 
 	<build>
