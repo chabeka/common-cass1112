@@ -230,7 +230,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.framework.version}</version>
-			<scope>test</scope>
 		</dependency>
 
 		<dependency>
