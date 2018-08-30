@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service.impl;
 
@@ -10,10 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
-import net.docubase.toolkit.service.ged.RecordManagerService;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
@@ -23,13 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
@@ -38,12 +34,14 @@ import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 
 /**
  * Classe d'implémentation du support {@link DispatcheurService}. Cette classe
  * est un singleton et peut être accessible par le mécanisme d'injection IOC
  * avec l'annotation @Autowired
- * 
+ *
  */
 @Service
 public class DispatcheurServiceImpl implements DispatcheurService {
@@ -69,40 +67,40 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    private static final String JOURNAL = "journal";
 
    private static final List<String> DEST_AUTORISES = Arrays.asList(
-         TraceDestinataireDao.COL_HIST_ARCHIVE,
-         TraceDestinataireDao.COL_HIST_EVT,
-         TraceDestinataireDao.COL_REG_EXPLOIT,
-         TraceDestinataireDao.COL_REG_SECURITE,
-         TraceDestinataireDao.COL_REG_TECHNIQUE,
-         TraceDestinataireDao.COL_JOURN_EVT);
+                                                                    TraceDestinataireDao.COL_HIST_ARCHIVE,
+                                                                    TraceDestinataireDao.COL_HIST_EVT,
+                                                                    TraceDestinataireDao.COL_REG_EXPLOIT,
+                                                                    TraceDestinataireDao.COL_REG_SECURITE,
+                                                                    TraceDestinataireDao.COL_REG_TECHNIQUE,
+                                                                    TraceDestinataireDao.COL_JOURN_EVT);
 
    private static final List<String> REG_AUTORISES = Arrays.asList(
-         TraceDestinataireDao.COL_REG_EXPLOIT,
-         TraceDestinataireDao.COL_REG_SECURITE,
-         TraceDestinataireDao.COL_REG_TECHNIQUE);
+                                                                   TraceDestinataireDao.COL_REG_EXPLOIT,
+                                                                   TraceDestinataireDao.COL_REG_SECURITE,
+                                                                   TraceDestinataireDao.COL_REG_TECHNIQUE);
 
    private static final List<String> JOURN_AUTORISES = Arrays
          .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
-   private JobClockSupport clockSupport;
+   private final JobClockSupport clockSupport;
 
-   private TraceDestinataireSupport destSupport;
+   private final TraceDestinataireSupport destSupport;
 
-   private TraceRegSecuriteSupport secuSupport;
+   private final TraceRegSecuriteSupport secuSupport;
 
-   private TraceRegExploitationSupport exploitSupport;
+   private final TraceRegExploitationSupport exploitSupport;
 
-   private TraceRegTechniqueSupport techSupport;
+   private final TraceRegTechniqueSupport techSupport;
 
-   private TraceJournalEvtSupport evtSupport;
+   private final TraceJournalEvtSupport evtSupport;
 
-   private ServiceProviderSupport providerSupport;
+   private final DFCEServices dfceServices;
 
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+   private final TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    /**
     * Constructeur
-    * 
+    *
     * @param clockSupport
     *           Support pour le calcul de l'horloge sur Cassandra
     * @param destSupport
@@ -121,14 +119,14 @@ public class DispatcheurServiceImpl implements DispatcheurService {
     *           Utilitaires pour créer des TimeUUID
     */
    @Autowired
-   public DispatcheurServiceImpl(JobClockSupport clockSupport,
-         TraceDestinataireSupport destSupport,
-         TraceRegSecuriteSupport secuSupport,
-         TraceRegTechniqueSupport techSupport,
-         TraceRegExploitationSupport exploitSupport,
-         TraceJournalEvtSupport evtSupport,
-         ServiceProviderSupport providerSupport,
-         TimeUUIDEtTimestampSupport timeUUIDSupport) {
+   public DispatcheurServiceImpl(final JobClockSupport clockSupport,
+                                 final TraceDestinataireSupport destSupport,
+                                 final TraceRegSecuriteSupport secuSupport,
+                                 final TraceRegTechniqueSupport techSupport,
+                                 final TraceRegExploitationSupport exploitSupport,
+                                 final TraceJournalEvtSupport evtSupport,
+                                 final DFCEServices dfceServices,
+                                 final TimeUUIDEtTimestampSupport timeUUIDSupport) {
 
       this.clockSupport = clockSupport;
       this.destSupport = destSupport;
@@ -136,7 +134,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       this.techSupport = techSupport;
       this.exploitSupport = exploitSupport;
       this.evtSupport = evtSupport;
-      this.providerSupport = providerSupport;
+      this.dfceServices = dfceServices;
       this.timeUUIDSupport = timeUUIDSupport;
    }
 
@@ -144,19 +142,19 @@ public class DispatcheurServiceImpl implements DispatcheurService {
     * {@inheritDoc}
     */
    @Override
-   public final void ajouterTrace(TraceToCreate trace) {
+   public final void ajouterTrace(final TraceToCreate trace) {
 
-      String prefix = "ajouterTrace()";
+      final String prefix = "ajouterTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-      String codeEvt = trace.getCodeEvt();
+      final String codeEvt = trace.getCodeEvt();
 
-      TraceDestinataire traceDest = destSupport.find(codeEvt);
+      final TraceDestinataire traceDest = destSupport.find(codeEvt);
 
-      for (String type : traceDest.getDestinataires().keySet()) {
+      for (final String type : traceDest.getDestinataires().keySet()) {
 
          createTrace(codeEvt, type, traceDest.getDestinataires().get(type),
-               trace);
+                     trace);
 
       }
 
@@ -165,13 +163,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    }
 
    @SuppressWarnings("PMD.ConfusingTernary")
-   private void createTrace(String codeEvt, String type, List<String> list,
-         TraceToCreate trace) {
+   private void createTrace(final String codeEvt, final String type, final List<String> list,
+                            final TraceToCreate trace) {
 
       if (!DEST_AUTORISES.contains(type)) {
          LOGGER.warn(
-               "Le destinataire {0} ne doit pas exister pour l'événement {1}",
-               new Object[] { type, codeEvt });
+                     "Le destinataire {0} ne doit pas exister pour l'événement {1}",
+                     new Object[] { type, codeEvt });
 
       } else if (REG_AUTORISES.contains(type) || JOURN_AUTORISES.contains(type)) {
          checkCategoriesValues(trace, type);
@@ -186,7 +184,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   private void checkCategoriesValues(TraceToCreate trace, String type) {
+   private void checkCategoriesValues(final TraceToCreate trace, final String type) {
 
       if (trace == null) {
          throw new IllegalArgumentException("la trace doit etre non nulle");
@@ -228,78 +226,77 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   private void checkStringValue(String name, String value, String suffixe,
-         String categorie) {
+   private void checkStringValue(final String name, final String value, final String suffixe,
+                                 final String categorie) {
 
       if (StringUtils.isBlank(value)) {
-         Map<String, String> map = new HashMap<String, String>();
+         final Map<String, String> map = new HashMap<String, String>();
          map.put(ARG_0, name);
          map.put(ARG_1, categorie);
          map.put(ARG_2, suffixe);
          throw new IllegalArgumentException(StrSubstitutor.replace(
-               MESSAGE_ERREUR_REGISTRE, map));
+                                                                   MESSAGE_ERREUR_REGISTRE, map));
       }
 
    }
 
-   private void saveTrace(TraceToCreate trace, String type, List<String> list) {
+   private void saveTrace(final TraceToCreate trace, final String type, final List<String> list) {
 
-      String prefix = "saveTrace()";
+      final String prefix = "saveTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-      long timestamp = timeUUIDSupport.getCurrentTimestamp();
-      UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
-      Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
+      final long timestamp = timeUUIDSupport.getCurrentTimestamp();
+      final UUID idTrace = timeUUIDSupport.buildUUIDFromTimestamp(timestamp);
+      final Date timestampTrace = timeUUIDSupport.getDateFromTimestamp(timestamp);
 
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);
-         TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
-               list, idTrace, timestampTrace);
+         final TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
+                                                                            list, idTrace, timestampTrace);
          exploitSupport.create(traceExploit, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace de sécurité", prefix);
-         TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list,
-               idTrace, timestampTrace);
+         final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list,
+                                                                     idTrace, timestampTrace);
          secuSupport.create(traceSecurite, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace technique", prefix);
-         TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list,
-               idTrace, timestampTrace);
+         final TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list,
+                                                                        idTrace, timestampTrace);
          techSupport.create(traceTechnique, clockSupport.currentCLock());
 
       } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
-         TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list,
-               idTrace, timestampTrace);
+         final TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list,
+                                                                    idTrace, timestampTrace);
 
          final String KEY_ID_DOC = "idDoc";
-         long currentCLock = clockSupport.currentCLock();
+         final long currentCLock = clockSupport.currentCLock();
          evtSupport.create(traceTechnique, currentCLock);
 
-         Map<String, Object> mapInfos = trace.getInfos();
+         final Map<String, Object> mapInfos = trace.getInfos();
          if (MapUtils.isNotEmpty(mapInfos)) {
             if (mapInfos.containsKey(KEY_ID_DOC)) {
-               String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
+               final String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
                evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
             }
          }
 
       } else {
          throw new IllegalArgumentException(StringUtils.replace(
-               "pas de type existant {0} à convertir", "{0}", type));
+                                                                "pas de type existant {0} à convertir", "{0}", type));
       }
 
       LOGGER.debug(FIN_LOG, prefix);
 
    }
 
-   private void saveTraceHistEvt(TraceToCreate trace) {
-      RecordManagerService service = providerSupport.getRecordManagerService();
-      RMSystemEvent event = ToolkitFactory.getInstance().createRMSystemEvent();
+   private void saveTraceHistEvt(final TraceToCreate trace) {
+      final RMSystemEvent event = ToolkitFactory.getInstance().createRMSystemEvent();
       event.setUsername(USERNAME);
       event.setEventDescription(trace.toString());
-      service.createCustomSystemEventLog(event);
+      dfceServices.createCustomSystemEventLog(event);
    }
 }

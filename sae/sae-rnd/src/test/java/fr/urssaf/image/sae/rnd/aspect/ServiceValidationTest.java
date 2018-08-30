@@ -48,102 +48,102 @@ public class ServiceValidationTest {
       try {
          rndService.getCodeActivite(null);
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getCodeFonction(null);
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getDureeConservation(null);
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getTypeDocument(null);
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
 
       // Recherche avec codeRnd vide
       try {
          rndService.getCodeActivite("");
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getCodeFonction("");
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getDureeConservation("");
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
-      
+
       try {
          rndService.getTypeDocument("");
          Assert.fail("le test doit échouer : codeRnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
-                     .getMessage());
+                             "l'argument codeRnd n'est pas valide : codeRnd null ou vide", e
+                             .getMessage());
       }
 
-    }
+   }
 
    @Test
-   public void testUpdateVerion() throws SaeBddRuntimeException {
+   public void testUpdateVersion() throws SaeBddRuntimeException {
 
       // Version null
       try {
          saeBddSupport.updateVersionRnd(null);
          Assert.fail("le test doit échouer : versionRnd = 0");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals("l'argument versionRnd n'est pas valide", e
-               .getMessage());
+                             .getMessage());
       }
 
-      VersionRnd version = new VersionRnd();
+      final VersionRnd version = new VersionRnd();
 
       // Date de mise à jour null
       version.setVersionEnCours("11.4");
       try {
          saeBddSupport.updateVersionRnd(version);
          Assert.fail("le test doit échouer : date de mise à jour null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument versionRnd n'est pas valide : date de mise à jour null",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument versionRnd n'est pas valide : date de mise à jour null",
+                       e.getMessage());
       }
 
       // Numéro de version null
@@ -152,11 +152,11 @@ public class ServiceValidationTest {
       try {
          saeBddSupport.updateVersionRnd(version);
          Assert.fail("le test doit échouer : numero de version à jour null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument versionRnd n'est pas valide : numéro version null ou vide",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument versionRnd n'est pas valide : numéro version null ou vide",
+                       e.getMessage());
       }
 
    }
@@ -164,7 +164,7 @@ public class ServiceValidationTest {
    @Test
    public void testAjouterRnd() {
 
-      TypeDocument typeDoc = new TypeDocument();
+      final TypeDocument typeDoc = new TypeDocument();
       typeDoc.setCloture(false);
       typeDoc.setCode("1.1.1.1.1");
       typeDoc.setCodeActivite("1");
@@ -178,18 +178,18 @@ public class ServiceValidationTest {
          rndSupport.ajouterRnd(typeDoc, 0);
          Assert.fail("le test doit échouer : clock = 0");
 
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals("l'argument clock n'est pas valide", e
-               .getMessage());
+                             .getMessage());
       }
 
       // typeDoc null
       try {
          rndSupport.ajouterRnd(null, jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : typeDoc null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals("l'argument typeDoc n'est pas valide", e
-               .getMessage());
+                             .getMessage());
       }
 
       // code RND vide
@@ -197,10 +197,10 @@ public class ServiceValidationTest {
       try {
          rndSupport.ajouterRnd(typeDoc, jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : typeDoc null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument typeDoc n'est pas valide : code Rnd null ou vide", e
-                     .getMessage());
+                             "l'argument typeDoc n'est pas valide : code Rnd null ou vide", e
+                             .getMessage());
       }
       typeDoc.setCode("1.1.1.1.1");
 
@@ -209,10 +209,10 @@ public class ServiceValidationTest {
       try {
          rndSupport.ajouterRnd(typeDoc, jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : code Rnd null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals(
-               "l'argument typeDoc n'est pas valide : code Rnd null ou vide", e
-                     .getMessage());
+                             "l'argument typeDoc n'est pas valide : code Rnd null ou vide", e
+                             .getMessage());
       }
       typeDoc.setCode("1.1.1.1.1");
 
@@ -221,11 +221,11 @@ public class ServiceValidationTest {
       try {
          rndSupport.ajouterRnd(typeDoc, jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : codeFonction null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument typeDoc n'est pas valide : codeFonction null ou vide alors que le type de document n'est pas TEMPORAIRE",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument typeDoc n'est pas valide : codeFonction null ou vide alors que le type de document n'est pas TEMPORAIRE",
+                       e.getMessage());
       }
       typeDoc.setCodeFonction("1");
 
@@ -234,11 +234,11 @@ public class ServiceValidationTest {
       try {
          rndSupport.ajouterRnd(typeDoc, jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : dureeConservation <= 0");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument typeDoc n'est pas valide : dureeConservation négatif ou nul",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument typeDoc n'est pas valide : dureeConservation négatif ou nul",
+                       e.getMessage());
       }
 
    }
@@ -246,7 +246,7 @@ public class ServiceValidationTest {
    @Test
    public void testAjouterCorrespondance() {
 
-      Correspondance correspondance = new Correspondance();
+      final Correspondance correspondance = new Correspondance();
       correspondance.setCodeDefinitif("1.1.1.1.1");
       correspondance.setCodeTemporaire("a.a.a.a.a");
       correspondance.setDateDebutMaj(new Date());
@@ -258,32 +258,32 @@ public class ServiceValidationTest {
          correspondancesRndSupport.ajouterCorrespondance(correspondance, 0);
          Assert.fail("le test doit échouer : clock = 0");
 
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals("l'argument clock n'est pas valide", e
-               .getMessage());
+                             .getMessage());
       }
 
       // Correspondance null
       try {
          correspondancesRndSupport.ajouterCorrespondance(null, jobClockSupport
-               .currentCLock());
+                                                         .currentCLock());
          Assert.fail("le test doit échouer : correspondance null");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert.assertEquals("l'argument correspondance n'est pas valide", e
-               .getMessage());
+                             .getMessage());
       }
 
       // Code définitif null
       correspondance.setCodeDefinitif("");
       try {
          correspondancesRndSupport.ajouterCorrespondance(correspondance,
-               jobClockSupport.currentCLock());
+                                                         jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : code définitif vide");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument correspondance n'est pas valide : code définitif null ou vide",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument correspondance n'est pas valide : code définitif null ou vide",
+                       e.getMessage());
       }
 
       // Code temporaire null
@@ -291,13 +291,13 @@ public class ServiceValidationTest {
       correspondance.setCodeTemporaire("");
       try {
          correspondancesRndSupport.ajouterCorrespondance(correspondance,
-               jobClockSupport.currentCLock());
+                                                         jobClockSupport.currentCLock());
          Assert.fail("le test doit échouer : code temporaire vide");
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          Assert
-               .assertEquals(
-                     "l'argument correspondance n'est pas valide : code temporaire null ou vide",
-                     e.getMessage());
+         .assertEquals(
+                       "l'argument correspondance n'est pas valide : code temporaire null ou vide",
+                       e.getMessage());
       }
 
    }

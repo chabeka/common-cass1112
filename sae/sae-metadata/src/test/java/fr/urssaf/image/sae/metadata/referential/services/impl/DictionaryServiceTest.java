@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
@@ -21,7 +19,7 @@ import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 
 /**
  * classe de test du service {@link DictionarySupportImpl}
- * 
+ *
  */
 // FIXME : réactiver les testes après la mise en place des fichiers application
 // contexte
@@ -38,31 +36,22 @@ public class DictionaryServiceTest {
    @Autowired
    private DictionaryService service;
 
-   @Autowired
-   private ServiceProviderSupportMetadata provider;
-
-   @Before
-   public void before() {
-      provider.connect();
-   }
-
    @After
    public void after() throws Exception {
-      provider.disconnect();
       server.resetData();
    }
 
 
 
    /**
-    * Test de création d'un dictionnaire 
+    * Test de création d'un dictionnaire
     */
    @Test
    public void testService() throws DictionaryNotFoundException {
-      String id = "dictionnaireTest";
-      List<String> values = Arrays.asList("ValeurTest", "ValeurTest2");
+      final String id = "dictionnaireTest";
+      final List<String> values = Arrays.asList("ValeurTest", "ValeurTest2");
       service.addElements(id, values);
-      Dictionary dict = dictSupport.find(id);
+      final Dictionary dict = dictSupport.find(id);
       Assert.assertNotNull(dict);
       Assert.assertTrue(id.equals(dict.getId()));
    }

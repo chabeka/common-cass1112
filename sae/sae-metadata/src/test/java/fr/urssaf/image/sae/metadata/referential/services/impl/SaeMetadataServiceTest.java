@@ -1,10 +1,7 @@
 package fr.urssaf.image.sae.metadata.referential.services.impl;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,10 +10,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
+import junit.framework.Assert;
 
 /**
  * classe de test du service {@link SaeMetaDataServiceImpl}
@@ -35,17 +32,9 @@ public class SaeMetadataServiceTest {
    @Autowired
    private CassandraServerBean server;
 
-   @Autowired
-   private ServiceProviderSupportMetadata provider;
-
-   @Before
-   public void before() {
-      provider.connect();
-   }
 
    @After
    public void after() throws Exception {
-      provider.disconnect();
       server.resetData();
    }
 
@@ -57,7 +46,7 @@ public class SaeMetadataServiceTest {
    @Test
    public void testServiceCreate() {
 
-      MetadataReference metaDest = new MetadataReference();
+      final MetadataReference metaDest = new MetadataReference();
       metaDest.setArchivable(Boolean.TRUE);
       metaDest.setConsultable(Boolean.TRUE);
       metaDest.setDefaultConsultable(Boolean.FALSE);
@@ -77,29 +66,29 @@ public class SaeMetadataServiceTest {
       metaDest.setIsIndexed(Boolean.TRUE);
       service.create(metaDest);
 
-      MetadataReference metafind = metaSupport.find(metaDest.getLongCode());
+      final MetadataReference metafind = metaSupport.find(metaDest.getLongCode());
       Assert.assertNotNull(metafind);
       Assert.assertEquals("description fausse", metaDest.getDescription(),
-            metafind.getDescription());
+                          metafind.getDescription());
       Assert.assertEquals("code court faux", metaDest.getShortCode(), metafind
-            .getShortCode());
+                          .getShortCode());
       Assert.assertEquals("code long faux", metaDest.getLongCode(), metafind
-            .getLongCode());
+                          .getLongCode());
       Assert.assertEquals("nom du dictionnaire faux", metaDest
-            .getDictionaryName(), metafind.getDictionaryName());
+                          .getDictionaryName(), metafind.getDictionaryName());
       Assert.assertEquals("consultable faux", metaDest.isConsultable(),
-            metafind.isConsultable());
+                          metafind.isConsultable());
       Assert.assertEquals("default consultable faux", metaDest
-            .isDefaultConsultable(), metafind.isDefaultConsultable());
+                          .isDefaultConsultable(), metafind.isDefaultConsultable());
       Assert.assertEquals("recherchable faux", metaDest.isSearchable(),
-            metafind.isSearchable());
+                          metafind.isSearchable());
       Assert.assertEquals("obligatoire à l'archivage faux", metaDest
-            .isRequiredForArchival(), metafind.isRequiredForArchival());
+                          .isRequiredForArchival(), metafind.isRequiredForArchival());
       Assert.assertEquals("obligatoire au stockage faux", metaDest
-            .isRequiredForStorage(), metafind.isRequiredForStorage());
+                          .isRequiredForStorage(), metafind.isRequiredForStorage());
       Assert.assertEquals("valeur interne faux", metaDest.isInternal(),
-            metafind.isInternal());
+                          metafind.isInternal());
       Assert.assertEquals("recherchable faux", metaDest.isSearchable(),
-            metafind.isSearchable());
+                          metafind.isSearchable());
    }
 }

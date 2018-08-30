@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport;
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.EtatCorrespondance;
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.modification.impl;
 
@@ -64,11 +64,11 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Classe d'implémentation de l'interface {@link SAEModificationService}. Cette
  * classe est un singleton et peut être accessible par le mécanisme d'injection
  * IOC et l'annotation @Autowired
- * 
+ *
  */
 @Service
 public class SAEModificationServiceImpl extends AbstractSAEServices implements
-      SAEModificationService {
+SAEModificationService {
 
    private static final Logger LOG = LoggerFactory
          .getLogger(SAEModificationServiceImpl.class);
@@ -97,32 +97,32 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
-    * 
+    *
     */
    @Override
-   public final void modification(UUID idArchive,
-         List<UntypedMetadata> metadonnees)
-         throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, ReferentialRndException,
-         UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
-         ModificationException, ArchiveInexistanteEx,
-         MetadataValueNotInDictionaryEx {
-      String trcPrefix = "modification";
+   public final void modification(final UUID idArchive,
+                                  final List<UntypedMetadata> metadonnees)
+                                        throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+                                        DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+                                        RequiredArchivableMetadataEx, ReferentialRndException,
+                                        UnknownCodeRndEx, UnknownHashCodeEx, NotModifiableMetadataEx,
+                                        ModificationException, ArchiveInexistanteEx,
+                                        MetadataValueNotInDictionaryEx {
+      final String trcPrefix = "modification";
       LOG.debug("{} - début", trcPrefix);
 
       LOG.debug("{} - recherche du document", trcPrefix);
 
       try {
-         List<StorageMetadata> listeStorageMetaDocument = this
+         final List<StorageMetadata> listeStorageMetaDocument = this
                .controlerMetaDocumentModifie(idArchive, metadonnees, trcPrefix,
                      "modification");
-         
-         StorageDocument document = this.separationMetaDocumentModifie(idArchive, listeStorageMetaDocument, metadonnees, trcPrefix);  
-         
+
+         final StorageDocument document = this.separationMetaDocumentModifie(idArchive, listeStorageMetaDocument, metadonnees, trcPrefix);
+
          this.modificationMetaDocument(document, trcPrefix);
 
-      } catch (UpdateServiceEx exception) {
+      } catch (final UpdateServiceEx exception) {
          throw new ModificationRuntimeException(exception);
       }
 
@@ -132,7 +132,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
    /**
     * Vérifie les règles de gestion des métadonnées
-    * 
+    *
     * @param modifiedMetadatas
     *           la liste des métadonnées à modifier
     * @return la nouvelle liste enrichie des métadonnées
@@ -140,56 +140,56 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     * @throws CodeRndInexistantException
     */
    private List<List<UntypedMetadata>> completeMetadatas(
-         List<UntypedMetadata> modifiedMetadatas,
-         List<UntypedMetadata> deletedMetadatas, List<StorageMetadata> list)
-         throws UnknownCodeRndEx {
-      String trcPrefix = "completeMetadatas";
+                                                         final List<UntypedMetadata> modifiedMetadatas,
+                                                         final List<UntypedMetadata> deletedMetadatas, final List<StorageMetadata> list)
+                                                               throws UnknownCodeRndEx {
+      final String trcPrefix = "completeMetadatas";
       LOG.debug("{} - début", trcPrefix);
 
-      List<UntypedMetadata> returnedModifiedList = new ArrayList<UntypedMetadata>(
+      final List<UntypedMetadata> returnedModifiedList = new ArrayList<UntypedMetadata>(
             modifiedMetadatas);
-      List<UntypedMetadata> returnedDeletedList = new ArrayList<UntypedMetadata>(
+      final List<UntypedMetadata> returnedDeletedList = new ArrayList<UntypedMetadata>(
             deletedMetadatas);
-      String codeRnd = getValueMeta(SAEArchivalMetadatas.CODE_RND,
-            modifiedMetadatas);
+      final String codeRnd = getValueMeta(SAEArchivalMetadatas.CODE_RND,
+                                          modifiedMetadatas);
 
       try {
          if (StringUtils.isNotBlank(codeRnd)) {
 
-            Date date = (Date) getValueMeta("SM_LIFE_CYCLE_REFERENCE_DATE", list);
+            final Date date = (Date) getValueMeta("SM_LIFE_CYCLE_REFERENCE_DATE", list);
             String codeActivite;
 
             codeActivite = rndService.getCodeActivite(codeRnd);
 
-            String codeFonction = rndService.getCodeFonction(codeRnd);
+            final String codeFonction = rndService.getCodeFonction(codeRnd);
 
-            int duration = rndService.getDureeConservation(codeRnd);
-            Date dateFin = DateUtils.addDays(date, duration);
-            String sDateFin = DateFormatUtils.format(dateFin,
-                  Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
+            final int duration = rndService.getDureeConservation(codeRnd);
+            final Date dateFin = DateUtils.addDays(date, duration);
+            final String sDateFin = DateFormatUtils.format(dateFin,
+                                                           Constants.DATE_PATTERN, Constants.DEFAULT_LOCAL);
             if (StringUtils.isNotEmpty(codeActivite)) {
                returnedModifiedList.add(new UntypedMetadata(
-                     SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
-                     codeActivite));
+                                                            SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
+                                                            codeActivite));
             } else {
                returnedDeletedList.add(new UntypedMetadata(
-                     SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
-                     codeActivite));
+                                                           SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode(),
+                                                           codeActivite));
             }
 
             returnedModifiedList.add(new UntypedMetadata(
-                  SAEArchivalMetadatas.CODE_FONCTION.getLongCode(),
-                  codeFonction));
+                                                         SAEArchivalMetadatas.CODE_FONCTION.getLongCode(),
+                                                         codeFonction));
             returnedModifiedList.add(new UntypedMetadata(
-                  SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode(),
-                  sDateFin));
+                                                         SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode(),
+                                                         sDateFin));
 
          }
-      } catch (CodeRndInexistantException e) {
+      } catch (final CodeRndInexistantException e) {
          throw new UnknownCodeRndEx(e.getMessage(), e);
       }
 
-      List<List<UntypedMetadata>> returnedList = new ArrayList<List<UntypedMetadata>>();
+      final List<List<UntypedMetadata>> returnedList = new ArrayList<List<UntypedMetadata>>();
       returnedList.add(returnedModifiedList);
       returnedList.add(returnedDeletedList);
 
@@ -203,7 +203,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     * @param metadatas Liste de metadonnees.
     * @return La valeur de la metadonnees en fonction de son code.
     */
-   private String getValueMeta(SAEArchivalMetadatas codeMeta, List<UntypedMetadata> metadatas) {
+   private String getValueMeta(final SAEArchivalMetadatas codeMeta, final List<UntypedMetadata> metadatas) {
       String value = null;
       int index = 0;
 
@@ -224,7 +224,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     * @param metadatas Liste de metadonnees.
     * @return La valeur de la metadonnees en fonction de son code.
     */
-   private Object getValueMeta(String shortCode, List<StorageMetadata> metadatas) {
+   private Object getValueMeta(final String shortCode, final List<StorageMetadata> metadatas) {
       Object value = null;
       int index = 0;
 
@@ -242,36 +242,36 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
    /**
     * {@inheritDoc}
-    * 
+    *
     */
    @Override
-   public List<StorageMetadata> controlerMetaDocumentModifie(UUID idArchive,
-         List<UntypedMetadata> metadonnees, String trcPrefix,
-         String actionUnitaire) throws ArchiveInexistanteEx,
-         ModificationException, DuplicatedMetadataEx {
+   public List<StorageMetadata> controlerMetaDocumentModifie(final UUID idArchive,
+                                                             final List<UntypedMetadata> metadonnees, final String trcPrefix,
+                                                             final String actionUnitaire) throws ArchiveInexistanteEx,
+   ModificationException, DuplicatedMetadataEx {
       List<StorageMetadata> listeStorageMeta;
-      
+
       try {
 
          listeStorageMeta = this.getListeStorageMetadatas(idArchive);
-         
+
          if (listeStorageMeta.size() == 0) {
-            String message = StringUtils
+            final String message = StringUtils
                   .replace(
-                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                        "{0}", idArchive.toString());
+                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                           "{0}", idArchive.toString());
             throw new ArchiveInexistanteEx(message);
          }
-         List<UntypedMetadata> listeUMeta = mappingService
+         final List<UntypedMetadata> listeUMeta = mappingService
                .storageMetadataToUntypedMetadata(listeStorageMeta);
 
          // Vérification des droits
          LOG.debug("{} - Récupération des droits", trcPrefix);
-         AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+         final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                .getContext().getAuthentication();
-         List<SaePrmd> saePrmds = token.getSaeDroits().get(actionUnitaire);
+         final List<SaePrmd> saePrmds = token.getSaeDroits().get(actionUnitaire);
          LOG.debug("{} - Vérification des droits", trcPrefix);
-         boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+         final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
          if (!isPermitted) {
             throw new AccessDeniedException(
@@ -279,86 +279,85 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
 
          }
 
-      } catch (InvalidSAETypeException exception) {
+      } catch (final InvalidSAETypeException exception) {
          throw new ModificationException(exception);
-      } catch (MappingFromReferentialException exception) {
+      } catch (final MappingFromReferentialException exception) {
          throw new ModificationException(exception);
-      } catch (ReferentialException exception) {
+      } catch (final ReferentialException exception) {
          throw new ModificationException(exception);
-      } catch (RetrievalServiceEx exception) {
+      } catch (final RetrievalServiceEx exception) {
          throw new ModificationException(exception);
       }
 
       LOG.debug("{} - vérification non dupplication des métadonnées",
-            trcPrefix);
+                trcPrefix);
       if (!CollectionUtils.isEmpty(metadonnees)) {
          controlesModificationService
-               .checkSaeMetadataForModification(metadonnees);
+         .checkSaeMetadataForModification(metadonnees);
       }
-      
+
       return listeStorageMeta;
-         
+
    }
 
    /**
     * {@inheritDoc}
-    * 
+    *
     */
    @Override
-   public List<StorageMetadata> getListeStorageMetadatas(UUID idArchive)
+   public List<StorageMetadata> getListeStorageMetadatas(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx {
       // On récupère la liste de toutes les méta du référentiel sauf la
       // Note, le Gel et la durée de conservation inutile pour les droits
       // et générant des accès DFCE inutiles
-      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-      Map<String, MetadataReference> listeAllMeta = referenceDAO
+      final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      final Map<String, MetadataReference> listeAllMeta = referenceDAO
             .getAllMetadataReferencesPourVerifDroits();
 
-      for (String mapKey : listeAllMeta.keySet()) {
+      for (final String mapKey : listeAllMeta.keySet()) {
          allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-               .getShortCode()));
+                                         .getShortCode()));
       }
 
-      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-      return this.getStorageServiceProvider()
-            .getStorageDocumentService()
+      return this.getStorageDocumentService()
             .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
    }
 
    /**
     * {@inheritDoc}
-    * 
+    *
     */
    @Override
-   public void modificationMetaDocument(StorageDocument document, String trcPrefix) throws ModificationException, UpdateServiceEx {
-      if (document != null && document.getUuid() != null 
+   public void modificationMetaDocument(final StorageDocument document, final String trcPrefix) throws ModificationException, UpdateServiceEx {
+      if (document != null && document.getUuid() != null
             && (document.getMetadatas() != null || document.getMetadatasToDelete() != null)) {
-         documentService.updateStorageDocument(document.getUuid(), document.getMetadatas(), document.getMetadatasToDelete());  
+         documentService.updateStorageDocument(document.getUuid(), document.getMetadatas(), document.getMetadatasToDelete());
       } else {
          throw new ModificationException(
                "Une erreur interne à l'application est survenue lors de la modification");
-      }   
+      }
    }
 
 
    @Override
-   public StorageDocument separationMetaDocumentModifie(UUID idArchive,
-         List<StorageMetadata> listeStorageMetaDocument,
-         List<UntypedMetadata> metadonnees, String trcPrefix)
-         throws UnknownCodeRndEx, ReferentialRndException,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         ModificationException {
+   public StorageDocument separationMetaDocumentModifie(final UUID idArchive,
+                                                        final List<StorageMetadata> listeStorageMetaDocument,
+                                                        final List<UntypedMetadata> metadonnees, final String trcPrefix)
+                                                              throws UnknownCodeRndEx, ReferentialRndException,
+                                                              InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+                                                              DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+                                                              RequiredArchivableMetadataEx, UnknownHashCodeEx,
+                                                              NotModifiableMetadataEx, MetadataValueNotInDictionaryEx,
+                                                              ModificationException {
 
       LOG.debug(
-            "{} - Séparation des métadonnées en modifiées et supprimées",
-            trcPrefix);
+                "{} - Séparation des métadonnées en modifiées et supprimées",
+                trcPrefix);
       List<UntypedMetadata> modifiedMetadatas = new ArrayList<UntypedMetadata>();
       List<UntypedMetadata> deletedMetadatas = new ArrayList<UntypedMetadata>();
-      for (UntypedMetadata metadata : metadonnees) {
+      for (final UntypedMetadata metadata : metadonnees) {
          if (StringUtils.isNotBlank(metadata.getValue())) {
             modifiedMetadatas.add(metadata);
          } else {
@@ -369,53 +368,53 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
       LOG.debug("{} - vérification des métadonnées", trcPrefix);
       if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
          controlesModificationService
-               .checkSaeMetadataForUpdate(modifiedMetadatas);
+         .checkSaeMetadataForUpdate(modifiedMetadatas);
 
       }
       if (!CollectionUtils.isEmpty(deletedMetadatas)) {
          controlesModificationService
-               .checkSaeMetadataForDelete(deletedMetadatas);
+         .checkSaeMetadataForDelete(deletedMetadatas);
       }
 
       // Application des règles de gestion pour compléter les métadonnées (ex
       // :
       // enrichissement du code fonction, activité et
       // date de fin si modification du code RND)
-      List<List<UntypedMetadata>> completedMetadatas = completeMetadatas(
-            modifiedMetadatas, deletedMetadatas, listeStorageMetaDocument);
+      final List<List<UntypedMetadata>> completedMetadatas = completeMetadatas(
+                                                                               modifiedMetadatas, deletedMetadatas, listeStorageMetaDocument);
 
       modifiedMetadatas = completedMetadatas.get(0);
       deletedMetadatas = completedMetadatas.get(1);
 
-      StorageDocument storageDocument = new StorageDocument();
+      final StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(idArchive);
       try {
          List<StorageMetadata> modifiedStorageMetas = new ArrayList<StorageMetadata>();
          if (!CollectionUtils.isEmpty(modifiedMetadatas)) {
-            List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
+            final List<SAEMetadata> modifiedSaeMetadatas = mappingDocumentService
                   .untypedMetadatasToSaeMetadatas(modifiedMetadatas);
             modifiedStorageMetas = mappingDocumentService
                   .saeMetadatasToStorageMetadatas(modifiedSaeMetadatas);
             storageDocument.setMetadatas(modifiedStorageMetas);
          }
-         
+
          List<StorageMetadata> deletedStorageMetas = new ArrayList<StorageMetadata>();
          if (!CollectionUtils.isEmpty(deletedMetadatas)) {
-            List<SAEMetadata> deletedSaeMetadatas = mappingDocumentService
+            final List<SAEMetadata> deletedSaeMetadatas = mappingDocumentService
                   .nullSafeUntypedMetadatasToSaeMetadatas(deletedMetadatas);
             deletedStorageMetas = mappingDocumentService
                   .saeMetadatasToStorageMetadatas(deletedSaeMetadatas);
             storageDocument.setMetadatasToDelete(deletedStorageMetas);
          }
-         
-      } catch (InvalidSAETypeException exception) {
+
+      } catch (final InvalidSAETypeException exception) {
          throw new ModificationRuntimeException(exception);
 
-      } catch (MappingFromReferentialException exception) {
+      } catch (final MappingFromReferentialException exception) {
          throw new ModificationRuntimeException(exception);
 
       }
-      
+
       return storageDocument;
    }
 
@@ -426,9 +425,9 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
    public boolean isFrozenDocument(final List<StorageMetadata> listeStorageMeta)
          throws ModificationException, RetrievalServiceEx {
       if (listeStorageMeta != null && !listeStorageMeta.isEmpty()) {
-         for (StorageMetadata meta : listeStorageMeta) {
+         for (final StorageMetadata meta : listeStorageMeta) {
             if (meta.getShortCode().equals(
-                  StorageTechnicalMetadatas.GEL.getShortCode())) {
+                                           StorageTechnicalMetadatas.GEL.getShortCode())) {
                if (meta.getValue() == Boolean.TRUE) {
                   return true;
                }
@@ -442,29 +441,29 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+   public List<StorageMetadata> getListeStorageMetadatasWithGel(final UUID idArchive)
          throws ReferentialException, RetrievalServiceEx {
       // On récupère la liste de toutes les méta du référentiel sauf la
       // Note, le Gel et la durée de conservation inutile pour les droits
       // et générant des accès DFCE inutiles
-      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-      Map<String, MetadataReference> listeAllMeta = referenceDAO
+      final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      final Map<String, MetadataReference> listeAllMeta = referenceDAO
             .getAllMetadataReferencesPourVerifDroits();
 
-      for (String mapKey : listeAllMeta.keySet()) {
+      for (final String mapKey : listeAllMeta.keySet()) {
          allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-               .getShortCode()));
+                                         .getShortCode()));
       }
 
       // Ajout de la meta GEL puisque non récupéré avant
       allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL
-            .getShortCode()));
+                                      .getShortCode()));
 
       // Création des critéres
-      UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
       // Recherche du document par critére
-      return this.getStorageServiceProvider().getStorageDocumentService()
+      return this.getStorageDocumentService()
             .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
    }
 

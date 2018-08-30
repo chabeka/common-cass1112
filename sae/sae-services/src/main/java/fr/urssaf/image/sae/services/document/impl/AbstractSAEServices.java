@@ -3,7 +3,7 @@ package fr.urssaf.image.sae.services.document.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 /**
  * Classe abstraite contenant les attributs communs de toutes les
@@ -18,23 +18,22 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 public abstract class AbstractSAEServices {
 
    @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider storageServiceProvider;
+   @Qualifier("storageDocumentService")
+   private StorageDocumentService storageDocumentService;
 
    /**
     * @return La façade de services Storage DFCE.
     */
-   public final StorageServiceProvider getStorageServiceProvider() {
-      return storageServiceProvider;
+   public final StorageDocumentService getStorageDocumentService() {
+      return storageDocumentService;
    }
 
    /**
     * @param storageServiceProvider
     *           : La façade de services Storage DFCE.
     */
-   public final void setStorageServiceProvider(
-         StorageServiceProvider storageServiceProvider) {
-      this.storageServiceProvider = storageServiceProvider;
+   public final void setStorageServiceProvider(final StorageDocumentService storageDocumentService) {
+      this.storageDocumentService = storageDocumentService;
    }
 
 }

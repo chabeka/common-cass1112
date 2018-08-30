@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -24,11 +21,11 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
  * Pool de thread pour la suppression de masse dans DFCE
- * 
+ *
  */
 @Component
 public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
-      Serializable, DisposableBean {
+Serializable, DisposableBean {
 
    private static final long serialVersionUID = 1L;
 
@@ -41,12 +38,8 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
 
    private SuppressionMasseRuntimeException exception;
 
-  final Lock lock = new ReentrantLock();
-
-  final Condition waitCondition = lock.newCondition();
-
    private static final String PREFIX_TRACE = "SuppressionPoolExecutor()";
-   
+
    /**
     * Nombre de documents supprimés.
     */
@@ -54,7 +47,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
 
    /**
     * Constructeur
-    * 
+    *
     * @param poolConfiguration
     *           configuration du pool de suppression des documents dans DFCE
     * @param support
@@ -64,25 +57,25 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     */
    @Autowired
    public SuppressionPoolThreadExecutor(
-         SuppressionPoolConfiguration poolConfiguration,
-         InterruptionTraitementMasseSupport support,
-         InterruptionTraitementConfig config) {
+                                        final SuppressionPoolConfiguration poolConfiguration,
+                                        final InterruptionTraitementMasseSupport support,
+                                        final InterruptionTraitementConfig config) {
 
       super(poolConfiguration.getCorePoolSize(), poolConfiguration
             .getCorePoolSize(), 1, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
 
       Assert.notNull(support, "'support' is required");
-      
+
       LOGGER
       .debug(
-            "{} - Taille du pool de threads pour la suppression de masse dans DFCE: {}",
-            new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
+             "{} - Taille du pool de threads pour la suppression de masse dans DFCE: {}",
+             new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.config = config;
       this.support = support;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -94,21 +87,21 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
   /**
    * Attend que l'ensemble des threads aient bien terminé leur travail
    */
-  public final void waitFinishInsertion() {
-    try {
-      this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-    }
-    catch (final InterruptedException e) {
-      throw new IllegalStateException(e);
-    }
-  }
+   public final void waitFinishInsertion() {
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+      }
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
+      }
+   }
 
    /**
     * @param exception
     *           Mise à jour de la première erreur
     */
    protected final void setSuppressionException(
-         final SuppressionMasseRuntimeException exception) {
+                                                final SuppressionMasseRuntimeException exception) {
 
       if (getSuppressionMasseException() == null) {
          setSuppressionMasseRuntimeException(exception);
@@ -126,7 +119,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     * @param isInterrupted
     *           indicateur de traitement interrompu
     */
-   protected final void setIsInterrupted(Boolean isInterrupted) {
+   protected final void setIsInterrupted(final Boolean isInterrupted) {
       this.isInterrupted = isInterrupted;
    }
 
@@ -145,7 +138,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    }
 
    /**
-    * 
+    *
     * @return exception levée lors du traitement de suppression en masse
     */
    public final synchronized SuppressionMasseRuntimeException getSuppressionMasseException() {
@@ -157,7 +150,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     *           l'exception
     */
    protected void setSuppressionMasseRuntimeException(
-         SuppressionMasseRuntimeException exception) {
+                                                      final SuppressionMasseRuntimeException exception) {
       this.exception = exception;
    }
 
@@ -166,7 +159,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     *           le traitement en cours
     * @return le document concerné
     */
-   protected StorageDocument getDocumentFromRunnable(SuppressionRunnable runnable) {
+   protected StorageDocument getDocumentFromRunnable(final SuppressionRunnable runnable) {
       return runnable.getStorageDocument();
    }
 
@@ -174,11 +167,11 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
     * {@inheritDoc}
     */
    @Override
-   protected final void beforeExecute(Thread thread, Runnable runnable) {
+   protected final void beforeExecute(final Thread thread, final Runnable runnable) {
 
       super.beforeExecute(thread, runnable);
 
-      StorageDocument document = getDocumentFromRunnable((SuppressionRunnable) runnable);
+      final StorageDocument document = getDocumentFromRunnable((SuppressionRunnable) runnable);
 
       // on vérifie que le traitement ne doit pas s'interrompre
       final DateTime currentDate = new DateTime();
@@ -194,7 +187,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
 
                try {
                   this.wait();
-               } catch (InterruptedException e) {
+               } catch (final InterruptedException e) {
                   throw new IllegalStateException(e);
                }
 
@@ -216,14 +209,14 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
                // appel de la méthode de reconnexion
                getSupport().interruption(currentDate, getConfig());
 
-            } catch (InterruptionTraitementException e) {
+            } catch (final InterruptionTraitementException e) {
 
                // en cas d'échec de la reconnexion
 
                // levée d'une exception pour le document chargé de la
                // reconnexion
                this.setSuppressionException(new SuppressionMasseRuntimeException(
-                     document, e));
+                                                                                 document, e));
 
                // les autres Threads en attente sont interrompus définitivement
                this.shutdownNow();
@@ -244,53 +237,53 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
    }
 
    /**
-    * 
-    * 
+    *
+    *
     * Après chaque suppression, plusieurs cas possibles : <br>
     * <ol>
     * <li>la suppression a réussi : on incremente le compteur de suppression</li>
     * <li>la suppression a échouée : on shutdown le pool de suppression</li>
     * </ol>
-    * 
+    *
     * @param runnable
     *           le thread de suppression d'un document
     * @param throwable
     *           l'exception éventuellement levée lors de la suppression du document
-    * 
+    *
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
 
-      String trcPrefix = "afterExecute()";
+      final String trcPrefix = "afterExecute()";
 
       super.afterExecute(runnable, throwable);
-      
+
       synchronized (this) {
-         
+
          final StorageDocument document = getDocumentFromRunnable((SuppressionRunnable) runnable);
-   
+
          if (throwable == null) {
-   
+
             LOGGER.info("{} - Mise a la corbeille du document (uuid:{})",
-                  new Object[] { trcPrefix, document.getUuid().toString() });
-            
+                        new Object[] { trcPrefix, document.getUuid().toString() });
+
             nombreSupprimes++;
-   
+
          } else {
-   
+
             setSuppressionException((SuppressionMasseRuntimeException) throwable);
             // dès le premier échec les autres Threads en exécution ou pas sont
             // interrompus définitivement
             this.shutdownNow();
-   
+
          }
       }
    }
-   
+
    /**
     * Permet de récupérer le nombre de documents supprimés.
-    * 
+    *
     * @return int
     */
    public final int getNombreSupprimes() {
@@ -299,7 +292,7 @@ public class SuppressionPoolThreadExecutor extends ThreadPoolExecutor implements
 
    /**
     * Permet de modifier le nombre de documents supprimés.
-    * 
+    *
     * @param nombreSupprimes
     *           nombre de documents supprimés
     */

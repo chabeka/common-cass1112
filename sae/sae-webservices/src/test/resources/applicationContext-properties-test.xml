@@ -19,15 +19,7 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   <bean id="dfceConnectionTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.transfert.cheminFichierConfig}" />
-   </bean>
+   <!-- Les connexions vers DFCE -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
    
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
 </beans>

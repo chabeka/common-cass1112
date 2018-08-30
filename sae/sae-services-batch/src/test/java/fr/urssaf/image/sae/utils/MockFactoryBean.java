@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.utils;
 
@@ -9,6 +9,7 @@ import org.easymock.EasyMock;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.item.ItemProcessor;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.droit.service.SaeDroitService;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
@@ -20,7 +21,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.enrichment.SAEEnrichmentMetadataService;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
@@ -28,13 +28,13 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 
 /**
  * Classe de factory pour créer les mocks
- * 
+ *
  */
 public class MockFactoryBean {
 
    /**
     * Création d'un mock de storageDocumentService
-    * 
+    *
     * @return un mock StorageDocumentService
     */
    public final StorageDocumentService createStorageDocumentService() {
@@ -43,7 +43,7 @@ public class MockFactoryBean {
 
    /**
     * création d'un mock de CaptureMasseControleSupport
-    * 
+    *
     * @return un mock CaptureMasseControleSupport
     */
    public final CaptureMasseControleSupport createCaptureMasseControleSupport() {
@@ -51,19 +51,19 @@ public class MockFactoryBean {
    }
 
    /**
-    * 
+    *
     * @return instance de {@link DeletionService}
     */
    public final DeletionService createDeletionService() {
 
-      DeletionService service = EasyMock.createMock(DeletionService.class);
+      final DeletionService service = EasyMock.createMock(DeletionService.class);
 
       return service;
    }
 
    /**
     * création d'un mock de {@link SAEEnrichmentMetadataService}
-    * 
+    *
     * @return un mock SAEEnrichmentMetadataService
     */
    public final SAEEnrichmentMetadataService createEnrichmentMetaDataService() {
@@ -73,7 +73,7 @@ public class MockFactoryBean {
 
    /**
     * création d'un mock de {@link StorageServiceProvider}
-    * 
+    *
     * @return un mock StorageServiceProvider
     */
    public final StorageServiceProviderImpl createStorageServiceProvider() {
@@ -81,18 +81,10 @@ public class MockFactoryBean {
       return EasyMock.createMock(StorageServiceProviderImpl.class);
    }
 
-   /**
-    * création d'un mock de {@link DFCEServicesManager}
-    * 
-    * @return un mock DFCEServicesManager
-    */
-   public final DFCEServicesManager createServicesManager() {
-      return EasyMock.createMock(DFCEServicesManager.class);
-   }
 
    /**
     * création d'un mock {@link ItemProcessor}
-    * 
+    *
     * @return un mock ItemProcessor
     */
    @SuppressWarnings("unchecked")
@@ -102,7 +94,7 @@ public class MockFactoryBean {
 
    /**
     * création d'un mock {@link SAEDocumentService}
-    * 
+    *
     * @return un mock SAEDocumentService
     */
    public final SAEDocumentService createSaeDocumentService() {
@@ -110,7 +102,7 @@ public class MockFactoryBean {
    }
 
    /**
-    * 
+    *
     * @return instance de {@link InterruptionTraitementMasseSupport}
     */
    public final InterruptionTraitementMasseSupport createInterruptionTraitementMasseSupport() {
@@ -118,7 +110,7 @@ public class MockFactoryBean {
    }
 
    /**
-    * 
+    *
     * @return instance de {@link SAEControleSupportService}
     */
    public final SAEControleSupportService createControleSupportService() {
@@ -126,15 +118,15 @@ public class MockFactoryBean {
    }
 
    /**
-    * 
+    *
     * @return instance de {@link JobQueueService}
     */
    public final JobQueueService createJobQueueService() {
       return EasyMock.createMock(JobQueueService.class);
    }
-   
+
    /**
-    * 
+    *
     * @return instance de {@link SaeDroitService}
     */
    public final SaeDroitService createDroitService() {
@@ -161,5 +153,13 @@ public class MockFactoryBean {
    public final RollbackSupport createRollbackSupport() {
       return EasyMock.createMock(RollbackSupport.class);
    }
+
+   /**
+    * @return un mock de type {@link DFCEServices}
+    */
+   public final DFCEServices createDFCEServices() {
+      return EasyMock.createMock(DFCEServices.class);
+   }
+
 
 }

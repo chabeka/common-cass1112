@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * <li>@beforeStep : ouverture de la connexion DFCE</li>
  * <li>@afterStep : fermeture de la connexion DFCE</li>
  * </ul>
- * 
+ *
  */
 public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
@@ -34,13 +34,13 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    @Override
    protected void specificInitOperations() {
 
-      String trcPrefix = "specificInitOperations()";
+      final String trcPrefix = "specificInitOperations()";
 
       try {
          getServiceProvider().openConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
          getLogger().warn("{} - erreur de connexion à DFCE", trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
@@ -62,17 +62,17 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       // pour l'instant nous avons fait le choix de propager l'erreur
       // pour ne pas la cacher et attérir dans un état en erreur
 
-      String trcPrefix = "specificAfterStepOperations()";
+      final String trcPrefix = "specificAfterStepOperations()";
       ExitStatus exitStatus = getStepExecution().getExitStatus();
 
       try {
          getServiceProvider().closeConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
          getLogger().warn(
-               "{} - erreur lors de la fermeture de la base de données",
-               trcPrefix, e);
+                          "{} - erreur lors de la fermeture de la base de données",
+                          trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -99,19 +99,19 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    /**
     * Vérifie que le document est dans liste des document en erreur ou déjà
     * traité (Reprise). Renvoi True si c'est le cas, false sinon.
-    * 
+    *
     * @param index
     *           index du document traité
     * @return True si le document est dans liste des document en erreur ou déjà
     *         traité (Reprise), false sinon.
     */
-   protected boolean isDocumentATraite(int index) {
+   protected boolean isDocumentATraite(final int index) {
       boolean isdocumentATraite = true;
       if (isModePartielBatch() || isRepriseActifBatch()) {
          isdocumentATraite = isDocumentATraiteByListIndex(
-               getIndexErreurListe(), index)
+                                                          getIndexErreurListe(), index)
                && isDocumentATraiteByListIndex(getIndexRepriseDoneListe(),
-                     index);
+                                               index);
       }
 
       return isdocumentATraite;
@@ -120,16 +120,16 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    /**
     * Vérifie que le document a déjà été traité par le traitement nominal lors
     * de la reprise.
-    * 
+    *
     * @param index
     *           index du document
     * @return True si le document a déjà été traité, false sinon.
     */
-   protected boolean isDocumentDejaTraite(int index) {
+   protected boolean isDocumentDejaTraite(final int index) {
       boolean isdocumentDejaTraite = false;
       if (isRepriseActifBatch()) {
          isdocumentDejaTraite = !isDocumentATraiteByListIndex(
-               getIndexRepriseDoneListe(), index);
+                                                              getIndexRepriseDoneListe(), index);
       }
 
       return isdocumentDejaTraite;
@@ -138,7 +138,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    /**
     * Méthode permettant de voir si un index d'un document est présent dans une
     * liste d'index de type {@link ConcurrentLinkedQueue}
-    * 
+    *
     * @param indexListe
     *           liste d'index
     * @param index
@@ -147,10 +147,10 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
     *         sinon.
     */
    private boolean isDocumentATraiteByListIndex(
-         ConcurrentLinkedQueue<Integer> indexListe, int index) {
+                                                final ConcurrentLinkedQueue<Integer> indexListe, final int index) {
       // En mode PARTIEL, on regarde s'il y a une erreur de déclarer pour
       // l'item. Si c'est le cas, on ne le traite pas.
-      for (Integer indexDocError : indexListe) {
+      for (final Integer indexDocError : indexListe) {
          if (indexDocError == (getStepExecution().getReadCount() + index)) {
             return false;
          }

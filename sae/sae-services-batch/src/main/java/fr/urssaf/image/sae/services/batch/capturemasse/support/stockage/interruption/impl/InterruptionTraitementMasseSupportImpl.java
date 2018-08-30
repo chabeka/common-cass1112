@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.impl;
 
@@ -14,18 +14,17 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.util.InterruptionTraitementUtils;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
- * 
- * 
+ *
+ *
  */
 @Component
 public class InterruptionTraitementMasseSupportImpl implements
@@ -34,14 +33,14 @@ InterruptionTraitementMasseSupport {
    private static final Logger LOG = LoggerFactory
          .getLogger(InterruptionTraitementMasseSupportImpl.class);
 
-   private final DFCEServicesManager dfceManager;
+   private final DFCEServices dfceServices;
 
    private static final String CATCH = "AvoidCatchingThrowable";
 
    private final StorageServiceProvider serviceProvider;
 
    /**
-    * 
+    *
     * @param dfceManager
     *           ensemble des services de manipulation DFCE
     * @param serviceProvider
@@ -49,14 +48,14 @@ InterruptionTraitementMasseSupport {
     */
    @Autowired
    public InterruptionTraitementMasseSupportImpl(
-         final DFCEServicesManager dfceManager,
-         final @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider) {
+                                                 final DFCEServices dfceServices,
+                                                 final @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider) {
 
-      Assert.notNull(dfceManager, "'dfceManager' is required");
+      Assert.notNull(dfceServices, "'dfceServices' is required");
 
       Assert.notNull(serviceProvider, "'serviceProvider' is required");
 
-      this.dfceManager = dfceManager;
+      this.dfceServices = dfceServices;
       this.serviceProvider = serviceProvider;
 
    }
@@ -70,7 +69,7 @@ InterruptionTraitementMasseSupport {
    private long defaultDelay = DEFAULT_DELAY;
 
    /**
-    * 
+    *
     * @param defaultDelay
     *           temps d'attente en secondes entre chaque tentatives après la
     *           première
@@ -89,16 +88,16 @@ InterruptionTraitementMasseSupport {
     * Après la première tentative le delai d'attente entre chaque tentative est
     * fixé par {@link #setDelay(long)} en secondes.<br>
     * Par défaut cette valeur est fixé à {@value #DEFAULT_DELAY}
-    * 
-    * 
+    *
+    *
     */
    @Override
    public final void interruption(final DateTime currentDate,
-         InterruptionTraitementConfig config)
-               throws InterruptionTraitementException {
+                                  final InterruptionTraitementConfig config)
+                                        throws InterruptionTraitementException {
 
       final long diffTime = InterruptionTraitementUtils.waitTime(currentDate,
-            config);
+                                                                 config);
 
       if (diffTime > 0) {
 
@@ -108,7 +107,7 @@ InterruptionTraitementMasseSupport {
                .forPattern(DATE_TIME_PATTERN);
 
          LOG.debug("{} - Reprise prévue à {}", LOG_PREFIX, formatter
-               .print(endDate));
+                   .print(endDate));
 
          // On ne ferme pas la connexion avec DFCE pour éviter une levée
          // d'exception sur les Threads en cours d'exécution qui effectuent une
@@ -118,8 +117,8 @@ InterruptionTraitementMasseSupport {
          ConnectionResult connectionResult;
          try {
             connectionResult = pause(diffTime, null, config.getTentatives(),
-                  config.getTentatives(), dfceManager);
-         } catch (InterruptedException e) {
+                                     config.getTentatives(), dfceServices);
+         } catch (final InterruptedException e) {
             // Interruption lors de la mise en pause du traitement
             throw new InterruptionTraitementException(config, e);
          }
@@ -127,21 +126,21 @@ InterruptionTraitementMasseSupport {
          if (connectionResult.exception != null) {
 
             throw new InterruptionTraitementException(config,
-                  connectionResult.exception);
+                                                      connectionResult.exception);
          }
 
          LOG.debug(
-               "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
-               new Object[] { LOG_PREFIX, connectionResult.step,
-                     config.getTentatives() });
+                   "{} - Réussite de la tentative n°{}/{} de reconnexion à DFCE ",
+                   new Object[] { LOG_PREFIX, connectionResult.step,
+                                  config.getTentatives() });
 
       }
    }
 
    @SuppressWarnings(CATCH)
    private ConnectionResult pause(final long delay,
-         final Exception lastException, final int tentatives, final int total,
-         final DFCEServicesManager dfceManager) throws InterruptedException {
+                                  final Exception lastException, final int tentatives, final int total,
+                                  final DFCEServices dfceServices) throws InterruptedException {
 
       final int step = total - tentatives + 1;
 
@@ -154,51 +153,47 @@ InterruptionTraitementMasseSupport {
          final Duration duration = Duration.millis(delay);
 
          LOG.debug("{} - Interruption de {} secondes", LOG_PREFIX, duration
-               .getStandardSeconds());
+                   .getStandardSeconds());
 
          Thread.sleep(delay);
 
          try {
 
             LOG.debug("{} - Tentative n°{}/{} de reconnexion à DFCE",
-                  new Object[] { LOG_PREFIX, step, total });
+                      new Object[] { LOG_PREFIX, step, total });
 
-            dfceManager.getConnection(Boolean.TRUE);
-
-            // Reconnexion pour la couche storage
-            ((StorageServiceProviderImpl) serviceProvider)
-                  .getDfceServicesManager().getConnection();
+            dfceServices.reconnect();
 
             // réussite de la connexion à DFCE
 
             connectionResult.step = step;
             connectionResult.setLastException(null);
 
-         } catch (Exception e) {
+         } catch (final Exception e) {
 
             // échec de la connection
 
             final int newTentatives = tentatives - 1;
 
             LOG.debug(
-                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
-                  new Object[] { LOG_PREFIX, step, total });
+                      "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
+                      new Object[] { LOG_PREFIX, step, total });
 
             connectionResult = pause(this.defaultDelay, e, newTentatives,
-                  total, dfceManager);
+                                     total, dfceServices);
 
             /* erreur DFCE catchée */
-         } catch (Throwable throwable) {
+         } catch (final Throwable throwable) {
 
             final int newTentatives = tentatives - 1;
 
             LOG.debug(
-                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
-                  new Object[] { LOG_PREFIX, step, total });
+                      "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
+                      new Object[] { LOG_PREFIX, step, total });
 
             connectionResult = pause(this.defaultDelay,
-                  new ConnectionServiceEx("erreur de reconnexion", throwable),
-                  newTentatives, total, dfceManager);
+                                     new ConnectionServiceEx("erreur de reconnexion", throwable),
+                                     newTentatives, total, dfceServices);
          }
 
       }
@@ -222,12 +217,12 @@ InterruptionTraitementMasseSupport {
 
    /**
     * {@inheritDoc}
-    * 
-    * 
+    *
+    *
     */
    @Override
    public final boolean hasInterrupted(final DateTime currentDate,
-         final InterruptionTraitementConfig config) {
+                                       final InterruptionTraitementConfig config) {
 
       return InterruptionTraitementUtils.waitTime(currentDate, config) > 0;
    }

@@ -4,8 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
@@ -15,13 +14,17 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
  */
 @Service("storageServiceProvider")
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public class StorageServiceProviderImpl extends AbstractServiceProvider
-implements StorageServiceProvider {
+public class StorageServiceProviderImpl implements StorageServiceProvider {
 
    @Autowired
    @Qualifier("storageDocumentService")
    @SuppressWarnings("PMD.LongVariable")
    private StorageDocumentService storageDocumentService;
+
+   @Autowired
+   @Qualifier("dfceServices")
+   private DFCEServices dfceServices;
+
 
    /**
     * @return Les services d'insertion ,de recherche, de suppression,de
@@ -34,13 +37,13 @@ implements StorageServiceProvider {
 
    /**
     * Initialise la façade des services d'insertion ,de recherche,récupération
-    * 
+    *
     * @param storageDocumentService
     *           : la façade des services d'insertion ,de recherche,récupération
     */
    @SuppressWarnings("PMD.LongVariable")
    public void setStorageDocumentService(
-         final StorageDocumentService storageDocumentService) {
+                                         final StorageDocumentService storageDocumentService) {
       this.storageDocumentService = storageDocumentService;
    }
 
@@ -49,9 +52,7 @@ implements StorageServiceProvider {
     */
    @Override
    public void openConnexion() {
-      if (!dfceServicesManager.isActive()) {
-         dfceServicesManager.getConnection();
-      }
+      dfceServices.connectTheFistTime();
    }
 
    /**
@@ -59,15 +60,7 @@ implements StorageServiceProvider {
     */
    @Override
    public void closeConnexion() {
-      dfceServicesManager.closeConnection();
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public DFCEServicesManager getDfceServicesManager() {
-      return dfceServicesManager;
+      dfceServices.closeConnexion();
    }
 
 }

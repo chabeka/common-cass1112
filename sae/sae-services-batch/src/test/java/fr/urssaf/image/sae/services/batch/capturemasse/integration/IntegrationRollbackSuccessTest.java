@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.integration;
 
@@ -59,8 +59,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ObjectFa
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.resultats.ResultatsType;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -77,7 +75,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-batch-test.xml",
+                                   "/applicationContext-sae-services-batch-test.xml",
 "/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class IntegrationRollbackSuccessTest {
 
@@ -101,10 +99,6 @@ public class IntegrationRollbackSuccessTest {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
-
-   @Autowired
-   @Qualifier("dfceServicesManager")
-   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -134,33 +128,33 @@ public class IntegrationRollbackSuccessTest {
             + ecdeTestSommaire.getRepEcde());
 
       // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse", "recherche" };
+      final String[] roles = new String[] { "archivage_masse", "recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
-      TypeDocument typeDocCree = new TypeDocument();
+      final TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
@@ -176,7 +170,7 @@ public class IntegrationRollbackSuccessTest {
    public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      } catch (IOException e) {
+      } catch (final IOException e) {
          // rien a faire
       }
 
@@ -198,15 +192,15 @@ public class IntegrationRollbackSuccessTest {
       initGeneral();
       initDatas();
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      final ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+                                                             .getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
       Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+                         .isSucces());
 
       checkFiles();
 
@@ -223,15 +217,15 @@ public class IntegrationRollbackSuccessTest {
       initGeneral();
       initDatas();
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), uuid);
+      final ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+                                                             .getUrlEcde(), uuid);
 
       EasyMock.verify(provider, storageDocumentService);
 
       Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
+                         .isSucces());
 
       checkFiles();
 
@@ -247,16 +241,11 @@ public class IntegrationRollbackSuccessTest {
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
+                                                                      storageDocumentService).anyTimes();
 
-      EasyMock
-            .expect(
-                  ((StorageServiceProviderImpl) provider)
-                        .getDfceServicesManager())
-            .andReturn(dfceServicesManager).anyTimes();
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
-            .anyObject(UUID.class));
+                                                   .anyObject(UUID.class));
       EasyMock.expectLastCall().anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
@@ -266,100 +255,100 @@ public class IntegrationRollbackSuccessTest {
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initThrowable() throws ConnectionServiceEx, DeletionServiceEx,
    InsertionServiceEx, InsertionIdGedExistantEx {
-      StorageDocument storageDocument = new StorageDocument();
+      final StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-                  .andReturn(storageDocument).times(2);
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class)))
+      .andReturn(storageDocument).times(2);
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-                        new Error("erreur mémoire")).once();
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class))).andThrow(
+                                                                                                                new Error("erreur mémoire")).once();
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-                  .andReturn(storageDocument).anyTimes();
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class)))
+      .andReturn(storageDocument).anyTimes();
    }
 
    @SuppressWarnings("PMD.AvoidThrowingRawExceptionTypes")
    private void initRuntime() throws ConnectionServiceEx, DeletionServiceEx,
    InsertionServiceEx, InsertionIdGedExistantEx {
-      StorageDocument storageDocument = new StorageDocument();
+      final StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-                  .andReturn(storageDocument).times(2);
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class)))
+      .andReturn(storageDocument).times(2);
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class))).andThrow(
-                        new RuntimeException("erreur mémoire")).once();
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class))).andThrow(
+                                                                                                                new RuntimeException("erreur mémoire")).once();
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-                  .andReturn(storageDocument).anyTimes();
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class)))
+      .andReturn(storageDocument).anyTimes();
    }
 
    private void initDatas() throws IOException {
-      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
+      final File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      final ClassPathResource resSommaire = new ClassPathResource(
             "testhautniveau/rollbackSuccess/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
-      File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
-      ClassPathResource resAttestation1 = new ClassPathResource(
+      final File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
+      final ClassPathResource resAttestation1 = new ClassPathResource(
             "testhautniveau/rollbackSuccess/documents/doc1.PDF");
-      File fileAttestation1 = new File(repEcde, "doc1.PDF");
+      final File fileAttestation1 = new File(repEcde, "doc1.PDF");
       FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
    }
 
    private void checkFiles() throws IOException, JAXBException, SAXException {
 
-      File repTraitement = ecdeTestSommaire.getRepEcde();
-      File debut = new File(repTraitement, "debut_traitement.flag");
-      File fin = new File(repTraitement, "fin_traitement.flag");
-      File resultats = new File(repTraitement, "resultats.xml");
+      final File repTraitement = ecdeTestSommaire.getRepEcde();
+      final File debut = new File(repTraitement, "debut_traitement.flag");
+      final File fin = new File(repTraitement, "fin_traitement.flag");
+      final File resultats = new File(repTraitement, "resultats.xml");
 
       Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
+                        .exists());
       Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
+                        .exists());
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+                        .exists());
 
-      ResultatsType res = getResultats(resultats);
+      final ResultatsType res = getResultats(resultats);
 
       Assert.assertEquals("10 documents doivent être initialement présents",
-            Integer.valueOf(10), res.getInitialDocumentsCount());
+                          Integer.valueOf(10), res.getInitialDocumentsCount());
       Assert.assertEquals("10 documents doivent être rejetés", Integer
-            .valueOf(10), res.getNonIntegratedDocumentsCount());
+                          .valueOf(10), res.getNonIntegratedDocumentsCount());
       Assert.assertEquals("0 documents doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedDocumentsCount());
+                          .valueOf(0), res.getIntegratedDocumentsCount());
       Assert.assertEquals(
-            "0 documents virtuels doivent être initialement présents", Integer
-            .valueOf(0), res.getInitialVirtualDocumentsCount());
+                          "0 documents virtuels doivent être initialement présents", Integer
+                          .valueOf(0), res.getInitialVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être rejetés", Integer
-            .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
+                          .valueOf(0), res.getNonIntegratedVirtualDocumentsCount());
       Assert.assertEquals("0 documents virtuels doivent être intégrés", Integer
-            .valueOf(0), res.getIntegratedVirtualDocumentsCount());
+                          .valueOf(0), res.getIntegratedVirtualDocumentsCount());
 
       boolean erreurFound = false;
       int index = 0;
       int indexErreur = 0;
       List<ErreurType> listeErreurs;
-      List<NonIntegratedDocumentType> docs = res.getNonIntegratedDocuments()
+      final List<NonIntegratedDocumentType> docs = res.getNonIntegratedDocuments()
             .getNonIntegratedDocument();
       ErreurType erreurType;
       while (!erreurFound && index < docs.size()) {
 
          if (CollectionUtils.isNotEmpty(docs.get(index).getErreurs()
-               .getErreur())) {
+                                        .getErreur())) {
 
             indexErreur = 0;
             listeErreurs = docs.get(index).getErreurs().getErreur();
@@ -368,7 +357,7 @@ public class IntegrationRollbackSuccessTest {
 
                if (Constantes.ERR_BUL001.equals(erreurType.getCode())
                      && ERREUR_ATTENDUE.equalsIgnoreCase(erreurType
-                           .getLibelle())) {
+                                                         .getLibelle())) {
                   erreurFound = true;
                }
                indexErreur++;
@@ -388,11 +377,11 @@ public class IntegrationRollbackSuccessTest {
     * @throws IOException
     * @throws SAXException
     */
-   private ResultatsType getResultats(File resultats) throws JAXBException,
+   private ResultatsType getResultats(final File resultats) throws JAXBException,
    IOException, SAXException {
-      JAXBContext context = JAXBContext
+      final JAXBContext context = JAXBContext
             .newInstance(new Class[] { ObjectFactory.class });
-      Unmarshaller unmarshaller = context.createUnmarshaller();
+      final Unmarshaller unmarshaller = context.createUnmarshaller();
 
       final Resource classPath = applicationContext
             .getResource("classpath:xsd_som_res/resultats.xsd");
@@ -402,14 +391,15 @@ public class IntegrationRollbackSuccessTest {
 
       // Affectation du schéma XSD si spécifié
       if (xsdSchema != null) {
-         SchemaFactory schemaFactory = SchemaFactory
+         final SchemaFactory schemaFactory = SchemaFactory
                .newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
-         Schema schema = schemaFactory.newSchema(xsdSchema);
+         final Schema schema = schemaFactory.newSchema(xsdSchema);
          unmarshaller.setSchema(schema);
       }
 
       // Déclenche le unmarshalling
       @SuppressWarnings("unchecked")
+      final
       JAXBElement<ResultatsType> doc = (JAXBElement<ResultatsType>) unmarshaller
       .unmarshal(resultats);
 
@@ -417,19 +407,19 @@ public class IntegrationRollbackSuccessTest {
 
    }
 
-   private void checkLogs(String uuid) {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+   private void checkLogs(final String uuid) {
+      final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertNotNull("liste des messages non null", loggingEvents);
 
       Assert
       .assertTrue("Au moins un message présent", loggingEvents.size() > 0);
 
-      int nbreErreur = LogUtils.countLogsWithLevel(loggingEvents, Level.ERROR);
+      final int nbreErreur = LogUtils.countLogsWithLevel(loggingEvents, Level.ERROR);
 
       Assert.assertEquals("aucun message de niveau error", 0, nbreErreur);
 
-      boolean messageFound = LogUtils.logExists(loggingEvents, Level.WARN,
+      final boolean messageFound = LogUtils.logExists(loggingEvents, Level.WARN,
             "erreur mémoire");
 
       Assert.assertTrue("le message d'erreur doit être trouvé", messageFound);

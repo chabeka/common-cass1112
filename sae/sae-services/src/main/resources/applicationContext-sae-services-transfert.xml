@@ -8,37 +8,21 @@
       http://www.springframework.org/schema/context 
       http://www.springframework.org/schema/context/spring-context-3.0.xsd">
    
-   <bean id="transfertDFCEConnectionService" class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" autowire-candidate="false">
-      <constructor-arg ref="dfceConnectionTransfert"/>
-   </bean>
-   
-   <bean id="dfceServicesManagerTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.sae.storage.dfce.manager.impl.DFCEServicesManagerImpl">
-      <constructor-arg ref="dfceConnectionTransfert"/>
-      <constructor-arg ref="transfertDFCEConnectionService"/>
-   </bean>
-   
    <bean id="typeListTransfert" autowire-candidate="false"
       class="fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList">
-      <constructor-arg ref="dfceServicesManagerTransfert" />
-   </bean>
-   
-   <bean id="tracesDfceTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport">
-      <constructor-arg ref="dispatcherServiceTransfer" />
+      <constructor-arg ref="dfceServicesTransfert" />
    </bean>
    
    <bean id="transfertService" autowire-candidate="false"
       class="fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.TransfertServiceImpl">
      <constructor-arg ref="typeListTransfert" />
-     <constructor-arg ref="tracesDfceTransfert" />
-     <constructor-arg ref="dfceConnectionTransfert" />
+     <constructor-arg ref="tracesDfceSupport" />
+     <constructor-arg ref="dfceServicesTransfert" />
    </bean>
    
    <bean id="storageTransfertService" 
       class="fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.StorageTransfertServiceImpl">
-	  <constructor-arg ref="dfceServicesManagerTransfert" />
-     <constructor-arg ref="transfertService" />
+      <constructor-arg ref="transfertService" />
    </bean>
    
    <bean id="transfertCassandraClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory">
@@ -121,23 +105,5 @@
      <constructor-arg ref="transfertTraceRegTechniqueDao" />
      <constructor-arg ref="transfertTraceRegTechniqueIndexDao" />
    </bean>
-   <bean id="transfertServiceProviderSupport" autowire-candidate="false" 
-      class="fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport">
-     <constructor-arg ref="dfceConnectionTransfert" />
-     <constructor-arg ref="transfertDFCEConnectionService" />
-   </bean>
    
-   <bean id="dispatcherServiceTransfer" autowire-candidate="false" 
-      class="fr.urssaf.image.sae.trace.service.impl.DispatcheurServiceImpl">
-     <constructor-arg ref="transfertTraceJobClockSupport" />
-     <constructor-arg ref="transfertTraceDestinataireSupport" />
-     <constructor-arg ref="transfertTraceRegSecuriteSupport" />
-     <constructor-arg ref="transfertTraceRegTechniqueSupport" />
-     <constructor-arg ref="transfertTraceRegExploitationSupport" />
-     <constructor-arg ref="transfertTraceJournalEvtSupport" />
-     <constructor-arg ref="transfertServiceProviderSupport" />
-     <constructor-arg ref="transfertTimeUUIDEtTimestampSupport" />  
-   </bean>
-   
-
 </beans>

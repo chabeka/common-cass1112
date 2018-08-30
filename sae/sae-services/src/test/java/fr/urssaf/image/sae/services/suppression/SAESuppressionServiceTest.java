@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.document.Document;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -64,11 +62,11 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -76,10 +74,6 @@ public class SAESuppressionServiceTest {
 
    @Autowired
    private SAESuppressionService saeSuppressionService;
-
-   @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider provider;
 
    @Autowired
    private SAECaptureService insertService;
@@ -99,17 +93,15 @@ public class SAESuppressionServiceTest {
    private RndSupport rndSupport;
    @Autowired
    private JobClockSupport jobClockSupport;
-   
+
    private EcdeTestDocument ecde;
 
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      provider.closeConnexion();
-
       server.resetData();
-      
+
       if (ecde != null) {
          // supprime le repertoire ecde
          ecdeTestTools.cleanEcdeTestDocument(ecde);
@@ -122,33 +114,33 @@ public class SAESuppressionServiceTest {
 
       server.resetData();
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "suppression", "archivage_unitaire" };
+      final String[] roles = new String[] { "suppression", "archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression", saePrmds);
       saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
-      TypeDocument typeDocCree = new TypeDocument();
+      final TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
@@ -166,11 +158,11 @@ public class SAESuppressionServiceTest {
          saeSuppressionService.suppression(null);
          Assert.fail("une IllegalArgumentException est attendue");
 
-      } catch (IllegalArgumentException exception) {
+      } catch (final IllegalArgumentException exception) {
          Assert.assertTrue("le message doit etre correct", exception
-               .getMessage().contains("identifiant de l'archive"));
+                           .getMessage().contains("identifiant de l'archive"));
 
-      } catch (Exception exception) {
+      } catch (final Exception exception) {
          Assert.fail("une IllegalArgumentException est attendue");
       }
    }
@@ -178,58 +170,58 @@ public class SAESuppressionServiceTest {
    @Test
    public void testDocumentInexistant() {
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
       try {
          saeSuppressionService.suppression(uuid);
          Assert.fail("une erreur est attendue");
 
-      } catch (ArchiveInexistanteEx exception) {
+      } catch (final ArchiveInexistanteEx exception) {
          Assert
-               .assertEquals(
-                     "le message d'erreur doit être correct",
-                     StringUtils
-                           .replace(
-                                 "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                                 "{0}", uuid.toString()), exception
-                           .getMessage());
+         .assertEquals(
+                       "le message d'erreur doit être correct",
+                       StringUtils
+                       .replace(
+                                "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                                "{0}", uuid.toString()), exception
+                       .getMessage());
 
-      } catch (SuppressionException e) {
+      } catch (final SuppressionException e) {
          Assert.fail("une ArchiveInexistanteEx est attendue");
       }
    }
 
    @Test
    public void testSuccess() throws IOException, SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, SearchingServiceEx,
-         SuppressionException, ArchiveInexistanteEx,
-         ValidationExceptionInvalidFile, UnknownFormatException, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException {
-      
+   ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, SearchingServiceEx,
+   SuppressionException, ArchiveInexistanteEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException {
+
       ecde = ecdeTestTools.buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -239,7 +231,7 @@ public class SAESuppressionServiceTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", hash.toUpperCase()));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -248,19 +240,19 @@ public class SAESuppressionServiceTest {
       metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
       metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
 
-      UUID uuid = insertService.capture(metadatas, urlEcdeDocument).getIdDoc();
+      final UUID uuid = insertService.capture(metadatas, urlEcdeDocument).getIdDoc();
 
-      Document document = testProvider.searchDocument(uuid);
+      final Document document = testProvider.searchDocument(uuid);
 
       Assert.assertNotNull(
-            "le document vient d'être créé, il doit donc exister", document);
+                           "le document vient d'être créé, il doit donc exister", document);
 
       saeSuppressionService.suppression(uuid);
 
-      Document storageDocument = testProvider.searchDocument(uuid);
+      final Document storageDocument = testProvider.searchDocument(uuid);
 
       Assert.assertNull("le document ne doit pas exister", storageDocument);
-      
+
       // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
       fileDoc.delete();
    }

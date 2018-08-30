@@ -33,12 +33,9 @@
       </constructor-arg>
    </bean>
 
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-
    <import resource="classpath*:/applicationContext-sae-metadata.xml" />
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
+   <import resource="applicationContext-commons-dfce-connection.xml" />
 
 </beans>

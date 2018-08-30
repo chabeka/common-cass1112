@@ -45,9 +45,10 @@
 		<spring.security.version>3.0.5.RELEASE</spring.security.version>
 		<dozer.version>5.3.1</dozer.version>
 		<jackson-annotations.version>2.4.5</jackson-annotations.version>
+		<logback.version>0.9.30</logback.version>
 
 	</properties>
-
+   
 	<dependencies>
 
       <!-- DFCE -->
@@ -275,6 +276,14 @@
 			<version>${jackson-annotations.version}</version>
 		</dependency>
 
+		<!-- Logback, pour pouvoir voir les logs dans les tests unitaires -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -286,11 +295,20 @@
 
 	<build>
 		<plugins>
-
-         <!--
-            On spécifie la version du JDK et l'encodage de caractères
-            des sources
-         -->
+			<!-- Compilation Aspect -->
+			<plugin>
+				<inherited>true</inherited>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<configuration>
+					<argumentFileName>builddef-commons-dfce.lst</argumentFileName>
+				</configuration>
+			</plugin>
+			
+			<!--
+			On spécifie la version du JDK et l'encodage de caractères
+			des sources
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -301,12 +319,12 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
-
-         <!--
-            Dans le cas d'un packaging JAR, on demande que le JAR des
-            sources soit également généré
-         -->
+		
+		
+			<!--
+			Dans le cas d'un packaging JAR, on demande que le JAR des
+			sources soit également généré
+			-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -320,9 +338,9 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-         <!-- On spécifie l'encodage de caractères des ressources-->
+		
+		
+			<!-- On spécifie l'encodage de caractères des ressources-->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -331,8 +349,8 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-
-         <!-- On demande la génération de la Javadoc -->
+		
+			<!-- On demande la génération de la Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -350,8 +368,8 @@
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
-
-         <!-- Pour la gestion des release -->
+		
+			<!-- Pour la gestion des release -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>

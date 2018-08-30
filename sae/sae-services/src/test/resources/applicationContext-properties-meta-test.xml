@@ -35,21 +35,5 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-    <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
-   
-   <bean id="dfceConnectionTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.transfert.cheminFichierConfig}" />
-   </bean>   
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
 
 </beans>

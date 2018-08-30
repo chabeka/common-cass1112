@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.suppression.support.stockage.batch;
 
@@ -28,7 +28,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.suppression.exception.SuppressionMasseSearchException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -40,11 +39,11 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * Item reader permettant de récupérer les documents à partir de la requête lucene.
- * 
+ *
  */
 @Component
 @Scope("step")
-public class StorageDocumentReader 
+public class StorageDocumentReader
 implements ItemReader<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
@@ -106,15 +105,15 @@ implements ItemReader<StorageDocument> {
     */
    static {
       // En l'occurrence, on veut savoir si le document est gelé ou non
-      SAEMetadata metadataGel = new SAEMetadata(StorageTechnicalMetadatas.GEL.getLongCode(),
-            StorageTechnicalMetadatas.GEL.getShortCode(), null);
+      final SAEMetadata metadataGel = new SAEMetadata(StorageTechnicalMetadatas.GEL.getLongCode(),
+                                                      StorageTechnicalMetadatas.GEL.getShortCode(), null);
       DESIRED_METADATAS.add(metadataGel);
    }
 
    /**
     * Permet de verifier s'il y a un élément suivant.
     * @return boolean
-    * @throws SuppressionMasseSearchException 
+    * @throws SuppressionMasseSearchException
     */
    private boolean hasNext() throws SuppressionMasseSearchException {
       boolean hasNext;
@@ -124,7 +123,7 @@ implements ItemReader<StorageDocument> {
          if (lastIteration) {
             hasNext = false;
          } else {
-            // avant de faire appel à la base pour récupérer les éléments, on va tester qu'on est pas à l'heure 
+            // avant de faire appel à la base pour récupérer les éléments, on va tester qu'on est pas à l'heure
             // de l'interruption des serveurs
             gererInterruption();
             // on appelle la récupération des prochains éléments
@@ -148,7 +147,7 @@ implements ItemReader<StorageDocument> {
    /**
     * Permet de récupérer les prochains éléments.
     * @return boolean
-    * @throws SuppressionMasseSearchException 
+    * @throws SuppressionMasseSearchException
     */
    private boolean fetchMore() throws SuppressionMasseSearchException {
       PaginatedStorageDocuments paginatedStorageDocuments = null;
@@ -162,34 +161,31 @@ implements ItemReader<StorageDocument> {
          }
 
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
-         PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
+         final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                     MAX_PAR_PAGE, DESIRED_METADATAS, new ArrayList<AbstractFilter>(),
-                     lastIdDoc, "");
-
-         ((StorageServiceProviderImpl) storageServiceProvider)
-               .getDfceServicesManager().getConnection();
+                                                    MAX_PAR_PAGE, DESIRED_METADATAS, new ArrayList<AbstractFilter>(),
+                                                    lastIdDoc, "");
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchPaginatedStorageDocuments(
-                     paginatedLuceneCriteria);
+                                                                            paginatedLuceneCriteria);
 
          // recupere les infos de la requete
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
          if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
+            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
             lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
             hasMore = true;
          } else {
             hasMore = false;
          }
 
-      } catch (ConnectionServiceEx except) {
+      } catch (final ConnectionServiceEx except) {
          throw new SuppressionMasseSearchException(except);
-      } catch (SearchingServiceEx except) {
+      } catch (final SearchingServiceEx except) {
          throw new SuppressionMasseSearchException(except);
-      } catch (QueryParseServiceEx except) {
+      } catch (final QueryParseServiceEx except) {
          throw new SuppressionMasseSearchException(except);
       }
       return hasMore;
@@ -225,7 +221,7 @@ implements ItemReader<StorageDocument> {
 
          try {
             support.interruption(currentDate, config);
-         } catch (InterruptionTraitementException e) {
+         } catch (final InterruptionTraitementException e) {
             throw new SuppressionMasseSearchException(e);
          }
       }

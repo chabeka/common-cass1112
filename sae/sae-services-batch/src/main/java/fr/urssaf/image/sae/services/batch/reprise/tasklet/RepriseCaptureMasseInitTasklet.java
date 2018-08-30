@@ -40,7 +40,6 @@ import fr.urssaf.image.sae.services.batch.suppression.exception.SuppressionMasse
 import fr.urssaf.image.sae.services.exception.search.SyntaxLuceneEx;
 import fr.urssaf.image.sae.services.util.SAESearchUtil;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -141,8 +140,8 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
     * {@inheritDoc}
     */
    @Override
-   public RepeatStatus execute(StepContribution contribution,
-         ChunkContext chunkContext) throws Exception {
+   public RepeatStatus execute(final StepContribution contribution,
+                               final ChunkContext chunkContext) throws Exception {
       LOGGER.info("Début Rollback reprise archivage de masse");
       int incr = 0;
 
@@ -150,13 +149,13 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
             .getStepExecution();
 
       final String ident = stepExecution.getJobParameters().getString(
-            Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+                                                                      Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
 
       Assert.notNull(ident, "L'identifiant du job à reprendre est requis");
 
       final UUID idTraitement = UUID.fromString(ident);
 
-      JobRequest jobAReprendre = jobLectureService
+      final JobRequest jobAReprendre = jobLectureService
             .getJobRequest(idTraitement);
 
       Assert.notNull(jobAReprendre, "Le job à reprendre est requis");
@@ -175,28 +174,28 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       URI sommaireURL;
       try {
          sommaireURL = URI.create(urlECDE);
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
          throw new RepriseException("Erreur de parsing de l'url ECDE : "
                + e.getMessage(), idTraitement.toString());
       }
 
-      File sommaireFile = fileSupport.convertURLtoFile(sommaireURL);
+      final File sommaireFile = fileSupport.convertURLtoFile(sommaireURL);
 
       if (sommaireFile == null) {
          throw new RepriseException("Le fichier " + sommaireURL.toString()
-               + " ne peut être lu", idTraitement.toString());
+         + " ne peut être lu", idTraitement.toString());
       }
 
       stepExecution.getJobExecution().getExecutionContext()
       .put(Constantes.SOMMAIRE_FILE, sommaireFile.getAbsolutePath());
 
-      String batchmode = XmlReadUtils.getElementValue(sommaireFile,
-            Constantes.BATCH_MODE_ELEMENT_NAME);
+      final String batchmode = XmlReadUtils.getElementValue(sommaireFile,
+                                                            Constantes.BATCH_MODE_ELEMENT_NAME);
 
       if (batchmode == null || batchmode.isEmpty()
             || !BATCH_MODE.batchModeExist(batchmode)) {
          throw new RepriseException("Le mode du batch n'est pas reconnu",
-               idTraitement.toString());
+                                    idTraitement.toString());
       }
 
       if (BatchModeType.TOUT_OU_RIEN.name().equals(batchmode)) {
@@ -206,11 +205,11 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          try {
             // Vérification de la requête lucène
             SAESearchUtil.verifieSyntaxeLucene(requeteLucene);
-         } catch (SyntaxLuceneEx e) {
+         } catch (final SyntaxLuceneEx e) {
             throw new RepriseException(
-                  "La requete lucene de recherche des documents à supprimer est erroné : "
-                        + requeteLucene,
-                        idTraitement.toString());
+                                       "La requete lucene de recherche des documents à supprimer est erroné : "
+                                             + requeteLucene,
+                                             idTraitement.toString());
          }
 
          StorageDocument doc = null;
@@ -221,12 +220,12 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
             if (doc != null) {
                try {
                   LOGGER.debug("Suppression du document {} en cours", doc
-                        .getUuid().toString());
+                               .getUuid().toString());
                   support.rollback(doc.getUuid());
                   incr++;
                   LOGGER.debug("Fin suppression du document {} en cours", doc
-                        .getUuid().toString());
-               } catch (Exception e) {
+                               .getUuid().toString());
+               } catch (final Exception e) {
                   throw new RepriseException(e);
                }
                isFirstRound = false;
@@ -243,15 +242,15 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       }
 
       LOGGER.info(
-            "Fin Rollback reprise archivage de masse - Nombre documents supprimés = {}",
-            incr);
+                  "Fin Rollback reprise archivage de masse - Nombre documents supprimés = {}",
+                  incr);
 
       return RepeatStatus.FINISHED;
    }
 
    /**
     * Permet de verifier s'il y a un élément suivant.
-    * 
+    *
     * @return boolean
     * @throws SuppressionMasseSearchException
     */
@@ -281,7 +280,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
    /**
     * Recupere le prochain element.
-    * 
+    *
     * @return StorageDocument
     */
    private StorageDocument next() {
@@ -290,7 +289,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
    /**
     * Permet de récupérer les prochains éléments.
-    * 
+    *
     * @return boolean
     * @throws SuppressionMasseSearchException
     */
@@ -306,24 +305,21 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
          }
 
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
-         PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
+         final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                     limit > 0 ? limit : MAX_PAR_PAGE, DESIRED_METADATAS,
-                           new ArrayList<AbstractFilter>(), lastIdDoc, "");
-
-         ((StorageServiceProviderImpl) storageServiceProvider)
-               .getDfceServicesManager().getConnection();
+                                                    limit > 0 ? limit : MAX_PAR_PAGE, DESIRED_METADATAS,
+                                                          new ArrayList<AbstractFilter>(), lastIdDoc, "");
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchPaginatedStorageDocuments(
-                     paginatedLuceneCriteria);
+                                                                            paginatedLuceneCriteria);
 
          // recupere les infos de la requete
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments()
                .iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
          if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            int nbElements = paginatedStorageDocuments.getAllStorageDocuments()
+            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments()
                   .size();
             lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments()
                   .get(nbElements - 1).getUuid();
@@ -332,11 +328,11 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
             hasMore = false;
          }
 
-      } catch (ConnectionServiceEx except) {
+      } catch (final ConnectionServiceEx except) {
          throw new RepriseException(except);
-      } catch (SearchingServiceEx except) {
+      } catch (final SearchingServiceEx except) {
          throw new RepriseException(except);
-      } catch (QueryParseServiceEx except) {
+      } catch (final QueryParseServiceEx except) {
          throw new RepriseException(except);
       }
       return hasMore;
@@ -344,7 +340,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
    /**
     * Methode permettant de gerer la plage d'interruption.
-    * 
+    *
     * @throws SuppressionMasseSearchException
     */
    private void gererInterruption() throws RepriseException {
@@ -356,7 +352,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
          try {
             interruptionSupport.interruption(currentDate, config);
-         } catch (InterruptionTraitementException e) {
+         } catch (final InterruptionTraitementException e) {
             throw new RepriseException(e);
          }
       }

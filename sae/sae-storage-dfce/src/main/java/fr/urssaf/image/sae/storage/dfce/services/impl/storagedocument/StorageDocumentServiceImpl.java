@@ -11,8 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.DeletionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.InsertionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.SearchingServiceImpl;
@@ -57,13 +56,13 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
  * <li>{@link SearchingServiceImpl}</li>
  * <li>{@link DeletionServiceImpl}</li>
  * </ul>
- * 
+ *
  */
 @Service("storageDocumentService")
 @FacadePattern(participants = { InsertionServiceImpl.class,
-      RetrievalServiceImpl.class, SearchingServiceImpl.class,
-      DeletionServiceImpl.class }, comment = "Fournit les services des classes participantes")
-public class StorageDocumentServiceImpl extends AbstractServiceProvider
+                                RetrievalServiceImpl.class, SearchingServiceImpl.class,
+                                DeletionServiceImpl.class }, comment = "Fournit les services des classes participantes")
+public class StorageDocumentServiceImpl extends AbstractServices
 implements StorageDocumentService {
    @Autowired
    @Qualifier("insertionService")
@@ -106,31 +105,31 @@ implements StorageDocumentService {
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * @throws InsertionIdGedExistantEx
     */
 
    @Override
    public StorageDocument insertStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
+                                                final StorageDocument storageDocument) throws InsertionServiceEx,
+   InsertionIdGedExistantEx {
       return insertionService.insertStorageDocument(storageDocument);
    }
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * @throws InsertionIdGedExistantEx
     */
    @Override
    public StorageDocument insertBinaryStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
+                                                      final StorageDocument storageDocument) throws InsertionServiceEx,
+   InsertionIdGedExistantEx {
       return insertionService.insertBinaryStorageDocument(storageDocument);
    }
 
    /**
-    * 
+    *
     * @return Les services d'insertions
     */
    public final InsertionService getInsertionService() {
@@ -138,7 +137,7 @@ implements StorageDocumentService {
    }
 
    /**
-    * 
+    *
     * @return les services de recherche
     */
    public final SearchingService getSearchingService() {
@@ -146,7 +145,7 @@ implements StorageDocumentService {
    }
 
    /**
-    * 
+    *
     * @return les services de récupération
     */
    public final RetrievalService getRetrievalService() {
@@ -159,8 +158,8 @@ implements StorageDocumentService {
 
    @Override
    public StorageDocuments searchStorageDocumentByLuceneCriteria(
-         final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
-         QueryParseServiceEx {
+                                                                 final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
+   QueryParseServiceEx {
       return searchingService
             .searchStorageDocumentByLuceneCriteria(luceneCriteria);
    }
@@ -171,9 +170,9 @@ implements StorageDocumentService {
 
    @Override
    public StorageDocument searchStorageDocumentByUUIDCriteria(
-         final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
+                                                              final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
       return searchingService.searchStorageDocumentByUUIDCriteria(uUIDCriteria,
-            false);
+                                                                  false);
    }
 
    /**
@@ -181,7 +180,7 @@ implements StorageDocumentService {
     */
    @Override
    public final StorageDocument retrieveStorageDocumentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                              final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       return retrievalService.retrieveStorageDocumentByUUID(uUIDCriteria);
    }
 
@@ -191,7 +190,7 @@ implements StorageDocumentService {
 
    @Override
    public final byte[] retrieveStorageDocumentContentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                            final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       return retrievalService
             .retrieveStorageDocumentContentByUUID(uUIDCriteria);
    }
@@ -202,14 +201,14 @@ implements StorageDocumentService {
 
    @Override
    public List<StorageMetadata> retrieveStorageDocumentMetaDatasByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                                       final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       return retrievalService
             .retrieveStorageDocumentMetaDatasByUUID(uUIDCriteria);
    }
 
    /**
     * Initialise les services d'insertion
-    * 
+    *
     * @param insertionService
     *           : les services d'insertions
     */
@@ -219,7 +218,7 @@ implements StorageDocumentService {
 
    /**
     * Initialise les services de recherche
-    * 
+    *
     * @param searchingService
     *           : Le service de recherche
     */
@@ -229,7 +228,7 @@ implements StorageDocumentService {
 
    /**
     * Initialise les services de récupération
-    * 
+    *
     * @param retrievalService
     *           : les services de récupération
     */
@@ -251,7 +250,7 @@ implements StorageDocumentService {
     */
    @Override
    public StorageDocument searchMetaDatasByUUIDCriteria(
-         final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
+                                                        final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
       return searchingService.searchMetaDatasByUUIDCriteria(uuidCriteria);
    }
 
@@ -265,13 +264,13 @@ implements StorageDocumentService {
 
    @Override
    public StorageReferenceFile insertStorageReference(
-         VirtualStorageReference reference) throws InsertionServiceEx {
+                                                      final VirtualStorageReference reference) throws InsertionServiceEx {
       return insertionService.insertStorageReference(reference);
    }
 
    @Override
    public UUID insertVirtualStorageDocument(
-         VirtualStorageDocument document) throws InsertionServiceEx {
+                                            final VirtualStorageDocument document) throws InsertionServiceEx {
       return insertionService.insertVirtualStorageDocument(document);
    }
 
@@ -279,11 +278,11 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final void updateStorageDocument(UUID uuid,
-         List<StorageMetadata> modifiedMetadatas,
-         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
+   public final void updateStorageDocument(final UUID uuid,
+                                           final List<StorageMetadata> modifiedMetadatas,
+                                           final List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
       updateService.updateStorageDocument(null, uuid, modifiedMetadatas,
-            deletedMetadatas);
+                                          deletedMetadatas);
 
    }
 
@@ -291,14 +290,14 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void updateStorageDocument(UUID uuidJob, UUID uuid,
-         List<StorageMetadata> modifiedMetadatas,
-         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {      
+   public void updateStorageDocument(final UUID uuidJob, final UUID uuid,
+                                     final List<StorageMetadata> modifiedMetadatas,
+                                     final List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
       if( uuidJob== null){
          updateStorageDocument(uuid, modifiedMetadatas, deletedMetadatas);
       } else {
          updateService.updateStorageDocument(uuidJob, uuid, modifiedMetadatas,
-               deletedMetadatas);
+                                             deletedMetadatas);
       }
    }
 
@@ -316,8 +315,8 @@ implements StorageDocumentService {
     */
    @Override
    public PaginatedStorageDocuments searchPaginatedStorageDocuments(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
-               throws SearchingServiceEx, QueryParseServiceEx {
+                                                                    final PaginatedLuceneCriteria paginatedLuceneCriteria)
+                                                                          throws SearchingServiceEx, QueryParseServiceEx {
       return searchingService
             .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
    }
@@ -326,7 +325,7 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login)
+   public void addDocumentNote(final UUID docUuid, final String contenu, final String login)
          throws DocumentNoteServiceEx {
       documentNoteService.addDocumentNote(docUuid, contenu, login, null, null);
 
@@ -336,7 +335,7 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
+   public List<StorageDocumentNote> getDocumentsNotes(final UUID docUuid) {
       return documentNoteService.getDocumentNotes(docUuid);
    }
 
@@ -344,18 +343,18 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentAttachment(UUID docUuid, String docName,
-         String extension, DataHandler contenu)
-               throws StorageDocAttachmentServiceEx {
+   public void addDocumentAttachment(final UUID docUuid, final String docName,
+                                     final String extension, final DataHandler contenu)
+                                           throws StorageDocAttachmentServiceEx {
       documentAttachmentService.addDocumentAttachment(docUuid, docName,
-            extension, contenu);
+                                                      extension, contenu);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public StorageDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws StorageDocAttachmentServiceEx {
       return documentAttachmentService.getDocumentAttachments(docUuid);
    }
@@ -364,7 +363,7 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void moveStorageDocumentToRecycleBin(UUID uuid)
+   public void moveStorageDocumentToRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx {
       recycleBinService.moveStorageDocumentToRecycleBin(uuid);
    }
@@ -373,7 +372,7 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void restoreStorageDocumentFromRecycleBin(UUID uuid)
+   public void restoreStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx {
       recycleBinService.restoreStorageDocumentFromRecycleBin(uuid);
    }
@@ -382,18 +381,18 @@ implements StorageDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocumentFromRecycleBin(UUID uuid)
+   public void deleteStorageDocumentFromRecycleBin(final UUID uuid)
          throws RecycleBinServiceEx {
       recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
    }
 
    /**
     * {@inheritDoc}
-    * @throws IOException 
-    * @throws StorageException 
+    * @throws IOException
+    * @throws StorageException
     */
    @Override
-   public StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria)
+   public StorageDocument getStorageDocumentFromRecycleBin(final UUIDCriteria uuidCriteria)
          throws StorageException, IOException {
       return recycleBinService.getStorageDocumentFromRecycleBin(uuidCriteria);
    }
@@ -403,27 +402,20 @@ implements StorageDocumentService {
     */
    @Override
    public PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
-               throws SearchingServiceEx, QueryParseServiceEx {
+                                                                        final PaginatedLuceneCriteria paginatedLuceneCriteria)
+                                                                              throws SearchingServiceEx, QueryParseServiceEx {
       return searchingService
             .searchStorageDocumentsInRecycleBean(paginatedLuceneCriteria);
    }
 
    /**
     * Setter pour recycleBinService
-    * 
+    *
     * @param recycleBinService
     *           the recycleBinService to set
     */
-   public final void setRecycleBinService(RecycleBinService recycleBinService) {
+   public final void setRecycleBinService(final RecycleBinService recycleBinService) {
       this.recycleBinService = recycleBinService;
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final DFCEServicesManager getDfceServicesManager() {
-      return dfceServicesManager;
-   }
 }

@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 @Qualifier("saeDocumentAttachmentService")
 public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
-      implements SAEDocumentAttachmentService {
+implements SAEDocumentAttachmentService {
 
    private static final String SEPARATOR_STRING = ", ";
 
@@ -98,22 +98,22 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          .getLogger(SAEDocumentAttachmentServiceImpl.class);
 
    @Override
-   public void addDocumentAttachmentBinaire(UUID docUuid, String docName,
-         String extension, DataHandler contenu) throws SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx {
+   public void addDocumentAttachmentBinaire(final UUID docUuid, final String docName,
+                                            final String extension, final DataHandler contenu) throws SAEDocumentAttachmentEx,
+   ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "addDocumentAttachmentBinaire()";
+      final String prefixeTrc = "addDocumentAttachmentBinaire()";
 
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID document de rattachement : \"{}\"", prefixeTrc,
-            docUuid);
+                docUuid);
       LOG.debug("{} - Nom du fichier : \"{}\"", prefixeTrc, docName);
       LOG.debug("{} - Extension : \"{}\"", prefixeTrc, extension);
 
       if (contenu != null) {
          LOG.debug("{} - Taille du contenu du fichier : \"{}\"", prefixeTrc,
-               contenu);
+                   contenu);
       }
       // Fin des traces debug - entrée méthode
 
@@ -125,43 +125,43 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          verificationDroit(docUuid, prefixeTrc);
 
          storageService.addDocumentAttachment(docUuid, docName, extension,
-               contenu);
+                                              contenu);
 
          LOG.debug("{} - Sortie", prefixeTrc);
          // Fin des traces debug - sortie méthode
 
-      } catch (ConnectionServiceEx e) {
+      } catch (final ConnectionServiceEx e) {
          throw new SAEDocumentAttachmentEx(
-               "Erreur de connection au service de gestion des documents attachés",
-               e);
-      } catch (ReferentialException e) {
+                                           "Erreur de connection au service de gestion des documents attachés",
+                                           e);
+      } catch (final ReferentialException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (StorageDocAttachmentServiceEx e) {
+      } catch (final StorageDocAttachmentServiceEx e) {
          throw new SAEDocumentAttachmentEx(e);
       }
 
    }
 
    @Override
-   public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrl(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "addDocumentAttachmentUrl()";
+      final String prefixeTrc = "addDocumentAttachmentUrl()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID document de rattachement : \"{}\"", prefixeTrc,
-            docUuid);
+                docUuid);
       LOG.debug("{} - URI ECDE : \"{}\"", prefixeTrc, ecdeURL.toString());
       // Fin des traces debug - entrée méthode
 
@@ -170,43 +170,43 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
          controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
          // chargement du document de l'ECDE
-         File ecdeFile = loadEcdeFile(ecdeURL);
+         final File ecdeFile = loadEcdeFile(ecdeURL);
          controlesService.checkDocumentAttache(ecdeFile);
 
-         String docName = FilenameUtils.getBaseName(ecdeFile.getName());
-         String extension = FilenameUtils.getExtension(ecdeFile.getName());
+         final String docName = FilenameUtils.getBaseName(ecdeFile.getName());
+         final String extension = FilenameUtils.getExtension(ecdeFile.getName());
 
-         DataHandler contenu = new DataHandler(new FileDataSource(ecdeFile));
+         final DataHandler contenu = new DataHandler(new FileDataSource(ecdeFile));
 
          storageService.addDocumentAttachment(docUuid, docName, extension,
-               contenu);
+                                              contenu);
 
          LOG.debug("{} - Sortie", prefixeTrc);
          // Fin des traces debug - sortie méthode
 
-      } catch (ConnectionServiceEx e) {
+      } catch (final ConnectionServiceEx e) {
          throw new SAEDocumentAttachmentEx(
-               "Erreur de connection au service de gestion des documents attachés",
-               e);
-      } catch (ReferentialException e) {
+                                           "Erreur de connection au service de gestion des documents attachés",
+                                           e);
+      } catch (final ReferentialException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (StorageDocAttachmentServiceEx e) {
+      } catch (final StorageDocAttachmentServiceEx e) {
          throw new SAEDocumentAttachmentEx(e);
       }
 
    }
 
-   private void verificationDroit(UUID docUuid, String prefixeTrc)
+   private void verificationDroit(final UUID docUuid, final String prefixeTrc)
          throws ConnectionServiceEx, ReferentialException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          RetrievalServiceEx, ArchiveInexistanteEx, InvalidSAETypeException,
@@ -215,35 +215,34 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
       // On récupère le document sur lequel on souhaite ajouter un document
       // attaché pour
       // vérifier les droits
-      List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-      Map<String, MetadataReference> listeAllMeta = referenceDAO
+      final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      final Map<String, MetadataReference> listeAllMeta = referenceDAO
             .getAllMetadataReferences();
-      for (String mapKey : listeAllMeta.keySet()) {
+      for (final String mapKey : listeAllMeta.keySet()) {
          allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-               .getShortCode()));
+                                         .getShortCode()));
       }
-      UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
-      List<StorageMetadata> listeStorageMeta = this.getStorageServiceProvider()
-            .getStorageDocumentService()
+      final List<StorageMetadata> listeStorageMeta = this.getStorageDocumentService()
             .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
       if (listeStorageMeta.size() == 0) {
-         String message = StringUtils
+         final String message = StringUtils
                .replace(
-                     "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                     "{0}", docUuid.toString());
+                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                        "{0}", docUuid.toString());
          throw new ArchiveInexistanteEx(message);
       }
-      List<UntypedMetadata> listeUMeta = mappingService
+      final List<UntypedMetadata> listeUMeta = mappingService
             .storageMetadataToUntypedMetadata(listeStorageMeta);
 
       // Vérification des droits
       LOG.debug("{} - Récupération des droits", prefixeTrc);
-      AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+      final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
             .getContext().getAuthentication();
-      List<SaePrmd> saePrmds = token.getSaeDroits().get("ajout_doc_attache");
+      final List<SaePrmd> saePrmds = token.getSaeDroits().get("ajout_doc_attache");
       LOG.debug("{} - Vérification des droits", prefixeTrc);
-      boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+      final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
       if (!isPermitted) {
          throw new AccessDeniedException(
@@ -252,49 +251,48 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
    }
 
    /**
-    * 
+    *
     * @param ecdeURL
     * @return File.
     * @throws SAECaptureServiceEx
     *            {@link SAECaptureServiceEx}
     */
-   private File loadEcdeFile(URI ecdeURL) throws SAEDocumentAttachmentEx {
+   private File loadEcdeFile(final URI ecdeURL) throws SAEDocumentAttachmentEx {
       try {
          return ecdeServices.convertURIToFile(ecdeURL);
-      } catch (EcdeBadURLException e) {
+      } catch (final EcdeBadURLException e) {
          throw new SAEDocumentAttachmentEx(e);
-      } catch (EcdeBadURLFormatException e) {
+      } catch (final EcdeBadURLFormatException e) {
          throw new SAEDocumentAttachmentEx(e);
       }
 
    }
 
    @Override
-   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       // Traces debug - entrée méthode
-      String prefixeTrc = "getDocumentAttachment()";
+      final String prefixeTrc = "getDocumentAttachment()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID document de rattachement : \"{}\"", prefixeTrc,
-            docUuid);
+                docUuid);
       // Fin des traces debug - entrée méthode
 
       try {
 
-         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-         Map<String, MetadataReference> listeAllMeta = referenceDAO
+         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         final Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferencesPourVerifDroits();
-         for (String mapKey : listeAllMeta.keySet()) {
-               allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                     .getShortCode()));
+         for (final String mapKey : listeAllMeta.keySet()) {
+            allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
+                                            .getShortCode()));
          }
 
-         UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
+         final UUIDCriteria uuidCriteria = new UUIDCriteria(docUuid, allMeta);
 
          // On récupère le document à partir de l'UUID, avec toutes les
          // métadonnées du référentiel
-         StorageDocument storageDocument = this.getStorageServiceProvider()
-               .getStorageDocumentService()
+         final StorageDocument storageDocument = this.getStorageDocumentService()
                .retrieveStorageDocumentByUUID(uuidCriteria);
 
          UntypedDocument untypedDocument = null;
@@ -304,26 +302,26 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
                   .storageDocumentToUntypedDocument(storageDocument);
 
             LOG.debug("{} - Récupération des droits", prefixeTrc);
-            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                   .getContext().getAuthentication();
-            List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+            final List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
             LOG.debug("{} - Vérification des droits", prefixeTrc);
-            boolean isPermitted = prmdService.isPermitted(
-                  untypedDocument.getUMetadatas(), saePrmds);
+            final boolean isPermitted = prmdService.isPermitted(
+                                                                untypedDocument.getUMetadatas(), saePrmds);
 
             if (!isPermitted) {
                throw new AccessDeniedException(
                      "Le document est refusé à la consultation car les droits sont insuffisants");
             }
 
-            StorageDocumentAttachment documentAttache = storageService
+            final StorageDocumentAttachment documentAttache = storageService
                   .getDocumentAttachment(docUuid);
 
             LOG.debug("{} - Sortie", prefixeTrc);
             // Fin des traces debug - sortie méthode
 
             if (documentAttache != null) {
-               UntypedDocumentAttachment uDocumentAttache = this.mappingService
+               final UntypedDocumentAttachment uDocumentAttache = this.mappingService
                      .storageDocumentAttachmentToUntypedDocumentAttachment(documentAttache);
                return uDocumentAttache;
             } else {
@@ -331,55 +329,55 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
             }
 
          } else {
-            String message = StringUtils
+            final String message = StringUtils
                   .replace(
-                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                        "{0}", docUuid.toString());
+                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                           "{0}", docUuid.toString());
             throw new ArchiveInexistanteEx(message);
          }
 
-      } catch (StorageDocAttachmentServiceEx e) {
+      } catch (final StorageDocAttachmentServiceEx e) {
          throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
-      } catch (ReferentialException e) {
+                                           "Une exception a eu lieu lors de la récupération du document au format d'origine",
+                                           e);
+      } catch (final ReferentialException e) {
          throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
-      } catch (RetrievalServiceEx e) {
+                                           "Une exception a eu lieu lors de la récupération du document au format d'origine",
+                                           e);
+      } catch (final RetrievalServiceEx e) {
          throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
-      } catch (InvalidSAETypeException e) {
+                                           "Une exception a eu lieu lors de la récupération du document au format d'origine",
+                                           e);
+      } catch (final InvalidSAETypeException e) {
          throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
-      } catch (MappingFromReferentialException e) {
+                                           "Une exception a eu lieu lors de la récupération du document au format d'origine",
+                                           e);
+      } catch (final MappingFromReferentialException e) {
          throw new SAEDocumentAttachmentEx(
-               "Une exception a eu lieu lors de la récupération du document au format d'origine",
-               e);
+                                           "Une exception a eu lieu lors de la récupération du document au format d'origine",
+                                           e);
       }
 
    }
 
    @Override
-   public void addDocumentAttachmentBinaireRollbackParent(UUID docUuid,
-         String docName, String extension, DataHandler contenu)
-         throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
-         EmptyFileNameEx {
+   public void addDocumentAttachmentBinaireRollbackParent(final UUID docUuid,
+                                                          final String docName, final String extension, final DataHandler contenu)
+                                                                throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
+                                                                EmptyFileNameEx {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "addDocumentAttachmentBinaireRollbackParent()";
+      final String prefixeTrc = "addDocumentAttachmentBinaireRollbackParent()";
 
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID document de rattachement : \"{}\"", prefixeTrc,
-            docUuid);
+                docUuid);
       LOG.debug("{} - Nom du fichier : \"{}\"", prefixeTrc, docName);
       LOG.debug("{} - Extension : \"{}\"", prefixeTrc, extension);
 
       if (contenu != null) {
          LOG.debug("{} - Taille du contenu du fichier : \"{}\"", prefixeTrc,
-               contenu);
+                   contenu);
       }
       // Fin des traces debug - entrée méthode
 
@@ -391,51 +389,51 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
          verificationDroit(docUuid, prefixeTrc);
 
          storageService.addDocumentAttachment(docUuid, docName, extension,
-               contenu);
+                                              contenu);
 
          LOG.debug("{} - Sortie", prefixeTrc);
          // Fin des traces debug - sortie méthode
 
-      } catch (ConnectionServiceEx e) {
+      } catch (final ConnectionServiceEx e) {
          try {
             storageService.deleteStorageDocument(docUuid);
             throw new SAEDocumentAttachmentEx(
-                  "Erreur de connection au service de gestion des documents attachés",
-                  e);
-         } catch (DeletionServiceEx e1) {
+                                              "Erreur de connection au service de gestion des documents attachés",
+                                              e);
+         } catch (final DeletionServiceEx e1) {
 
-            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+            final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                   + docUuid + ") n'a pas été effectué";
             throw new SAEDocumentAttachmentEx(message, e);
          }
-      } catch (ReferentialException e) {
+      } catch (final ReferentialException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (StorageDocAttachmentServiceEx e) {
+      } catch (final StorageDocAttachmentServiceEx e) {
          rollBackDocumentParent(docUuid, e);
       }
 
    }
 
    @Override
-   public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrlRollbackParent(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "addDocumentAttachmentUrlRollbackParent()";
+      final String prefixeTrc = "addDocumentAttachmentUrlRollbackParent()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID document de rattachement : \"{}\"", prefixeTrc,
-            docUuid);
+                docUuid);
       LOG.debug("{} - URI ECDE : \"{}\"", prefixeTrc, ecdeURL.toString());
       // Fin des traces debug - entrée méthode
 
@@ -444,73 +442,73 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
          controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
          // chargement du document de l'ECDE
-         File ecdeFile = loadEcdeFile(ecdeURL);
+         final File ecdeFile = loadEcdeFile(ecdeURL);
          controlesService.checkDocumentAttache(ecdeFile);
 
-         String docName = FilenameUtils.getBaseName(ecdeFile.getName());
-         String extension = FilenameUtils.getExtension(ecdeFile.getName());
+         final String docName = FilenameUtils.getBaseName(ecdeFile.getName());
+         final String extension = FilenameUtils.getExtension(ecdeFile.getName());
 
-         DataHandler contenu = new DataHandler(new FileDataSource(ecdeFile));
+         final DataHandler contenu = new DataHandler(new FileDataSource(ecdeFile));
 
          storageService.addDocumentAttachment(docUuid, docName, extension,
-               contenu);
+                                              contenu);
          LOG.debug("{} - Sortie", prefixeTrc);
          // Fin des traces debug - sortie méthode
 
-      } catch (ConnectionServiceEx e) {
+      } catch (final ConnectionServiceEx e) {
          try {
             storageService.deleteStorageDocument(docUuid);
             throw new SAEDocumentAttachmentEx(
-                  "Erreur de connection au service de gestion des documents attachés",
-                  e);
-         } catch (DeletionServiceEx e1) {
+                                              "Erreur de connection au service de gestion des documents attachés",
+                                              e);
+         } catch (final DeletionServiceEx e1) {
 
-            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+            final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                   + docUuid + ") n'a pas été effectué";
             throw new SAEDocumentAttachmentEx(message, e);
          }
 
-      } catch (ReferentialException e) {
+      } catch (final ReferentialException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (UnknownDesiredMetadataEx e) {
+      } catch (final UnknownDesiredMetadataEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
+      } catch (final MetaDataUnauthorizedToConsultEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (StorageDocAttachmentServiceEx e) {
+      } catch (final StorageDocAttachmentServiceEx e) {
          rollBackDocumentParent(docUuid, e);
-      } catch (CaptureEcdeUrlFileNotFoundEx e) {
+      } catch (final CaptureEcdeUrlFileNotFoundEx e) {
          try {
             storageService.deleteStorageDocument(docUuid);
             throw e;
-         } catch (DeletionServiceEx e1) {
+         } catch (final DeletionServiceEx e1) {
 
-            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+            final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                   + docUuid + ") n'a pas été effectué";
             throw new SAEDocumentAttachmentEx(message, e);
          }
-      } catch (CaptureBadEcdeUrlEx e) {
+      } catch (final CaptureBadEcdeUrlEx e) {
          try {
             storageService.deleteStorageDocument(docUuid);
             throw e;
-         } catch (DeletionServiceEx e1) {
+         } catch (final DeletionServiceEx e1) {
 
-            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+            final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                   + docUuid + ") n'a pas été effectué";
             throw new SAEDocumentAttachmentEx(message, e);
          }
-      } catch (EmptyDocumentEx e) {
+      } catch (final EmptyDocumentEx e) {
          try {
             storageService.deleteStorageDocument(docUuid);
             throw e;
-         } catch (DeletionServiceEx e1) {
+         } catch (final DeletionServiceEx e1) {
 
-            String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+            final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                   + docUuid + ") n'a pas été effectué";
             throw new SAEDocumentAttachmentEx(message, e);
          }
@@ -518,14 +516,14 @@ public class SAEDocumentAttachmentServiceImpl extends AbstractSAEServices
 
    }
 
-   private void rollBackDocumentParent(UUID docUuid, Exception e)
+   private void rollBackDocumentParent(final UUID docUuid, final Exception e)
          throws SAEDocumentAttachmentEx {
       try {
          storageService.deleteStorageDocument(docUuid);
          throw new SAEDocumentAttachmentEx(e);
-      } catch (DeletionServiceEx e1) {
+      } catch (final DeletionServiceEx e1) {
 
-         String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
+         final String message = "Erreur lors de l'ajout d'un document attaché, ATTENTION, le rollback du document parent ("
                + docUuid + ") n'a pas été effectué";
          throw new SAEDocumentAttachmentEx(message, e);
       }

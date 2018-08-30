@@ -12,12 +12,6 @@
       <constructor-arg value="config/sae-config-test.properties" />
    </bean>
 
-
    <import resource="applicationContext-commons-dfce-connection.xml" />
-
-   <bean id="dfceConnectionService "
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
 
 </beans>

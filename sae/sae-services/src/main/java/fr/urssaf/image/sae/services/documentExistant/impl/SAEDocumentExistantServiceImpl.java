@@ -14,26 +14,26 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 @Service
 public class SAEDocumentExistantServiceImpl implements
-      SAEDocumentExistantService {
+SAEDocumentExistantService {
 
    @Autowired
    private MetadataReferenceDAO referenceDAO;
-   
+
    @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider serviceProvider;
-   
+   @Qualifier("storageDocumentService")
+   private StorageDocumentService storageDocumentService;
+
 
    @Override
-   public boolean documentExistant(UUID idGed) throws 
-          SearchingServiceEx, ConnectionServiceEx {
-      UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
-            new ArrayList<StorageMetadata>());
-      StorageDocument document = serviceProvider.getStorageDocumentService()
+   public boolean documentExistant(final UUID idGed) throws
+   SearchingServiceEx, ConnectionServiceEx {
+      final UUIDCriteria uuidCrit = new UUIDCriteria(idGed,
+                                                     new ArrayList<StorageMetadata>());
+      final StorageDocument document = storageDocumentService
             .searchMetaDatasByUUIDCriteria(uuidCrit);
       if (document == null || (document != null && document.getUuid() == null)) {
          return false;

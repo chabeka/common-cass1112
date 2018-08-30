@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.DesiredMetaData;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 
 /**
  * Cette clase contient les tests des services de gestion du fichier xml contenant les
@@ -30,18 +28,13 @@ public class SaeDocumentProviderTest {
    @Autowired
    private CommonsServices commonsServices;
 
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
-
    @Test
    @SuppressWarnings( { "PMD.AvoidInstantiatingObjectsInLoops",
-         "PMD.DataflowAnomalyAnalysis" })
+   "PMD.DataflowAnomalyAnalysis" })
    public void getSaeDocumentsFromXML() throws FileNotFoundException {
-      File file[] = new File[Constants.XML_PATH_DOC_WITHOUT_ERROR.length];
+      final File file[] = new File[Constants.XML_PATH_DOC_WITHOUT_ERROR.length];
       int numFile = 0;
-      for (String pathFile : Constants.XML_PATH_DOC_WITHOUT_ERROR) {
+      for (final String pathFile : Constants.XML_PATH_DOC_WITHOUT_ERROR) {
          file[numFile] = new File(pathFile);
          numFile++;
       }
@@ -54,7 +47,7 @@ public class SaeDocumentProviderTest {
    public void getDesiredMetadatas() throws IOException {
       final DesiredMetaData saeMetaData = commonsServices.getXmlDataService()
             .desiredMetaDataReader(
-                  new File(Constants.XML_FILE_DESIRED_MDATA[0]));
+                                   new File(Constants.XML_FILE_DESIRED_MDATA[0]));
       Assert.assertNotNull(saeMetaData);
    }
 }

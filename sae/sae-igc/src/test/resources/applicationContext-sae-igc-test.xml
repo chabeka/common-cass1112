@@ -28,21 +28,9 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   <bean id="dfceConnectionService "
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConfig" />
-   </bean>
-   
-      <!-- Création du bean de connexion à DFCE -->
-   <bean id="dfceConfig"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfigurationResource">
-      <constructor-arg>
-         <bean class="org.springframework.core.io.FileSystemResource">
-            <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-         </bean>
-      </constructor-arg>
-   </bean>
+   <!-- Création du bean de connexion à DFCE -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
+   <import resource="applicationContext-commons-cassandra.xml" />
 
    <import resource="applicationContext-sae-igc.xml" />
 

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
@@ -17,12 +17,12 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * classe mère des listeners de rollback
- * 
+ *
  * @param <BOT>
  *           classe backoffice
  * @param <CAPT>
  *           classe de capture
- * 
+ *
  */
 public abstract class AbstractRollbackListener<BOT, CAPT> {
 
@@ -30,29 +30,29 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
 
    /**
     * Ouverture de la connexion à DFCE au début du rollback
-    * 
+    *
     * @param stepExecution
     *           étape de rollback
     */
    @SuppressWarnings(CATCH)
    @BeforeStep
-   public final void beforeRollback(StepExecution stepExecution) {
+   public final void beforeRollback(final StepExecution stepExecution) {
 
-      String trcPrefix = "beforeRollback()";
-      int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
+      final String trcPrefix = "beforeRollback()";
+      final int nbDocsIntegres = getExecutor().getIntegratedDocuments().size();
 
       try {
          getServiceProvider().openConnexion();
 
          /* on catch les throwable de DFCE */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
 
-         String idTraitement = stepExecution.getJobParameters()
+         final String idTraitement = stepExecution.getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);
 
-         String errorMessage = MessageFormat.format(
-               "{0} - Une exception a été levée lors du rollback : {1}",
-               trcPrefix, idTraitement);
+         final String errorMessage = MessageFormat.format(
+                                                          "{0} - Une exception a été levée lors du rollback : {1}",
+                                                          trcPrefix, idTraitement);
 
          getLogger().warn(errorMessage, e);
 
@@ -61,10 +61,10 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
             getLogger()
             .error(
 
-                  "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
-                  idTraitement);
+                   "Le traitement de masse n°{} doit être rollbacké par une procédure d'exploitation",
+                   idTraitement);
             stepExecution.getJobExecution().getExecutionContext().put(
-                  Constantes.FLAG_BUL003, Boolean.TRUE);
+                                                                      Constantes.FLAG_BUL003, Boolean.TRUE);
          }
 
          throw new CaptureMasseRuntimeException(e);
@@ -80,34 +80,34 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
       }
 
       stepExecution.getExecutionContext().putInt(Constantes.COUNT_ROLLBACK,
-            countRollback);
+                                                 countRollback);
    }
 
    /**
     * Fermeture de la connexion à DFCE à la fin du rollback
-    * 
+    *
     * @param stepExecution
     *           étape de rollback
     */
    @AfterStep
    @SuppressWarnings(CATCH)
-   public final void afterRollback(StepExecution stepExecution) {
+   public final void afterRollback(final StepExecution stepExecution) {
 
       // pour l'instant nous avons fait le choix de propager l'erreur
       // pour ne pas la cacher et attérir dans un état en erreur
 
-      String trcPrefix = "afterRollback()";
+      final String trcPrefix = "afterRollback()";
 
       try {
          // On stocke le nombre de document intégrés
          stepExecution.getJobExecution().getExecutionContext().put(
-               Constantes.NB_INTEG_DOCS,
-               getExecutor().getIntegratedDocuments().size());
+                                                                   Constantes.NB_INTEG_DOCS,
+                                                                   getExecutor().getIntegratedDocuments().size());
 
          getServiceProvider().closeConnexion();
 
          /* on catch car DFCE renvoie des throwables */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
 
          getLogger().warn("{} - Fermeture de la base impossible", trcPrefix, e);
          throw new CaptureMasseRuntimeException(e);

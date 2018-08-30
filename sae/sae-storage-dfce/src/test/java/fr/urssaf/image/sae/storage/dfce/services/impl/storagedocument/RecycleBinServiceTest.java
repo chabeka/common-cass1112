@@ -7,8 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,6 +34,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import junit.framework.Assert;
 
 /**
  * Classe de test du service
@@ -48,11 +47,6 @@ public class RecycleBinServiceTest {
 
    @Autowired
    private CommonsServices commonsServices;
-
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
 
    @Autowired
    private TraceAssertUtils traceAssertUtils;
@@ -67,27 +61,27 @@ public class RecycleBinServiceTest {
 
       // Initialisation des droits
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      final String[] roles = new String[] { "archivage_unitaire" };
       saePrmds.add(saePrmd);
       saeDroits.put("archivage_unitaire", saePrmds);
 
       viExtrait.setSaeDroits(saeDroits);
 
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
    }
@@ -105,115 +99,115 @@ public class RecycleBinServiceTest {
     * Test du service :
     * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.RecycleBinServiceImpl#moveStorageDocumentToRecycleBin(java.util.UUID)
     * moveStorageDocumentToRecycleBin}
-    * 
+    *
     * @throws ConnectionServiceEx
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void moveStorageDocumentToRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
+   ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
             .getMockData(commonsServices.getInsertionService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(storageDoc.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       try {
          commonsServices.getRecycleBinService().moveStorageDocumentToRecycleBin(
-               uuidCriteria.getUuid());
-      } catch (RecycleBinServiceEx e) {
+                                                                                uuidCriteria.getUuid());
+      } catch (final RecycleBinServiceEx e) {
          Assert.assertTrue("La mise a la corbeille a échoué " + e.getMessage(), true);
       }
       Assert.assertNull(commonsServices.getRetrievalService()
-            .retrieveStorageDocumentByUUID(uuidCriteria));
+                        .retrieveStorageDocumentByUUID(uuidCriteria));
 
       // Vérifie la traçabilité
       traceAssertUtils.verifieAucuneTraceDansRegistres();
       traceAssertUtils.verifieTraceDepotEtMiseEnCorbeilleDfceDansJournalSae(
-            storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                                                                            storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
             "SHA-1");
 
       // supprime le doc
-      commonsServices.destroyMockForRecycleBinTest(storageDoc.getUuid(), commonsServices.getRecycleBinService()); 
+      commonsServices.destroyMockForRecycleBinTest(storageDoc.getUuid(), commonsServices.getRecycleBinService());
    }
 
    /**
     * Test du service :
     * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.RecycleBinServiceImpl#restoreStorageDocumentFromRecycleBin(java.util.UUID)
     * restoreStorageDocumentFromRecycleBin}
-    * 
+    *
     * @throws ConnectionServiceEx
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void restoreStorageDocumentFromRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, DeletionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
+   ParseException, RetrievalServiceEx, DeletionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
             .getMockDataForRecycleBin(commonsServices.getInsertionService(),
-                  commonsServices.getRecycleBinService());
+                                      commonsServices.getRecycleBinService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(storageDoc.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       try {
          commonsServices.getRecycleBinService().restoreStorageDocumentFromRecycleBin(
-               uuidCriteria.getUuid());
-      } catch (RecycleBinServiceEx e) {
+                                                                                     uuidCriteria.getUuid());
+      } catch (final RecycleBinServiceEx e) {
          Assert.assertTrue("La restore de la corbeille a échoué " + e.getMessage(), true);
       }
       Assert.assertNotNull(commonsServices.getRetrievalService()
-            .retrieveStorageDocumentByUUID(uuidCriteria));
+                           .retrieveStorageDocumentByUUID(uuidCriteria));
 
       // Vérifie la traçabilité
       traceAssertUtils.verifieAucuneTraceDansRegistres();
       traceAssertUtils.verifieTraceDepotEtRestoreCorbeilleDfceDansJournalSae(
-            storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                                                                             storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
             "SHA-1");
 
       // supprime le doc
       commonsServices.destroyMockTest(storageDoc.getUuid(), commonsServices.getDeletionService());
    }
-   
+
    /**
     * Test du service :
     * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.RecycleBinServiceImpl#deleteStorageDocumentFromRecycleBin(java.util.UUID)
     * deleteStorageDocumentFromRecycleBin}
-    * 
+    *
     * @throws ConnectionServiceEx
     *            ConnectionServiceEx Exception lévée lorsque la connexion
     *            n'aboutie pas.
     * @throws RetrievalServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void deleteStorageDocumentFromRecycleBin() throws InsertionServiceEx, IOException,
-         ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
+   ParseException, RetrievalServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
 
       // Initialisation des jeux de données UUID
       final StorageDocument storageDoc = commonsServices
             .getMockDataForRecycleBin(commonsServices.getInsertionService(),
-                  commonsServices.getRecycleBinService());
+                                      commonsServices.getRecycleBinService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(storageDoc.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       try {
          commonsServices.getRecycleBinService().deleteStorageDocumentFromRecycleBin(
-               uuidCriteria.getUuid());
-      } catch (RecycleBinServiceEx e) {
+                                                                                    uuidCriteria.getUuid());
+      } catch (final RecycleBinServiceEx e) {
          Assert.assertTrue("La mise a la corbeille a échoué " + e.getMessage(), true);
       }
       Assert.assertNull(commonsServices.getRetrievalService()
-            .retrieveStorageDocumentByUUID(uuidCriteria));
+                        .retrieveStorageDocumentByUUID(uuidCriteria));
 
       // Vérifie la traçabilité
       traceAssertUtils.verifieAucuneTraceDansRegistres();
       traceAssertUtils.verifieTraceDepotEtMiseEnCorbeilleEtSuppressionDfceDansJournalSae(
-            storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
+                                                                                         storageDoc.getUuid(), "a2f93f1f121ebba0faef2c0596f2f126eacae77b",
             "SHA-1");
 
    }

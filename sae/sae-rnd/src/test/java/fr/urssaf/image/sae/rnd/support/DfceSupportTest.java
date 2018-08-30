@@ -3,11 +3,6 @@ package fr.urssaf.image.sae.rnd.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.docubase.toolkit.model.reference.LifeCycleRule;
-import net.docubase.toolkit.model.reference.LifeCycleStep;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.administration.StorageAdministrationService;
-
 import org.apache.commons.lang.StringUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -20,34 +15,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.docubase.dfce.exception.ObjectAlreadyExistsException;
+
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
-
-import com.docubase.dfce.exception.ObjectAlreadyExistsException;
-
-import fr.urssaf.image.commons.dfce.service.DFCEConnectionService;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.rnd.exception.DfceRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
+import net.docubase.toolkit.model.reference.LifeCycleRule;
+import net.docubase.toolkit.model.reference.LifeCycleStep;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
 public class DfceSupportTest {
 
+   // Mock
    @Autowired
-   private ServiceProvider serviceProvider;
-
-   @Autowired
-   private DFCEConnectionService dfceConnectionService;
-
-   @Autowired
-   private StorageAdministrationService storageAdministrationService;
+   private DFCEServices dfceServices;
 
    @Autowired
    private LifeCycleRule lifeCycleRule;
-   
+
    @Autowired
    private LifeCycleStep lifeCycleStep;
 
@@ -68,8 +59,7 @@ public class DfceSupportTest {
 
    @After
    public void after() throws Exception {
-      EasyMock.reset(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule, lifeCycleStep);
+      EasyMock.reset(dfceServices, lifeCycleRule, lifeCycleStep);
 
       logger.detachAppender(logAppender);
    }
@@ -80,8 +70,8 @@ public class DfceSupportTest {
 
       initComposantsNouveauCode();
 
-      List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
-      TypeDocument typeDoc1 = new TypeDocument();
+      final List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
+      final TypeDocument typeDoc1 = new TypeDocument();
       typeDoc1.setCloture(false);
       typeDoc1.setCode("1.1.1.1.1");
       typeDoc1.setCodeActivite("1");
@@ -96,8 +86,7 @@ public class DfceSupportTest {
 
       checkLogsNouveauCode();
 
-      EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule, lifeCycleStep);
+      EasyMock.verify(dfceServices, lifeCycleRule, lifeCycleStep);
 
    }
 
@@ -107,8 +96,8 @@ public class DfceSupportTest {
 
       initComposantsCodeExistantDureeIdentique();
 
-      List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
-      TypeDocument typeDoc1 = new TypeDocument();
+      final List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
+      final TypeDocument typeDoc1 = new TypeDocument();
       typeDoc1.setCloture(false);
       typeDoc1.setCode("1.1.1.1.1");
       typeDoc1.setCodeActivite("1");
@@ -123,8 +112,7 @@ public class DfceSupportTest {
 
       checkLogsCodeExistantDureeIdentique();
 
-      EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule, lifeCycleStep);
+      EasyMock.verify(dfceServices, lifeCycleRule, lifeCycleStep);
 
    }
 
@@ -139,8 +127,8 @@ public class DfceSupportTest {
 
       initComposantsCodeExistantDureeDifferenteEtException();
 
-      List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
-      TypeDocument typeDoc1 = new TypeDocument();
+      final List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
+      final TypeDocument typeDoc1 = new TypeDocument();
       typeDoc1.setCloture(false);
       typeDoc1.setCode("1.1.1.1.1");
       typeDoc1.setCodeActivite("1");
@@ -155,11 +143,11 @@ public class DfceSupportTest {
          dfceSupport.updateLifeCycleRule(listeTypeDocs);
          Assert.fail("Une exception DfceRuntimeException aurait dû être levée");
 
-      } catch (DfceRuntimeException ex) {
+      } catch (final DfceRuntimeException ex) {
          Assert.assertEquals(
-               "Le message de l'exception levée n'est pas celui attendu",
-               "Erreur sur la mise à jour du type de document 1.1.1.1.1 dans DFCE",
-               ex.getMessage());
+                             "Le message de l'exception levée n'est pas celui attendu",
+                             "Erreur sur la mise à jour du type de document 1.1.1.1.1 dans DFCE",
+                             ex.getMessage());
       }
 
    }
@@ -170,8 +158,8 @@ public class DfceSupportTest {
 
       initComposantsCodeExistantDureeDifferente();
 
-      List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
-      TypeDocument typeDoc1 = new TypeDocument();
+      final List<TypeDocument> listeTypeDocs = new ArrayList<TypeDocument>();
+      final TypeDocument typeDoc1 = new TypeDocument();
       typeDoc1.setCloture(false);
       typeDoc1.setCode("1.1.1.1.1");
       typeDoc1.setCodeActivite("1");
@@ -186,156 +174,137 @@ public class DfceSupportTest {
 
       checkLogsCodeExistantDureeDifferente();
 
-      EasyMock.verify(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule, lifeCycleStep);
+      EasyMock.verify(dfceServices, lifeCycleRule, lifeCycleStep);
 
    }
 
    private void initComposantsNouveauCode() throws ObjectAlreadyExistsException {
-      initDfce();
       initStorageAdministrationCreate();
       replay();
    }
 
    private void initComposantsCodeExistantDureeIdentique() {
-      initDfce();
       initLifeCycleRule(3000);
       // Réglage storageAdministrationService
       EasyMock
-            .expect(
-                  storageAdministrationService.getLifeCycleRule(EasyMock
-                        .anyObject(String.class))).andReturn(lifeCycleRule)
-            .anyTimes();
+      .expect(
+              dfceServices.getLifeCycleRule(EasyMock
+                                            .anyObject(String.class))).andReturn(lifeCycleRule)
+      .anyTimes();
       replay();
    }
 
    private void initComposantsCodeExistantDureeDifferente() {
-      initDfce();
       initLifeCycleRule(5000);
       initStorageAdministrationUpdate();
       replay();
    }
 
    private void initComposantsCodeExistantDureeDifferenteEtException() {
-      initDfce();
       initLifeCycleRule(5000);
       initStorageAdministrationUpdateAvecExceptionJiraCRTL113();
       replay();
    }
 
    private void replay() {
-      EasyMock.replay(serviceProvider, dfceConnectionService,
-            storageAdministrationService, lifeCycleRule, lifeCycleStep);
+      EasyMock.replay(dfceServices, lifeCycleRule, lifeCycleStep);
    }
 
-   private void initDfce() {
-      // Réglage dfce
-      serviceProvider.connect(EasyMock.anyObject(String.class),
-            EasyMock.anyObject(String.class), EasyMock.anyObject(String.class),
-            EasyMock.anyInt());
-      EasyMock.expectLastCall().anyTimes();
-      serviceProvider.disconnect();
-      EasyMock.expectLastCall().anyTimes();
-      EasyMock.expect(serviceProvider.getStorageAdministrationService())
-            .andReturn(storageAdministrationService).anyTimes();
-      EasyMock.expect(dfceConnectionService.openConnection())
-            .andReturn(serviceProvider).anyTimes();
-   }
 
-   private void initLifeCycleRule(int duree) {
+   private void initLifeCycleRule(final int duree) {
       // Réglage de lifeCycleStep
       EasyMock.expect(lifeCycleStep.getLength()).andReturn(duree)
-            .anyTimes();
+      .anyTimes();
       // Réglage de lifeCycleRule
-      List<LifeCycleStep> steps = new ArrayList<LifeCycleStep>();
+      final List<LifeCycleStep> steps = new ArrayList<LifeCycleStep>();
       steps.add(lifeCycleStep);
       EasyMock.expect(lifeCycleRule.getSteps()).andReturn(steps)
-            .anyTimes();
+      .anyTimes();
    }
 
    private void initStorageAdministrationCreate()
          throws ObjectAlreadyExistsException {
       // Réglage storageAdministrationService
       EasyMock
-            .expect(
-                  storageAdministrationService.getLifeCycleRule(EasyMock
-                        .anyObject(String.class))).andReturn(null).anyTimes();
+      .expect(
+              dfceServices.getLifeCycleRule(EasyMock
+                                            .anyObject(String.class))).andReturn(null).anyTimes();
 
       EasyMock.expect(
-            storageAdministrationService.createNewLifeCycleRule(
-                  EasyMock.anyObject(LifeCycleRule.class))).andReturn(
-            lifeCycleRule);
+                      dfceServices.createNewLifeCycleRule(
+                                                          EasyMock.anyObject(LifeCycleRule.class))).andReturn(
+                                                                                                              lifeCycleRule);
    }
 
    private void initStorageAdministrationUpdate() {
       // Réglage storageAdministrationService
       EasyMock
-            .expect(
-                  storageAdministrationService.getLifeCycleRule(EasyMock
-                        .anyObject(String.class))).andReturn(lifeCycleRule)
-            .anyTimes();
-      
+      .expect(
+              dfceServices.getLifeCycleRule(EasyMock
+                                            .anyObject(String.class))).andReturn(lifeCycleRule)
+      .anyTimes();
+
       EasyMock.expect(
-            storageAdministrationService.updateLifeCycleRule(
-                  EasyMock.anyObject(LifeCycleRule.class))).andReturn(
-            lifeCycleRule);
+                      dfceServices.updateLifeCycleRule(
+                                                       EasyMock.anyObject(LifeCycleRule.class))).andReturn(
+                                                                                                           lifeCycleRule);
    }
 
    private void initStorageAdministrationUpdateAvecExceptionJiraCRTL113() {
       // Réglage storageAdministrationService
       // avec levée d'une exception
       EasyMock
-            .expect(
-                  storageAdministrationService.getLifeCycleRule(EasyMock
-                        .anyObject(String.class))).andReturn(lifeCycleRule)
-            .anyTimes();
+      .expect(
+              dfceServices.getLifeCycleRule(EasyMock
+                                            .anyObject(String.class))).andReturn(lifeCycleRule)
+      .anyTimes();
 
       EasyMock
-            .expect(
-                  storageAdministrationService.updateLifeCycleRule(
-                        EasyMock.anyObject(LifeCycleRule.class)))
-            .andThrow(
-                  new IllegalStateException(
-                        "no life cycle rule update can be made as long as previous rule history was not handled"));
+      .expect(
+              dfceServices.updateLifeCycleRule(
+                                               EasyMock.anyObject(LifeCycleRule.class)))
+      .andThrow(
+                new IllegalStateException(
+                                          "no life cycle rule update can be made as long as previous rule history was not handled"));
 
    }
 
    private void checkLogsNouveauCode() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+      final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertTrue(
-            "Message de log d'info incorrect",
-            loggingEvents != null
-                  && loggingEvents.size() > 0
-                  && "updateLifeCycleRule - Ajout du code : 1.1.1.1.1"
+                        "Message de log d'info incorrect",
+                        loggingEvents != null
+                        && loggingEvents.size() > 0
+                        && "updateLifeCycleRule - Ajout du code : 1.1.1.1.1"
                         .equals(loggingEvents.get(0).getFormattedMessage()));
 
    }
 
    private void checkLogsCodeExistantDureeIdentique() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+      final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertTrue("Message de log d'info doit être vide",
-            loggingEvents != null && compteNbLogInfo(loggingEvents) == 0);
+                        loggingEvents != null && compteNbLogInfo(loggingEvents) == 0);
 
    }
 
    private void checkLogsCodeExistantDureeDifferente() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+      final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertTrue(
-            "Message de log d'info incorrect",
-            loggingEvents != null
-                  && compteNbLogInfo(loggingEvents) == 1
-                  && "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (5000 => 3000) !"
+                        "Message de log d'info incorrect",
+                        loggingEvents != null
+                        && compteNbLogInfo(loggingEvents) == 1
+                        && "updateLifeCycleRule - La durée de conservation du code 1.1.1.1.1 a été modifiée (5000 => 3000) !"
                         .equals(recupPremierLogInfo(loggingEvents)));
    }
 
-   private int compteNbLogInfo(List<ILoggingEvent> loggingEvents) {
+   private int compteNbLogInfo(final List<ILoggingEvent> loggingEvents) {
 
       int comptage = 0;
       if (loggingEvents != null) {
-         for (ILoggingEvent loggingEvent : loggingEvents) {
+         for (final ILoggingEvent loggingEvent : loggingEvents) {
             if (loggingEvent.getLevel() == Level.INFO) {
                comptage++;
             }
@@ -345,10 +314,10 @@ public class DfceSupportTest {
 
    }
 
-   private String recupPremierLogInfo(List<ILoggingEvent> loggingEvents) {
+   private String recupPremierLogInfo(final List<ILoggingEvent> loggingEvents) {
       String result = StringUtils.EMPTY;
       if (loggingEvents != null) {
-         for (ILoggingEvent loggingEvent : loggingEvents) {
+         for (final ILoggingEvent loggingEvent : loggingEvents) {
             if (loggingEvent.getLevel() == Level.INFO) {
                result = loggingEvent.getFormattedMessage();
                break;

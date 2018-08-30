@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
@@ -9,15 +9,14 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.dfce.model.DFCEConnection;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractTransfertServices;
+import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
@@ -35,17 +34,17 @@ import fr.urssaf.image.sae.storage.services.storagedocument.TransfertService;
  * Classe d'implémentation de l'interface {@link TransfertService}. Cette classe
  * est un singleton et peut être accessible via le mécanisme d'injection IOC et
  * l'annotation @Autowired
- * 
+ *
  */
 @Component
-public class TransfertServiceImpl extends AbstractTransfertServices implements
+public class TransfertServiceImpl implements
 TransfertService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(TransfertServiceImpl.class);
 
    /**
-    * On injecte DocumentsTypeList mannuellement(xml) paramétré avec la
+    * On injecte DocumentsTypeList manuellement(xml) paramétré avec la
     * connexion DFCE de transfert pour éviter les conflits avec celle existante.
     */
    private DocumentsTypeList typeList;
@@ -53,13 +52,22 @@ TransfertService {
    private TracesDfceSupport tracesSupport;
 
    /**
+    * Il s'agit des services DFCE du DFCE DISTANT (cible du transfert, GNS)
+    */
+   protected DFCEServices dfceServices;
+
+   @Autowired
+   protected StorageDocumentServiceSupport storageDocumentServiceSupport;
+
+
+   /**
     * Constructeur
     */
-   public TransfertServiceImpl(DocumentsTypeList typeList,
-         TracesDfceSupport tracesSupport, DFCEConnection cnxParameters) {
+   public TransfertServiceImpl(final DocumentsTypeList typeList,
+                               final TracesDfceSupport tracesSupport, final DFCEServices dfceServices) {
       this.typeList = typeList;
       this.tracesSupport = tracesSupport;
-      this.cnxParameters = cnxParameters;
+      this.dfceServices = dfceServices;
    }
 
    /**
@@ -69,17 +77,19 @@ TransfertService {
       super();
    }
 
+   public DFCEServices getDfceServices() {
+      return dfceServices;
+   }
+
    /**
     * {@inheritDoc}
     */
    @Override
    public StorageDocument searchStorageDocumentByUUIDCriteria(
-         UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
-      ServiceProvider dfceService = getDfceService();
-      DFCEConnection cnxParams = getCnxParameters();
+                                                              final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
       return storageDocumentServiceSupport
             .searchStorageDocumentByUUIDCriteriaWithoutDocContent(
-            dfceService, cnxParams, uUIDCriteria, false, LOGGER);
+                                                                  dfceServices, uUIDCriteria, false, LOGGER);
    }
 
    /**
@@ -87,36 +97,30 @@ TransfertService {
     */
    @Override
    public StorageDocument insertBinaryStorageDocument(
-         StorageDocument storageDocument) throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
-      ServiceProvider dfceService = getDfceService();
-      DFCEConnection cnxParams = getCnxParameters();
-      return storageDocumentServiceSupport.insertBinaryStorageDocument(
-            dfceService, cnxParams, typeList, storageDocument, LOGGER,
-            tracesSupport);
+                                                      final StorageDocument storageDocument) throws InsertionServiceEx,
+   InsertionIdGedExistantEx {
+      return storageDocumentServiceSupport.insertBinaryStorageDocument(dfceServices, typeList, storageDocument, LOGGER,
+                                                                       tracesSupport);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocument(UUID uuid) throws DeletionServiceEx {
-      ServiceProvider dfceService = getDfceService();
-      DFCEConnection cnxParams = getCnxParameters();
-      // -- Suppression du ducument
-      storageDocumentServiceSupport.deleteStorageDocument(dfceService,
-            cnxParams, uuid, LOGGER, tracesSupport);
+   public void deleteStorageDocument(final UUID uuid) throws DeletionServiceEx {
+      // -- Suppression du document
+      storageDocumentServiceSupport.deleteStorageDocument(dfceServices,
+                                                          uuid, LOGGER, tracesSupport);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login,
-         Date dateCreation, UUID noteUuid) throws DocumentNoteServiceEx {
-      ServiceProvider dfceService = getDfceService();
-      storageDocumentServiceSupport.addDocumentNote(dfceService, docUuid,
-            contenu, login, dateCreation, noteUuid, LOGGER);
+   public void addDocumentNote(final UUID docUuid, final String contenu, final String login,
+                               final Date dateCreation, final UUID noteUuid) throws DocumentNoteServiceEx {
+      storageDocumentServiceSupport.addDocumentNote(dfceServices, docUuid,
+                                                    contenu, login, dateCreation, noteUuid, LOGGER);
 
    }
 
@@ -124,36 +128,30 @@ TransfertService {
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid) {
-      ServiceProvider dfceService = getDfceService();
-      return storageDocumentServiceSupport.getDocumentNotes(dfceService,
-            docUuid, LOGGER);
+   public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid) {
+      return storageDocumentServiceSupport.getDocumentNotes(dfceServices,
+                                                            docUuid, LOGGER);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentAttachment(UUID docUuid, String docName,
-         String extension, DataHandler contenu)
-               throws StorageDocAttachmentServiceEx {
-      ServiceProvider dfceService = getDfceService();
-      DFCEConnection cnxParams = getCnxParameters();
-      storageDocumentServiceSupport.addDocumentAttachment(dfceService,
-            cnxParams, docUuid, docName, extension, contenu, LOGGER,
-            tracesSupport);
+   public void addDocumentAttachment(final UUID docUuid, final String docName,
+                                     final String extension, final DataHandler contenu)
+                                           throws StorageDocAttachmentServiceEx {
+      storageDocumentServiceSupport.addDocumentAttachment(dfceServices,
+                                                          docUuid, docName, extension, contenu, LOGGER,
+                                                          tracesSupport);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public StorageDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws StorageDocAttachmentServiceEx {
-      ServiceProvider dfceService = getDfceService();
-      DFCEConnection cnxParams = getCnxParameters();
-      return storageDocumentServiceSupport.getDocumentAttachment(dfceService,
-            cnxParams, docUuid, LOGGER);
+      return storageDocumentServiceSupport.getDocumentAttachment(dfceServices, docUuid, LOGGER);
    }
 
 }

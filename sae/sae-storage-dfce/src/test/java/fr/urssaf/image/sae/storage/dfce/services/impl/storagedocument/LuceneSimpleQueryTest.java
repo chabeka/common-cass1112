@@ -10,9 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +23,6 @@ import fr.urssaf.image.sae.storage.dfce.data.model.LuceneQuery;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -34,6 +30,7 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.LuceneCriteria;
+import junit.framework.Assert;
 
 /**
  * Classe de test des services de recherche.
@@ -46,30 +43,25 @@ public class LuceneSimpleQueryTest {
    @Autowired
    private CommonsServices commonsServices;
 
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
-
    /**
     * Test de recherche par requête Lucene.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithWildcard() throws SearchingServiceEx,
-         IOException, ParseException, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
+   IOException, ParseException, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("wildcard");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
-    * 
+    *
     * @throws FileNotFoundException
     *            Exception lévée lorsque le fichier n'existe pas.
     * @throws IOException
@@ -78,125 +70,125 @@ public class LuceneSimpleQueryTest {
     *            Exception lévée
     * @throws InsertionServiceEx
     *            Exception lévée
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    private void createStorageDocument() throws FileNotFoundException,
-         IOException, ParseException, InsertionServiceEx, InsertionIdGedExistantEx {
+   IOException, ParseException, InsertionServiceEx, InsertionIdGedExistantEx {
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
-                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+                               new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
       commonsServices.getInsertionService().insertStorageDocument(
-            storageDocument);
+                                                                  storageDocument);
    }
 
    /**
     * Test de recherche par requête Lucene.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueries() throws SearchingServiceEx, InsertionServiceEx,
-         IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       final Map<String, LuceneCriteria> queries = buildQueries("simple");
       createStorageDocument();
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
     * Test de recherche par requête Lucene.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithRange() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("range");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
     * Test de recherche par requête Lucene.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorAnd() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAnd");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorOr() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorOr");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorAndOr() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorAndOr");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
    }
 
    /**
     * Test de recherche par requête Lucene avec l'opérateur OR.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    @Ignore
    public void luceneQueriesWithOperatorNot() throws SearchingServiceEx,
-         InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, ParseException, QueryParseServiceEx, InsertionIdGedExistantEx {
       createStorageDocument();
       final Map<String, LuceneCriteria> queries = buildQueries("withOperatorNot");
-      for (Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
+      for (final Map.Entry<String, LuceneCriteria> query : queries.entrySet()) {
          Assert.assertTrue(query.getKey(), commonsServices
-               .getSearchingService().searchStorageDocumentByLuceneCriteria(
-                     query.getValue()).getAllStorageDocuments().size() > 0);
+                           .getSearchingService().searchStorageDocumentByLuceneCriteria(
+                                                                                        query.getValue()).getAllStorageDocuments().size() > 0);
       }
 
    }
 
    /**
     * Permet de construire une serie de requête lucene à partir d'un type.
-    * 
+    *
     * @param queryType
     *           : Le type de requête.
     * @return Une liste de requête suivant le type de requête en entrée.
@@ -206,7 +198,7 @@ public class LuceneSimpleQueryTest {
     *            Exception lévée
     * @throws InsertionServiceEx
     *            Exception lévée
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public Map<String, LuceneCriteria> buildQueries(final String queryType)
@@ -215,17 +207,17 @@ public class LuceneSimpleQueryTest {
       final LuceneQueries queries = commonsServices.getXmlDataService()
             .queriesReader(new File(Constants.XML_FILE_QUERIES[0]));
       final Map<String, LuceneCriteria> luceneCriteria = new HashMap<String, LuceneCriteria>();
-      for (LuceneQuery query : queries.getLuceneQuery()) {
+      for (final LuceneQuery query : queries.getLuceneQuery()) {
          if (query.getQueryType().equals(queryType)) {
             final String saeQuery = query.getQuery();
             final List<String> metadatas = Arrays.asList(query
-                  .getDesiredMetadata().split(","));
+                                                         .getDesiredMetadata().split(","));
             final List<StorageMetadata> stMetadata = new ArrayList<StorageMetadata>();
-            for (String metadata : metadatas) {
+            for (final String metadata : metadatas) {
                stMetadata.add(new StorageMetadata(metadata.trim()));
             }
             luceneCriteria.put(query.getQueryId(), new LuceneCriteria(saeQuery,
-                  100, stMetadata));
+                                                                      100, stMetadata));
          }
       }
       return luceneCriteria;

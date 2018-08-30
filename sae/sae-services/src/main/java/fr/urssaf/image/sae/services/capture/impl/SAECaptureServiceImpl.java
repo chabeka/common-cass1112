@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import fr.urssaf.image.commons.dfce.model.DFCEConnection;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
@@ -60,17 +59,17 @@ import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 /**
  * Implémentation du service {@link SAECaptureService}
- * 
+ *
  */
 @Service
 public class SAECaptureServiceImpl implements SAECaptureService {
    private static final Logger LOG = LoggerFactory
          .getLogger(SAECaptureServiceImpl.class);
-   private final StorageServiceProvider serviceProvider;
+   private final StorageDocumentService storageDocumentService;
 
    private final EcdeServices ecdeServices;
 
@@ -81,12 +80,10 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
    /**
     * initialisation des différents services du SAE nécessaire à la capture
-    * 
-    * @param serviceProvider
-    *           façade des services DFCE
-    * @param connectionParam
-    *           configuration de la connexion à DFCE
-    * 
+    *
+    * @param storageDocumentService
+    *           façade des services de stockage de documents
+    *
     * @param ecdeServices
     *           les ecdes
     * @param commonsService
@@ -94,17 +91,16 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     */
    @Autowired
    public SAECaptureServiceImpl(
-         @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider,
-         DFCEConnection connectionParam, EcdeServices ecdeServices,
-         SAECommonCaptureService commonsService) {
+                                final StorageDocumentService storageDocumentService,
+                                final EcdeServices ecdeServices,
+                                final SAECommonCaptureService commonsService) {
 
-      Assert.notNull(serviceProvider);
-      Assert.notNull(connectionParam);
+      Assert.notNull(storageDocumentService);
       Assert.notNull(ecdeServices);
       Assert.notNull(commonsService);
 
       this.ecdeServices = ecdeServices;
-      this.serviceProvider = serviceProvider;
+      this.storageDocumentService = storageDocumentService;
       this.commonsService = commonsService;
    }
 
@@ -112,29 +108,29 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * {@inheritDoc}
     */
    @Override
-   public final CaptureResult capture(List<UntypedMetadata> metadatas,
-         URI ecdeURL) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException,
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+   public final CaptureResult capture(final List<UntypedMetadata> metadatas,
+                                      final URI ecdeURL) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
+   CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+   UnknownFormatException, UnexpectedDomainException,
+   InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
       // Traces debug - entrée méthode
-      String prefixeTrc = "capture()";
-      CaptureResult result = new CaptureResult();
+      final String prefixeTrc = "capture()";
+      final CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
-            buildMessageFromList(metadatas));
+                buildMessageFromList(metadatas));
       LOG.debug("{} - URI ECDE : \"{}\"", prefixeTrc, ecdeURL.toString());
       // Fin des traces debug - entrée méthode
       controlesService.checkCaptureEcdeUrl(ecdeURL.toString());
       // chargement du document de l'ECDE
-      File ecdeFile = loadEcdeFile(ecdeURL);
+      final File ecdeFile = loadEcdeFile(ecdeURL);
 
-      UUID uuid = insertDocument(metadatas, ecdeFile, result);
+      final UUID uuid = insertDocument(metadatas, ecdeFile, result);
       result.setIdDoc(uuid);
       // Traces debug - sortie méthode
       LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
@@ -147,7 +143,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
    /**
     * {@inheritDoc}
-    * 
+    *
     * @throws UnknownHashCodeEx
     * @throws RequiredArchivableMetadataEx
     * @throws EmptyDocumentEx
@@ -161,25 +157,25 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnexpectedDomainException
     */
    @Override
-   public final CaptureResult captureFichier(List<UntypedMetadata> metadatas,
-         String path) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         FileNotFoundException, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException {
+   public final CaptureResult captureFichier(final List<UntypedMetadata> metadatas,
+                                             final String path) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx, UnknownHashCodeEx,
+   FileNotFoundException, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException {
       // Traces debug - entrée méthode
-      String prefixeTrc = "capture()";
-      CaptureResult result = new CaptureResult();
+      final String prefixeTrc = "capture()";
+      final CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
-            buildMessageFromList(metadatas));
+                buildMessageFromList(metadatas));
       LOG.debug("{} - Chemin du fichier : \"{}\"", prefixeTrc, path);
       // Fin des traces debug - entrée méthode
-      File file = new File(path);
+      final File file = new File(path);
       UUID uuid;
       if (file.exists()) {
          uuid = insertDocument(metadatas, file, result);
@@ -203,27 +199,27 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws CaptureExistingUuuidException
     */
    @Override
-   public final CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
-         DataHandler content, String fileName) throws SAECaptureServiceEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException {
+   public final CaptureResult captureBinaire(final List<UntypedMetadata> metadatas,
+                                             final DataHandler content, final String fileName) throws SAECaptureServiceEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+   UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+   UnknownFormatException, ValidationExceptionInvalidFile,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "captureBinaire()";
-      CaptureResult result = new CaptureResult();
+      final String prefixeTrc = "captureBinaire()";
+      final CaptureResult result = new CaptureResult();
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - Liste des métadonnées : \"{}\"", prefixeTrc,
-            buildMessageFromList(metadatas));
+                buildMessageFromList(metadatas));
       LOG.debug("{} - Nom du fichier : \"{}\"", prefixeTrc, fileName);
       if (content != null) {
          LOG.debug("{} - Taille du contenu du fichier : \"{}\"", prefixeTrc,
-               content);
+                   content);
       }
       // Fin des traces debug - entrée méthode
 
@@ -231,25 +227,25 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       controlesService.checkBinaryFileName(fileName);
 
       // Instanciation d'un untypedDocument
-      UntypedDocument untypedDocument = new UntypedDocument(content, fileName,
-            metadatas);
+      final UntypedDocument untypedDocument = new UntypedDocument(content, fileName,
+                                                                  metadatas);
 
       // appel du service commun d'archivage dans la capture unitaire
       StorageDocument storageDoc;
       try {
          storageDoc = commonsService.buildBinaryStorageDocumentForCapture(
-               untypedDocument, result);
+                                                                          untypedDocument, result);
 
          // archivage du document dans DFCE
-         UUID uuid = insererBinaryStorageDocument(storageDoc);
+         final UUID uuid = insererBinaryStorageDocument(storageDoc);
          result.setIdDoc(uuid);
          // Traces debug - sortie méthode
          LOG.debug("{} - Valeur de retour archiveId: \"{}\"", prefixeTrc, uuid);
          LOG.debug("{} - Sortie", prefixeTrc);
          // Fin des traces debug - sortie méthode
-      } catch (SAEEnrichmentEx e) {
+      } catch (final SAEEnrichmentEx e) {
          throw new SAECaptureServiceEx(e);
-      } catch (SearchingServiceEx e) {
+      } catch (final SearchingServiceEx e) {
          throw new SAECaptureServiceEx(e);
       }
 
@@ -264,32 +260,32 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     *            {@link SAECaptureServiceEx}
     */
    private UntypedDocument createUntypedDocument(
-         List<UntypedMetadata> metadatas, File ecdeFile)
-               throws SAECaptureServiceEx {
+                                                 final List<UntypedMetadata> metadatas, final File ecdeFile)
+                                                       throws SAECaptureServiceEx {
 
       // TODO vérification que le fichier extrait de l'url ECDE existe bien!
 
       // conversion du fichier extrait de l'url ECDE en bytes[]
       // instanciation de la classe UntypedDocument avec la liste des
       // métadonnées et le contenu du document à archiver
-      UntypedDocument untypedDocument = new UntypedDocument(null, metadatas);
+      final UntypedDocument untypedDocument = new UntypedDocument(null, metadatas);
       untypedDocument.setFilePath(ecdeFile.toString());
       return untypedDocument;
    }
 
    /**
-    * 
+    *
     * @param ecdeURL
     * @return File.
     * @throws SAECaptureServiceEx
     *            {@link SAECaptureServiceEx}
     */
-   private File loadEcdeFile(URI ecdeURL) throws SAECaptureServiceEx {
+   private File loadEcdeFile(final URI ecdeURL) throws SAECaptureServiceEx {
       try {
          return ecdeServices.convertURIToFile(ecdeURL);
-      } catch (EcdeBadURLException e) {
+      } catch (final EcdeBadURLException e) {
          throw new SAECaptureServiceEx(e);
-      } catch (EcdeBadURLFormatException e) {
+      } catch (final EcdeBadURLFormatException e) {
          throw new SAECaptureServiceEx(e);
       }
 
@@ -303,7 +299,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws CaptureExistingUuuidException
     * @throws SearchingServiceEx
     */
-   private UUID insererBinaryStorageDocument(StorageDocument storageDoc)
+   private UUID insererBinaryStorageDocument(final StorageDocument storageDoc)
          throws SAECaptureServiceEx, SearchingServiceEx,
          CaptureExistingUuuidException {
       // insertion du document à archiver dans DFCE puis fermeture de la
@@ -313,14 +309,13 @@ public class SAECaptureServiceImpl implements SAECaptureService {
          // -- On controle que l'uuid si il est founit dans les métas
          checkDocumentUuid(storageDoc, null);
 
-         uuid = serviceProvider.getStorageDocumentService()
-               .insertBinaryStorageDocument(storageDoc).getUuid();
+         uuid = storageDocumentService.insertBinaryStorageDocument(storageDoc).getUuid();
 
-      } catch (ConnectionServiceEx e) {
+      } catch (final ConnectionServiceEx e) {
          throw new SAECaptureServiceEx(e);
-      } catch (InsertionServiceEx e) {
+      } catch (final InsertionServiceEx e) {
          throw new SAECaptureServiceEx(e);
-      } catch (InsertionIdGedExistantEx e) {
+      } catch (final InsertionIdGedExistantEx e) {
          throw new CaptureExistingUuuidException(e.getMessage());
       }
       return uuid;
@@ -332,17 +327,17 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * Exemple : "UntypedMetadata[code long:=Titre,value=Attestation],
     * UntypedMetadata[code long:=DateCreation,value=2011-09-01],
     * UntypedMetadata[code long:=ApplicationProductrice,value=ADELAIDE]"
-    * 
+    *
     * @param <T>
     *           le type d'objet
     * @param list
     *           : liste des objets à afficher.
     * @return Une chaîne qui représente l'ensemble des objets à afficher.
     */
-   private <T> String buildMessageFromList(Collection<T> list) {
+   private <T> String buildMessageFromList(final Collection<T> list) {
       final ToStringBuilder toStrBuilder = new ToStringBuilder(this,
-            ToStringStyle.SIMPLE_STYLE);
-      for (T o : Utils.nullSafeIterable(list)) {
+                                                               ToStringStyle.SIMPLE_STYLE);
+      for (final T o : Utils.nullSafeIterable(list)) {
          if (o != null) {
             toStrBuilder.append(o.toString());
          }
@@ -353,7 +348,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
    /**
     * Méthode commune à captureFile et capture permettant d'archiver un document
     * qui provient soit de l'ECDE soit d'un emplacement donné
-    * 
+    *
     * @param metadatas
     *           Liste des métadonnées
     * @param file
@@ -379,25 +374,25 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws InvalidPagmsCombinaisonException
     * @throws UnexpectedDomainException
     */
-   private UUID insertDocument(List<UntypedMetadata> metadatas, File file,
-         CaptureResult captureResult) throws SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, UnknownHashCodeEx,
-         NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException {
+   private UUID insertDocument(final List<UntypedMetadata> metadatas, final File file,
+                               final CaptureResult captureResult) throws SAECaptureServiceEx,
+   ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotArchivableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, UnknownHashCodeEx,
+   NotSpecifiableMetadataEx, MetadataValueNotInDictionaryEx,
+   UnknownFormatException, ValidationExceptionInvalidFile,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException {
 
       // instanciation d'un UntypedDocument
-      UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);
+      final UntypedDocument untypedDocument = createUntypedDocument(metadatas, file);
       // appel du service commun d'archivage dans la capture unitaire
       StorageDocument storageDoc;
       try {
          storageDoc = commonsService.buildStorageDocumentForCapture(
-               untypedDocument, captureResult);
-      } catch (SAEEnrichmentEx e) {
+                                                                    untypedDocument, captureResult);
+      } catch (final SAEEnrichmentEx e) {
          throw new SAECaptureServiceEx(e);
       }
 
@@ -406,17 +401,16 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       try {
          // serviceProvider.openConnexion();
 
-         // 160600 : désactivation de ce contrôle qui est fait plus bas niveau 
+         // 160600 : désactivation de ce contrôle qui est fait plus bas niveau
          // pour tester aussi la capture de masse
          // -- Controle sur la méta IdGed
          // checkDocumentUuid(null, metadatas);
 
-         uuid = serviceProvider.getStorageDocumentService()
-               .insertStorageDocument(storageDoc).getUuid();
+         uuid = storageDocumentService.insertStorageDocument(storageDoc).getUuid();
 
-      } catch (InsertionServiceEx e) {
+      } catch (final InsertionServiceEx e) {
          throw new SAECaptureServiceEx(e);
-      } catch (InsertionIdGedExistantEx e) {
+      } catch (final InsertionIdGedExistantEx e) {
          throw new CaptureExistingUuuidException(e.getMessage());
       }
       return uuid;
@@ -425,34 +419,34 @@ public class SAECaptureServiceImpl implements SAECaptureService {
    /**
     * Méthode de controle si la méta IdGed est founit, qu'elle ne correspond pas
     * à un UUID déjà existant en base
-    * 
+    *
     * @param doc
     *           : Le document à archiver
     * @param metas
     *           : Les métas du document à archiver
-    * 
+    *
     *           Cette méthode utiltaire cherche la méta à partir d'une liste
     *           d'objets {@link UntypedMetadata} ou de l'objet
     *           {@link StorageDocument}
-    * 
+    *
     * @see {@link #insererBinaryStorageDocument(StorageDocument)},
     *      {@link #insertDocument(List, File, CaptureResult)}
-    * 
+    *
     * @throws CaptureExistingUuuidException
     * @throws SearchingServiceEx
     */
-   private void checkDocumentUuid(StorageDocument doc,
-         List<UntypedMetadata> metas) throws CaptureExistingUuuidException,
-         SearchingServiceEx {
+   private void checkDocumentUuid(final StorageDocument doc,
+                                  final List<UntypedMetadata> metas) throws CaptureExistingUuuidException,
+   SearchingServiceEx {
 
       // -- On recherche la présence de la métadonnée IdeGed (UUID du document)
 
       UUID uuid = null;
 
       if (doc != null) {
-         for (StorageMetadata meta : doc.getMetadatas()) {
+         for (final StorageMetadata meta : doc.getMetadatas()) {
             if (meta.getShortCode().equals(
-                  StorageTechnicalMetadatas.IDGED.getShortCode())) {
+                                           StorageTechnicalMetadatas.IDGED.getShortCode())) {
                uuid = (UUID) meta.getValue();
                break;
             }
@@ -460,9 +454,9 @@ public class SAECaptureServiceImpl implements SAECaptureService {
       } else if (metas != null) {
          // -- On recherche la présence de la métadonnée IdeGed (UUID du
          // document)
-         for (UntypedMetadata meta : metas) {
+         for (final UntypedMetadata meta : metas) {
             if (meta.getLongCode().equals(
-                  StorageTechnicalMetadatas.IDGED.getLongCode())) {
+                                          StorageTechnicalMetadatas.IDGED.getLongCode())) {
                uuid = UUID.fromString(meta.getValue());
                break;
             }
@@ -471,12 +465,11 @@ public class SAECaptureServiceImpl implements SAECaptureService {
 
       // -- Si l'uuid est spécifié on vérifie qu'il n'existe pas déjà en base
       if (uuid != null) {
-         UUIDCriteria uuidCrit = new UUIDCriteria(uuid,
-               new ArrayList<StorageMetadata>());
-         StorageDocument document = serviceProvider.getStorageDocumentService()
-               .searchStorageDocumentByUUIDCriteria(uuidCrit);
+         final UUIDCriteria uuidCrit = new UUIDCriteria(uuid,
+                                                        new ArrayList<StorageMetadata>());
+         final StorageDocument document = storageDocumentService.searchStorageDocumentByUUIDCriteria(uuidCrit);
          if (document != null) {
-            String mssg = "L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.";
+            final String mssg = "L'identifiant ged spécifié '%s' existe déjà et ne peut être utilisé.";
             throw new CaptureExistingUuuidException(String.format(mssg, uuid));
          }
       }

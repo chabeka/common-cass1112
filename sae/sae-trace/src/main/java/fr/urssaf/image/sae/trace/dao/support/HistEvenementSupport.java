@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.dao.support;
 
@@ -8,53 +8,53 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.iterators.ReverseListIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 
 /**
  * Classe de support pour les historiques des événements
- * 
+ *
  */
 @Component
 public class HistEvenementSupport {
 
-   private final ServiceProviderSupport support;
+   private final DFCEServices dfceServices;
 
    /**
     * @param support
     *           Service de manipulation des objets DFCE
     */
    @Autowired
-   public HistEvenementSupport(ServiceProviderSupport support) {
+   public HistEvenementSupport(final DFCEServices dfceServices) {
       super();
-      this.support = support;
+      this.dfceServices = dfceServices;
    }
 
    /**
-    * Ajout d'une trace dans l'historique des événéments
-    * 
+    * Ajout d'une trace dans l'historique des événements
+    *
     * @param trace
     *           la trace à ajouter
     */
-   public final void create(TraceToCreate trace) {
+   public final void create(final TraceToCreate trace) {
 
-      RMSystemEvent event = ToolkitFactory.getInstance().createRMSystemEvent();
+      final RMSystemEvent event = ToolkitFactory.getInstance().createRMSystemEvent();
       event.setEventDescription(trace.toString());
       event.setUsername(trace.getLogin());
-      support.getRecordManagerService().createCustomSystemEventLog(event);
+      dfceServices.createCustomSystemEventLog(event);
    }
 
    /**
     * Recherche des traces existantes dans l'historique des événements
-    * 
+    *
     * @param dateDebut
     *           date de début de recherche
     * @param dateFin
@@ -67,11 +67,10 @@ public class HistEvenementSupport {
     * @return la liste des traces
     */
    @SuppressWarnings("unchecked")
-   public final List<DfceTraceSyst> findByDates(Date dateDebut, Date dateFin,
-         int limite, boolean reversed) {
+   public final List<DfceTraceSyst> findByDates(final Date dateDebut, final Date dateFin,
+                                                final int limite, final boolean reversed) {
 
-      List<RMSystemEvent> events = support.getRecordManagerService()
-            .getSystemEventLogsByDates(dateDebut, dateFin);
+      final List<RMSystemEvent> events = dfceServices.getSystemEventLogsByDates(dateDebut, dateFin);
 
       List<DfceTraceSyst> values = null;
 
@@ -86,21 +85,21 @@ public class HistEvenementSupport {
          int countLeft = limite;
          values = new ArrayList<DfceTraceSyst>(limite);
          while (countLeft > 0 && iterator.hasNext()) {
-            RMSystemEvent event = iterator.next();
-            DfceTraceSyst trace = new DfceTraceSyst();
-            
+            final RMSystemEvent event = iterator.next();
+            final DfceTraceSyst trace = new DfceTraceSyst();
+
             trace.setAttributs(event.getAttributes());
             trace.setDateEvt(event.getEventDate());
             trace.setDocUuid(event.getArchiveUUID());
             trace.setLogin(event.getUsername());
             trace.setTypeEvt(event.getEventDescription());
-            
-           
+
+
             values.add(trace);
             countLeft--;
          }
-         
-       }
+
+      }
 
       return values;
    }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.restore.support.stockage.batch;
 
@@ -24,7 +24,6 @@ import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interrup
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
 import fr.urssaf.image.sae.services.batch.restore.exception.RestoreMasseSearchException;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -35,11 +34,11 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * Item reader permettant de récupérer les documents à partir de la requête lucene.
- * 
+ *
  */
 @Component
 @Scope("step")
-public class RecycleBeanStorageDocumentReader 
+public class RecycleBeanStorageDocumentReader
 implements ItemReader<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
@@ -94,7 +93,7 @@ implements ItemReader<StorageDocument> {
    /**
     * Permet de verifier s'il y a un élément suivant.
     * @return boolean
-    * @throws RestoreMasseSearchException 
+    * @throws RestoreMasseSearchException
     */
    private boolean hasNext() throws RestoreMasseSearchException {
       boolean hasNext;
@@ -104,7 +103,7 @@ implements ItemReader<StorageDocument> {
          if (lastIteration) {
             hasNext = false;
          } else {
-            // avant de faire appel à la base pour récupérer les éléments, on va tester qu'on est pas à l'heure 
+            // avant de faire appel à la base pour récupérer les éléments, on va tester qu'on est pas à l'heure
             // de l'interruption des serveurs
             gererInterruption();
             // on appelle la récupération des prochains éléments
@@ -128,7 +127,7 @@ implements ItemReader<StorageDocument> {
    /**
     * Permet de récupérer les prochains éléments.
     * @return boolean
-    * @throws RestoreMasseSearchException 
+    * @throws RestoreMasseSearchException
     */
    private boolean fetchMore() throws RestoreMasseSearchException {
       PaginatedStorageDocuments paginatedStorageDocuments = null;
@@ -142,34 +141,31 @@ implements ItemReader<StorageDocument> {
          }
 
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
-         PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
+         final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
                .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                     MAX_PAR_PAGE, null, null,
-                     lastIdDoc, "");
-
-         ((StorageServiceProviderImpl) storageServiceProvider)
-               .getDfceServicesManager().getConnection();
+                                                    MAX_PAR_PAGE, null, null,
+                                                    lastIdDoc, "");
 
          paginatedStorageDocuments = storageServiceProvider
                .getStorageDocumentService().searchStorageDocumentsInRecycleBean(
-                     paginatedLuceneCriteria);
+                                                                                paginatedLuceneCriteria);
 
          // recupere les infos de la requete
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
          if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
+            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
             lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
             hasMore = true;
          } else {
             hasMore = false;
          }
 
-      } catch (ConnectionServiceEx except) {
+      } catch (final ConnectionServiceEx except) {
          throw new RestoreMasseSearchException(except);
-      } catch (SearchingServiceEx except) {
+      } catch (final SearchingServiceEx except) {
          throw new RestoreMasseSearchException(except);
-      } catch (QueryParseServiceEx except) {
+      } catch (final QueryParseServiceEx except) {
          throw new RestoreMasseSearchException(except);
       }
       return hasMore;
@@ -205,7 +201,7 @@ implements ItemReader<StorageDocument> {
 
          try {
             support.interruption(currentDate, config);
-         } catch (InterruptionTraitementException e) {
+         } catch (final InterruptionTraitementException e) {
             throw new RestoreMasseSearchException(e);
          }
       }

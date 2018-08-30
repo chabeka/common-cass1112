@@ -10,15 +10,15 @@ import fr.urssaf.image.sae.trace.model.JournalType;
 
 /**
  * Service de manipulation des journaux
- * 
- * 
+ *
+ *
  */
 public interface JournalService {
 
    /**
     * Renvoie la liste des journaux des évènements DFCE pour l'intervalle de
     * dates donné
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
@@ -30,7 +30,7 @@ public interface JournalService {
    /**
     * Renvoie la liste des journaux du cycle de vie pour l'intervalle de dates
     * donné
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
@@ -42,7 +42,7 @@ public interface JournalService {
    /**
     * Renvoie la liste des journaux du cycle de vie des archives pour le
     * document donc l'identifiant est passé en paramètre
-    * 
+    *
     * @param docUuid
     *           Identifiant unique du document
     * @return Liste des journaux concernant le document
@@ -52,7 +52,7 @@ public interface JournalService {
    /**
     * Renvoie le chainage des journaux transmis directement par DFCE pour un
     * intervalle de dates et un type de journal donnés
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
@@ -62,12 +62,12 @@ public interface JournalService {
     * @return Liste des chaînage
     */
    List<Chainage> verifierChainage(Date dateDebut, Date dateFin,
-         JournalType journalType);
+                                   JournalType journalType);
 
    /**
     * Renvoie la liste des journaux des évènements SAE pour l'intervalle de
     * dates donné
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
@@ -77,11 +77,11 @@ public interface JournalService {
     * @return Liste des journaux compris dans l'intervalle de dates
     */
    List<Journal> rechercherJournauxEvenementSae(Date dateDebut, Date dateFin,
-         String nomBase);
+                                                String nomBase);
 
    /**
-    * Renvoie le journal des évènements SAE correspondant à un UUID
-    * 
+    * Renvoie le journal des événements SAE correspondant à un UUID
+    *
     * @param uuidJournal
     *           l'UUID du journal
     * @param nomBase
@@ -92,7 +92,7 @@ public interface JournalService {
 
    /**
     * Renvoie le contenu du journal DFCE avec l'identifiant passé en paramètre
-    * 
+    *
     * @param uuidJournal
     *           Identifiant unique du journal
     * @return Contenu du journal ou null si le document n'existe pas
@@ -101,7 +101,7 @@ public interface JournalService {
 
    /**
     * Renvoie le contenu du journal SAE avec l'identifiant passé en paramètre
-    * 
+    *
     * @param uuidJournal
     *           Identifiant unique du journal
     * @param nomBase
@@ -112,7 +112,7 @@ public interface JournalService {
 
    /**
     * Récupère le nom du journal dont l'id est passé en paramètre
-    * 
+    *
     * @param uuidJournal
     *           Identifiant unique du journal
     * @return Nom du journal
@@ -121,7 +121,7 @@ public interface JournalService {
 
    /**
     * Renvoie le journal des évènements DFCE correspondant à un UUID
-    * 
+    *
     * @param uuidJournal
     *           UUID du journal
     * @return Le journal correspondant à l'UUID

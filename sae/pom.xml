@@ -44,7 +44,7 @@
       commons-cassandra
       ==========================================
       -->
-		<commons.cassandra>1.0.2</commons.cassandra>
+		<commons.cassandra>1.0.3-SNAPSHOT</commons.cassandra>
 
       <!--
       ==========================================
@@ -58,7 +58,7 @@
       commons-dfce
       ==========================================
       -->
-		<commons.dfce>1.9.5</commons.dfce>
+		<commons.dfce>1.9.6-SNAPSHOT</commons.dfce>
 
       <!--
       ==========================================

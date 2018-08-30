@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.storage.dfce.validation;
 import java.io.IOException;
 import java.text.ParseException;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -26,18 +24,13 @@ public class DeletionServiceValidationTest {
    @Autowired
    private CommonsServices commonsServices;
 
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
-
    /**
     * {@link fr.urssaf.image.sae.storage.dfce.ValidationDeletionServiceValidation#deleteStorageDocumentValidation(fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria)}
     * <br>
     */
    @Test(expected = IllegalArgumentException.class)
    public void deleteStorageDocumentValidation() throws InsertionServiceEx,
-         IOException, ParseException, DeletionServiceEx {
+   IOException, ParseException, DeletionServiceEx {
       // Initialisation des jeux de données UUID
       commonsServices.getDeletionService().deleteStorageDocument(null);
    }
@@ -48,7 +41,7 @@ public class DeletionServiceValidationTest {
     */
    @Test(expected = IllegalArgumentException.class)
    public void rollBackValidation() throws DeletionServiceEx,
-         SearchingServiceEx {
+   SearchingServiceEx {
       commonsServices.getDeletionService().rollBack(null);
    }
 }

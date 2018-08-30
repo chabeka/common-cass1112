@@ -1,24 +1,23 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.storage.dfce.utils;
 
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.administration.BaseAdministrationService;
-
 import org.easymock.EasyMock;
+
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
+import net.docubase.toolkit.model.base.Base;
 
 
 /**
  * Classe de factory pour créer les mocks
- * 
+ *
  */
 public class MockFactoryBean {
 
    /**
     * Création d'un mock de Base
-    * 
+    *
     * @return un mock Base
     */
    public final Base createBase() {
@@ -26,22 +25,12 @@ public class MockFactoryBean {
    }
 
    /**
-    * Création d'un mock de BaseAdministrationService
-    * 
-    * @return un mock BaseAdministrationService
+    * Création d'un mock de dfceServices
+    *
+    * @return un mock dfceServices
     */
-   public final BaseAdministrationService createBaseAdministrationService() {
-      return EasyMock.createMock(BaseAdministrationService.class);
+   public final DFCEServices createDFCESercices() {
+      return EasyMock.createMock(DFCEServices.class);
    }
 
-   /**
-    * Création d'un mock de ServiceProvider
-    * 
-    * @return un mock ServiceProvider
-    */
-   public final ServiceProvider createServiceProvider() {
-      return EasyMock.createMock(ServiceProvider.class);
-   }
-   
-  
 }

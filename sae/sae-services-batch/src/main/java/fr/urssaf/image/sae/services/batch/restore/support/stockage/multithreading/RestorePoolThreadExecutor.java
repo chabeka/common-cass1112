@@ -4,9 +4,6 @@ import java.io.Serializable;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -24,11 +21,11 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 
 /**
  * Pool de thread pour la restore de masse dans DFCE
- * 
+ *
  */
 @Component
 public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
-      Serializable, DisposableBean {
+Serializable, DisposableBean {
 
    private static final long serialVersionUID = 1L;
 
@@ -41,12 +38,8 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
 
    private RestoreMasseRuntimeException exception;
 
-  final Lock lock = new ReentrantLock();
-
-  final Condition waitCondition = lock.newCondition();
-
    private static final String PREFIX_TRACE = "RestorePoolThreadExecutor()";
-   
+
    /**
     * Nombre de documents restorés.
     */
@@ -54,7 +47,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
 
    /**
     * Constructeur
-    * 
+    *
     * @param poolConfiguration
     *           configuration du pool d'insertion des documents dans DFCE
     * @param support
@@ -64,25 +57,25 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
     */
    @Autowired
    public RestorePoolThreadExecutor(
-         RestorePoolConfiguration poolConfiguration,
-         InterruptionTraitementMasseSupport support,
-         InterruptionTraitementConfig config) {
+                                    final RestorePoolConfiguration poolConfiguration,
+                                    final InterruptionTraitementMasseSupport support,
+                                    final InterruptionTraitementConfig config) {
 
       super(poolConfiguration.getCorePoolSize(), poolConfiguration
             .getCorePoolSize(), 1, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
 
       Assert.notNull(support, "'support' is required");
-      
+
       LOGGER
       .debug(
-            "{} - Taille du pool de threads pour la restore de masse dans DFCE: {}",
-            new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
+             "{} - Taille du pool de threads pour la restore de masse dans DFCE: {}",
+             new Object[] { PREFIX_TRACE, this.getCorePoolSize() });
 
       this.config = config;
       this.support = support;
    }
-   
+
    /**
     * {@inheritDoc}
     */
@@ -94,43 +87,21 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
    /**
     * Attend que l'ensemble des threads aient bien terminé leur travail
     */
-  public final void waitFinishInsertion() {
-    while (!this.isTerminated()) {
-      lock.lock();
+   public final void waitFinishInsertion() {
       try {
-        waitCondition.await();
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
       }
-      catch (InterruptedException e) {
-
-        throw new IllegalStateException(e);
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
-      finally {
-        lock.unlock();
-      }
-    }
-  }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-  protected final void terminated() {
-    lock.lock();
-    super.terminated();
-    try {
-      waitCondition.signalAll();
-    }
-    finally {
-      lock.unlock();
-    }
-  }
+   }
 
    /**
     * @param exception
     *           Mise à jour de la première erreur
     */
    protected final void setRestoreException(
-         final RestoreMasseRuntimeException exception) {
+                                            final RestoreMasseRuntimeException exception) {
 
       if (getRestoreMasseException() == null) {
          setRestoreMasseRuntimeException(exception);
@@ -148,7 +119,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
     * @param isInterrupted
     *           indicateur de traitement interrompu
     */
-   protected final void setIsInterrupted(Boolean isInterrupted) {
+   protected final void setIsInterrupted(final Boolean isInterrupted) {
       this.isInterrupted = isInterrupted;
    }
 
@@ -167,7 +138,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
    }
 
    /**
-    * 
+    *
     * @return l'exception levée lors du traitement de restore en masse
     */
    public final synchronized RestoreMasseRuntimeException getRestoreMasseException() {
@@ -179,7 +150,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
     *           l'exception
     */
    protected void setRestoreMasseRuntimeException(
-         RestoreMasseRuntimeException exception) {
+                                                  final RestoreMasseRuntimeException exception) {
       this.exception = exception;
    }
 
@@ -188,7 +159,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
     *           le traitement en cours
     * @return le document concerné
     */
-   protected StorageDocument getDocumentFromRunnable(RestoreRunnable runnable) {
+   protected StorageDocument getDocumentFromRunnable(final RestoreRunnable runnable) {
       return runnable.getStorageDocument();
    }
 
@@ -196,11 +167,11 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
     * {@inheritDoc}
     */
    @Override
-   protected final void beforeExecute(Thread thread, Runnable runnable) {
+   protected final void beforeExecute(final Thread thread, final Runnable runnable) {
 
       super.beforeExecute(thread, runnable);
 
-      StorageDocument document = getDocumentFromRunnable((RestoreRunnable) runnable);
+      final StorageDocument document = getDocumentFromRunnable((RestoreRunnable) runnable);
 
       // on vérifie que le traitement ne doit pas s'interrompre
       final DateTime currentDate = new DateTime();
@@ -216,7 +187,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
 
                try {
                   this.wait();
-               } catch (InterruptedException e) {
+               } catch (final InterruptedException e) {
                   throw new IllegalStateException(e);
                }
 
@@ -238,14 +209,14 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
                // appel de la méthode de reconnexion
                getSupport().interruption(currentDate, getConfig());
 
-            } catch (InterruptionTraitementException e) {
+            } catch (final InterruptionTraitementException e) {
 
                // en cas d'échec de la reconnexion
 
                // levée d'une exception pour le document chargé de la
                // reconnexion
                this.setRestoreException(new RestoreMasseRuntimeException(
-                     document, e));
+                                                                         document, e));
 
                // les autres Threads en attente sont interrompus définitivement
                this.shutdownNow();
@@ -266,53 +237,53 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
    }
 
    /**
-    * 
-    * 
+    *
+    *
     * Après chaque restore, plusieurs cas possibles : <br>
     * <ol>
     * <li>la restore a réussi : on incremente un compteur de document restores</li>
     * <li>la restore a échouée : on shutdown le pool de restore</li>
     * </ol>
-    * 
+    *
     * @param runnable
     *           le thread de restore d'un document
     * @param throwable
     *           l'exception éventuellement levée lors de la restore du document
-    * 
+    *
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
 
-      String trcPrefix = "afterExecute()";
+      final String trcPrefix = "afterExecute()";
 
       super.afterExecute(runnable, throwable);
-      
+
       synchronized (this) {
-         
+
          final StorageDocument document = getDocumentFromRunnable((RestoreRunnable) runnable);
-   
+
          if (throwable == null) {
-   
+
             LOGGER.info("{} - Restore de la corbeille du document (uuid:{})",
-                  new Object[] { trcPrefix, document.getUuid().toString() });
-            
+                        new Object[] { trcPrefix, document.getUuid().toString() });
+
             nombreRestores++;
-   
+
          } else {
-   
+
             setRestoreException((RestoreMasseRuntimeException) throwable);
             // dès le premier échec les autres Threads en exécution ou pas sont
             // interrompus définitivement
             this.shutdownNow();
-   
+
          }
       }
    }
-   
+
    /**
     * Permet de récupérer le nombre de documents restorés.
-    * 
+    *
     * @return int
     */
    public final int getNombreRestores() {
@@ -321,7 +292,7 @@ public class RestorePoolThreadExecutor extends ThreadPoolExecutor implements
 
    /**
     * Permet de modifier le nombre de documents restorés.
-    * 
+    *
     * @param nombreRestores
     *           nombre de documents restorés
     */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.integration;
 
@@ -46,8 +46,6 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.SAECaptureMasseService;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.TraceAssertUtils;
 import fr.urssaf.image.sae.services.batch.common.model.ExitTraitement;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.services.impl.StorageServiceProviderImpl;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
@@ -63,8 +61,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-integration.xml" })
+                                   "/applicationContext-sae-services-batch-test.xml",
+"/applicationContext-sae-services-capturemasse-test-integration.xml" })
 public class Integration204Test {
 
    @Autowired
@@ -80,10 +78,6 @@ public class Integration204Test {
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider provider;
-
-   @Autowired
-   @Qualifier("dfceServicesManager")
-   protected DFCEServicesManager dfceServicesManager;
 
    private EcdeTestSommaire ecdeTestSommaire;
 
@@ -116,33 +110,33 @@ public class Integration204Test {
             + ecdeTestSommaire.getRepEcde());
 
       // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse" };
+      final String[] roles = new String[] { "archivage_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
-      TypeDocument typeDocCree = new TypeDocument();
+      final TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
@@ -158,7 +152,7 @@ public class Integration204Test {
    public void end() throws Exception {
       try {
          ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      } catch (IOException e) {
+      } catch (final IOException e) {
          // rien a faire
       }
 
@@ -174,17 +168,17 @@ public class Integration204Test {
    @Test
    @DirtiesContext
    public void testLancement() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, IOException, InsertionIdGedExistantEx {
+   InsertionServiceEx, IOException, InsertionIdGedExistantEx {
       initComposants();
       initDatas();
 
-      ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-            .getUrlEcde(), UUID.randomUUID());
+      final ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
+                                                             .getUrlEcde(), UUID.randomUUID());
 
       EasyMock.verify(provider, storageDocumentService);
 
       Assert.assertTrue("le traitement doit etre un succes", exitStatus
-            .isSucces());
+                        .isSucces());
 
       checkFiles();
 
@@ -195,7 +189,7 @@ public class Integration204Test {
    }
 
    private void initComposants() throws ConnectionServiceEx, DeletionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
+   InsertionServiceEx, InsertionIdGedExistantEx {
 
       // règlage provider
       provider.openConnexion();
@@ -203,32 +197,27 @@ public class Integration204Test {
       provider.closeConnexion();
       EasyMock.expectLastCall().anyTimes();
       EasyMock.expect(provider.getStorageDocumentService()).andReturn(
-            storageDocumentService).anyTimes();
-      EasyMock
-            .expect(
-                  ((StorageServiceProviderImpl) provider)
-                        .getDfceServicesManager())
-            .andReturn(dfceServicesManager).anyTimes();
+                                                                      storageDocumentService).anyTimes();
 
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
-            .anyObject(UUID.class));
+                                                   .anyObject(UUID.class));
       EasyMock.expectLastCall().anyTimes();
 
-      StorageDocument storageDocument = new StorageDocument();
+      final StorageDocument storageDocument = new StorageDocument();
       storageDocument.setUuid(UUID.randomUUID());
 
       EasyMock.expect(
-            storageDocumentService.insertStorageDocument(EasyMock
-                  .anyObject(StorageDocument.class)))
-            .andReturn(storageDocument).anyTimes();
+                      storageDocumentService.insertStorageDocument(EasyMock
+                                                                   .anyObject(StorageDocument.class)))
+      .andReturn(storageDocument).anyTimes();
 
       EasyMock.replay(provider, storageDocumentService);
    }
 
    private void initDatas() throws IOException {
-      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
+      final File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+      final ClassPathResource resSommaire = new ClassPathResource(
             "testhautniveau/204/sommaire.xml");
       FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
@@ -252,30 +241,30 @@ public class Integration204Test {
 
    private void checkFiles() throws IOException {
 
-      File repTraitement = ecdeTestSommaire.getRepEcde();
-      File debut = new File(repTraitement, "debut_traitement.flag");
-      File fin = new File(repTraitement, "fin_traitement.flag");
-      File resultats = new File(repTraitement, "resultats.xml");
+      final File repTraitement = ecdeTestSommaire.getRepEcde();
+      final File debut = new File(repTraitement, "debut_traitement.flag");
+      final File fin = new File(repTraitement, "fin_traitement.flag");
+      final File resultats = new File(repTraitement, "resultats.xml");
 
       Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
+                        .exists());
       Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
+                        .exists());
       Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
+                        .exists());
 
-      String sha1Resultat = calculeSha1(resultats);
-      String sha1Attendu = "de6273873baab4d45cb78c5dcc4dce79f917ed4e";
+      final String sha1Resultat = calculeSha1(resultats);
+      final String sha1Attendu = "de6273873baab4d45cb78c5dcc4dce79f917ed4e";
 
       Assert.assertEquals(
-            "le sha1 attendu et de résultat doivent etre identiques",
-            sha1Attendu, sha1Resultat);
+                          "le sha1 attendu et de résultat doivent etre identiques",
+                          sha1Attendu, sha1Resultat);
 
    }
 
-   private String calculeSha1(File file) throws IOException {
+   private String calculeSha1(final File file) throws IOException {
 
-      FileInputStream fis = new FileInputStream(file);
+      final FileInputStream fis = new FileInputStream(file);
       try {
 
          return DigestUtils.shaHex(fis);
@@ -289,10 +278,10 @@ public class Integration204Test {
    }
 
    private void checkLogs() {
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+      final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
 
       Assert.assertTrue("aucun message d'erreur ou warn attendu",
-            loggingEvents == null || loggingEvents.isEmpty());
+                        loggingEvents == null || loggingEvents.isEmpty());
 
    }
 

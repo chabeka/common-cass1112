@@ -9,13 +9,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.recordmanager.RMLogArchiveReport;
-import net.docubase.toolkit.model.search.SearchResult;
-import net.docubase.toolkit.model.search.SortedSearchQuery;
-
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,17 +16,24 @@ import org.springframework.stereotype.Component;
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.dao.model.Chainage;
 import fr.urssaf.image.sae.trace.dao.model.Journal;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.model.JournalType;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.recordmanager.RMLogArchiveReport;
+import net.docubase.toolkit.model.search.SearchResult;
+import net.docubase.toolkit.model.search.SortedSearchQuery;
 
 /**
  * Service permettant de réaliser des opérations sur les journaux DFCE
- * (historique des évènements ou du cycle de vie des archives)
- * 
- * 
+ * (historique des événements ou du cycle de vie des archives)
+ *
+ *
  */
 @Component
 public class JournalDfceSupport {
@@ -43,62 +43,60 @@ public class JournalDfceSupport {
    /**
     * Classe d'accès à DFCE
     */
-   private final ServiceProviderSupport serviceProvider;
+   private final DFCEServices dfceServices;
 
    /**
     * Constructeur
-    * 
+    *
     * @param serviceProvider
     *           Classe d'accès à DFCE
     */
    @Autowired
-   public JournalDfceSupport(ServiceProviderSupport serviceProvider) {
+   public JournalDfceSupport(final DFCEServices dfceServices) {
       super();
-      this.serviceProvider = serviceProvider;
+      this.dfceServices = dfceServices;
    }
 
    /**
     * Retourne la liste des journaux concernant le document dont l'identifiant
     * est passé en paramètre
-    * 
+    *
     * @param docUuid
     *           Identifiant unique du document
     * @return Liste des journaux concernant le document dont l'uuid est passé en
     *         paramètre
     */
-   public final List<Journal> findByDocumentUuid(UUID docUuid) {
+   public final List<Journal> findByDocumentUuid(final UUID docUuid) {
 
-      CycleVieSupport cycleVieSupport = new CycleVieSupport(serviceProvider);
+      final CycleVieSupport cycleVieSupport = new CycleVieSupport(dfceServices);
 
-      List<DfceTraceDoc> listeTraces = cycleVieSupport.findByDocUuid(docUuid);
+      final List<DfceTraceDoc> listeTraces = cycleVieSupport.findByDocUuid(docUuid);
 
-      List<UUID> listeUuidJournal = new ArrayList<UUID>();
-      for (DfceTraceDoc dfceTraceDoc : listeTraces) {
-         UUID idJournal = dfceTraceDoc.getIdJournal();
+      final List<UUID> listeUuidJournal = new ArrayList<UUID>();
+      for (final DfceTraceDoc dfceTraceDoc : listeTraces) {
+         final UUID idJournal = dfceTraceDoc.getIdJournal();
          listeUuidJournal.add(idJournal);
       }
 
-      Set<UUID> set = new HashSet<UUID>();
+      final Set<UUID> set = new HashSet<UUID>();
       set.addAll(listeUuidJournal);
-      ArrayList<UUID> listeUuidJournalUnique = new ArrayList<UUID>(set);
+      final ArrayList<UUID> listeUuidJournalUnique = new ArrayList<UUID>(set);
 
-      List<Journal> listeJournal = new ArrayList<Journal>();
+      final List<Journal> listeJournal = new ArrayList<Journal>();
 
-      for (UUID uuid : listeUuidJournalUnique) {
+      for (final UUID uuid : listeUuidJournalUnique) {
          if (uuid != null) {
-            Base base = serviceProvider.getArchiveService()
-                  .getLogsArchiveBase();
-            Document doc = serviceProvider.getSearchService()
-                  .getDocumentByUUID(base, uuid);
-            String nomFichier = doc.getFilename() + "." + doc.getExtension();
+            final Base base = dfceServices.getLogsArchiveBase();
+            final Document doc = dfceServices.getDocumentByUUID(base, uuid);
+            final String nomFichier = doc.getFilename() + "." + doc.getExtension();
 
-            Date dateDebutEvt = (Date) doc.getSingleCriterion(
+            final Date dateDebutEvt = (Date) doc.getSingleCriterion(
                   "LOG_ARCHIVE_BEGIN_DATE").getWord();
-            Date dateFinEvt = (Date) doc.getSingleCriterion(
+            final Date dateFinEvt = (Date) doc.getSingleCriterion(
                   "LOG_ARCHIVE_END_DATE").getWord();
 
-            Journal journal = new Journal(doc.getArchivageDate(), uuid,
-                  nomFichier, dateDebutEvt, dateFinEvt, doc.getSize());
+            final Journal journal = new Journal(doc.getArchivageDate(), uuid,
+                                                nomFichier, dateDebutEvt, dateFinEvt, doc.getSize());
             listeJournal.add(journal);
          }
       }
@@ -107,26 +105,26 @@ public class JournalDfceSupport {
    }
 
    /**
-    * Retourne la liste des journaux des évènements DFCE compris dans
+    * Retourne la liste des journaux des événements DFCE compris dans
     * l'intervalle de dates donné
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
     *           Date de fin de l'intervalle
     * @param journalType
     *           Type du journal
-    * @return Liste des journaux des évènements compris dans l'intervalle de
+    * @return Liste des journaux des événements compris dans l'intervalle de
     *         dates donné
     */
-   public final List<Journal> findByDates(String dateDebut, String dateFin,
-         JournalType journalType) {
+   public final List<Journal> findByDates(final String dateDebut, final String dateFin,
+                                          final JournalType journalType) {
 
       try {
 
          // Construction de la requête LUCENE
 
-         StringBuffer sBuffer = new StringBuffer(CENT);
+         final StringBuffer sBuffer = new StringBuffer(CENT);
          sBuffer.append("LOG_ARCHIVE_BEGIN_DATE:[");
          sBuffer.append(dateDebut);
          sBuffer.append(" TO ");
@@ -143,50 +141,49 @@ public class JournalDfceSupport {
             sBuffer.append("DOCUMENT");
          }
 
-         Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
+         final Base base = dfceServices.getLogsArchiveBase();
 
          // Lancement de la recherche
-         String requete = sBuffer.toString();
-         int nbMaxElements = Integer.MAX_VALUE;
+         final String requete = sBuffer.toString();
+         final int nbMaxElements = Integer.MAX_VALUE;
 
-         SortedSearchQuery paramSearchQuery = ToolkitFactory.getInstance().createMonobaseSortedQuery(requete, base);
+         final SortedSearchQuery paramSearchQuery = ToolkitFactory.getInstance().createMonobaseSortedQuery(requete, base);
          paramSearchQuery.setPageSize(nbMaxElements);
          paramSearchQuery.setOffset(0);
-         
-         SearchResult resultat = serviceProvider.getSearchService().search(
-               paramSearchQuery);
 
-         List<Journal> listeJournal = new ArrayList<Journal>();
+         final SearchResult resultat = dfceServices.search(paramSearchQuery);
 
-         List<Document> listeDoc = resultat.getDocuments();
-         for (Document document : listeDoc) {
-            String nomFichier = document.getFilename() + "."
+         final List<Journal> listeJournal = new ArrayList<Journal>();
+
+         final List<Document> listeDoc = resultat.getDocuments();
+         for (final Document document : listeDoc) {
+            final String nomFichier = document.getFilename() + "."
                   + document.getExtension();
 
-            Date dateDebutEvt = (Date) document.getSingleCriterion(
+            final Date dateDebutEvt = (Date) document.getSingleCriterion(
                   "LOG_ARCHIVE_BEGIN_DATE").getWord();
-            Date dateFinEvt = (Date) document.getSingleCriterion(
+            final Date dateFinEvt = (Date) document.getSingleCriterion(
                   "LOG_ARCHIVE_END_DATE").getWord();
 
-            Journal journal = new Journal(document.getCreationDate(), document
-                  .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
-                  .getSize());
+            final Journal journal = new Journal(document.getCreationDate(), document
+                                                .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
+                                                .getSize());
 
             listeJournal.add(journal);
 
          }
          return listeJournal;
 
-      } catch (ExceededSearchLimitException e) {
+      } catch (final ExceededSearchLimitException e) {
          throw new TraceRuntimeException(e);
-      } catch (SearchQueryParseException e) {
+      } catch (final SearchQueryParseException e) {
          throw new TraceRuntimeException(e);
       }
    }
 
    /**
     * Vérifie le chaînage des journaux
-    * 
+    *
     * @param dateDebut
     *           Date de début de l'intervalle
     * @param dateFin
@@ -195,27 +192,25 @@ public class JournalDfceSupport {
     *           Type de journal dont il faut vérifier le chaînage
     * @return La liste des chaînages
     */
-   public final List<Chainage> checkChaining(Date dateDebut, Date dateFin,
-         JournalType journalType) {
+   public final List<Chainage> checkChaining(final Date dateDebut, final Date dateFin,
+                                             final JournalType journalType) {
 
       List<RMLogArchiveReport> liste;
       if (journalType.equals(JournalType.JOURNAL_CYCLE_VIE)) {
-         liste = serviceProvider.getArchiveService()
-               .createDocumentLogArchiveChainingReport(dateDebut, dateFin);
+         liste = dfceServices.createDocumentLogArchiveChainingReport(dateDebut, dateFin);
       } else {
-         liste = serviceProvider.getArchiveService()
-               .createSystemLogArchiveChainingReport(dateDebut, dateFin);
+         liste = dfceServices.createSystemLogArchiveChainingReport(dateDebut, dateFin);
       }
 
-      List<Chainage> listeChainage = new ArrayList<Chainage>();
-      for (RMLogArchiveReport rmLogArchiveReport : liste) {
-         Chainage chainage = new Chainage();
+      final List<Chainage> listeChainage = new ArrayList<Chainage>();
+      for (final RMLogArchiveReport rmLogArchiveReport : liste) {
+         final Chainage chainage = new Chainage();
          chainage.setAlgoHash(rmLogArchiveReport.getDigestAlgorithm());
          chainage.setDateFin(rmLogArchiveReport.getEndDate());
          chainage.setHash(rmLogArchiveReport.getDigest());
          chainage.setHashRecalcule(rmLogArchiveReport.getReComputedDigest());
          chainage.setUuidPrecedentJournal(rmLogArchiveReport
-               .getPreviousArchiveUUID());
+                                          .getPreviousArchiveUUID());
          listeChainage.add(chainage);
       }
       return listeChainage;
@@ -223,21 +218,19 @@ public class JournalDfceSupport {
 
    /**
     * Récupère le contenu du journal
-    * 
+    *
     * @param idJournal
     *           L'identifiant unique du journal
     * @return Contenu du journal ou null si le document n'existe pas
     */
-   public final byte[] getContent(UUID idJournal) {
-      Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
-      Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
-            idJournal);
+   public final byte[] getContent(final UUID idJournal) {
+      final Base base = dfceServices.getLogsArchiveBase();
+      final Document doc = dfceServices.getDocumentByUUID(base, idJournal);
       if (doc != null) {
-         InputStream inStream = serviceProvider.getStoreService()
-               .getDocumentFile(doc);
+         final InputStream inStream = dfceServices.getDocumentFile(doc);
          try {
             return IOUtils.toByteArray(inStream);
-         } catch (IOException e) {
+         } catch (final IOException e) {
             throw new TraceRuntimeException(e);
          }
       } else {
@@ -248,15 +241,14 @@ public class JournalDfceSupport {
 
    /**
     * Retourne le nom du journal dont l'identifiant est passé en paramètre
-    * 
+    *
     * @param idJournal
     *           Identifiant du journal
     * @return le nom du journal
     */
-   public final String getNomJournal(UUID idJournal) {
-      Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
-      Document doc = serviceProvider.getSearchService().getDocumentByUUID(base,
-            idJournal);
+   public final String getNomJournal(final UUID idJournal) {
+      final Base base = dfceServices.getLogsArchiveBase();
+      final Document doc = dfceServices.getDocumentByUUID(base, idJournal);
 
       return doc.getFilename() + "." + doc.getExtension();
 
@@ -264,28 +256,27 @@ public class JournalDfceSupport {
 
    /**
     * Retourne le journal dont l'identifiant est passé en paramètre
-    * 
+    *
     * @param idJournal
     *           Identifiant du journal
     * @return le journal
     */
-   public final Journal getJournal(UUID idJournal) {
-      Base base = serviceProvider.getArchiveService().getLogsArchiveBase();
-      Document document = serviceProvider.getSearchService().getDocumentByUUID(
-            base, idJournal);
+   public final Journal getJournal(final UUID idJournal) {
+      final Base base = dfceServices.getLogsArchiveBase();
+      final Document document = dfceServices.getDocumentByUUID(base, idJournal);
 
       if (document != null) {
-         String nomFichier = document.getFilename() + "."
+         final String nomFichier = document.getFilename() + "."
                + document.getExtension();
 
-         Date dateDebutEvt = (Date) document.getSingleCriterion(
+         final Date dateDebutEvt = (Date) document.getSingleCriterion(
                "LOG_ARCHIVE_BEGIN_DATE").getWord();
-         Date dateFinEvt = (Date) document.getSingleCriterion(
+         final Date dateFinEvt = (Date) document.getSingleCriterion(
                "LOG_ARCHIVE_END_DATE").getWord();
 
-         Journal journal = new Journal(document.getCreationDate(), document
-               .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
-               .getSize());
+         final Journal journal = new Journal(document.getCreationDate(), document
+                                             .getUuid(), nomFichier, dateDebutEvt, dateFinEvt, document
+                                             .getSize());
 
          return journal;
       } else {

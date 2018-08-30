@@ -9,11 +9,6 @@
   
    <import resource="applicationContext-properties-test.xml" />
 
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-   
    <bean
       class="fr.urssaf.image.sae.webservices.dfceservice.test.DfceInfoServiceTU"
       id="dfceInfoService" />

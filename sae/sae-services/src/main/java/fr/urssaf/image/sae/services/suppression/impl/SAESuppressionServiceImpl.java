@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.suppression.impl;
 
@@ -41,7 +41,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Classe implémentant l'interface {@link SAESuppressionService}. Cette classe
  * est un singleton et peut être accessible par le système d'injection IOC avec
  * l'annotation @Autowired
- * 
+ *
  */
 @Service
 public class SAESuppressionServiceImpl extends AbstractSAEServices implements
@@ -67,44 +67,43 @@ SAESuppressionService {
     * {@inheritDoc}
     */
    @Override
-   public final void suppression(UUID idArchive) throws SuppressionException,
+   public final void suppression(final UUID idArchive) throws SuppressionException,
    ArchiveInexistanteEx {
-      String trcPrefix = "suppression";
+      final String trcPrefix = "suppression";
       LOG.debug("{} - début", trcPrefix);
       LOG.debug("{} - Début de suppression du document {}", new Object[] {
-            trcPrefix, idArchive.toString() });
+                                                                          trcPrefix, idArchive.toString() });
 
       try {
          LOG.debug("{} - recherche du document", trcPrefix);
-         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-         Map<String, MetadataReference> listeAllMeta = referenceDAO
+         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         final Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferencesPourVerifDroits();
-         for (String mapKey : listeAllMeta.keySet()) {
+         for (final String mapKey : listeAllMeta.keySet()) {
             allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey)
-                  .getShortCode()));
+                                            .getShortCode()));
          }
-         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+         final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
-         List<StorageMetadata> listeStorageMeta = this
-               .getStorageServiceProvider().getStorageDocumentService()
+         final List<StorageMetadata> listeStorageMeta = this.getStorageDocumentService()
                .retrieveStorageDocumentMetaDatasByUUID(uuidCriteria);
          if (listeStorageMeta.size() == 0) {
-            String message = StringUtils
+            final String message = StringUtils
                   .replace(
-                        "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
-                        "{0}", idArchive.toString());
+                           "Il n'existe aucun document pour l'identifiant d'archivage '{0}'",
+                           "{0}", idArchive.toString());
             throw new ArchiveInexistanteEx(message);
          }
-         List<UntypedMetadata> listeUMeta = mappingService
+         final List<UntypedMetadata> listeUMeta = mappingService
                .storageMetadataToUntypedMetadata(listeStorageMeta);
 
          // Vérification des droits
          LOG.debug("{} - Récupération des droits", trcPrefix);
-         AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+         final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                .getContext().getAuthentication();
-         List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
+         final List<SaePrmd> saePrmds = token.getSaeDroits().get("suppression");
          LOG.debug("{} - Vérification des droits", trcPrefix);
-         boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+         final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
 
          if (!isPermitted) {
             throw new AccessDeniedException(
@@ -115,20 +114,20 @@ SAESuppressionService {
          LOG.debug("{} - suppression du document", trcPrefix);
          storageService.deleteStorageDocument(idArchive);
 
-      } catch (DeletionServiceEx exception) {
+      } catch (final DeletionServiceEx exception) {
          throw new SuppressionException(exception);
-      } catch (ReferentialException exception) {
+      } catch (final ReferentialException exception) {
          throw new SuppressionException(exception);
-      } catch (InvalidSAETypeException exception) {
+      } catch (final InvalidSAETypeException exception) {
          throw new SuppressionException(exception);
-      } catch (MappingFromReferentialException exception) {
+      } catch (final MappingFromReferentialException exception) {
          throw new SuppressionException(exception);
-      } catch (RetrievalServiceEx exception) {
+      } catch (final RetrievalServiceEx exception) {
          throw new SuppressionException(exception);
       }
 
       LOG.debug("{} - Suppression du document {} terminée", new Object[] {
-            trcPrefix, idArchive.toString() });
+                                                                          trcPrefix, idArchive.toString() });
       LOG.debug("{} - fin", trcPrefix);
    }
 

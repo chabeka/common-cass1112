@@ -11,6 +11,9 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
+   <!-- Import des contextes principaux -->
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
    
    <!-- Chargement des fichiers Properties de la partie test -->
    <bean 
@@ -41,23 +44,8 @@
       </constructor-arg>
    </bean>
    
-   <!-- Configuration d'accès à DFCE -->
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-   
-   <bean id="dfceConnectionTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionTransfertBySAEConf">
-      <constructor-arg value="saeConfigResource" />
-   </bean>
+   <!-- Création des beans d'accès à DFCE (utilise saeConfigResource) -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
    
    
    <!-- Les beans pour SpringBatch sur Cassandra -->

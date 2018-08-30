@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @Service
 @Qualifier("retrievalService")
-public class RetrievalServiceImpl extends AbstractCommonServices implements
+public class RetrievalServiceImpl extends AbstractServices implements
 RetrievalService {
    private static final Logger LOG = LoggerFactory
          .getLogger(RetrievalServiceImpl.class);
@@ -43,35 +43,35 @@ RetrievalService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final StorageDocument retrieveStorageDocumentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                              final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       try {
          // Traces debug - entrée méthode
-         String prefixeTrc = "retrieveStorageDocumentByUUID()";
+         final String prefixeTrc = "retrieveStorageDocumentByUUID()";
          LOG.debug("{} - Début", prefixeTrc);
          LOG.debug("{} - UUIDCriteria du document à consulter: {}", prefixeTrc,
-               uUIDCriteria.toString());
+                   uUIDCriteria.toString());
          // Fin des traces debug - entrée méthode
-         StorageDocument storageDoc = searchingService
+         final StorageDocument storageDoc = searchingService
                .searchStorageDocumentByUUIDCriteria(uUIDCriteria, true);
          if (storageDoc == null) {
             LOG.debug("{} - Le document n'a pas été trouvé dans le stockage",
-                  prefixeTrc);
+                      prefixeTrc);
 
          } else {
             LOG.debug("{} - Le document a été trouvé dans le stockage",
-                  prefixeTrc);
+                      prefixeTrc);
          }
 
          LOG.debug("{} - Sortie", prefixeTrc);
          return storageDoc;
 
-      } catch (SearchingServiceEx srcSerEx) {
+      } catch (final SearchingServiceEx srcSerEx) {
          throw new RetrievalServiceEx(StorageMessageHandler
-               .getMessage(Constants.RTR_CODE_ERROR), srcSerEx.getMessage(),
-               srcSerEx);
-      } catch (Exception exc) {
+                                      .getMessage(Constants.RTR_CODE_ERROR), srcSerEx.getMessage(),
+                                      srcSerEx);
+      } catch (final Exception exc) {
          throw new RetrievalServiceEx(StorageMessageHandler
-               .getMessage(Constants.RTR_CODE_ERROR), exc.getMessage(), exc);
+                                      .getMessage(Constants.RTR_CODE_ERROR), exc.getMessage(), exc);
       }
    }
 
@@ -82,18 +82,18 @@ RetrievalService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final byte[] retrieveStorageDocumentContentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                            final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       try {
          return searchingService
                .searchStorageDocumentContentByUUIDCriteria(uUIDCriteria);
-      } catch (IOException except) {
+      } catch (final IOException except) {
          throw new RetrievalServiceEx(StorageMessageHandler
-               .getMessage(Constants.RTR_CODE_ERROR), except.getMessage(),
-               except);
-      } catch (Exception except) {
+                                      .getMessage(Constants.RTR_CODE_ERROR), except.getMessage(),
+                                      except);
+      } catch (final Exception except) {
          throw new RetrievalServiceEx(StorageMessageHandler
-               .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
-               except);
+                                      .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
+                                      except);
       }
    }
 
@@ -104,16 +104,16 @@ RetrievalService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public final List<StorageMetadata> retrieveStorageDocumentMetaDatasByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
+                                                                             final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
       try {
          return searchingService.searchMetaDatasByUUIDCriteria(uUIDCriteria)
                .getMetadatas();
-      } catch (SearchingServiceEx srcSerEx) {
+      } catch (final SearchingServiceEx srcSerEx) {
          throw new RetrievalServiceEx(srcSerEx.getMessage(), srcSerEx);
-      } catch (Exception except) {
+      } catch (final Exception except) {
          throw new RetrievalServiceEx(StorageMessageHandler
-               .getMessage(Constants.RTR_CODE_ERROR), except.getMessage(),
-               except);
+                                      .getMessage(Constants.RTR_CODE_ERROR), except.getMessage(),
+                                      except);
       }
    }
 

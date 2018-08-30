@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption;
 
@@ -18,24 +18,24 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
-      "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-mock-dfcemanager.xml" })
+                                   "/applicationContext-sae-services-batch-test.xml",
+"/applicationContext-sae-services-capturemasse-test-mock-dfcemanager.xml" })
 public class InterruptionTraitementMasseSupportImplTest {
 
    /**
-    * 
+    *
     */
    private static final String FORMAT_DATE = "HH:mm:ss";
 
    @Autowired
-   private DFCEServicesManager dfceManager;
+   private DFCEServices dfceServices;
 
    @Autowired
    private InterruptionTraitementMasseSupport support;
@@ -48,16 +48,16 @@ public class InterruptionTraitementMasseSupportImplTest {
    @DirtiesContext
    public void testHasInterruptTrue() {
 
-      Date dateNow = new Date();
-      Date dateStart = DateUtils.addMinutes(dateNow, -1);
-      SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      String value = sdf.format(dateStart);
+      final Date dateNow = new Date();
+      final Date dateStart = DateUtils.addMinutes(dateNow, -1);
+      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+      final String value = sdf.format(dateStart);
 
       config.setStart(value);
       config.setDelay(64);
 
-      boolean interrupt = support.hasInterrupted(new DateTime(new Date()
-            .getTime()), config);
+      final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
+                                                                    .getTime()), config);
 
       Assert.assertTrue("on doit etre en interruption", interrupt);
 
@@ -67,34 +67,34 @@ public class InterruptionTraitementMasseSupportImplTest {
    @DirtiesContext
    public void testHasInterruptFalse() {
 
-      Date dateNow = new Date();
-      Date dateStart = DateUtils.addMinutes(dateNow, -1);
-      SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      String value = sdf.format(dateStart);
+      final Date dateNow = new Date();
+      final Date dateStart = DateUtils.addMinutes(dateNow, -1);
+      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+      final String value = sdf.format(dateStart);
 
       config.setStart(value);
       config.setDelay(20);
 
-      boolean interrupt = support.hasInterrupted(new DateTime(new Date()
-            .getTime()), config);
+      final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
+                                                                    .getTime()), config);
 
       Assert.assertFalse("on ne doit pas etre en interruption", interrupt);
    }
 
    @Test
    public void testInterruptionError() throws ConnectionServiceEx,
-         InterruptionTraitementException {
+   InterruptionTraitementException {
 
-      dfceManager.getConnection();
+      dfceServices.reconnect();
 
       EasyMock.expectLastCall().andThrow(new Error("erreur connexion")).once();
 
-      EasyMock.replay(dfceManager);
+      EasyMock.replay(dfceServices);
 
-      Date dateNow = new Date();
-      Date dateStart = DateUtils.addSeconds(dateNow, -60);
-      SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      String value = sdf.format(dateStart);
+      final Date dateNow = new Date();
+      final Date dateStart = DateUtils.addSeconds(dateNow, -60);
+      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+      final String value = sdf.format(dateStart);
 
       config.setStart(value);
       config.setDelay(62);
@@ -104,14 +104,14 @@ public class InterruptionTraitementMasseSupportImplTest {
          support.interruption(new DateTime(new Date().getTime()), config);
          Assert.fail("exception attendue");
 
-      } catch (Exception e) {
+      } catch (final Exception e) {
          Assert.assertTrue(
-               "on doit avoir une exception InterruptionTraitementException",
-               e instanceof InterruptionTraitementException);
+                           "on doit avoir une exception InterruptionTraitementException",
+                           e instanceof InterruptionTraitementException);
          e.printStackTrace();
 
       } finally {
-         EasyMock.reset(dfceManager);
+         EasyMock.reset(dfceServices);
       }
    }
 }

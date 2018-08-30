@@ -13,7 +13,7 @@
    <logger name="me.prettyprint.cassandra" level="OFF" />
    <logger name="com.springsource" level="INFO" />
    <logger name="org.springframework" level="INFO" />
-   <logger name="com.netflix.curator" level="OFF" />
+   <logger name="org.apache.curator" level="OFF" />
    <logger name="net.sf.ehcache" level="OFF" />   
    
    <root level="TRACE">
