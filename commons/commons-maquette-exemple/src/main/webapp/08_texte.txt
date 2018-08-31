@@ -1,3 +1,0 @@
-bonjour ceci est du texte dans un fichier texte
-Et son contenu ne sera jamais decore car il n'y a pas l'uri pattern *.txt ou texte.txt dans le tag filter-mapping 
-du fichier web.xml
