@@ -37,7 +37,7 @@ public class DFCEReconnectionAspect {
                    new Object[] {LOG_PREFIX, joinPoint.getSignature()});
          proceed = joinPoint.proceed();
       }
-      catch (final HessianConnectionException ex) {
+      catch (final HessianConnectionException | NullPointerException ex) {
          LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
                   new Object[] {LOG_PREFIX}, ex);
          // On se reconnecte

@@ -39,6 +39,7 @@ import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.service.ServiceProvider;
+import net.docubase.toolkit.service.ged.SearchService;
 
 /**
  * {@inheritDoc}
@@ -118,7 +119,10 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    public void closeConnexion() {
       if (dfceService != null) {
+         final String LOG_PREFIX = "closeConnexion";
+         LOG.debug("{} - Fermeture connexion à DFCE (url : {})", new Object[] { LOG_PREFIX, dfceConnection.getServerUrl() });
          dfceService.disconnect();
+         dfceService = null;
       }
    }
 
@@ -209,7 +213,8 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public SearchResult search(final SearchQuery searchQuery) throws ExceededSearchLimitException, SearchQueryParseException {
-      return dfceService.getSearchService().search(searchQuery);
+      final SearchService searchService = dfceService.getSearchService();
+      return searchService.search(searchQuery);
    }
 
    /**
