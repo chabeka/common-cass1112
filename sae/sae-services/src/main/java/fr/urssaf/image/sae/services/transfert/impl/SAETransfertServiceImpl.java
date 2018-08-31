@@ -209,6 +209,9 @@ SAETransfertService {
       }
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public final StorageDocument transfertControlePlateforme(
                                                             StorageDocument document, final UUID idArchive, final boolean isReprise,
@@ -369,7 +372,7 @@ SAETransfertService {
     * @throws ReferentialException
     * @throws TransfertException
     *
-    *            Fonction permet suppression doc sur GNT apres le transfert
+    *            Fonction permet suppression doc sur GNT après le transfert
     */
    @Override
    public final void deleteDocApresTransfert(final UUID idArchive)
@@ -404,7 +407,7 @@ SAETransfertService {
     * @throws ReferentialException
     * @throws SearchingServiceEx
     *
-    *            Permet de récupérer le document avec les metadonnées
+    *            Permet de récupérer le document avec les métadonnées
     *            transférables
     */
    @Override
@@ -735,7 +738,7 @@ SAETransfertService {
    }
 
    /**
-    * Méthode conversion en json de la liste des évènements du cycle de vie DFCE
+    * Méthode conversion en json de la liste des événements du cycle de vie DFCE
     * par identifiant de document. La liste est renvoyée au format Json.
     *
     * @param idArchive
@@ -761,7 +764,7 @@ SAETransfertService {
    }
 
    /**
-    * Récupératrion de la liste des évènements du jounal SAE des évents par
+    * Récupération de la liste des événements du journal SAE par
     * identifiant de document. La liste est renvoyée au format Json.
     *
     * @param idArchive
@@ -783,6 +786,7 @@ SAETransfertService {
          throw new TransfertException(e);
       }
    }
+
 
    @Override
    public final StorageDocument controleDocumentTransfertMasse(
