@@ -75,14 +75,17 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    private void connect() {
       dfceService = ServiceProvider.newServiceProvider();
-
+      final String serverUrl = ObjectUtils.toString(this.dfceConnection.getServerUrl());
       dfceService.connect(this.dfceConnection.getLogin(),
                           this.dfceConnection.getPassword(),
-                          ObjectUtils.toString(this.dfceConnection.getServerUrl()),
+                          serverUrl,
                           this.dfceConnection.getTimeout());
 
       base = dfceService.getBaseAdministrationService().getBase(dfceConnection.getBaseName());
-
+      if (base == null) {
+         throw new DFCEConnectionServiceException("Base " + dfceConnection.getBaseName() +
+                                                  " non trouvée sur le serveur " +  serverUrl);
+      }
    }
 
    /**
@@ -146,8 +149,9 @@ public class DFCEServicesImpl implements DFCEServices {
          }
          else {
             // On abandonne
-            LOG.error("{} - Le nombre max de tentatives de connexion à DFCE est atteint {}/{} (url : {})",
-                      new Object[] { LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl() });
+            LOG.error("{} - Le nombre max de tentatives de connexion à DFCE est atteint {}/{} (url : {} - erreur : {})",
+                      new Object[] { LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl(),
+                                     connex.getMessage()});
             throw new DFCEConnectionServiceException(connex);
          }
       }
