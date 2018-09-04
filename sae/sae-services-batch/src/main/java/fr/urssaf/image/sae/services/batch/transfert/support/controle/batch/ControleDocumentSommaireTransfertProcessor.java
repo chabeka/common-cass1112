@@ -76,17 +76,25 @@ public class ControleDocumentSommaireTransfertProcessor extends
 					.getJobParameters().getString(Constantes.ID_TRAITEMENT));
 		}
 		
+		List<StorageMetadata> listeMetadataDocument = null;
 		// -- On vérifie si le document n'est pas gelé
       if (item.getUuid() != null) {
-         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";            
-         List<StorageMetadata> listeMetadataDocument = support.getListeStorageMetadatasWithGel(item.getUuid());
-         if (isFrozenDocument(listeMetadataDocument)) {
-            throw new TransfertException(StringUtils.replace(
-                  frozenDocMsgException, "{0}", uuidString));
-         }
+          listeMetadataDocument = support.getListeStorageMetadatasWithGel(item.getUuid());
       }
-		
-		if (item.getBatchActionType().equals("SUPPRESSION")) {
+      
+      if (isFrozenDocument(listeMetadataDocument)) {
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+         
+         getCodesErreurListe().add(Constantes.ERR_BUL002);
+         getIndexErreurListe().add(
+               getStepExecution().getExecutionContext().getInt(
+                     Constantes.CTRL_INDEX));         
+         getErrorMessageList().add(StringUtils.replace(frozenDocMsgException, "{0}",
+             uuidString));
+         LOGGER.warn(StringUtils.replace(frozenDocMsgException, "{0}",
+                uuidString),  new TransfertException(StringUtils.replace(frozenDocMsgException,
+                      "{0}", uuidString)));
+      } else if (item.getBatchActionType().equals("SUPPRESSION")) {
 			boolean isExiste = support.controleSAEDocumentSuppression(item);
 			if (isExiste) {
 				try {
