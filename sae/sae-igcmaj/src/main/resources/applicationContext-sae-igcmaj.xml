@@ -7,7 +7,21 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-   <import resource="applicationContext-sae-commons.xml" />
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/sae-config.properties" />
+   </bean>
+
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
 
    <!-- Le PropertyPlaceholderConfigurer -->
    <bean id="applicationProperties" class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
@@ -15,12 +29,10 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-
-   <!-- Importation contexte SAE IGC  -->
+   <!-- Importation des autres contextes -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
+   <import resource="applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
    <import resource="applicationContext-sae-igc.xml" />
 
 

@@ -10,8 +10,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +30,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.utils.HostnameUtil;
+import junit.framework.Assert;
 
 @SuppressWarnings( { "PMD.MethodNamingConventions" })
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -73,7 +72,12 @@ public class IgcMainTest {
    @AfterClass
    public static void afterClass() throws IOException {
 
-      FileUtils.deleteDirectory(DIRECTORY);
+      try {
+         FileUtils.deleteDirectory(DIRECTORY);
+      }
+      catch (final Throwable t) {
+         FileUtils.forceDeleteOnExit(DIRECTORY);
+      }
 
    }
 
@@ -84,26 +88,26 @@ public class IgcMainTest {
 
    }
 
-   private static String getAbsolute(String path) {
+   private static String getAbsolute(final String path) {
 
       return new File(path).getAbsolutePath();
    }
 
-   private static String loadConfig(String newConfig, String acRacines,
-         String crls, String... urls) {
+   private static String loadConfig(final String newConfig, final String acRacines,
+                                    final String crls, final String... urls) {
 
-      XMLConfiguration newXML = new XMLConfiguration();
+      final XMLConfiguration newXML = new XMLConfiguration();
 
       try {
          newXML
-               .load(getAbsolute("src/test/resources/igcConfig/igcConfig_modele.xml"));
+         .load(getAbsolute("src/test/resources/igcConfig/igcConfig_modele.xml"));
          newXML.addProperty("IgcConfig.id", "PKI_VAL_AED");
          newXML.addProperty("IgcConfig.certifACRacine", acRacines);
          newXML.addProperty("IgcConfig.repertoireCRL", crls);
          newXML.addProperty("IgcConfig.issuers.issuer", "CN=IGC/A");
          newXML.addProperty("IgcConfig.activerTelechargementCRL", true);
 
-         for (String url : urls) {
+         for (final String url : urls) {
 
             newXML.addProperty("IgcConfig.URLTelechargementCRL.url", url);
          }
@@ -112,7 +116,7 @@ public class IgcMainTest {
 
          return DIRECTORY + "/" + newConfig;
 
-      } catch (ConfigurationException e) {
+      } catch (final ConfigurationException e) {
 
          throw new IllegalStateException(e);
       }
@@ -121,30 +125,30 @@ public class IgcMainTest {
    @Test
    public void igcMain_success() {
 
-      String pathConfigFile = loadConfig(
-            "igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"),
-            CRL.getAbsolutePath(), "http://cer69idxpkival1.cer69.recouv/*.crl");
+      final String pathConfigFile = loadConfig(
+                                               "igcConfig_success_temp.xml",
+                                               getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"),
+                                               CRL.getAbsolutePath(), "http://cer69idxpkival1.cer69.recouv/*.crl");
 
-      String[] args = new String[] {
-            "src/test/resources/sae-config.properties", pathConfigFile };
+      final String[] args = new String[] {
+                                          "src/test/resources/sae-config.properties", pathConfigFile };
 
       instance.execute(args);
 
-      Collection<File> files = FileUtils.listFiles(CRL, null, true);
+      final Collection<File> files = FileUtils.listFiles(CRL, null, true);
 
       Assert.assertTrue("erreur sur le nombre d'urls à télécharger", files
-            .size() > 3);
+                        .size() > 3);
 
-      List<String> crlUtiles = new ArrayList<String>();
+      final List<String> crlUtiles = new ArrayList<String>();
       crlUtiles.add("Pseudo_Appli.crl");
       crlUtiles.add("Pseudo_ACOSS.crl");
       crlUtiles.add("Pseudo_IGC_A.crl");
 
       boolean trouve = false;
-      for (String crl : crlUtiles) {
+      for (final String crl : crlUtiles) {
          trouve = false;
-         for (File file : files) {
+         for (final File file : files) {
             if (file.getName().equals(crl)) {
                trouve = true;
             }
@@ -166,49 +170,49 @@ public class IgcMainTest {
       assert_failure_igcPathConfig_required(new String[] { "test", " " });
    }
 
-   private static void assert_failure_saePathConfig_required(String[] args) {
+   private static void assert_failure_saePathConfig_required(final String[] args) {
 
       try {
          IgcMain.main(args);
 
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
 
          assertEquals("message de l'exception incorrect",
-               IgcMain.CONFIG_EMPTY, e.getMessage());
+                      IgcMain.CONFIG_EMPTY, e.getMessage());
       }
    }
 
-   private static void assert_failure_igcPathConfig_required(String[] args) {
+   private static void assert_failure_igcPathConfig_required(final String[] args) {
 
       try {
          IgcMain.main(args);
 
-      } catch (IllegalArgumentException e) {
+      } catch (final IllegalArgumentException e) {
 
          assertEquals("message de l'exception incorrect",
-               IgcMain.IGC_CONFIG_EMPTY, e.getMessage());
+                      IgcMain.IGC_CONFIG_EMPTY, e.getMessage());
       }
    }
 
    @Test
    public void igcMain_failure_igcConfigException() {
 
-      String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
-            getAbsolute("/notExist/certificats/ACRacine"), CRL
-                  .getAbsolutePath(),
+      final String pathConfigFile = loadConfig("igcConfig_success_temp.xml",
+                                               getAbsolute("/notExist/certificats/ACRacine"), CRL
+                                               .getAbsolutePath(),
             "http://cer69idxpkival1.cer69.recouv/*.crl");
 
       try {
-         String[] args = new String[] {
-               "src/test/resources/sae-config.properties", pathConfigFile };
+         final String[] args = new String[] {
+                                             "src/test/resources/sae-config.properties", pathConfigFile };
 
          instance.execute(args);
-         
+
          fail(FAIL_MESSAGE);
-      } catch (IgcMainException e) {
+      } catch (final IgcMainException e) {
 
          assertEquals("exception non attendue", IgcConfigException.class, e
-               .getCause().getClass());
+                      .getCause().getClass());
 
       }
    }
@@ -216,38 +220,38 @@ public class IgcMainTest {
    @Test
    public void igcMain_failure_igcDownloadException() {
 
-      String pathConfigFile = loadConfig(
-            "igcConfig_success_temp.xml",
-            getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"),
-            CRL.getAbsolutePath(),
+      final String pathConfigFile = loadConfig(
+                                               "igcConfig_success_temp.xml",
+                                               getAbsolute("src/test/resources/certificats/ACRacine/pseudo_IGCA.crt"),
+                                               CRL.getAbsolutePath(),
             "http://download.oracle.com/javase/6/docs/api/");
 
-      String[] args = new String[] {
-            "src/test/resources/sae-config.properties", pathConfigFile };
+      final String[] args = new String[] {
+                                          "src/test/resources/sae-config.properties", pathConfigFile };
 
       instance.execute(args);
 
       // Vérification présence de la trace
-      Date dateFin = new Date();
-      Date dateDebut = DateUtils.addDays(dateFin, -1);
-      List<TraceRegTechniqueIndex> listeTrace = regTechnique.lecture(dateDebut,
-            dateFin, 1, false);
-      for (TraceRegTechniqueIndex traceRegTechniqueIndex : listeTrace) {
-         TraceRegTechnique trace = regTechnique.lecture(traceRegTechniqueIndex
-               .getIdentifiant());
+      final Date dateFin = new Date();
+      final Date dateDebut = DateUtils.addDays(dateFin, -1);
+      final List<TraceRegTechniqueIndex> listeTrace = regTechnique.lecture(dateDebut,
+                                                                           dateFin, 1, false);
+      for (final TraceRegTechniqueIndex traceRegTechniqueIndex : listeTrace) {
+         final TraceRegTechnique trace = regTechnique.lecture(traceRegTechniqueIndex
+                                                              .getIdentifiant());
          Assert.assertEquals("Code évenement incorrect", "IGC_LOAD_CRLS|KO",
-               trace.getCodeEvt());
+                             trace.getCodeEvt());
 
          Assert.assertEquals("Contexte incorrect", "telechargerCRLs", trace
-               .getContexte());
+                             .getContexte());
 
          Assert.assertEquals("saeServeurHostname incorrect", HostnameUtil
-               .getHostname(), trace.getInfos().get("saeServeurHostname"));
+                             .getHostname(), trace.getInfos().get("saeServeurHostname"));
          Assert.assertEquals("saeServeurHostname incorrect",
-               "http://download.oracle.com/javase/6/docs/api/", trace
-                     .getInfos().get("fichier"));
+                             "http://download.oracle.com/javase/6/docs/api/", trace
+                             .getInfos().get("fichier"));
          Assert.assertEquals("saeServeurHostname incorrect", "PKI_VAL_AED",
-               trace.getInfos().get("pki"));
+                             trace.getInfos().get("pki"));
       }
 
    }
