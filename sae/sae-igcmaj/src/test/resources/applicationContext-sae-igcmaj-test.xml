@@ -7,6 +7,22 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <!-- Pour les tests : chargement du fichier de config de test -->
+   <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
+      <constructor-arg value="config/sae-config.properties" />
+   </bean>
+   <bean class="java.io.File" id="fileSaeConfig">
+      <constructor-arg>
+         <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
+      </constructor-arg>
+   </bean>
+   <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
+      <constructor-arg>
+         <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
+      </constructor-arg>
+   </bean>
+   
+   <!-- Import du fichier de context principal -->
    <import resource="applicationContext-sae-igcmaj.xml" />
 
 </beans>
