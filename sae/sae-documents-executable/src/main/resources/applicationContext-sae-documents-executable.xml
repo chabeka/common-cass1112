@@ -18,17 +18,15 @@
    
    <context:component-scan base-package="fr.urssaf.image.sae.documents.executable" />
 
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-      
    <!-- Chargement des fichiers properties -->
    <bean class="fr.urssaf.image.sae.commons.factory.PropertiesFactory"
       factory-method="load">
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
+   <import resource="applicationContext-commons-dfce-connection.xml" />
+   <import resource="applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
    <import resource="classpath*:/applicationContext-sae-format.xml" />
    <import resource="classpath*:/applicationContext-sae-trace.xml" />
 

@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.documents.executable.service;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.easymock.EasyMock;
+import org.easymock.IAnswer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +130,15 @@ public class TraitementServiceTest {
       EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
                                                                             listeDoc.iterator());
       EasyMock.expect(dfceService.recupererContenu(document))
-      .andAnswer(() -> new FileInputStream(fichier)).anyTimes();
+      .andAnswer(new IAnswer<InputStream>() {
+         /**
+          * {@inheritDoc}
+          */
+         @Override
+         public InputStream answer() throws Throwable {
+            return new FileInputStream(fichier);
+         }
+      }).anyTimes();
       EasyMock.replay(dfceService);
       traitementService.setDfceService(dfceService);
    }
@@ -152,7 +162,7 @@ public class TraitementServiceTest {
       EasyMock.expect(dfceService.executerRequete(requeteLucene)).andReturn(
                                                                             listeDoc.iterator());
       EasyMock.expect(dfceService.getDFCEServices())
-      .andReturn((DFCEServices) dfceService).anyTimes();
+      .andReturn(dfceServices).anyTimes();
       if (typeRetour == TYPE_RETOUR_OK) {
          EasyMock.expect(dfceServices.updateDocument(document))
          .andReturn(document).anyTimes();
