@@ -275,7 +275,7 @@ SearchingService {
          // Recherche des documents par l'itérateur DFCE
          Iterator<Document> iterateur;
          if (searchInRecycleBean) {
-            iterateur = getDfceServices().createDocumentIterator(searchQuery);
+            iterateur = getDfceServices().createDocumentIteratorFromRecycleBin(searchQuery);
          } else {
             iterateur = getDfceServices().createDocumentIterator(searchQuery);
          }
