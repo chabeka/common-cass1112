@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -593,16 +595,23 @@ public class DFCEUpdater {
    */
   private void filesCQLWrite(String cFName, String rowName, String columnName, Object value) throws IOException {
 
-    StringBuffer sbf = prepareCQLUpdateQuery(cFName,
-                                             rowName,
-                                             columnName,
-                                             value);
+    StringBuffer sbf = prepareCQLUpdateQuery(cFName, rowName, columnName, value);
 
-    Files.write(Paths.get("computedIndexComposite"), sbf.toString().getBytes(), StandardOpenOption.APPEND);
+    String cqlReq = sbf.toString();
+    LOG.info("Requete CQL = " + cqlReq);
+    
+    Path fileCQL = Paths.get("computedIndexComposite");
+    if (!Files.notExists(fileCQL, LinkOption.NOFOLLOW_LINKS)) {
+      Files.createFile(fileCQL);
+    }
+
+    Files.write(fileCQL, cqlReq.getBytes(), StandardOpenOption.APPEND);
 
   }
 
   /**
+   * Methode de création de la requete d'update de la base de données.
+   * 
    * @param cFName
    * @param rowName
    * @param columnName
@@ -619,6 +628,6 @@ public class DFCEUpdater {
     sbf.append("IF " + columnName + "=" + Boolean.FALSE);
     sbf.append(";");
     
-    return null;
+    return sbf;
   }
 }
