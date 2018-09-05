@@ -441,11 +441,12 @@ public class DFCEUpdater {
    * Indexe à vide les index composite si nécessaire (met les colonnes indexed
    * et computed à true dans la colonne de famille CompositeIndexesReference
    * 
+   * @param pathFichierUpdateCql
    * @param indexes
    *          Liste des index composites à créer
    * @throws IOException
    */
-  public final void indexeAVideCompositeIndex(String indexName) throws IOException {
+  public final void indexeAVideCompositeIndex(String indexName, String pathFichierUpdateCql) throws IOException {
 
       // On se connecte au keyspace
     // connectToKeyspace();
@@ -453,7 +454,7 @@ public class DFCEUpdater {
       // On indexe l'index composite si ce n'est pas déjà le cas dans DFCE
     // if (!isCompositeIndexComputed(indexName)) {
 
-         updateColumn(CF_COMPOSITE_INDEXES_REFERENCE, indexName, "computed", true);
+    updateColumn(CF_COMPOSITE_INDEXES_REFERENCE, indexName, "computed", true, pathFichierUpdateCql);
 
     // }
    }
@@ -534,7 +535,7 @@ public class DFCEUpdater {
    }
 
    private void updateColumn(String CFName, String rowName, String columnName,
-                            Object value)
+                            Object value, String pathFichierUpdateCql)
       throws IOException {
 
 //      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
@@ -583,24 +584,33 @@ public class DFCEUpdater {
     filesCQLWrite(CFName,
                   rowName,
                   columnName,
-                  value);
+                  value,
+                  pathFichierUpdateCql);
    }
 
   /**
+   * Methode de création du fichier CQL d'update des indexes composites.
+   * 
    * @param cFName
+   *          Nom de CF
    * @param rowName
+   *          Nom de la ligne
    * @param columnName
+   *          Nom de la colonne
    * @param value
+   *          Valeur
+   * @param pathFichierUpdateCql
    * @throws IOException
+   * @{@link IOException}
    */
-  private void filesCQLWrite(String cFName, String rowName, String columnName, Object value) throws IOException {
+  private void filesCQLWrite(String cFName, String rowName, String columnName, Object value, String pathFichierUpdateCql) throws IOException {
 
     StringBuffer sbf = prepareCQLUpdateQuery(cFName, rowName, columnName, value);
 
     String cqlReq = sbf.toString();
     LOG.info("Requete CQL = " + cqlReq);
     
-    Path fileCQL = Paths.get("computedIndexComposite");
+    Path fileCQL = Paths.get(pathFichierUpdateCql);
     if (Files.notExists(fileCQL, LinkOption.NOFOLLOW_LINKS)) {
       Files.createFile(fileCQL);
     }

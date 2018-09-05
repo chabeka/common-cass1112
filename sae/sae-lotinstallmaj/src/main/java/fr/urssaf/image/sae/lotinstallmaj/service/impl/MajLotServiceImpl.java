@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
@@ -193,6 +194,9 @@ public final class MajLotServiceImpl implements MajLotService {
 
   @Autowired
   private CassandraConfig cassandraConfig;
+
+  @Value("${sae.path.fichier.cql.lotinstallmaj}")
+  private String pathFichierUpdateCql;
 
   /**
    * {@inheritDoc}
@@ -1210,7 +1214,7 @@ public final class MajLotServiceImpl implements MajLotService {
       // Indexation à vide si besoin
       if ("oui".equals(aIndexerVide)) {
         LOG.info("Indexation de l'index composite {}", nomIndex);
-        dfceUpdater.indexeAVideCompositeIndex(nomIndex.toString());
+        dfceUpdater.indexeAVideCompositeIndex(nomIndex.toString(), pathFichierUpdateCql);
       }
     }
   }
