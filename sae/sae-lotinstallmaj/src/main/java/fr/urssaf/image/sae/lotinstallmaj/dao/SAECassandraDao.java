@@ -210,10 +210,10 @@ public class SAECassandraDao {
    /**
     * @param cluster
     *           : le cluster cassandra
-    * @return le facteur de réplication du keyspace Docubase
+    * @return le facteur de réplication du keyspace dfce
     */
    public final int getDocubaseReplicationFactor(Cluster cluster) {
-      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace("Docubase");
+      KeyspaceDefinition keyspaceDef = cluster.describeKeyspace("dfce");
       if (keyspaceDef != null) {
          return keyspaceDef.getReplicationFactor();
       }

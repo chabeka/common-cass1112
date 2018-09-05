@@ -4,17 +4,13 @@
  
 # Source function library
 . /etc/rc.d/init.d/functions
-
-GED_CONCERNEE="$2"
  
 PROG_TOMCAT="tomcat"
 PROG_ZOOKEEPER="zookeeper"
-PROG_SAE_ORDONNANCEUR="ged-ordonnanceur"
-PROG_GNT_ORDONNANCEUR="ged-ordonnanceur"
-PID_FILE_SAE_ORDONNANCEUR="/var/run/$PROG_SAE_ORDONNANCEUR.pid"
-PID_FILE_GNT_ORDONNANCEUR="/var/run/$PROG_GNT_ORDONNANCEUR.pid"
-LOCK_FILE_SAE_ORDONNANCEUR="/var/lock/subsys/$PROG_SAE_ORDONNANCEUR"
-LOCK_FILE_GNT_ORDONNANCEUR="/var/lock/subsys/$PROG_GNT_ORDONNANCEUR"
+PROG_GED_ORDONNANCEUR="ged_ordonnanceur"
+PID_GED_ORDONNANCEUR_NAME="GED-ordonnanceur"
+PID_FILE_GED_ORDONNANCEUR="/var/run/$PID_GED_ORDONNANCEUR_NAME.pid"
+LOCK_FILE_GED_ORDONNANCEUR="/var/lock/subsys/$PID_GED_ORDONNANCEUR_NAME"
  
 start(){
 	echo -n "Verification de l'etat du service $PROG_ZOOKEEPER: "
@@ -66,18 +62,17 @@ start(){
 			start
 		fi
     fi	
-	if [ "GNT" = "$GED_CONCERNEE" ]; then
-        echo "Verification de l'etat du service $PROG_GNT_ORDONNANCEUR: "
-		if [ -e $PID_FILE_GNT_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GNT_ORDONNANCEUR"` ]; then
-			echo "Le programme $PROG_GNT_ORDONNANCEUR est deja demarre."
+        echo "Verification de l'etat du service $PROG_GED_ORDONNANCEUR: "
+		if [ -e $PID_FILE_GED_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GED_ORDONNANCEUR"` ]; then
+			echo "Le programme $PROG_GED_ORDONNANCEUR est deja demarre."
 		else
-			echo -n "Starting $PROG_GNT_ORDONNANCEUR: "
-			service gnt-ordonnanceur start
-			echo "$PROG_GNT_ORDONNANCEUR - done."
+			echo -n "Starting $PROG_GED_ORDONNANCEUR: "
+			service ged_ordonnanceur start
+			echo "$PROG_GED_ORDONNANCEUR - done."
 			sleep 5
-			echo "Verification $PROG_GNT_ORDONNANCEUR start "
-			if [ -e $PID_FILE_GNT_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GNT_ORDONNANCEUR"` ]; then
-				#echo -n "$PROG_GNT_ORDONNANCEUR - demarre"
+			echo "Verification $PROG_GED_ORDONNANCEUR start "
+			if [ -e $PID_FILE_GED_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GED_ORDONNANCEUR"` ]; then
+				#echo -n "$PROG_GED_ORDONNANCEUR - demarre"
 				success "OK"
 				echo -e "\n"
 				sleep 5
@@ -88,32 +83,6 @@ start(){
 				start
 			fi
 		fi
-		
-    elif [ "GNS" = "$GED_CONCERNEE" ]; then
-	    echo "Verification de l'etat du service $PROG_SAE_ORDONNANCEUR: "
-		if [ -e $PID_FILE_SAE_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_SAE_ORDONNANCEUR"` ]; then
-			echo "Le programme $PROG_SAE_ORDONNANCEUR est deja demarre."
-		else
-			echo -n "Starting $PROG_SAE_ORDONNANCEUR: "
-			service sae-ordonnanceur start
-			echo "$PROG_SAE_ORDONNANCEUR - done."
-			sleep 5
-			echo -n "Verification $PROG_SAE_ORDONNANCEUR start "
-			if [ -e $PID_FILE_SAE_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_SAE_ORDONNANCEUR"` ]; then
-				#echo -n "$PROG_SAE_ORDONNANCEUR - demarre"
-				success "OK"
-				echo -e "\n"
-				sleep 5
-			else
-				failure "KO"
-				echo -e "\n"
-				sleep 10
-				start
-			fi
-		fi
-	else
-        echo -n "L'ordonnanceur n'a pas pu �tre arr�te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
-    fi
 }
  
 stop(){
@@ -168,54 +137,26 @@ stop(){
 			stop
 		fi
     fi	
-	if [ "GNT" = "$GED_CONCERNEE" ]; then
-        echo "Verification de l'etat du service $PROG_GNT_ORDONNANCEUR: "
-		if [ ! -e $LOCK_FILE_GNT_ORDONNANCEUR ]; then
-			echo "L'ordonnanceur GNT n'est pas demarre."
-		else
-			echo -n "Stopping $PROG_GNT_ORDONNANCEUR: "
-			service gnt-ordonnanceur stop
-			echo "$PROG_GNT_ORDONNANCEUR - done."
-			sleep 5
-			echo -n "Verification $PROG_GNT_ORDONNANCEUR stop "
-			if [ ! -e $LOCK_FILE_GNT_ORDONNANCEUR ]; then
-				#echo -n "$PROG_GNT_ORDONNANCEUR arr�te"
-				success "OK"
-				echo -e "\n"
-				sleep 5
-			else
-				failure "KO"
-				echo -e "\n"
-				sleep 10
-				stop
-			fi
-		fi
-		
-    elif [ "GNS" = "$GED_CONCERNEE" ]; then
-	    echo "Verification de l'etat du service $PROG_SAE_ORDONNANCEUR: "
-		if [ ! -e $LOCK_FILE_SAE_ORDONNANCEUR ]; then
-			echo "L'ordonnanceur SAE n'est pas demarre."
-		else
-			echo -n "Stopping $PROG_SAE_ORDONNANCEUR: "
-			service sae-ordonnanceur stop
-			echo "$PROG_SAE_ORDONNANCEUR - done."
-			sleep 5
-			echo -n "Verification $PROG_SAE_ORDONNANCEUR stop "
-			if [ ! -e $LOCK_FILE_SAE_ORDONNANCEUR ]; then
-				#echo -n "$PROG_SAE_ORDONNANCEUR arr�te"
-				success "OK"
-				echo -e "\n"
-				sleep 5
-			else
-				failure "KO"
-				echo -e "\n"
-				sleep 10
-				stop
-			fi
-		fi
+    echo "Verification de l'etat du service $PROG_GED_ORDONNANCEUR: "
+	if [ ! -e $LOCK_FILE_GED_ORDONNANCEUR ]; then
+		echo "L'ordonnanceur GED n'est pas demarre."
 	else
-        echo -n "L'ordonnanceur n'a pas pu �tre arr�te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
-    fi
+		echo -n "Stopping $PROG_GED_ORDONNANCEUR: "
+		service ged_ordonnanceur stop
+		echo "$PROG_GED_ORDONNANCEUR - done."
+		sleep 5
+		echo -n "Verification $PROG_GED_ORDONNANCEUR stop "
+		if [ ! -e $LOCK_FILE_GED_ORDONNANCEUR ]; then
+			success "OK"
+			echo -e "\n"
+			sleep 5
+		else
+			failure "KO"
+			echo -e "\n"
+			sleep 10
+			stop
+		fi
+	fi
 }
  
 restart(){
@@ -225,99 +166,41 @@ restart(){
 }
  
 status(){
-   echo -n "Verification de l'etat du service $PROG_TOMCAT: "	
+    echo -n "Verification de l'etat du service $PROG_TOMCAT: "	
 	RETVAL=$(service $PROG_TOMCAT status)
 	echo "$RETVAL"
 	echo -n "Verification de l'etat du service $PROG_ZOOKEEPER: "	
 	RETVAL=$(service $PROG_ZOOKEEPER status)
 	echo "$RETVAL"
-	if [ "GNT" = "$GED_CONCERNEE" ]; then
-        echo -n "Verification de l'etat du service $PROG_GNT_ORDONNANCEUR: "
-		if [ -e $PID_FILE_GNT_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GNT_ORDONNANCEUR"` ]; then
-			echo "Le programme $PROG_GNT_ORDONNANCEUR est demarre."
-		elif [ ! -e $LOCK_FILE_GNT_ORDONNANCEUR ]; then
-			echo "L'ordonnanceur GNT n'est pas demarre."
-		else
-			echo "L'ordonnanceur GNT est dans un �tat instable. Veuillez d�tuire le process manuellement svp."
-		fi
-		
-    elif [ "GNS" = "$GED_CONCERNEE" ]; then
-	    echo -n "Verification de l'etat du service $PROG_SAE_ORDONNANCEUR: "
-		if [ -e $PID_FILE_SAE_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_SAE_ORDONNANCEUR"` ]; then
-			echo "Le programme $PROG_SAE_ORDONNANCEUR est demarre."
-		elif [ ! -e $LOCK_FILE_SAE_ORDONNANCEUR ]; then
-			echo "L'ordonnanceur SAE n'est pas demarre."
-		else
-			echo "L'ordonnanceur SAE est dans un �tat instable. Veuillez d�tuire le process manuellement svp."
-		fi
+    echo -n "Verification de l'etat du service $PROG_GED_ORDONNANCEUR: "
+	if [ -e $PID_FILE_GED_ORDONNANCEUR ] && [ -e /proc/`cat "$PID_FILE_GED_ORDONNANCEUR"` ]; then
+		echo "Le programme $PROG_GED_ORDONNANCEUR est demarre."
+	elif [ ! -e $LOCK_FILE_GED_ORDONNANCEUR ]; then
+		echo "L'ordonnanceur GED n'est pas demarre."
 	else
-        echo -n "L'ordonnanceur n'a pas pu �tre arr�te car le parametre 2 du script n'est pas reconnu (GNT ou GNS)."
-    fi
+		echo "L'ordonnanceur GED est dans un etat instable. Veuillez detuire le process manuellement svp."
+	fi
 }
  
 case "$1" in
   start)
-	if [ -z "$2" ]; then
-	echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
-	exit 1
-	fi
-	case "$2" in "GNT" | "GNS")
-		echo "Debut du traitement de demarrage sur le serveur $2"
-		;;
-	 *)
-		echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT svp."
-		exit 1
-		;;
-	esac
+	echo "Debut du traitement de demarrage sur le serveur GED"
     start
-    ;;
+        ;;
   stop)
-  	if [ -z "$2" ]; then
-	echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
-	exit 1
-	fi
-	case "$2" in "GNT" | "GNS")
-		echo "Debut du traitement de demarrage sur le serveur $2"
-		;;
-	 *)
-		echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT svp."
-		exit 1
-		;;
-	esac
+	echo "Debut du traitement de l'arret sur le serveur GED"
     stop
-    ;;
+        ;;
   restart)
-  	if [ -z "$2" ]; then
-	echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
-	exit 1
-	fi
-	case "$2" in "GNT" | "GNS")
-		echo "Debut du traitement de demarrage sur le serveur $2"
-		;;
-	 *)
-		echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT svp."
-		exit 1
-		;;
-	esac
+	echo "Debut du traitement de redemarrage sur le serveur GED"
     restart
-    ;;
+        ;;
   status)
-  	if [ -z "$2" ]; then
-	echo "Le parametre 2 est manquant. Saisir GNT ou GNS comme deuxieme parametre svp."
-	exit 1
-	fi
-	case "$2" in "GNT" | "GNS")
-		echo "Debut du traitement de demarrage sur le serveur $2"
-		;;
-	 *)
-		echo "Le serveur $2 n'est pas reconnu. Veuillez saisir GNS ou GNT svp."
-		exit 1
-		;;
-	esac
+	echo "Debut du traitement du status sur le serveur GED"
     status
     ;;
   *)
-      echo "Usage : $0 {start GNS ou GNT|stop GNS ou GNT|status  GNS ou GNT|restart GNS ou GNT}"
+    echo "Usage : $0 {start|stop|status|restart}"
 esac
  
 exit 0

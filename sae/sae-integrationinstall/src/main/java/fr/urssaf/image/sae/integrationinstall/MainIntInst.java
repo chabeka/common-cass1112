@@ -76,14 +76,6 @@ public final class MainIntInst {
          throw new MajLotRuntimeException(message);
       }
 
-      // Création de la base de données DFCE (Schema et CF).
-      if (MajLotServiceImpl.APPL_CONCERNEE.DFCE.getApplName().equals(applicationConcernee)) {
-         LOG.info("Lancement du telechargement des CRL");
-         // Démarre l'opération d'update de la base DFCE
-         majLotService.demarreUpdateDFCE(applicationConcernee);
-         LOG.info("Fin du telechargement des CRL");
-      }
-
       // Création de la base de données GED (CNS ou GNT).
       if (MajLotServiceImpl.APPL_CONCERNEE.GNS.getApplName().equals(applicationConcernee) || 
             MajLotServiceImpl.APPL_CONCERNEE.GNT.getApplName().equals(applicationConcernee)) {

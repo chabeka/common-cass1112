@@ -1,29 +1,32 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.urssaf.image.sae.lotinstallmaj.iterator.AllColumnsIterator;
+import fr.urssaf.image.sae.lotinstallmaj.iterator.AllRowsIterator;
+import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
-import me.prettyprint.cassandra.serializers.DateSerializer;
-import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Cluster;
 import me.prettyprint.hector.api.HConsistencyLevel;
 import me.prettyprint.hector.api.Keyspace;
@@ -38,13 +41,6 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
-import fr.urssaf.image.sae.lotinstallmaj.iterator.AllRowsIterator;
-import fr.urssaf.image.sae.lotinstallmaj.iterator.AllColumnsIterator;
-
 /**
  * Classe permettant la mise à jour des donnees du keyspace Docubase dans
  * cassandra
@@ -55,7 +51,7 @@ public class DFCEUpdater {
    /**
     * Nom du keyspace
     */
-   private static final String DFCE_KEYSPACE_NAME = "Docubase";
+  private static final String DFCE_KEYSPACE_NAME = "dfce";
    
    /**
     * Column family TermInfo.
@@ -85,7 +81,7 @@ public class DFCEUpdater {
    /**
     * Column family CompositeIndexesReference.
     */
-   private static final String CF_COMPOSITE_INDEXES_REFERENCE = "CompositeIndexesReference";
+  private static final String CF_COMPOSITE_INDEXES_REFERENCE = "composite_index";
 
    private final Cluster cluster;
    private Keyspace keyspace;
@@ -440,59 +436,37 @@ public class DFCEUpdater {
    }
 
    /**
-    * Indexe à vide les index composite si nécessaire (met les colonnes indexed
-    * et computed à true dans la colonne de famille CompositeIndexesReference
-    * 
-    * @param indexes
-    *           Liste des index composites à créer
-    */
-   public final void indexeAVideCompositeIndex(String indexName) {
+   * Indexe à vide les index composite si nécessaire (met les colonnes indexed
+   * et computed à true dans la colonne de famille CompositeIndexesReference
+   * 
+   * @param indexes
+   *          Liste des index composites à créer
+   * @throws IOException
+   */
+  public final void indexeAVideCompositeIndex(String indexName) throws IOException {
 
       // On se connecte au keyspace
-      connectToKeyspace();
+    // connectToKeyspace();
 
       // On indexe l'index composite si ce n'est pas déjà le cas dans DFCE
-      if (!isCompositeIndexComputed(indexName)) {
+    // if (!isCompositeIndexComputed(indexName)) {
 
          updateColumn(CF_COMPOSITE_INDEXES_REFERENCE, indexName, "computed", true);
 
-      }
+    // }
    }
 
    
-   /**
-    * Indexe à vide un index simple si nécessaire (met les colonnes indexed
-    * et computed à true dans la colonne de famille BaseCategoriesReference
-    * 
-    * @param indexes
-    *           Liste des index composites à créer
-    */
-   public final void indexeAVideIndexSimple(String indexName, String baseName) {
-
-      // On se connecte au keyspace
-      connectToKeyspace();
-      
-      // creation de la rowKey
-      StringBuffer buffer = new StringBuffer();
-      buffer.append(baseName);
-      buffer.append((char) 65535);
-      buffer.append(indexName);
-      String rowKey = buffer.toString();
-
-      // On indexe l'index composite si ce n'est pas déjà le cas dans DFCE
-      if (!isMetaIndexedAndComputed(rowKey)) {
-         updateColumn("BaseCategoriesReference", rowKey, "indexed", true);
-         updateColumn("BaseCategoriesReference", rowKey, "computed", true);
-      }
-   }
    
    /**
-    * Vérifie si l'index est déjà indexée dans DFCE (computed à true)
-    * 
-    * @param indexName
-    *           le nom de l'index
-    * @return vrai si l'index est indexée
-    */
+   * Vérifie si l'index est déjà indexée dans DFCE (computed à true)
+   * 
+   * @param indexName
+   *          le nom de l'index
+   * @return vrai si l'index est indexée
+   * @deprecated Il faut migrer vers la librairie CQL pour pouvoir faire des requetes dans la base DFCE.
+   */
+  @Deprecated
    private boolean isCompositeIndexComputed(String indexName) {
 
       boolean isIndexee = false;
@@ -558,49 +532,93 @@ public class DFCEUpdater {
    }
 
    private void updateColumn(String CFName, String rowName, String columnName,
-         Object value) {
+                            Object value)
+      throws IOException {
 
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
-            keyspace, CFName, StringSerializer.get(), StringSerializer.get());
+//      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+//            keyspace, CFName, StringSerializer.get(), StringSerializer.get());
+//
+//      ColumnFamilyUpdater<String, String> updater = cfTmpl
+//            .createUpdater(rowName);
+//
+//      Collection<String> columnNames = cfTmpl.queryColumns(rowName)
+//            .getColumnNames();
+//
+//      if (columnNames.contains(columnName)) {
+//
+//         if (value != null && value instanceof String) {
+//            HColumn<String, String> column = HFactory.createColumn(columnName,
+//                  (String) value, StringSerializer.get(),
+//                  StringSerializer.get());
+//            updater.setColumn(column);
+//            cfTmpl.update(updater);
+//         } else if (value != null && value instanceof Long) {
+//            HColumn<String, Long> column = HFactory.createColumn(columnName,
+//                  (Long) value, StringSerializer.get(), LongSerializer.get());
+//            updater.setColumn(column);
+//            cfTmpl.update(updater);
+//         } else if (value != null && value instanceof Date) {
+//            HColumn<String, Date> column = HFactory.createColumn(columnName,
+//                  (Date) value, StringSerializer.get(), DateSerializer.get());
+//            updater.setColumn(column);
+//            cfTmpl.update(updater);
+//         } else if (value != null && value instanceof Boolean) {
+//            HColumn<String, Boolean> column = HFactory.createColumn(columnName,
+//                  (Boolean) value, StringSerializer.get(),
+//                  BooleanSerializer.get());
+//            updater.setColumn(column);
+//            cfTmpl.update(updater);
+//         } else if (value != null) {
+//            LOG.info("Type de valeur non prise en charge : "
+//                  + value.getClass().getName());
+//         }
 
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
-            .createUpdater(rowName);
-
-      Collection<String> columnNames = cfTmpl.queryColumns(rowName)
-            .getColumnNames();
-
-      if (columnNames.contains(columnName)) {
-
-         if (value != null && value instanceof String) {
-            HColumn<String, String> column = HFactory.createColumn(columnName,
-                  (String) value, StringSerializer.get(),
-                  StringSerializer.get());
-            updater.setColumn(column);
-            cfTmpl.update(updater);
-         } else if (value != null && value instanceof Long) {
-            HColumn<String, Long> column = HFactory.createColumn(columnName,
-                  (Long) value, StringSerializer.get(), LongSerializer.get());
-            updater.setColumn(column);
-            cfTmpl.update(updater);
-         } else if (value != null && value instanceof Date) {
-            HColumn<String, Date> column = HFactory.createColumn(columnName,
-                  (Date) value, StringSerializer.get(), DateSerializer.get());
-            updater.setColumn(column);
-            cfTmpl.update(updater);
-         } else if (value != null && value instanceof Boolean) {
-            HColumn<String, Boolean> column = HFactory.createColumn(columnName,
-                  (Boolean) value, StringSerializer.get(),
-                  BooleanSerializer.get());
-            updater.setColumn(column);
-            cfTmpl.update(updater);
-         } else if (value != null) {
-            LOG.info("Type de valeur non prise en charge : "
-                  + value.getClass().getName());
-         }
-
-      } else {
-         LOG.info("Column " + columnName + " inexistante pour la key "
-               + rowName + " dans la CF " + CFName);
-      }
+    // } else {
+    // LOG.info("Column " + columnName + " inexistante pour la key "
+    // + rowName + " dans la CF " + CFName);
+    // }
+     
+    filesCQLWrite(CFName,
+                  rowName,
+                  columnName,
+                  value);
    }
+
+  /**
+   * @param cFName
+   * @param rowName
+   * @param columnName
+   * @param value
+   * @throws IOException
+   */
+  private void filesCQLWrite(String cFName, String rowName, String columnName, Object value) throws IOException {
+
+    StringBuffer sbf = prepareCQLUpdateQuery(cFName,
+                                             rowName,
+                                             columnName,
+                                             value);
+
+    Files.write(Paths.get("computedIndexComposite"), sbf.toString().getBytes(), StandardOpenOption.APPEND);
+
+  }
+
+  /**
+   * @param cFName
+   * @param rowName
+   * @param columnName
+   * @param value
+   * @return
+   */
+  private StringBuffer prepareCQLUpdateQuery(String cFName, String rowName, String columnName, Object value) {
+    String spaceString = " ";
+    StringBuffer sbf = new StringBuffer();
+        
+    sbf.append("UPDATE " + DFCE_KEYSPACE_NAME + "." + cFName + spaceString);
+    sbf.append("SET " + columnName + "=" + Boolean.TRUE + spaceString);
+    sbf.append("WHERE id='" + rowName + "'");
+    sbf.append("IF " + columnName + "=" + Boolean.FALSE);
+    sbf.append(";");
+    
+    return null;
+  }
 }
