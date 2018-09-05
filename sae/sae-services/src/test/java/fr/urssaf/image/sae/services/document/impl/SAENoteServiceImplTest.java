@@ -205,6 +205,7 @@ public class SAENoteServiceImplTest {
    }
 
    @Test
+   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void ajoutNoteTestSuccess() throws IOException, SAECaptureServiceEx,
    ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
    InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
@@ -431,6 +432,7 @@ public class SAENoteServiceImplTest {
    }
 
    @Test
+   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void ajoutPlusieurNotesTestSuccess() throws IOException,
    SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
    RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
