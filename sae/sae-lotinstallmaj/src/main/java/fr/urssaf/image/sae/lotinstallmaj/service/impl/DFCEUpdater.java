@@ -601,7 +601,7 @@ public class DFCEUpdater {
     LOG.info("Requete CQL = " + cqlReq);
     
     Path fileCQL = Paths.get("computedIndexComposite");
-    if (!Files.notExists(fileCQL, LinkOption.NOFOLLOW_LINKS)) {
+    if (Files.notExists(fileCQL, LinkOption.NOFOLLOW_LINKS)) {
       Files.createFile(fileCQL);
     }
 
