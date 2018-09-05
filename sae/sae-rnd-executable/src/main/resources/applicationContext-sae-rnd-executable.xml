@@ -22,7 +22,9 @@
    </bean>
 
 
-   <!-- Importation contexte RND  -->
+   <!-- Importation des autres contextes  -->
+   <import resource="applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-commons-dfce-connection.xml" />
    <import resource="applicationContext-sae-rnd.xml" />
 
 
