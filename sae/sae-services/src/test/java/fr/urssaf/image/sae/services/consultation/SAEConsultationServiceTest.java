@@ -224,8 +224,16 @@ public class SAEConsultationServiceTest {
                                                                                      "ContratDeService" })));
       final List<UntypedMetadata> metadatas = untypedDocument.getUMetadatas();
       // on trie les métadonnées non typés en fonction de leur code long
-      final Comparator<UntypedMetadata> comparator = (untypedMetadata1, untypedMetadata2) -> untypedMetadata1.getLongCode().compareTo(
-                                                                                                                                      untypedMetadata2.getLongCode());
+      final Comparator<UntypedMetadata> comparator = new Comparator<UntypedMetadata>() {
+         /**
+          * {@inheritDoc}
+          */
+         @Override
+         public int compare(final UntypedMetadata untypedMetadata1, final UntypedMetadata untypedMetadata2) {
+            return untypedMetadata1.getLongCode().compareTo(
+                                                            untypedMetadata2.getLongCode());
+         }
+      };
       Collections.sort(metadatas, comparator);
 
       assertMetadata(metadatas.get(0), "CodeOrganismeGestionnaire", "UR750");
@@ -299,8 +307,16 @@ public class SAEConsultationServiceTest {
                    12, metadatas.size());
 
       // on trie les métadonnées non typés en fonction de leur code long
-      final Comparator<UntypedMetadata> comparator = (untypedMetadata1, untypedMetadata2) -> untypedMetadata1.getLongCode().compareTo(
-                                                                                                                                      untypedMetadata2.getLongCode());
+      final Comparator<UntypedMetadata> comparator = new Comparator<UntypedMetadata>() {
+         /**
+          * {@inheritDoc}
+          */
+         @Override
+         public int compare(final UntypedMetadata untypedMetadata1, final UntypedMetadata untypedMetadata2) {
+            return untypedMetadata1.getLongCode().compareTo(
+                                                            untypedMetadata2.getLongCode());
+         }
+      };
       Collections.sort(metadatas, comparator);
 
       assertMetadata(metadatas.get(0), "CodeOrganismeGestionnaire", "UR750");
@@ -342,8 +358,16 @@ public class SAEConsultationServiceTest {
                    12, metadatas.size());
 
       // on trie les métadonnées non typés en fonction de leur code long
-      final Comparator<UntypedMetadata> comparator = (untypedMetadata1, untypedMetadata2) -> untypedMetadata1.getLongCode().compareTo(
-                                                                                                                                      untypedMetadata2.getLongCode());
+      final Comparator<UntypedMetadata> comparator = new Comparator<UntypedMetadata>() {
+         /**
+          * {@inheritDoc}
+          */
+         @Override
+         public int compare(final UntypedMetadata untypedMetadata1, final UntypedMetadata untypedMetadata2) {
+            return untypedMetadata1.getLongCode().compareTo(
+                                                            untypedMetadata2.getLongCode());
+         }
+      };
       Collections.sort(metadatas, comparator);
 
       assertMetadata(metadatas.get(0), "CodeOrganismeGestionnaire", "UR750");
