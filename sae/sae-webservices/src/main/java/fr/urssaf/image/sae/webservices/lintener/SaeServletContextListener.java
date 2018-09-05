@@ -17,7 +17,7 @@ public class SaeServletContextListener implements
 ServletContextListener {
 
    @Autowired
-   @Qualifier("dfceServicesManager")
+   @Qualifier("dfceServices")
    private DFCEServices dfceServices;
 
    @Autowired

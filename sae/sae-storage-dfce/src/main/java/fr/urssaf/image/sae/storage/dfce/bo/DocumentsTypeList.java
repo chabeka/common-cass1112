@@ -30,7 +30,7 @@ public class DocumentsTypeList {
    /**
     * Constructeur
     *
-    * @param dfceServicesManager
+    * @param dfceServices
     *           service de connexion à DFCE
     */
    @Autowired
