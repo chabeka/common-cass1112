@@ -1,5 +1,7 @@
 package fr.urssaf.image.commons.dfce.service.impl;
 
+import java.io.InputStream;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,9 +34,26 @@ public class DFCEReconnectionAspect {
 
       Object proceed;
       try {
-         // On tente d'exécuter les service DFCE
          LOG.debug("{} - Appel DFCE : {}",
                    new Object[] {LOG_PREFIX, joinPoint.getSignature()});
+
+         // Si jamais un des paramètres est un inputStream, on sauvegarde la position du stream
+         // afin de pouvoir retenter la méthode en cas d'exception
+         LOG.debug("{} - Analyse des paramètres", new Object[] {LOG_PREFIX});
+         final Object[] args = joinPoint.getArgs();
+         for (final Object arg : args) {
+            if (arg instanceof InputStream) {
+               final InputStream inputStream = (InputStream) arg;
+               if (!inputStream.markSupported()) {
+                  final Class<? extends Object> theClass = arg.getClass();
+                  LOG.warn("{} - Attention : l'inputstream de class {} ne supporte pas le retour arrière. Le rejeu ne fonctionnera pas en cas de reconnexion !",
+                           new Object[] {LOG_PREFIX, theClass});
+               }
+               inputStream.mark(5*1024);
+            }
+         }
+
+         // On tente d'exécuter le service DFCE
          proceed = joinPoint.proceed();
       }
       catch (final HessianConnectionException | NullPointerException ex) {
@@ -42,7 +61,16 @@ public class DFCEReconnectionAspect {
                   new Object[] {LOG_PREFIX}, ex);
          // On se reconnecte
          dfceServices.reconnect();
-         // On retente l'exécution
+         // On remet les inputStream à leur position d'origine
+         final Object[] args = joinPoint.getArgs();
+         for (final Object arg : args) {
+            if (arg instanceof InputStream) {
+               final InputStream inputStream = (InputStream) arg;
+               LOG.debug("{} - reset de l'inputstream...", new Object[] {LOG_PREFIX});
+               inputStream.reset();
+            }
+         }
+         // On retente l'exécution de la méthode
          proceed = joinPoint.proceed();
       }
       return proceed;

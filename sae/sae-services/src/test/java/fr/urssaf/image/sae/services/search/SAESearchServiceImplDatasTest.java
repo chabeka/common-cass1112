@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.services.search;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +23,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -605,7 +604,6 @@ public class SAESearchServiceImplDatasTest {
     *
     */
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public final void rechercheParIterateurAvecNoteSucces()
          throws SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
          RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
@@ -695,18 +693,10 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertEquals("UUID attendu incorect", uuid, documents
                           .getDocuments().get(0).getUuid());
 
-      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      final Date dateCourante = new Date();
-      final String dateString = dateFormat.format(dateCourante);
 
       final String contenu = documents.getDocuments().get(0).getUMetadatas().get(0)
             .getValue();
-      final String[] splitContenu = contenu.split(dateString);
-
-      assertEquals(
-                   "Contenu de la note invalide",
-                   "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"UTILISATEUR TEST\"}]",
-                   splitContenu[0] + splitContenu[1].substring(9));
+      validateNoteContent(contenu);
 
       serviceSuppression.suppression(uuid);
 
@@ -772,7 +762,6 @@ public class SAESearchServiceImplDatasTest {
    }
 
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public final void searchWithNoteSuccessResult() throws SAESearchServiceEx,
    MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
    UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
@@ -848,18 +837,33 @@ public class SAESearchServiceImplDatasTest {
       final String dateString = dateFormat.format(dateCourante);
 
       final String contenu = listeDocs.get(0).getUMetadatas().get(0).getValue();
-      final String[] splitContenu = contenu.split(dateString);
-
-      assertEquals(
-                   "Contenu de la note invalide",
-                   "[{\"contenu\":\"contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"UTILISATEUR TEST\"}]",
-                   splitContenu[0] + splitContenu[1].substring(9));
+      validateNoteContent(contenu);
 
       serviceSuppression.suppression(uuid);
 
       // supprime le fichier attestation_consultation.pdf sur le repertoire de
       // l'ecde
       fileDoc.delete();
+   }
+
+   /**
+    * Vérifie le contenu de la note
+    * @param noteContent : contenu de la note
+    */
+   private void validateNoteContent(final String contenu) {
+      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      final Date todayDate = new Date();
+      final String todayString= dateFormat.format(todayDate);
+      final Calendar c = Calendar.getInstance();
+      c.setTime(todayDate);
+      c.add(Calendar.DATE, 1);
+      final Date tomorowDate = c.getTime();
+      final String tomorowString = dateFormat.format(tomorowDate);
+
+      Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"contenu de la note\""));
+      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
+                        .or(JUnitMatchers.containsString(tomorowString)));
+      Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":\"UTILISATEUR TEST\"}]"));
    }
 
 }

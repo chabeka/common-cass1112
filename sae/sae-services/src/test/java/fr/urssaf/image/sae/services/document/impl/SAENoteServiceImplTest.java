@@ -11,6 +11,7 @@ import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -205,7 +207,6 @@ public class SAENoteServiceImplTest {
    }
 
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void ajoutNoteTestSuccess() throws IOException, SAECaptureServiceEx,
    ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
    InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
@@ -267,20 +268,11 @@ public class SAENoteServiceImplTest {
       final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
       final UntypedDocument uDoc = consultationService.consultation(consultParams);
 
-      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      final Date dateCourante = new Date();
-      final String dateString = dateFormat.format(dateCourante);
-
       if (uDoc.getUMetadatas().size() > 0) {
          // rq : login n'est pas remplacé, DFCE écrase par _ADMIN
 
-         final String contenu = uDoc.getUMetadatas().get(0).getValue();
-         final String[] splitContenu = contenu.split(dateString);
-
-         assertEquals(
-                      "Contenu de la note invalide",
-                      "[{\"contenu\":\"Contenu de la note\",\"dateCreation\":\"\",\"auteur\":\"login\"}]",
-                      splitContenu[0] + splitContenu[1].substring(9));
+         final String noteContent = uDoc.getUMetadatas().get(0).getValue();
+         validateNoteContent(noteContent);
 
       } else {
          fail("Une note devrait être rattachée au document");
@@ -432,7 +424,6 @@ public class SAENoteServiceImplTest {
    }
 
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void ajoutPlusieurNotesTestSuccess() throws IOException,
    SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
    RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
@@ -497,10 +488,6 @@ public class SAENoteServiceImplTest {
       final ConsultParams consultParams = new ConsultParams(uuid, listeMeta);
       final UntypedDocument uDoc = consultationService.consultation(consultParams);
 
-      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      final Date dateCourante = new Date();
-      final String dateString = dateFormat.format(dateCourante);
-
       if (uDoc.getUMetadatas().size() > 0) {
          /*
           * assertEquals( "Contenu de la note invalide",
@@ -511,15 +498,20 @@ public class SAENoteServiceImplTest {
           * .getUMetadatas().get(0).getValue());
           */
          final String contenu = uDoc.getUMetadatas().get(0).getValue();
-         final String[] splitContenu = contenu.split(dateString);
 
-         assertEquals(
-                      "Contenu de la note invalide",
-                      "[{\"contenu\":\"Contenu de la note 1\",\"dateCreation\":\""
-                            + "\",\"auteur\":\"login\"},{\"contenu\":\"Contenu de la note 2\",\"dateCreation\":\""
-                            + "\",\"auteur\":\"login\"}]", splitContenu[0]
-                                  + splitContenu[1].substring(9)
-                                  + splitContenu[2].substring(9));
+         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+         final Date todayDate = new Date();
+         final String todayString= dateFormat.format(todayDate);
+         final Calendar c = Calendar.getInstance();
+         c.setTime(todayDate);
+         c.add(Calendar.DATE, 1);
+         final Date tomorowDate = c.getTime();
+         final String tomorowString = dateFormat.format(tomorowDate);
+
+         Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"Contenu de la note 1\""));
+         Assert.assertThat(contenu, JUnitMatchers.containsString("\",\"auteur\":\"login\"},{\"contenu\":\"Contenu de la note 2\""));
+         Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
+                           .or(JUnitMatchers.containsString(tomorowString)));
       } else {
          fail("Une note devrait être rattachée au document");
       }
@@ -611,5 +603,25 @@ public class SAENoteServiceImplTest {
       noteService.addDocumentNote(uuid, "Contenu de la note 1", "login");
 
       Assert.fail("exception attendue");
+   }
+
+   /**
+    * Vérifie le contenu de la note
+    * @param noteContent : contenu de la note
+    */
+   private void validateNoteContent(final String contenu) {
+      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+      final Date todayDate = new Date();
+      final String todayString= dateFormat.format(todayDate);
+      final Calendar c = Calendar.getInstance();
+      c.setTime(todayDate);
+      c.add(Calendar.DATE, 1);
+      final Date tomorowDate = c.getTime();
+      final String tomorowString = dateFormat.format(tomorowDate);
+
+      Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"Contenu de la note\""));
+      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
+                        .or(JUnitMatchers.containsString(tomorowString)));
+      Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":\"login\"}]"));
    }
 }

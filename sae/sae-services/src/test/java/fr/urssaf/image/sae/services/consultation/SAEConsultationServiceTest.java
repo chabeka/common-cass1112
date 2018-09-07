@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -27,6 +28,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.matchers.JUnitMatchers;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -547,7 +549,6 @@ public class SAEConsultationServiceTest {
    }
 
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void consultationAvecNote_success_consultParam() throws IOException,
    SAEConsultationServiceException, ConnectionServiceEx, ParseException,
    UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
@@ -564,23 +565,12 @@ public class SAEConsultationServiceTest {
 
       Assert.assertEquals("Un seule métadonnée attendue : Note",
                           untypedDocument.getUMetadatas().size(), 1);
+      final String noteContent = untypedDocument.getUMetadatas().get(0).getValue();
 
-      final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      final Date dateCourante = new Date();
-      final String dateString = dateFormat.format(dateCourante);
-
-      final String contenu = untypedDocument.getUMetadatas().get(0).getValue();
-      final String[] splitContenu = contenu.split(dateString);
-
-      assertEquals(
-                   "Contenu de la note invalide",
-                   "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":null}]",
-                   splitContenu[0] + splitContenu[1].substring(9));
-
+      validateNoteContent(noteContent);
    }
 
    @Test
-   // TODO : à corriger : ce test ne marche pas à 23h !!
    public void consultationAffichableAvecNote_success_consultParam() throws IOException,
    SAEConsultationServiceException, ConnectionServiceEx, ParseException,
    UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
@@ -598,18 +588,28 @@ public class SAEConsultationServiceTest {
       Assert.assertEquals("Un seule métadonnée attendue : Note",
                           untypedDocument.getUMetadatas().size(), 1);
 
+      final String noteContent = untypedDocument.getUMetadatas().get(0).getValue();
+      validateNoteContent(noteContent);
+   }
+
+   /**
+    * Vérifie le contenu de la note
+    * @param noteContent : contenu de la note
+    */
+   private void validateNoteContent(final String contenu) {
       final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-      final Date dateCourante = new Date();
-      final String dateString = dateFormat.format(dateCourante);
+      final Date todayDate = new Date();
+      final String todayString= dateFormat.format(todayDate);
+      final Calendar c = Calendar.getInstance();
+      c.setTime(todayDate);
+      c.add(Calendar.DATE, 1);
+      final Date tomorowDate = c.getTime();
+      final String tomorowString = dateFormat.format(tomorowDate);
 
-      final String contenu = untypedDocument.getUMetadatas().get(0).getValue();
-      final String[] splitContenu = contenu.split(dateString);
-
-      assertEquals(
-                   "Contenu de la note invalide",
-                   "[{\"contenu\":\"note du document\",\"dateCreation\":\"\",\"auteur\":null}]",
-                   splitContenu[0] + splitContenu[1].substring(9));
-
+      Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"note du document\""));
+      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
+                        .or(JUnitMatchers.containsString(tomorowString)));
+      Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":null}]"));
    }
 
 }
