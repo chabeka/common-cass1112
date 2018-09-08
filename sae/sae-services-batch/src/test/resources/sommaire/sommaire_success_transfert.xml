@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<som:sommaire
+   xmlns:som="http://www.cirtil.fr/sae/sommaireXml"
+   xmlns:somres="http://www.cirtil.fr/sae/commun_sommaire_et_resultat"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+   <!-- Type de traitement de masse - Le transfert de masse fonctionne uniquement en mode PARTIEL -->
+   <som:batchMode>PARTIEL</som:batchMode>
+   
+    <som:restitutionUuids>true</som:restitutionUuids>
+    
+   <!-- Liste des documents a archiver -->
+   <som:documentsMultiAction>
+         
+       
+      <!-- Transfert d'un document + modification de metadonnees au moment du transfert en GNS -->
+      <somres:documentMultiAction>
+         <somres:objetNumerique>
+            <somres:UUID>C62168AF-2D57-4CD1-B1C7-8EF45AE41364</somres:UUID>
+         </somres:objetNumerique>
+         <somres:metadonnees>
+            <somres:metadonnee>
+                  <somres:code>CodeRND</somres:code>
+                  <somres:valeur>2.3.1.1.12</somres:valeur>
+            </somres:metadonnee>
+            <somres:metadonnee>
+                  <somres:code>Siren</somres:code>
+                  <somres:valeur>123456789</somres:valeur>
+            </somres:metadonnee>
+         </somres:metadonnees>
+         <somres:typeAction>TRANSFERT</somres:typeAction>
+      </somres:documentMultiAction>
+
+      <!-- Transfert de document dans modification de metadonnees -->
+      <somres:documentMultiAction>
+         <somres:objetNumerique>
+            <somres:UUID>445A5834-6ADE-4AEB-835C-0A54EC631AAE</somres:UUID>
+         </somres:objetNumerique>
+		 <somres:metadonnees/>
+         <somres:typeAction>TRANSFERT</somres:typeAction>
+      </somres:documentMultiAction>
+       
+          <!-- Suppression de document -->
+      <somres:documentMultiAction>
+         <somres:objetNumerique>
+            <somres:UUID>09D651E8-52AA-4C4E-BA12-9D002DFD09F9</somres:UUID>
+         </somres:objetNumerique>
+         <somres:metadonnees/>
+         <somres:typeAction>SUPPRESSION</somres:typeAction>
+      </somres:documentMultiAction>
+       
+
+   </som:documentsMultiAction>
+
+   <!-- Liste des documents virtuels a transferer - Non prise en charge pour le transfert de masse -->
+   <som:documentsVirtuels />
+
+</som:sommaire>

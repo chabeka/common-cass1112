@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fichier de recherche conforme -->
+<sae:recherche xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
+	<sae:requete>Ma chaine de recherche</sae:requete>
+	<sae:metadonnees>
+		<sae:metadonneeCode>
+		code_1
+		</sae:metadonneeCode>
+		<sae:metadonneeCode>
+		code_2
+		</sae:metadonneeCode>
+		<sae:metadonneeCode>
+		code_3
+		</sae:metadonneeCode>
+	</sae:metadonnees>
+</sae:recherche>

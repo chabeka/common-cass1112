@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<journal xmlns="http://www.cirtil.fr/sae/journalSae">
+    <journalPrecedent>
+        <id>6f5e4930-80cc-11e2-8759-005056c00008</id>
+        <hash>00000</hash>
+        <typeHash>SHA-1</typeHash>
+    </journalPrecedent>
+    <dateJournee>2013-04-15</dateJournee>
+    <traces>
+        <trace>
+            <id>1b163270-80bd-11e2-8148-005056c00008</id>
+            <timestamp>2013-04-15T11:45:50+02:00</timestamp>
+            <codeEvt>code événement [DATE]</codeEvt>
+            <contexte>contexte [DATE]</contexte>
+            <cs>contrat de service [DATE]</cs>
+            <pagms>
+                <pagm>PAGM  [DATE]</pagm>
+            </pagms>
+            <login>LE LOGIN [DATE]</login>
+            <infos>
+                <info>
+                    <code>clé</code>
+                    <valeur>valeur</valeur>
+                </info>
+            </infos>
+        </trace>
+    </traces>
+</journal>
