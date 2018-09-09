@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<ns1:archivageMasseAvecHash xmlns:ns1="http://www.cirtil.fr/saeService" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.cirtil.fr/saeService ..\SaeService.xsd">
-   <ns1:urlSommaire>ecde://cer69-ecde.cer69.recouv/DCL001/19991231/3/sommaire.xml</ns1:urlSommaire>
-   <ns1:hash></ns1:hash>
-   <ns1:typeHash></ns1:typeHash>
-</ns1:archivageMasseAvecHash>
-      
-   
