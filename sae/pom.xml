@@ -22,7 +22,6 @@
 		<maven-compiler-plugin.version>3.5.1</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
-		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
 		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
 		<maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
@@ -383,15 +382,6 @@
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
-
-
-         <!-- On spécifie la version du plugin Maven pour Sonar -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>${sonar-maven-plugin.version}</version>
-			</plugin>
-
 
          <!-- Pour la gestion des release -->
 			<plugin>
