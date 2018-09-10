@@ -38,4 +38,25 @@ public class DFCEServicesTest {
       Assert.assertTrue("Le nombre de résultats doit être supérieur ou égal à zéro", searchResult.getTotalHits() >= 0);
    }
 
+   @Test
+   public void reconnectTest() throws ExceededSearchLimitException, SearchQueryParseException {
+      final SearchQuery query = new SearchQuery("srt:153556*", dfceServices.getBase());
+      final SearchResult searchResult = dfceServices.search(query);
+      Assert.assertTrue("Le nombre de résultats doit être supérieur ou égal à zéro", searchResult.getTotalHits() >= 0);
+
+      dfceServices.closeConnexion();
+      // Les services DFCE doivent se reconnecter tout seuls
+      final SearchResult searchResult2 = dfceServices.search(query);
+      Assert.assertTrue("Le nombre de résultats doit être supérieur ou égal à zéro", searchResult2.getTotalHits() >= 0);
+   }
+
+   @Test
+   public void isDfceUp_reconnect() {
+
+      Assert.assertTrue("DFCE doit être Up!", dfceServices.isServerUp());
+      dfceServices.closeConnexion();
+      // Les services DFCE doivent se reconnecter tout seuls
+      Assert.assertTrue("DFCE doit être Up!", dfceServices.isServerUp());
+   }
+
 }
