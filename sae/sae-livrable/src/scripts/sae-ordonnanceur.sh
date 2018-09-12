@@ -1,80 +1,104 @@
-#!/bin/sh
+#!/bin/bash
 #
-# description: Lance ou arrête l'ordonnanceur du SAE.
+# Startup script for the @PROJECT_NAME@-ordonnanceur
+#
+# chkconfig: - 85 15
+# description: Service @PROJECT_NAME@_ordonnanceur
+# processname: sae
+# pidfile: @PROJECT_NAME@-ordonnanceur.pid
 
+# source function library
 . /etc/rc.d/init.d/functions
 
-SCHEDULER_CMD_LINE="java -Dlogback.configurationFile=@SAE_HOME@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @SAE_HOME@/sae-ordonnanceur/sae-ordonnanceur.jar @SAE_HOME@/sae-config.properties"
+RETVAL=0
+exec="java -Dlogback.configurationFile=@SAE_HOME@/sae-ordonnanceur/logback-sae-ordonnanceur.xml -jar @SAE_HOME@/sae-ordonnanceur/sae-ordonnanceur.jar @SAE_HOME@/sae-config.properties"
+prog="@PROJECT_NAME@-ordonnanceur"
+user="root"
+pidfile=${PIDFILE-/var/run/@PROJECT_NAME@-ordonnanceur.pid}
+lockfile=${LOCKFILE-/var/lock/subsys/@PROJECT_NAME@-ordonnanceur.pid}
+logfile="/hawai/logs/ged/@PROJECT_NAME@.log"
 
-PROG_NAME=@PROJECT_NAME@-ordonnanceur
-
-# Les sorties sont redirigées dans ce fichier. 
-# Ce n'est pas un fichier de log à proprement parlé
-# car les logs applicatifs sont gérés via logback.
-OUT_FILE="@LOGS_PATH@/$PROG_NAME.out"
-
-PID_FILE="/var/run/$PROG_NAME.pid"
-LOCK_FILE="/var/lock/subsys/$PROG_NAME"
+runlevel=$(set -- $(runlevel); eval "echo \$$#" )
 
 start() {
-    echo -n "Démarrage de l'ordonnanceur du SAE... "
+    #[ -x $exec ] || exit 5
 
-    if [ -e $PID_FILE ] && [ -e /proc/`cat "$PID_FILE"` ]; then
-        echo "L'ordonnanceur du SAE est déja démarré."
-        return 1
-    fi
+    umask 022
 
-    $SCHEDULER_CMD_LINE &> $OUT_FILE &
+    touch $logfile $pidfile
+    chown $user:$user $logfile $pidfile
+
+    echo -n $"Starting $prog: "
+    ## holy shell shenanigans, batman!
+    ## daemon can't be backgrounded.  We need the pid of the spawned process,
+    ## which is actually done via runuser thanks to --user.  you can't do "cmd
+    ## &; action" but you can do "{cmd &}; action".
+    daemon \
+        --pidfile=$pidfile \
+        --user=$user \
+        " { nohup $exec &>> $logfile & } ; echo \$! >| $pidfile " &>/dev/null
+    sleep 2
+    rh_status_q
     RETVAL=$?
-    sleep 1
-    sched_pid=`pgrep -f -x "$SCHEDULER_CMD_LINE"`
     
-    if [ "x$sched_pid" != x ]; then
-        echo "$sched_pid" > $PID_FILE
-        success "OK"
-    else
-        failure "KO"
-    fi
-    
+    [ $RETVAL -eq 0 ] && { touch $lockfile; success; } || failure
     echo
-    [ $RETVAL -eq 0 ] && touch $LOCK_FILE;
+
     return $RETVAL
 }
 
 stop() {
-    echo -n "Arrêt de l'ordonnanceur du SAE... "
-
-    if [ ! -e $LOCK_FILE ]; then
-        echo "L'ordonnanceur n'est pas démarré."
-        return 1
-    fi
-
-    killproc $PROG_NAME
+    echo -n $"Shutting down $prog: "
+    killproc -p $pidfile -TERM
     RETVAL=$?
     echo
-    [ $RETVAL -eq 0 ] && rm -f $LOCK_FILE;
+    [ $RETVAL -eq 0 ] && rm -f $lockfile $pidfile
     return $RETVAL
 }
 
+restart() {
+    stop
+    start
+}
+
+rh_status() {
+    status -p $pidfile $exec
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
 
 case "$1" in
     start)
+        rh_status_q && exit 0
         start
         ;;
     stop)
+        if ! rh_status_q; then
+            rm -f $lockfile $pidfile
+            exit 0
+        fi
         stop
-        ;;
-    status)
-        status $PROG_NAME
         ;;
     restart)
-        stop
-        sleep 3
-        start
+        restart
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+        if [ -f $lockfile ] ; then
+            restart
+        fi
+        ;;
+    status)
+        rh_status
+        RETVAL=$?
+        if [ $RETVAL -eq 3 -a -f $lockfile ] ; then
+            RETVAL=2
+        fi
         ;;
     *)
-        echo $"Usage: $0 {start|stop|status|restart}"
-        exit 1
+        echo $"Usage: $0 {start|stop|restart|condrestart|try-restart|status}"
+        RETVAL=2
 esac
-
-exit $?
+exit $RETVAL
