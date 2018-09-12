@@ -621,6 +621,15 @@
 						<format>html</format>
 					</formats>
 				</configuration>
+				<reportSets>
+					<reportSet>
+						<id>cobertura-report</id>
+				        <reports>
+				          <report>clean</report>
+				          <report>cobertura</report>
+				        </reports>
+					</reportSet>
+				</reportSets>
 			</plugin>
 		</plugins>
 	</reporting>
