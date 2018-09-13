@@ -624,10 +624,10 @@
 							<instrumentation>
 								<ignores>
 									<ignore>org.aspectj.runtime.*</ignore>
-									<ignore>**/validation/*.*</ignore>
 								</ignores>
 								<excludes>
 									<exclude>**/*$AjcClosure*</exclude>
+									<exclude>**/validation/*.*</exclude>
 								</excludes>
 								<includes>
 									<include>**/*.class</include>
