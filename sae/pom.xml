@@ -638,6 +638,7 @@
 							</execution>
 							<execution>
 								<id>instrument</id>
+								<phase>process-test-classes</phase>
 								<goals>
 									<goal>instrument</goal>
 								</goals>
