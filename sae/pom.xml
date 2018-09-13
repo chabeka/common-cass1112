@@ -622,6 +622,13 @@
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<configuration>
 							<instrumentation>
+								<ignores>
+									<ignore>org.aspectj.runtime.*</ignore>
+									<ignore>**/validation/*.*</ignore>
+								</ignores>
+								<excludes>
+									<exclude>**/*$AjcClosure*</exclude>
+								</excludes>
 								<includes>
 									<include>**/*.class</include>
 								</includes>
@@ -643,12 +650,6 @@
 								</goals>
 								<configuration>
 									<encoding>UTF-8</encoding>
-									<ignores>
-										<ignore>org.aspectj.runtime.*</ignore>
-									</ignores>
-									<excludes>
-										<exclude>**/*$AjcClosure*</exclude>
-									</excludes>
 								</configuration>
 							</execution>
 						</executions>
