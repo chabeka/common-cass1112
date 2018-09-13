@@ -46,9 +46,9 @@
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<configuration>
 					<instrumentation>
-						<excludes>
-							<exclude>fr.urssaf.image.sae.trace.service.validation/*.class</exclude>
-						</excludes>
+						<ignores>
+							<ignore>fr.urssaf.image.sae.trace.service.validation.*</ignore>
+						</ignores>
 					</instrumentation>
 				</configuration>
 			</plugin>
