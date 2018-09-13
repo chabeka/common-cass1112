@@ -596,7 +596,7 @@
 			<version>${logback.version}</version>
 		</dependency>
 	</dependencies>
-	
+
 	<profiles>
 		<profile>
 			<id>sonar_build</id>
@@ -631,17 +631,15 @@
 						<executions>
 							<execution>
 								<id>clean</id>
-								<phase>pre-site</phase>
+								<phase>initialize</phase>
 								<goals>
 									<goal>clean</goal>
 								</goals>
 							</execution>
 							<execution>
 								<id>instrument</id>
-								<phase>site</phase>
 								<goals>
 									<goal>instrument</goal>
-									<goal>cobertura</goal>
 								</goals>
 								<configuration>
 									<encoding>UTF-8</encoding>
@@ -663,12 +661,12 @@
 								<format>xml</format>
 								<format>html</format>
 							</formats>
+							<encoding>UTF-8</encoding>
 						</configuration>
 						<reportSets>
 							<reportSet>
 								<id>cobertura-report</id>
 								<reports>
-									<report>clean</report>
 									<report>cobertura</report>
 								</reports>
 							</reportSet>
