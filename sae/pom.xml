@@ -643,6 +643,12 @@
 								</goals>
 								<configuration>
 									<encoding>UTF-8</encoding>
+									<ignores>
+										<ignore>org.aspectj.runtime.*</ignore>
+									</ignores>
+									<excludes>
+										<exclude>**/*$AjcClosure*</exclude>
+									</excludes>
 								</configuration>
 							</execution>
 						</executions>

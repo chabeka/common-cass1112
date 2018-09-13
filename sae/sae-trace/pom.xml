@@ -46,15 +46,10 @@
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<configuration>
 					<instrumentation>
-						<ignores>
-							<ignore>org.aspectj.runtime.*</ignore>
-						</ignores>
 						<excludes>
 							<exclude>fr.urssaf.image.sae.trace.service.validation/*.class</exclude>
-							<exclude>**/*$AjcClosure*</exclude>
 						</excludes>
 					</instrumentation>
-					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 
