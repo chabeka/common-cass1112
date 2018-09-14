@@ -436,17 +436,6 @@
 					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<instrumentation>
-						<ignores>
-							<ignore>fr.urssaf.image.sae.trace.executable.service.validation.*</ignore>
-						</ignores>
-					</instrumentation>
-				</configuration>
-			</plugin>
 		</plugins>
 
 
@@ -639,6 +628,7 @@
 								<excludes>
 									<exclude>**/*$AjcClosure*</exclude>
 									<exclude>**/validation/*.*</exclude>
+									<exclude>**/aspect/*.*</exclude>
 								</excludes>
 								<includes>
 									<include>**/*.class</include>

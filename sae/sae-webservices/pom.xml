@@ -199,6 +199,10 @@
 							<ignore>fr.urssaf.image.sae.webservices.aspect.*</ignore>
 							<ignore>fr.urssaf.image.sae.webservices.security.ws.*</ignore>
 						</ignores>
+						<excludes>
+							<exclude>**/*$AjcClosure*</exclude>
+							<exclude>**/security/ws/*.*</exclude>
+						</excludes>
 					</instrumentation>
 				</configuration>
 			</plugin>

@@ -191,6 +191,10 @@
 							<ignore>fr.urssaf.image.sae.storage.dfce.context.*</ignore>
 							<ignore>fr.urssaf.image.sae.storage.dfce.validation.*</ignore>
 						</ignores>
+						<excludes>
+							<exclude>**/*$AjcClosure*</exclude>
+							<exclude>**/context/*.*</exclude>
+						</excludes>
 					</instrumentation>
 				</configuration>
 			</plugin>
