@@ -32,6 +32,10 @@
 						<ignores>
 							<ignore>fr.urssaf.image.sae.igc.component.*</ignore>
 						</ignores>
+						<excludes>
+							<exclude>**/*$AjcClosure*</exclude>
+							<exclude>**/component/*.*</exclude>
+						</excludes>
 					</instrumentation>
 				</configuration>
 			</plugin>
