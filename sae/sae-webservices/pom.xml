@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -179,17 +180,28 @@
 				</executions>
 			</plugin>
 		<!-- PLUGIN HAWAI/FEDEX -->
-		<plugin>
-			<groupId>fr.acoss.industrialisation.maven</groupId>
-			<artifactId>hawai-maven-plugin</artifactId>
-			<configuration>
-				<applicationName>ged</applicationName>
-				<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
-				<fedex>false</fedex>
-				<skip>false</skip>
-			</configuration>
-		</plugin>
-
+			<plugin>
+				<groupId>fr.acoss.industrialisation.maven</groupId>
+				<artifactId>hawai-maven-plugin</artifactId>
+				<configuration>
+					<applicationName>ged</applicationName>
+					<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
+					<fedex>false</fedex>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<instrumentation>
+						<ignores>
+							<ignore>fr.urssaf.image.sae.webservices.aspect.*</ignore>
+							<ignore>fr.urssaf.image.sae.webservices.security.ws.*</ignore>
+						</ignores>
+					</instrumentation>
+				</configuration>
+			</plugin>
 		</plugins>
 
 	</build>

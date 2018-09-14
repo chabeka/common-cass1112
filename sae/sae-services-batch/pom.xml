@@ -83,7 +83,19 @@
                <argumentFileName>builddef-sae-services-capturemasse.lst</argumentFileName>
             </configuration>
          </plugin>
-
+		 <plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<instrumentation>
+						<ignores>
+							<ignore>fr.urssaf.image.sae.services.batch.validation.*</ignore>
+							<ignore>fr.urssaf.image.sae.services.batch.*.support.*.validation.*</ignore>
+							<ignore>fr.urssaf.image.sae.services.batch.*.support.*.*.validation.*</ignore>
+						</ignores>
+					</instrumentation>
+				</configuration>
+			</plugin>
       </plugins>
    </build>
 
