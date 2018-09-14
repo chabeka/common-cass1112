@@ -194,6 +194,7 @@
 						<excludes>
 							<exclude>**/*$AjcClosure*</exclude>
 							<exclude>**/context/*.*</exclude>
+							<exclude>**/validation/*.*</exclude>
 						</excludes>
 					</instrumentation>
 				</configuration>
