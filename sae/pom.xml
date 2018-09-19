@@ -31,7 +31,6 @@
 		<axis2-maven-plugin.version>1.7.7</axis2-maven-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
-		<jacoco.maven.plugin>0.7.2.201409121644</jacoco.maven.plugin>
       <!--
       =========================================================
       Version des dépendances des librairies réutilisables Image
@@ -570,12 +569,6 @@
 						</dependency>
 					</dependencies>
 				</plugin>
-				<!-- On spécifie la version du plugin Maven pour Sonar -->
-				<plugin>
-					<groupId>org.codehaus.mojo</groupId>
-					<artifactId>sonar-maven-plugin</artifactId>
-					<version>${sonar-maven-plugin.version}</version>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -625,15 +618,22 @@
 			</activation>
 			<properties>
 				<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>
+				<jacoco.maven.plugin>0.7.2.201409121644</jacoco.maven.plugin>
 			</properties>
 			<build>
 				<pluginManagement>
 					<plugins>
+						<!-- On spécifie la version du plugin Maven pour Sonar -->
 						<plugin>
+							<groupId>org.codehaus.mojo</groupId>
+							<artifactId>sonar-maven-plugin</artifactId>
+							<version>${sonar-maven-plugin.version}</version>
+						</plugin>
+						<!--<plugin>
 							<groupId>org.codehaus.mojo</groupId>
 							<artifactId>cobertura-maven-plugin</artifactId>
 							<version>${cobertura-maven-plugin.version}</version>
-						</plugin>
+						</plugin> -->
 						<plugin>
 							<groupId>org.jacoco</groupId>
 							<artifactId>jacoco-maven-plugin</artifactId>
@@ -663,7 +663,7 @@
 					</plugins>
 				</pluginManagement>
 				<plugins>
-					<plugin>
+					<!-- <plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<configuration>
@@ -700,7 +700,7 @@
 								</configuration>
 							</execution>
 						</executions>
-					</plugin>
+					</plugin> -->
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
@@ -747,10 +747,10 @@
 
 				</plugins>
 			</build>
-			<reporting>
+			<!-- <reporting>
 				<plugins>
 					<plugin>
-		            <!-- use mvn cobertura:cobertura to generate cobertura reports -->
+		            use mvn cobertura:cobertura to generate cobertura reports
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>cobertura-maven-plugin</artifactId>
 						<version>${cobertura-maven-plugin.version}</version>
@@ -771,7 +771,7 @@
 						</reportSets>
 					</plugin>
 				</plugins>
-			</reporting>
+			</reporting> -->
 		</profile>
 	</profiles>
 </project>
