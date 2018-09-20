@@ -616,7 +616,7 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<sonar-maven-plugin.version>3.3.0.603</sonar-maven-plugin.version>
+				<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
 				<jacoco.maven.plugin>0.7.2.201409121644</jacoco.maven.plugin>
 			</properties>
 			<build>
@@ -625,8 +625,7 @@
 						<!-- On spécifie la version du plugin Maven pour Sonar -->
 						<plugin>
 							<groupId>org.sonarsource.scanner.maven</groupId>
-						    <artifactId>sonar-maven-plugin</artifactId>
-							<version>${sonar-maven-plugin.version}</version>
+							<artifactId>sonar-maven-plugin</artifactId>
 						</plugin>
 						<plugin>
 							<groupId>org.jacoco</groupId>
@@ -657,6 +656,11 @@
 					</plugins>
 				</pluginManagement>
 				<plugins>
+					<plugin>
+						<groupId>org.sonarsource.scanner.maven</groupId>
+						<artifactId>sonar-maven-plugin</artifactId>
+						<version>${sonar-maven-plugin.version}</version>
+					</plugin>
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
