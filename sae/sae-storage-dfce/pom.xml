@@ -182,23 +182,6 @@
                </excludes>
             </configuration>
          </plugin>
-         <plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<instrumentation>
-						<ignores>
-							<ignore>fr.urssaf.image.sae.storage.dfce.context.*</ignore>
-							<ignore>fr.urssaf.image.sae.storage.dfce.validation.*</ignore>
-						</ignores>
-						<excludes>
-							<exclude>**/*$AjcClosure*</exclude>
-							<exclude>**/context/*.*</exclude>
-							<exclude>**/validation/*.*</exclude>
-						</excludes>
-					</instrumentation>
-				</configuration>
-			</plugin>
       </plugins>
    </build>
 </project>

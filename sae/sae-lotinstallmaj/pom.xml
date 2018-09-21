@@ -83,7 +83,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.5</version>
 				<configuration>
 					<skipTests>true</skipTests>
 				</configuration>
@@ -98,18 +97,6 @@
 					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 					<fedex>false</fedex>
 					<skip>false</skip>
-				</configuration>
-			</plugin>
-			
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<configuration>
-					<instrumentation>
-						<ignores>
-							<ignore>fr.urssaf.image.sae.lotinstallmaj.validation.*</ignore>
-						</ignores>
-					</instrumentation>
 				</configuration>
 			</plugin>
 		</plugins>
