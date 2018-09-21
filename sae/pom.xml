@@ -399,11 +399,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>@{argLine} -Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
-					<forkCount>3</forkCount>
-					<reuseForks>false</reuseForks>
-				</configuration>
 			</plugin>
 
          <!-- Déploiement réalisé uniquement à la fin du build de tous les modules, et pas module par module. -->
@@ -573,6 +568,12 @@
 							<version>2.22.0</version>
 						</dependency>
 					</dependencies>
+					<configuration combine.self="override">
+						<argLine>@{argLine} -Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+						<forkCount>3</forkCount>
+						<reuseForks>false</reuseForks>
+						<testFailureIgnore>false</testFailureIgnore>
+					</configuration>
 				</plugin>
 
 				<!-- Plugin Sonar -->
@@ -582,6 +583,7 @@
 					<version>${sonar-maven-plugin.version}</version>
 				</plugin>
 			</plugins>
+
 		</pluginManagement>
 
 		<extensions>
