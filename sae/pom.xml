@@ -30,6 +30,7 @@
 		<maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
 		<axis2-maven-plugin.version>1.7.7</axis2-maven-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
+		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
       <!--
       =========================================================
       Version des dépendances des librairies réutilisables Image
@@ -435,6 +436,12 @@
 					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
+			
+			<!-- Plugin Sonar -->
+			<plugin>
+				<groupId>org.sonarsource.scanner.maven</groupId>
+				<artifactId>sonar-maven-plugin</artifactId>
+			</plugin>
 		</plugins>
 
 
@@ -568,6 +575,13 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+
+				<!-- Plugin Sonar -->
+				<plugin>
+					<groupId>org.sonarsource.scanner.maven</groupId>
+					<artifactId>sonar-maven-plugin</artifactId>
+					<version>${sonar-maven-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 
@@ -616,7 +630,6 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
 				<jacoco.maven.plugin>0.7.2.201409121644</jacoco.maven.plugin>
 			</properties>
 			<build>
@@ -656,11 +669,6 @@
 					</plugins>
 				</pluginManagement>
 				<plugins>
-					<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>${sonar-maven-plugin.version}</version>
-					</plugin>
 					<plugin>
 						<groupId>org.jacoco</groupId>
 						<artifactId>jacoco-maven-plugin</artifactId>
