@@ -569,8 +569,8 @@
 						</dependency>
 					</dependencies>
 					<configuration combine.self="override">
-						<argLine>@{surefireArgLine} -Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
-						<forkCount>3</forkCount>
+						<argLine>@{surefireArgLine} -Xms256m -Xmx512m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+						<forkCount>1</forkCount>
 						<reuseForks>true</reuseForks>
 						<testFailureIgnore>false</testFailureIgnore>
 					</configuration>
