@@ -569,7 +569,7 @@
 						</dependency>
 					</dependencies>
 					<configuration combine.self="override">
-						<argLine>@{argLine} -Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
+						<argLine>@{surefireArgLine} -Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
 						<forkCount>3</forkCount>
 						<reuseForks>false</reuseForks>
 						<testFailureIgnore>false</testFailureIgnore>
