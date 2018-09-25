@@ -54,7 +54,7 @@ public class QueryUtils {
       try {
         field.setAccessible(true);
         if (field.get(entity) != null) {
-          insert.value(field.getName(), field.get(entity));
+          insert.value(field.getName().toLowerCase(), field.get(entity));
         }
       }
       catch (final Exception e) {
@@ -79,21 +79,27 @@ public class QueryUtils {
     Assert.notNull(delete, "delete statement must not be null");
     Assert.notNull(entity, "entity must not be null");
 
-    final Field keyField = ColumnUtil.getKeyField(clazz, PartitionKey.class);
-    final String keyName = keyField.getName();
-    for (final Field field : Utils.getEntityFileds(clazz)) {
-      try {
-        if (field.getName().equals(keyName)) {
-          field.setAccessible(true);
-          if (field.get(entity) != null) {
-            delete.where(eq(keyName, field.get(entity)));
+    final boolean isSimpleOrCompositeKey = ColumnUtil.isSimpleOrCompositePartionKey(clazz);
+    Assert.isTrue(isSimpleOrCompositeKey, "La clé de partionnement de la classe ne peut être null");
+
+    final List<Field> fields = ColumnUtil.getClassFieldsByAnnotation(clazz, PartitionKey.class);
+    // final Field keyField = ColumnUtil.getSimplePartionKeyField(clazz);
+
+    for (final Field keyField : fields) {
+      final String keyName = keyField.getName();
+      for (final Field field : Utils.getEntityFileds(clazz)) {
+        try {
+          if (field.getName().equals(keyName)) {
+            field.setAccessible(true);
+            if (field.get(entity) != null) {
+              delete.where(eq(keyName, field.get(entity)));
+            }
           }
         }
+        catch (final Exception e) {
+          e.printStackTrace();
+        }
       }
-      catch (final Exception e) {
-        e.printStackTrace();
-      }
-
     }
   }
 
@@ -139,21 +145,27 @@ public class QueryUtils {
     Assert.notNull(select, "select statement must not be null");
     Assert.notNull(entity, "entity must not be null");
 
-    final Field keyField = ColumnUtil.getKeyField(clazz, PartitionKey.class);
-    final String keyName = keyField.getName();
-    for (final Field field : Utils.getEntityFileds(clazz)) {
-      try {
-        if (field.getName().equals(keyName)) {
-          field.setAccessible(true);
-          if (field.get(entity) != null) {
-            select.where(eq(keyName, field.get(entity)));
+    // check if class are simple or composite partionkey for cassandra
+    final boolean isSimpleOrCompositeKey = ColumnUtil.isSimpleOrCompositePartionKey(clazz);
+    Assert.isTrue(!isSimpleOrCompositeKey, "La clé de l'entité à supprimer ne peut être null");
+
+    final List<Field> fields = ColumnUtil.getClassFieldsByAnnotation(clazz, PartitionKey.class);
+
+    for (final Field keyField : fields) {
+      final String keyName = keyField.getName();
+      for (final Field field : Utils.getEntityFileds(clazz)) {
+        try {
+          if (field.getName().equals(keyName)) {
+            field.setAccessible(true);
+            if (field.get(entity) != null) {
+              select.where(eq(keyName, field.get(entity)));
+            }
           }
         }
+        catch (final Exception e) {
+          e.printStackTrace();
+        }
       }
-      catch (final Exception e) {
-        e.printStackTrace();
-      }
-
     }
   }
 
