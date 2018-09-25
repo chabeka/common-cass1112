@@ -41,7 +41,7 @@
       <bean id="cassandraServerCql" class="fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql">
       <property name="startLocal" value="${cassandra.startlocal}"/>
       <property name="hosts" value="${cassandra.hosts.cql}" />
-      <property name="dataSet" value="${cassandra.dataset}"/>
+      <property name="dataSet" value="${cassandra.dataset.cql}"/>
    </bean>
    <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
    		<constructor-arg ref="cassandraCQLClientFactory" />
