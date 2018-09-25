@@ -14,7 +14,6 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper.Option;
-import com.datastax.driver.mapping.annotations.PartitionKey;
 
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.commons.utils.ColumnUtil;
@@ -43,7 +42,9 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, UUID> imple
     Assert.notNull(id, " colSituation est requis");
     Assert.notNull(clock, " le clock est requis");
     final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
-    final Field keyField = ColumnUtil.getKeyField(daoType, PartitionKey.class);
+    final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
+    Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");
+
     final String keyName = keyField.getName();
     delete.where(eq(keyName, id));
     delete.where(eq(JOBSITUATION, colSituation));

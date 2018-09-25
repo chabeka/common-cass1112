@@ -5,7 +5,7 @@ package fr.urssaf.image.sae.pile.travaux.dao.cql.impl;
 
 import java.util.UUID;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IGenericTypeJobDao;
@@ -17,7 +17,7 @@ import fr.urssaf.image.sae.pile.travaux.model.GenericTypeJob;
  * des requete cql. Ce qui engendre du mapping manuel pour contruire les
  * bean associés aux données extraites
  */
-@Service
+@Repository
 public class GenericTypeJobImpl extends GenericDAOImpl<GenericTypeJob, UUID> implements IGenericTypeJobDao {
 
 }

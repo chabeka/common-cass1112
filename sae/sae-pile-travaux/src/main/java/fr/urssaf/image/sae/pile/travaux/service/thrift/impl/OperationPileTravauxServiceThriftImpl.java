@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.service.OperationPileTravauxService;
-import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.OperationPileTravauxThriftService;
 import me.prettyprint.hector.api.Keyspace;
 
 /**
@@ -24,7 +24,7 @@ import me.prettyprint.hector.api.Keyspace;
  */
 @Service
 public class OperationPileTravauxServiceThriftImpl implements
-                                                   OperationPileTravauxCqlService {
+                                                   OperationPileTravauxThriftService {
 
   private static final Logger LOGGER = LoggerFactory
                                                     .getLogger(OperationPileTravauxServiceThriftImpl.class);

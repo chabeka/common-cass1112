@@ -204,9 +204,9 @@ public class JobQueueServiceImpl implements JobQueueService {
   public List<String> getHosts() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      return this.getHosts();
+      return jobQueueCqlService.getHosts();
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-      return this.getHosts();
+      return jobQueueThriftService.getHosts();
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes

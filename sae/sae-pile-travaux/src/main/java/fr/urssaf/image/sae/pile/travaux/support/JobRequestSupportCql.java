@@ -1,7 +1,9 @@
 package fr.urssaf.image.sae.pile.travaux.support;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,11 +11,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * Support pour l'utilisation de {@link JobRequestDao}
@@ -37,6 +43,7 @@ public class JobRequestSupportCql {
 
     final JobRequest job = new JobRequest();
 
+    job.setIdJob(jobToCreate.getIdJob());
     job.setState(JobState.CREATED);
     job.setType(jobToCreate.getType());
     job.setParameters(jobToCreate.getParameters());
@@ -66,6 +73,10 @@ public class JobRequestSupportCql {
    */
   public final void reserverJobDansJobRequest(final UUID idJob, final String reservedBy,
                                               final Date reservationDate, final long clock) {
+
+    Assert.notNull(idJob, "L'id du job doit être fournit");
+    Assert.notNull(reservedBy, "Le host du serveur de reservation doit être renseigné");
+    Assert.notNull(reservationDate, "La date de reservation doit être renseignée");
 
     final Optional<JobRequest> opt = jobRequestDaoCql.findWithMapperById(idJob);
     Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -311,11 +322,11 @@ public class JobRequestSupportCql {
   }
 
   public JobRequest getJobRequest(final UUID idJob) {
-    return jobRequestDaoCql.findWithMapperById(idJob).get();
+    return jobRequestDaoCql.findWithMapperById(idJob).orElse(null);
   }
 
   public Iterator<JobRequest> findAll() {
-    return jobRequestDaoCql.findAll();
+    return jobRequestDaoCql.findAllWithMapper();
   }
 
   public UUID getJobRequestIdByJobKey(final byte[] jobKey) {

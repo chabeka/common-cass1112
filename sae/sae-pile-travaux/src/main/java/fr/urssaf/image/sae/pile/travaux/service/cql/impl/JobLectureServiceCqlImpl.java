@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 import me.prettyprint.hector.api.Keyspace;
 
 /**
- * Implémentation du service {@link JobLectureCqlService}
+ * @author AC75007648
  */
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
@@ -36,16 +36,8 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
   private final JobHistorySupportCql jobHistorySupportCql;
 
-  /**
-   * Valeur de la clé pour les jobs en attente de réservation
-   */
   private static final int MAX_ALL_JOBS = 200;
 
-  /**
-   * @param jobHistorySupportCql
-   * @param jobRequestSupportCql
-   * @param jobsQueueSupportCql
-   */
   @Autowired
   public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
                                   final JobsQueueSupportCql jobsQueueSupportCql) {
@@ -80,6 +72,14 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
     for (final JobQueueCql jobQueue : listJQ) {
       final JobRequest jobRequest = this.getJobRequest(jobQueue.getIdJob());
+      if (jobRequest == null) {
+        try {
+          throw new JobInexistantException(jobQueue.getIdJob());
+        }
+        catch (final JobInexistantException e) {
+          e.printStackTrace();
+        }
+      }
       jobRequests.add(jobRequest);
     }
 
@@ -142,20 +142,23 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
     return listJR;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public final boolean isJobResettable(final JobRequest job) {
-    final String state = job.getState().toString();
-    if (state.equals(JobState.RESERVED) || state.equals(JobState.STARTING)) {
+    if (JobState.RESERVED.equals(job.getState()) || JobState.STARTING.equals(job.getState())) {
       return true;
     }
     return false;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public final boolean isJobRemovable(final JobRequest job) {
-    final String state = job.getState().toString();
-    if (JobState.CREATED.equals(state) || JobState.STARTING.equals(state)
-        || JobState.RESERVED.equals(state)) {
+    if (JobState.CREATED.equals(job.getState()) || JobState.STARTING.equals(job.getState()) || JobState.RESERVED.equals(job.getState())) {
       return true;
     }
     return false;

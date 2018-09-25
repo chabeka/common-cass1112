@@ -193,6 +193,10 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
       // On regarde si le job a été réservé par un autre serveur
       final JobRequest jobRequest = this.jobLectureCqlService.getJobRequest(idJob);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+        return;
+      }
       final String currentHostname = jobRequest.getReservedBy();
       if (currentHostname != null && currentHostname.equals(hostname)) {
         // On a été déconnecté de zookeeper, mais pour autant, le job nous a
@@ -431,6 +435,8 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
     // Suppression de la CF "JobQueues"
     final String reservedBy = jobRequest.getReservedBy();
 
+    // if the job is reserved
+
     this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob,
                                                          reservedBy,
                                                          0);
@@ -497,8 +503,6 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
   private void addJobQueue(final JobToCreate jobToCreate, Long clock) {
 
     if (clock == null) {
-      // Timestamp de l'opération
-      // Pas besoin de gérer le décalage ici : on ne fait que la création
       clock = jobClockSupport.currentCLock();
     }
 

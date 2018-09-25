@@ -46,6 +46,17 @@ public class JobLectureServiceImpl implements JobLectureService {
   public JobRequest getJobRequest(final UUID jobRequestUUID) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      final JobRequest jobRequest = this.jobLectureCqlService.getJobRequest(jobRequestUUID);
+      // Vérifier que le job existe
+      if (jobRequest == null) {
+        try {
+          throw new JobInexistantException(jobRequestUUID);
+        }
+        catch (final JobInexistantException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
       return this.jobLectureCqlService.getJobRequest(jobRequestUUID);
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.jobLectureThriftService.getJobRequest(jobRequestUUID);
@@ -102,7 +113,7 @@ public class JobLectureServiceImpl implements JobLectureService {
   public List<JobHistory> getJobHistory(final UUID idJob) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(this.jobLectureCqlService.getJobHistory(idJob));
+      return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(this.jobLectureCqlService.getJobHistory(idJob).get(0));
     } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
       return this.jobLectureThriftService.getJobHistory(idJob);
     } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {

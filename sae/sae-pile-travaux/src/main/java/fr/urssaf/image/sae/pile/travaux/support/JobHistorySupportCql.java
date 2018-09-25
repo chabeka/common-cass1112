@@ -50,7 +50,7 @@ public class JobHistorySupportCql {
     trace.put(timestampTrace, messageTrace);
     boolean isPresent = false;
     if (jobHistoryDaoCql.existsById(idJob)) {
-      // Si job present dans la base de donnée, on le modifie en ajoutant la nouvelle trace
+      // Si le job est present dans la base de donnée, on le modifie en ajoutant la nouvelle trace
       final Optional<JobHistoryCql> opt = jobHistoryDaoCql.findWithMapperById(idJob);
       if (opt.isPresent()) {
         final JobHistoryCql jobHInDB = opt.get();
@@ -62,7 +62,7 @@ public class JobHistorySupportCql {
     // Nouvelle trace
     if (!isPresent) {
       final JobHistoryCql newJobH = new JobHistoryCql();
-      newJobH.setIdjob(timestampTrace);
+      newJobH.setIdjob(idJob);
       newJobH.setTrace(trace);
       jobHistoryDaoCql.save(newJobH);
     }

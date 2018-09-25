@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
@@ -58,7 +60,7 @@ public class JobsQueueSupportCql {
 
     final JobQueueCql jobQueue = createNewJobQueue(idJob, type, jobParameters, JOBS_WAITING_KEY);
 
-    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL, clock);
+    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL);
   }
 
   /**
@@ -82,8 +84,16 @@ public class JobsQueueSupportCql {
     // Dans la CF JobQueues, on "switch" le job entre :
     // - la clé "jobsWaiting" (suppression)
     // - la clé "valeur de reservedBy" (création)
-    final JobQueueCql jobQueue = createNewJobQueue(idJob, type, jobParameters, reservedBy);
-    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL, clock);
+    // Pour cela creation d'un nouvaeu job avec le meme id afin d'écraser l'existant et remplacer
+    // et remplacer la colonne jobSituation de: "jobsWaiting" ==> "valeur de reservedBy"
+
+    final Optional<JobQueueCql> opt = jobsQueueDaoCql.findWithMapperById(idJob);
+    Assert.notNull(opt, "L'id  ne correspond à aucun JobQueue");
+    final JobQueueCql jobQueue = opt.get();
+    jobQueue.setJobParameters(jobParameters);
+    jobQueue.setJobsituation(reservedBy);
+    jobQueue.setType(type);
+    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL);
 
   }
 
@@ -101,10 +111,10 @@ public class JobsQueueSupportCql {
                                                 final long clock) {
 
     // Opération 1: Suppression du job de la liste de la file d'attente
-    this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy, clock);
+    this.jobsQueueDaoCql.deleteById(idJob);
 
     // Opération 2: Suppression du job de la liste des jobs non réservé JOBS_WAITING_KEY
-    this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, JOBS_WAITING_KEY, clock);
+    // this.jobsQueueDaoCql.deleteById(idJob);
 
   }
 
@@ -143,7 +153,7 @@ public class JobsQueueSupportCql {
                                   final Map<String, String> jobParameters, final String hote, final long clock) {
 
     final JobQueueCql jobQueue = createNewJobQueue(idJob, type, jobParameters, JOBS_WAITING_KEY);
-    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL, clock);
+    this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL);
 
   }
 
@@ -204,6 +214,7 @@ public class JobsQueueSupportCql {
       listJQ.add(it.next());
     }
     return listJQ;
+
   }
 
   /**

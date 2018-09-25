@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
@@ -33,8 +37,10 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * <li><code>pid</code>: PID du processus qui exécute le traitement de masse</li>
  * </ul>
  */
+@Table(name = "jobrequest")
 public class JobRequest {
 
+  @PartitionKey
   private UUID idJob;
 
   private String type;
@@ -69,7 +75,8 @@ public class JobRequest {
 
   private String toCheckFlagRaison;
 
-  private VIContenuExtrait viExtrait;
+  @Column(name = "viextrait")
+  private VIContenuExtrait vi;
 
   private Map<String, String> jobParameters;
 
@@ -332,7 +339,7 @@ public class JobRequest {
    * @return le contenu du VI
    */
   public final VIContenuExtrait getVi() {
-    return viExtrait;
+    return vi;
   }
 
   /**
@@ -340,7 +347,7 @@ public class JobRequest {
    *          le contenu du VI
    */
   public final void setVi(final VIContenuExtrait viExtrait) {
-    this.viExtrait = viExtrait;
+    this.vi = viExtrait;
   }
 
   /**
@@ -361,7 +368,7 @@ public class JobRequest {
 
   /**
    * Getter pour jobKey
-   * 
+   *
    * @return the jobKey
    */
   public byte[] getJobKey() {
@@ -370,7 +377,7 @@ public class JobRequest {
 
   /**
    * Setter pour jobKey
-   * 
+   *
    * @param jobKey
    *          the jobKey to set
    */
@@ -380,7 +387,7 @@ public class JobRequest {
 
   /**
    * Getter pour docCountTraite
-   * 
+   *
    * @return the docCountTraite
    */
   public Integer getDocCountTraite() {
@@ -389,7 +396,7 @@ public class JobRequest {
 
   /**
    * Setter pour docCountTraite
-   * 
+   *
    * @param docCountTraite
    *          the docCountTraite to set
    */

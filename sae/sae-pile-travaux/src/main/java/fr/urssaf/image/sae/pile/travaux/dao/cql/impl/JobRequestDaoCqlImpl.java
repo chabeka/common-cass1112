@@ -14,6 +14,7 @@ import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.extras.codecs.enums.EnumNameCodec;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
 import fr.urssaf.image.sae.commons.context.JsonCodec;
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
@@ -42,6 +43,7 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequest, UUID> imple
   public void setRegister() {
     ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<VIContenuExtrait>(VIContenuExtrait.class));
     ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
+    ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
   }
 
   /**

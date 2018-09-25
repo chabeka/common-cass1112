@@ -57,7 +57,9 @@ public interface JobLectureCqlService {
    *
    * @param idJob
    *          identifiant du traitement
-   * @return liste trié de l'historique du traitement
+   * @return liste trié de l'historique du traitement. Dans le cas de la table cql, la methode
+   *         retournera un seul Objet {@link JobHistorique} de type cql.
+   *         La signature de la methode a été avant tout adapté au type thrift.
    */
   List<JobHistoryCql> getJobHistory(UUID idJob);
 
