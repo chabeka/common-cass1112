@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.cassandra.spring.batch.dao;
+package fr.urssaf.image.commons.cassandra.spring.batch.daothrift;
 
 import java.util.*;
 
@@ -20,6 +20,7 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
 import fr.urssaf.image.commons.cassandra.helper.IndexedSlicesPredicateHelper;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.AbstractCassandraDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSerializer;
@@ -32,7 +33,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSe
  * @see org.springframework.batch.core.repository.dao.JdbcJobInstanceDao
  * @author Samuel Carrière
  */
-public class CassandraJobInstanceDao extends AbstractCassandraDAO implements
+public class CassandraJobInstanceDaoThrift extends AbstractCassandraDAO implements
       SearchableJobInstanceDao {
 
    private final IdGenerator idGenerator;
@@ -43,7 +44,7 @@ public class CassandraJobInstanceDao extends AbstractCassandraDAO implements
     * @param keyspace : keyspace cassandra 
     * @param idGenerator : générateur d'id pour les jobInstance
     */
-   public CassandraJobInstanceDao(Keyspace keyspace, IdGenerator idGenerator) {
+   public CassandraJobInstanceDaoThrift(Keyspace keyspace, IdGenerator idGenerator) {
       super(keyspace);
       this.idGenerator = idGenerator;
    }
@@ -125,8 +126,8 @@ public class CassandraJobInstanceDao extends AbstractCassandraDAO implements
     *           DAO permettant de supprimer les steps de l'instance
     */
    public final void deleteJobInstance(Long instanceId,
-         CassandraJobExecutionDao executionDao,
-         CassandraStepExecutionDao stepExecutionDao) {
+         CassandraJobExecutionDaoThrift executionDao,
+         CassandraStepExecutionDaoThrift stepExecutionDao) {
       Assert.notNull(instanceId, "JobInstanceId cannot be null.");
       
       JobInstance jobInstance = getJobInstance(instanceId);
@@ -146,8 +147,8 @@ public class CassandraJobInstanceDao extends AbstractCassandraDAO implements
     *           DAO permettant de supprimer les steps de l'instance
     */
    private void deleteJobInstance(JobInstance jobInstance,
-         CassandraJobExecutionDao executionDao,
-         CassandraStepExecutionDao stepExecutionDao) {
+         CassandraJobExecutionDaoThrift executionDao,
+         CassandraStepExecutionDaoThrift stepExecutionDao) {
       // Suppression dans JobInstance et JobInstancesByName
       deleteJobInstance(jobInstance.getId(), jobInstance.getJobName());
 

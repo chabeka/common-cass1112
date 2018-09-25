@@ -15,8 +15,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobInstanceDao;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift;
 
 
 /**
@@ -28,7 +28,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 public class SpringContextTest1 {
 
    @Autowired
-   private CassandraJobInstanceDao jobInstanceDao;
+   private CassandraJobInstanceDaoThrift jobInstanceDao;
 
    @Autowired
    private CassandraServerBean cassandraServer;

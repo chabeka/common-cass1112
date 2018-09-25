@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.cassandra.spring.batch.dao;
+package fr.urssaf.image.commons.cassandra.spring.batch.daothrift;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -6,19 +6,23 @@ import java.util.Map;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
-import org.cassandraunit.AbstractCassandraUnit4TestCase;
-import org.cassandraunit.dataset.DataSet;
-import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
@@ -27,20 +31,33 @@ import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import junit.framework.Assert;
 import me.prettyprint.hector.api.Keyspace;
 
-public class CassandraExecutionContextDAOTest extends
-      AbstractCassandraUnit4TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-cassandra-local.xml" })
+public class CassandraExecutionContextDAOThriftTest {
 
-   private CassandraJobExecutionDao jobExecutionDao;
-   private CassandraJobInstanceDao jobInstanceDao;
-   private CassandraExecutionContextDao executionContextDao;
+   private CassandraJobExecutionDaoThrift jobExecutionDao;
+
+   private CassandraJobInstanceDaoThrift jobInstanceDao;
+
+   private CassandraExecutionContextDaoThrift executionContextDao;
+
    private static final String MY_JOB_NAME = "job_test_execution";
+
    private static final String INDEX = "index";
+
    private TestingServer zkServer;
+
    private CuratorFramework zkClient;
 
-   @Override
-   public DataSet getDataSet() {
-      return new ClassPathXmlDataSet("dataSet-commons-cassandra-spring-batch.xml");
+   @Autowired
+   private CassandraServerBean server;
+
+   @Autowired
+   private CassandraClientFactory ccf;
+
+   @After
+   public void after() throws Exception {
+      server.resetData();
    }
 
    @Before
@@ -48,76 +65,75 @@ public class CassandraExecutionContextDAOTest extends
       // Connexion à un serveur zookeeper local
       initZookeeperServer();
       zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
-      
+
       // Récupération du keyspace de cassandra-unit, et création des dao
-      Keyspace keyspace = getKeyspace();
-      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(keyspace);
-      jobExecutionDao = new CassandraJobExecutionDao(keyspace, new JobExecutionIdGenerator(keyspace, zkClient,clockSupport));
-      jobInstanceDao = new CassandraJobInstanceDao(keyspace, new JobInstanceIdGenerator(keyspace, zkClient,clockSupport));
-      executionContextDao = new CassandraExecutionContextDao(keyspace);
+      final Keyspace keyspace = ccf.getKeyspace();
+      final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(keyspace);
+      jobExecutionDao = new CassandraJobExecutionDaoThrift(keyspace, new JobExecutionIdGenerator(keyspace, zkClient, clockSupport));
+      jobInstanceDao = new CassandraJobInstanceDaoThrift(keyspace, new JobInstanceIdGenerator(keyspace, zkClient, clockSupport));
+      executionContextDao = new CassandraExecutionContextDaoThrift(keyspace);
    }
-   
+
    @After
    public void clean() {
       zkClient.close();
-    try {
-      zkServer.close();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
-   }
-   
-   private void initZookeeperServer() throws Exception {
-      if (zkServer == null)
-         zkServer = new TestingServer();
+      try {
+         zkServer.close();
+      }
+      catch (final IOException e) {
+         e.printStackTrace();
+      }
    }
 
+   private void initZookeeperServer() throws Exception {
+      if (zkServer == null) {
+         zkServer = new TestingServer();
+      }
+   }
 
    @Test
    public void updateExecutionContext() {
       // On crée une exécution
-      JobInstance jobInstance = getOrCreateTestJobInstance();
-      JobExecution jobExecution = createJobExecution(jobInstance, 333);
-      Long executionId = jobExecution.getId();
+      final JobInstance jobInstance = getOrCreateTestJobInstance();
+      final JobExecution jobExecution = createJobExecution(jobInstance, 333);
+      final Long executionId = jobExecution.getId();
 
       // On met à jour son contexte
-      Map<String, Object> mapContext = new HashMap<String, Object>();
+      final Map<String, Object> mapContext = new HashMap<String, Object>();
       mapContext.put("contexte1", "newValue");
-      ExecutionContext executionContext = new ExecutionContext(mapContext);
+      final ExecutionContext executionContext = new ExecutionContext(mapContext);
       jobExecution.setExecutionContext(executionContext);
       executionContextDao.updateExecutionContext(jobExecution);
 
       // On relit l'exécution
-      JobExecution jobExecution2 = jobExecutionDao.getJobExecution(executionId);
+      final JobExecution jobExecution2 = jobExecutionDao.getJobExecution(executionId);
       Assert.assertEquals("newValue", jobExecution2.getExecutionContext().getString("contexte1"));
    }
-
 
    private JobInstance getOrCreateTestJobInstance() {
       return getOrCreateTestJobInstance(MY_JOB_NAME);
    }
 
-   private JobExecution createJobExecution(JobInstance jobInstance, int index) {
-      JobExecution jobExecution = new JobExecution(jobInstance);
-      Map<String, Object> mapContext = new HashMap<String, Object>();
+   private JobExecution createJobExecution(final JobInstance jobInstance, final int index) {
+      final JobExecution jobExecution = new JobExecution(jobInstance);
+      final Map<String, Object> mapContext = new HashMap<String, Object>();
       mapContext.put("contexte1", "test1");
       mapContext.put("contexte2", 2);
       mapContext.put(INDEX, index);
-      ExecutionContext executionContext = new ExecutionContext(mapContext);
+      final ExecutionContext executionContext = new ExecutionContext(mapContext);
       jobExecution.setExecutionContext(executionContext);
       jobExecution.setExitStatus(new ExitStatus("123", "test123"));
       jobExecutionDao.saveJobExecution(jobExecution);
       return jobExecution;
    }
 
-   private JobInstance getOrCreateTestJobInstance(String jobName) {
-      CassandraJobInstanceDao dao = jobInstanceDao;
-      Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
+   private JobInstance getOrCreateTestJobInstance(final String jobName) {
+      final CassandraJobInstanceDaoThrift dao = jobInstanceDao;
+      final Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
       mapJobParameters.put("premier_parametre", new JobParameter("test1"));
       mapJobParameters.put("deuxieme_parametre", new JobParameter("test2"));
       mapJobParameters.put("troisieme_parametre", new JobParameter(122L));
-      JobParameters jobParameters = new JobParameters(mapJobParameters);
+      final JobParameters jobParameters = new JobParameters(mapJobParameters);
 
       JobInstance jobInstance = dao.getJobInstance(jobName, jobParameters);
       if (jobInstance == null) {

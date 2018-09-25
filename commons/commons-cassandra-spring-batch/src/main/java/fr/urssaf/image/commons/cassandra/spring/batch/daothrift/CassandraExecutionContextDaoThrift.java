@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.cassandra.spring.batch.dao;
+package fr.urssaf.image.commons.cassandra.spring.batch.daothrift;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
@@ -9,6 +9,7 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.repository.dao.ExecutionContextDao;
 import org.springframework.batch.item.ExecutionContext;
 
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.AbstractCassandraDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContextSerializer;
 
 /**
@@ -20,7 +21,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContex
  * @author Samuel Carrière
  * 
  */
-public class CassandraExecutionContextDao extends AbstractCassandraDAO
+public class CassandraExecutionContextDaoThrift extends AbstractCassandraDAO
       implements ExecutionContextDao {
 
    /**
@@ -29,7 +30,7 @@ public class CassandraExecutionContextDao extends AbstractCassandraDAO
     * @param keyspace
     *           : keyspace cassandra
     */
-   public CassandraExecutionContextDao(Keyspace keyspace) {
+   public CassandraExecutionContextDaoThrift(Keyspace keyspace) {
       super(keyspace);
    }
 
