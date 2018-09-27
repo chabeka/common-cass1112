@@ -32,6 +32,7 @@
 		<axis2-maven-plugin.version>1.7.7</axis2-maven-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
+		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 		<!-- ========================================================= Version 
 			des dépendances des librairies réutilisables Image ========================================================= -->
 
@@ -443,28 +444,14 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.22.0</version>
+					<version>${maven-surefire-plugin.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.maven.surefire</groupId>
 							<artifactId>surefire-junit47</artifactId>
-							<version>2.22.0</version>
+							<version>${maven-surefire-plugin.version}</version>
 						</dependency>
 					</dependencies>
-					<configuration combine.self="override">
-						<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
-						<forkMode>pertest</forkMode>
-						<!-- <forkCount>1</forkCount> <reuseForks>false</reuseForks> <parallel>classes</parallel> 
-							<useUnlimitedThreads>true</useUnlimitedThreads> -->
-						<!-- Specific to generate mapping between tests and covered code -->
-						<properties>
-							<property>
-								<name>listener</name>
-								<value>org.sonar.java.jacoco.JUnitListener</value>
-							</property>
-						</properties>
-						<testFailureIgnore>false</testFailureIgnore>
-					</configuration>
 				</plugin>
 
 				<!-- Plugin Sonar -->
@@ -600,6 +587,32 @@
 								</execution>
 							</executions>
 							<configuration>
+							</configuration>
+						</plugin>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<version>${maven-surefire-plugin.version}</version>
+							<dependencies>
+								<dependency>
+									<groupId>org.apache.maven.surefire</groupId>
+									<artifactId>surefire-junit47</artifactId>
+									<version>${maven-surefire-plugin.version}</version>
+								</dependency>
+							</dependencies>
+							<configuration combine.self="override">
+								<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
+								<forkMode>pertest</forkMode>
+								<!-- <forkCount>1</forkCount> <reuseForks>false</reuseForks> <parallel>classes</parallel> 
+									<useUnlimitedThreads>true</useUnlimitedThreads> -->
+								<!-- Specific to generate mapping between tests and covered code -->
+								<properties>
+									<property>
+										<name>listener</name>
+										<value>org.sonar.java.jacoco.JUnitListener</value>
+									</property>
+								</properties>
+								<testFailureIgnore>false</testFailureIgnore>
 							</configuration>
 						</plugin>
 					</plugins>
