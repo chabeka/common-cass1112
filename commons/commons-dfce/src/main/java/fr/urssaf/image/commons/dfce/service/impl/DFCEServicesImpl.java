@@ -135,7 +135,13 @@ public class DFCEServicesImpl implements DFCEServices {
       if (dfceService != null) {
          final String LOG_PREFIX = "closeConnexion";
          LOG.debug("{} - Fermeture connexion à DFCE (url : {})", new Object[] {LOG_PREFIX, dfceConnection.getServerUrl()});
-         dfceService.disconnect();
+         try {
+            dfceService.disconnect();
+         }
+         catch (final Exception e) {
+            LOG.debug("{} - La fermeture de la connexion à DFCE (url : {}) a provoqué une erreur : {}",
+                      new Object[] {LOG_PREFIX, dfceConnection.getServerUrl(), e.getMessage()});
+         }
          dfceService = null;
       }
    }
