@@ -4,19 +4,27 @@
 package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+
+import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
  * Classe de modèle d'une trace du registre de sécurité
- * 
  */
 public class TraceRegSecurite extends Trace {
 
    /** Contexte de la trace */
    private String contexte;
+
+  /** informations supplémentaires de la trace */
+  private Map<String, Object> infos;
 
    /**
     * Constructeur
@@ -26,7 +34,7 @@ public class TraceRegSecurite extends Trace {
     * @param timestamp
     *           le timestamp à affecter à la trace
     */
-   public TraceRegSecurite(UUID idTrace, Date timestamp) {
+  public TraceRegSecurite(final UUID idTrace, final Date timestamp) {
       super(idTrace, timestamp);
    }
 
@@ -42,12 +50,42 @@ public class TraceRegSecurite extends Trace {
     * @param timestamp
     *           le timestamp à affecter à la trace
     */
-   public TraceRegSecurite(TraceToCreate trace, List<String> listInfos,
-         UUID idTrace, Date timestamp) {
+  public TraceRegSecurite(final TraceToCreate trace, final List<String> listInfos,
+                          final UUID idTrace, final Date timestamp) {
 
       super(trace, listInfos, idTrace, timestamp);
       this.contexte = trace.getContexte();
 
+    if (CollectionUtils.isNotEmpty(listInfos)
+        && MapUtils.isNotEmpty(trace.getInfos())) {
+      this.infos = new HashMap<String, Object>();
+      for (final String info : listInfos) {
+        if (trace.getInfos().get(info) != null) {
+          this.infos.put(info, trace.getInfos().get(info));
+        }
+      }
+
+      // on récupère toutes les infos
+      if (listInfos.size() == 1
+          && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
+        infos.putAll(trace.getInfos());
+      }
+    }
+  }
+
+  /**
+   * @return les informations supplémentaires de la trace
+   */
+  public final Map<String, Object> getInfos() {
+    return infos;
+  }
+
+  /**
+   * @param infos
+   *          tinformations supplémentaires de la trace
+   */
+  public final void setInfos(final Map<String, Object> infos) {
+    this.infos = infos;
    }
 
    /**
@@ -61,7 +99,7 @@ public class TraceRegSecurite extends Trace {
     * @param contexte
     *           Contexte de la trace
     */
-   public final void setContexte(String contexte) {
+  public final void setContexte(final String contexte) {
       this.contexte = contexte;
    }
 

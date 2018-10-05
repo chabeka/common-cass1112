@@ -2,44 +2,48 @@ package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 
-import fr.urssaf.image.sae.trace.commons.Constantes;
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
  * Classe de modèle générique d'une trace
- * 
- *
  */
 public class Trace {
 
    /** Identifiant de la trace */
-   private final UUID identifiant;
+  @PartitionKey
+  private UUID identifiant;
 
    /** Date de création de la trace */
-   private final Date timestamp;
+  private Date timestamp;
 
    /** code de l'événement */
+  @Column(name = "codeevt")
    private String codeEvt;
 
    /** login de l'utilisateur */
    private String login;
 
    /** code du contrat de service */
+  @Column(name = "contratservice")
    private String contratService;
 
    /** Le ou les PAGM */
    private List<String> pagms = new ArrayList<String>();
 
-   /** informations supplémentaires de la trace */
-   private Map<String, Object> infos;
+  /**
+   *
+   */
+  public Trace() {
+
+  }
 
    /**
     * Constructeur
@@ -49,7 +53,7 @@ public class Trace {
     * @param timestamp
     *           le timestamp à affecter à la trace
     */
-   public Trace(UUID idTrace, Date timestamp) {
+  public Trace(final UUID idTrace, final Date timestamp) {
       this.identifiant = idTrace;
       this.timestamp = getDateCopy(timestamp);
    }
@@ -66,8 +70,8 @@ public class Trace {
     * @param timestamp
     *           le timestamp à affecter à la trace
     */
-   public Trace(TraceToCreate trace, List<String> listInfos,
-         UUID idTrace, Date timestamp) {
+  public Trace(final TraceToCreate trace, final List<String> listInfos,
+               final UUID idTrace, final Date timestamp) {
       this.codeEvt = trace.getCodeEvt();
       this.contratService = trace.getContrat();
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
@@ -77,21 +81,6 @@ public class Trace {
       this.timestamp =getDateCopy(timestamp);
       this.identifiant = idTrace;
 
-      if (CollectionUtils.isNotEmpty(listInfos)
-            && MapUtils.isNotEmpty(trace.getInfos())) {
-         this.infos = new HashMap<String, Object>();
-         for (String info : listInfos) {
-            if (trace.getInfos().get(info) != null) {
-               this.infos.put(info, trace.getInfos().get(info));
-            }
-         }
-
-         // on récupère toutes les infos
-         if (listInfos.size() == 1
-               && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
-            infos.putAll(trace.getInfos());
-         }
-      }
    }
 
    /**
@@ -119,7 +108,7 @@ public class Trace {
     * @param codeEvt
     *           code de l'événement
     */
-   public final void setCodeEvt(String codeEvt) {
+  public final void setCodeEvt(final String codeEvt) {
       this.codeEvt = codeEvt;
    }
 
@@ -134,7 +123,7 @@ public class Trace {
     * @param login
     *           login de l'utilisateur
     */
-   public final void setLogin(String login) {
+  public final void setLogin(final String login) {
       this.login = login;
    }
 
@@ -149,7 +138,7 @@ public class Trace {
     * @param contrat
     *           code du contrat de service
     */
-   public final void setContratService(String contrat) {
+  public final void setContratService(final String contrat) {
       this.contratService = contrat;
    }
 
@@ -168,28 +157,11 @@ public class Trace {
     * @param pagms
     *           Le ou les PAGM
     */
-   public final void setPagms(List<String> pagms) {
+  public final void setPagms(final List<String> pagms) {
       this.pagms = pagms;
    }
 
-   /**
-    * @return les informations supplémentaires de la trace
-    */
-   public final Map<String, Object> getInfos() {
-      return infos;
-   }
-
-   /**
-    * @param infos
-    *           tinformations supplémentaires de la trace
-    */
-   public final void setInfos(Map<String, Object> infos) {
-      this.infos = infos;
-   }
-   
-
-
-   private Date getDateCopy(Date date) {
+  private Date getDateCopy(final Date date) {
       Date tDate = null;
       if (date != null) {
          tDate = new Date(date.getTime());

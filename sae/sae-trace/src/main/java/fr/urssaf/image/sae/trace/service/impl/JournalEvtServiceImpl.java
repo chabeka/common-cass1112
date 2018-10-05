@@ -1,267 +1,313 @@
+/**
+ *
+ */
 package fr.urssaf.image.sae.trace.service.impl;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import javanet.staxutils.IndentingXMLEventWriter;
-
-import javax.xml.stream.XMLEventFactory;
-import javax.xml.stream.XMLEventWriter;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
-import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
-import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
-import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
+import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.model.PurgeType;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
+import fr.urssaf.image.sae.trace.service.JournalEvtServiceCql;
+import fr.urssaf.image.sae.trace.service.JournalEvtServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
-import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
-import fr.urssaf.image.sae.trace.utils.StaxUtils;
+import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
 
 /**
- * Classe d'implémentation du support {@link JournalEvtService}. Cette classe
- * est un singleton et peut être accessible par le mécanisme d'injection IOC
- * avec l'annotation @Autowired
- * 
+ * @author AC75007648
  */
 @Service
-public class JournalEvtServiceImpl extends
-      AbstractTraceServiceImpl<TraceJournalEvt, TraceJournalEvtIndex> implements
-      JournalEvtService {
+public class JournalEvtServiceImpl implements JournalEvtService {
 
-   private static final String FIN_LOG = "{} - Fin";
-   private static final String DEBUT_LOG = "{} - Début";
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(JournalEvtServiceImpl.class);
+  private final String cfName = "tracejournalevt";
 
-   private static final String PATTERN_DATE = "yyyyMMdd";
-   private static final String INDENTATION = "    ";
-   private static final String ERREUR_FLUX = "erreur de fermeture du flux ";
+  private final JournalEvtServiceThrift journalEvtServiceThrift;
 
-   private final TraceJournalEvtSupport support;
+  private final JournalEvtServiceCql journalEvtCqlService;
 
-   private final JobClockSupport clockSupport;
+  private static final String FIN_LOG = "{} - Fin";
 
-   private final LoggerSupport loggerSupport;
+  private static final String DEBUT_LOG = "{} - Début";
 
-   private final TraceFileSupport traceFileSupport;
-
-   /**
-    * @param support
-    *           Support de la classe DAO TraceJournalEvtDao
-    * @param clockSupport
-    *           JobClockSupport
-    * @param loggerSupport
-    *           Support pour l'écriture des traces applicatives
-    * @param traceFileSupport
-    *           Classe de support pour la création des fichiers de traces
-    */
    @Autowired
-   public JournalEvtServiceImpl(TraceJournalEvtSupport support,
-         JobClockSupport clockSupport, LoggerSupport loggerSupport,
-         TraceFileSupport traceFileSupport) {
+  public JournalEvtServiceImpl(final JournalEvtServiceThrift journalEvtServiceThrift, final JournalEvtServiceCql journalEvtCqlService) {
       super();
-      this.support = support;
-      this.clockSupport = clockSupport;
-      this.loggerSupport = loggerSupport;
-      this.traceFileSupport = traceFileSupport;
+    this.journalEvtServiceThrift = journalEvtServiceThrift;
+    this.journalEvtCqlService = journalEvtCqlService;
    }
 
-   /**
-    * {@inheritDoc}
-    */
    @Override
-   public final String export(Date date, String repertoire,
-         String idJournalPrecedent, String hashJournalPrecedent) {
+  public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      return this.journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      return this.journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    }
+    return null;
+  }
 
-      String trcPrefix = "export()";
-      LOGGER.debug(DEBUT_LOG, trcPrefix);
+  public LoggerSupport getLoggerSupport() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      return this.journalEvtCqlService.getLoggerSupport();
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      return this.journalEvtServiceThrift.getLoggerSupport();
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    }
+    return null;
+  }
 
-      List<TraceJournalEvtIndex> listTraces = getSupport().findByDate(date);
+  public JobClockSupport getClockSupport() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      return this.journalEvtCqlService.getClockSupport();
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      return this.journalEvtServiceThrift.getClockSupport();
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+    }
+    return null;
+  }
 
-      String path = null;
-      String sDate = DateFormatUtils.format(date, PATTERN_DATE);
-      if (CollectionUtils.isNotEmpty(listTraces)) {
+  public Logger getLogger() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      return this.journalEvtCqlService.getLogger();
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      return this.journalEvtServiceThrift.getLogger();
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
+    return null;
+   }
 
-         LOGGER.info(
-               "{} - Nombre de traces trouvées pour la journée du {} : {}",
-               new Object[] {
-                     trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                           .format(date), listTraces.size() });
-
-         File file, directory;
-         directory = new File(repertoire);
-         try {
-            file = File.createTempFile(sDate, ".xml", directory);
-
-         } catch (IOException exception) {
-            throw new TraceRuntimeException(exception);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TraceJournalEvt lecture(final UUID identifiant) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      final TraceJournalEvtCql tracecql = this.journalEvtCqlService.lecture(identifiant);
+      return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      return this.journalEvtServiceThrift.lecture(identifiant);
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+            }
+    return null;
          }
 
-         path = file.getAbsolutePath();
-         writeTraces(file, listTraces, idJournalPrecedent,
-               hashJournalPrecedent, date);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<TraceJournalEvtIndex> lecture(final Date dateDebut, final Date dateFin, final int limite, final boolean reversed) {
+    final String prefix = "lecture()";
+    getLogger().debug(DEBUT_LOG, prefix);
 
-      } else {
-         LOGGER.info("{} - Aucune trace trouvée pour la journée du {}",
-               new Object[] {
-                     trcPrefix,
-                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                           .format(date) });
+    final List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
+    getLogger().debug("{} - Liste des dates à regarder : {}", prefix, dates);
+
+    List<TraceJournalEvtIndex> value = null;
+    List<TraceJournalEvtIndex> list;
+    if (reversed) {
+      list = findReversedOrder(dates, limite);
+    } else {
+      list = findNormalOrder(dates, limite);
       }
 
-      LOGGER.debug(FIN_LOG, trcPrefix);
-      return path;
+    if (CollectionUtils.isNotEmpty(list)) {
+      value = list;
    }
 
-   private void writeTraces(File file, List<TraceJournalEvtIndex> listTraces,
-         String idJournalPrecedent, String hashJournalPrecedent, Date date) {
+    getLogger().debug(FIN_LOG, prefix);
 
-      String trcPrefix = "writeTraces()";
+    return value;
+   }
 
-      FileOutputStream resultatsStream = null;
-      final String resultatPath = file.getAbsolutePath();
-      XMLEventWriter writer = null;
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+  public void purge(final Date date) {
+    final String prefix = "purge()";
+    getLogger().debug(DEBUT_LOG, prefix);
 
-      try {
-         resultatsStream = new FileOutputStream(resultatPath);
-         writer = loadWriter(resultatsStream);
-         XMLEventFactory eventFactory = XMLEventFactory.newInstance();
-         LOGGER.debug("{} - Classe du XMLEventFactory: {}", trcPrefix,
-               eventFactory.getClass().getName());
-         StaxUtils staxUtils = new StaxUtils(eventFactory, writer);
+    final Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
-         traceFileSupport.ecrireEntete(staxUtils);
-         traceFileSupport.ecrireInfosJournalPrecedent(staxUtils,
-               idJournalPrecedent, hashJournalPrecedent);
-         traceFileSupport.ecrireDate(staxUtils, date);
+    getLoggerSupport().logPurgeJourneeDebut(getLogger(),
+                                            prefix,
+                                            PurgeType.PURGE_EVT,
+                                            DateRegUtils.getJournee(date));
 
-         traceFileSupport.ecrireBaliseDebutTraces(staxUtils);
+    long nbTracesPurgees = 0;
 
-         TraceJournalEvt trace;
-         if (CollectionUtils.isNotEmpty(listTraces)) {
-            for (TraceJournalEvtIndex evt : listTraces) {
-               trace = support.find(evt.getIdentifiant());
-               traceFileSupport.ecrireTrace(staxUtils, trace);
-            }
-         }
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      nbTracesPurgees = this.journalEvtCqlService.getSupport().delete(dateIndex,
+                                                                      getClockSupport().currentCLock());
+    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      nbTracesPurgees = this.journalEvtServiceThrift.getSupport().delete(dateIndex,
+                                                                         getClockSupport().currentCLock());
+    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      // Pour exemple
+      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+   }
 
-         traceFileSupport.ecrireBalisesFin(staxUtils);
+    getLoggerSupport()
+                      .logPurgeJourneeFin(getLogger(),
+                                          prefix,
+                                          PurgeType.PURGE_EVT,
+                                          DateRegUtils.getJournee(date),
+                                          nbTracesPurgees);
 
-      } catch (FileNotFoundException e) {
-         throw new TraceRuntimeException(e);
+    getLogger().debug(FIN_LOG, prefix);
+   }
 
-      } catch (XMLStreamException exception) {
-         throw new TraceRuntimeException(exception);
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+  public boolean hasRecords(final Date date) {
+    final String trcPrefix = "hasRecords()";
+    getLogger().debug(DEBUT_LOG, trcPrefix);
 
-      } finally {
-         if (writer != null) {
-            try {
-               writer.close();
-            } catch (XMLStreamException e) {
-               LOGGER.debug(ERREUR_FLUX + resultatPath);
-            }
-         }
+    final Date beginDate = DateUtils.truncate(date, Calendar.DATE);
+    Date endDate = DateUtils.addDays(beginDate, 1);
+    endDate = DateUtils.addMilliseconds(endDate, -1);
 
-         if (resultatsStream != null) {
-            try {
-               resultatsStream.close();
-            } catch (IOException e) {
-               LOGGER.debug(ERREUR_FLUX + resultatPath);
-            }
-         }
+    final List<TraceJournalEvtIndex> list = lecture(beginDate, endDate, 1, false);
+
+    final boolean hasRecords = CollectionUtils.isNotEmpty(list);
+
+    if (!hasRecords) {
+      getLogger().info(
+                       "{} - Aucune trace trouvée pour la journée du {}",
+                       new Object[] {
+                                     trcPrefix,
+                                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                                                                                      .format(date)});
+    }
+
+    getLogger().debug(FIN_LOG, trcPrefix);
+    return hasRecords;
+  }
+
+  private List<TraceJournalEvtIndex> findNormalOrder(final List<Date> dates, final int limite) {
+    int index = 0;
+    int countLeft = limite;
+    List<TraceJournalEvtIndex> result = new ArrayList<>();
+    final List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
+    Date currentDate, startDate, endDate;
+
+    do {
+      currentDate = dates.get(index);
+      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      endDate = DateRegUtils.getEndDate(currentDate, dates
+                                                          .get(dates.size() - 1));
+
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+        final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
+        }
+      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+        result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
+                                                                       endDate,
+                                                                       countLeft,
+                                                                       true);
+      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+        // Pour exemple
+        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+   }
+
+      if (CollectionUtils.isNotEmpty(result)) {
+        values.addAll(result);
+        countLeft = limite - values.size();
+        result.clear();
+   }
+      index++;
+    } while (index < dates.size() && countLeft > 0
+        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
+    return values;
+   }
+
+  private List<TraceJournalEvtIndex> findReversedOrder(final List<Date> dates, final int limite) {
+
+    int index = dates.size() - 1;
+    int countLeft = limite;
+    List<TraceJournalEvtIndex> result = new ArrayList<>();
+    final List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
+    Date currentDate, startDate, endDate;
+
+    do {
+      currentDate = dates.get(index);
+      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      endDate = DateRegUtils.getEndDate(currentDate, dates
+                                                          .get(dates.size() - 1));
+
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+        final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
+        }
+      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+        result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
+                                                                       endDate,
+                                                                       countLeft,
+                                                                       true);
+      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+        // Pour exemple
+        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
 
-   }
-
-   /**
-    * créé le writer pour le fichier résultats.xml
-    * 
-    * @param resultatsStream
-    * @return
-    */
-   private XMLEventWriter loadWriter(final FileOutputStream resultatsStream) {
-
-      String trcPrefix = "loadWriter()";
-
-      final XMLOutputFactory outputFactory = XMLOutputFactory.newInstance();
-      LOGGER.debug("{} - Classe du XMLOutputFactory: {}", trcPrefix,
-            outputFactory.getClass().getName());
-
-      try {
-         final XMLEventWriter writer = outputFactory.createXMLEventWriter(
-               resultatsStream, "UTF-8");
-         LOGGER.debug("{} - Classe du XMLEventWriter: {}", trcPrefix, writer
-               .getClass().getName());
-         IndentingXMLEventWriter iWriter = new IndentingXMLEventWriter(writer);
-         iWriter.setIndent(INDENTATION);
-         return iWriter;
-
-      } catch (XMLStreamException e) {
-         throw new TraceRuntimeException(e);
+      if (CollectionUtils.isNotEmpty(result)) {
+        values.addAll(result);
+        countLeft = limite - values.size();
+        result.clear();
       }
-   }
+      index--;
+    } while (index >= 0 && countLeft > 0
+        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final JobClockSupport getClockSupport() {
-      return clockSupport;
-   }
+    return values;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Logger getLogger() {
-      return LOGGER;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final LoggerSupport getLoggerSupport() {
-      return loggerSupport;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final AbstractTraceSupport<TraceJournalEvt, TraceJournalEvtIndex> getSupport() {
-      return support;
-   }
-
-   /**
-    * Récupération de la liste des traces par identifiant unique du document.
-    * 
-    * @param idDoc
-    *           Identifiant du document
-    * @return Liste des traces
-    */
-   public final List<TraceJournalEvtIndexDoc> getTraceJournalEvtByIdDoc(
-         UUID idDoc) {
-      return support.findByIdDoc(idDoc);
-   }
 }

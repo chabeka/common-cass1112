@@ -22,7 +22,6 @@ import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.service.PurgeService;
 import fr.urssaf.image.sae.trace.service.RegExploitationService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
-import fr.urssaf.image.sae.trace.service.RegService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.service.StatusService;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
@@ -32,7 +31,6 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  * Classe d'implémentation de l'interface {@link PurgeService}. Cette classe est
  * un singleton et peut être accessible via le mécanisme d'injection IOC avec
  * l'annotation @Autowired
- * 
  */
 @Service
 public class PurgeServiceImpl implements PurgeService {
@@ -68,7 +66,7 @@ public class PurgeServiceImpl implements PurgeService {
     * {@inheritDoc}
     */
    @Override
-   public final void purgerRegistre(PurgeType typePurge) {
+  public final void purgerRegistre(final PurgeType typePurge) {
 
       String trcPrefix = "purgerRegistre()";
 
@@ -97,13 +95,16 @@ public class PurgeServiceImpl implements PurgeService {
          Date minDate = getDateFromPurgeType(typePurge);
          Integer retentionDuration = getDureeFomPurgeType(typePurge);
          Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
-         loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge, minDate,
+      loggerSupport.logPurgeJournees(LOGGER,
+                                     trcPrefix,
+                                     typePurge,
+                                     minDate,
                maxDate);
 
          if (minDate.before(maxDate)) {
 
             @SuppressWarnings("unchecked")
-            RegService servicePurge;
+        Object servicePurge;
             if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
                servicePurge = exploitService;
 
@@ -121,7 +122,8 @@ public class PurgeServiceImpl implements PurgeService {
 
          }
 
-      } finally {
+    }
+    finally {
          LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
                trcPrefix);
          loggerSupport
@@ -137,7 +139,7 @@ public class PurgeServiceImpl implements PurgeService {
     * {@inheritDoc}
     */
    @Override
-   public final void purgerJournal(PurgeType typePurge) {
+  public final void purgerJournal(final PurgeType typePurge) {
 
       String trcPrefix = "purgerJournal()";
       List<PurgeType> authorized = Arrays.asList(PurgeType.PURGE_EVT);
@@ -161,11 +163,13 @@ public class PurgeServiceImpl implements PurgeService {
          Date dateDerniereJourneePurgee = getDateFromPurgeType(typePurge);
          Date premiereJourneeApurger = DateUtils.addDays(
                dateDerniereJourneePurgee, 1);
-         LOGGER.debug("{} - Première journée à purger : {}", trcPrefix,
+      LOGGER.debug("{} - Première journée à purger : {}",
+                   trcPrefix,
                dateJourneeFormat.format(premiereJourneeApurger));
 
-         Integer retentionDuration = getDureeFomPurgeType(typePurge);
-         LOGGER.debug("{} - Durée de rétention des traces : {}", trcPrefix,
+      final Integer retentionDuration = getDureeFomPurgeType(typePurge);
+      LOGGER.debug("{} - Durée de rétention des traces : {}",
+                   trcPrefix,
                retentionDuration);
 
          Date maxDate = DateUtils.addDays(new Date(), -retentionDuration);
@@ -173,11 +177,13 @@ public class PurgeServiceImpl implements PurgeService {
          LOGGER
                .debug(
                      "{} - Dernière journée à purger calculée uniquement avec la durée de rétention : {}",
-                     trcPrefix, dateJourneeFormat.format(maxDate));
+                   trcPrefix,
+                   dateJourneeFormat.format(maxDate));
 
          Date lastDateJournalisation = getDateJournalisationFromPurgeType(typePurge);
          LOGGER.debug("{} - Dernière journée qui a été journalisée : {}",
-               trcPrefix, dateJourneeFormat.format(lastDateJournalisation));
+                   trcPrefix,
+                   dateJourneeFormat.format(lastDateJournalisation));
 
          if (lastDateJournalisation.before(maxDate)) {
             maxDate = lastDateJournalisation;
@@ -186,12 +192,16 @@ public class PurgeServiceImpl implements PurgeService {
          LOGGER
                .debug(
                      "{} - Dernière journée à purger calculée avec la durée de rétention et la dernière date de journalisation : {}",
-                     trcPrefix, dateJourneeFormat.format(maxDate));
+                   trcPrefix,
+                   dateJourneeFormat.format(maxDate));
 
          if (premiereJourneeApurger.before(maxDate)) {
 
-            loggerSupport.logPurgeJournees(LOGGER, trcPrefix, typePurge,
-                  premiereJourneeApurger, maxDate);
+        loggerSupport.logPurgeJournees(LOGGER,
+                                       trcPrefix,
+                                       typePurge,
+                                       premiereJourneeApurger,
+                                       maxDate);
 
             purge(evtService, premiereJourneeApurger, maxDate, typePurge);
 
@@ -200,7 +210,8 @@ public class PurgeServiceImpl implements PurgeService {
             LOGGER.debug("{} - Rien à purger", trcPrefix);
 
          }
-      } finally {
+    }
+    finally {
          LOGGER.debug("{} - mise à jour du flag de traitement à FALSE",
                trcPrefix);
          loggerSupport
@@ -210,8 +221,7 @@ public class PurgeServiceImpl implements PurgeService {
 
    }
 
-   @SuppressWarnings("unchecked")
-   private void purge(RegService servicePurge, Date minDate, Date maxDate,
+   private void purge(Object servicePurge, Date minDate, Date maxDate,
          PurgeType typePurge) {
 
       String prefix = "purge()";
@@ -223,11 +233,20 @@ public class PurgeServiceImpl implements PurgeService {
 
       do {
 
-         loggerSupport.logPurgeJourneeDebut(LOGGER, prefix, typePurge,
+      loggerSupport.logPurgeJourneeDebut(LOGGER,
+                                         prefix,
+                                         typePurge,
                DateRegUtils.getJournee(date));
 
-         servicePurge.purge(date);
-
+      if (PurgeType.PURGE_EXPLOITATION.equals(typePurge)) {
+        ((RegExploitationService) servicePurge).purge(date);
+      } else if (PurgeType.PURGE_SECURITE.equals(typePurge)) {
+        ((RegSecuriteService) servicePurge).purge(date);
+      } else if (PurgeType.PURGE_EVT.equals(typePurge)) {
+        ((JournalEvtService) servicePurge).purge(date);
+      } else {
+        ((RegTechniqueService) servicePurge).purge(date);
+      }
          setDateFromPurgeType(typePurge, date);
 
          date = DateUtils.addDays(date, 1);
@@ -277,7 +296,8 @@ public class PurgeServiceImpl implements PurgeService {
          } else {
             throw new IllegalArgumentException("typePurge");
          }
-      } catch (ParameterNotFoundException e) {
+    }
+    catch (final ParameterNotFoundException e) {
          throw new TraceRuntimeException(e);
       }
 
@@ -301,7 +321,8 @@ public class PurgeServiceImpl implements PurgeService {
          } else {
             throw new IllegalArgumentException("typePurge");
          }
-      } catch (ParameterNotFoundException e) {
+    }
+    catch (final ParameterNotFoundException e) {
          throw new TraceRuntimeException(e);
       }
 
@@ -334,7 +355,8 @@ public class PurgeServiceImpl implements PurgeService {
 
             return date;
 
-         } catch (ParameterNotFoundException e) {
+      }
+      catch (final ParameterNotFoundException e) {
             throw new TraceRuntimeException(e);
          }
 

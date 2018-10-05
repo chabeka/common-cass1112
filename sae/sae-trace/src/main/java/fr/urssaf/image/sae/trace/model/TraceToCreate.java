@@ -16,7 +16,6 @@ import org.apache.commons.lang.StringUtils;
 /**
  * Formulaire d'une trace à créer. Ce modèle sert essentiellement au dispatcheur
  * de traces.
- * 
  */
 public class TraceToCreate {
 
@@ -46,6 +45,24 @@ public class TraceToCreate {
    /** Informations supplémentaires sur la trace */
    private Map<String, Object> infos = new HashMap<String, Object>();
 
+  /** informations supplémentaires de la trace */
+  private Map<String, String> infosCql = new HashMap<>();
+
+  /**
+   * @return the infosCql
+   */
+  public Map<String, String> getInfosCql() {
+    return infosCql;
+  }
+
+  /**
+   * @param infosCql
+   *          the infosCql to set
+   */
+  public void setInfosCql(final Map<String, String> infosCql) {
+    this.infosCql = infosCql;
+  }
+
    /**
     * @return le Contexte de la trace
     */
@@ -57,7 +74,7 @@ public class TraceToCreate {
     * @param contexte
     *           Contexte de la trace
     */
-   public final void setContexte(String contexte) {
+  public final void setContexte(final String contexte) {
       this.contexte = contexte;
    }
 

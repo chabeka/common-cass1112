@@ -11,13 +11,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
-import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.SliceQuery;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -28,9 +21,14 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
-import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.exceptions.HInvalidRequestException;
+import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Classe mère des classes de traitement des traces
@@ -64,22 +62,24 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     * @param clock
     *           horloge de la création
     */
-   public final void create(T trace, long clock) {
+
+  public void create(final T trace, final long clock) {
 
       // Trace applicative
-      String prefix = "create()";
+    final String prefix = "create()";
       getLogger().debug("{} - Début", prefix);
 
       // création de la trace
-      ColumnFamilyTemplate<UUID, String> tmpl = getDao().getCfTmpl();
-      ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
+    final ColumnFamilyTemplate<UUID, String> tmpl = getDao().getCfTmpl();
+    final ColumnFamilyUpdater<UUID, String> updater = tmpl.createUpdater(trace
             .getIdentifiant());
 
       getDao().writeColumnCodeEvt(updater, trace.getCodeEvt(), clock);
       getDao().writeColumnTimestamp(updater, trace.getTimestamp(), clock);
 
       if (StringUtils.isNotBlank(trace.getContratService())) {
-         getDao().writeColumnContratService(updater, trace.getContratService(),
+      getDao().writeColumnContratService(updater,
+                                         trace.getContratService(),
                clock);
       }
 
@@ -91,21 +91,19 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
          getDao().writeColumnLogin(updater, trace.getLogin(), clock);
       }
 
-      if (trace.getInfos() != null) {
-         getDao().writeColumnInfos(updater, trace.getInfos(), clock);
-      }
-
       // ajout des informations spécifiques à cette trace
       completeCreateTrace(updater, trace, clock);
 
       tmpl.update(updater);
 
       // création de l'index
-      I index = getIndexFromTrace(trace);
-      String journee = DateRegUtils.getJournee(index.getTimestamp());
-      ColumnFamilyUpdater<String, UUID> indexUpdater = getIndexDao()
+    final I index = getIndexFromTrace(trace);
+    final String journee = DateRegUtils.getJournee(index.getTimestamp());
+    final ColumnFamilyUpdater<String, UUID> indexUpdater = getIndexDao()
             .createUpdater(journee);
-      getIndexDao().writeColumn(indexUpdater, index.getIdentifiant(), index,
+    getIndexDao().writeColumn(indexUpdater,
+                              index.getIdentifiant(),
+                              index,
             clock);
       getIndexDao().update(indexUpdater);
 
@@ -127,16 +125,16 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     *           horloge de la suppression
     * @return le nombre de traces purgées
     */
-   public final long delete(Date date, long clock) {
+  public final long delete(final Date date, final long clock) {
 
       long nbTracesPurgees = 0;
 
       SliceQuery<String, UUID, I> sliceQuery;
       sliceQuery = getIndexDao().createSliceQuery();
-      String journee = DateRegUtils.getJournee(date);
+    final String journee = DateRegUtils.getJournee(date);
       sliceQuery.setKey(journee);
 
-      Iterator<I> iterator = getIterator(sliceQuery);
+    final Iterator<I> iterator = getIterator(sliceQuery);
 
       if (iterator.hasNext()) {
 
@@ -144,7 +142,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
          nbTracesPurgees = deleteRecords(iterator, clock);
 
          // suppression de l'index
-         Mutator<String> indexMutator = getIndexDao().createMutator();
+      final Mutator<String> indexMutator = getIndexDao().createMutator();
          getIndexDao().mutatorSuppressionLigne(indexMutator, journee, clock);
          indexMutator.execute();
 
@@ -161,9 +159,9 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     *           identifiant de la trace
     * @return la trace de sécurité
     */
-   public final T find(UUID identifiant) {
-      ColumnFamilyTemplate<UUID, String> tmpl = getDao().getCfTmpl();
-      ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
+  public final T find(final UUID identifiant) {
+    final ColumnFamilyTemplate<UUID, String> tmpl = getDao().getCfTmpl();
+    final ColumnFamilyResult<UUID, String> result = tmpl.queryColumns(identifiant);
 
       return getTraceFromResult(result);
    }
@@ -175,12 +173,12 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     *           date à laquelle rechercher les traces
     * @return la liste des traces techniques
     */
-   public final List<I> findByDate(Date date) {
-      SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
+  public final List<I> findByDate(final Date date) {
+    final SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(date));
 
       List<I> list = null;
-      Iterator<I> iterator = getIterator(sliceQuery);
+    final Iterator<I> iterator = getIterator(sliceQuery);
 
       if (iterator.hasNext()) {
          list = new ArrayList<I>();
@@ -194,6 +192,21 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
    }
 
    /**
+   * Recherche et retourne la liste des traces à une date donnée
+   *
+   * @param date
+   *          date à laquelle rechercher les traces
+   * @return la liste des traces techniques
+   */
+  public final Iterator<I> findByDateIterator(final Date date) {
+    final SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
+    sliceQuery.setKey(DateRegUtils.getJournee(date));
+
+    final Iterator<I> iterator = getIterator(sliceQuery);
+    return iterator;
+  }
+
+  /**
     * recherche et retourne la liste des traces pour un intervalle de dates
     * données
     * 
@@ -211,34 +224,39 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     *           </ul>
     * @return la liste des traces d'exploitation
     */
-   public final List<I> findByDates(Date startDate, Date endDate, int maxCount,
-         boolean reversed) {
+  public final List<I> findByDates(final Date startDate, final Date endDate, final int maxCount,
+                                   final boolean reversed) {
 
       // Trace applicative
-      String prefix = "findByDates()";
+    final String prefix = "findByDates()";
       getLogger().debug("{} - Début", prefix);
-      getLogger().debug("{} - Date de début : {}", prefix,
+    getLogger().debug("{} - Date de début : {}",
+                      prefix,
             dateFormat.format(startDate));
-      getLogger().debug("{} - Date de fin : {}", prefix,
+    getLogger().debug("{} - Date de fin : {}",
+                      prefix,
             dateFormat.format(endDate));
       getLogger().debug("{} - Ordre décroissant : {}", prefix, reversed);
 
       List<I> list = null;
 
-      SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
+    final SliceQuery<String, UUID, I> sliceQuery = getIndexDao().createSliceQuery();
       sliceQuery.setKey(DateRegUtils.getJournee(startDate));
 
-      UUID startUuid = getTimeUuidSupport().buildUUIDFromDate(startDate);
-      UUID endUuid = getTimeUuidSupport().buildUUIDFromDateBorneSup(endDate);
+    final UUID startUuid = getTimeUuidSupport().buildUUIDFromDate(startDate);
+    final UUID endUuid = getTimeUuidSupport().buildUUIDFromDateBorneSup(endDate);
 
-      Iterator<I> iterator = getIterator(sliceQuery, startUuid, endUuid,
+    final Iterator<I> iterator = getIterator(sliceQuery,
+                                             startUuid,
+                                             endUuid,
             reversed);
 
       try {
          if (iterator.hasNext()) {
             list = new ArrayList<I>();
          }
-      } catch (HInvalidRequestException ex) {
+    }
+    catch (final HInvalidRequestException ex) {
          getLogger()
                .warn(
                      "{} - Echec de la requête Cassandra. Date de début : {}. UUID début : {}. Date de fin : {}. UUID fin : {}.",
@@ -265,14 +283,15 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
     *           l'horloge de la suppression
     * @return le nombre d'enregistrements supprimés
     */
-   private long deleteRecords(Iterator<I> iterator, long clock) {
+  private long deleteRecords(final Iterator<I> iterator, final long clock) {
       long result = 0;
 
       // suppression de toutes les traces
-      Mutator<UUID> mutator = getDao().createMutator();
+    final Mutator<UUID> mutator = getDao().createMutator();
       while (iterator.hasNext()) {
          getDao().mutatorSuppressionLigne(mutator,
-               iterator.next().getIdentifiant(), clock);
+                                       iterator.next().getIdentifiant(),
+                                       clock);
          result++;
       }
       mutator.execute();
@@ -281,14 +300,14 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
 
    }
 
-   private T getTraceFromResult(ColumnFamilyResult<UUID, String> result) {
+  private T getTraceFromResult(final ColumnFamilyResult<UUID, String> result) {
 
       T trace = null;
 
       if (result != null && result.hasResults()) {
 
-         UUID idTrace = result.getKey();
-         Date timestamp = result.getDate(TraceRegTechniqueDao.COL_TIMESTAMP);
+      final UUID idTrace = result.getKey();
+      final Date timestamp = result.getDate(TraceRegTechniqueDao.COL_TIMESTAMP);
 
          trace = createNewInstance(idTrace, timestamp);
 
@@ -297,12 +316,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
                .getString(TraceRegTechniqueDao.COL_CONTRAT_SERVICE));
          trace.setLogin(result.getString(TraceRegTechniqueDao.COL_LOGIN));
 
-         byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
-         if (bValue != null) {
-            trace.setInfos(MapSerializer.get().fromBytes(bValue));
-         }
-
-         bValue = result.getByteArray(TraceRegTechniqueDao.COL_PAGMS);
+      final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_PAGMS);
          if (bValue != null) {
             trace.setPagms(ListSerializer.get().fromBytes(bValue));
          }
