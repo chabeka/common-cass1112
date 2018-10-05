@@ -60,7 +60,7 @@ public final class ModeGestionAPI {
          return listeCfsModes.get(cfName);
       } else {
          // Sinon par défaut on renvoit le fonctionnement avec Hector
-         return MODE_API.DATASTAX;
+         return MODE_API.HECTOR;
       }
    }
 }
