@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.service.CycleVieService;
-import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceImpl;
+import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceThriftImpl;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
@@ -114,7 +114,7 @@ SAETransfertService {
     * Liste des events du SAE par id du doc
     */
    @Autowired
-   private JournalEvtServiceImpl journalEvtService;
+   private JournalEvtServiceThriftImpl journalEvtService;
 
    /**
     * Service pour le mapping de document

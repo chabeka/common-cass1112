@@ -43,7 +43,7 @@
       commons-cassandra
       ==========================================
       -->
-		<commons.cassandra>1.0.2</commons.cassandra>
+		<commons.cassandra>2.0.1-SNAPSHOT</commons.cassandra>
 
       <!--
       ==========================================
