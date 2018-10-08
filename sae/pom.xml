@@ -33,6 +33,7 @@
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
 		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+		<maven-war-plugin.version>2.5</maven-war-plugin.version>
 		<!-- ========================================================= Version 
 			des dépendances des librairies réutilisables Image ========================================================= -->
 
@@ -459,6 +460,12 @@
 					<groupId>org.sonarsource.scanner.maven</groupId>
 					<artifactId>sonar-maven-plugin</artifactId>
 					<version>${sonar-maven-plugin.version}</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${maven-war-plugin.version}</version>
 				</plugin>
 			</plugins>
 
