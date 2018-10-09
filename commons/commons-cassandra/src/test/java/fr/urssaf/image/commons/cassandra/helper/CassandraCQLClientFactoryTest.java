@@ -85,7 +85,7 @@ public class CassandraCQLClientFactoryTest {
          final File ressFile = new File(classLoader.getResource("conf/commons-config_test.properties").getFile());
          final FileSystemResource ress = new FileSystemResource(ressFile);
          final CassandraCQLClientFactory ccf = new CassandraCQLClientFactory(ress);
-         ccf.getServer().resetData();
+         // ccf.getServer().resetData();
          final File fileReseted = new File(tmpDir + yamlFile);
          Assert.assertTrue("", fileReseted.exists());
       }
