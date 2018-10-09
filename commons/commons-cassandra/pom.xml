@@ -33,9 +33,10 @@
       
       <!-- Version des framework -->
 
-      <junit.version>4.11</junit.version>
+      <junit.version>4.12</junit.version>
       <slf4j-api.version>1.7.12</slf4j-api.version>
-      <logback.version>0.9.30</logback.version>
+      <!--logback.version>0.9.30</logback.version-->
+      <logback.version>1.1.3</logback.version>
       <spring.framework.version>3.0.5.RELEASE</spring.framework.version>
       <xstream.version>1.3.1</xstream.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
@@ -50,6 +51,7 @@
       <jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
       <zookeeper.version>3.4.11</zookeeper.version>
       <guava.version>19.0</guava.version>
+      <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 
    </properties>
 
@@ -169,16 +171,16 @@
       <dependency>
          <groupId>org.cassandraunit</groupId>
          <artifactId>cassandra-unit</artifactId>
-			<version>${cassandra-unit.version}</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-			</exclusions>
+         <version>${cassandra-unit.version}</version>
+         <scope>compile</scope>
+         <exclusions>
+            <exclusion>
+               <groupId>org.slf4j</groupId>
+               <artifactId>slf4j-log4j12</artifactId>
+            </exclusion>
+         </exclusions>
       </dependency>
-		
+
 
       <dependency>
          <groupId>org.apache.thrift</groupId>
@@ -355,8 +357,21 @@
    </dependencies>
 
    <build>
+      <pluginManagement>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven-surefire-plugin.version}</version>
+            <dependencies>
+               <dependency>
+                  <groupId>org.apache.maven.surefire</groupId>
+                  <artifactId>surefire-junit47</artifactId>
+                  <version>${maven-surefire-plugin.version}</version>
+               </dependency>
+            </dependencies>
+         </plugin>
+      </pluginManagement>
       <plugins>
-
          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
