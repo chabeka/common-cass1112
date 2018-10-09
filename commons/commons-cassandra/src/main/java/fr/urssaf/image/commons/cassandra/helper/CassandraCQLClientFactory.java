@@ -114,7 +114,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
          cassandraServer.setDataSet(cassandraProp.getProperty(CASSANDRA_DATASET));
          if (startLocal) {
             try {
-               // cassandraServer.resetData();
+               cassandraServer.resetData();
             }
             catch (final Exception e) {
                e.printStackTrace();
