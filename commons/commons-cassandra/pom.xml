@@ -50,7 +50,7 @@
       <jettison.version>1.3.1</jettison.version>
       <jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
       <zookeeper.version>3.4.11</zookeeper.version>
-      <guava.version>19.0</guava.version>
+      <guava.version>20.0</guava.version>
       <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 
    </properties>
