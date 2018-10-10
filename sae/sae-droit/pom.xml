@@ -1,16 +1,15 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae</artifactId>
-		<version>18.9.12-SNAPSHOT</version>
+		<version>18.9.12</version>
 	</parent>
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-droit</artifactId>
-	<version>18.9.12-SNAPSHOT</version>
+	<version>18.9.12</version>
 	<packaging>jar</packaging>
 
 	<name>sae-droit</name>
@@ -50,12 +49,12 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-commons</artifactId>
-			<version>18.9.12-SNAPSHOT</version>
+			<version>18.9.12</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-bo</artifactId>
-			<version>18.9.12-SNAPSHOT</version>
+			<version>18.9.12</version>
 		</dependency>
 
       <!-- SPRING -->
