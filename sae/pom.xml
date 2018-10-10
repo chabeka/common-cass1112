@@ -46,7 +46,7 @@
 		<commons.cassandra.spring.batch>1.0.1</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>1.9.13-SNAPSHOT</commons.dfce>
+		<commons.dfce>1.9.13</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
 		<commons-pdfbox>1.0.1</commons-pdfbox>
