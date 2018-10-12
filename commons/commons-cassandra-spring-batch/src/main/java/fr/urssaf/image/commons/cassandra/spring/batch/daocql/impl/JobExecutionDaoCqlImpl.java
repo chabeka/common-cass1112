@@ -3,6 +3,7 @@ package fr.urssaf.image.commons.cassandra.spring.batch.daocql.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.util.Assert;
 
 import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.google.common.collect.Iterators;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
@@ -44,9 +46,19 @@ import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 @Repository
 public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long> implements IJobExecutionDaoCql {
 
+   /**
+    * le nom de la colonne indexée dals la table d'index JobExecutionsRunning
+    */
+   private static final String JOB_NAME = "jobname";
+
+   /**
+    * le nom de la colonne contenant les ids des execution
+    */
+   private static final String JOBEXECUTIONID = "jobexecutionid";
+
    private static final String ALL = "all";
 
-   protected static final String JOBEXECUTIONS_CFNAME = "JobExecutions";
+   // protected static final String JOBEXECUTIONS_CFNAME = "JobExecutions";
 
    @Autowired
    @Qualifier("jobexecutionidgeneratorcql")
@@ -152,7 +164,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       final JobInstanceToJobExecutionCql jobIToJEx = new JobInstanceToJobExecutionCql();
       jobIToJEx.setJobExecutionId(jobExecution.getId());
       jobIToJEx.setJobInstanceId(jobExecution.getJobInstance().getId());
-      jobInstToJExDaoCql.save(jobIToJEx);
+      jobInstToJExDaoCql.saveWithMapper(jobIToJEx);
 
       // insertion dans JOBEXECUTIONS_CFNAME avec la clé jobName
       // Index permettant de faire la recheche d'un job exécution par son nom
@@ -160,7 +172,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       jobExes.setJobExecutionId(jobExecution.getId());
       jobExes.setJobName(jobExecution.getJobInstance().getJobName());
       // jobExes.setCreationTime(new Date());
-      jobExsDaoCql.save(jobExes);
+      jobExsDaoCql.saveWithMapper(jobExes);
 
       // insertion dans JOBEXECUTIONS_RUNNING_CFNAME avec la clé jobName
       // Index permettant de faire la recherche d'un job en cours d'exécution par son nom
@@ -168,7 +180,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       jobRun.setJobName(jobExecution.getJobInstance().getJobName());
       jobRun.setJobExecutionId(jobExecution.getId());
       if (jobExecution.isRunning()) {
-         jobExRunDaoCql.save(jobRun);
+         jobExRunDaoCql.saveWithMapper(jobRun);
 
       } else {
          // suppression de l'index JOBEXECUTIONS_RUNNING_CFNAME avec le second key jobName
@@ -185,6 +197,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       Assert.notNull(jobInstance, "Job cannot be null.");
       Assert.notNull(jobInstance.getId(), "Job Id cannot be null.");
 
+      final List<JobExecution> jobsExSpring = new ArrayList<JobExecution>();
       //
       final List<Long> idsJobExe = new ArrayList<Long>();
 
@@ -193,18 +206,25 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
          idsJobExe.add(it.next().getJobExecutionId());
       }
 
-      // Récuperation de la list des jobs ExecutionCql en fonction des ids
-      final Iterator<JobExecutionCql> itJobExe = this.findAllWithMapper();
-
-      // Transformer la liste de JobExecutionsCql en liste de JobExecution
-      final List<JobExecution> jobsExSpring = new ArrayList<JobExecution>();
-
-      while (itJobExe.hasNext()) {
-         final JobExecutionCql jobcql = itJobExe.next();
-         if (idsJobExe.contains(jobcql.getJobExecutionId())) {
+      for (int i = idsJobExe.size() - 1; i >= 0; i--) {
+         final Long id = idsJobExe.get(i);
+         final Optional<JobExecutionCql> opt = this.findWithMapperById(id);
+         if (opt.isPresent()) {
+            final JobExecutionCql jobcql = opt.get();
             jobsExSpring.add(JobTranslateUtils.JobExecutionCqlToJobExecution(jobcql, jobInstance));
          }
       }
+      /*
+       * // Récuperation de la list des jobs ExecutionCql en fonction des ids
+       * final Iterator<JobExecutionCql> itJobExe = this.findAllWithMapper();
+       * // Transformer la liste de JobExecutionsCql en liste de JobExecution
+       * while (itJobExe.hasNext()) {
+       * final JobExecutionCql jobcql = itJobExe.next();
+       * if (idsJobExe.contains(jobcql.getJobExecutionId())) {
+       * jobsExSpring.add(JobTranslateUtils.JobExecutionCqlToJobExecution(jobcql, jobInstance));
+       * }
+       * }
+       */
       return jobsExSpring;
    }
 
@@ -237,21 +257,24 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       final Set<JobExecution> set = new HashSet<JobExecution>();
       final Iterator<JobExecutionsRunningCql> it = jobExRunDaoCql.findAllWithMapperById(jobName);
 
-      // TODO Récupération des id des jobExecutions, par ordre décroissant
-      final List<Long> ids = new ArrayList<Long>();
+      // Récupération des id des jobExecutions, par ordre décroissant
       while (it.hasNext()) {
          final JobExecutionsRunningCql job = it.next();
-         ids.add(job.getJobExecutionId());
-      }
-      // Récupération des executions à partir des ids
-      final Iterator<JobExecutionCql> itJobExe = this.findAllWithMapper();
-
-      while (itJobExe.hasNext()) {
-         final JobExecutionCql jobcql = itJobExe.next();
-         if (ids.contains(jobcql.getJobExecutionId())) {
-            set.add(JobTranslateUtils.JobExecutionCqlToJobExecution(jobcql, null));
+         final Optional<JobExecutionCql> opt = this.findWithMapperById(job.getJobExecutionId());
+         if (opt.isPresent()) {
+            set.add(JobTranslateUtils.JobExecutionCqlToJobExecution(opt.get(), null));
          }
       }
+      // Récupération des executions à partir des ids
+      /*
+       * final Iterator<JobExecutionCql> itJobExe = this.findAllWithMapper();
+       * while (itJobExe.hasNext()) {
+       * final JobExecutionCql jobcql = itJobExe.next();
+       * if (ids.contains(jobcql.getJobExecutionId())) {
+       * set.add(JobTranslateUtils.JobExecutionCqlToJobExecution(jobcql, null));
+       * }
+       * }
+       */
 
       return set;
    }
@@ -305,13 +328,11 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       return getJobExecutions(ALL, start, count);
    }
 
+   /**
+    * {@inheritDoc}
+    */
    @Override
    public List<JobExecution> getJobExecutions(final String jobName, final int start, final int count) {
-
-      // pour la recupération des JobExecutions dans l'ordre inverse de la création,
-      // une clé de clustering (creationTime) à été ajouté dans la table CQL.
-      // Les colonne ajouté sont ordonnées en fonction de cette colonne
-      // grace à : WITH CLUSTERING ORDER BY (creationtime DESC) dans la commande de création de la table
 
       final List<JobExecution> list = new ArrayList<JobExecution>();
       final List<JobExecutionsCql> jobExes = new ArrayList<JobExecutionsCql>();
@@ -341,14 +362,10 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
     */
    @Override
    public int countJobExecutions(final String jobName) {
-      final Iterator<JobExecutionsCql> it = jobExsDaoCql.findAllWithMapper();
-      int count = 0;
-      while (it.hasNext()) {
-         final JobExecutionsCql ex = it.next();
-         if (ex.getJobName().equals(jobName)) {
-            count++;
-         }
-      }
+      // possible car jobName est la clé primaire de la table donc il possible de faire une recherche
+      // sur la colonne
+      final Iterator<JobExecutionsCql> it = jobExsDaoCql.findAllWithMapperById(jobName);
+      final int count = Iterators.size(it);
       return count;
    }
 
@@ -358,7 +375,7 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
    @Override
    public Collection<JobExecution> getRunningJobExecutions() {
 
-      // TODO Récupération des id, par ordre décroissant
+      // Récupération des id, par ordre décroissant
 
       final List<JobExecution> list = new ArrayList<JobExecution>();
       final Iterator<JobExecutionsRunningCql> it = jobExRunDaoCql.findAllWithMapper();
@@ -367,11 +384,20 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
          final JobExecutionsRunningCql job = it.next();
          jobExecutionIds.add(job.getJobExecutionId());
       }
-      final Iterator<JobExecutionCql> itJobExes = this.findAllWithMapper();
-      while (itJobExes.hasNext()) {
-         final JobExecutionCql job = itJobExes.next();
-         list.add(JobTranslateUtils.JobExecutionCqlToJobExecution(job, null));
+      Collections.sort(jobExecutionIds, Collections.reverseOrder());
+      for (final Long id : jobExecutionIds) {
+         final Optional<JobExecutionCql> opt = this.findWithMapperById(id);
+         if (opt.isPresent()) {
+            list.add(JobTranslateUtils.JobExecutionCqlToJobExecution(opt.get(), null));
+         }
       }
+      /*
+       * final Iterator<JobExecutionCql> itJobExes = this.findAllWithMapper();
+       * while (itJobExes.hasNext()) {
+       * final JobExecutionCql job = itJobExes.next();
+       * list.add(JobTranslateUtils.JobExecutionCqlToJobExecution(job, null));
+       * }
+       */
       return list;
 
    }
@@ -388,25 +414,31 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
       stepExecutionDao.deleteStepsOfExecution(jobExecution);
 
       // Suppression des indexations de jobExecutions
-      final Iterator<JobExecutionsCql> itJobExes = jobExsDaoCql.findAllWithMapper();
-      while (itJobExes.hasNext()) {
-         final JobExecutionsCql jobExs = itJobExes.next();
-         if (jobExs.getJobExecutionId().equals(jobExecutionId)) {
-            jobExsDaoCql.deleteWithMapper(jobExs);
-         }
+      /*
+       * final Iterator<JobExecutionsCql> itJobExes = jobExsDaoCql.findAllWithMapper();
+       * while (itJobExes.hasNext()) {
+       * final JobExecutionsCql jobExs = itJobExes.next();
+       * if (jobExs.getJobExecutionId().equals(jobExecutionId)) {
+       * jobExsDaoCql.deleteWithMapper(jobExs);
+       * }
+       * }
+       */
+      final Optional<JobExecutionsCql> opt = jobExsDaoCql.findByJobExecutionId(jobExecutionId);
+      if (opt.isPresent()) {
+         jobExsDaoCql.deleteWithMapper(opt.get());
       }
 
       // suppression des index JobExecutionToJobStep
       // Dans ce cas on supprime toutes les lignes qui font reference à l'id de jobExecution. On peut en avoir plusieurs...
       final Delete delete1 = QueryBuilder.delete().from(ccf.getKeyspace(), Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME.toLowerCase());
-      delete1.where(QueryBuilder.eq("jobexecutionid", jobExecutionId));
+      delete1.where(QueryBuilder.eq(JOBEXECUTIONID, jobExecutionId));
       jobExToJobStepDaoCql.getSession().execute(delete1);
 
       // Suppression de l'index dans JobExecutionsRunning
       if (jobExecution.isRunning()) {
 
          final Delete delete2 = QueryBuilder.delete().from(ccf.getKeyspace(), Constante.JOBEXECUTIONS_RUNNING_CFNAME.toLowerCase());
-         delete2.where(QueryBuilder.eq("jobname", jobName)).and(QueryBuilder.eq("jobexecutionid", jobExecutionId));
+         delete2.where(QueryBuilder.eq(JOB_NAME, jobName)).and(QueryBuilder.eq(JOBEXECUTIONID, jobExecutionId));
          jobExRunDaoCql.getSession().execute(delete2);
       }
       // On ne supprime rien dans JobInstanceToJobExecution : ça sera fait lors de la suppression

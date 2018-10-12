@@ -17,13 +17,13 @@ public class JobStepsCql {
   @Column(name = "jobstepid")
   private Long jobStepId;
 
-  @Column(name = "jobname")
-  private String jobName;
+   @Column(name = "jobname")
+   private String jobName;
 
-  @Column(name = "stepname")
-  private String stepName;
+   @Column(name = "stepname")
+   private String stepName;
 
-  /**
+   /**
    * @return the jobStepId
    */
   public Long getJobStepId() {
@@ -39,33 +39,33 @@ public class JobStepsCql {
   }
 
   /**
-   * @return the jobName
-   */
-  public String getJobName() {
-    return jobName;
-  }
+    * @return the jobName
+    */
+   public String getJobName() {
+      return jobName;
+   }
 
-  /**
-   * @param jobName
-   *          the jobName to set
-   */
-  public void setJobName(final String jobName) {
-    this.jobName = jobName;
-  }
+   /**
+    * @param jobName
+    *           the jobName to set
+    */
+   public void setJobName(final String jobName) {
+      this.jobName = jobName;
+   }
 
-  /**
-   * @return the stepName
-   */
-  public String getStepName() {
-    return stepName;
-  }
+   /**
+    * @return the stepName
+    */
+   public String getStepName() {
+      return stepName;
+   }
 
-  /**
-   * @param stepName
-   *          the stepName to set
-   */
-  public void setStepName(final String stepName) {
-    this.stepName = stepName;
-  }
+   /**
+    * @param stepName
+    *           the stepName to set
+    */
+   public void setStepName(final String stepName) {
+      this.stepName = stepName;
+   }
 
 }

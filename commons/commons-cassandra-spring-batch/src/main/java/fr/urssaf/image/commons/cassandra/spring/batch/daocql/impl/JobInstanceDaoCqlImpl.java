@@ -111,10 +111,10 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
 
       // On enregistre l'instance dans JobInstance
       final JobInstanceCql job = JobTranslateUtils.getJobInstanceCqlToJobInstance(instance);
-      this.save(job);
+      this.saveWithMapper(job);
       // Ajout de l'index dans jobInstancesByName
       final JobInstancesByNameCql jobInstByName = JobTranslateUtils.getJobInstancesByNameCqlToJobInstance(job);
-      jobIByNamedaocql.save(jobInstByName);
+      jobIByNamedaocql.saveWithMapper(jobInstByName);
    }
 
    /**

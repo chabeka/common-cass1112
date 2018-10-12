@@ -44,8 +44,8 @@ CREATE TABLE jobexecution (
     exitcode			text,
     exitmessage			text,
     lastupdated			timestamp,
-	PRIMARY KEY (jobexecutionid,creationtime)
-)WITH CLUSTERING ORDER BY (creationtime DESC);
+	PRIMARY KEY (jobexecutionid)
+);
 
 
 
@@ -55,6 +55,7 @@ CREATE TABLE jobexecutions (
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
 ) WITH CLUSTERING ORDER BY (jobexecutionid DESC);
+CREATE INDEX jobExIdKey_idx ON jobexecutions (jobexecutionid);
 
 
 CREATE TABLE jobexecutionsrunning (

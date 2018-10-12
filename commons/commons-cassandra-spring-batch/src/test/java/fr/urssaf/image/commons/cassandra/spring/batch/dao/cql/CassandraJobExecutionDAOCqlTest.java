@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.apache.curator.framework.CuratorFramework;
@@ -27,8 +28,10 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionsDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceToJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepExecutionDaoCql;
@@ -43,6 +46,9 @@ public class CassandraJobExecutionDAOCqlTest {
 
    @Autowired
    IJobExecutionDaoCql jobExecutionDaoCQl;
+
+   @Autowired
+   IJobExecutionsDaoCql jobExsDao;
 
    @Autowired
    IJobInstanceDaoCql jobInstDaoCql;
@@ -137,6 +143,33 @@ public class CassandraJobExecutionDAOCqlTest {
    }
 
    @Test
+   public void runningJobExecutionsOrderTest() {
+      final JobInstance jobInstance = getOrCreateTestJobInstance();
+
+      // On crée 10 exécutions
+      for (int i = 0; i < 10; i++) {
+         createJobExecution(jobInstance, i);
+      }
+      // on s'assure que les 10 executions ont tété créé
+      final int count = jobExecutionDaoCQl.count();
+      Assert.assertEquals(10, count);
+
+      // on recupère les dix executions
+      final List<JobExecution> list = jobExecutionDaoCQl.getJobExecutions(MY_JOB_NAME, 0, 10);
+      Assert.assertEquals(10, list.size());
+
+      // on verife l'ordre des lignes qui ont été recupéré
+      final Long j1 = list.get(0).getId();
+      Assert.assertEquals(j1.intValue(), 10);
+      final Long j9 = list.get(9).getId();
+      Assert.assertEquals(j9.intValue(), 1);
+
+      // on recupère 5 executions avec une limitation
+      final List<JobExecution> list5 = jobExecutionDaoCQl.getJobExecutions(MY_JOB_NAME, 0, 5);
+      Assert.assertEquals(5, list5.size());
+   }
+
+   @Test
    public void findRunningJobExecutionsTest() {
 
       final JobInstance jobInstance = getOrCreateTestJobInstance();
@@ -169,17 +202,25 @@ public class CassandraJobExecutionDAOCqlTest {
 
       final JobInstance jobInstance = getOrCreateTestJobInstance();
       // On crée 2 exécutions
-      createJobExecution(jobInstance, 1);
-      createJobExecution(jobInstance, 2);
+      final JobExecution job1 = createJobExecution(jobInstance, 1);
+      final JobExecution job2 = createJobExecution(jobInstance, 2);
       // On vérifie qu'on les trouve
       List<JobExecution> list = jobExecutionDaoCQl.findJobExecutions(jobInstance);
       Assert.assertEquals(2, list.size());
+
+      // on verfie les index
+      final Optional<JobExecutionsCql> optIni = jobExsDao.findByJobExecutionId(job1.getId());
+      Assert.assertTrue("Un index doit etre associé", optIni.isPresent());
+
       // On les supprime
       jobExecutionDaoCQl.deleteJobExecutionsOfInstance(jobInstance, stepExeDaoCql);
       // On vérifie qu'on ne les trouve plus
       list = jobExecutionDaoCQl.findJobExecutions(jobInstance);
       Assert.assertEquals(0, list.size());
-
+      // on verifie que tous les index associés ont été supprimés
+      // index jobexecutions
+      final Optional<JobExecutionsCql> optEnd = jobExsDao.findByJobExecutionId(job1.getId());
+      Assert.assertFalse("Aucun index ne doit etre associé", optEnd.isPresent());
    }
 
    @Test
@@ -211,6 +252,45 @@ public class CassandraJobExecutionDAOCqlTest {
       Assert.assertEquals(6, jobExecutionDaoCQl.getJobExecutions(0, 100).size());
       Assert.assertEquals(5, jobExecutionDaoCQl.getJobExecutions(1, 100).size());
       Assert.assertEquals(2, jobExecutionDaoCQl.getJobExecutions(1, 2).size());
+   }
+
+   @Test
+   public void testGetOrderJobExecutions() {
+
+      // creation d'une instance
+      final JobInstance jobInstance1 = getOrCreateTestJobInstance("jobName1");
+      // creation de 10 exécution liées à l'instance
+      for (int i = 0; i < 10; i++) {
+         createJobExecution(jobInstance1, i);
+      }
+      // verification nombre d'execution
+      final int exescount = jobExecutionDaoCQl.count();
+      Assert.assertTrue("Le nombre d'executions créé doit etre correct", 10 == exescount);
+      // verification du nombre d'index
+      final int insTOexecount = jobInstToJExDaoCql.count();
+      Assert.assertTrue("Le nombre  d'index créé lié à l'execution doit etre correct", 10 == insTOexecount);
+      // recupérations des exécutions verification
+      final List<JobExecution> exes = jobExecutionDaoCQl.findJobExecutions(jobInstance1);
+      Assert.assertEquals(1, exes.get(0).getId().intValue());
+      Assert.assertEquals(10, exes.get(9).getId().intValue());
+   }
+
+   @Test
+   public void getRunningJobExecutions() {
+
+      // On crée 6 executions, dont 1 terminée
+      for (int i = 0; i < 3; i++) {
+         final JobInstance jobInstance1 = getOrCreateTestJobInstance("jobName1");
+         final JobInstance jobInstance2 = getOrCreateTestJobInstance("jobName2");
+         createJobExecution(jobInstance1, i);
+         final JobExecution jobExecution2 = createJobExecution(jobInstance2, i);
+         if (i == 2) {
+            // On termine l'exécution de jobExecution2
+            jobExecution2.setEndTime(new Date());
+            jobExecutionDaoCQl.updateJobExecution(jobExecution2);
+         }
+      }
+      Assert.assertEquals(5, jobExecutionDaoCQl.getRunningJobExecutions().size());
    }
    //
 

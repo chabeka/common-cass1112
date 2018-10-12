@@ -72,7 +72,7 @@ public class CassandraExecutionContextDaoCqlImpl implements ExecutionContextDao 
    @Override
    public final void updateExecutionContext(final JobExecution jobExecution) {
       final JobExecutionCql executionCql = JobTranslateUtils.JobExecutionToJobExecutionCql(jobExecution);
-      jobExeDaoCql.save(executionCql);
+      jobExeDaoCql.saveWithMapper(executionCql);
    }
 
    @Override
