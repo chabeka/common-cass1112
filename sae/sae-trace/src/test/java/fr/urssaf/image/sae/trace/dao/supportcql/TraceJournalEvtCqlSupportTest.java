@@ -24,8 +24,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;

@@ -1,7 +1,7 @@
 /**
- *
+ *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.trace.dao.model;
+package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -15,16 +15,19 @@ import org.apache.commons.collections.MapUtils;
 import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.trace.commons.Constantes;
+import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 /**
- * Classe de modèle d'une trace du registre d'exploitation
+ * TODO (AC75095028) Description du type
  */
-@Table(name = "traceregexploitation")
-public class TraceRegExploitationCql extends Trace {
+@Table(name = "tracejournalevt")
+public class TraceJournalEvtCql extends Trace {
 
-  /** Contexte de la trace */
-  private String action;
+  /**
+   * Contexte de l'événement
+   */
+  private String contexte;
 
   /** informations supplémentaires de la trace */
   private Map<String, String> infos;
@@ -32,7 +35,7 @@ public class TraceRegExploitationCql extends Trace {
   /**
    *
    */
-  public TraceRegExploitationCql() {
+  public TraceJournalEvtCql() {
     super();
   }
 
@@ -44,7 +47,7 @@ public class TraceRegExploitationCql extends Trace {
    * @param timestamp
    *          le timestamp à affecter à la trace
    */
-  public TraceRegExploitationCql(final UUID idTrace, final Date timestamp) {
+  public TraceJournalEvtCql(final UUID idTrace, final Date timestamp) {
     super(idTrace, timestamp);
   }
 
@@ -54,16 +57,16 @@ public class TraceRegExploitationCql extends Trace {
    * @param trace
    *          trace d'origine
    * @param listInfos
-   *          liste des clés des informations supplémentaires à récupérer
+   *          liste des informations supplémentaires à récupérer
    * @param idTrace
    *          l'identifiant unique à affecter à la trace
    * @param timestamp
    *          le timestamp à affecter à la trace
    */
-  public TraceRegExploitationCql(final TraceToCreate trace, final List<String> listInfos,
-                                 final UUID idTrace, final Date timestamp) {
+  public TraceJournalEvtCql(final TraceToCreate trace, final List<String> listInfos,
+                            final UUID idTrace, final Date timestamp) {
     super(trace, listInfos, idTrace, timestamp);
-    this.action = trace.getAction();
+    this.contexte = trace.getContexte();
 
     if (CollectionUtils.isNotEmpty(listInfos)
         && MapUtils.isNotEmpty(trace.getInfos())) {
@@ -83,11 +86,29 @@ public class TraceRegExploitationCql extends Trace {
 
       }
     }
+
+  }
+
+  /**
+   * @return the contexte
+   */
+  public final String getContexte() {
+    return contexte;
+  }
+
+  /**
+   * @param contexte
+   *          the contexte to set
+   */
+
+  public final void setContexte(final String contexte) {
+    this.contexte = contexte;
   }
 
   /**
    * @return les informations supplémentaires de la trace
    */
+
   public final Map<String, String> getInfos() {
     return infos;
   }
@@ -96,23 +117,8 @@ public class TraceRegExploitationCql extends Trace {
    * @param infos
    *          tinformations supplémentaires de la trace
    */
+
   public final void setInfos(final Map<String, String> infos) {
     this.infos = infos;
   }
-
-  /**
-   * @return le Contexte de la trace
-   */
-  public final String getAction() {
-    return action;
-  }
-
-  /**
-   * @param action
-   *          action de la trace
-   */
-  public final void setAction(final String action) {
-    this.action = action;
-  }
-
 }

@@ -1,34 +1,38 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.trace.dao.model;
+package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
+
 /**
  * TODO (AC75095028) Description du type
  */
-@Table(name = "traceregsecuriteindexcql")
-public class TraceRegSecuriteIndexCql extends TraceIndex {
+@Table(name = "tracejournalevtindexcql")
+public class TraceJournalEvtIndexCql extends TraceIndex {
 
   @PartitionKey
   @Column(name = "identifiantindex")
   private String identifiantIndex;
 
-  /** Contexte de la trace */
+  /**
+   * Contexte de l'évenement
+   */
   private String contexte;
 
   /**
    * Code du contrat de service
    */
-  private String contrat;
+  private String contratService;
 
   /**
    * Constructeur par défaut
    */
-  public TraceRegSecuriteIndexCql() {
+  public TraceJournalEvtIndexCql() {
     super();
   }
 
@@ -36,14 +40,15 @@ public class TraceRegSecuriteIndexCql extends TraceIndex {
    * Constructeur
    *
    * @param exploitation
-   *          trace de sécurité
+   *          trace d'exploitation
    */
-  public TraceRegSecuriteIndexCql(final TraceRegSecuriteCql exploitation) {
+  public TraceJournalEvtIndexCql(final TraceJournalEvtCql exploitation) {
     super(exploitation);
     this.contexte = exploitation.getContexte();
-    this.contrat = exploitation.getContratService();
+    this.contratService = exploitation.getContratService();
   }
 
+  
   /**
    * @return the identifiantIndex
    */
@@ -52,15 +57,14 @@ public class TraceRegSecuriteIndexCql extends TraceIndex {
   }
 
   /**
-   * @param identifiantIndex
-   *          the identifiantIndex to set
+   * @param identifiantIndex the identifiantIndex to set
    */
-  public void setIdentifiantIndex(final String identifiantIndex) {
+  public void setIdentifiantIndex(String identifiantIndex) {
     this.identifiantIndex = identifiantIndex;
   }
 
   /**
-   * @return le Contexte de la trace
+   * @return le contexte de l'événement
    */
   public final String getContexte() {
     return contexte;
@@ -68,24 +72,25 @@ public class TraceRegSecuriteIndexCql extends TraceIndex {
 
   /**
    * @param contexte
-   *          Contexte de la trace
+   *          le contexte de l'événement
    */
   public final void setContexte(final String contexte) {
     this.contexte = contexte;
   }
 
   /**
-   * @return the contrat
+   * @return the contratService
    */
-  public String getContrat() {
-    return contrat;
+  public String getContratService() {
+    return contratService;
   }
 
   /**
-   * @param contrat
-   *          the contrat to set
+   * @param contratService
+   *          the contratService to set
    */
-  public void setContrat(final String contrat) {
-    this.contrat = contrat;
+  public void setContratService(final String contratService) {
+    this.contratService = contratService;
   }
+
 }

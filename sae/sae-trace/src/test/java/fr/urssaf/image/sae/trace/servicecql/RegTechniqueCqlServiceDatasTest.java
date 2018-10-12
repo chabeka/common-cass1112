@@ -20,8 +20,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;

@@ -25,172 +25,172 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  * Classe mère d'implémentation des support de trace
  *
  * @param <T>
- *          Type de trace contenue dans le registre
+ *           Type de trace contenue dans le registre
  * @param <I>
- *          Index des traces
+ *           Index des traces
  */
 public abstract class AbstractTraceServiceCqlImpl<T extends Trace, I extends TraceIndex> {
 
-  private static final String FIN_LOG = "{} - Fin";
+   private static final String FIN_LOG = "{} - Fin";
 
-  private static final String DEBUT_LOG = "{} - Début";
+   private static final String DEBUT_LOG = "{} - Début";
 
-  /**
-   * {@inheritDoc}
-   */
-  public final List<I> lecture(final Date dateDebut, final Date dateFin, final int limite,
-                               final boolean reversed) {
+   /**
+    * {@inheritDoc}
+    */
+   public final List<I> lecture(final Date dateDebut, final Date dateFin, final int limite,
+                                final boolean reversed) {
 
-    final String prefix = "lecture()";
-    getLogger().debug(DEBUT_LOG, prefix);
+      final String prefix = "lecture()";
+      getLogger().debug(DEBUT_LOG, prefix);
 
-    final List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
-    getLogger().debug("{} - Liste des dates à regarder : {}", prefix, dates);
+      final List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
+      getLogger().debug("{} - Liste des dates à regarder : {}", prefix, dates);
 
-    List<I> value = null;
-    List<I> list;
-    if (reversed) {
-      list = findReversedOrder(dates, limite);
-    } else {
-      list = findNormalOrder(dates, limite);
-    }
+      List<I> value = null;
+      List<I> list;
+      if (reversed) {
+         list = findReversedOrder(dates, limite);
+      } else {
+         list = findNormalOrder(dates, limite);
+      }
 
-    if (CollectionUtils.isNotEmpty(list)) {
-      value = list;
-    }
+      if (CollectionUtils.isNotEmpty(list)) {
+         value = list;
+      }
 
-    getLogger().debug(FIN_LOG, prefix);
+      getLogger().debug(FIN_LOG, prefix);
 
-    return value;
-  }
+      return value;
+   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public final T lecture(final UUID identifiant) {
-    final Optional<T> tOp = getSupport().find(identifiant);
-    return tOp.get();
-  }
+   /**
+    * {@inheritDoc}
+    */
+   public final T lecture(final UUID identifiant) {
+      final Optional<T> tOp = getSupport().find(identifiant);
+      return tOp.orElse(null);
+   }
 
-  /**
-   * {@inheritDoc}
-   */
-  public final void purge(final Date date) {
-    final String prefix = "purge()";
-    getLogger().debug(DEBUT_LOG, prefix);
+   /**
+    * {@inheritDoc}
+    */
+   public final void purge(final Date date) {
+      final String prefix = "purge()";
+      getLogger().debug(DEBUT_LOG, prefix);
 
-    final Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
+      final Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
-    getLoggerSupport().logPurgeJourneeDebut(getLogger(),
+      getLoggerSupport().logPurgeJourneeDebut(getLogger(),
+                                              prefix,
+                                              PurgeType.PURGE_EVT,
+                                              DateRegUtils.getJournee(date));
+
+      final long nbTracesPurgees = getSupport().delete(dateIndex,
+                                                       getClockSupport().currentCLock());
+
+      getLoggerSupport().logPurgeJourneeFin(getLogger(),
                                             prefix,
                                             PurgeType.PURGE_EVT,
-                                            DateRegUtils.getJournee(date));
+                                            DateRegUtils.getJournee(date),
+                                            nbTracesPurgees);
 
-    final long nbTracesPurgees = getSupport().delete(dateIndex,
-                                                     getClockSupport().currentCLock());
+      getLogger().debug(FIN_LOG, prefix);
 
-    getLoggerSupport().logPurgeJourneeFin(getLogger(),
-                                          prefix,
-                                          PurgeType.PURGE_EVT,
-                                          DateRegUtils.getJournee(date),
-                                          nbTracesPurgees);
+   }
 
-    getLogger().debug(FIN_LOG, prefix);
+   private List<I> findNormalOrder(final List<Date> dates, final int limite) {
+      int index = 0;
+      int countLeft = limite;
+      List<I> result;
+      final List<I> values = new ArrayList<I>();
+      Date currentDate;
 
-  }
+      do {
+         currentDate = dates.get(index);
 
-  private List<I> findNormalOrder(final List<Date> dates, final int limite) {
-    int index = 0;
-    int countLeft = limite;
-    List<I> result;
-    final List<I> values = new ArrayList<I>();
-    Date currentDate;
+         result = getSupport().findByDate(currentDate, limite);
 
-    do {
-      currentDate = dates.get(index);
+         if (CollectionUtils.isNotEmpty(result)) {
+            values.addAll(result);
+            // recalcul du nombre d'items restant à ajouter à la liste
+            countLeft = limite - values.size();
+         }
+         index++;
+      } while (index < dates.size() && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
-      result = getSupport().findByDate(currentDate, limite);
+      return values;
+   }
 
-      if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
-        // recalcul du nombre d'items restant à ajouter à la liste
-        countLeft = limite - values.size();
+   private List<I> findReversedOrder(final List<Date> dates, final int limite) {
+
+      int index = dates.size() - 1;
+      int countLeft = limite;
+      List<I> result;
+      final List<I> values = new ArrayList<I>();
+      Date currentDate;
+
+      do {
+         currentDate = dates.get(index);
+
+         result = getSupport().findByDate(currentDate, limite);
+
+         if (CollectionUtils.isNotEmpty(result)) {
+            values.addAll(result);
+            // recalcul du nombre d'items restant à ajouter à la liste
+            countLeft = limite - values.size();
+         }
+         index--;
+      } while (index >= 0 && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+
+      return values;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   public final boolean hasRecords(final Date date) {
+
+      final String trcPrefix = "hasRecords()";
+      getLogger().debug(DEBUT_LOG, trcPrefix);
+
+      final Date beginDate = DateUtils.truncate(date, Calendar.DATE);
+      Date endDate = DateUtils.addDays(beginDate, 1);
+      endDate = DateUtils.addMilliseconds(endDate, -1);
+
+      final List<I> list = lecture(beginDate, endDate, 1, false);
+
+      final boolean hasRecords = CollectionUtils.isNotEmpty(list);
+
+      if (!hasRecords) {
+         getLogger().info(
+                          "{} - Aucune trace trouvée pour la journée du {}",
+                          new Object[] {
+                                         trcPrefix,
+                                         new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH).format(date) });
       }
-      index++;
-    } while (index < dates.size() && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
-    return values;
-  }
+      getLogger().debug(FIN_LOG, trcPrefix);
+      return hasRecords;
+   }
 
-  private List<I> findReversedOrder(final List<Date> dates, final int limite) {
+   /**
+    * @return le support permettant la réalisation des opérations
+    */
+   public abstract GenericAbstractTraceCqlSupport<T, I> getSupport();
 
-    int index = dates.size() - 1;
-    int countLeft = limite;
-    List<I> result;
-    final List<I> values = new ArrayList<I>();
-    Date currentDate;
+   /**
+    * @return le support de log
+    */
+   public abstract LoggerSupport getLoggerSupport();
 
-    do {
-      currentDate = dates.get(index);
+   /**
+    * @return le support de timing des opérations
+    */
+   public abstract JobClockSupport getClockSupport();
 
-      result = getSupport().findByDate(currentDate, limite);
-
-      if (CollectionUtils.isNotEmpty(result)) {
-        values.addAll(result);
-        // recalcul du nombre d'items restant à ajouter à la liste
-        countLeft = limite - values.size();
-      }
-      index--;
-    } while (index >= 0 && countLeft > 0 && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
-
-    return values;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  public final boolean hasRecords(final Date date) {
-
-    final String trcPrefix = "hasRecords()";
-    getLogger().debug(DEBUT_LOG, trcPrefix);
-
-    final Date beginDate = DateUtils.truncate(date, Calendar.DATE);
-    Date endDate = DateUtils.addDays(beginDate, 1);
-    endDate = DateUtils.addMilliseconds(endDate, -1);
-
-    final List<I> list = lecture(beginDate, endDate, 1, false);
-
-    final boolean hasRecords = CollectionUtils.isNotEmpty(list);
-
-    if (!hasRecords) {
-      getLogger().info(
-                       "{} - Aucune trace trouvée pour la journée du {}",
-                       new Object[] {
-                                     trcPrefix,
-                                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH).format(date)});
-    }
-
-    getLogger().debug(FIN_LOG, trcPrefix);
-    return hasRecords;
-  }
-
-  /**
-   * @return le support permettant la réalisation des opérations
-   */
-  public abstract GenericAbstractTraceCqlSupport<T, I> getSupport();
-
-  /**
-   * @return le support de log
-   */
-  public abstract LoggerSupport getLoggerSupport();
-
-  /**
-   * @return le support de timing des opérations
-   */
-  public abstract JobClockSupport getClockSupport();
-
-  /**
-   * @return le logger de la classe concernée
-   */
-  public abstract Logger getLogger();
+   /**
+    * @return le logger de la classe concernée
+    */
+   public abstract Logger getLogger();
 }

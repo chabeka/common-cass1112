@@ -1,7 +1,4 @@
-/**
- *  TODO (AC75095028) Description du fichier
- */
-package fr.urssaf.image.sae.trace.dao.model;
+package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -15,18 +12,17 @@ import org.apache.commons.collections.MapUtils;
 import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.trace.commons.Constantes;
+import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
-/**
- * TODO (AC75095028) Description du type
- */
-@Table(name = "tracejournalevt")
-public class TraceJournalEvtCql extends Trace {
+@Table(name = "traceregtechnique")
+public class TraceRegTechniqueCql extends Trace {
 
-  /**
-   * Contexte de l'événement
-   */
+  /** Contexte de la trace */
   private String contexte;
+
+  /** Trace technique de l'exception */
+  private String stacktrace;
 
   /** informations supplémentaires de la trace */
   private Map<String, String> infos;
@@ -34,7 +30,7 @@ public class TraceJournalEvtCql extends Trace {
   /**
    *
    */
-  public TraceJournalEvtCql() {
+  public TraceRegTechniqueCql() {
     super();
   }
 
@@ -46,7 +42,7 @@ public class TraceJournalEvtCql extends Trace {
    * @param timestamp
    *          le timestamp à affecter à la trace
    */
-  public TraceJournalEvtCql(final UUID idTrace, final Date timestamp) {
+  public TraceRegTechniqueCql(final UUID idTrace, final Date timestamp) {
     super(idTrace, timestamp);
   }
 
@@ -62,10 +58,12 @@ public class TraceJournalEvtCql extends Trace {
    * @param timestamp
    *          le timestamp à affecter à la trace
    */
-  public TraceJournalEvtCql(final TraceToCreate trace, final List<String> listInfos,
-                            final UUID idTrace, final Date timestamp) {
+  public TraceRegTechniqueCql(final TraceToCreate trace, final List<String> listInfos,
+                              final UUID idTrace, final Date timestamp) {
+
     super(trace, listInfos, idTrace, timestamp);
     this.contexte = trace.getContexte();
+    this.stacktrace = trace.getStracktrace();
 
     if (CollectionUtils.isNotEmpty(listInfos)
         && MapUtils.isNotEmpty(trace.getInfos())) {
@@ -89,7 +87,7 @@ public class TraceJournalEvtCql extends Trace {
   }
 
   /**
-   * @return the contexte
+   * @return le Contexte de la trace
    */
   public final String getContexte() {
     return contexte;
@@ -97,17 +95,30 @@ public class TraceJournalEvtCql extends Trace {
 
   /**
    * @param contexte
-   *          the contexte to set
+   *          Contexte de la trace
    */
-
   public final void setContexte(final String contexte) {
     this.contexte = contexte;
   }
 
   /**
+   * @return la Trace technique de l'exception
+   */
+  public final String getStacktrace() {
+    return stacktrace;
+  }
+
+  /**
+   * @param stacktrace
+   *          Trace technique de l'exception
+   */
+  public final void setStacktrace(final String stacktrace) {
+    this.stacktrace = stacktrace;
+  }
+
+  /**
    * @return les informations supplémentaires de la trace
    */
-
   public final Map<String, String> getInfos() {
     return infos;
   }
@@ -116,7 +127,6 @@ public class TraceJournalEvtCql extends Trace {
    * @param infos
    *          tinformations supplémentaires de la trace
    */
-
   public final void setInfos(final Map<String, String> infos) {
     this.infos = infos;
   }

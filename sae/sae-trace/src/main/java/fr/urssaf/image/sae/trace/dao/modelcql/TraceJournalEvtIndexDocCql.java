@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.trace.dao.model;
+package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import java.util.Map;
 import java.util.UUID;
@@ -6,6 +6,8 @@ import java.util.UUID;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
+
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 
 @Table(name = "tracejournalevtindexdoc")
 public class TraceJournalEvtIndexDocCql extends TraceIndex {

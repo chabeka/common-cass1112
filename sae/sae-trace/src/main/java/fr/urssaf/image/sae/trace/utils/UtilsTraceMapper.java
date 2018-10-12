@@ -7,23 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndexCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 
 /**
  * TODO (AC75095028) Description du type

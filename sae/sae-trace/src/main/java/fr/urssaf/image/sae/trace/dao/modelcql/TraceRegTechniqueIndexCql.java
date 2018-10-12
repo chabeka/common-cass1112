@@ -1,8 +1,10 @@
-package fr.urssaf.image.sae.trace.dao.model;
+package fr.urssaf.image.sae.trace.dao.modelcql;
 
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
+
+import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 
 @Table(name = "traceregtechniqueindexcql")
 public class TraceRegTechniqueIndexCql extends TraceIndex {

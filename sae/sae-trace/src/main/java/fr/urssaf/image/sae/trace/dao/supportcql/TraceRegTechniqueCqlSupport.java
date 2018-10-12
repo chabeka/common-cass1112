@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.commons.dao.IGenericDAO;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueIndexCqlDao;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;

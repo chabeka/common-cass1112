@@ -24,13 +24,13 @@ import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
-import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegExploitationCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegExploitationSupport;
@@ -57,23 +57,32 @@ import net.docubase.toolkit.model.recordmanager.RMSystemEvent;
 public class DispatcheurServiceImpl implements DispatcheurService {
 
    private static final String ARG_0 = "0";
+
    private static final String ARG_1 = "1";
+
    private static final String ARG_2 = "2";
+
    private static final String USERNAME = "_ADMIN";
 
    private static final String FIN_LOG = "{} - fin";
+
    private static final String DEBUT_LOG = "{} - début";
+
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(DispatcheurServiceImpl.class);
+                                                     .getLogger(DispatcheurServiceImpl.class);
 
    private static final String MESSAGE_ERREUR_REGISTRE = "l'argument ${0} est obligatoire dans le ${1} ${2}";
 
    private static final String REG_SECURITE = "de sécurité";
+
    private static final String REG_EXPLOITATION = "d'exploitation";
+
    private static final String REG_TECHNIQUE = "technique";
+
    private static final String JOURNAL_EVT = "des événements SAE";
 
    private static final String REGISTRE = "registre";
+
    private static final String JOURNAL = "journal";
 
    private static final List<String> DEST_AUTORISES = Arrays.asList(
@@ -90,43 +99,43 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                                                    TraceDestinataireDao.COL_REG_TECHNIQUE);
 
    private static final List<String> JOURN_AUTORISES = Arrays
-         .asList(TraceDestinataireDao.COL_JOURN_EVT);
+                                                             .asList(TraceDestinataireDao.COL_JOURN_EVT);
 
    private final JobClockSupport clockSupport;
 
    private final TraceDestinataireSupport destSupport;
 
-  private final TraceDestinataireCqlSupport destCqlSupport;
+   private final TraceDestinataireCqlSupport destCqlSupport;
 
-  private final String cfNameDestinataire = "tracedestinataire";
+   private final String cfNameDestinataire = "tracedestinataire";
 
    private final TraceRegSecuriteSupport secuSupport;
 
-  private final TraceRegSecuriteCqlSupport secuCqlSupport;
+   private final TraceRegSecuriteCqlSupport secuCqlSupport;
 
-  private final String cfNameRegSecu = "traceregsecurite";
+   private final String cfNameRegSecu = "traceregsecurite";
 
    private final TraceRegExploitationSupport exploitSupport;
 
-  private final TraceRegExploitationCqlSupport exploitCqlSupport;
+   private final TraceRegExploitationCqlSupport exploitCqlSupport;
 
-  private final String cfNameRefExploit = "traceregexploitation";
+   private final String cfNameRefExploit = "traceregexploitation";
 
    private final TraceRegTechniqueSupport techSupport;
 
-  private final TraceRegTechniqueCqlSupport techCqlSupport;
+   private final TraceRegTechniqueCqlSupport techCqlSupport;
 
-  private final String cfNameRegTech = "traceregtechnique";
+   private final String cfNameRegTech = "traceregtechnique";
 
    private final TraceJournalEvtSupport evtSupport;
 
-  private final TraceJournalEvtCqlSupport evtCqlSupport;
+   private final TraceJournalEvtCqlSupport evtCqlSupport;
 
-  private final String cfNameEvt = "tracejournalevt";
+   private final String cfNameEvt = "tracejournalevt";
 
    private final TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-private final DFCEServices dfceServices;
+   private final DFCEServices dfceServices;
 
    /**
     * Constructeur
@@ -151,15 +160,15 @@ private final DFCEServices dfceServices;
    @Autowired
    public DispatcheurServiceImpl(final JobClockSupport clockSupport,
                                  final TraceDestinataireSupport destSupport,
-                                final TraceDestinataireCqlSupport destCqlSupport,
+                                 final TraceDestinataireCqlSupport destCqlSupport,
                                  final TraceRegSecuriteSupport secuSupport,
-                                final TraceRegSecuriteCqlSupport secuCqlSupport,
+                                 final TraceRegSecuriteCqlSupport secuCqlSupport,
                                  final TraceRegTechniqueSupport techSupport,
-                                final TraceRegTechniqueCqlSupport techCqlSupport,
+                                 final TraceRegTechniqueCqlSupport techCqlSupport,
                                  final TraceRegExploitationSupport exploitSupport,
-                                final TraceRegExploitationCqlSupport exploitCqlSupport,
+                                 final TraceRegExploitationCqlSupport exploitCqlSupport,
                                  final TraceJournalEvtSupport evtSupport,
-                                final TraceJournalEvtCqlSupport evtCqlSupport,
+                                 final TraceJournalEvtCqlSupport evtCqlSupport,
                                  final TimeUUIDEtTimestampSupport timeUUIDSupport,
                                  final DFCEServices dfceServices) {
 
@@ -170,14 +179,14 @@ private final DFCEServices dfceServices;
       this.exploitSupport = exploitSupport;
       this.evtSupport = evtSupport;
 
-    this.destCqlSupport = destCqlSupport;
-    this.secuCqlSupport = secuCqlSupport;
-    this.techCqlSupport = techCqlSupport;
-    this.exploitCqlSupport = exploitCqlSupport;
-    this.evtCqlSupport = evtCqlSupport;
+      this.destCqlSupport = destCqlSupport;
+      this.secuCqlSupport = secuCqlSupport;
+      this.techCqlSupport = techCqlSupport;
+      this.exploitCqlSupport = exploitCqlSupport;
+      this.evtCqlSupport = evtCqlSupport;
 
       this.timeUUIDSupport = timeUUIDSupport;
-      
+
       this.dfceServices = dfceServices;
    }
 
@@ -190,24 +199,24 @@ private final DFCEServices dfceServices;
       final String prefix = "ajouterTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-    TraceDestinataire traceDest = new TraceDestinataire();
+      TraceDestinataire traceDest = new TraceDestinataire();
 
       final String codeEvt = trace.getCodeEvt();
 
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      traceDest = destCqlSupport.find(codeEvt);
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-      traceDest = destSupport.find(codeEvt);
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-    }
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         traceDest = destCqlSupport.find(codeEvt);
+      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         traceDest = destSupport.find(codeEvt);
+      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         // Pour exemple
+         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
 
       for (final String type : traceDest.getDestinataires().keySet()) {
-      createTrace(codeEvt,
-                  type,
-                  traceDest.getDestinataires().get(type),
+         createTrace(codeEvt,
+                     type,
+                     traceDest.getDestinataires().get(type),
                      trace);
 
       }
@@ -263,7 +272,7 @@ private final DFCEServices dfceServices;
 
       } else {
          throw new IllegalArgumentException(
-               "pas de vérification prévue pour cette trace");
+                                            "pas de vérification prévue pour cette trace");
       }
 
       String typeTrace = REGISTRE;
@@ -306,94 +315,94 @@ private final DFCEServices dfceServices;
       if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);
          final TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
-                                                                         list,
-                                                                         idTrace,
-                                                                         timestampTrace);
+                                                                            list,
+                                                                            idTrace,
+                                                                            timestampTrace);
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRefExploit);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
-        traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
-        exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        exploitSupport.create(traceExploit, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
+         final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRefExploit);
+         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+            TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
+            traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
+            exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+            exploitSupport.create(traceExploit, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+            // Pour exemple
+            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+         }
       } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace de sécurité", prefix);
-      final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace,
-                                                                  list,
-                                                                  idTrace,
-                                                                  timestampTrace);
-
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegSecu);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
-        traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
-        secuCqlSupport.create(traceCql, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-         secuSupport.create(traceSecurite, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-
-      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
-         LOGGER.debug("{} - ajout d'une trace technique", prefix);
-      final TraceRegTechnique traceTechnique = new TraceRegTechnique(trace,
+         final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace,
                                                                      list,
                                                                      idTrace,
                                                                      timestampTrace);
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegTech);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
-        traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
-        techCqlSupport.create(traceCql, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-         techSupport.create(traceTechnique, clockSupport.currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
+         final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegSecu);
+         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+            TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
+            traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
+            secuCqlSupport.create(traceCql, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+            secuSupport.create(traceSecurite, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+            // Pour exemple
+            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+         }
+
+      } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
+         LOGGER.debug("{} - ajout d'une trace technique", prefix);
+         final TraceRegTechnique traceTechnique = new TraceRegTechnique(trace,
+                                                                        list,
+                                                                        idTrace,
+                                                                        timestampTrace);
+
+         final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegTech);
+         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+            TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
+            traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
+            techCqlSupport.create(traceCql, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+            techSupport.create(traceTechnique, clockSupport.currentCLock());
+         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+            // Pour exemple
+            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+         }
 
       } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
          LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
-      final TraceJournalEvt traceTechnique = new TraceJournalEvt(trace,
-                                                                 list,
-                                                                 idTrace,
-                                                                 timestampTrace);
+         final TraceJournalEvt traceTechnique = new TraceJournalEvt(trace,
+                                                                    list,
+                                                                    idTrace,
+                                                                    timestampTrace);
 
          final String KEY_ID_DOC = "idDoc";
          final long currentCLock = clockSupport.currentCLock();
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameEvt);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-        TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
-        traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
-        evtCqlSupport.create(traceCql, currentCLock);
-        final Map<String, Object> mapInfos = trace.getInfos();
-        if (MapUtils.isNotEmpty(mapInfos)) {
-          if (mapInfos.containsKey(KEY_ID_DOC)) {
-            final String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
-            evtCqlSupport.addIndexDoc(traceCql, idDoc, currentCLock);
-          }
-        }
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-        evtSupport.create(traceTechnique, currentCLock);
-         final Map<String, Object> mapInfos = trace.getInfos();
-         if (MapUtils.isNotEmpty(mapInfos)) {
-            if (mapInfos.containsKey(KEY_ID_DOC)) {
-               final String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
-               evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
+         final String modeApi = ModeGestionAPI.getModeApiCf(cfNameEvt);
+         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+            TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
+            traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
+            evtCqlSupport.create(traceCql, currentCLock);
+            final Map<String, Object> mapInfos = trace.getInfos();
+            if (MapUtils.isNotEmpty(mapInfos)) {
+               if (mapInfos.containsKey(KEY_ID_DOC)) {
+                  final String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
+                  evtCqlSupport.addIndexDoc(traceCql, idDoc, currentCLock);
+               }
             }
+         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+            evtSupport.create(traceTechnique, currentCLock);
+            final Map<String, Object> mapInfos = trace.getInfos();
+            if (MapUtils.isNotEmpty(mapInfos)) {
+               if (mapInfos.containsKey(KEY_ID_DOC)) {
+                  final String idDoc = String.valueOf(mapInfos.get(KEY_ID_DOC));
+                  evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
+               }
+            }
+         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+            // Pour exemple
+            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
 
       } else {
          throw new IllegalArgumentException(StringUtils.replace(

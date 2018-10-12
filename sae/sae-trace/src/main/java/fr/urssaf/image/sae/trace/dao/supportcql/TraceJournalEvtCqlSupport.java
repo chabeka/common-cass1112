@@ -15,9 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.commons.dao.IGenericDAO;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDocCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexCqlDao;
 import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;

@@ -9,8 +9,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 

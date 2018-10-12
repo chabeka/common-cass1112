@@ -13,7 +13,7 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
-import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtCql;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.utils.StaxUtils;
 
 /**

@@ -38,18 +38,27 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 public class JournalEvtServiceDatasTest {
 
    private static final Date DATE = new Date();
+
    private static final Date DATE_INF = DateUtils.addHours(DATE, -1);
+
    private static final Date DATE_SUP = DateUtils.addHours(DATE, 1);
+
    private static final Date DATE_JOUR_SUIVANT = DateUtils.addDays(DATE, 1);
+
    private static final Date DATE_JOUR_PRECEDENT = DateUtils.addDays(DATE, -1);
 
    private static final String VALUE = "valeur";
+
    private static final String KEY = "clé";
 
    private static final String LOGIN = "LE LOGIN";
+
    private static final String CONTRAT = "contrat de service";
+
    private static final String CODE_EVT = "code événement";
+
    private static final String CONTEXTE = "contexte";
+
    private static final Map<String, Object> INFOS;
    static {
       INFOS = new HashMap<String, Object>();
@@ -81,8 +90,10 @@ public class JournalEvtServiceDatasTest {
       final Date dateStart = DateUtils.addHours(DATE, -3);
       final Date dateFin = DateUtils.addHours(DATE, -2);
 
-      final List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateFin,
-                                                                10, true);
+      final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                                dateFin,
+                                                                10,
+                                                                true);
       Assert.assertNull("il ne doit y avoir aucun résultat", result);
    }
 
@@ -93,11 +104,14 @@ public class JournalEvtServiceDatasTest {
       final Date dateStart = DateUtils.addHours(DATE, -2);
       final Date dateFin = DateUtils.addHours(DATE, 2);
 
-      final List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateFin,
-                                                                1, true);
+      final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                                dateFin,
+                                                                1,
+                                                                true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-                          1, result.size());
+                          1,
+                          result.size());
       Assert.assertTrue("l'enregistrement doit correspondre au plus récent",
                         result.get(0).getContexte().contains("DATE_SUP"));
    }
@@ -109,11 +123,14 @@ public class JournalEvtServiceDatasTest {
       final Date dateStart = DATE_INF;
       final Date dateEnd = DATE_SUP;
 
-      final List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateEnd,
-                                                                10, true);
+      final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                                dateEnd,
+                                                                10,
+                                                                true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-                          3, result.size());
+                          3,
+                          result.size());
       Assert.assertTrue("le premier enregistrement doit etre le plus récent",
                         result.get(0).getContexte().contains("DATE_SUP"));
       Assert.assertTrue("le deuxième enregistrement doit etre lintermédiaire",
@@ -130,26 +147,29 @@ public class JournalEvtServiceDatasTest {
       final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
       final Date dateEnd = DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1);
 
-      final List<TraceJournalEvtIndex> result = service.lecture(dateStart, dateEnd,
-                                                                10, true);
+      final List<TraceJournalEvtIndex> result = service.lecture(dateStart,
+                                                                dateEnd,
+                                                                10,
+                                                                true);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-                          5, result.size());
+                          5,
+                          result.size());
       Assert.assertTrue("le premier enregistrement doit etre le plus récent",
                         result.get(0).getContexte().contains("DATE_JOUR_SUIVANT"));
       Assert.assertTrue(
                         "le deuxième enregistrement doit etre le max du jour précédent",
                         result.get(1).getContexte().contains("[DATE_SUP]"));
       Assert
-      .assertTrue(
-                  "le troisième enregistrement doit etre l'intermediaire du jour précédent",
-                  result.get(2).getContexte().contains("[DATE]"));
+            .assertTrue(
+                        "le troisième enregistrement doit etre l'intermediaire du jour précédent",
+                        result.get(2).getContexte().contains("[DATE]"));
       Assert.assertTrue(
                         "le quatrieme enregistrement doit etre le min du jour précédent",
                         result.get(3).getContexte().contains("[DATE_INF]"));
       Assert.assertTrue(
                         "le cinquième enregistrement doit etre le max du jour -2", result
-                        .get(4).getContexte().contains("[DATE_JOUR_PRECEDENT]"));
+                                                                                         .get(4).getContexte().contains("[DATE_JOUR_PRECEDENT]"));
    }
 
    @Test
@@ -160,27 +180,31 @@ public class JournalEvtServiceDatasTest {
       final TraceJournalEvt result = service.lecture(uuid);
       Assert.assertNotNull("il doit y avoir un résultat");
       Assert.assertNotNull("l'objet doit etre trouvé", result);
-      Assert.assertEquals("l'action doit etre correcte", CONTEXTE + suffixe,
+      Assert.assertEquals("l'action doit etre correcte",
+                          CONTEXTE + suffixe,
                           result.getContexte());
       Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT
-                          + suffixe, result.getCodeEvt());
-      Assert.assertEquals("le contrat doit etre correcte", CONTRAT + suffixe,
+            + suffixe, result.getCodeEvt());
+      Assert.assertEquals("le contrat doit etre correcte",
+                          CONTRAT + suffixe,
                           result.getContratService());
       Assert.assertEquals("l'identifiant doit etre correcte", uuid, result
-                          .getIdentifiant());
-      Assert.assertEquals("le login doit etre correcte", LOGIN + suffixe,
+                                                                          .getIdentifiant());
+      Assert.assertEquals("le login doit etre correcte",
+                          LOGIN + suffixe,
                           result.getLogin());
       Assert.assertEquals("la date doit etre correcte", DATE, result
-                          .getTimestamp());
+                                                                    .getTimestamp());
       Assert.assertEquals(
                           "les infos supplémentaire doivent contenir un élément", 1, result
-                          .getInfos().size());
+                                                                                           .getInfos().size());
       Assert.assertTrue("les infos supplémentaire doivent une clé correcte",
                         result.getInfos().keySet().contains(KEY));
       Assert
-      .assertEquals(
-                    "les infos supplémentaire doivent contenir une valeur correcte élément",
-                    VALUE, result.getInfos().get(KEY));
+            .assertEquals(
+                          "les infos supplémentaire doivent contenir une valeur correcte élément",
+                          VALUE,
+                          result.getInfos().get(KEY));
 
    }
 
@@ -193,16 +217,21 @@ public class JournalEvtServiceDatasTest {
       service.purge(DATE);
 
       List<TraceJournalEvtIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
-                                                          DATE, 100, false);
+                                                          DATE,
+                                                          100,
+                                                          false);
       Assert.assertNull(
                         "il ne doit plus rester de traces pour les deux jours donnés",
                         result);
 
       result = service.lecture(DATE,
-                               DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1), 100, false);
+                               DateUtils.addSeconds(DATE_JOUR_SUIVANT, 1),
+                               100,
+                               false);
       Assert.assertEquals("il ne doit y avoir qu'une trace", 1, result.size());
       Assert.assertTrue("il doit s'agir de la trace du jour +1", result.get(0)
-                        .getCodeEvt().contains("DATE_JOUR_SUIVANT"));
+                                                                       .getCodeEvt()
+                                                                       .contains("DATE_JOUR_SUIVANT"));
 
    }
 
@@ -248,7 +277,7 @@ public class JournalEvtServiceDatasTest {
       calendar.set(Calendar.SECOND, 50);
 
       createTrace(calendar.getTime(), " [DATE]", UUID
-                  .fromString("1b163270-80bd-11e2-8148-005056c00008"));
+                                                     .fromString("1b163270-80bd-11e2-8148-005056c00008"));
 
       final String dirPath = System.getProperty("java.io.tmpdir");
       final File tempDirectory = new File(dirPath);
@@ -256,8 +285,10 @@ public class JournalEvtServiceDatasTest {
       repertoire.mkdir();
 
       final String path = service
-            .export(calendar.getTime(), repertoire.getAbsolutePath(),
-                    "6f5e4930-80cc-11e2-8759-005056c00008", "00000");
+                                 .export(calendar.getTime(),
+                                         repertoire.getAbsolutePath(),
+                                         "6f5e4930-80cc-11e2-8759-005056c00008",
+                                         "00000");
 
       final String sha1Attendu = "61d37fcf05a3ea89ad02653a412e5147d8b8b9d6";
       final String sha1Obtenu = calculeSha1(new File(path));
@@ -266,7 +297,8 @@ public class JournalEvtServiceDatasTest {
 
       Assert.assertEquals(
                           "le sha1 doit etre correct : le fichier doit etre correct",
-                          sha1Attendu, sha1Obtenu);
+                          sha1Attendu,
+                          sha1Obtenu);
 
    }
 
@@ -277,7 +309,8 @@ public class JournalEvtServiceDatasTest {
 
          return DigestUtils.shaHex(fis);
 
-      } finally {
+      }
+      finally {
          if (fis != null) {
             fis.close();
          }
@@ -295,7 +328,8 @@ public class JournalEvtServiceDatasTest {
 
    private void createTrace(final Date date, final String suffixe) {
       final TraceJournalEvt trace = new TraceJournalEvt(timeUUIDSupport
-                                                        .buildUUIDFromDate(date), date);
+                                                                       .buildUUIDFromDate(date),
+                                                        date);
       trace.setContexte(CONTEXTE + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContratService(CONTRAT + suffixe);
