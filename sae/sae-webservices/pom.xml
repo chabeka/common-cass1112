@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae</artifactId>
-		<version>18.9.13</version>
+		<version>18.9.14-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>sae-webservices</artifactId>
