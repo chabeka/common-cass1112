@@ -5,14 +5,15 @@ CREATE TABLE tracedestinataire (
 
 
 CREATE TABLE tracejournalevt (
-    identifiant timeuuid PRIMARY KEY,
+    identifiant timeuuid,
+    timestamp timestamp,
     codeevt text,
     contexte text,
     contratservice text,
     infos map<text, text>,
     login text,
     pagms list<text>,
-    timestamp timestamp
+    PRIMARY KEY (identifiant, timestamp)
 );
 
 

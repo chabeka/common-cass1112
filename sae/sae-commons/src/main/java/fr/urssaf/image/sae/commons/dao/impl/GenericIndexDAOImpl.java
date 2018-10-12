@@ -91,7 +91,7 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
    @Override
    public Iterator<T> findAllWithMapperById(final ID id) {
       Assert.notNull(id, "L'id ne peut être null");
-      final Select select = QueryBuilder.select().from(ccf.getKeyspace(), "\"" + getTypeArgumentsName() + "\"");
+      final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
       final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
       Assert.notNull(keyField, "La clé de l'entité à chercher ne peut être null");
 
