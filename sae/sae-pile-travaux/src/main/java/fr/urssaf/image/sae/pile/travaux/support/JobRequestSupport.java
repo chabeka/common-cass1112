@@ -3,30 +3,38 @@ package fr.urssaf.image.sae.pile.travaux.support;
 import java.util.Date;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.mutation.Mutator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * Support pour l'utilisation de {@link JobRequestDao}
  * 
  * 
  */
+@Component
 public class JobRequestSupport {
 
-   private final JobRequestDao jobRequestDao;
+  @Autowired
+  private JobRequestDao jobRequestDao;
 
    /**
     * 
     * @param jobRequestDao
     *           DAO de la colonne famille JobRequest
     */
-   public JobRequestSupport(JobRequestDao jobRequestDao) {
+  public JobRequestSupport() {
 
-      this.jobRequestDao = jobRequestDao;
+    // this.jobRequestDao = jobRequestDao;
    }
 
    /**
@@ -37,52 +45,68 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de la création du nouveau job
     */
-   public final void ajouterJobDansJobRequest(JobToCreate jobToCreate,
-         long clock) {
+  public final void ajouterJobDansJobRequest(final JobToCreate jobToCreate,
+                                             final long clock) {
 
       // Valeur définie "en dur" par la méthode
-      String state = JobState.CREATED.name();
+    final String state = JobState.CREATED.name();
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
             .getJobRequestTmpl().createUpdater(jobToCreate.getIdJob());
 
       // Ecriture des colonnes
-      jobRequestDao.ecritColonneType(updaterJobRequest, jobToCreate.getType(),
+    jobRequestDao.ecritColonneType(updaterJobRequest,
+                                   jobToCreate.getType(),
             clock);
       if (jobToCreate.getParameters() != null) {
-         jobRequestDao.ecritColonneParameters(updaterJobRequest, jobToCreate
-               .getParameters(), clock);
+      jobRequestDao.ecritColonneParameters(updaterJobRequest,
+                                           jobToCreate
+                                                      .getParameters(),
+                                           clock);
       }
 
       if (jobToCreate.getJobParameters() != null) {
-         jobRequestDao.ecritColonneJobParameters(updaterJobRequest, jobToCreate
-               .getJobParameters(), clock);
+      jobRequestDao.ecritColonneJobParameters(updaterJobRequest,
+                                              jobToCreate
+                                                         .getJobParameters(),
+                                              clock);
       }
       jobRequestDao.ecritColonneJobKey(updaterJobRequest,
-            jobToCreate.getJobKey(), clock);
+                                     jobToCreate.getJobKey(),
+                                     clock);
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
-      jobRequestDao.ecritColonneCreationDate(updaterJobRequest, jobToCreate
-            .getCreationDate(), clock);
+    jobRequestDao.ecritColonneCreationDate(updaterJobRequest,
+                                           jobToCreate
+                                                      .getCreationDate(),
+                                           clock);
       if (jobToCreate.getSaeHost() != null) {
-         jobRequestDao.ecritColonneSaeHost(updaterJobRequest, jobToCreate
-               .getSaeHost(), clock);
+      jobRequestDao.ecritColonneSaeHost(updaterJobRequest,
+                                        jobToCreate
+                                                   .getSaeHost(),
+                                        clock);
       }
       if (jobToCreate.getClientHost() != null) {
-         jobRequestDao.ecritColonneClientHost(updaterJobRequest, jobToCreate
-               .getClientHost(), clock);
+      jobRequestDao.ecritColonneClientHost(updaterJobRequest,
+                                           jobToCreate
+                                                      .getClientHost(),
+                                           clock);
       }
       if (jobToCreate.getDocCount() != null) {
-         jobRequestDao.ecritColonneDocCount(updaterJobRequest, jobToCreate
-               .getDocCount(), clock);
+      jobRequestDao.ecritColonneDocCount(updaterJobRequest,
+                                         jobToCreate
+                                                    .getDocCount(),
+                                         clock);
       }
       if (jobToCreate.getDocCountTraite() != null) {
          jobRequestDao.ecritColonneDocCountTraite(updaterJobRequest,
-               jobToCreate.getDocCountTraite(), clock);
+                                               jobToCreate.getDocCountTraite(),
+                                               clock);
       }
       if (jobToCreate.getVi() != null) {
-         jobRequestDao.ecritColonneVi(updaterJobRequest, jobToCreate.getVi(),
+      jobRequestDao.ecritColonneVi(updaterJobRequest,
+                                   jobToCreate.getVi(),
                clock);
       }
 
@@ -104,15 +128,15 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de la réservation du job
     */
-   public final void reserverJobDansJobRequest(UUID idJob, String reservedBy,
-         Date reservationDate, long clock) {
+  public final void reserverJobDansJobRequest(final UUID idJob, final String reservedBy,
+                                              final Date reservationDate, final long clock) {
 
       // Valeur définie "en dur" par la méthode
-      String state = JobState.RESERVED.name();
+    final String state = JobState.RESERVED.name();
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
@@ -120,7 +144,8 @@ public class JobRequestSupport {
       jobRequestDao
       .ecritColonneReservedBy(updaterJobRequest, reservedBy, clock);
       jobRequestDao.ecritColonneReservationDate(updaterJobRequest,
-            reservationDate, clock);
+                                              reservationDate,
+                                              clock);
 
       // Ecrit en base
       this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
@@ -137,20 +162,21 @@ public class JobRequestSupport {
     * @param clock
     *           horloge du démarrage du job
     */
-   public final void passerEtatEnCoursJobRequest(UUID idJob, Date startingDate,
-         long clock) {
+  public final void passerEtatEnCoursJobRequest(final UUID idJob, final Date startingDate,
+                                                final long clock) {
 
       // Valeur définie "en dur" par la méthode
-      String state = JobState.STARTING.name();
+    final String state = JobState.STARTING.name();
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
       jobRequestDao.ecritColonneState(updaterJobRequest, state, clock);
-      jobRequestDao.ecritColonneStartingDate(updaterJobRequest, startingDate,
+    jobRequestDao.ecritColonneStartingDate(updaterJobRequest,
+                                           startingDate,
             clock);
 
       // Ecrit en base
@@ -175,8 +201,8 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de conclusion du job
     */
-   public final void passerEtatTermineJobRequest(UUID idJob, Date endingDate,
-         boolean success, String message, int nbDocTraite, long clock) {
+  public final void passerEtatTermineJobRequest(final UUID idJob, final Date endingDate,
+                                                final boolean success, final String message, final int nbDocTraite, final long clock) {
 
       // Valeur définie "en dur" par la méthode
       String state;
@@ -188,7 +214,7 @@ public class JobRequestSupport {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
@@ -198,7 +224,8 @@ public class JobRequestSupport {
 
       if (nbDocTraite > 0) {
          jobRequestDao.ecritColonneDocCountTraite(updaterJobRequest,
-               nbDocTraite, clock);
+                                               nbDocTraite,
+                                               clock);
       }
 
       if (message != null) {
@@ -222,12 +249,12 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de l'ajout du PID
     */
-   public final void renseignerPidDansJobRequest(UUID idJob, Integer pid,
-         long clock) {
+  public final void renseignerPidDansJobRequest(final UUID idJob, final Integer pid,
+                                                final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
@@ -251,12 +278,12 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de l'ajout du flag
     */
-   public final void renseignerCheckFlagDansJobRequest(UUID idJob,
-         Boolean toCheckFlag, String raison, long clock) {
+  public final void renseignerCheckFlagDansJobRequest(final UUID idJob,
+                                                      final Boolean toCheckFlag, final String raison, final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updater = jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updater = jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
@@ -276,10 +303,10 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de la suppression
     */
-   public final void deleteJobRequest(UUID idJob, long clock) {
+  public final void deleteJobRequest(final UUID idJob, final long clock) {
 
       // Création du Mutator
-      Mutator<UUID> mutator = this.jobRequestDao.createMutator();
+    final Mutator<UUID> mutator = this.jobRequestDao.createMutator();
 
       // suppression du JobRequest
       this.jobRequestDao.mutatorSuppressionJobRequest(mutator, idJob, clock);
@@ -299,11 +326,11 @@ public class JobRequestSupport {
     * @param clock
     *           horloge de la remise à zéro
     */
-   public final void resetJob(UUID idJob, String etat, long clock) {
+  public final void resetJob(final UUID idJob, final String etat, final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
+    final ColumnFamilyUpdater<UUID, String> updaterJobRequest = this.jobRequestDao
             .getJobRequestTmpl().createUpdater(idJob);
 
       // On passe l'état à CREATED
@@ -311,10 +338,12 @@ public class JobRequestSupport {
       // Ecrit en base
       this.jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
 
-      Mutator<UUID> mutator = this.jobRequestDao.createMutator();
+    final Mutator<UUID> mutator = this.jobRequestDao.createMutator();
 
       // On supprime la colonne reservationDate
-      mutator.addDeletion(idJob, "JobRequest", "reservationDate",
+    mutator.addDeletion(idJob,
+                        "JobRequest",
+                        "reservationDate",
             StringSerializer.get());
       // On supprime la colonne reservedBy
       mutator.addDeletion(idJob, "JobRequest", "reservedBy", StringSerializer
@@ -422,5 +451,21 @@ public class JobRequestSupport {
       // Ecrit en base
       jobRequestDao.getJobRequestTmpl().update(updaterJobRequest);
    }   
+
+  /**
+   * @param result
+   * @return
+   */
+  public JobRequest createJobRequestFromResult(final ColumnFamilyResult<UUID, String> result) {
+    return jobRequestDao.createJobRequestFromResult(result);
+  }
+
+  /**
+   * @return
+   */
+  public ColumnFamilyTemplate<UUID, String> getJobRequestTmpl() {
+    return jobRequestDao.getJobRequestTmpl();
+
+  }
 
 }

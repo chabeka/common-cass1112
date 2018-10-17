@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.cassandra.exceptions.ConfigurationException;
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.After;
@@ -28,7 +26,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
-
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-Cassandra-local-test.xml" })
@@ -71,17 +69,17 @@ public class JobQueueServiceProcessExistingJobsTest {
    @Test
    public void processExistingJobWithOldParam() throws JobDejaReserveException, JobInexistantException, LockTimeoutException{
 
-      UUID idJobExistant = UUID.fromString("3897da00-3893-11e2-9ff4-005056c00008");
+    final UUID idJobExistant = UUID.fromString("3897da00-3893-11e2-9ff4-005056c00008");
       JobRequest jobRequest = jobLectureService.getJobRequest(idJobExistant);
       Assert.assertNotNull(jobRequest);
       // creation d'un nouveau job avec des job parameters
       idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-      Date dateCreation = new Date();
+    final Date dateCreation = new Date();
 
-      Map<String,String> jobParam= new HashMap<String, String>();
+    final Map<String, String> jobParam = new HashMap<String, String>();
       jobParam.put("parameters", "param");
       
-      JobToCreate job = new JobToCreate();
+    final JobToCreate job = new JobToCreate();
       job.setIdJob(idJobWithJobParam);
       job.setType("ArchivageMasse");
       job.setJobParameters(jobParam);
@@ -89,7 +87,7 @@ public class JobQueueServiceProcessExistingJobsTest {
       job.setDocCount(100);
       job.setSaeHost("saeHost");
       job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
+    final String jobKey = new String("jobKey");
       job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
@@ -100,7 +98,7 @@ public class JobQueueServiceProcessExistingJobsTest {
       
       jobQueueService.reserveJob(idJobWithJobParam, "hostname", new Date());
 
-      Date dateDebutTraitement = new Date();
+    final Date dateDebutTraitement = new Date();
       jobQueueService.startingJob(idJobExistant, dateDebutTraitement);
       
       jobQueueService.startingJob(idJobWithJobParam, dateDebutTraitement);

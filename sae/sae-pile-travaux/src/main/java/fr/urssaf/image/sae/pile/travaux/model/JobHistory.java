@@ -18,6 +18,14 @@ public class JobHistory {
    private Date date;
 
    /**
+  * 
+  */
+  public JobHistory() {
+    super();
+    // TODO Auto-generated constructor stub
+  }
+
+  /**
     * @return the trace
     */
    public final String getTrace() {

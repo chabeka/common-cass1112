@@ -36,21 +36,18 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * masse uniquement</li>
  * <li><code>pid</code>: PID du processus qui exécute le traitement de masse</li>
  * </ul>
- * 
- * 
- * 
  */
 @Table(name = "jobrequest")
-public class JobRequest {
+public class JobRequestCql {
 
-  @PartitionKey
+   @PartitionKey
    private UUID idJob;
 
    private String type;
 
    private String parameters;
 
-   private JobState state;
+   private String state;
 
    private String reservedBy;
 
@@ -78,8 +75,8 @@ public class JobRequest {
 
    private String toCheckFlagRaison;
 
-  @Column(name = "viextrait")
-  private VIContenuExtrait vi;
+   @Column(name = "viextrait")
+   private VIContenuExtrait vi;
 
    private Map<String, String> jobParameters;
 
@@ -96,7 +93,7 @@ public class JobRequest {
     * @param idJob
     *           the idJob to set
     */
-  public final void setIdJob(final UUID idJob) {
+   public final void setIdJob(final UUID idJob) {
       this.idJob = idJob;
    }
 
@@ -111,7 +108,7 @@ public class JobRequest {
     * @param type
     *           the type to set
     */
-  public final void setType(final String type) {
+   public final void setType(final String type) {
       this.type = type;
    }
 
@@ -126,14 +123,14 @@ public class JobRequest {
     * @param parameters
     *           the parameters to set
     */
-  public final void setParameters(final String parameters) {
+   public final void setParameters(final String parameters) {
       this.parameters = parameters;
    }
 
    /**
     * @return the state of the jobRequest
     */
-   public final JobState getState() {
+   public final String getState() {
       return state;
    }
 
@@ -141,7 +138,7 @@ public class JobRequest {
     * @param state
     *           the state to set
     */
-  public final void setState(final JobState state) {
+   public final void setState(final String state) {
       this.state = state;
    }
 
@@ -156,7 +153,7 @@ public class JobRequest {
     * @param reservedBy
     *           the reservedBy to set
     */
-  public final void setReservedBy(final String reservedBy) {
+   public final void setReservedBy(final String reservedBy) {
       this.reservedBy = reservedBy;
    }
 
@@ -172,9 +169,9 @@ public class JobRequest {
     * @param creationDate
     *           the creationDate to set
     */
-  public final void setCreationDate(final Date creationDate) {
+   public final void setCreationDate(final Date creationDate) {
       this.creationDate = creationDate == null ? null : new Date(creationDate
-            .getTime());
+                                                                             .getTime());
    }
 
    /**
@@ -183,16 +180,16 @@ public class JobRequest {
    public final Date getReservationDate() {
       // On ne renvoie pas la date directement, car c'est un objet mutable
       return reservationDate == null ? null : new Date(reservationDate
-            .getTime());
+                                                                      .getTime());
    }
 
    /**
     * @param reservationDate
     *           the reservationDate to set
     */
-  public final void setReservationDate(final Date reservationDate) {
+   public final void setReservationDate(final Date reservationDate) {
       this.reservationDate = reservationDate == null ? null : new Date(
-            reservationDate.getTime());
+                                                                       reservationDate.getTime());
    }
 
    /**
@@ -207,9 +204,9 @@ public class JobRequest {
     * @param startingDate
     *           the startingDate to set
     */
-  public final void setStartingDate(final Date startingDate) {
+   public final void setStartingDate(final Date startingDate) {
       this.startingDate = startingDate == null ? null : new Date(startingDate
-            .getTime());
+                                                                             .getTime());
    }
 
    /**
@@ -224,21 +221,20 @@ public class JobRequest {
     * @param endingDate
     *           the endingDate to set
     */
-  public final void setEndingDate(final Date endingDate) {
+   public final void setEndingDate(final Date endingDate) {
       this.endingDate = endingDate == null ? null : new Date(endingDate
-            .getTime());
+                                                                       .getTime());
    }
 
    /**
     * @param message
     *           : message de compte-rendu du traitement
     */
-  public final void setMessage(final String message) {
+   public final void setMessage(final String message) {
       this.message = message;
    }
 
    /**
-    * 
     * @return message de compte-rendu du traitement
     */
    public final String getMessage() {
@@ -257,9 +253,8 @@ public class JobRequest {
     * @param saeHost
     *           le nom de machine ou l'IP de la machine SAE ayant traité la
     *           demande
-    * 
     */
-  public final void setSaeHost(final String saeHost) {
+   public final void setSaeHost(final String saeHost) {
       this.saeHost = saeHost;
    }
 
@@ -276,7 +271,7 @@ public class JobRequest {
     *           le nom de machine ou l'IP de la machine cliente ayant traité la
     *           demande
     */
-  public final void setClientHost(final String clientHost) {
+   public final void setClientHost(final String clientHost) {
       this.clientHost = clientHost;
    }
 
@@ -291,7 +286,7 @@ public class JobRequest {
     * @param docCount
     *           le nombre de documents présents dans le fichier sommaire
     */
-  public final void setDocCount(final Integer docCount) {
+   public final void setDocCount(final Integer docCount) {
       this.docCount = docCount;
    }
 
@@ -306,7 +301,7 @@ public class JobRequest {
     * @param pid
     *           le process ID du traitement
     */
-  public final void setPid(final Integer pid) {
+   public final void setPid(final Integer pid) {
       this.pid = pid;
    }
 
@@ -321,7 +316,7 @@ public class JobRequest {
     * @param toCheckFlag
     *           the toCheckFlag to set
     */
-  public final void setToCheckFlag(final Boolean toCheckFlag) {
+   public final void setToCheckFlag(final Boolean toCheckFlag) {
       this.toCheckFlag = toCheckFlag;
    }
 
@@ -336,7 +331,7 @@ public class JobRequest {
     * @param toCheckFlagRaison
     *           the toCheckFlagRaison to set
     */
-  public final void setToCheckFlagRaison(final String toCheckFlagRaison) {
+   public final void setToCheckFlagRaison(final String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
    }
 
@@ -344,38 +339,36 @@ public class JobRequest {
     * @return le contenu du VI
     */
    public final VIContenuExtrait getVi() {
-    return vi;
+      return vi;
    }
 
    /**
     * @param viExtrait
     *           le contenu du VI
     */
-  public final void setVi(final VIContenuExtrait viExtrait) {
-    this.vi = viExtrait;
+   public final void setVi(final VIContenuExtrait viExtrait) {
+      this.vi = viExtrait;
    }
 
    /**
-    * 
     * @return jobParameters
-    *                Objet contenant tous les paramètres du job
+    *         Objet contenant tous les paramètres du job
     */
    public final Map<String, String> getJobParameters() {
       return jobParameters;
    }
 
    /**
-    * 
     * @param jobParameters
-    *              Objet contenant tous les paramètres du job
+    *           Objet contenant tous les paramètres du job
     */
-  public final void setJobParameters(final Map<String, String> jobParameters) {
+   public final void setJobParameters(final Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
    }
 
    /**
     * Getter pour jobKey
-    * 
+    *
     * @return the jobKey
     */
    public byte[] getJobKey() {
@@ -384,17 +377,17 @@ public class JobRequest {
 
    /**
     * Setter pour jobKey
-    * 
+    *
     * @param jobKey
     *           the jobKey to set
     */
-  public void setJobKey(final byte[] jobKey) {
+   public void setJobKey(final byte[] jobKey) {
       this.jobKey = jobKey;
    }
 
    /**
     * Getter pour docCountTraite
-    * 
+    *
     * @return the docCountTraite
     */
    public Integer getDocCountTraite() {
@@ -403,11 +396,11 @@ public class JobRequest {
 
    /**
     * Setter pour docCountTraite
-    * 
+    *
     * @param docCountTraite
     *           the docCountTraite to set
     */
-  public void setDocCountTraite(final Integer docCountTraite) {
+   public void setDocCountTraite(final Integer docCountTraite) {
       this.docCountTraite = docCountTraite;
    }
 

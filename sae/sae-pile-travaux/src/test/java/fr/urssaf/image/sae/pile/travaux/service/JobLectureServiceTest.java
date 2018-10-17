@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
+import me.prettyprint.hector.api.Keyspace;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
@@ -52,6 +53,9 @@ public class JobLectureServiceTest {
    @Autowired
    private JobClockSupport jobClockSupport;
 
+   @Autowired
+   private Keyspace keyspace;
+
    private UUID idJob;
 
    private UUID otherJob;
@@ -70,6 +74,7 @@ public class JobLectureServiceTest {
    @After
    public void after() {
 
+     //List<JobRequest> jobList = jobLectureService.getAllJobs(keyspace);
       // suppression du traitement de masse
       if (idJob != null) {
 
