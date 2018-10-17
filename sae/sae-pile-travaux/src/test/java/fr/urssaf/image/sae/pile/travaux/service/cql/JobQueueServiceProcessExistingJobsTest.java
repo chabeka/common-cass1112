@@ -26,10 +26,10 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 

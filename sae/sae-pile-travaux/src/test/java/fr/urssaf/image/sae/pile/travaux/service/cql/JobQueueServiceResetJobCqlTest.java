@@ -21,11 +21,11 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)

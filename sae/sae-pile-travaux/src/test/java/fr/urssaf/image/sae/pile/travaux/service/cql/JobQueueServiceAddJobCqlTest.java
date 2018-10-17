@@ -17,11 +17,11 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
