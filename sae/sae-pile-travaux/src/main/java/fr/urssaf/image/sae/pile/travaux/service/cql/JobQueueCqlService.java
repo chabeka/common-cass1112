@@ -9,8 +9,8 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
  * Service de la pile des travaux

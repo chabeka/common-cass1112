@@ -18,7 +18,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
  * Support pour l'utilisation de {@link JobsQueueDao}

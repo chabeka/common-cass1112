@@ -17,7 +17,7 @@ import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
 import fr.urssaf.image.sae.commons.context.JsonCodec;
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 
 /**
  * DAO de la colonne famille <code>JobHistory</code>

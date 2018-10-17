@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobQueueCqlService;
 import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;

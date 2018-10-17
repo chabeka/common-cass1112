@@ -11,9 +11,9 @@ import org.springframework.util.Assert;
 
 import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 
 /**
  * Support pour l'utilisation de {@link JobRequestDao}

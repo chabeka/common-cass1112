@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 
 /**
  * @author AC75007648

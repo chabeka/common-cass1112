@@ -14,10 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupportCql;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupportCql;

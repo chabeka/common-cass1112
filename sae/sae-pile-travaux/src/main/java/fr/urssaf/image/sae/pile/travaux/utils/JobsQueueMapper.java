@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
  * @author AC75007648

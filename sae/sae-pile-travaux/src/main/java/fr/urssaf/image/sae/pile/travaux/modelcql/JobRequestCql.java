@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.pile.travaux.model;
+package fr.urssaf.image.sae.pile.travaux.modelcql;
 
 import java.util.Date;
 import java.util.Map;

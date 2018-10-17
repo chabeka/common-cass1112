@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import me.prettyprint.hector.api.Keyspace;
 
 /**

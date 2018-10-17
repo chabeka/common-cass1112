@@ -4,8 +4,8 @@
 package fr.urssaf.image.sae.pile.travaux.utils;
 
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 
 /**
  *

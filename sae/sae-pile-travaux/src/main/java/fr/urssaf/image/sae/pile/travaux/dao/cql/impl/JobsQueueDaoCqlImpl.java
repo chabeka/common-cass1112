@@ -18,7 +18,7 @@ import com.datastax.driver.core.querybuilder.Select;
 import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.commons.utils.ColumnUtil;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueueCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 /**
  * DAO de la colonne famille <code>JobsQueue</code>

@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.pile.travaux.model;
+package fr.urssaf.image.sae.pile.travaux.modelcql;
 
 import java.util.Map;
 import java.util.UUID;

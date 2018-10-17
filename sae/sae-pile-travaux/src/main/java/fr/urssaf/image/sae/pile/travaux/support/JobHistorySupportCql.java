@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
-import fr.urssaf.image.sae.pile.travaux.model.JobHistoryCql;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 
 /**
  * Support pour l'utilisation de {@link JobHistoryDao}
