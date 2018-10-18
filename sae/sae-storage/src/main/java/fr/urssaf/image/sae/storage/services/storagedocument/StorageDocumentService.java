@@ -412,4 +412,16 @@ public interface StorageDocumentService {
    PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
          PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
+
+   /**
+    * Permet de faire une recherche paginée avec un indexComposite
+    * @param paginatedLuceneCriteria
+    * @param indexOrderPreferenceList
+    * @return
+    * @throws SearchingServiceEx
+    * @throws QueryParseServiceEx
+    */
+   PaginatedStorageDocuments searchPaginatedStorageDocumentsWithindexOrderPreference(
+		PaginatedLuceneCriteria paginatedLuceneCriteria, List<String> indexOrderPreferenceList)
+		throws SearchingServiceEx, QueryParseServiceEx;
 }

@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.storage.services.storagedocument;
 
 import java.io.IOException;
+import java.util.List;
 
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
@@ -122,4 +123,16 @@ public interface SearchingService {
     */
    byte[] searchStorageDocumentContentByUUIDCriteria(UUIDCriteria uUIDCriteria)
          throws IOException;
+
+   
+   /**
+    * Permet de faire une recherche paginée avec un indexComposite
+    * @param paginatedLuceneCriteria
+    * @param indexOrderPreferenceList
+    * @return
+    * @throws SearchingServiceEx
+    * @throws QueryParseServiceEx
+    */
+   PaginatedStorageDocuments searchPaginatedStorageDocuments(PaginatedLuceneCriteria paginatedLuceneCriteria,
+		List<String> indexOrderPreferenceList) throws SearchingServiceEx, QueryParseServiceEx;
 }
