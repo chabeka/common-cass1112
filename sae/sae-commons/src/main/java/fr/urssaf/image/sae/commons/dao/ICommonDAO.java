@@ -171,7 +171,7 @@ public interface ICommonDAO<T, ID> {
     * @return
     */
    @SuppressWarnings("unchecked")
-   public default Iterator<T> iterablefindAll(final String cfName, final String keyspace) {
+   public default Iterator<T> findAllByCFName(final String cfName, final String keyspace) {
       final String query = "SELECT * FROM " + keyspace + ".\"" + cfName + "\"";
       if (getLogger().isDebugEnabled()) {
          getLogger().info(query);
