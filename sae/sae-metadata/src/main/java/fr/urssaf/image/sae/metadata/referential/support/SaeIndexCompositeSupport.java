@@ -16,62 +16,77 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
  */
 public class SaeIndexCompositeSupport {
 
-   private final DFCEServices dfceServices;
+	private DFCEServices dfceServices;
 
-   /**
-    * Constructeur
-    * @param serviceDfce service dfce
-    */
-   public SaeIndexCompositeSupport(final DFCEServices dfceServices) {
-      this.dfceServices = dfceServices;
-   }
+	public SaeIndexCompositeSupport() {
+	}
 
-   /**
-    * Récupération de la liste des indexes compositees
-    * @return List<SaeIndexComposite>
-    */
-   public final List<SaeIndexComposite> getListeCompositeIndex() {
+	/**
+	 * Constructeur
+	 * 
+	 * @param serviceDfce
+	 *            service dfce
+	 */
+	public SaeIndexCompositeSupport(final DFCEServices dfceServices) {
+		this.dfceServices = dfceServices;
+	}
 
-      //-- Récupération la liste des index composites
-      final List<SaeIndexComposite> listeIndexes = new ArrayList<SaeIndexComposite>();
-      final Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
-      final Iterator<CompositeIndex> iter = compositeIndexes.iterator();
-      while(iter.hasNext()) {
-         final CompositeIndex index = iter.next();
-         final SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
-         listeIndexes.add(saeIndexComposite);
-         //LOGGER.debug("{} : indexé {}", getCompositeIndexName(index), index.isComputed());
-      }
+	/**
+	 * Récupération de la liste des indexes compositees
+	 * 
+	 * @return List<SaeIndexComposite>
+	 */
+	public final List<SaeIndexComposite> getListeCompositeIndex() {
 
-      return listeIndexes;
-   }
-   /**
-    * Création d'un indexe composite
-    * @param codesCourts : composition de l'index à créer
-    * @throws IndexCompositeException
-    *
-    * @return objet CompositeIndex
-    */
-   public final CompositeIndex creatIndexComposite(final List<String> codesCourts) throws IndexCompositeException {
+		// -- Récupération la liste des index composites
+		final List<SaeIndexComposite> listeIndexes = new ArrayList<SaeIndexComposite>();
+		// -- Ouverture de la connexion à DFCE;
+	    boolean startActive = dfceServices.isServerUp();
+	    if (!startActive) {
+            dfceServices.connectTheFistTime();
+        }
+	    
+		final Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
+		final Iterator<CompositeIndex> iter = compositeIndexes.iterator();
+		while (iter.hasNext()) {
+			final CompositeIndex index = iter.next();
+			final SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
+			listeIndexes.add(saeIndexComposite);
+		}
 
-      if (codesCourts == null || codesCourts.size() < 2) {
-         throw new IndexCompositeException("La liste des métas de l'index ne peut être nulle ou < à 2.");
-      }
+		return listeIndexes;
+	}
 
-      //-- Récupération des catégories de l'index composite
-      final Category[] categories = new Category[codesCourts.size()];
-      for (int i=0; i<codesCourts.size(); i++) {
-         final String codeCourt = codesCourts.get(i);
-         final Category category = dfceServices.getCategory(codeCourt);
-         categories[i] = category;
-         if (category == null) {
-            //LOG.error("Impossible de récupérer la Category pour code {}", codeCourt);
-            throw new IndexCompositeException("La category '" + codeCourt + "' n'a pas ete trouvee");
-         }
-      }
+	/**
+	 * Création d'un indexe composite
+	 * 
+	 * @param codesCourts
+	 *            : composition de l'index à créer
+	 * @throws IndexCompositeException
+	 *
+	 * @return objet CompositeIndex
+	 */
+	public final CompositeIndex creatIndexComposite(final List<String> codesCourts) throws IndexCompositeException {
 
-      //-- Création de l'index composite en base
-      final CompositeIndex idx = dfceServices.findOrCreateCompositeIndex(categories);
-      return idx;
-   }
+		if (codesCourts == null || codesCourts.size() < 2) {
+			throw new IndexCompositeException("La liste des métas de l'index ne peut être nulle ou < à 2.");
+		}
+
+		// -- Récupération des catégories de l'index composite
+		final Category[] categories = new Category[codesCourts.size()];
+		for (int i = 0; i < codesCourts.size(); i++) {
+			final String codeCourt = codesCourts.get(i);
+			final Category category = dfceServices.getCategory(codeCourt);
+			categories[i] = category;
+			if (category == null) {
+				// LOG.error("Impossible de récupérer la Category pour code {}",
+				// codeCourt);
+				throw new IndexCompositeException("La category '" + codeCourt + "' n'a pas ete trouvee");
+			}
+		}
+
+		// -- Création de l'index composite en base
+		final CompositeIndex idx = dfceServices.findOrCreateCompositeIndex(categories);
+		return idx;
+	}
 }

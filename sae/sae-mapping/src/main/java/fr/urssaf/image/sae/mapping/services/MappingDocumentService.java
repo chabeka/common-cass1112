@@ -224,4 +224,21 @@ public interface MappingDocumentService {
          final StorageDocumentAttachment storage) throws InvalidSAETypeException,
          MappingFromReferentialException;
 
+   /**
+    * Retourne true si la metadata passée en paramètre est indexée
+    * @param metadata
+    * @return
+    * @throws MappingFromReferentialException
+    */
+   boolean isIndexedMetadata(UntypedMetadata metadata)
+         throws MappingFromReferentialException;
+
+   /**
+    * Retourne true si la metadata avec le shortCode passee en parametre est indexee
+    * @param metadata
+    * @return
+    * @throws MappingFromReferentialException
+    */
+   boolean isIndexedMetadataByShortCode(String shortCodeMetadata) throws MappingFromReferentialException;
+
 }

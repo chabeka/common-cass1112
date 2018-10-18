@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.mapping.services.impl;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -216,9 +217,18 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
          try {
             final MetadataReference reference = referenceDAO
                   .getByLongCode(metadata.getLongCode());
-            saeMetadatas.add(new SAEMetadata(reference.getLongCode(), reference
-                  .getShortCode(), Utils.conversionToObject(
-                        metadata.getValue(), reference)));
+            if("Date".equals(reference.getType()) ){
+               SimpleDateFormat formatSrc = new SimpleDateFormat("yyyyMMdd");
+               SimpleDateFormat formatDest = new SimpleDateFormat("yyyy-MM-dd");
+               saeMetadatas.add(new SAEMetadata(reference.getLongCode(), reference
+                     .getShortCode(), Utils.conversionToObject(formatDest
+                    		 .format(formatSrc.parse(metadata.getValue())), reference) ));
+            }else {
+               saeMetadatas.add(new SAEMetadata(reference.getLongCode(), reference
+                     .getShortCode(), Utils.conversionToObject(
+                           metadata.getValue(), reference)));
+            }
+            
          } catch (ParseException parseExcept) {
             throw new InvalidSAETypeException(parseExcept);
          } catch (ReferentialException refExcpt) {
@@ -228,7 +238,46 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
       return saeMetadatas;
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public boolean isIndexedMetadata(UntypedMetadata metadata) 
+         throws MappingFromReferentialException {
+      
+      boolean isMetadataIndexed = false;
+      
+      try {
+         final MetadataReference reference = referenceDAO
+               .getByLongCode(metadata.getLongCode());
+         isMetadataIndexed = reference.getIsIndexed();
+         
+      } catch (ReferentialException refExcpt) {
+         throw new MappingFromReferentialException(refExcpt);
+      }
+      
+      return isMetadataIndexed;
+   }
 
+   @Override
+   public boolean isIndexedMetadataByShortCode(String shortCodeMetadata) 
+         throws MappingFromReferentialException {
+      
+      boolean isMetadataIndexed = false;
+      
+      try {
+         final MetadataReference reference = referenceDAO
+               .getByShortCode(shortCodeMetadata);
+         isMetadataIndexed = reference.getIsIndexed();
+         
+      } catch (ReferentialException refExcpt) {
+         throw new MappingFromReferentialException(refExcpt);
+      }
+      
+      return isMetadataIndexed;
+   }
+   
    /**
     * {@inheritDoc}
     */

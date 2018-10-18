@@ -580,6 +580,10 @@ SAESearchService {
       return listUntypedDocument;
 
    }
+   
+   
+   
+
 
    /**
     * {@inheritDoc}
@@ -593,7 +597,8 @@ SAESearchService {
                                                           final UntypedRangeMetadata varyingMetadata,
                                                           final List<AbstractMetadata> listeFiltreEgal,
                                                           final List<AbstractMetadata> listeFiltreDifferent, final int nbDocumentsParPage,
-                                                          final UUID lastIdDoc, final List<String> listeDesiredMetadata)
+                                                          final UUID lastIdDoc, final List<String> listeDesiredMetadata,
+                                                          final List<String> indexOrderPreferenceList)
                                                                 throws MetaDataUnauthorizedToSearchEx,
                                                                 MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
                                                                 SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
@@ -698,7 +703,7 @@ SAESearchService {
 
          final PaginatedStorageDocuments psd = searchPaginatedStorageDocuments(
                                                                                requeteFinal, nbDocumentsParPage, abstractFilter, lastIdDoc,
-                                                                               listCodCourtConsult, codeCourtVaryingMeta);
+                                                                               listCodCourtConsult, codeCourtVaryingMeta, indexOrderPreferenceList);
 
          // liste de résultats à envoyer
          final List<UntypedDocument> listUntypedDocument = new ArrayList<UntypedDocument>();
@@ -902,6 +907,7 @@ SAESearchService {
     *           : le nombre max de résultat à retourner.
     * @param listeDesiredMetadata
     *           : Liste des métadonnées souhaitées.
+ * @param indexOrderPreferenceList 
     * @return Une liste de type {@link StorageDocument}
     * @throws SAESearchServiceEx
     *            : Une exception de type {@link SAESearchServiceEx}
@@ -915,7 +921,8 @@ SAESearchService {
    private PaginatedStorageDocuments searchPaginatedStorageDocuments(
                                                                      final String requeteLucene, final int nbDocumentsParPage,
                                                                      final List<AbstractFilter> abstractFilter, final UUID lastIdDoc,
-                                                                     final List<SAEMetadata> listeDesiredMetadata, final String codeCourtVaryingMeta)
+                                                                     final List<SAEMetadata> listeDesiredMetadata, final String codeCourtVaryingMeta,
+                                                                     final List<String> indexOrderPreferenceList)
                                                                            throws SAESearchServiceEx, QueryParseServiceEx {
 
       PaginatedStorageDocuments paginatedStorageDocuments = null;
@@ -925,8 +932,13 @@ SAESearchService {
                                                     nbDocumentsParPage, listeDesiredMetadata, abstractFilter,
                                                     lastIdDoc, codeCourtVaryingMeta);
 
-         paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocuments(
-                                                                                                 paginatedLuceneCriteria);
+         if(indexOrderPreferenceList == null || indexOrderPreferenceList.isEmpty()){
+        	 paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocuments(
+                     paginatedLuceneCriteria );
+         } else {
+        	 paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocumentsWithindexOrderPreference(paginatedLuceneCriteria, 
+        			 indexOrderPreferenceList);
+         }
 
       } catch (final SearchingServiceEx except) {
          throw new SAESearchServiceEx(except.getMessage(), except);

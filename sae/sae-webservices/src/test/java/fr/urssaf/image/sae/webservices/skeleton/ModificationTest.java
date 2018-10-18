@@ -21,6 +21,7 @@ import fr.cirtil.www.saeservice.Modification;
 import fr.cirtil.www.saeservice.ModificationRequestType;
 import fr.cirtil.www.saeservice.ModificationResponse;
 import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
@@ -35,6 +36,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.modification.SAEModificationService;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })
@@ -58,7 +60,7 @@ public class ModificationTest {
          UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
          UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
-         AxisFault, ArchiveInexistanteEx, MetadataValueNotInDictionaryEx {
+         AxisFault, ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
 
       Modification request = new Modification();
       ModificationRequestType type = new ModificationRequestType();

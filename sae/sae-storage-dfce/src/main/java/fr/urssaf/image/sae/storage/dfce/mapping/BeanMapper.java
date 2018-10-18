@@ -2,7 +2,9 @@ package fr.urssaf.image.sae.storage.dfce.mapping;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -414,7 +416,7 @@ public final class BeanMapper {
    }
 
    private static Document createDocument(final List<StorageMetadata> metadatas,
-                                          final Base baseDFCE, final String[] file) throws MetadonneeInexistante {
+                                          final Base baseDFCE, final String[] file) throws MetadonneeInexistante, ParseException {
       BaseCategory baseCategory = null;
       Date dateCreation = new Date();
       final Document document = ToolkitFactory.getInstance().createDocument(
@@ -442,7 +444,10 @@ public final class BeanMapper {
             // Si la date de creation est définie on remplace la date du
             // jour par la dite date
             if (storageMetadata.getValue() != null) {
-               dateCreation = (Date) storageMetadata.getValue();
+            	dateCreation = (Date) storageMetadata.getValue();
+//            	DateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//				dateCreation = (Date) simpleDateFormat.parse((String) storageMetadata.getValue());
+				
             }
             document.setCreationDate(dateCreation);
          } else if (technical.getShortCode().equals(

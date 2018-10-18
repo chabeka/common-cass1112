@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.vi.service.impl;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.sae.vi.configuration.VIConfiguration;
@@ -198,10 +201,14 @@ public final class PortailVIServiceImpl implements PortailVIService {
          unmarshaller.setSchema(SCHEMA);
 
          InputStream input = new ByteArrayInputStream(xml.getBytes());
+         
+         Reader reader = new InputStreamReader(input,"UTF-8");         
+         InputSource is = new InputSource(reader);
+         is.setEncoding("UTF-8");
 
          try {
 
-            ViType viType = (ViType) unmarshaller.unmarshal(input);
+            ViType viType = (ViType) unmarshaller.unmarshal(is);
 
             eventHandler.validate();
 

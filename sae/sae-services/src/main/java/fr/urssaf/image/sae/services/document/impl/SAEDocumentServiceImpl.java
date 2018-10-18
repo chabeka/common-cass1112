@@ -141,14 +141,15 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
          UntypedRangeMetadata varyingMetadata,
          List<AbstractMetadata> listeFiltreEgalite,
          List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata)
+         UUID lastIdDoc, List<String> listeDesiredMetadata, 
+         final List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
          UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
       return saeSearchService.searchPaginated(fixedMetadatas, varyingMetadata,
             listeFiltreEgalite, listeFiltreDifferent, nbDocumentsParPage,
-            lastIdDoc, listeDesiredMetadata);
+            lastIdDoc, listeDesiredMetadata, indexOrderPreferenceList);
    }
 
    /**

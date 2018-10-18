@@ -69,7 +69,7 @@ public class DispatcheurServiceSecuriteDatasTest {
    }
 
    @Test
-   public void testCreationTraceSecuriteErreurContexteNonRenseigné() {
+   public void testCreationTraceSecuriteErreurContexteNonRenseigne() {
       createDestinataireSecurite();
 
       TraceToCreate traceToCreate = new TraceToCreate();
@@ -95,7 +95,7 @@ public class DispatcheurServiceSecuriteDatasTest {
    }
 
    @Test
-   public void testCreationTraceSecuriteSuccesContratNonRenseigné() {
+   public void testCreationTraceSecuriteSuccesContratNonRenseigne() {
       createDestinataireSecurite();
 
       TraceToCreate traceToCreate = new TraceToCreate();

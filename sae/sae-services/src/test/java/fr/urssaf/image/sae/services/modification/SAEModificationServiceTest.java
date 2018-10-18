@@ -38,6 +38,7 @@ import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestDocument;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
@@ -66,6 +67,7 @@ import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadata
 import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
+import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -225,7 +227,7 @@ public class SAEModificationServiceTest {
    UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
    RequiredArchivableMetadataEx, NotArchivableMetadataEx,
    UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
-   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx {
+   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
       final List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
                                                                                 "Titre", "ceci est le titre"), new UntypedMetadata(
                                                                                                                                    "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
@@ -240,7 +242,7 @@ public class SAEModificationServiceTest {
    UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
    RequiredArchivableMetadataEx, NotArchivableMetadataEx,
    UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
-   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx {
+   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
       final List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
                                                                                 "Titre", "ceci est le titre"), new UntypedMetadata(
                                                                                                                                    "NumeroCompteInterne", "123456"));
@@ -267,6 +269,8 @@ public class SAEModificationServiceTest {
     * @throws InvalidPagmsCombinaisonException
     * @throws UnexpectedDomainException
     * @throws CaptureExistingUuuidException
+ * @throws RetrievalServiceEx 
+ * @throws ReferentialException 
     *
     */
    @Test
@@ -280,7 +284,7 @@ public class SAEModificationServiceTest {
    ModificationException, ArchiveInexistanteEx,
    ValidationExceptionInvalidFile, UnknownFormatException,
    UnexpectedDomainException, InvalidPagmsCombinaisonException,
-   CaptureExistingUuuidException {
+   CaptureExistingUuuidException, ReferentialException, RetrievalServiceEx {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");

@@ -133,7 +133,7 @@ public class PurgeServiceTest {
    }
 
    @Test
-   public void testPurgeNonLancée() {
+   public void testPurgeNonLancee() {
       createParametersEquals();
       createTraces();
 

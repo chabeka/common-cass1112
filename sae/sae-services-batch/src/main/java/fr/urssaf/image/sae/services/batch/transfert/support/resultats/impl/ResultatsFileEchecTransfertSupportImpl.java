@@ -221,32 +221,35 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       while (reader.hasNext()) {
 
          xmlEvent = reader.nextEvent();
+         
+         if(xmlEvent.getEventType() != XMLEvent.COMMENT) {
+            if (xmlEvent.isStartElement()) {
+               startElement = xmlEvent.asStartElement();
+               name = startElement.getName().getLocalPart();
 
-         if (xmlEvent.isStartElement()) {
-            startElement = xmlEvent.asStartElement();
-            name = startElement.getName().getLocalPart();
-
-            if (isVirtual) {
-               indexReference = startTagVirtuelPartiel(name, reader, erreur,
-                     indexReference, listIntDocTemp);
-            } else {
-               if ("documentsMultiAction".equals(name)) {
-                  staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
+               if (isVirtual) {
+                  indexReference = startTagVirtuelPartiel(name, reader, erreur,
+                        indexReference, listIntDocTemp);
                } else {
-                  startTagDocsIntegres(name, reader, listIntDocTemp);
+                  if ("documentsMultiAction".equals(name)) {
+                     staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
+                  } else {
+                     startTagDocsIntegres(name, reader, listIntDocTemp);
+                  }
                }
-            }
-         } else if (xmlEvent.isEndElement()) {
-            endElement = xmlEvent.asEndElement();
-            name = endElement.getName().getLocalPart();
+            } else if (xmlEvent.isEndElement()) {
+               endElement = xmlEvent.asEndElement();
+               name = endElement.getName().getLocalPart();
 
-            if (isVirtual) {
-               endElementVirtuelIntegrated(name);
-            } else {
-               endElementIntegrated(name);
-            }
+               if (isVirtual) {
+                  endElementVirtuelIntegrated(name);
+               } else {
+                  endElementIntegrated(name);
+               }
 
+            }
          }
+
       }
       if (!isVirtual) {
          staxUtils.addStartTag(INTEGRATED_VIRT_DOCS, PX_RES, PX_SOMRES);
@@ -283,35 +286,38 @@ public class ResultatsFileEchecTransfertSupportImpl implements
       while (reader.hasNext()) {
 
          xmlEvent = reader.nextEvent();
+         
+         if(xmlEvent.getEventType() != XMLEvent.COMMENT) {
+            if (xmlEvent.isStartElement()) {
+               startElement = xmlEvent.asStartElement();
+               name = startElement.getName().getLocalPart();
 
-         if (xmlEvent.isStartElement()) {
-            startElement = xmlEvent.asStartElement();
-            name = startElement.getName().getLocalPart();
-
-            if (isVirtual) {
-               indexReference = startTagVirtuel(name, reader, erreur,
-                     indexReference);
-            } else {
-               if ("documentsMultiAction".equals(name)) {
-                  staxUtils.addStartTag(NON_INTEGRATED_DOCUMENTS, PX_RES,
-                        NS_RES);
+               if (isVirtual) {
+                  indexReference = startTagVirtuel(name, reader, erreur,
+                        indexReference);
                } else {
-                  indexReference = startTagDocsNonIntegres(name, reader,
-                        erreur, indexReference, listIntDocs, addmetadatas);
+                  if ("documentsMultiAction".equals(name)) {
+                     staxUtils.addStartTag(NON_INTEGRATED_DOCUMENTS, PX_RES,
+                           NS_RES);
+                  } else {
+                     indexReference = startTagDocsNonIntegres(name, reader,
+                           erreur, indexReference, listIntDocs, addmetadatas);
+                  }
+               }
+               // s'il n'y a pas de nouvelle index de reference, c'est que l'on a
+               // pas
+            } else if (xmlEvent.isEndElement()) {
+               endElement = xmlEvent.asEndElement();
+               name = endElement.getName().getLocalPart();
+
+               if (isVirtual) {
+                  endElementVirtuel(name);
+               } else {
+                  endElement(name);
                }
             }
-            // s'il n'y a pas de nouvelle index de reference, c'est que l'on a
-            // pas
-         } else if (xmlEvent.isEndElement()) {
-            endElement = xmlEvent.asEndElement();
-            name = endElement.getName().getLocalPart();
-
-            if (isVirtual) {
-               endElementVirtuel(name);
-            } else {
-               endElement(name);
-            }
          }
+
       }
 
       if (!isVirtual) {

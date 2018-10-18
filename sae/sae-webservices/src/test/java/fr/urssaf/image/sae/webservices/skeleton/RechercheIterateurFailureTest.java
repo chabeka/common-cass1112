@@ -108,7 +108,7 @@ public class RechercheIterateurFailureTest {
                            (List<AbstractMetadata>) EasyMock.anyObject(),
                            (List<AbstractMetadata>) EasyMock.anyObject(),
                            EasyMock.anyInt(), (UUID) EasyMock.anyObject(),
-                           (List<String>) EasyMock.anyObject()))
+                           (List<String>) EasyMock.anyObject(), null))
                .andThrow(
                      new MetaDataUnauthorizedToSearchEx(
                            "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
@@ -148,7 +148,7 @@ public class RechercheIterateurFailureTest {
                      .anyObject(), (UntypedRangeMetadata) EasyMock.anyObject(),
                      (List<AbstractMetadata>) EasyMock.anyObject(), (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                            .anyInt(), (UUID) EasyMock.anyObject(),
-                     (List<String>) EasyMock.anyObject())).andThrow(
+                     (List<String>) EasyMock.anyObject(), null)).andThrow(
                new RuntimeException("une runtime exception est levée"));
 
          EasyMock.replay(documentService);

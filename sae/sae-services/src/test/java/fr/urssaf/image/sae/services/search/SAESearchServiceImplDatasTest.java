@@ -463,7 +463,7 @@ public class SAESearchServiceImplDatasTest {
       final PaginatedUntypedDocuments documents2 = saeSearchService.searchPaginated(
                                                                                     fixedMetadatas, varyingMetadata, new ArrayList<AbstractMetadata>(),
                                                                                     new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
-                                                                                    desiredMetadatas);
+                                                                                    desiredMetadatas, null);
 
       Assert.assertEquals("1 document attendu", 1, documents2.getDocuments()
                           .size());
@@ -582,7 +582,8 @@ public class SAESearchServiceImplDatasTest {
       final PaginatedUntypedDocuments documents = saeSearchService.searchPaginated(
                                                                                    fixedMetadatas, varyingMetadata, filters,
                                                                                    new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
-                                                                                   listeDesiredMetadata);
+                                                                                   listeDesiredMetadata, 
+                                                                                   null);
 
       Assert.assertEquals("1 document attendu", 1, documents.getDocuments()
                           .size());
@@ -685,7 +686,8 @@ public class SAESearchServiceImplDatasTest {
       final PaginatedUntypedDocuments documents = saeSearchService.searchPaginated(
                                                                                    fixedMetadatas, varyingMetadata, filters,
                                                                                    new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
-                                                                                   listeDesiredMetadata);
+                                                                                   listeDesiredMetadata, 
+                                                                                   null);
 
       Assert.assertEquals("1 document attendu", 1, documents.getDocuments()
                           .size());
@@ -748,7 +750,7 @@ public class SAESearchServiceImplDatasTest {
          final PaginatedUntypedDocuments documents = saeSearchService
                .searchPaginated(fixedMetadatas, varyingMetadata, filters,
                                 new ArrayList<AbstractMetadata>(), nbDocumentsParPage,
-                                lastIdDoc, listeDesiredMetadata);
+                                lastIdDoc, listeDesiredMetadata, null);
          Assert
          .fail("L'exception de type DoublonFiltresMetadataEx est attendue");
       } catch (final DoublonFiltresMetadataEx e) {

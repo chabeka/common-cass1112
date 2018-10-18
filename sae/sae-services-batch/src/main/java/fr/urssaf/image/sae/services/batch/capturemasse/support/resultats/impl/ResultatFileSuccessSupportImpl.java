@@ -187,92 +187,94 @@ public class ResultatFileSuccessSupportImpl implements
             while (reader.hasNext()) {
 
                xmlEvent = reader.nextEvent();
+               
+               if(xmlEvent.getEventType() != XMLEvent.COMMENT) {
+                  if (xmlEvent.isStartElement() ) {
+                     startElement = xmlEvent.asStartElement();
+                     name = startElement.getName().getLocalPart();
+                     if ("document".equals(name)) {
+                        index++;
+                        integratedDocumentType = new IntegratedDocumentType();
+                        objetNumerique = new FichierType();
+                        metadonnees = new ListeMetadonneeType();
 
-               if (xmlEvent.isStartElement()) {
-                  startElement = xmlEvent.asStartElement();
-                  name = startElement.getName().getLocalPart();
-                  if ("document".equals(name)) {
-                     index++;
-                     integratedDocumentType = new IntegratedDocumentType();
-                     objetNumerique = new FichierType();
-                     metadonnees = new ListeMetadonneeType();
+                        // On ajoute l'UUID au document
+                        if (index >= 0 && index < listeDocs.size()) {
+                           integratedDocumentType.setUuid(listeDocs.get(index)
+                                 .getIdentifiant().toString());
+                        } else {
+                           throw new CaptureMasseRuntimeException(
+                                 "Le document n°"
+                                       + index
+                                       + " n'a pas été trouvé dans la liste des documents intégrés");
+                        }
 
-                     // On ajoute l'UUID au document
-                     if (index >= 0 && index < listeDocs.size()) {
-                        integratedDocumentType.setUuid(listeDocs.get(index)
-                              .getIdentifiant().toString());
-                     } else {
-                        throw new CaptureMasseRuntimeException(
-                              "Le document n°"
-                                    + index
-                                    + " n'a pas été trouvé dans la liste des documents intégrés");
-                     }
+                     } else if (CHEMIN_FICHIER.equals(name)) {
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           throw new CaptureMasseRuntimeException(
+                                 ERREUR_VALEUR_VIDE);
+                        }
+                        objetNumerique.setCheminEtNomDuFichier(xmlEventTmp
+                              .asCharacters().getData());
+                        integratedDocumentType.setObjetNumerique(objetNumerique);
+                     } else if (UUID.equals(name)) {
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           throw new CaptureMasseRuntimeException(
+                                 ERREUR_VALEUR_VIDE);
+                        }
+                        objetNumerique.setUUID(xmlEventTmp
+                              .asCharacters().getData());
+                        integratedDocumentType.setObjetNumerique(objetNumerique);
+                     } else if (METADONNEE.equals(name)) {
+                        metadonnee = new MetadonneeType();
+                     } else if (CODE.equals(name)) {
+                        reader.peek();
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           throw new CaptureMasseRuntimeException(
+                                 ERREUR_VALEUR_VIDE);
+                        }
+                        metadonnee.setCode(xmlEventTmp.asCharacters().getData());
+                     } else if (VALEUR.equals(name)) {
+                        reader.peek();
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           LOGGER.info(VALEUR_VIDE);
+                           metadonnee.setValeur(StringUtils.EMPTY);
+                        } else {
+                           metadonnee.setValeur(xmlEventTmp.asCharacters().getData());  
+                        }
+                        metadonnees.getMetadonnee().add(metadonnee);
+                     } else if (NUM_PAGE_DEBUT.equals(name)) {
+                        reader.peek();
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           throw new CaptureMasseRuntimeException(
+                                 ERREUR_VALEUR_VIDE);
+                        }
+                        integratedDocumentType.setNumeroPageDebut(Integer
+                              .parseInt(xmlEventTmp.asCharacters().getData()));
+                     } else if (NUM_PAGE.equals(name)) {
+                        reader.peek();
+                        final XMLEvent xmlEventTmp = reader.peek();
+                        if (!xmlEventTmp.isCharacters()) {
+                           throw new CaptureMasseRuntimeException(
+                                 ERREUR_VALEUR_VIDE);
+                        }
+                        integratedDocumentType.setNombreDePages(Integer
+                              .parseInt(xmlEventTmp.asCharacters().getData()));
 
-                  } else if (CHEMIN_FICHIER.equals(name)) {
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
                      }
-                     objetNumerique.setCheminEtNomDuFichier(xmlEventTmp
-                           .asCharacters().getData());
-                     integratedDocumentType.setObjetNumerique(objetNumerique);
-                  } else if (UUID.equals(name)) {
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
+                  } else if (xmlEvent.isEndElement()) {
+                     endElement = xmlEvent.asEndElement();
+                     name = endElement.getName().getLocalPart();
+                     if ("document".equals(name)) {
+                        integratedDocumentType.setMetadonnees(metadonnees);
+                        listeIntegratesDocuments.getIntegratedDocument().add(
+                              integratedDocumentType);
                      }
-                     objetNumerique.setUUID(xmlEventTmp
-                           .asCharacters().getData());
-                     integratedDocumentType.setObjetNumerique(objetNumerique);
-                  } else if (METADONNEE.equals(name)) {
-                     metadonnee = new MetadonneeType();
-                  } else if (CODE.equals(name)) {
-                     reader.peek();
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
-                     }
-                     metadonnee.setCode(xmlEventTmp.asCharacters().getData());
-                  } else if (VALEUR.equals(name)) {
-                     reader.peek();
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        LOGGER.info(VALEUR_VIDE);
-                        metadonnee.setValeur(StringUtils.EMPTY);
-                     } else {
-                        metadonnee.setValeur(xmlEventTmp.asCharacters().getData());  
-                     }
-                     metadonnees.getMetadonnee().add(metadonnee);
-                  } else if (NUM_PAGE_DEBUT.equals(name)) {
-                     reader.peek();
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
-                     }
-                     integratedDocumentType.setNumeroPageDebut(Integer
-                           .parseInt(xmlEventTmp.asCharacters().getData()));
-                  } else if (NUM_PAGE.equals(name)) {
-                     reader.peek();
-                     final XMLEvent xmlEventTmp = reader.peek();
-                     if (!xmlEventTmp.isCharacters()) {
-                        throw new CaptureMasseRuntimeException(
-                              ERREUR_VALEUR_VIDE);
-                     }
-                     integratedDocumentType.setNombreDePages(Integer
-                           .parseInt(xmlEventTmp.asCharacters().getData()));
-
-                  }
-               } else if (xmlEvent.isEndElement()) {
-                  endElement = xmlEvent.asEndElement();
-                  name = endElement.getName().getLocalPart();
-                  if ("document".equals(name)) {
-                     integratedDocumentType.setMetadonnees(metadonnees);
-                     listeIntegratesDocuments.getIntegratedDocument().add(
-                           integratedDocumentType);
                   }
                }
 

@@ -320,6 +320,18 @@ implements StorageDocumentService {
       return searchingService
             .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
    }
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public PaginatedStorageDocuments searchPaginatedStorageDocumentsWithindexOrderPreference(
+                                                                    final PaginatedLuceneCriteria paginatedLuceneCriteria, 
+                                                                    final List<String> indexOrderPreferenceList)
+                                                                          throws SearchingServiceEx, QueryParseServiceEx {
+      return searchingService
+            .searchPaginatedStorageDocuments(paginatedLuceneCriteria, indexOrderPreferenceList);
+   }
 
    /**
     * {@inheritDoc}

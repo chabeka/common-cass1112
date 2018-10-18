@@ -90,7 +90,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new UnknownFiltresMetadataEx("test-unitaire : filtres incorrects"));
 
       EasyMock.replay(saeService);
@@ -128,7 +128,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new SyntaxLuceneEx("test-unitaire : lucene incorrecte"));
 
       EasyMock.replay(saeService);
@@ -165,7 +165,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new MetaDataUnauthorizedToSearchEx(
                   "test-unitaire : meta non recherchable"));
 
@@ -204,7 +204,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new SAESearchServiceEx(
                   "test-unitaire : erreur lors de la recherche"));
 
@@ -242,7 +242,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new UnknownDesiredMetadataEx(
                   "test-unitaire : meta souhaitee inconnue"));
 
@@ -325,7 +325,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new MetaDataUnauthorizedToConsultEx(
                   "test-unitaire : meta non consultable"));
    
@@ -364,7 +364,7 @@ public class WSRechercheServiceImplTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andThrow(
+                  (List<String>) EasyMock.anyObject(), null)).andThrow(
             new DoublonFiltresMetadataEx(
                   "test-unitaire : meta filtre doublon"));
    

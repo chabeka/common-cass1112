@@ -213,33 +213,36 @@ public class ResultatsFileEchecSupportImpl implements ResultatsFileEchecSupport 
       while (reader.hasNext()) {
 
          xmlEvent = reader.nextEvent();
+         
+         if(xmlEvent.getEventType() != XMLEvent.COMMENT) {
+            if (xmlEvent.isStartElement()) {
+               startElement = xmlEvent.asStartElement();
+               name = startElement.getName().getLocalPart();
 
-         if (xmlEvent.isStartElement()) {
-            startElement = xmlEvent.asStartElement();
-            name = startElement.getName().getLocalPart();
-
-            if (isVirtual) {
-               indexReference = startTagVirtuelPartiel(name, reader, erreur,
-                     indexReference, listIntDocTemp);
-            } else {
-               if ("documents".equals(name)) {
-                  staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
+               if (isVirtual) {
+                  indexReference = startTagVirtuelPartiel(name, reader, erreur,
+                        indexReference, listIntDocTemp);
                } else {
-                  indexReference = startTagDocsIntegres(name, reader, listIntDocTemp,
-                        indexReference);
+                  if ("documents".equals(name)) {
+                     staxUtils.addStartTag(INTEGRATED_DOCUMENTS, PX_RES, NS_RES);
+                  } else {
+                     indexReference = startTagDocsIntegres(name, reader, listIntDocTemp,
+                           indexReference);
+                  }
                }
-            }
-         } else if (xmlEvent.isEndElement()) {
-            endElement = xmlEvent.asEndElement();
-            name = endElement.getName().getLocalPart();
+            } else if (xmlEvent.isEndElement()) {
+               endElement = xmlEvent.asEndElement();
+               name = endElement.getName().getLocalPart();
 
-            if (isVirtual) {
-               endElementVirtuelIntegrated(name);
-            } else {
-               endElementIntegrated(name);
-            }
+               if (isVirtual) {
+                  endElementVirtuelIntegrated(name);
+               } else {
+                  endElementIntegrated(name);
+               }
 
+            }
          }
+
       }
       if (!isVirtual) {
          staxUtils.addStartTag(INTEGRATED_VIRT_DOCS, PX_RES, PX_SOMRES);

@@ -27,108 +27,112 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
  */
 public interface SAETransfertService {
 
-   /**
-    * Supprime le document donné
-    * 
-    * @param idArchive
-    *           identifiant unique du document à transférer
-    * @throws TransfertException
-    *            Erreur levée lorsqu'un erreur survient pendant le transfert du
-    *            doc
-    * @throws ArchiveAlreadyTransferedException
-    *            Erreur levée lorsque le document a déjà été transféré
-    * @throws ArchiveInexistanteEx
-    *            Erreur levée lorsque l'archive n'a pas été trouvée
-    * @throws InsertionIdGedExistantEx 
-    */
-   @PreAuthorize("hasRole('transfert')")
-   void transfertDoc(UUID idArchive) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx, InsertionIdGedExistantEx;
+	/**
+	 * Supprime le document donné
+	 * 
+	 * @param idArchive
+	 *            identifiant unique du document à transférer
+	 * @throws TransfertException
+	 *             Erreur levée lorsqu'un erreur survient pendant le transfert
+	 *             du doc
+	 * @throws ArchiveAlreadyTransferedException
+	 *             Erreur levée lorsque le document a déjà été transféré
+	 * @throws ArchiveInexistanteEx
+	 *             Erreur levée lorsque l'archive n'a pas été trouvée
+	 * @throws InsertionIdGedExistantEx
+	 */
+	@PreAuthorize("hasRole('transfert')")
+	void transfertDoc(UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
+			ArchiveInexistanteEx, InsertionIdGedExistantEx;
 
-   void transfertDocMasse(StorageDocument document) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         ReferentialException, RetrievalServiceEx, InvalidSAETypeException,
-         MappingFromReferentialException;
+	void transfertDocMasse(StorageDocument document)
+			throws TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, ReferentialException,
+			RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException;
 
-   void controleDroitTransfert(final UUID idArchive)
-         throws ReferentialException, RetrievalServiceEx,
-         InvalidSAETypeException, MappingFromReferentialException;
-   
-   void controleDroitTransfertMasse(List<StorageMetadata> allMeta)
-         throws ReferentialException, RetrievalServiceEx,
-         InvalidSAETypeException, MappingFromReferentialException;
+	void controleDroitTransfert(final UUID idArchive)
+			throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException;
 
-   /**
-    * Methode de contrôle de presence du document sur les plateformes GNS et
-    * GNT.
-    * 
-    * @param document
-    *           document
-    * @param idArchive
-    *           identifiant de l'archive
-    * @param isReprise
-    *           Mode reprise actif
-    * @return Le document trouvé soit en GNT, soit en GNS.
-    * @throws ArchiveAlreadyTransferedException
-    *            @{@link ArchiveAlreadyTransferedException}
-    * @throws SearchingServiceEx
-    *            @{@link SearchingServiceEx}
-    * @throws ReferentialException
-    *            @{@link ReferentialException}
-    * @throws ArchiveInexistanteEx
-    *            @{@link ArchiveInexistanteEx}
-    * 
-    *            Permet plusieurs controles avant le transfert : Document en GNT
-    *            ? Document en GNS ?
-    * @throws ConnectionServiceEx
-    *            @{@link ConnectionServiceEx}
-    * @throws TraitementRepriseAlreadyDoneException
-    *            @{@link TraitementRepriseAlreadyDoneException}
-    */
-   StorageDocument transfertControlePlateforme(StorageDocument document,
-         final UUID idArchive, boolean isReprise, UUID idTraitementMasse)
-         throws ArchiveAlreadyTransferedException,
-         SearchingServiceEx, ReferentialException, ArchiveInexistanteEx,
- TransfertException,
-         ConnectionServiceEx, TraitementRepriseAlreadyDoneException;
+	void controleDroitTransfertMasse(List<StorageMetadata> allMeta)
+			throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException;
 
-   void transfertDocument(StorageDocument document) throws TransfertException;
+	/**
+	 * Methode de contrôle de presence du document sur les plateformes GNS et
+	 * GNT.
+	 * 
+	 * @param document
+	 *            document
+	 * @param idArchive
+	 *            identifiant de l'archive
+	 * @param isReprise
+	 *            Mode reprise actif
+	 * @return Le document trouvé soit en GNT, soit en GNS.
+	 * @throws ArchiveAlreadyTransferedException
+	 * @{@link ArchiveAlreadyTransferedException}
+	 * @throws SearchingServiceEx
+	 * @{@link SearchingServiceEx}
+	 * @throws ReferentialException
+	 * @{@link ReferentialException}
+	 * @throws ArchiveInexistanteEx
+	 * @{@link ArchiveInexistanteEx}
+	 * 
+	 *         Permet plusieurs controles avant le transfert : Document en GNT ?
+	 *         Document en GNS ?
+	 * @throws ConnectionServiceEx
+	 * @{@link ConnectionServiceEx}
+	 * @throws TraitementRepriseAlreadyDoneException
+	 * @{@link TraitementRepriseAlreadyDoneException}
+	 */
+	StorageDocument transfertControlePlateforme(StorageDocument document, final UUID idArchive, boolean isReprise,
+			UUID idTraitementMasse) throws ArchiveAlreadyTransferedException, SearchingServiceEx, ReferentialException,
+			ArchiveInexistanteEx, TransfertException, ConnectionServiceEx, TraitementRepriseAlreadyDoneException;
 
-   void deleteDocApresTransfert(final UUID idArchive)
-         throws SearchingServiceEx, ReferentialException, TransfertException;
+	void transfertDocument(StorageDocument document) throws TransfertException;
 
-   StorageDocument recupererDocMetaTransferable(final UUID idArchive)
-         throws ReferentialException, SearchingServiceEx;
+	void deleteDocApresTransfert(final UUID idArchive)
+			throws SearchingServiceEx, ReferentialException, TransfertException;
 
-   /**
-    * Méthode permettant de modifier les métadonnées du document avant
-    * transfert.
-    * 
-    * @param document
-    *           Document
-    * @param listeMeta
-    *           Liste des métadonnées
-    * @param idTraitementMasse
-    *           Identifiant du traitement qui réalise le transfert
-    * @return Le document transférable.
-    * @throws ReferentialException
-    *            @{@link ReferentialException}
-    * @throws TransfertException
-    * @throws UnknownCodeRndEx 
-    *            @{@link TransfertException}
-    * 
-    *            Methode permettant la modification de métadonnées avant le
-    *            transfert pour le traitement de transfert de masse
-    */
-   StorageDocument updateMetaDocumentForTransfertMasse(
-         StorageDocument document, final List<StorageMetadata> listeMeta,
-         UUID idTraitementMasse)
-         throws ReferentialException, TransfertException, UnknownCodeRndEx;
+	StorageDocument recupererDocMetaTransferable(final UUID idArchive) throws ReferentialException, SearchingServiceEx;
 
-   StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
-         final List<StorageMetadata> storageMetas, boolean isReprise,
-         UUID idTraitementMasse) throws TransfertException,
-         ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-         TraitementRepriseAlreadyDoneException, UnknownCodeRndEx;
+	/**
+	 * Méthode permettant de modifier les métadonnées du document avant
+	 * transfert.
+	 * 
+	 * @param document
+	 *            Document
+	 * @param listeMeta
+	 *            Liste des métadonnées
+	 * @param idTraitementMasse
+	 *            Identifiant du traitement qui réalise le transfert
+	 * @return Le document transférable.
+	 * @throws ReferentialException
+	 * @{@link ReferentialException}
+	 * @throws TransfertException
+	 * @throws UnknownCodeRndEx
+	 * @{@link TransfertException}
+	 * 
+	 *         Methode permettant la modification de métadonnées avant le
+	 *         transfert pour le traitement de transfert de masse
+	 */
+	StorageDocument updateMetaDocumentForTransfertMasse(StorageDocument document, final List<StorageMetadata> listeMeta,
+			UUID idTraitementMasse) throws ReferentialException, TransfertException, UnknownCodeRndEx;
+
+	StorageDocument controleDocumentTransfertMasse(final UUID idArchive, final List<StorageMetadata> storageMetas,
+			boolean isReprise, UUID idTraitementMasse) throws TransfertException, ArchiveAlreadyTransferedException,
+			ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException, UnknownCodeRndEx;
+
+	/**
+	 * Méthode permettant de générer la liste des métadonnées storage contenant
+	 * les metadonnées de modification et la métadonnée GEL.
+	 * 
+	 * @param idArchive
+	 *            Identifiant document
+	 * @return la liste des metadonnées storage
+	 * @throws ReferentialException
+	 * @{@link ReferentialException}
+	 * @throws RetrievalServiceEx
+	 * @{@link RetrievalServiceEx}
+	 */
+	public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
+			throws ReferentialException, RetrievalServiceEx;
 
 }

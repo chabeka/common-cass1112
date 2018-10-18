@@ -17,6 +17,7 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.services.batch.restore.support.stockage.batch.StorageDocumentFromRecycleWriter;
 import fr.urssaf.image.sae.services.batch.transfert.support.controle.TransfertMasseControleSupport;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -74,7 +75,26 @@ public class ControleDocumentSommaireTransfertProcessor extends
 			idTraitementMasse = UUID.fromString(getStepExecution()
 					.getJobParameters().getString(Constantes.ID_TRAITEMENT));
 		}
-		if (item.getBatchActionType().equals("SUPPRESSION")) {
+		
+		List<StorageMetadata> listeMetadataDocument = null;
+		// -- On vérifie si le document n'est pas gelé
+      if (item.getUuid() != null) {
+          listeMetadataDocument = support.getListeStorageMetadatasWithGel(item.getUuid());
+      }
+      
+      if (isFrozenDocument(listeMetadataDocument)) {
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+         
+         getCodesErreurListe().add(Constantes.ERR_BUL002);
+         getIndexErreurListe().add(
+               getStepExecution().getExecutionContext().getInt(
+                     Constantes.CTRL_INDEX));         
+         getErrorMessageList().add(StringUtils.replace(frozenDocMsgException, "{0}",
+             uuidString));
+         LOGGER.warn(StringUtils.replace(frozenDocMsgException, "{0}",
+                uuidString),  new TransfertException(StringUtils.replace(frozenDocMsgException,
+                      "{0}", uuidString)));
+      } else if (item.getBatchActionType().equals("SUPPRESSION")) {
 			boolean isExiste = support.controleSAEDocumentSuppression(item);
 			if (isExiste) {
 				try {

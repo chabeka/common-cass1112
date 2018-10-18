@@ -169,7 +169,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
          UntypedRangeMetadata varyingMetadata,
          List<AbstractMetadata> equalsFilters,
          List<AbstractMetadata> notEqualsFilters, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata)
+         UUID lastIdDoc, List<String> listeDesiredMetadata, final List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx {

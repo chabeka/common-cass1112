@@ -150,7 +150,7 @@ public class RechercheIterateurTest {
                   (List<AbstractMetadata>) EasyMock.anyObject(),
                   (List<AbstractMetadata>) EasyMock.anyObject(), EasyMock
                         .anyInt(), (UUID) EasyMock.anyObject(),
-                  (List<String>) EasyMock.anyObject())).andReturn(documents);
+                  (List<String>) EasyMock.anyObject(), null)).andReturn(documents);
       // permet de sauvegarder l'enregistrement
       EasyMock.replay(documentService);
 

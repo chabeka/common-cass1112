@@ -137,9 +137,11 @@ public interface SAESearchService {
          UntypedRangeMetadata varyingMetadata,
          List<AbstractMetadata> listeFiltreEgal,
          List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata)
+         UUID lastIdDoc, List<String> listeDesiredMetadata,
+         List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
          UnknownFiltresMetadataEx, DoublonFiltresMetadataEx;
+
 }

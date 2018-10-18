@@ -211,9 +211,24 @@ SearchingService {
                                                                     final PaginatedLuceneCriteria paginatedLuceneCriteria)
                                                                           throws SearchingServiceEx, QueryParseServiceEx {
 
-      return searchByIterator(paginatedLuceneCriteria, false, true);
+      return searchByIterator(paginatedLuceneCriteria, null,  false, true);
    }
 
+   
+   
+   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+                                                                    final PaginatedLuceneCriteria paginatedLuceneCriteria, 
+                                                                    final List<String> indexOrderPreferenceList)
+                                                                          throws SearchingServiceEx, QueryParseServiceEx {
+
+      return searchByIterator(paginatedLuceneCriteria, indexOrderPreferenceList,  false, true);
+   }
+   
    /**
     * {@inheritDoc}
     */
@@ -244,6 +259,7 @@ SearchingService {
     */
    private PaginatedStorageDocuments searchByIterator(
                                                       final PaginatedLuceneCriteria paginatedLuceneCriteria,
+                                                      final List<String> indexOrderPreferenceList,
                                                       final boolean searchInRecycleBean,
                                                       final boolean useChainedFilter)
                                                             throws SearchingServiceEx, QueryParseServiceEx {
@@ -271,6 +287,12 @@ SearchingService {
          }
          // On fixe le pas d'execution de l'itérateur
          searchQuery.setSearchLimit(LIMITE);
+         
+         
+         // charger l'index à utliser dans l'objet searchQuery
+         if(indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()){
+        	 searchQuery.setIndexOrderPreference(indexOrderPreferenceList);
+         }
 
          // Recherche des documents par l'itérateur DFCE
          Iterator<Document> iterateur;
@@ -529,7 +551,7 @@ SearchingService {
                                                                         final PaginatedLuceneCriteria paginatedLuceneCriteria)
                                                                               throws SearchingServiceEx, QueryParseServiceEx {
 
-      return searchByIterator(paginatedLuceneCriteria, true, false);
+      return searchByIterator(paginatedLuceneCriteria, null, true, false);
    }
 
    /**

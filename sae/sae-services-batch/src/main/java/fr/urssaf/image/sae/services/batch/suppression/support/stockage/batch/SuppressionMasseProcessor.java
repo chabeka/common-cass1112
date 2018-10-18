@@ -8,8 +8,10 @@ import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -81,6 +83,9 @@ public class SuppressionMasseProcessor implements
          item.setProcessId(uuid);
       } else {
          LOGGER.debug("Le document {} a été ignoré car il est gelé", item.getUuid().toString());
+         String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+         throw new SuppressionException(StringUtils.replace(
+               frozenDocMsgException, "{0}", item.getUuid().toString()));
       }
 
       return retour;

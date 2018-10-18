@@ -96,6 +96,7 @@ import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
+import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.webservices.SaeService;
@@ -202,8 +203,8 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     private WSDocumentAttacheService documentAttacheService;
     @Autowired
     private WSEtatJobMasseService etatJobMasseService;
-    @Autowired
-    private DfceInfoService dfceInfoService;
+//    @Autowired
+//    private DfceInfoService dfceInfoService;
     @Autowired
     private WsMessageRessourcesUtils wsMessageRessourcesUtils;
     @Autowired
@@ -864,11 +865,23 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             setCodeHttp412();
             throw spf;
         } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new RechercheAxis2Fault("ErreurInterneRecherche",
-                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
-        }
+            if(ex.getCause()!= null && 
+                    ex.getCause().toString().contains(ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.exception"))){
+                 logRuntimeException(ex);
+                 throw new RechercheAxis2Fault(
+                       "ErreurInterneRecherche",
+                       ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.error"),
+                       ex);
+              }else {
+                 logRuntimeException(ex);
+                 throw new RechercheAxis2Fault(
+                       "ErreurInterneRecherche",
+                       "Une erreur interne à l'application est survenue lors de la recherche.",
+                       ex);
+              }
+              
+           }          
+        
     }
 
     @Override
