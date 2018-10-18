@@ -95,7 +95,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
                                             .withClusterName(TEST_CLUSTER_NAME)
                                             .withPort(9142);
          testCluster = Cluster.buildFrom(testBuilder);
-         final Session session = testCluster.connect();
+         final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
          testSession = session;
       }
       testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
