@@ -24,6 +24,8 @@ public class CassandraServerBean extends AbstractCassandraServer {
 
    private Cluster testCluster = null;
 
+   public static final String KEYSPACE_TU = "KEYSPACE_TU";
+
    /**
     * Réinitialise les données de la base cassandra locale
     *
@@ -149,8 +151,8 @@ public class CassandraServerBean extends AbstractCassandraServer {
       // Boucle sur le reste des DataSet
       // Et fusionne les CF avec celles du premier DataSet
       for (int i = 1; i < dataSets.length; i++) {
-         String dataSet = dataSets[i];
-         ClassPathXmlDataSet dataSetObj = new ClassPathXmlDataSet(dataSet);
+         final String dataSet = dataSets[i];
+         final ClassPathXmlDataSet dataSetObj = new ClassPathXmlDataSet(dataSet);
          if (!StringUtils.equals(dataSetObj.getKeyspace().getName(),
                                  dataSetResult.getKeyspace().getName())) {
             throw new IllegalArgumentException(
@@ -164,6 +166,14 @@ public class CassandraServerBean extends AbstractCassandraServer {
       // Renvoie l'objet Dataset fusionné
       return dataSetResult;
 
+   }
+
+   /**
+    * @return the keyspaceTu
+    */
+   @Override
+   public String getKeyspaceTu() {
+      return KEYSPACE_TU;
    }
 
    /*

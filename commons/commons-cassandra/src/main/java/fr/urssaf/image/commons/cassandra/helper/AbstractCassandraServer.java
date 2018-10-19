@@ -28,8 +28,6 @@ public abstract class AbstractCassandraServer implements InitializingBean, Dispo
 
    protected static final String TEST_CLUSTER_NAME = "TestCluster";
 
-   public static final String KEYSPACE_TU = "KEYSPACETU";
-
    protected String[] dataSets;
 
    protected boolean startLocal = false;
@@ -166,9 +164,7 @@ public abstract class AbstractCassandraServer implements InitializingBean, Dispo
    /**
     * @return the keyspaceTu
     */
-   public String getKeyspaceTu() {
-      return KEYSPACE_TU;
-   }
+   protected abstract String getKeyspaceTu();
 
    // Methodes abstraites
 

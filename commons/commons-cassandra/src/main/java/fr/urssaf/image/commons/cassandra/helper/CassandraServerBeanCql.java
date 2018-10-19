@@ -23,6 +23,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
 
    private Session testSession = null;
 
+   public static final String KEYSPACE_TU = "keyspace_cql";
+
    /**
     * Réinitialise les données de la base cassandra locale
     *
@@ -49,7 +51,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
          final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
          cqlDataLoader.load(new ClassPathCQLDataSet(dataSet, true, true, KEYSPACE_TU));
       }
-
+      final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
+      testSession = session;
    }
 
    /**
@@ -95,7 +98,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
                                             .withClusterName(TEST_CLUSTER_NAME)
                                             .withPort(9142);
          testCluster = Cluster.buildFrom(testBuilder);
-         final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
+         final Session session = testCluster.connect();
          testSession = session;
       }
       testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
@@ -137,6 +140,14 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     */
    public Session getTestSession() {
       return testSession;
+   }
+
+   /**
+    * @return the keyspaceTu
+    */
+   @Override
+   public String getKeyspaceTu() {
+      return KEYSPACE_TU;
    }
 
    @Override
