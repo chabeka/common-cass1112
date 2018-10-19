@@ -10,12 +10,12 @@ import com.datastax.driver.mapping.annotations.Table;
 /**
  * TODO (AC75095028) Description du type
  */
-@Table(name = "jobsteps")
+@Table(name = "jobstepscql")
 public class JobStepsCql {
 
-  @PartitionKey
-  @Column(name = "jobstepid")
-  private Long jobStepId;
+   @PartitionKey
+   @Column(name = "jobstepid")
+   private Long jobStepId;
 
    @Column(name = "jobname")
    private String jobName;
@@ -24,21 +24,21 @@ public class JobStepsCql {
    private String stepName;
 
    /**
-   * @return the jobStepId
-   */
-  public Long getJobStepId() {
-    return jobStepId;
-  }
+    * @return the jobStepId
+    */
+   public Long getJobStepId() {
+      return jobStepId;
+   }
 
-  /**
-   * @param jobStepId
-   *          the jobStepId to set
-   */
-  public void setJobStepId(final Long jobStepId) {
-    this.jobStepId = jobStepId;
-  }
+   /**
+    * @param jobStepId
+    *           the jobStepId to set
+    */
+   public void setJobStepId(final Long jobStepId) {
+      this.jobStepId = jobStepId;
+   }
 
-  /**
+   /**
     * @return the jobName
     */
    public String getJobName() {

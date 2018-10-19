@@ -1,5 +1,5 @@
 
-CREATE TABLE jobstep (
+CREATE TABLE jobstepcql (
 	jobstepexecutionid	bigint,
     commitcount			int,
     endtime				timestamp,
@@ -23,7 +23,7 @@ CREATE TABLE jobstep (
 );
 
 
-CREATE TABLE jobsteps (
+CREATE TABLE jobstepscql (
 	jobstepid		bigint,
     jobname 		text,
     stepname 		text,
@@ -31,7 +31,7 @@ CREATE TABLE jobsteps (
 );
 
 
-CREATE TABLE jobexecution (
+CREATE TABLE jobexecutioncql (
 	jobexecutionid		bigint,
 	jobinstanceid		bigint,
 	jobName				text,
@@ -49,7 +49,7 @@ CREATE TABLE jobexecution (
 
 
 
-CREATE TABLE jobexecutions (
+CREATE TABLE jobexecutionscql (
 	jobname				text,
 	jobexecutionid		bigint,
     value 				text,
@@ -58,14 +58,14 @@ CREATE TABLE jobexecutions (
 CREATE INDEX jobExIdKey_idx ON jobexecutions (jobexecutionid);
 
 
-CREATE TABLE jobexecutionsrunning (
+CREATE TABLE jobexecutionsrunningcql (
 	jobname				text,
 	jobexecutionid		bigint,
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
 );
 
-CREATE TABLE jobinstancetojobexecution (
+CREATE TABLE jobinstancetojobexecutioncql (
 	jobinstanceid		bigint,
 	jobexecutionid		bigint,
     value 				text,
@@ -73,7 +73,7 @@ CREATE TABLE jobinstancetojobexecution (
 )WITH CLUSTERING ORDER BY (jobexecutionid DESC);
 
 
-CREATE TABLE jobexecutiontojobstep (
+CREATE TABLE jobexecutiontojobstepcql (
 	jobexecutionid		bigint,
 	jobstepid		bigint,
     value 				text,
@@ -81,13 +81,7 @@ CREATE TABLE jobexecutiontojobstep (
 );
 
 
-CREATE TABLE sequences (
-	jobidname		text,
-    value 			bigint,
-	PRIMARY KEY (jobidname)
-);
-
-CREATE TABLE jobinstance (
+CREATE TABLE jobinstancecql (
 	jobinstanceid			bigint,
 	jobname					text,
     jobparameters 			blob,
@@ -99,13 +93,21 @@ CREATE TABLE jobinstance (
 CREATE INDEX jobRKey_idx ON jobinstance (jobkey);
 
 
-CREATE TABLE jobinstancesByname (
+CREATE TABLE jobinstancesBynamecql (
 	jobname text,
 	jobinstanceid bigint,
 	reservedBy text,
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC);
 
+
+
+
+CREATE TABLE sequences (
+	jobidname		text,
+    value 			bigint,
+	PRIMARY KEY (jobidname)
+);
 
 CREATE TABLE modeapi (
 	cfname text PRIMARY KEY, 

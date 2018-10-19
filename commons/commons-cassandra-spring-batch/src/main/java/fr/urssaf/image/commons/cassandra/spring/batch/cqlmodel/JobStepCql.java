@@ -19,7 +19,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * La classe n'a rien à avoir avec la classe spring {@link JobStep}
  * portant à peu près le même nom.
  */
-@Table(name = "jobstep")
+@Table(name = "jobstepcql")
 public class JobStepCql {
 
    // Colonnes de JobStep

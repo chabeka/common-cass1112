@@ -10,62 +10,62 @@ import com.datastax.driver.mapping.annotations.Table;
 /**
  * TODO (AC75095028) Description du type
  */
-@Table(name = "jobinstancesbyname")
+@Table(name = "jobinstancesbynamecql")
 public class JobInstancesByNameCql {
 
-  @PartitionKey
-  @Column(name = "jobname")
-  private String jobName;
+   @PartitionKey
+   @Column(name = "jobname")
+   private String jobName;
 
-  @Column(name = "jobinstanceid")
-  private Long jobInstanceId;
+   @Column(name = "jobinstanceid")
+   private Long jobInstanceId;
 
-  @Column(name = "reservedby")
-  private String reservedBy;
+   @Column(name = "reservedby")
+   private String reservedBy;
 
-  /**
-   * @return the jobName
-   */
-  public String getJobName() {
-    return jobName;
-  }
+   /**
+    * @return the jobName
+    */
+   public String getJobName() {
+      return jobName;
+   }
 
-  /**
-   * @param jobName
-   *          the jobName to set
-   */
-  public void setJobName(final String jobName) {
-    this.jobName = jobName;
-  }
+   /**
+    * @param jobName
+    *           the jobName to set
+    */
+   public void setJobName(final String jobName) {
+      this.jobName = jobName;
+   }
 
-  /**
-   * @return the jobInstanceId
-   */
-  public Long getJobInstanceId() {
-    return jobInstanceId;
-  }
+   /**
+    * @return the jobInstanceId
+    */
+   public Long getJobInstanceId() {
+      return jobInstanceId;
+   }
 
-  /**
-   * @param jobInstanceId
-   *          the jobInstanceId to set
-   */
-  public void setJobInstanceId(final Long jobInstanceId) {
-    this.jobInstanceId = jobInstanceId;
-  }
+   /**
+    * @param jobInstanceId
+    *           the jobInstanceId to set
+    */
+   public void setJobInstanceId(final Long jobInstanceId) {
+      this.jobInstanceId = jobInstanceId;
+   }
 
-  /**
-   * @return the reservedBy
-   */
-  public String getReservedBy() {
-    return reservedBy;
-  }
+   /**
+    * @return the reservedBy
+    */
+   public String getReservedBy() {
+      return reservedBy;
+   }
 
-  /**
-   * @param reservedBy
-   *          the reservedBy to set
-   */
-  public void setReservedBy(final String reservedBy) {
-    this.reservedBy = reservedBy;
-  }
+   /**
+    * @param reservedBy
+    *           the reservedBy to set
+    */
+   public void setReservedBy(final String reservedBy) {
+      this.reservedBy = reservedBy;
+   }
 
 }

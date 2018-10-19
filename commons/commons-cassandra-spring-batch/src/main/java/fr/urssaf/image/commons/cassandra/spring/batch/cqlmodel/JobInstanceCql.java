@@ -12,124 +12,124 @@ import com.datastax.driver.mapping.annotations.Table;
 /**
  * TODO (AC75095028) Description du type
  */
-@Table(name = "jobinstance")
+@Table(name = "jobinstancecql")
 public class JobInstanceCql {
 
-  @PartitionKey
-  @Column(name = "jobinstanceid")
-  private Long jobInstanceId;
+   @PartitionKey
+   @Column(name = "jobinstanceid")
+   private Long jobInstanceId;
 
-  @Column(name = "jobname")
-  private String jobName;
+   @Column(name = "jobname")
+   private String jobName;
 
-  @Column(name = "jobParameters")
-  private JobParameters jobparameters;
+   @Column(name = "jobParameters")
+   private JobParameters jobparameters;
 
-  @Column(name = "jobkey")
-  private byte[] jobKey;
+   @Column(name = "jobkey")
+   private byte[] jobKey;
 
-  private Integer version;
+   private Integer version;
 
-  @Column(name = "reservedby")
-  private String reservedBy;
+   @Column(name = "reservedby")
+   private String reservedBy;
 
-  /**
-   * @param jobInstanceId
-   * @param jobparameters
-   * @param jobKey
-   */
-  public JobInstanceCql() {
-    super();
-  }
+   /**
+    * @param jobInstanceId
+    * @param jobparameters
+    * @param jobKey
+    */
+   public JobInstanceCql() {
+      super();
+   }
 
-  /**
-   * @return the jobInstanceId
-   */
-  public Long getJobInstanceId() {
-    return jobInstanceId;
-  }
+   /**
+    * @return the jobInstanceId
+    */
+   public Long getJobInstanceId() {
+      return jobInstanceId;
+   }
 
-  /**
-   * @param jobInstanceId
-   *          the jobInstanceId to set
-   */
-  public void setJobInstanceId(final Long jobInstanceId) {
-    this.jobInstanceId = jobInstanceId;
-  }
+   /**
+    * @param jobInstanceId
+    *           the jobInstanceId to set
+    */
+   public void setJobInstanceId(final Long jobInstanceId) {
+      this.jobInstanceId = jobInstanceId;
+   }
 
-  /**
-   * @return the jobparameters
-   */
-  public JobParameters getJobparameters() {
-    return jobparameters;
-  }
+   /**
+    * @return the jobparameters
+    */
+   public JobParameters getJobparameters() {
+      return jobparameters;
+   }
 
-  /**
-   * @param jobparameters
-   *          the jobparameters to set
-   */
-  public void setJobparameters(final JobParameters jobparameters) {
-    this.jobparameters = jobparameters;
-  }
+   /**
+    * @param jobparameters
+    *           the jobparameters to set
+    */
+   public void setJobparameters(final JobParameters jobparameters) {
+      this.jobparameters = jobparameters;
+   }
 
-  /**
-   * @return the jobKey
-   */
-  public byte[] getJobKey() {
-    return jobKey;
-  }
+   /**
+    * @return the jobKey
+    */
+   public byte[] getJobKey() {
+      return jobKey;
+   }
 
-  /**
-   * @param jobKey
-   *          the jobKey to set
-   */
-  public void setJobKey(final byte[] jobKey) {
-    this.jobKey = jobKey;
-  }
+   /**
+    * @param jobKey
+    *           the jobKey to set
+    */
+   public void setJobKey(final byte[] jobKey) {
+      this.jobKey = jobKey;
+   }
 
-  /**
-   * @return the version
-   */
-  public Integer getVersion() {
-    return version;
-  }
+   /**
+    * @return the version
+    */
+   public Integer getVersion() {
+      return version;
+   }
 
-  /**
-   * @param version
-   *          the version to set
-   */
-  public void setVersion(final Integer version) {
-    this.version = version;
-  }
+   /**
+    * @param version
+    *           the version to set
+    */
+   public void setVersion(final Integer version) {
+      this.version = version;
+   }
 
-  /**
-   * @return the reservedBy
-   */
-  public String getReservedBy() {
-    return reservedBy;
-  }
+   /**
+    * @return the reservedBy
+    */
+   public String getReservedBy() {
+      return reservedBy;
+   }
 
-  /**
-   * @param reservedBy
-   *          the reservedBy to set
-   */
-  public void setReservedBy(final String reservedBy) {
-    this.reservedBy = reservedBy;
-  }
+   /**
+    * @param reservedBy
+    *           the reservedBy to set
+    */
+   public void setReservedBy(final String reservedBy) {
+      this.reservedBy = reservedBy;
+   }
 
-  /**
-   * @return the jobName
-   */
-  public String getJobName() {
-    return jobName;
-  }
+   /**
+    * @return the jobName
+    */
+   public String getJobName() {
+      return jobName;
+   }
 
-  /**
-   * @param jobName
-   *          the jobName to set
-   */
-  public void setJobName(final String jobName) {
-    this.jobName = jobName;
-  }
+   /**
+    * @param jobName
+    *           the jobName to set
+    */
+   public void setJobName(final String jobName) {
+      this.jobName = jobName;
+   }
 
 }
