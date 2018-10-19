@@ -1,10 +1,10 @@
-CREATE TABLE tracedestinataire (
+CREATE TABLE tracedestinatairecql (
     codeevt text PRIMARY KEY,
     destinataires map<text, frozen<list<text>>>
 ); 
 
 
-CREATE TABLE tracejournalevt (
+CREATE TABLE tracejournalevtcql (
     identifiant timeuuid,
     timestamp timestamp,
     codeevt text,
@@ -32,7 +32,7 @@ CREATE TABLE tracejournalevtindexcql (
 );
 
 
-CREATE TABLE traceregsecurite (
+CREATE TABLE traceregsecuritecql (
   identifiant timeuuid,
   timestamp timestamp,
   codeEvt text,
@@ -45,7 +45,7 @@ CREATE TABLE traceregsecurite (
 );
 
 
-CREATE TABLE traceregtechnique (
+CREATE TABLE traceregtechniquecql (
     identifiant timeuuid PRIMARY KEY,
     codeevt text,
     contexte text,
@@ -57,7 +57,7 @@ CREATE TABLE traceregtechnique (
     stacktrace text
 );
 
-CREATE TABLE traceregexploitation (
+CREATE TABLE traceregexploitationcql (
   identifiant timeuuid PRIMARY KEY,
   timestamp timestamp,
   codeevt text,

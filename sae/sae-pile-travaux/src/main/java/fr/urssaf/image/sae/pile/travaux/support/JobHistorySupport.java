@@ -21,14 +21,18 @@ public class JobHistorySupport {
   @Autowired
   private JobHistoryDao jobHistoryDao;
 
+  public JobHistorySupport() {
+	  
+  }
+  
    /**
     * 
     * @param jobHistoryDao
     *           DAO de la colonne famille JobHistory
     */
-  public JobHistorySupport() {
+  public JobHistorySupport(JobHistoryDao jobHistoryDao) {
 
-    //this.jobHistoryDao = jobHistoryDao;
+	  this.jobHistoryDao = jobHistoryDao;
 
    }
 

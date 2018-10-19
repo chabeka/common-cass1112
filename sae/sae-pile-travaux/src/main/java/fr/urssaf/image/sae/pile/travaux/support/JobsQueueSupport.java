@@ -36,15 +36,19 @@ public class JobsQueueSupport {
 
   @Autowired
   private JobsQueueDao jobsQueueDao;
+  
+  public JobsQueueSupport(){
+	  
+  }
 
    /**
     * 
     * @param jobsQueueDao
     *           DAO de la colonne famille JobsQueue
     */
-  public JobsQueueSupport() {
+  public JobsQueueSupport(JobsQueueDao jobsQueueDao) {
 
-    // this.jobsQueueDao = jobsQueueDao;
+	  this.jobsQueueDao = jobsQueueDao;
 
    }
 

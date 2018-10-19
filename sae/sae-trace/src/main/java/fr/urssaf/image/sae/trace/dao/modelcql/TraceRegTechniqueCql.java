@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
-@Table(name = "traceregtechnique")
+@Table(name = "traceregtechniquecql")
 public class TraceRegTechniqueCql extends Trace {
 
   /** Contexte de la trace */

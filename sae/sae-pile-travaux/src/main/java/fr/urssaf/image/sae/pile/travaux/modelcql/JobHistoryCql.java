@@ -16,7 +16,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * <li><code>date</code>: date de la trace</li>
  * </ul>
  */
-@Table(name = "jobhistory")
+@Table(name = "jobhistorycql")
 public class JobHistoryCql {
 
   /** identifiant du job */

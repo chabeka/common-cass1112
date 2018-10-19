@@ -37,7 +37,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * <li><code>pid</code>: PID du processus qui exécute le traitement de masse</li>
  * </ul>
  */
-@Table(name = "jobrequest")
+@Table(name = "jobrequestcql")
 public class JobRequestCql {
 
    @PartitionKey

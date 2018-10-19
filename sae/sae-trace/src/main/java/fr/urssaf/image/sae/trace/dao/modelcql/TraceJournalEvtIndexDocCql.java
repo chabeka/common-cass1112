@@ -9,7 +9,7 @@ import com.datastax.driver.mapping.annotations.Table;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 
-@Table(name = "tracejournalevtindexdoc")
+@Table(name = "tracejournalevtindexdoccql")
 public class TraceJournalEvtIndexDocCql extends TraceIndex {
 
   @PartitionKey

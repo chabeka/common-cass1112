@@ -22,7 +22,7 @@ import com.datastax.driver.mapping.annotations.Table;
  * <li><b><code>parameters</code></b>: paramètres du traitement</li>
  * </ul>
  */
-@Table(name = "jobqueue")
+@Table(name = "jobqueuecql")
 public class JobQueueCql {
 
    @PartitionKey

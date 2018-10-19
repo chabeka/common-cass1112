@@ -1,10 +1,10 @@
-CREATE TABLE jobhistory (
+CREATE TABLE jobhistorycql (
 	idjob timeuuid,
 	trace map<timeuuid, text>,
 	PRIMARY KEY (idjob)
 );
 
-CREATE TABLE jobqueue (
+CREATE TABLE jobqueuecql (
 	key text,
 	idjob timeuuid,	
 	type text,
@@ -20,7 +20,7 @@ CREATE TABLE serverhosts (
 	PRIMARY KEY (hostname)
 );
 
-CREATE TABLE jobrequest (
+CREATE TABLE jobrequestcql (
 	idjob timeuuid,
 	type text,
 	parameters text,
