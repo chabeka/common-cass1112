@@ -29,112 +29,111 @@ import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceToJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstancesByNameDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepsDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDAOThriftTest;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext-cassandra-local.xml"})
+@ContextConfiguration(locations = { "/applicationContext-cassandra-local.xml" })
 public class CassandraJobInstanceDoaCqlTest {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CassandraJobExecutionDAOThriftTest.class);
+   private static final Logger LOG = LoggerFactory.getLogger(CassandraJobInstanceDoaCqlTest.class);
 
-  @Autowired
-  IJobInstanceDaoCql jobInstDaoCql;
+   @Autowired
+   IJobInstanceDaoCql jobInstDaoCql;
 
-  @Autowired
-  private IJobExecutionDaoCql jobExeDaoCql;
+   @Autowired
+   private IJobExecutionDaoCql jobExeDaoCql;
 
-  @Autowired
-  IJobInstanceToJobExecutionDaoCql jobInstToJExDaoCql;
+   @Autowired
+   IJobInstanceToJobExecutionDaoCql jobInstToJExDaoCql;
 
-  @Autowired
-  private IJobStepsDaoCql stepExeDaoCql;
+   @Autowired
+   private IJobStepsDaoCql stepExeDaoCql;
 
-  @Autowired
-  private IJobInstancesByNameDaoCql jobInstByNamedaocql;
+   @Autowired
+   private IJobInstancesByNameDaoCql jobInstByNamedaocql;
 
-  private static final String MY_JOB_NAME = "my_job_name";
+   private static final String MY_JOB_NAME = "my_job_name";
 
-  private JobParameters myJobParameters;
+   private JobParameters myJobParameters;
 
-  private TestingServer zkServer;
+   private TestingServer zkServer;
 
-  private CuratorFramework zkClient;
+   private CuratorFramework zkClient;
 
-  @Autowired
-  private CassandraServerBeanCql server;
+   @Autowired
+   private CassandraServerBeanCql server;
 
-  @Autowired
-  private CassandraCQLClientFactory ccf;
+   @Autowired
+   private CassandraCQLClientFactory ccf;
 
-  @After
-  public void after() throws Exception {
-    server.resetData();
-  }
+   @After
+   public void after() throws Exception {
+      server.resetData();
+   }
 
-  @Before
-  public void init() throws Exception {
+   @Before
+   public void init() throws Exception {
 
-    // Connexion à un serveur zookeeper local
-    initZookeeperServer();
-    zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+      // Connexion à un serveur zookeeper local
+      initZookeeperServer();
+      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
 
-    // On crée une 1ere instance de test
-    myJobParameters = getTestJobParameters();
-    jobInstDaoCql.createJobInstance(MY_JOB_NAME, myJobParameters);
-  }
+      // On crée une 1ere instance de test
+      myJobParameters = getTestJobParameters();
+      jobInstDaoCql.createJobInstance(MY_JOB_NAME, myJobParameters);
+   }
 
-  @Test
-  public void testDeleteJobInstances() {
+   @Test
+   public void testDeleteJobInstances() {
 
-    final List<String> jobNames = new ArrayList<String>();
-    final List<Long> jobInstIds = new ArrayList<Long>();
+      final List<String> jobNames = new ArrayList<String>();
+      final List<Long> jobInstIds = new ArrayList<Long>();
 
-    List<JobInstance> jobInstances = jobInstDaoCql.getJobInstances(MY_JOB_NAME, 0, 150);
-    Assert.assertEquals(1, jobInstances.size());
+      List<JobInstance> jobInstances = jobInstDaoCql.getJobInstances(MY_JOB_NAME, 0, 150);
+      Assert.assertEquals(1, jobInstances.size());
 
-    for (final JobInstance jobInstance : jobInstances) {
-      jobNames.add(jobInstance.getJobName());
-      jobInstIds.add(jobInstance.getId());
-    }
-    // Verification sur les index
-    // JobInstanceByName
-    Iterator<JobInstancesByNameCql> jobInstByName = jobInstByNamedaocql.findAllWithMapperById(jobNames.get(0));
-    Assert.assertTrue("Un index JobInstancesByNameCql doit être créé", jobInstByName.hasNext());
+      for (final JobInstance jobInstance : jobInstances) {
+         jobNames.add(jobInstance.getJobName());
+         jobInstIds.add(jobInstance.getId());
+      }
+      // Verification sur les index
+      // JobInstanceByName
+      Iterator<JobInstancesByNameCql> jobInstByName = jobInstByNamedaocql.findAllWithMapperById(jobNames.get(0));
+      Assert.assertTrue("Un index JobInstancesByNameCql doit être créé", jobInstByName.hasNext());
 
-    // On parcours les instances et on les supprime
-    LOG.trace("Suppression des jobs :");
-    for (final JobInstance jobInstance : jobInstances) {
-      final long id = jobInstance.getId();
-      LOG.trace(jobInstance.getId().toString());
-      jobInstDaoCql.deleteJobInstance(id);
-    }
+      // On parcours les instances et on les supprime
+      LOG.trace("Suppression des jobs :");
+      for (final JobInstance jobInstance : jobInstances) {
+         final long id = jobInstance.getId();
+         LOG.trace(jobInstance.getId().toString());
+         jobInstDaoCql.deleteJobInstance(id);
+      }
 
-    // On vérifie qu'il n'y a plus d'instance
-    jobInstances = jobInstDaoCql.getJobInstances(MY_JOB_NAME, 0, 150);
-    Assert.assertEquals(0, jobInstances.size());
+      // On vérifie qu'il n'y a plus d'instance
+      jobInstances = jobInstDaoCql.getJobInstances(MY_JOB_NAME, 0, 150);
+      Assert.assertEquals(0, jobInstances.size());
 
-    // Verification sur les index
-    jobInstByName = jobInstByNamedaocql.findAllWithMapperById(jobNames.get(0));
-    Assert.assertFalse("L'index doit être supprimer", jobInstByName.hasNext());
+      // Verification sur les index
+      jobInstByName = jobInstByNamedaocql.findAllWithMapperById(jobNames.get(0));
+      Assert.assertFalse("L'index doit être supprimer", jobInstByName.hasNext());
 
-  }
+   }
 
-  // Methode utilitaire
+   // Methode utilitaire
 
-  private void initZookeeperServer() throws Exception {
-    if (zkServer == null) {
-      zkServer = new TestingServer();
-    }
-  }
+   private void initZookeeperServer() throws Exception {
+      if (zkServer == null) {
+         zkServer = new TestingServer();
+      }
+   }
 
-  private JobParameters getTestJobParameters() {
-    final Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
-    mapJobParameters.put("index", new JobParameter(0L));
-    mapJobParameters.put("premier_parametre", new JobParameter("test1"));
-    mapJobParameters.put("deuxieme_parametre", new JobParameter("test2"));
-    mapJobParameters.put("troisieme_parametre", new JobParameter(122L));
-    return new JobParameters(mapJobParameters);
-  }
+   private JobParameters getTestJobParameters() {
+      final Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
+      mapJobParameters.put("index", new JobParameter(0L));
+      mapJobParameters.put("premier_parametre", new JobParameter("test1"));
+      mapJobParameters.put("deuxieme_parametre", new JobParameter("test2"));
+      mapJobParameters.put("troisieme_parametre", new JobParameter(122L));
+      return new JobParameters(mapJobParameters);
+   }
 }
