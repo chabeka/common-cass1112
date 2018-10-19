@@ -19,35 +19,36 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
  */
 public interface JournalEvtServiceCql {
 
-  String export(Date date, String repertoire, String idJournalPrecedent,
-                String hashJournalPrecedent);
+   String export(Date date, String repertoire, String idJournalPrecedent,
+                 String hashJournalPrecedent);
 
-  /**
-   * @return le support permettant la réalisation des opérations
-   */
-  GenericAbstractTraceCqlSupport<TraceJournalEvtCql, TraceJournalEvtIndexCql> getSupport();
+   /**
+    * Renvoie une trace dans un registre à partir de son identifiant
+    *
+    * @param identifiant
+    *           identifiant de la trace
+    * @return Trace correspondant à l'identifiant
+    */
+   TraceJournalEvtCql lecture(UUID identifiant);
 
-  /**
-   * @return le support de log
-   */
-  LoggerSupport getLoggerSupport();
+   /**
+    * @return le support permettant la réalisation des opérations
+    */
+   GenericAbstractTraceCqlSupport<TraceJournalEvtCql, TraceJournalEvtIndexCql> getSupport();
 
-  /**
-   * @return le support de timing des opérations
-   */
-  JobClockSupport getClockSupport();
+   /**
+    * @return le support de log
+    */
+   LoggerSupport getLoggerSupport();
 
-  /**
-   * @return le logger de la classe concernée
-   */
-  Logger getLogger();
+   /**
+    * @return le support de timing des opérations
+    */
+   JobClockSupport getClockSupport();
 
-  /**
-   * Renvoie une trace dans un registre à partir de son identifiant
-   *
-   * @param identifiant
-   *          identifiant de la trace
-   * @return Trace correspondant à l'identifiant
-   */
-  TraceJournalEvtCql lecture(UUID identifiant);
+   /**
+    * @return le logger de la classe concernée
+    */
+   Logger getLogger();
+
 }

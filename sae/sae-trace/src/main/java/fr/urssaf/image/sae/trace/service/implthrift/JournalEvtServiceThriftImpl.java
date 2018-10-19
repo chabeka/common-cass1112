@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.trace.service.impl;
+package fr.urssaf.image.sae.trace.service.implthrift;
 
 import java.io.File;
 import java.io.FileNotFoundException;

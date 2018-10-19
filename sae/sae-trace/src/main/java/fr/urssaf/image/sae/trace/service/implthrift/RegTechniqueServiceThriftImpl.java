@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.trace.service.impl;
+package fr.urssaf.image.sae.trace.service.implthrift;
 
 import java.util.UUID;
 
@@ -13,6 +13,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueServiceThrift;
+import fr.urssaf.image.sae.trace.service.impl.RegTechniqueServiceImpl;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 
 /**

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service.impl;
 
@@ -9,7 +9,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
@@ -24,59 +23,60 @@ import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
  * IOC avec l'annotation @Autowired
  */
 @Service
-@Qualifier("serviceImpl")
 public class TraceDestinataireServiceImpl implements TraceDestinaireService {
 
-  private final String cfName = "tracedestinataire";
+   private final String cfName = "tracedestinataire";
 
-  public TraceDestinataireSupport traceDestinataireSupport;
+   public TraceDestinataireSupport traceDestinataireSupport;
 
-  public TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+   public TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
    private static final String FIN_LOG = "{} - fin";
+
    private static final String DEBUT_LOG = "{} - début";
+
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(TraceDestinataireServiceImpl.class);
+                                                     .getLogger(TraceDestinataireServiceImpl.class);
 
    /**
     * Constructeur
     * 
-   * @param traceDestinataireSupport
-   *          Support de la classe DAO TraceDestinataireDao
-   * @param traceDestinataireCqlSupport
-   *          Support de la classe DAO TraceDestinataireCqlDao
+    * @param traceDestinataireSupport
+    *           Support de la classe DAO TraceDestinataireDao
+    * @param traceDestinataireCqlSupport
+    *           Support de la classe DAO TraceDestinataireCqlDao
     */
    @Autowired
-  public TraceDestinataireServiceImpl(final TraceDestinataireSupport traceDestinataireSupport,
-                                      final TraceDestinataireCqlSupport traceDestinataireCqlSupport) {
-    this.traceDestinataireSupport = traceDestinataireSupport;
-    this.traceDestinataireCqlSupport = traceDestinataireCqlSupport;
+   public TraceDestinataireServiceImpl(final TraceDestinataireSupport traceDestinataireSupport,
+                                       final TraceDestinataireCqlSupport traceDestinataireCqlSupport) {
+      this.traceDestinataireSupport = traceDestinataireSupport;
+      this.traceDestinataireCqlSupport = traceDestinataireCqlSupport;
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-  public List<String> getCodeEvenementByTypeTrace(final String typeTrace) {
+   public List<String> getCodeEvenementByTypeTrace(final String typeTrace) {
 
-    final String prefix = "getCodeEvenementByTypeTrace()";
+      final String prefix = "getCodeEvenementByTypeTrace()";
       LOGGER.debug(DEBUT_LOG, prefix);
 
-    List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
-    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+      List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
 
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
-      listeTraceDestinataire = traceDestinataireSupport.findAll();
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
-      listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-    }
+      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         listeTraceDestinataire = traceDestinataireSupport.findAll();
+      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
+      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         // Pour exemple
+         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
 
-    final List<String> listeCodeEvenement = new ArrayList<String>();
+      final List<String> listeCodeEvenement = new ArrayList<String>();
 
-    for (final TraceDestinataire traceDestinataire : listeTraceDestinataire) {
+      for (final TraceDestinataire traceDestinataire : listeTraceDestinataire) {
          if (traceDestinataire.getDestinataires().containsKey(typeTrace)) {
             listeCodeEvenement.add(traceDestinataire.getCodeEvt());
          }

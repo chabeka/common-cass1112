@@ -1,7 +1,7 @@
 /**
  * 
  */
-package fr.urssaf.image.sae.trace.service.impl;
+package fr.urssaf.image.sae.trace.service.implthrift;
 
 import java.util.UUID;
 

@@ -12,7 +12,6 @@ import java.util.Map;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -28,32 +27,32 @@ import junit.framework.Assert;
  * TODO (AC75095028) Description du type
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class TraceDestinataireServiceImplTest {
-  @Autowired
-  @Qualifier("cqlServiceImpl")
-  TraceDestinaireService tracedestinataireservice;
 
-  @Autowired
-  TraceDestinataireCqlSupport tracesupprot;
+   @Autowired
+   TraceDestinaireService tracedestinataireservice;
 
-  private final List<String> list = Arrays.asList("date", "contrat");
+   @Autowired
+   TraceDestinataireCqlSupport tracesupprot;
 
-  @Test
-  public void testGetCodeEvenementByTypeTrace() {
+   private final List<String> list = Arrays.asList("date", "contrat");
 
-    final String code = "TEST|CREATE";
-    final TraceDestinataire trace = new TraceDestinataire();
-    trace.setCodeEvt(code);
+   @Test
+   public void testGetCodeEvenementByTypeTrace() {
 
-    final Map<String, List<String>> dest = new HashMap<String, List<String>>();
-    dest.put(TraceDestinataireEnum.REG_TECHNIQUE.name(), list);
-    trace.setDestinataires(dest);
+      final String code = "TEST|CREATE";
+      final TraceDestinataire trace = new TraceDestinataire();
+      trace.setCodeEvt(code);
 
-    tracesupprot.create(trace, new Date().getTime());
+      final Map<String, List<String>> dest = new HashMap<String, List<String>>();
+      dest.put(TraceDestinataireEnum.REG_TECHNIQUE.name(), list);
+      trace.setDestinataires(dest);
 
-    final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
-    Assert.assertEquals(1, str.size());
-  }
+      tracesupprot.create(trace, new Date().getTime());
+
+      final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
+      Assert.assertEquals(1, str.size());
+   }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -29,9 +29,8 @@ public class TraceDestinataireServiceTest {
 
    @Test
    public void testGetCodeEvenementByTypeTrace() {
-    
+
       service.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
    }
 
- 
 }

@@ -1,23 +1,25 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.List;
 import java.util.Map;
 
+import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
 /**
  * Classe de modèle d'une trace du registre de sécurité
  */
-@Table(name = "tracedestinataire")
+@Table(name = "tracedestinatairecql")
 public class TraceDestinataire {
 
    /** code de l'événement */
-  @PartitionKey
-  private String codeevt;
+   @PartitionKey
+   @Column(name = "codeevt")
+   private String codeEvt;
 
    /**
     * <ul>
@@ -31,20 +33,20 @@ public class TraceDestinataire {
     * @return le code de l'événement
     */
    public final String getCodeEvt() {
-    return codeevt;
+      return codeEvt;
    }
 
    /**
     * @param codeEvt
     *           code de l'événement
     */
-  public final void setCodeEvt(final String codeEvt) {
-    this.codeevt = codeEvt;
+   public final void setCodeEvt(final String codeEvt) {
+      this.codeEvt = codeEvt;
    }
 
    /**
-   * @return
-   *         <ul>
+    * @return
+    *         <ul>
     *         <li>key : type de destinataire</li>
     *         <li>values : liste des propriétés à transmettre au destinataire</li>
     *         </ul>
@@ -60,7 +62,7 @@ public class TraceDestinataire {
     *           <li>values : liste des propriétés à transmettre au destinataire</li>
     *           </ul>
     */
-  public final void setDestinataires(final Map<String, List<String>> destinataires) {
+   public final void setDestinataires(final Map<String, List<String>> destinataires) {
       this.destinataires = destinataires;
    }
 
