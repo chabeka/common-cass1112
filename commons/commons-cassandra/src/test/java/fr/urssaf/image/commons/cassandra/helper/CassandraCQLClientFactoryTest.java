@@ -85,7 +85,7 @@ public class CassandraCQLClientFactoryTest {
       Assert.assertNotNull("Le cluster doit être non nul", ccf.getCluster());
       Assert.assertNotNull("Le server est non nul", ccf.getServer());
       if (ccf.getStartLocal()) {
-        Assert.assertTrue("Le nom du keyspace est incorrect", "KEYSPACETU".equals(ccf.getKeyspace()));
+        Assert.assertTrue("Le nom du keyspace est incorrect", "KEYSPACE_TU".equals(ccf.getKeyspace()));
       }
     }
     catch (final Exception e) {
