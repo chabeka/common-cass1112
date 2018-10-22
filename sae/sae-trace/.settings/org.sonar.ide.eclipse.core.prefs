@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+extraProperties=sonar.checkstyle.url\=http\://sonar.altair.recouv/sonar/profiles/export?format\=checkstyle&language\=java&\r\nsonar.project.url\=http\://sonar.altair.recouv/sonar/dashboard/index/fr.urssaf.image.sae\:sae-trace\r\nsonar.host.url\=http\://sonar.altair.recouv/sonar\r\nsonar.export.path\=http\://sonar.altair.recouv/sonar/profiles/export\r\nsonar.host\=sonar.altair.recouv\r\nsonar.sgbd.host\=altair69picsgbd1.altair.recouv\r\nsonar.findbugs.url\=http\://sonar.altair.recouv/sonar/profiles/export?format\=findbugs&language\=java&\r\nsonar.exclusions\=target/**/*.*\r\nsonar.pmd.url\=http\://sonar.altair.recouv/sonar/profiles/export?format\=pmd&language\=java&
+projectKey=fr.urssaf.image.sae\:sae-trace
+serverUrl=http\://sonarqube.altair.recouv
+version=2
