@@ -19,6 +19,7 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegTechniqueIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 /**
@@ -130,6 +131,10 @@ public class TraceRegTechniqueSupport extends AbstractTraceSupport<TraceRegTechn
 	 */
 	@Override
 	protected void completeTraceFromResult(TraceRegTechnique trace, ColumnFamilyResult<UUID, String> result) {
+		final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+		if (bValue != null) {
+			trace.setInfos(MapSerializer.get().fromBytes(bValue));
+		}
 		trace.setContexte(result.getString(TraceRegTechniqueDao.COL_CONTEXTE));
 		trace.setStacktrace(result.getString(TraceRegTechniqueDao.COL_STACKTRACE));
 

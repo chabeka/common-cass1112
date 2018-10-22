@@ -19,11 +19,13 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDocDao;
+import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexDocIterator;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 /**
@@ -136,6 +138,10 @@ public class TraceJournalEvtSupport extends AbstractTraceSupport<TraceJournalEvt
 	 */
 	@Override
 	protected final void completeTraceFromResult(TraceJournalEvt trace, ColumnFamilyResult<UUID, String> result) {
+		final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+		if (bValue != null) {
+			trace.setInfos(MapSerializer.get().fromBytes(bValue));
+		}
 		trace.setContexte(result.getString(TraceJournalEvtDao.COL_CONTEXT));
 	}
 
