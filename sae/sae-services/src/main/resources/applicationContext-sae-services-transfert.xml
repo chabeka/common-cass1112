@@ -13,10 +13,15 @@
       <constructor-arg ref="dfceServicesTransfert" />
    </bean>
    
+   <bean id="tracesDfceTransfert" autowire-candidate="false"
+      class="fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport">
+      <constructor-arg ref="dispatcherServiceTransfert" />
+   </bean>
+
    <bean id="transfertService" autowire-candidate="false"
       class="fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.TransfertServiceImpl">
      <constructor-arg ref="typeListTransfert" />
-     <constructor-arg ref="tracesDfceSupport" />
+     <constructor-arg ref="tracesDfceTransfert" />
      <constructor-arg ref="dfceServicesTransfert" />
    </bean>
    
@@ -104,6 +109,18 @@
       class="fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport">
      <constructor-arg ref="transfertTraceRegTechniqueDao" />
      <constructor-arg ref="transfertTraceRegTechniqueIndexDao" />
+   </bean>
+      
+   <bean id="dispatcherServiceTransfert" autowire-candidate="false" 
+      class="fr.urssaf.image.sae.trace.service.impl.DispatcheurServiceImpl">
+     <constructor-arg ref="transfertTraceJobClockSupport" />
+     <constructor-arg ref="transfertTraceDestinataireSupport" />
+     <constructor-arg ref="transfertTraceRegSecuriteSupport" />
+     <constructor-arg ref="transfertTraceRegTechniqueSupport" />
+     <constructor-arg ref="transfertTraceRegExploitationSupport" />
+     <constructor-arg ref="transfertTraceJournalEvtSupport" />
+     <constructor-arg ref="dfceServicesTransfert" />
+     <constructor-arg ref="transfertTimeUUIDEtTimestampSupport" />  
    </bean>
    
 </beans>
