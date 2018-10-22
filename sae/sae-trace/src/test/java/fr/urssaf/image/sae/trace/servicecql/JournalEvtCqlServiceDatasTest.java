@@ -73,7 +73,7 @@ public class JournalEvtCqlServiceDatasTest {
    private JournalEvtService service;
 
    @Autowired
-   private CassandraServerBeanCql server;
+   private CassandraServerBeanCql servercql;
 
    @Autowired
    private TraceJournalEvtCqlSupport support;
@@ -83,7 +83,7 @@ public class JournalEvtCqlServiceDatasTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      servercql.resetData();
    }
 
    @Test
