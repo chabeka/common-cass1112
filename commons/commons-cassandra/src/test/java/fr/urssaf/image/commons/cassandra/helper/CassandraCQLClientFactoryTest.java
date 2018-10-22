@@ -19,11 +19,12 @@ import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationExcepti
 public class CassandraCQLClientFactoryTest {
 
    /**
-    * 
+    *
     */
    private static final String CONF_TEST_PROPERTIES = "conf/conf_test.properties";
+
    /**
-    * 
+    *
     */
    private static final String CONF_COMMONS_CONFIG_TEST_PROPERTIES = "conf/commons-config_test.properties";
 
@@ -94,7 +95,7 @@ public class CassandraCQLClientFactoryTest {
          Assert.assertNotNull("Le cluster doit être non nul", ccf.getCluster());
          Assert.assertNotNull("Le server est non nul", ccf.getServer());
          if (ccf.getStartLocal()) {
-            Assert.assertTrue("Le nom du keyspace est incorrect keyspace_cql et " + ccf.getKeyspace(),
+            Assert.assertTrue("Le nom du keyspace est incorrect  " + ccf.getKeyspace(),
                               CassandraServerBeanCql.KEYSPACE_TU.equals(ccf.getKeyspace()));
          }
       }

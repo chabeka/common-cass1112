@@ -49,10 +49,10 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
          final String dataSet = newDataSets[0];
 
          final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
-         cqlDataLoader.load(new ClassPathCQLDataSet(dataSet, true, true, KEYSPACE_TU));
+         cqlDataLoader.load(new ClassPathCQLDataSet(dataSet, true, true, CassandraServerBeanCql.KEYSPACE_TU));
       }
-      final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
-      testSession = session;
+      // final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
+      // testSession = session;
    }
 
    /**
