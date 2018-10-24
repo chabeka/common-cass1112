@@ -64,7 +64,7 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.service.CycleVieService;
-import fr.urssaf.image.sae.trace.service.impl.JournalEvtServiceThriftImpl;
+import fr.urssaf.image.sae.trace.service.implthrift.JournalEvtServiceThriftImpl;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
@@ -146,7 +146,7 @@ SAETransfertService {
       // métadonnées du référentiel sauf la note qui n'est pas utilise pour
       // les droits
 
-      final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+      final List<StorageMetadata> allMeta = new ArrayList<>();
       final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
             .getAllMetadataReferencesPourVerifDroits();
       for (final String mapKey : listeAllMeta.keySet()) {
@@ -435,9 +435,9 @@ SAETransfertService {
       final String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
       try {
-         this.transfertDocument(document);
+         transfertDocument(document);
 
-         this.deleteDocApresTransfert(document.getUuid());
+         deleteDocApresTransfert(document.getUuid());
 
          LOG.debug("{} - Fin de transfert du document {}", new Object[] {
                                                                          trcPrefix, document.getUuid().toString() });
@@ -464,7 +464,7 @@ SAETransfertService {
             .getTransferableMetadataReference();
 
       final Set<Entry<String, MetadataReference>> data = transferables.entrySet();
-      final List<StorageMetadata> metas = new ArrayList<StorageMetadata>();
+      final List<StorageMetadata> metas = new ArrayList<>();
 
       for (final Map.Entry<String, MetadataReference> entry : data) {
          metas.add(new StorageMetadata(entry.getValue().getShortCode()));
@@ -571,7 +571,7 @@ SAETransfertService {
 
       // modification des métadonnées avant transfert
       if (!CollectionUtils.isEmpty(listeMeta)) {
-         final List<StorageMetadata> metadataMasse = new ArrayList<StorageMetadata>();
+         final List<StorageMetadata> metadataMasse = new ArrayList<>();
          Boolean bool = false;
          for (final StorageMetadata meta : document.getMetadatas()) {
             for (final StorageMetadata meta2 : listeMeta) {
@@ -705,7 +705,7 @@ SAETransfertService {
 
    private String getTracePreArchivageAsJson(final StorageDocument document)
          throws TransfertException {
-      final Map<String, String> mapTraces = new HashMap<String, String>();
+      final Map<String, String> mapTraces = new HashMap<>();
 
       // -- Get json de la liste des events du cycle de vie DFCE
       final String eventsDfce = getCycleVieDfceEventsAsJson(document.getUuid());
@@ -879,7 +879,7 @@ SAETransfertService {
          // toutes les
          // métadonnées du référentiel sauf la note qui n'est pas utilise pour
          // les droits
-         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         final List<StorageMetadata> allMeta = new ArrayList<>();
          final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
                .getAllMetadataReferencesPourVerifDroits();
          for (final String mapKey : listeAllMeta.keySet()) {
@@ -946,7 +946,7 @@ SAETransfertService {
             // -- On s'assure que le document n'existe pas en GNS
             // -- OU si il existe en GNT et GNS, on le supprime de la GNS
             if (documentGNS == null ||
-                  (getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) ) {
+                  getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT) ) {
 
                if(getHashDocument(documentGNS) != null
                      && getHashDocument(documentGNS).equals(hashDocGNT)) {
@@ -1137,7 +1137,7 @@ SAETransfertService {
    private StorageMetadata getDateDebutConservation(final UUID uuidDoc) throws TransfertException{
 
       StorageMetadata dateDebutConservationMeta = null;
-      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<>();
       desiredStorageMetadatas.add(new StorageMetadata(
                                                       StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode()));
       try {
