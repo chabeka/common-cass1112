@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<parent>
 		<artifactId>sae</artifactId>
 		<groupId>fr.urssaf.image.sae</groupId>
@@ -38,23 +40,17 @@
 										<exclude>META-INF/*.RSA</exclude>
 									</excludes>
 								</filter>
-                        <!--
-                        Toutes les classes de org.aspectj:aspectjrt sont reprises
-                        dans le jar org.aspectj:aspectjweaver
-                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
-                        L'exclusion des classes se fait donc au niveau de Shade. 
-                        -->
+								<!-- Toutes les classes de org.aspectj:aspectjrt sont reprises dans 
+									le jar org.aspectj:aspectjweaver Néanmoins, il faut inclure les 2 jar dans 
+									les dépendances. L'exclusion des classes se fait donc au niveau de Shade. -->
 								<filter>
 									<artifact>org.aspectj:aspectjrt</artifact>
 									<excludes>
 										<exclude>org/aspectj/**</exclude>
 									</excludes>
 								</filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
+								<!-- Exclusion de 4 classes qui ont été copiées/collées de commons-collection 
+									vers commons-beanutils https://issues.apache.org/jira/browse/BEANUTILS-278 -->
 								<filter>
 									<artifact>commons-beanutils:commons-beanutils</artifact>
 									<excludes>
@@ -66,13 +62,16 @@
 								</filter>
 							</filters>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>fr.urssaf.image.sae.ordonnanceur.OrdonnanceurMain</mainClass>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.handlers</resource>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
 							</transformers>
@@ -100,7 +99,7 @@
 
 	<dependencies>
 
-      <!-- commons-dfce -->
+		<!-- commons-dfce -->
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>
 			<artifactId>commons-dfce</artifactId>
@@ -114,10 +113,18 @@
 					<groupId>org.aspectj</groupId>
 					<artifactId>aspectjweaver</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>com.google.guava</groupId>
+					<artifactId>guava</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.fasterxml.jackson.core</groupId>
+					<artifactId>jackson-annotations</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-      
-      <!-- SAE -->
+
+		<!-- SAE -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-ecde</artifactId>
@@ -139,8 +146,8 @@
 			<artifactId>sae-trace</artifactId>
 			<version>19.3.1-SNAPSHOT</version>
 		</dependency>
-      
-       <!-- Pont entre Log4J et SLF4J -->
+
+		<!-- Pont entre Log4J et SLF4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>log4j-over-slf4j</artifactId>
@@ -148,7 +155,7 @@
 			<scope>runtime</scope>
 		</dependency>
 
-      <!-- Spring -->
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
@@ -171,7 +178,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!-- Apache Commons -->
+		<!-- Apache Commons -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -188,7 +195,7 @@
 			<version>${apache.commons-beanutils.version}</version>
 		</dependency>
 
-      <!-- EasyMock -->
+		<!-- EasyMock -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
@@ -196,7 +203,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!-- AspectJ -->
+		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>

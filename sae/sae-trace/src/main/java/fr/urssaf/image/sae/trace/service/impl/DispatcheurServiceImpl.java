@@ -225,7 +225,6 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
    }
 
-   @SuppressWarnings("PMD.ConfusingTernary")
    private void createTrace(final String codeEvt, final String type, final List<String> list,
                             final TraceToCreate trace) {
 
@@ -293,7 +292,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                  final String categorie) {
 
       if (StringUtils.isBlank(value)) {
-         final Map<String, String> map = new HashMap<String, String>();
+         final Map<String, String> map = new HashMap<>();
          map.put(ARG_0, name);
          map.put(ARG_1, categorie);
          map.put(ARG_2, suffixe);

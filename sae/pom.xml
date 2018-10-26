@@ -240,7 +240,7 @@
       http://code.google.com/p/guava-libraries/
       ==========================================
       -->
-		<guava.version>13.0.1</guava.version>
+		<guava.version>19.0</guava.version>
      
       
       <!--
