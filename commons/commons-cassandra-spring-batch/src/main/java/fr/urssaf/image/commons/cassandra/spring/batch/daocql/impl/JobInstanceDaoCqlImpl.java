@@ -31,6 +31,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstancesByName
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
+import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobParametersCodec;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
@@ -41,6 +42,11 @@ import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
  */
 @Repository
 public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> implements IJobInstanceDaoCql {
+
+   /**
+    *
+    */
+   private static final String RESERVEDBY = "reservedby";
 
    /**
     * TODO (AC75095028) Description du champ
@@ -87,6 +93,7 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    /**
     * {@inheritDoc}
     */
+
    @Override
    public JobInstance createJobInstance(final String jobName, final JobParameters jobParameters) {
       Assert.notNull(jobName, "Job name must not be null.");
@@ -238,6 +245,7 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    /**
     * {@inheritDoc}
     */
+
    @Override
    public List<String> getJobNames() {
 
@@ -255,6 +263,76 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
       }
       Collections.sort(list);
       return list;
+   }
+
+   /**
+    * Réserve un job, c'est à dire inscrit un nom de serveur dans la colonne
+    * "reservedBy" de l'instance de job
+    *
+    * @param instanceId
+    *           Id de l'instance de job à réserver
+    * @param serverName
+    *           Nom du serveur qui réserve le job
+    */
+   @Override
+   public final void reserveJob(final long instanceId, final String serverName) {
+      Assert.notNull(instanceId, "Job instance id name must not be null.");
+      Assert.notNull(serverName,
+                     "serverName must not be null (but can by empty)");
+
+      // reservation du job
+      final Optional<JobInstanceCql> opt = this.findWithMapperById(instanceId);
+      if (opt.isPresent()) {
+         final JobInstanceCql job = opt.get();
+         // Création du champ "ReservedBy" et sauvegarde
+         job.setReservedBy(serverName);
+         this.saveWithMapper(job);
+
+      }
+
+   }
+
+   /**
+    * Renvoie le nom du serveur qui réserve l'instance de job
+    *
+    * @param instanceId
+    *           Id de l'instance
+    * @return Nom du serveur qui réserve l'instance de job, ou vide si aucun serveur
+    *         ne réserve le job, ou null si l'instance n'existe pas
+    */
+   @Override
+   public final String getReservingServer(final long instanceId) {
+      Assert.notNull(instanceId, "Job instance id name must not be null.");
+
+      String serverName = null;
+
+      final Optional<JobInstanceCql> opt = this.findWithMapperById(instanceId);
+      if (opt.isPresent()) {
+         final JobInstanceCql jobI = opt.get();
+         serverName = jobI.getReservedBy();
+      }
+
+      return serverName;
+   }
+
+   /**
+    * Renvoie la liste des jobs non réservés
+    *
+    * @return Liste des jobs non réservés
+    */
+   @Override
+   public final List<JobInstance> getUnreservedJobInstances() {
+
+      final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+      select.where(QueryBuilder.eq(RESERVEDBY, Constante.UNRESERVED_KEY));
+      final Iterator<JobInstanceCql> it = getMapper().map(getSession().execute(select)).iterator();
+
+      final List<JobInstance> listJobIThrift = new ArrayList<JobInstance>();
+      while (it.hasNext()) {
+         final JobInstanceCql jobcql = it.next();
+         listJobIThrift.add(JobTranslateUtils.getJobInstanceToJobInstanceCql(jobcql));
+      }
+      return listJobIThrift;
    }
 
 }

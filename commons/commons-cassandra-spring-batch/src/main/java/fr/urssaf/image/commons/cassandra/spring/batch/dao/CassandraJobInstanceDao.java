@@ -147,4 +147,70 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       }
       return 0;
    }
+
+   /**
+    * Réserve un job, c'est à dire inscrit un nom de serveur dans la colonne
+    * "reservedBy" de l'instance de job
+    *
+    * @param instanceId
+    *           Id de l'instance de job à réserver
+    * @param serverName
+    *           Nom du serveur qui réserve le job
+    */
+   public void reserveJob(final long instanceId, final String serverName) {
+
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+
+      if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+         jobInstanceDaoCql.reserveJob(instanceId, serverName);
+      } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+         jobInstanceDaoThrift.reserveJob(instanceId, serverName);
+      } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+         // Pour exemple
+         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
+   }
+
+   /**
+    * Renvoie le nom du serveur qui réserve l'instance de job
+    *
+    * @param instanceId
+    *           Id de l'instance
+    * @return Nom du serveur qui réserve l'instance de job, ou vide si aucun serveur
+    *         ne réserve le job, ou null si l'instance n'existe pas
+    */
+   public final String getReservingServer(final long instanceId) {
+
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+
+      if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+         return jobInstanceDaoCql.getReservingServer(instanceId);
+      } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+         return jobInstanceDaoThrift.getReservingServer(instanceId);
+      } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+         // Pour exemple
+         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
+      return null;
+   }
+
+   /**
+    * Renvoie la liste des jobs non réservés
+    *
+    * @return Liste des jobs non réservés
+    */
+   public final List<JobInstance> getUnreservedJobInstances() {
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+
+      if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
+         return jobInstanceDaoCql.getUnreservedJobInstances();
+      } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
+         return jobInstanceDaoThrift.getUnreservedJobInstances();
+      } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+         // Pour exemple
+         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      }
+      return null;
+   }
+
 }

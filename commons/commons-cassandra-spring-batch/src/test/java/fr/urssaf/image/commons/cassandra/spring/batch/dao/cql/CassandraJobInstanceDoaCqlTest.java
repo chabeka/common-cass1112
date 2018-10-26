@@ -120,6 +120,64 @@ public class CassandraJobInstanceDoaCqlTest {
 
    }
 
+   @Test
+   public void testGetUnreservedJobInstances() {
+      // Création de 3 instances supplémentaires, soit 4 instances au total
+      for (int i = 1; i <= 3; i++) {
+         final Map<String, JobParameter> map = new HashMap<String, JobParameter>();
+         map.put("index", new JobParameter((long) i));
+         final JobParameters parameters = new JobParameters(map);
+         jobInstDaoCql.createJobInstance(MY_JOB_NAME, parameters);
+      }
+      // Aucune instance n'est pour le moment réservée
+      List<JobInstance> list = jobInstDaoCql.getUnreservedJobInstances();
+      Assert.assertEquals(4, list.size());
+
+      // On réserve puis on dé-réserve l'instance 1
+      jobInstDaoCql.reserveJob(1, "myServer");
+      jobInstDaoCql.reserveJob(1, "");
+      // On réserve l'instance 2
+      jobInstDaoCql.reserveJob(2, "myServer");
+
+      // On vérifie qu'on n'a que 3 instances non réservées
+      list = jobInstDaoCql.getUnreservedJobInstances();
+      Assert.assertEquals(3, list.size());
+      // et que l'instance n°2 n'apparait pas dans la liste
+      for (final JobInstance jobInstance : list) {
+         Assert.assertTrue(jobInstance.getId() != 2);
+      }
+
+      // On réserve tous les jobs
+      for (int i = 1; i <= 4; i++) {
+         jobInstDaoCql.reserveJob(i, "myServer");
+      }
+      list = jobInstDaoCql.getUnreservedJobInstances();
+      Assert.assertEquals(0, list.size());
+
+   }
+
+   @Test
+   public void testReserveJob() {
+      final JobInstance jobInstance = jobInstDaoCql.getJobInstance(MY_JOB_NAME,
+                                                                   myJobParameters);
+      final long instanceId = jobInstance.getId();
+      String server = jobInstDaoCql.getReservingServer(instanceId);
+      Assert.assertEquals("", server);
+
+      jobInstDaoCql.reserveJob(instanceId, "serveur.domain.com");
+      server = jobInstDaoCql.getReservingServer(instanceId);
+      Assert.assertEquals("serveur.domain.com", server);
+
+      // On "dé-réserve" le job
+      jobInstDaoCql.reserveJob(instanceId, "");
+      server = jobInstDaoCql.getReservingServer(instanceId);
+      Assert.assertEquals("", server);
+
+      final long nonExistentId = 4654654L;
+      server = jobInstDaoCql.getReservingServer(nonExistentId);
+      Assert.assertNull(server);
+
+   }
    // Methode utilitaire
 
    private void initZookeeperServer() throws Exception {
