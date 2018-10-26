@@ -55,7 +55,7 @@ CREATE TABLE jobexecutionscql (
     value 				text,
 	PRIMARY KEY (jobname, jobexecutionid)
 ) WITH CLUSTERING ORDER BY (jobexecutionid DESC);
-CREATE INDEX jobExIdKey_idx ON jobexecutions (jobexecutionid);
+CREATE INDEX jobExIdKey_idx ON jobexecutionscql (jobexecutionid);
 
 
 CREATE TABLE jobexecutionsrunningcql (
@@ -90,13 +90,13 @@ CREATE TABLE jobinstancecql (
 	reservedby				text,
 	PRIMARY KEY (jobinstanceid)
 );
-CREATE INDEX jobRKey_idx ON jobinstance (jobkey);
+CREATE INDEX jobRKey_idx ON jobinstancecql (jobkey);
+CREATE INDEX jobReserveBy_idx ON jobinstance (reservedby);
 
 
 CREATE TABLE jobinstancesBynamecql (
 	jobname text,
 	jobinstanceid bigint,
-	reservedBy text,
 	PRIMARY KEY (jobname, jobinstanceid)
 )WITH CLUSTERING ORDER BY (jobinstanceid DESC);
 

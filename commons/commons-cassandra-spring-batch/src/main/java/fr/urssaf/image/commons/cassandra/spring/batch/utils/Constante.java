@@ -15,7 +15,7 @@ public class Constante {
   
   // Nom des tables thrift
   // Le nom des tables cql = Nom des tables  thrift en minuscule
-  public static final String JOBINSTANCE_CFNAME = "jobinstance";
+  public static final String JOBINSTANCE_CFNAME = "JobInstance";
   public static final String JOBINSTANCES_BY_NAME_CFNAME = "JobInstancesByName";
   public static final String JOBINSTANCE_TO_JOBEXECUTION_CFNAME = "JobInstanceToJobExecution";
   public static final String JOBEXECUTION_CFNAME = "JobExecution";
