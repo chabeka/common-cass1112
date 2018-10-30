@@ -434,6 +434,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
 					<skipDeploy>true</skipDeploy>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
 			<plugin>
