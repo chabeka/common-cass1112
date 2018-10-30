@@ -29,8 +29,9 @@
 		<maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
 		<axis2-maven-plugin.version>1.7.7</axis2-maven-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
-		<sonar-maven-plugin.version>3.3.0.603</sonar-maven-plugin.version>
-		<cobertura-maven-plugin.version>2.7</cobertura-maven-plugin.version>	
+		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
+		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
+		<maven-war-plugin.version>2.5</maven-war-plugin.version>
       <!--
       =========================================================
       Version des dépendances des librairies réutilisables Image
@@ -57,7 +58,7 @@
       commons-dfce
       ==========================================
       -->
-		<commons.dfce>1.9.12</commons.dfce>
+		<commons.dfce>1.9.13</commons.dfce>
 
       <!--
       ==========================================
