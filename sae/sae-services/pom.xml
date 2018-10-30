@@ -28,7 +28,6 @@
                <argumentFileName>builddef-sae-services.lst</argumentFileName>
             </configuration>
          </plugin>
-
       </plugins>
    </build>
 

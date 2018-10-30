@@ -7,7 +7,6 @@ import java.io.InputStream;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
-import javax.activation.FileDataSource;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
@@ -27,6 +26,7 @@ import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
 import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
+import fr.urssaf.image.sae.storage.dfce.utils.MarkableFileDataSource;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
@@ -103,8 +103,9 @@ InsertionService {
 
          // -- ici on récupère le contenu du fichier.
          final File fileContent = new File(storageDocument.getFilePath());
-         final DataHandler docContent = new DataHandler(new FileDataSource(
-                                                                           fileContent));
+         // On fait en sorte que le dataHandler puisse avoir accès à un fileInputStream qui supporte les
+         // méthodes mark et reset, afin de pouvoir gérer les éventuelles reconnexions à DFCE.
+         final DataHandler docContent = new DataHandler(new MarkableFileDataSource(fileContent));
 
          LOGGER.debug("{} - Début insertion du document dans DFCE", TRC_INSERT);
 

@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +21,15 @@ import com.docubase.dfce.exception.NoSuchAttachmentException;
 import com.docubase.dfce.exception.ObjectAlreadyExistsException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 import com.docubase.dfce.exception.TagControlException;
+import com.docubase.dfce.exception.batch.DfceJobParametersInvalidException;
+import com.docubase.dfce.exception.batch.UnexpectedDfceJobExecutionException;
+import com.docubase.dfce.exception.batch.launch.DfceJobInstanceAlreadyExistsException;
+import com.docubase.dfce.exception.batch.launch.DfceJobParametersNotFoundException;
+import com.docubase.dfce.exception.batch.launch.NoSuchDfceJobException;
+import com.docubase.dfce.exception.batch.launch.NoSuchDfceJobExecutionException;
+import com.docubase.dfce.exception.batch.repository.DfceJobExecutionAlreadyRunningException;
+import com.docubase.dfce.exception.batch.repository.DfceJobInstanceAlreadyCompleteException;
+import com.docubase.dfce.exception.batch.repository.DfceJobRestartException;
 
 import fr.urssaf.image.commons.dfce.exception.DFCEConnectionServiceException;
 import fr.urssaf.image.commons.dfce.model.DFCEConnection;
@@ -28,6 +38,7 @@ import net.docubase.toolkit.model.base.Base;
 import net.docubase.toolkit.model.base.CategoryDataType;
 import net.docubase.toolkit.model.document.Attachment;
 import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.index.IndexInformation;
 import net.docubase.toolkit.model.note.Note;
 import net.docubase.toolkit.model.recordmanager.RMDocEvent;
 import net.docubase.toolkit.model.recordmanager.RMLogArchiveReport;
@@ -53,7 +64,9 @@ public class DFCEServicesImpl implements DFCEServices {
    private static final Logger LOG = LoggerFactory.getLogger(DFCEServicesImpl.class);
 
    private final DFCEConnection dfceConnection;
+
    private ServiceProvider dfceService;
+
    /**
     * Correspond à la base DFCE qui nous intéresse
     * Cette base est mise en cache à chaque reconnexion
@@ -62,7 +75,9 @@ public class DFCEServicesImpl implements DFCEServices {
 
    /**
     * Constructeur.
-    * @param dfceConnectionParameters Les paramètres de connexions à DFCE
+    * 
+    * @param dfceConnectionParameters
+    *           Les paramètres de connexions à DFCE
     */
    @Autowired
    public DFCEServicesImpl(final DFCEConnection dfceConnectionParameters) {
@@ -85,7 +100,7 @@ public class DFCEServicesImpl implements DFCEServices {
       base = dfceService.getBaseAdministrationService().getBase(dfceConnection.getBaseName());
       if (base == null) {
          throw new DFCEConnectionServiceException("Base " + dfceConnection.getBaseName() +
-                                                  " non trouvée sur le serveur " +  serverUrl);
+               " non trouvée sur le serveur " + serverUrl);
       }
    }
 
@@ -112,7 +127,6 @@ public class DFCEServicesImpl implements DFCEServices {
       }
    }
 
-
    /**
     * {@inheritDoc}
     */
@@ -120,12 +134,17 @@ public class DFCEServicesImpl implements DFCEServices {
    public void closeConnexion() {
       if (dfceService != null) {
          final String LOG_PREFIX = "closeConnexion";
-         LOG.debug("{} - Fermeture connexion à DFCE (url : {})", new Object[] { LOG_PREFIX, dfceConnection.getServerUrl() });
-         dfceService.disconnect();
+         LOG.debug("{} - Fermeture connexion à DFCE (url : {})", new Object[] {LOG_PREFIX, dfceConnection.getServerUrl()});
+         try {
+            dfceService.disconnect();
+         }
+         catch (final Exception e) {
+            LOG.debug("{} - La fermeture de la connexion à DFCE (url : {}) a provoqué une erreur : {}",
+                      new Object[] {LOG_PREFIX, dfceConnection.getServerUrl(), e.getMessage()});
+         }
          dfceService = null;
       }
    }
-
 
    /**
     * Méthode permettant d'ouvrir une connexion vers DFCE. On essaye plusieurs fois.
@@ -141,21 +160,22 @@ public class DFCEServicesImpl implements DFCEServices {
       final String LOG_PREFIX = "openConnectionDFCe";
 
       try {
-         LOG.debug("{} - Tentative n°{}/{} de connexion à DFCE (url : {})", new Object[] { LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl() });
+         LOG.debug("{} - Tentative n°{}/{} de connexion à DFCE (url : {})",
+                   new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl()});
          connect();
-         LOG.debug("{} - Réussite de la tentative n°{}/{} de connexion à DFCE", new Object[] { LOG_PREFIX, currentTentative, maxTentatives });
-         LOG.info("{} - Connexion aux services DFCe réussie (url : {})", new Object[] { LOG_PREFIX, dfceConnection.getServerUrl() });
-      } catch (final Throwable connex) {
-         LOG.warn("{} - Echec de la tentative n°{}/{} de connexion à DFCE ", new Object[] { LOG_PREFIX, currentTentative, maxTentatives });
+         LOG.debug("{} - Réussite de la tentative n°{}/{} de connexion à DFCE", new Object[] {LOG_PREFIX, currentTentative, maxTentatives});
+         LOG.info("{} - Connexion aux services DFCe réussie (url : {})", new Object[] {LOG_PREFIX, dfceConnection.getServerUrl()});
+      }
+      catch (final Throwable connex) {
+         LOG.warn("{} - Echec de la tentative n°{}/{} de connexion à DFCE ", new Object[] {LOG_PREFIX, currentTentative, maxTentatives});
          if (currentTentative < maxTentatives) {
             // On retente...
             openConnectionDFCe(currentTentative + 1, maxTentatives);
-         }
-         else {
+         } else {
             // On abandonne
             LOG.error("{} - Le nombre max de tentatives de connexion à DFCE est atteint {}/{} (url : {} - erreur : {})",
-                      new Object[] { LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl(),
-                                     connex.getMessage()});
+                      new Object[] {LOG_PREFIX, currentTentative, maxTentatives, dfceConnection.getServerUrl(),
+                                    connex.getMessage()});
             throw new DFCEConnectionServiceException(connex);
          }
       }
@@ -240,7 +260,9 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Override
    @AutoReconnectDfceServiceAnnotation
-   public Document addAttachment(final UUID paramUUID, final String paramString1, final String paramString2, final boolean paramBoolean, final String paramString3, final InputStream paramInputStream) throws FrozenDocumentException, TagControlException {
+   public Document addAttachment(final UUID paramUUID, final String paramString1, final String paramString2, final boolean paramBoolean,
+                                 final String paramString3, final InputStream paramInputStream)
+         throws FrozenDocumentException, TagControlException {
       return dfceService.getStoreService().addAttachment(paramUUID, paramString1, paramString2, paramBoolean, paramString3, paramInputStream);
    }
 
@@ -303,15 +325,17 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Override
    @AutoReconnectDfceServiceAnnotation
-   public Document storeDocument(final Document paramDocument, final StoreOptions paramStoreOptions, final byte[] paramArrayOfByte, final InputStream paramInputStream) throws TagControlException {
+   public Document storeDocument(final Document paramDocument, final StoreOptions paramStoreOptions, final byte[] paramArrayOfByte,
+                                 final InputStream paramInputStream)
+         throws TagControlException {
       return dfceService.getStoreService().storeDocument(paramDocument, paramStoreOptions, paramArrayOfByte, paramInputStream);
    }
-
 
    @Deprecated
    @Override
    @AutoReconnectDfceServiceAnnotation
-   public Document storeDocument(final Document paramDocument, final String paramString1, final String paramString2, final InputStream paramInputStream) throws TagControlException {
+   public Document storeDocument(final Document paramDocument, final String paramString1, final String paramString2, final InputStream paramInputStream)
+         throws TagControlException {
       return dfceService.getStoreService().storeDocument(paramDocument, paramString1, paramString2, paramInputStream);
    }
 
@@ -392,7 +416,8 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Override
    @AutoReconnectDfceServiceAnnotation
-   public Document storeVirtualDocument(final Document paramDocument, final FileReference paramFileReference, final int paramInt1, final int paramInt2) throws TagControlException {
+   public Document storeVirtualDocument(final Document paramDocument, final FileReference paramFileReference, final int paramInt1, final int paramInt2)
+         throws TagControlException {
       return dfceService.getStoreService().storeVirtualDocument(paramDocument, paramFileReference, paramInt1, paramInt2);
    }
 
@@ -586,5 +611,116 @@ public class DFCEServicesImpl implements DFCEServices {
       return result;
    }
 
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Long startNextInstance(final String jobName)
+         throws NoSuchDfceJobException, DfceJobParametersNotFoundException, DfceJobRestartException, DfceJobExecutionAlreadyRunningException,
+         DfceJobInstanceAlreadyCompleteException, UnexpectedDfceJobExecutionException, DfceJobParametersInvalidException {
+      return dfceService.getJobAdministrationService().startNextInstance(jobName);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Long start(final String jobName, final String parameters)
+         throws NoSuchDfceJobException, DfceJobInstanceAlreadyExistsException, DfceJobParametersInvalidException {
+      return dfceService.getJobAdministrationService().start(jobName, parameters);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public List<IndexInformation> getIndexesOverLimitInBase(final Integer limit, final UUID baseUUID) {
+      return dfceService.getIndexAdministrationService().getIndexesOverLimitInBase(limit, baseUUID);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public List<IndexInformation> getIndexesInBase(final UUID baseUUID) {
+      return dfceService.getIndexAdministrationService().getIndexesInBase(baseUUID);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Map<String, String> getSummaryAsMap(final long executionId) throws NoSuchDfceJobExecutionException {
+      return dfceService.getJobAdministrationService().getSummaryAsMap(executionId);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Long restart(final long executionId) throws DfceJobInstanceAlreadyCompleteException, NoSuchDfceJobExecutionException, NoSuchDfceJobException,
+         DfceJobRestartException, DfceJobParametersInvalidException {
+      return dfceService.getJobAdministrationService().restart(executionId);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public boolean isDocumentLogsArchiveRunning() {
+      return dfceService.getArchiveService().isDocumentLogsArchiveRunning();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public UUID getLastDocumentLogsArchiveUUID() {
+      return dfceService.getArchiveService().getLastDocumentLogsArchiveUUID();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Date getLastSucessfulDocumentLogsArchiveRunDate() {
+      return dfceService.getArchiveService().getLastSucessfulDocumentLogsArchiveRunDate();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public UUID getLastSystemLogsArchiveUUID() {
+      return dfceService.getArchiveService().getLastSystemLogsArchiveUUID();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public Date getLastSucessfulSystemLogsArchiveRunDate() {
+      return dfceService.getArchiveService().getLastSucessfulSystemLogsArchiveRunDate();
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public boolean isSystemLogsArchiveRunning() {
+      return dfceService.getArchiveService().isSystemLogsArchiveRunning();
+   }
 
 }

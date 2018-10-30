@@ -179,17 +179,16 @@
 				</executions>
 			</plugin>
 		<!-- PLUGIN HAWAI/FEDEX -->
-		<plugin>
-			<groupId>fr.acoss.industrialisation.maven</groupId>
-			<artifactId>hawai-maven-plugin</artifactId>
-			<configuration>
-				<applicationName>ged</applicationName>
-				<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
-				<fedex>false</fedex>
-				<skip>false</skip>
-			</configuration>
-		</plugin>
-
+			<plugin>
+				<groupId>fr.acoss.industrialisation.maven</groupId>
+				<artifactId>hawai-maven-plugin</artifactId>
+				<configuration>
+					<applicationName>ged</applicationName>
+					<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
+					<fedex>false</fedex>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
 		</plugins>
 
 	</build>

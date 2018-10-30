@@ -83,7 +83,6 @@
                <argumentFileName>builddef-sae-services-capturemasse.lst</argumentFileName>
             </configuration>
          </plugin>
-
       </plugins>
    </build>
 
