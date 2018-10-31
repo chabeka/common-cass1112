@@ -39,6 +39,9 @@
    <import resource="applicationContext-commons-dfce-connection.xml" />
    <import resource="applicationContext-logwarn-aspect.xml" />
    <import resource="applicationContext-sae-trace.xml" />
+   
+   <import resource="applicationContext-sae-pile-travaux.xml" />
+   
    <import resource="applicationContext-sae-rnd.xml" />
 
    <import resource="applicationContext-security.xml" />
