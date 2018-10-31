@@ -26,141 +26,145 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
 @Service
 public class IndexCompositeServiceImpl implements IndexCompositeService {
 
-	SaeIndexCompositeSupport serviceSupport;
+  SaeIndexCompositeSupport serviceSupport;
 
-	@Autowired
-	@Qualifier("dfceServices")
-	private DFCEServices dfceServices;
+  @Autowired
+  @Qualifier("dfceServices")
+  private DFCEServices dfceServices;
 
-	@Autowired
-	private MappingDocumentService mappingDocumentService;
+  @Autowired
+  private MappingDocumentService mappingDocumentService;
 
-	/**
-	 * Constructeur par défaut
-	 */
-	public IndexCompositeServiceImpl() {
-	}
+  /**
+   * Constructeur par défaut
+   */
+  public IndexCompositeServiceImpl() {
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public List<SaeIndexComposite> getAllComputedIndexComposite() {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<SaeIndexComposite> getAllComputedIndexComposite() {
 
-		// -- Ouverture de la connexion à DFCE;
-		boolean startActive = dfceServices.isServerUp();
+    // -- Ouverture de la connexion à DFCE;
+    final boolean startActive = dfceServices.isServerUp();
 
-		// -- Recuperation la liste des index composites
-		List<SaeIndexComposite> listIndexComposites = new ArrayList<SaeIndexComposite>();
+    // -- Recuperation la liste des index composites
+    final List<SaeIndexComposite> listIndexComposites = new ArrayList<>();
 
-		try {
-			if (!startActive) {
-				dfceServices.connectTheFistTime();
-			}
+    try {
+      if (!startActive) {
+        dfceServices.connectTheFistTime();
+      }
 
-			if (dfceServices.getCnxParams() != null) {
-				Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
-				Iterator<CompositeIndex> iter = compositeIndexes.iterator();
-				while (iter.hasNext()) {
-					CompositeIndex index = iter.next();
-					SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
-					// On ne récupère que les indexComposite indexés
-					if (index.isComputed()) {
-						listIndexComposites.add(saeIndexComposite);
-					}
-				}
-			}
-		} catch (ConnectionServiceEx exception) {
-			throw new DocumentTypeException("impossible de se connecter à DFCE", exception);
-		} finally {
-			if (!startActive) {
-				dfceServices.closeConnexion();
-			}
-		}
-		return listIndexComposites;
+      if (dfceServices.getCnxParams() != null) {
+        final Set<CompositeIndex> compositeIndexes = dfceServices.fetchAllCompositeIndex();
+        final Iterator<CompositeIndex> iter = compositeIndexes.iterator();
+        while (iter.hasNext()) {
+          final CompositeIndex index = iter.next();
+          final SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
+          // On ne récupère que les indexComposite indexés
+          if (index.isComputed()) {
+            listIndexComposites.add(saeIndexComposite);
+          }
+        }
+      }
+    }
+    catch (final ConnectionServiceEx exception) {
+      throw new DocumentTypeException("impossible de se connecter à DFCE", exception);
+    }
+    finally {
+      if (!startActive) {
+        dfceServices.closeConnexion();
+      }
+    }
+    return listIndexComposites;
 
-	}
+  }
 
-	@Override
-	public boolean checkIndexCompositeValid(SaeIndexComposite indexComposite, List<String> listShortCodeMetadatas) {
-		boolean isIndexValid = false;
+  @Override
+  public boolean checkIndexCompositeValid(final SaeIndexComposite indexComposite, final List<String> listShortCodeMetadatas) {
+    boolean isIndexValid = false;
 
-		List<String> listCriteresIndex = new ArrayList<String>(Arrays.asList(indexComposite.getName().split("&")));
+    final List<String> listCriteresIndex = new ArrayList<>(Arrays.asList(indexComposite.getName().split("&")));
 
-		// 1- L'indexComposite ne peut pas contenir plus de critères que la
-		// requête
-		if (listCriteresIndex.size() > listShortCodeMetadatas.size()) {
-			isIndexValid = false;
-		}
-		// 2- Les codes de l'indexComposite doivent être compris dans les
-		// critères
-		else if (!listShortCodeMetadatas.isEmpty() && listCriteresIndex.size() <= listShortCodeMetadatas.size()) {
+    // 1- L'indexComposite ne peut pas contenir plus de critères que la
+    // requête
+    if (listCriteresIndex.size() > listShortCodeMetadatas.size()) {
+      isIndexValid = false;
+    }
+    // 2- Les codes de l'indexComposite doivent être compris dans les
+    // critères
+    else if (!listShortCodeMetadatas.isEmpty() && listCriteresIndex.size() <= listShortCodeMetadatas.size()) {
 
-			for (String critere : listCriteresIndex) {
-				if (listShortCodeMetadatas.contains(critere)) {
-					isIndexValid = true;
-				} else {
-					isIndexValid = false;
-					break;
-				}
-			}
+      for (final String critere : listCriteresIndex) {
+        if (listShortCodeMetadatas.contains(critere)) {
+          isIndexValid = true;
+        } else {
+          isIndexValid = false;
+          break;
+        }
+      }
 
-		}
-		return isIndexValid;
-	}
-	
-	@Override
-	public boolean isIndexCompositeValid(SaeIndexComposite indexComposite, List<SAEMetadata> listSaeMetadatas) {
+    }
+    return isIndexValid;
+  }
 
-		return checkIndexCompositeValid(indexComposite,  getListShortCodeMetadata(listSaeMetadatas));
-		
-	}
-	
-	@Override
-	public List<SAEMetadata> untypedMetadatasToSaeMetadatas(final List<UntypedMetadata> metadatas)
-			throws InvalidSAETypeException, MappingFromReferentialException {
+  @Override
+  public boolean isIndexCompositeValid(final SaeIndexComposite indexComposite, final List<SAEMetadata> listSaeMetadatas) {
 
-		return mappingDocumentService.untypedMetadatasToSaeMetadatas(metadatas);
-	}
+    return checkIndexCompositeValid(indexComposite, getListShortCodeMetadata(listSaeMetadatas));
 
-	@Override
-	public SaeIndexComposite getBestIndexComposite(List<SaeIndexComposite> indexCandidats) {
-		// Rechercher l'index avec le plus de criteres
-		SaeIndexComposite bestIndexComposite = indexCandidats.get(0);
+  }
 
-		for (SaeIndexComposite saeIndexComposite : indexCandidats) {
-			if (saeIndexComposite.getName().split("&").length > bestIndexComposite.getName().split("&").length) {
-				bestIndexComposite = saeIndexComposite;
-			}
-		}
-		return bestIndexComposite;
-	}
+  @Override
+  public List<SAEMetadata> untypedMetadatasToCodeSaeMetadatas(final List<UntypedMetadata> metadatas)
+      throws InvalidSAETypeException, MappingFromReferentialException {
 
-	@Override
-	public boolean isIndexedMetadata(UntypedMetadata metadata) throws MappingFromReferentialException {
+    return mappingDocumentService.untypedMetadatasToCodeSaeMetadatas(metadatas);
 
-		return mappingDocumentService.isIndexedMetadata(metadata);
-	}
-	
-	@Override
-	public boolean isIndexedMetadataByShortCode(String shortCodeMetadata) throws MappingFromReferentialException {
+  }
 
-		return mappingDocumentService.isIndexedMetadataByShortCode(shortCodeMetadata);
-	}
+  @Override
+  public SaeIndexComposite getBestIndexComposite(final List<SaeIndexComposite> indexCandidats) {
+    // Rechercher l'index avec le plus de criteres
+    SaeIndexComposite bestIndexComposite = indexCandidats.get(0);
 
-	/**
-	 * Retourne une list de codes courts des metadonnees passees en paramtre
-	 * @param listMetadata
-	 * @return
-	 */
-	private List<String> getListShortCodeMetadata(List<SAEMetadata> listMetadata) {
+    for (final SaeIndexComposite saeIndexComposite : indexCandidats) {
+      if (saeIndexComposite.getName().split("&").length > bestIndexComposite.getName().split("&").length) {
+        bestIndexComposite = saeIndexComposite;
+      }
+    }
+    return bestIndexComposite;
+  }
 
-		List<String> listShortCodeMetadata = new ArrayList<String>();
-		for (SAEMetadata saeMetadata : listMetadata) {
-			listShortCodeMetadata.add(saeMetadata.getShortCode());
-		}
-		return listShortCodeMetadata;
+  @Override
+  public boolean isIndexedMetadata(final UntypedMetadata metadata) throws MappingFromReferentialException {
 
-	}
+    return mappingDocumentService.isIndexedMetadata(metadata);
+  }
+
+  @Override
+  public boolean isIndexedMetadataByShortCode(final String shortCodeMetadata) throws MappingFromReferentialException {
+
+    return mappingDocumentService.isIndexedMetadataByShortCode(shortCodeMetadata);
+  }
+
+  /**
+   * Retourne une list de codes courts des metadonnees passees en paramtre
+   * 
+   * @param listMetadata
+   * @return
+   */
+  private List<String> getListShortCodeMetadata(final List<SAEMetadata> listMetadata) {
+
+    final List<String> listShortCodeMetadata = new ArrayList<>();
+    for (final SAEMetadata saeMetadata : listMetadata) {
+      listShortCodeMetadata.add(saeMetadata.getShortCode());
+    }
+    return listShortCodeMetadata;
+
+  }
 
 }
