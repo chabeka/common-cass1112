@@ -89,8 +89,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          throws VIVerificationException {
 
       // vérification du jeton SAML
-//      SignatureVerificationResult result = validateService.validate(
-//            identification, signVerifParams);
+      SignatureVerificationResult result = validateService.validate(
+            identification, signVerifParams);
 
       // extraction du jeton SAML
       SamlAssertionData data;
@@ -153,7 +153,7 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
       } catch (ContratServiceReferenceException exception1) {
          throw new VIAppliClientException(issuer);
       }
-//      validateService.validateCertificates(contract, result);
+      validateService.validateCertificates(contract, result);
 
       /*--------------- Gestion des Formats -----------------------*/
       VIContenuExtrait viContenuExtrait = new VIContenuExtrait();
