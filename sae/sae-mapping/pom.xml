@@ -80,6 +80,13 @@
          <artifactId>spring-instrument</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
+	  <!-- EASYMOCK -->
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
    <build>
       <plugins>

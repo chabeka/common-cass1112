@@ -36,6 +36,7 @@
    </bean>
    
    <!-- Création du bean de connexion à DFCE -->
+   <import resource="classpath*:/applicationContext-sae-mapping-mock-test.xml" />
    <import resource="applicationContext-commons-dfce-connection.xml" />
 
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
