@@ -56,6 +56,11 @@
          <version>${jackson.version}</version>
       </dependency>
 
+	  <dependency>
+         <groupId>fr.urssaf.image.commons</groupId>
+         <artifactId>commons-dfce</artifactId>
+         <version>${commons.dfce}</version>
+      </dependency>
    </dependencies>
 
 

@@ -225,33 +225,4 @@ public interface MappingDocumentService {
       throws InvalidSAETypeException,
       MappingFromReferentialException;
 
-  /**
-   * Retourne true si la metadata passée en paramètre est indexée
-   * 
-   * @param metadata
-   * @return
-   * @throws MappingFromReferentialException
-   */
-  boolean isIndexedMetadata(UntypedMetadata metadata)
-      throws MappingFromReferentialException;
-
-  /**
-   * Retourne true si la metadata avec le shortCode passee en parametre est indexee
-   * 
-   * @param metadata
-   * @return
-   * @throws MappingFromReferentialException
-   */
-  boolean isIndexedMetadataByShortCode(String shortCodeMetadata) throws MappingFromReferentialException;
-
-  /**
-   * Service de conversion d’une liste d'objets de type {@link UntypedMetadata}
-   * vers une liste de codes d'objets de type{@link SAEMetadata}.
-   * 
-   * @param metadatas
-   * @return
-   * @throws MappingFromReferentialException
-   */
-  List<SAEMetadata> untypedMetadatasToCodeSaeMetadatas(List<UntypedMetadata> metadatas) throws MappingFromReferentialException;
-
 }

@@ -37,10 +37,9 @@ import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
-import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
-import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
 import fr.urssaf.image.sae.metadata.referential.model.SaeIndexComposite;
-import fr.urssaf.image.sae.service.indexComposite.IndexCompositeService;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -319,11 +318,8 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     catch (final DoublonFiltresMetadataEx e) {
       throw new RechercheAxis2Fault("RechercheMetadonneesDoublons", e.getMessage(), e);
     }
-    catch (final InvalidSAETypeException e) {
-      throw new RechercheAxis2Fault("InvalidSAETypeException", e.getMessage(), e);
-    }
-    catch (final MappingFromReferentialException e) {
-      throw new RechercheAxis2Fault("MappingFromReferentialException", e.getMessage(), e);
+    catch (final IndexCompositeException e) {
+      throw new RechercheAxis2Fault("IndexCompositeInconnue", e.getMessage(), e);
     }
     LOG.debug("{} - Sortie", prefixeTrc);
 
@@ -545,11 +541,11 @@ public class WSRechercheServiceImpl implements WSRechercheService {
 
   /**
    * @return l'indexComposite ou simple à utiliser pour la recherche
-   * @throws MappingFromReferentialException
-   * @throws InvalidSAETypeException
+   * @throws IndexCompositeException
+   * @{@link IndexCompositeException}
    */
   private List<String> getIndexOrderPreferenceList(final List<UntypedMetadata> listeFixedMeta, final UntypedRangeMetadata untypedRangeMeta)
-      throws InvalidSAETypeException, MappingFromReferentialException {
+      throws IndexCompositeException {
 
     // Identification de l'indexComposite à utiliser pour la recherche
     final List<SaeIndexComposite> listIndexComposites = indexCompositeService.getAllComputedIndexComposite();
@@ -557,56 +553,61 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     List<String> indexOrderPreferenceList = null;
     SaeIndexComposite indexCompositeCandidat = null;
 
-    // 1- Récupérer les metadatas critères à partir de la requête
-    if (listIndexComposites != null) {
+    try {
+      // 1- Récupérer les metadatas critères à partir de la requête
+      if (listIndexComposites != null) {
 
-      final List<SaeIndexComposite> indexCompositeCandidats = new ArrayList<>();
-      List<SAEMetadata> listSaeMetadatasFromRequest = null;
+        final List<SaeIndexComposite> indexCompositeCandidats = new ArrayList<>();
+        List<SAEMetadata> listSaeMetadatasFromRequest = null;
 
-      // Sert strictement que pour identifier l'indexComposite à
-      // utiliser pour la recherche
-      final UntypedMetadata varyingMetadata = new UntypedMetadata(untypedRangeMeta.getLongCode(),
-                                                                  untypedRangeMeta.getValeurMin());
+        // Sert strictement que pour identifier l'indexComposite à
+        // utiliser pour la recherche
+        final UntypedMetadata varyingMetadata = new UntypedMetadata(untypedRangeMeta.getLongCode(),
+                                                                    untypedRangeMeta.getValeurMin());
 
-      final List<UntypedMetadata> listMetaDataFromRequest = new ArrayList<>();
-      listMetaDataFromRequest.addAll(listeFixedMeta);
-      listMetaDataFromRequest.add(varyingMetadata);
+        final List<UntypedMetadata> listMetaDataFromRequest = new ArrayList<>();
+        listMetaDataFromRequest.addAll(listeFixedMeta);
+        listMetaDataFromRequest.add(varyingMetadata);
 
-      // Maping des codes des metadatas
-      if (!listMetaDataFromRequest.isEmpty()) {
-        listSaeMetadatasFromRequest = indexCompositeService.untypedMetadatasToCodeSaeMetadatas(listMetaDataFromRequest);
-      }
-
-      // Recuperer la liste des indexComposite candidats
-      for (final SaeIndexComposite saeIndexComposite : listIndexComposites) {
-        if (indexCompositeService.isIndexCompositeValid(saeIndexComposite, listSaeMetadatasFromRequest)) {
-          indexCompositeCandidats.add(saeIndexComposite);
+        // Maping des codes des metadatas
+        if (!listMetaDataFromRequest.isEmpty()) {
+          listSaeMetadatasFromRequest = indexCompositeService.untypedMetadatasToCodeSaeMetadatas(listMetaDataFromRequest);
         }
-      }
 
-      // Si un ou plusieurs indexComposites identifies
-      if (!indexCompositeCandidats.isEmpty()) {
-        if (indexCompositeCandidats.size() == 1) {
-          indexCompositeCandidat = indexCompositeCandidats.get(0);
-        } else if (indexCompositeCandidats.size() > 1) {
-          // recuperer l'indexComposite le plus pertinent ou celui
-          // qui contient le max de criteres
-          indexCompositeCandidat = indexCompositeService.getBestIndexComposite(indexCompositeCandidats);
+        // Recuperer la liste des indexComposite candidats
+        for (final SaeIndexComposite saeIndexComposite : listIndexComposites) {
+          if (indexCompositeService.isIndexCompositeValid(saeIndexComposite, listSaeMetadatasFromRequest)) {
+            indexCompositeCandidats.add(saeIndexComposite);
+          }
         }
-        indexOrderPreferenceList = new ArrayList<>(
-                                                   Arrays.asList(indexCompositeCandidat.getName().split("&")));
-      }
-      // - Sinon, si aucun indexComposite identifié, on utilise un index simple
-      else if (indexCompositeCandidats.isEmpty()) {
-        for (final UntypedMetadata metadata : listMetaDataFromRequest) {
-          if (indexCompositeService.isIndexedMetadata(metadata)) {
-            final int indexItem = listMetaDataFromRequest.indexOf(metadata);
-            indexOrderPreferenceList = new ArrayList<>();
-            indexOrderPreferenceList.add(listSaeMetadatasFromRequest.get(indexItem).getShortCode());
-            break;
+
+        // Si un ou plusieurs indexComposites identifies
+        if (!indexCompositeCandidats.isEmpty()) {
+          if (indexCompositeCandidats.size() == 1) {
+            indexCompositeCandidat = indexCompositeCandidats.get(0);
+          } else if (indexCompositeCandidats.size() > 1) {
+            // recuperer l'indexComposite le plus pertinent ou celui
+            // qui contient le max de criteres
+            indexCompositeCandidat = indexCompositeService.getBestIndexComposite(indexCompositeCandidats);
+          }
+          indexOrderPreferenceList = new ArrayList<>(
+                                                     Arrays.asList(indexCompositeCandidat.getName().split("&")));
+        }
+        // - Sinon, si aucun indexComposite identifié, on utilise un index simple
+        else if (indexCompositeCandidats.isEmpty()) {
+          for (final UntypedMetadata metadata : listMetaDataFromRequest) {
+            if (indexCompositeService.isIndexedMetadata(metadata)) {
+              final int indexItem = listMetaDataFromRequest.indexOf(metadata);
+              indexOrderPreferenceList = new ArrayList<>();
+              indexOrderPreferenceList.add(listSaeMetadatasFromRequest.get(indexItem).getShortCode());
+              break;
+            }
           }
         }
       }
+    }
+    catch (final IndexCompositeException e) {
+      throw new IndexCompositeException("Erreur lors de la selection de l'index composite de référence pour la recherche : " + e.getMessage(), e);
     }
 
     return indexOrderPreferenceList;

@@ -18,8 +18,6 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.MultiTermQuery;
-import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TermRangeQuery;
@@ -38,11 +36,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.building.services.BuildService;
-import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
 import fr.urssaf.image.sae.metadata.referential.model.SaeIndexComposite;
-import fr.urssaf.image.sae.service.indexComposite.IndexCompositeService;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
@@ -60,305 +57,317 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 /**
  * Item reader permettant de récupérer les documents à partir de la requête
  * lucene.
- *
  */
 @Component
 @Scope("step")
 public class StorageDocumentReader implements ItemReader<StorageDocument> {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(StorageDocumentReader.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(StorageDocumentReader.class);
 
-	/**
-	 * Requete lucene récupéré dans le contexte du job d'exécution
-	 */
-	@Value("#{jobExecutionContext['requeteFinale']}")
-	private String requeteLucene;
+  /**
+   * Requete lucene récupéré dans le contexte du job d'exécution
+   */
+  @Value("#{jobExecutionContext['requeteFinale']}")
+  private String requeteLucene;
 
-	/**
-	 * Service de build permettant de générer les critères de la recherche
-	 * paginée.
-	 */
-	@Autowired
-	@Qualifier("buildService")
-	private BuildService buildService;
+  /**
+   * Service de build permettant de générer les critères de la recherche
+   * paginée.
+   */
+  @Autowired
+  @Qualifier("buildService")
+  private BuildService buildService;
 
-	/**
-	 * Service permettant d'exécuter la recherche paginée
-	 */
-	@Autowired
-	@Qualifier("storageServiceProvider")
-	private StorageServiceProvider storageServiceProvider;
+  /**
+   * Service permettant d'exécuter la recherche paginée
+   */
+  @Autowired
+  @Qualifier("storageServiceProvider")
+  private StorageServiceProvider storageServiceProvider;
 
-	@Autowired
-	private InterruptionTraitementMasseSupport support;
+  @Autowired
+  private InterruptionTraitementMasseSupport support;
 
-	@Autowired
-	private InterruptionTraitementConfig config;
+  @Autowired
+  private InterruptionTraitementConfig config;
 
-	@Autowired
-	private IndexCompositeService indexCompositeService;
+  @Autowired
+  private IndexCompositeService indexCompositeService;
 
-	/**
-	 * Nombre de documents par page d'itération.
-	 */
-	private final static int MAX_PAR_PAGE = 500;
+  /**
+   * Nombre de documents par page d'itération.
+   */
+  private final static int MAX_PAR_PAGE = 500;
 
-	/**
-	 * Iterateur de documents.
-	 */
-	private Iterator<StorageDocument> iterateurDoc = null;
+  /**
+   * Iterateur de documents.
+   */
+  private Iterator<StorageDocument> iterateurDoc = null;
 
-	/**
-	 * Flag indiquant s'il s'agit de la dernière itération.
-	 */
-	private boolean lastIteration = false;
+  /**
+   * Flag indiquant s'il s'agit de la dernière itération.
+   */
+  private boolean lastIteration = false;
 
-	/**
-	 * Dernier identifiant de document remonté à l'itération précédente.
-	 */
-	private UUID lastIdDoc = null;
+  /**
+   * Dernier identifiant de document remonté à l'itération précédente.
+   */
+  private UUID lastIdDoc = null;
 
-	/**
-	 * Liste des métadonnées que l'on souhaite récupérés
-	 */
-	private final static List<SAEMetadata> DESIRED_METADATAS = new ArrayList<SAEMetadata>();
+  /**
+   * Liste des métadonnées que l'on souhaite récupérés
+   */
+  private final static List<SAEMetadata> DESIRED_METADATAS = new ArrayList<>();
 
-	/**
-	 * Initialisation de la liste des métadonnées désirées.
-	 */
-	static {
-		// En l'occurrence, on veut savoir si le document est gelé ou non
-		final SAEMetadata metadataGel = new SAEMetadata(StorageTechnicalMetadatas.GEL.getLongCode(),
-				StorageTechnicalMetadatas.GEL.getShortCode(), null);
-		DESIRED_METADATAS.add(metadataGel);
-	}
+  /**
+   * Initialisation de la liste des métadonnées désirées.
+   */
+  static {
+    // En l'occurrence, on veut savoir si le document est gelé ou non
+    final SAEMetadata metadataGel = new SAEMetadata(StorageTechnicalMetadatas.GEL.getLongCode(),
+                                                    StorageTechnicalMetadatas.GEL.getShortCode(),
+                                                    null);
+    DESIRED_METADATAS.add(metadataGel);
+  }
 
-	/**
-	 * Permet de verifier s'il y a un élément suivant.
-	 * 
-	 * @return boolean
-	 * @throws SuppressionMasseSearchException
-	 */
-	private boolean hasNext() throws SuppressionMasseSearchException {
-		boolean hasNext;
-		if (iterateurDoc == null || !iterateurDoc.hasNext()) {
-			// dans ce cas, on est soit à la première itération, soit on n'a
-			// plus d'éléments dans notre itérateurs 'local'
-			// il faut donc aller récupérer des nouveaux éléments si on n'est
-			// pas à la dernière itération
-			if (lastIteration) {
-				hasNext = false;
-			} else {
-				// avant de faire appel à la base pour récupérer les éléments,
-				// on va tester qu'on est pas à l'heure
-				// de l'interruption des serveurs
-				gererInterruption();
-				// on appelle la récupération des prochains éléments
-				hasNext = fetchMore();
-			}
-		} else {
-			// on a encore des éléments dans l'itérateur 'local'
-			hasNext = true;
-		}
-		return hasNext;
-	}
+  /**
+   * Permet de verifier s'il y a un élément suivant.
+   * 
+   * @return boolean
+   * @throws SuppressionMasseSearchException
+   */
+  private boolean hasNext() throws SuppressionMasseSearchException {
+    boolean hasNext;
+    if (iterateurDoc == null || !iterateurDoc.hasNext()) {
+      // dans ce cas, on est soit à la première itération, soit on n'a
+      // plus d'éléments dans notre itérateurs 'local'
+      // il faut donc aller récupérer des nouveaux éléments si on n'est
+      // pas à la dernière itération
+      if (lastIteration) {
+        hasNext = false;
+      } else {
+        // avant de faire appel à la base pour récupérer les éléments,
+        // on va tester qu'on est pas à l'heure
+        // de l'interruption des serveurs
+        gererInterruption();
+        // on appelle la récupération des prochains éléments
+        hasNext = fetchMore();
+      }
+    } else {
+      // on a encore des éléments dans l'itérateur 'local'
+      hasNext = true;
+    }
+    return hasNext;
+  }
 
-	/**
-	 * Recupere le prochain element.
-	 * 
-	 * @return StorageDocument
-	 */
-	private StorageDocument next() {
-		return iterateurDoc.next();
-	}
+  /**
+   * Recupere le prochain element.
+   * 
+   * @return StorageDocument
+   */
+  private StorageDocument next() {
+    return iterateurDoc.next();
+  }
 
-	/**
-	 * Permet de récupérer les prochains éléments.
-	 * 
-	 * @return boolean
-	 * @throws SuppressionMasseSearchException
-	 */
-	private boolean fetchMore() throws SuppressionMasseSearchException {
-		PaginatedStorageDocuments paginatedStorageDocuments = null;
-		boolean hasMore = false;
-		try {
-			String strIdDoc;
-			if (lastIdDoc == null) {
-				strIdDoc = "null";
-			} else {
-				strIdDoc = lastIdDoc.toString();
-			}
+  /**
+   * Permet de récupérer les prochains éléments.
+   * 
+   * @return boolean
+   * @throws SuppressionMasseSearchException
+   */
+  private boolean fetchMore() throws SuppressionMasseSearchException {
+    PaginatedStorageDocuments paginatedStorageDocuments = null;
+    boolean hasMore = false;
+    try {
+      String strIdDoc;
+      if (lastIdDoc == null) {
+        strIdDoc = "null";
+      } else {
+        strIdDoc = lastIdDoc.toString();
+      }
 
-			List<String> indexOrderPreferenceList = null;
-			
-			if(!StringUtils.containsIgnoreCase(requeteLucene, " OR ")){
-				
-				Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
-				QueryParser luceneParser = new QueryParser(Version.LUCENE_CURRENT, "", analyzer);
-				
-				Set<String> fieldsLuceneQuery = new TreeSet<String>();
-								
-				calculateQueryFieldsRecursively(luceneParser.parse(requeteLucene), fieldsLuceneQuery);
-								
-				List<String> listShortCodeMetadatas = new ArrayList<String>(fieldsLuceneQuery);
+      List<String> indexOrderPreferenceList = new ArrayList<>();
 
-				System.out.println("listShortCodeMetadatas: " + listShortCodeMetadatas.toString() );
-				System.out.println("requeteLucene: " + requeteLucene);
-				
-				// Identification de l'indexComposite à utiliser pour la recherche
-				List<SaeIndexComposite> listAllIndexComposites = indexCompositeService.getAllComputedIndexComposite();
+      if (!StringUtils.containsIgnoreCase(requeteLucene, " OR ")) {
 
-				SaeIndexComposite selectedIndexComposite = null;
+        final Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_CURRENT);
+        final QueryParser luceneParser = new QueryParser(Version.LUCENE_CURRENT, "", analyzer);
 
-				// 1- Récupérer les metadatas critères à partir de la requête
-				if (listAllIndexComposites != null) {
-					
-					List<SaeIndexComposite> listAllowedIndexComposite = new ArrayList<SaeIndexComposite>();
-					
-					// Recuperer la liste des indexComposite candidats
-					for (SaeIndexComposite saeIndexComposite : listAllIndexComposites) {
-						if (indexCompositeService.checkIndexCompositeValid(saeIndexComposite, listShortCodeMetadatas)) {
-							listAllowedIndexComposite.add(saeIndexComposite);
-						}
-					}
-					// Si un ou plusieurs indexComposites identifies
-					if (!listAllowedIndexComposite.isEmpty()) {
-						if (listAllowedIndexComposite.size() == 1) {
-							selectedIndexComposite = listAllowedIndexComposite.get(0);
-						} else if (listAllowedIndexComposite.size() > 1) {
-							// recuperer l'indexComposite le plus pertinent ou celui
-							// qui contient le max de criteres
-							selectedIndexComposite = indexCompositeService.getBestIndexComposite(listAllowedIndexComposite);
-						}
-						indexOrderPreferenceList = new ArrayList<String>(
-								Arrays.asList(selectedIndexComposite.getName().split("&")));
-					}
-					// - Sinon, si aucun indexComposite identifie, on recherche un index simple
-					else if (listAllowedIndexComposite.isEmpty()) {
-						for (String shortCodeMetadata : listShortCodeMetadatas) {
-							if (indexCompositeService.isIndexedMetadataByShortCode(shortCodeMetadata)) {
-								indexOrderPreferenceList = new ArrayList<String>();
-								indexOrderPreferenceList.add(shortCodeMetadata);
-								break;
-							}
-						}
-					}
-				}
-				
-			}
-			
-			LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
-			System.out.println("indexOrderPreferenceList: "+indexOrderPreferenceList.toString());
-			
-			final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService.buildStoragePaginatedLuceneCriteria(
-					requeteLucene, MAX_PAR_PAGE, DESIRED_METADATAS, new ArrayList<AbstractFilter>(), lastIdDoc, "");
+        final Set<String> fieldsLuceneQuery = new TreeSet<>();
 
-			if(indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()){
-				paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
-						.searchPaginatedStorageDocumentsWithindexOrderPreference(paginatedLuceneCriteria, indexOrderPreferenceList);
-			} else {
-				paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
-						.searchPaginatedStorageDocuments(paginatedLuceneCriteria);
-			}
-			
-			paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
-					.searchPaginatedStorageDocuments(paginatedLuceneCriteria);
+        calculateQueryFieldsRecursively(luceneParser.parse(requeteLucene), fieldsLuceneQuery);
 
-			// recupere les infos de la requete
-			iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
-			lastIteration = paginatedStorageDocuments.getLastPage();
-			if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-				final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
-				lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
-				hasMore = true;
-			} else {
-				hasMore = false;
-			}
+        final List<String> listShortCodeMetadatas = new ArrayList<>(fieldsLuceneQuery);
 
-		} catch (final ConnectionServiceEx except) {
-			throw new SuppressionMasseSearchException(except);
-		} catch (final SearchingServiceEx except) {
-			throw new SuppressionMasseSearchException(except);
-		} catch (final QueryParseServiceEx except) {
-			throw new SuppressionMasseSearchException(except);
-		} catch (org.apache.lucene.queryParser.ParseException except) {
-			throw new SuppressionMasseSearchException(except);
-		} catch (MappingFromReferentialException except) {
-			throw new SuppressionMasseSearchException(except);
-		}
-		return hasMore;
-	}
+        System.out.println("listShortCodeMetadatas: " + listShortCodeMetadatas.toString());
+        System.out.println("requeteLucene: " + requeteLucene);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public StorageDocument read()
-			throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+        // Identification de l'indexComposite à utiliser pour la recherche
+        final List<SaeIndexComposite> listAllIndexComposites = indexCompositeService.getAllComputedIndexComposite();
 
-		StorageDocument doc = null;
-		if (hasNext()) {
-			doc = next();
-		}
-		if (doc != null) {
-			LOGGER.debug("Read du document : {}", doc.getUuid().toString());
-		}
-		return doc;
-	}
+        SaeIndexComposite selectedIndexComposite = null;
 
-	/**
-	 * Methode permettant de gerer la plage d'interruption.
-	 * 
-	 * @throws SuppressionMasseSearchException
-	 */
-	private void gererInterruption() throws SuppressionMasseSearchException {
-		// on vérifie que le traitement ne doit pas s'interrompre
-		final DateTime currentDate = new DateTime();
+        // 1- Récupérer les metadatas critères à partir de la requête
+        if (listAllIndexComposites != null) {
 
-		if (config != null && support.hasInterrupted(currentDate, config)) {
+          final List<SaeIndexComposite> listAllowedIndexComposite = new ArrayList<>();
 
-			try {
-				support.interruption(currentDate, config);
-			} catch (final InterruptionTraitementException e) {
-				throw new SuppressionMasseSearchException(e);
-			}
-		}
-	}
+          // Recuperer la liste des indexComposite candidats
+          for (final SaeIndexComposite saeIndexComposite : listAllIndexComposites) {
+            if (indexCompositeService.checkIndexCompositeValid(saeIndexComposite, listShortCodeMetadatas)) {
+              listAllowedIndexComposite.add(saeIndexComposite);
+            }
+          }
+          // Si un ou plusieurs indexComposites identifies
+          if (!listAllowedIndexComposite.isEmpty()) {
+            if (listAllowedIndexComposite.size() == 1) {
+              selectedIndexComposite = listAllowedIndexComposite.get(0);
+            } else if (listAllowedIndexComposite.size() > 1) {
+              // recuperer l'indexComposite le plus pertinent ou celui
+              // qui contient le max de criteres
+              selectedIndexComposite = indexCompositeService.getBestIndexComposite(listAllowedIndexComposite);
+            }
+            indexOrderPreferenceList = Arrays.asList(selectedIndexComposite.getName().split("&"));
+          }
+          // - Sinon, si aucun indexComposite identifie, on recherche un index simple
+          else if (listAllowedIndexComposite.isEmpty()) {
+            for (final String shortCodeMetadata : listShortCodeMetadatas) {
+              if (indexCompositeService.isIndexedMetadataByShortCode(shortCodeMetadata)) {
+                indexOrderPreferenceList.add(shortCodeMetadata);
+                break;
+              }
+            }
+          }
+        }
+      }
 
-	/**
-	 * Retourne les criteres de recherche a partir d'une requete lucene
-	 * @param query
-	 * @return
-	 * @throws ParseException
-	 */
-	private void calculateQueryFieldsRecursively(Query query, Set<String> fieldsLuceneQuery)  {
-		
-		Set<String> fields = new TreeSet<String>();
-		if (query instanceof TermQuery ) {
-			TermQuery tQuery = (TermQuery) query;
-			Term term = tQuery.getTerm();
-			fields.add(term.field());
-			
-		} else if (query instanceof TermRangeQuery) {
-			TermRangeQuery trq = (TermRangeQuery) query;
-			fields.add(trq.getField());
-		} else if (query instanceof BooleanQuery) {
-			BooleanQuery bQuery = (BooleanQuery) query;
-			List<BooleanClause> clauses = bQuery.clauses();
-			for (BooleanClause clause : clauses) {
-				Query innerQuery = clause.getQuery();				
-				calculateQueryFieldsRecursively(innerQuery, fieldsLuceneQuery);
-			}
-		} 
-		// TODO support more lucene query types
-//		else {
-//			return null;
-//		}
-		
-		if(!fields.isEmpty()){
-			fieldsLuceneQuery.addAll(fields);
-		}
-		
-	}
+      LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
+
+      final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService.buildStoragePaginatedLuceneCriteria(
+                                                                                                               requeteLucene,
+                                                                                                               MAX_PAR_PAGE,
+                                                                                                               DESIRED_METADATAS,
+                                                                                                               new ArrayList<AbstractFilter>(),
+                                                                                                               lastIdDoc,
+                                                                                                               "");
+
+      if (indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()) {
+        LOGGER.debug("index composite order selected : {}", indexOrderPreferenceList);
+
+        paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
+                                                          .searchPaginatedStorageDocumentsWithindexOrderPreference(paginatedLuceneCriteria,
+                                                                                                                   indexOrderPreferenceList);
+      } else {
+        paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
+                                                          .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
+      }
+
+      paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
+                                                        .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
+
+      // recupere les infos de la requete
+      iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
+      lastIteration = paginatedStorageDocuments.getLastPage();
+      if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
+        final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
+        lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
+        hasMore = true;
+      } else {
+        hasMore = false;
+      }
+
+    }
+    catch (final ConnectionServiceEx except) {
+      throw new SuppressionMasseSearchException(except);
+    }
+    catch (final SearchingServiceEx except) {
+      throw new SuppressionMasseSearchException(except);
+    }
+    catch (final QueryParseServiceEx except) {
+      throw new SuppressionMasseSearchException(except);
+    }
+    catch (final org.apache.lucene.queryParser.ParseException except) {
+      throw new SuppressionMasseSearchException("ParseException - " + except.getMessage());
+    }
+    catch (final IndexCompositeException except) {
+      throw new SuppressionMasseSearchException(except);
+    }
+
+    return hasMore;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public StorageDocument read()
+      throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
+
+    StorageDocument doc = null;
+    if (hasNext()) {
+      doc = next();
+    }
+    if (doc != null) {
+      LOGGER.debug("Read du document : {}", doc.getUuid().toString());
+    }
+    return doc;
+  }
+
+  /**
+   * Methode permettant de gerer la plage d'interruption.
+   * 
+   * @throws SuppressionMasseSearchException
+   */
+  private void gererInterruption() throws SuppressionMasseSearchException {
+    // on vérifie que le traitement ne doit pas s'interrompre
+    final DateTime currentDate = new DateTime();
+
+    if (config != null && support.hasInterrupted(currentDate, config)) {
+
+      try {
+        support.interruption(currentDate, config);
+      }
+      catch (final InterruptionTraitementException e) {
+        throw new SuppressionMasseSearchException(e);
+      }
+    }
+  }
+
+  /**
+   * Retourne les criteres de recherche a partir d'une requete lucene
+   * 
+   * @param query
+   * @return
+   * @throws ParseException
+   */
+  private void calculateQueryFieldsRecursively(final Query query, final Set<String> fieldsLuceneQuery) {
+
+    final Set<String> fields = new TreeSet<>();
+    if (query instanceof TermQuery) {
+      final TermQuery tQuery = (TermQuery) query;
+      final Term term = tQuery.getTerm();
+      fields.add(term.field());
+
+    } else if (query instanceof TermRangeQuery) {
+      final TermRangeQuery trq = (TermRangeQuery) query;
+      fields.add(trq.getField());
+    } else if (query instanceof BooleanQuery) {
+      final BooleanQuery bQuery = (BooleanQuery) query;
+      final List<BooleanClause> clauses = bQuery.clauses();
+      for (final BooleanClause clause : clauses) {
+        final Query innerQuery = clause.getQuery();
+        calculateQueryFieldsRecursively(innerQuery, fieldsLuceneQuery);
+      }
+    }
+    // TODO support more lucene query types
+    // else {
+    // return null;
+    // }
+
+    if (!fields.isEmpty()) {
+      fieldsLuceneQuery.addAll(fields);
+    }
+
+  }
 
 }
