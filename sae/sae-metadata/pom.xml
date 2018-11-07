@@ -100,6 +100,15 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
+      
+       <!-- EASYMOCK -->
+
+      <dependency>
+         <groupId>org.easymock</groupId>
+         <artifactId>easymock</artifactId>
+         <version>${easymock.version}</version>
+         <scope>test</scope>
+      </dependency>
    </dependencies>
    
    <build>

@@ -33,6 +33,7 @@
       </constructor-arg>
    </bean>
 
+   <import resource="classpath*:/applicationContext-sae-metadata-mock-test.xml" />
    <import resource="classpath*:/applicationContext-sae-metadata.xml" />
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    <import resource="applicationContext-sae-commons.xml" />
