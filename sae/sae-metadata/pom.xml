@@ -101,8 +101,7 @@
          <scope>test</scope>
       </dependency>
       
-       <!-- EASYMOCK -->
-
+      <!-- EASYMOCK -->
       <dependency>
          <groupId>org.easymock</groupId>
          <artifactId>easymock</artifactId>
