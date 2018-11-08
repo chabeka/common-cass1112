@@ -9,7 +9,7 @@
 		http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
    <bean id="mockFactory"
-      class="fr.urssaf.image.sae.mapping.test.utils.MockFactoryBean" />
+      class="fr.urssaf.image.sae.metadata.test.utils.MockFactoryBean" />
 
    <bean id="storageServiceProvider" factory-bean="mockFactory" factory-method="createStorageServiceProvider"
       primary="true">
