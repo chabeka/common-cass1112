@@ -71,6 +71,11 @@
    <!-- mock pour le support pour les traces des controles -->
    <bean id="transfertService" factory-bean="SAEServiceFactory"
       factory-method="createSAETransfertService" />
+      
+   <!-- mock pour le support pour les indexes composites -->
+   <bean id="indexCompositeService" factory-bean="SAEServiceFactory"
+      factory-method="createIndexCompositeService" primary="true">
+   </bean>
 
    <bean id="ecdeControleSupport"
       class="fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.impl.EcdeControleSupportImpl" />

@@ -4,6 +4,7 @@ import org.easymock.EasyMock;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
@@ -157,5 +158,14 @@ public class SAEServiceFactory {
             .createMock(SAETransfertService.class);
 
       return transfertSce;
+   }
+   
+   /**
+    * 
+    * @return instance de SAETransfertService
+    */
+   public final IndexCompositeService createIndexCompositeService() {
+      return EasyMock
+          .createMock(IndexCompositeService.class);
    }
 }
