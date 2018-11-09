@@ -29,193 +29,193 @@ import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 
 public class ConsultationMTOMTest {
 
-   /**
-    * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
-    * <br>
-    * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
-    * dans le test corresponde à une archive en base)
-    * 
-    * @throws RemoteException 
-    */
-   @Test
-   public void consultationMTOM_success() throws RemoteException {
-      
-      // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      String idArchive = "27a26994-cf69-4375-878f-7c0475c9627e";
-      
-      // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
-      
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
-      //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
-      
-      // Appel du service web de consultation
-      ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
-      
-      // Affichage du résultat de la consultation
-      afficheResultatConsultation(reponse);
-      
-   }
-   
-   
-   private void afficheResultatConsultation(ConsultationMTOMResponse reponse) {
+  /**
+   * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
+   * <br>
+   * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
+   * dans le test corresponde à une archive en base)
+   * 
+   * @throws RemoteException
+   */
+  @Test
+  public void consultationMTOM_success() throws RemoteException {
 
-      
-      ConsultationMTOMResponseType consultationResponse = reponse
-            .getConsultationMTOMResponse();
+    // Identifiant unique d'archivage de l'archive que l'on veut consulter
+    final String idArchive = "EA6DC1AE-D226-4765-853E-4CACED884C18";
 
-      // Les métadonnées
+    // Construction du Stub
+    final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
 
-      System.out.println("Métadonnées : ");
+    // Construction du paramètre d'entrée de l'opération consultationMTOM,
+    // avec les objets modèle générés par Axis2.
+    final ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
 
-      MetadonneeType[] tabMetas = consultationResponse.getMetadonnees()
-            .getMetadonnee();
+    // Appel du service web de consultation
+    final ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
 
-      String valeurMetaNomFichier = "";
-      String codeMeta;
-      String valeurMeta;
-      for (MetadonneeType metadonnee : tabMetas) {
+    // Affichage du résultat de la consultation
+    afficheResultatConsultation(reponse);
 
-         codeMeta = metadonnee.getCode().getMetadonneeCodeType();
-         valeurMeta = metadonnee.getValeur().getMetadonneeValeurType();
+  }
 
-         System.out.println(codeMeta + "=" + valeurMeta);
+  private void afficheResultatConsultation(final ConsultationMTOMResponse reponse) {
 
-         // Mémorise la valeur de la métadonnée NomFichier
-         // pour l'écriture ultérieure du fichier renvoyée
-         if (codeMeta.equals("NomFichier")) {
-            valeurMetaNomFichier = valeurMeta;
-         }
+    final ConsultationMTOMResponseType consultationResponse = reponse
+                                                                     .getConsultationMTOMResponse();
 
-      }
-      if (StringUtils.isBlank(valeurMetaNomFichier)) {
-         valeurMetaNomFichier = UUID.randomUUID().toString() + ".tmp";
+    // Les métadonnées
+
+    System.out.println("Métadonnées : ");
+
+    final MetadonneeType[] tabMetas = consultationResponse.getMetadonnees()
+                                                          .getMetadonnee();
+
+    String valeurMetaNomFichier = "";
+    String codeMeta;
+    String valeurMeta;
+    for (final MetadonneeType metadonnee : tabMetas) {
+
+      codeMeta = metadonnee.getCode().getMetadonneeCodeType();
+      valeurMeta = metadonnee.getValeur().getMetadonneeValeurType();
+
+      System.out.println(codeMeta + "=" + valeurMeta);
+
+      // Mémorise la valeur de la métadonnée NomFichier
+      // pour l'écriture ultérieure du fichier renvoyée
+      if (codeMeta.equals("NomFichier")) {
+        valeurMetaNomFichier = valeurMeta;
       }
 
-      // Le fichier
-      DataHandler contenu = consultationResponse.getContenu();
-      
-      // TODO : est-ce que le fichier est bien renvoyé en MTOM
+    }
+    if (StringUtils.isBlank(valeurMetaNomFichier)) {
+      valeurMetaNomFichier = UUID.randomUUID().toString() + ".tmp";
+    }
 
-      // On va créér un fichier dans le répertoire temporaire de l'OS
-      String repTempOs = System.getProperty("java.io.tmpdir");
-      File file = new File(repTempOs, valeurMetaNomFichier);
+    // Le fichier
+    final DataHandler contenu = consultationResponse.getContenu();
 
-      // Ecrit le flux
-      OutputStream outputStream = null;
-      try {
-         outputStream = new FileOutputStream(file);
-      } catch (FileNotFoundException e) {
-         throw new DemoRuntimeException(e);
-      }
-      try {
-         contenu.writeTo(outputStream);
-      } catch (IOException e) {
-         throw new DemoRuntimeException(e);
-      }
+    // TODO : est-ce que le fichier est bien renvoyé en MTOM
 
-      // Ecrit dans la console le chemin complet du fichier créé
-      System.out.println("");
-      System.out.println("Fichier créé : " + file.getAbsolutePath());
+    // On va créér un fichier dans le répertoire temporaire de l'OS
+    final String repTempOs = System.getProperty("java.io.tmpdir");
+    final File file = new File(repTempOs, valeurMetaNomFichier);
 
-   }
-   
-   
-   /**
-    * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
-    * <br>
-    * Cas avec erreur : On demande un identifiant unique d'archivage qui n'existe pas dans le SAE<br>
-    * <br>
-    * Le SAE renvoie la SoapFault suivante :<br>
-    * <ul>
-    *    <li>Code : sae:ArchiveNonTrouvee</li>
-    *    <li>Message : Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'</li>
-    * </ul>
-    */
-   @Test
-   public void consultationMTOM_failure() {
-      
-      // Identifiant unique d'archivage inexistant
-      String idArchive = "00000000-0000-0000-0000-000000000000";
-      
-      // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
-      
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
-      //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
-      
+    // Ecrit le flux
+    OutputStream outputStream = null;
+    try {
+      outputStream = new FileOutputStream(file);
+    }
+    catch (final FileNotFoundException e) {
+      throw new DemoRuntimeException(e);
+    }
+    try {
+      contenu.writeTo(outputStream);
+    }
+    catch (final IOException e) {
+      throw new DemoRuntimeException(e);
+    }
+
+    // Ecrit dans la console le chemin complet du fichier créé
+    System.out.println("");
+    System.out.println("Fichier créé : " + file.getAbsolutePath());
+
+  }
+
+  /**
+   * Exemple de consommation de l'opération consultationMTOM du service web SaeService<br>
+   * <br>
+   * Cas avec erreur : On demande un identifiant unique d'archivage qui n'existe pas dans le SAE<br>
+   * <br>
+   * Le SAE renvoie la SoapFault suivante :<br>
+   * <ul>
+   * <li>Code : sae:ArchiveNonTrouvee</li>
+   * <li>Message : Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'</li>
+   * </ul>
+   */
+  @Test
+  public void consultationMTOM_failure() {
+
+    // Identifiant unique d'archivage inexistant
+    final String idArchive = "00000000-0000-0000-0000-000000000000";
+
+    // Construction du Stub
+    final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+
+    // Construction du paramètre d'entrée de l'opération consultationMTOM,
+    // avec les objets modèle générés par Axis2.
+    final ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(idArchive);
+
+    // Appel de l'opération consultationMTOM
+    try {
+
       // Appel de l'opération consultationMTOM
-      try {
-         
-         // Appel de l'opération consultationMTOM
-         // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
-         saeService.consultationMTOM(paramsEntree);
-         
-         // Si on a passé l'appel, le test est en échec
-         fail("La SoapFault attendue n'a pas été renvoyée");
-         
-      } catch (AxisFault fault) {
-         
-         // sysout
-         TestUtils.sysoutAxisFault(fault);
-         
-         // Vérification de la SoapFault
-         TestUtils.assertSoapFault(
-               fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "ArchiveNonTrouvee",
-               "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'");
-       
-      } catch (RemoteException exception) {
-         
-         fail("Une RemoteException a été levée, alors qu'on attendait une AxisFault\r\n" + exception);
-         
-      }
-      
-   }
-   
-   
-   /**
-    * Exemple de consommation de l'opération consultation du service web SaeService<br>
-    * <br>
-    * On spécifie les métadonnées souhaitées en retour de la consultation.<br>
-    * <br>
-    * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
-    * dans le test corresponde à une archive en base)
-    * 
-    * @throws RemoteException 
-    */
-   @Test
-   public void consultationMTOM_avecMeta_success() throws RemoteException {
-      
-      // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      String idArchive = "27a26994-cf69-4375-878f-7c0475c9627e";
-      
-      // Métadonnées souhaitées en retour de la consultation
-      List<String> codesMetasSouhaites = new ArrayList<String>();
-      codesMetasSouhaites.add("Siren");
-      codesMetasSouhaites.add("CodeRND");
-      codesMetasSouhaites.add("CodeOrganismeGestionnaire");
-      codesMetasSouhaites.add("NomFichier");
-      
-      // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
-      
-      // Construction du paramètre d'entrée de l'opération consultationMTOM, 
-      //  avec les objets modèle générés par Axis2.
-      ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(
-            idArchive,codesMetasSouhaites);
-      
-      // Appel du service web de consultation
-      ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
-      
-      // Affichage du résultat de la consultation
-      afficheResultatConsultation(reponse);
-      
-   }
-   
+      // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
+      saeService.consultationMTOM(paramsEntree);
+
+      // Si on a passé l'appel, le test est en échec
+      fail("La SoapFault attendue n'a pas été renvoyée");
+
+    }
+    catch (final AxisFault fault) {
+
+      // sysout
+      TestUtils.sysoutAxisFault(fault);
+
+      // Vérification de la SoapFault
+      TestUtils.assertSoapFault(
+                                fault,
+                                "urn:sae:faultcodes",
+                                "sae",
+                                "ArchiveNonTrouvee",
+                                "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'");
+
+    }
+    catch (final RemoteException exception) {
+
+      fail("Une RemoteException a été levée, alors qu'on attendait une AxisFault\r\n" + exception);
+
+    }
+
+  }
+
+  /**
+   * Exemple de consommation de l'opération consultation du service web SaeService<br>
+   * <br>
+   * On spécifie les métadonnées souhaitées en retour de la consultation.<br>
+   * <br>
+   * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
+   * dans le test corresponde à une archive en base)
+   * 
+   * @throws RemoteException
+   */
+  @Test
+  public void consultationMTOM_avecMeta_success() throws RemoteException {
+
+    // Identifiant unique d'archivage de l'archive que l'on veut consulter
+    final String idArchive = "EA6DC1AE-D226-4765-853E-4CACED884C18";
+
+    // Métadonnées souhaitées en retour de la consultation
+    final List<String> codesMetasSouhaites = new ArrayList<String>();
+    codesMetasSouhaites.add("Siren");
+    codesMetasSouhaites.add("CodeRND");
+    codesMetasSouhaites.add("CodeOrganismeGestionnaire");
+    codesMetasSouhaites.add("NomFichier");
+
+    // Construction du Stub
+    final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+
+    // Construction du paramètre d'entrée de l'opération consultationMTOM,
+    // avec les objets modèle générés par Axis2.
+    final ConsultationMTOM paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationMTOM(
+                                                                                                  idArchive,
+                                                                                                  codesMetasSouhaites);
+
+    // Appel du service web de consultation
+    final ConsultationMTOMResponse reponse = saeService.consultationMTOM(paramsEntree);
+
+    // Affichage du résultat de la consultation
+    afficheResultatConsultation(reponse);
+
+  }
 
 }

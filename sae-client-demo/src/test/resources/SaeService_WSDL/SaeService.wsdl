@@ -1,727 +1,512 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsdl:definitions targetNamespace="http://www.cirtil.fr/saeService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.cirtil.fr/saeService" xmlns:sae="http://www.cirtil.fr/saeService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap12/">
   <wsdl:types>
-    <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-         <xsd:import namespace="http://www.cirtil.fr/saeService" schemaLocation="SaeService.xsd"/>
-      </xsd:schema>
+    <xsd:schema>
+      <xsd:import namespace="http://www.cirtil.fr/saeService" schemaLocation="SaeService.xsd"/>
+    </xsd:schema>
   </wsdl:types>
   <wsdl:message name="restoreMasseResponseMessage">
-<wsdl:documentation>
-         Message de reponse à un demande de restore
-         masse
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:restoreMasseResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de reponse à un demande de restore
+         masse</wsdl:documentation>
+    <wsdl:part name="output" element="tns:restoreMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="recuperationMetadonneesResponseMessage">
-<wsdl:documentation>Message contenant la liste des
+    <wsdl:documentation>Message contenant la liste des
          métadonnées
-         disponible pour le client
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:recuperationMetadonneesResponse">
-    </wsdl:part>
+         disponible pour le client</wsdl:documentation>
+    <wsdl:part name="output" element="tns:recuperationMetadonneesResponse"/>
   </wsdl:message>
   <wsdl:message name="repriseRequestMessage">
-<wsdl:documentation>Message de demande de reprise de job
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:reprise">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande de reprise de job</wsdl:documentation>
+    <wsdl:part name="input" element="tns:reprise"/>
   </wsdl:message>
   <wsdl:message name="transfertMasseResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
+    <wsdl:documentation>Message de réponse à une demande
          de transfert
          de
          documents multiples avec le hash du
-         sommaire.xml
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:transfertMasseResponse">
-    </wsdl:part>
+         sommaire.xml</wsdl:documentation>
+    <wsdl:part name="output" element="tns:transfertMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="rechercheResponseMessage">
-<wsdl:documentation>Message contenant le résultat d'une
+    <wsdl:documentation>Message contenant le résultat d'une
          recherche
-         documentaire sur le SAE
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:rechercheResponse">
-    </wsdl:part>
+         documentaire sur le SAE</wsdl:documentation>
+    <wsdl:part name="output" element="tns:rechercheResponse"/>
   </wsdl:message>
   <wsdl:message name="stockageUnitaireRequestMessage">
-<wsdl:documentation>Message de demande pour archiver un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:stockageUnitaire">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour archiver un document
+         unique</wsdl:documentation>
+    <wsdl:part name="input" element="tns:stockageUnitaire"/>
   </wsdl:message>
   <wsdl:message name="archivageMasseAvecHashRequestMessage">
-<wsdl:documentation>Message de demande pour archiver des
+    <wsdl:documentation>Message de demande pour archiver des
          documents
-         multiples avec le hash du sommaire.xml
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:archivageMasseAvecHash">
-    </wsdl:part>
+         multiples avec le hash du sommaire.xml</wsdl:documentation>
+    <wsdl:part name="input" element="tns:archivageMasseAvecHash"/>
   </wsdl:message>
   <wsdl:message name="documentExistantRequestMessage">
-<wsdl:documentation>Message contenant la demande de
-         verification de l'existance du documents
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:documentExistant">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant la demande de
+         verification de l'existance du documents</wsdl:documentation>
+    <wsdl:part name="input" element="tns:documentExistant"/>
   </wsdl:message>
   <wsdl:message name="rechercheNbResRequestMessage">
-<wsdl:documentation>Message de demande d'une recherche
+    <wsdl:documentation>Message de demande d'une recherche
          documentaire sur le SAE (avec retour du nombre de
-         résultats)
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:rechercheNbRes">
-    </wsdl:part>
+         résultats)</wsdl:documentation>
+    <wsdl:part name="input" element="tns:rechercheNbRes"/>
   </wsdl:message>
   <wsdl:message name="transfertMasseRequestMessage">
-<wsdl:documentation>Message de demande pour transférer des
+    <wsdl:documentation>Message de demande pour transférer des
          documents
-         multiples avec le hash du sommaire.xml
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:transfertMasse">
-    </wsdl:part>
+         multiples avec le hash du sommaire.xml</wsdl:documentation>
+    <wsdl:part name="input" element="tns:transfertMasse"/>
   </wsdl:message>
   <wsdl:message name="consultationRequestMessage">
-<wsdl:documentation>Message de demande d'une consultation de
-         documents SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:consultation">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande d'une consultation de
+         documents SAE</wsdl:documentation>
+    <wsdl:part name="input" element="tns:consultation"/>
   </wsdl:message>
   <wsdl:message name="consultationMTOMRequestMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         consultationMTOM de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:consultationMTOM">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         consultationMTOM de documents au SAE</wsdl:documentation>
+    <wsdl:part name="input" element="tns:consultationMTOM"/>
   </wsdl:message>
   <wsdl:message name="ajoutNoteResponseMessage">
-<wsdl:documentation>
-         Message contenant le résultat de la
+    <wsdl:documentation>Message contenant le résultat de la
          création
-         d'une note
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:ajoutNoteResponse">
-    </wsdl:part>
+         d'une note</wsdl:documentation>
+    <wsdl:part name="output" element="tns:ajoutNoteResponse"/>
+  </wsdl:message>
+  <wsdl:message name="ajoutNoteRequestMessage">
+    <wsdl:documentation>Message contenant la demande d'ajout d'une
+         note sur un document</wsdl:documentation>
+    <wsdl:part name="input" element="tns:ajoutNote"/>
   </wsdl:message>
   <wsdl:message name="archivageMasseAvecHashResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
+    <wsdl:documentation>Message de réponse à une demande
          d'archivage
          de
          documents multiples avec le hash du
-         sommaire.xml
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:archivageMasseAvecHashResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="ajoutNoteRequestMessage">
-<wsdl:documentation>
-         Message contenant la demande d'ajout d'une
-         note sur un document
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:ajoutNote">
-    </wsdl:part>
+         sommaire.xml</wsdl:documentation>
+    <wsdl:part name="output" element="tns:archivageMasseAvecHashResponse"/>
   </wsdl:message>
   <wsdl:message name="consultationGNTGNSRequestMessage">
-<wsdl:documentation>Message contenant la demande de
-         consultation GNT vers GNS de documents
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:consultationGNTGNS">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant la demande de
+         consultation GNT vers GNS de documents</wsdl:documentation>
+    <wsdl:part name="input" element="tns:consultationGNTGNS"/>
   </wsdl:message>
   <wsdl:message name="archivageMasseRequestMessage">
-<wsdl:documentation>Message de demande pour archiver des
+    <wsdl:documentation>Message de demande pour archiver des
          documents
-         multiples
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:archivageMasse">
-    </wsdl:part>
+         multiples</wsdl:documentation>
+    <wsdl:part name="input" element="tns:archivageMasse"/>
   </wsdl:message>
   <wsdl:message name="getDocFormatOrigineRequestMessage">
-<wsdl:documentation>Message de demande de récupération du document
-         au format d'origine
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:getDocFormatOrigine">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande de récupération du document
+         au format d'origine</wsdl:documentation>
+    <wsdl:part name="input" element="tns:getDocFormatOrigine"/>
   </wsdl:message>
   <wsdl:message name="consultationMTOMResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         consultationMTOM de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:consultationMTOMResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="suppressionRequestMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         suppression de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:suppression">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         consultationMTOM de documents au SAE</wsdl:documentation>
+    <wsdl:part name="output" element="tns:consultationMTOMResponse"/>
   </wsdl:message>
   <wsdl:message name="consultationAffichableResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
+    <wsdl:documentation>Message contenant le résultat de la
          consultation de documents au SAE dans un format
-         affichable
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:consultationAffichableResponse">
-    </wsdl:part>
+         affichable</wsdl:documentation>
+    <wsdl:part name="output" element="tns:consultationAffichableResponse"/>
+  </wsdl:message>
+  <wsdl:message name="suppressionRequestMessage">
+    <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+    <wsdl:part name="input" element="tns:suppression"/>
   </wsdl:message>
   <wsdl:message name="rechercheParIterateurRequestMessage">
-<wsdl:documentation>Message de demande d'une recherche
-         documentaire sur le SAE (par iterateur)
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:rechercheParIterateur">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande d'une recherche
+         documentaire sur le SAE (par iterateur)</wsdl:documentation>
+    <wsdl:part name="input" element="tns:rechercheParIterateur"/>
   </wsdl:message>
   <wsdl:message name="documentExistantResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         verification de l'existance du documents
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:documentExistantResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         verification de l'existance du documents</wsdl:documentation>
+    <wsdl:part name="output" element="tns:documentExistantResponse"/>
   </wsdl:message>
   <wsdl:message name="transfertResponseMessage">
-<wsdl:documentation>Message contenant le résultat du
+    <wsdl:documentation>Message contenant le résultat du
          transfert
          de
-         documents de la GNT vers la GNS
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:transfertResponse">
-    </wsdl:part>
+         documents de la GNT vers la GNS</wsdl:documentation>
+    <wsdl:part name="output" element="tns:transfertResponse"/>
   </wsdl:message>
   <wsdl:message name="modificationResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         suppression de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:modificationResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+    <wsdl:part name="output" element="tns:modificationResponse"/>
   </wsdl:message>
   <wsdl:message name="archivageUnitairePJRequestMessage">
-<wsdl:documentation>Message de demande pour archiver un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:archivageUnitairePJ">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour archiver un document
+         unique</wsdl:documentation>
+    <wsdl:part name="input" element="tns:archivageUnitairePJ"/>
   </wsdl:message>
   <wsdl:message name="rechercheNbResResponseMessage">
-<wsdl:documentation>Message contenant le résultat d'une
+    <wsdl:documentation>Message contenant le résultat d'une
          recherche
          documentaire sur le SAE (avec retour du nombre de
-         résultats)
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:rechercheNbResResponse">
-    </wsdl:part>
+         résultats)</wsdl:documentation>
+    <wsdl:part name="output" element="tns:rechercheNbResResponse"/>
   </wsdl:message>
   <wsdl:message name="suppressionMasseResponseMessage">
-<wsdl:documentation>
-         Message de reponse à une demande de
-         suppression de masse
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:suppressionMasseResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de reponse à une demande de
+         suppression de masse</wsdl:documentation>
+    <wsdl:part name="output" element="tns:suppressionMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="consultationAffichableRequestMessage">
-<wsdl:documentation>Message de demande d'une consultation de
-         documents SAE dans un format affichable
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:consultationAffichable">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande d'une consultation de
+         documents SAE dans un format affichable</wsdl:documentation>
+    <wsdl:part name="input" element="tns:consultationAffichable"/>
   </wsdl:message>
   <wsdl:message name="PingSecureResponseMessage">
-<wsdl:documentation>Message de réponse du service de test serveur
-         en mode sécurisé
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:PingSecureResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse du service de test serveur
+         en mode sécurisé</wsdl:documentation>
+    <wsdl:part name="output" element="tns:PingSecureResponse"/>
   </wsdl:message>
   <wsdl:message name="etatTraitementsMasseRequestMessage">
-<wsdl:documentation>Message de demande de récupération des états
-         des traitements de masse
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:etatTraitementsMasse">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande de récupération des états
+         des traitements de masse</wsdl:documentation>
+    <wsdl:part name="input" element="tns:etatTraitementsMasse"/>
   </wsdl:message>
   <wsdl:message name="modificationMasseRequestMessage">
-<wsdl:documentation>Message de demande pour modification en masse
-      de documents
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:modificationMasse">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour modification en masse
+      de documents</wsdl:documentation>
+    <wsdl:part name="input" element="tns:modificationMasse"/>
   </wsdl:message>
   <wsdl:message name="consultationGNTGNSResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         consultation GNT vers GNS de documents
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:consultationGNTGNSResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         consultation GNT vers GNS de documents</wsdl:documentation>
+    <wsdl:part name="output" element="tns:consultationGNTGNSResponse"/>
   </wsdl:message>
   <wsdl:message name="archivageUnitaireRequestMessage">
-<wsdl:documentation>Message de demande pour archiver un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:archivageUnitaire">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour archiver un document
+         unique</wsdl:documentation>
+    <wsdl:part name="input" element="tns:archivageUnitaire"/>
   </wsdl:message>
   <wsdl:message name="copieResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         copie de documents
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:copieResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         copie de documents</wsdl:documentation>
+    <wsdl:part name="output" element="tns:copieResponse"/>
   </wsdl:message>
   <wsdl:message name="restoreMasseRequestMessage">
-<wsdl:documentation>
-         Message de demande pour la restore masse
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:restoreMasse">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour la restore masse</wsdl:documentation>
+    <wsdl:part name="input" element="tns:restoreMasse"/>
   </wsdl:message>
   <wsdl:message name="suppressionResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         suppression de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:suppressionResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+    <wsdl:part name="output" element="tns:suppressionResponse"/>
   </wsdl:message>
   <wsdl:message name="modificationRequestMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         suppression de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:modification">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         suppression de documents au SAE</wsdl:documentation>
+    <wsdl:part name="input" element="tns:modification"/>
   </wsdl:message>
   <wsdl:message name="copieRequestMessage">
-<wsdl:documentation>Message contenant la demande de
-         copie de documents
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:copie">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant la demande de
+         copie de documents</wsdl:documentation>
+    <wsdl:part name="input" element="tns:copie"/>
   </wsdl:message>
   <wsdl:message name="modificationMasseResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
-      de modification en masse de document
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:modificationMasseResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse à une demande
+      de modification en masse de document</wsdl:documentation>
+    <wsdl:part name="output" element="tns:modificationMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="etatTraitementsMasseResponseMessage">
-<wsdl:documentation>
-         Message de réponse de récupération des états
-         des traitements de masse
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:etatTraitementsMasseResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse de récupération des états
+         des traitements de masse</wsdl:documentation>
+    <wsdl:part name="output" element="tns:etatTraitementsMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="rechercheRequestMessage">
-<wsdl:documentation>Message de demande d'une recherche
-         documentaire sur le SAE
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:recherche">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande d'une recherche
+         documentaire sur le SAE</wsdl:documentation>
+    <wsdl:part name="input" element="tns:recherche"/>
   </wsdl:message>
   <wsdl:message name="deblocageRequestMessage">
-<wsdl:documentation>Message de demande de déblocage de job
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:deblocage">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande de déblocage de job</wsdl:documentation>
+    <wsdl:part name="input" element="tns:deblocage"/>
   </wsdl:message>
   <wsdl:message name="suppressionMasseRequestMessage">
-<wsdl:documentation>
-         Message de demande pour la suppressionde masse
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:suppressionMasse">
-    </wsdl:part>
+    <wsdl:documentation>Message de demande pour la suppressionde masse</wsdl:documentation>
+    <wsdl:part name="input" element="tns:suppressionMasse"/>
   </wsdl:message>
   <wsdl:message name="PingSecureRequestMessage">
-<wsdl:documentation>Message d'interrogation du service de test
-         serveur en mode sécurisé
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:PingSecureRequest">
-    </wsdl:part>
+    <wsdl:documentation>Message d'interrogation du service de test
+         serveur en mode sécurisé</wsdl:documentation>
+    <wsdl:part name="input" element="tns:PingSecureRequest"/>
   </wsdl:message>
   <wsdl:message name="getDocFormatOrigineResponseMessage">
-<wsdl:documentation>
-         Message de réponse de récupération d'un
+    <wsdl:documentation>Message de réponse de récupération d'un
          document
          Au format
-         d'origine
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:getDocFormatOrigineResponse">
-    </wsdl:part>
+         d'origine</wsdl:documentation>
+    <wsdl:part name="output" element="tns:getDocFormatOrigineResponse"/>
   </wsdl:message>
   <wsdl:message name="archivageUnitairePJResponseMessage">
-<wsdl:documentation>Message de réponse à l'archivage d'un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:archivageUnitairePJResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse à l'archivage d'un document
+         unique</wsdl:documentation>
+    <wsdl:part name="output" element="tns:archivageUnitairePJResponse"/>
   </wsdl:message>
   <wsdl:message name="repriseResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
-         de reprise de job
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:repriseResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse à une demande
+         de reprise de job</wsdl:documentation>
+    <wsdl:part name="output" element="tns:repriseResponse"/>
   </wsdl:message>
   <wsdl:message name="PingResponseMessage">
-<wsdl:documentation>Message de réponse du service de test serveur
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:PingResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse du service de test serveur</wsdl:documentation>
+    <wsdl:part name="output" element="tns:PingResponse"/>
   </wsdl:message>
   <wsdl:message name="archivageUnitaireResponseMessage">
-<wsdl:documentation>Message de réponse à l'archivage d'un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:archivageUnitaireResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse à l'archivage d'un document
+         unique</wsdl:documentation>
+    <wsdl:part name="output" element="tns:archivageUnitaireResponse"/>
   </wsdl:message>
   <wsdl:message name="consultationResponseMessage">
-<wsdl:documentation>Message contenant le résultat de la
-         consultation de documents au SAE
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:consultationResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message contenant le résultat de la
+         consultation de documents au SAE</wsdl:documentation>
+    <wsdl:part name="output" element="tns:consultationResponse"/>
   </wsdl:message>
   <wsdl:message name="recuperationMetadonneesRequestMessage">
-<wsdl:documentation>Message contenant la demande
+    <wsdl:documentation>Message contenant la demande
          de récupération
-         des métadonnées disponible pour le client
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:recuperationMetadonnees">
-    </wsdl:part>
+         des métadonnées disponible pour le client</wsdl:documentation>
+    <wsdl:part name="input" element="tns:recuperationMetadonnees"/>
   </wsdl:message>
   <wsdl:message name="deblocageResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
-         de déblocage de job
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:deblocageResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message de réponse à une demande
+         de déblocage de job</wsdl:documentation>
+    <wsdl:part name="output" element="tns:deblocageResponse"/>
   </wsdl:message>
   <wsdl:message name="PingRequestMessage">
-<wsdl:documentation>Message d'interrogation du service de test
-         serveur
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:PingRequest">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="archivageMasseResponseMessage">
-<wsdl:documentation>Message de réponse à une demande
-         d'archivage
-         de
-         documents multiples
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:archivageMasseResponse">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="stockageUnitaireResponseMessage">
-<wsdl:documentation>Message de réponse à l'archivage d'un document
-         unique
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:stockageUnitaireResponse">
-    </wsdl:part>
+    <wsdl:documentation>Message d'interrogation du service de test
+         serveur</wsdl:documentation>
+    <wsdl:part name="input" element="tns:PingRequest"/>
   </wsdl:message>
   <wsdl:message name="rechercheParIterateurResponseMessage">
-<wsdl:documentation>Message contenant le résultat d'une
+    <wsdl:documentation>Message contenant le résultat d'une
          recherche
-         documentaire sur le SAE (par iterateur)
-      </wsdl:documentation>
-    <wsdl:part name="output" element="tns:rechercheParIterateurResponse">
-    </wsdl:part>
+         documentaire sur le SAE (par iterateur)</wsdl:documentation>
+    <wsdl:part name="output" element="tns:rechercheParIterateurResponse"/>
+  </wsdl:message>
+  <wsdl:message name="stockageUnitaireResponseMessage">
+    <wsdl:documentation>Message de réponse à l'archivage d'un document
+         unique</wsdl:documentation>
+    <wsdl:part name="output" element="tns:stockageUnitaireResponse"/>
+  </wsdl:message>
+  <wsdl:message name="archivageMasseResponseMessage">
+    <wsdl:documentation>Message de réponse à une demande
+         d'archivage
+         de
+         documents multiples</wsdl:documentation>
+    <wsdl:part name="output" element="tns:archivageMasseResponse"/>
   </wsdl:message>
   <wsdl:message name="transfertRequestMessage">
-<wsdl:documentation>Message contenant la demande de
+    <wsdl:documentation>Message contenant la demande de
          transfert
          de
-         documents de la GNT vers la GNS
-      </wsdl:documentation>
-    <wsdl:part name="input" element="tns:transfert">
-    </wsdl:part>
+         documents de la GNT vers la GNS</wsdl:documentation>
+    <wsdl:part name="input" element="tns:transfert"/>
   </wsdl:message>
   <wsdl:portType name="SaeServicePortType">
     <wsdl:operation name="Ping" parameterOrder="input">
-<wsdl:documentation>Opération de test de la disponibilité
+      <wsdl:documentation>Opération de test de la disponibilité
             du
-            serveur
-         </wsdl:documentation>
-      <wsdl:input message="tns:PingRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:PingResponseMessage">
-    </wsdl:output>
+            serveur</wsdl:documentation>
+      <wsdl:input message="tns:PingRequestMessage"/>
+      <wsdl:output message="tns:PingResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="PingSecure" parameterOrder="input">
-<wsdl:documentation>Opération de test de la disponibilité
+      <wsdl:documentation>Opération de test de la disponibilité
             du
-            serveur en mode sécurisé
-         </wsdl:documentation>
-      <wsdl:input message="tns:PingSecureRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:PingSecureResponseMessage">
-    </wsdl:output>
+            serveur en mode sécurisé</wsdl:documentation>
+      <wsdl:input message="tns:PingSecureRequestMessage"/>
+      <wsdl:output message="tns:PingSecureResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="archivageUnitaire" parameterOrder="input">
-<wsdl:documentation>Opération d'archivage d'un document
-            unique
-         </wsdl:documentation>
-      <wsdl:input message="tns:archivageUnitaireRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:archivageUnitaireResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération d'archivage d'un document
+            unique</wsdl:documentation>
+      <wsdl:input message="tns:archivageUnitaireRequestMessage"/>
+      <wsdl:output message="tns:archivageUnitaireResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="archivageMasse" parameterOrder="input">
-<wsdl:documentation>Opération d'archivage de documents
-            multiples
-         </wsdl:documentation>
-      <wsdl:input message="tns:archivageMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:archivageMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération d'archivage de documents
+            multiples</wsdl:documentation>
+      <wsdl:input message="tns:archivageMasseRequestMessage"/>
+      <wsdl:output message="tns:archivageMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="archivageMasseAvecHash" parameterOrder="input">
-<wsdl:documentation>Opération d'archivage de documents
-            multiples avec un hash pour le sommaire.xml
-         </wsdl:documentation>
-      <wsdl:input message="tns:archivageMasseAvecHashRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:archivageMasseAvecHashResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération d'archivage de documents
+            multiples avec un hash pour le sommaire.xml</wsdl:documentation>
+      <wsdl:input message="tns:archivageMasseAvecHashRequestMessage"/>
+      <wsdl:output message="tns:archivageMasseAvecHashResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="suppressionMasse" parameterOrder="input">
-<wsdl:documentation>
-            Opération de suppression de masse de
-            documents
-         </wsdl:documentation>
-      <wsdl:input message="tns:suppressionMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:suppressionMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de suppression de masse de
+            documents</wsdl:documentation>
+      <wsdl:input message="tns:suppressionMasseRequestMessage"/>
+      <wsdl:output message="tns:suppressionMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="restoreMasse" parameterOrder="input">
-<wsdl:documentation>
-            Opération de restauration en masse de
-            documents supprimés
-         </wsdl:documentation>
-      <wsdl:input message="tns:restoreMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:restoreMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de restauration en masse de
+            documents supprimés</wsdl:documentation>
+      <wsdl:input message="tns:restoreMasseRequestMessage"/>
+      <wsdl:output message="tns:restoreMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="recherche" parameterOrder="input">
-<wsdl:documentation>Opération de recherche documentaire
+      <wsdl:documentation>Opération de recherche documentaire
             sur le
-            SAE
-         </wsdl:documentation>
-      <wsdl:input message="tns:rechercheRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:rechercheResponseMessage">
-    </wsdl:output>
+            SAE</wsdl:documentation>
+      <wsdl:input message="tns:rechercheRequestMessage"/>
+      <wsdl:output message="tns:rechercheResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="consultation" parameterOrder="input">
-<wsdl:documentation>Opération de consultation
+      <wsdl:documentation>Opération de consultation
             documentaire
             sur
             le
-            SAE
-         </wsdl:documentation>
-      <wsdl:input message="tns:consultationRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:consultationResponseMessage">
-    </wsdl:output>
+            SAE</wsdl:documentation>
+      <wsdl:input message="tns:consultationRequestMessage"/>
+      <wsdl:output message="tns:consultationResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="consultationMTOM" parameterOrder="input">
-<wsdl:documentation>Opération de consultationMTOM
+      <wsdl:documentation>Opération de consultationMTOM
             documentaire
-            sur le SAE
-         </wsdl:documentation>
-      <wsdl:input message="tns:consultationMTOMRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:consultationMTOMResponseMessage">
-    </wsdl:output>
+            sur le SAE</wsdl:documentation>
+      <wsdl:input message="tns:consultationMTOMRequestMessage"/>
+      <wsdl:output message="tns:consultationMTOMResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="archivageUnitairePJ" parameterOrder="input">
-<wsdl:documentation>Opération d'archivage d'un document
-            unique
-         </wsdl:documentation>
-      <wsdl:input message="tns:archivageUnitairePJRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:archivageUnitairePJResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération d'archivage d'un document
+            unique</wsdl:documentation>
+      <wsdl:input message="tns:archivageUnitairePJRequestMessage"/>
+      <wsdl:output message="tns:archivageUnitairePJResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="stockageUnitaire" parameterOrder="input">
-<wsdl:documentation>
-            Opération de stockage unitaire d'un
-            document
-         </wsdl:documentation>
-      <wsdl:input message="tns:stockageUnitaireRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:stockageUnitaireResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de stockage unitaire d'un
+            document</wsdl:documentation>
+      <wsdl:input message="tns:stockageUnitaireRequestMessage"/>
+      <wsdl:output message="tns:stockageUnitaireResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="getDocFormatOrigine" parameterOrder="input">
-<wsdl:documentation>
-            Opération de récupération d'un document au
-            format d'origine
-         </wsdl:documentation>
-      <wsdl:input message="tns:getDocFormatOrigineRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:getDocFormatOrigineResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de récupération d'un document au
+            format d'origine</wsdl:documentation>
+      <wsdl:input message="tns:getDocFormatOrigineRequestMessage"/>
+      <wsdl:output message="tns:getDocFormatOrigineResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="modification" parameterOrder="input">
-<wsdl:documentation>Opération de modification d'un
+      <wsdl:documentation>Opération de modification d'un
             document
-            unique
-         </wsdl:documentation>
-      <wsdl:input message="tns:modificationRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:modificationResponseMessage">
-    </wsdl:output>
+            unique</wsdl:documentation>
+      <wsdl:input message="tns:modificationRequestMessage"/>
+      <wsdl:output message="tns:modificationResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="suppression" parameterOrder="input">
-<wsdl:documentation>Opération de suppression d'un
+      <wsdl:documentation>Opération de suppression d'un
             document
-            unique
-         </wsdl:documentation>
-      <wsdl:input message="tns:suppressionRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:suppressionResponseMessage">
-    </wsdl:output>
+            unique</wsdl:documentation>
+      <wsdl:input message="tns:suppressionRequestMessage"/>
+      <wsdl:output message="tns:suppressionResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="recuperationMetadonnees" parameterOrder="input">
-<wsdl:documentation>Opération de récuperation de la liste
+      <wsdl:documentation>Opération de récuperation de la liste
             des
-            métadonnées disponible pour le client
-         </wsdl:documentation>
-      <wsdl:input message="tns:recuperationMetadonneesRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:recuperationMetadonneesResponseMessage">
-    </wsdl:output>
+            métadonnées disponible pour le client</wsdl:documentation>
+      <wsdl:input message="tns:recuperationMetadonneesRequestMessage"/>
+      <wsdl:output message="tns:recuperationMetadonneesResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="transfert" parameterOrder="input">
-<wsdl:documentation>Opération de transfert d'un document
+      <wsdl:documentation>Opération de transfert d'un document
             de
             la
-            GNT vers la GNS
-         </wsdl:documentation>
-      <wsdl:input message="tns:transfertRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:transfertResponseMessage">
-    </wsdl:output>
+            GNT vers la GNS</wsdl:documentation>
+      <wsdl:input message="tns:transfertRequestMessage"/>
+      <wsdl:output message="tns:transfertResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="consultationAffichable" parameterOrder="input">
-<wsdl:documentation>Opération de consultationAffichable
+      <wsdl:documentation>Opération de consultationAffichable
             d'un
             document
-            sur le SAE
-         </wsdl:documentation>
-      <wsdl:input message="tns:consultationAffichableRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:consultationAffichableResponseMessage">
-    </wsdl:output>
+            sur le SAE</wsdl:documentation>
+      <wsdl:input message="tns:consultationAffichableRequestMessage"/>
+      <wsdl:output message="tns:consultationAffichableResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="rechercheNbRes" parameterOrder="input">
-<wsdl:documentation>Opération de recherche documentaire
+      <wsdl:documentation>Opération de recherche documentaire
             sur
             le
             SAE
-            (avec retour du nombre de résultats)
-         </wsdl:documentation>
-      <wsdl:input message="tns:rechercheNbResRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:rechercheNbResResponseMessage">
-    </wsdl:output>
+            (avec retour du nombre de résultats)</wsdl:documentation>
+      <wsdl:input message="tns:rechercheNbResRequestMessage"/>
+      <wsdl:output message="tns:rechercheNbResResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="rechercheParIterateur" parameterOrder="input">
-<wsdl:documentation>Opération de recherche documentaire
+      <wsdl:documentation>Opération de recherche documentaire
             sur
             le
-            SAE (par iterateur)
-         </wsdl:documentation>
-      <wsdl:input message="tns:rechercheParIterateurRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:rechercheParIterateurResponseMessage">
-    </wsdl:output>
+            SAE (par iterateur)</wsdl:documentation>
+      <wsdl:input message="tns:rechercheParIterateurRequestMessage"/>
+      <wsdl:output message="tns:rechercheParIterateurResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="ajoutNote" parameterOrder="input">
-<wsdl:documentation>Opération d'ajout d'une note à un
-            document
-         </wsdl:documentation>
-      <wsdl:input message="tns:ajoutNoteRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:ajoutNoteResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération d'ajout d'une note à un
+            document</wsdl:documentation>
+      <wsdl:input message="tns:ajoutNoteRequestMessage"/>
+      <wsdl:output message="tns:ajoutNoteResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="etatTraitementsMasse" parameterOrder="input">
-<wsdl:documentation>Opération de récupération des états des
-            traitements de masse
-         </wsdl:documentation>
-      <wsdl:input message="tns:etatTraitementsMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:etatTraitementsMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de récupération des états des
+            traitements de masse</wsdl:documentation>
+      <wsdl:input message="tns:etatTraitementsMasseRequestMessage"/>
+      <wsdl:output message="tns:etatTraitementsMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="copie" parameterOrder="input">
-<wsdl:documentation>Opération de copie d'un
-            document
-         </wsdl:documentation>
-      <wsdl:input message="tns:copieRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:copieResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de copie d'un
+            document</wsdl:documentation>
+      <wsdl:input message="tns:copieRequestMessage"/>
+      <wsdl:output message="tns:copieResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="documentExistant" parameterOrder="input">
-<wsdl:documentation>Opération de vérification d'un
-            document
-         </wsdl:documentation>
-      <wsdl:input message="tns:documentExistantRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:documentExistantResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de vérification d'un
+            document</wsdl:documentation>
+      <wsdl:input message="tns:documentExistantRequestMessage"/>
+      <wsdl:output message="tns:documentExistantResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="consultationGNTGNS" parameterOrder="input">
-<wsdl:documentation>Opération de consultation GNT vers GNS d'un
-            document
-         </wsdl:documentation>
-      <wsdl:input message="tns:consultationGNTGNSRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:consultationGNTGNSResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de consultation GNT vers GNS d'un
+            document</wsdl:documentation>
+      <wsdl:input message="tns:consultationGNTGNSRequestMessage"/>
+      <wsdl:output message="tns:consultationGNTGNSResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="modificationMasse" parameterOrder="input">
-<wsdl:documentation>Opération de modification de masse de 
-         documents
-         </wsdl:documentation>
-      <wsdl:input message="tns:modificationMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:modificationMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de modification de masse de 
+         documents</wsdl:documentation>
+      <wsdl:input message="tns:modificationMasseRequestMessage"/>
+      <wsdl:output message="tns:modificationMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="transfertMasse" parameterOrder="input">
-<wsdl:documentation>Opération de transfert de documents
-            multiples avec un hash pour le sommaire.xml
-         </wsdl:documentation>
-      <wsdl:input message="tns:transfertMasseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:transfertMasseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de transfert de documents
+            multiples avec un hash pour le sommaire.xml</wsdl:documentation>
+      <wsdl:input message="tns:transfertMasseRequestMessage"/>
+      <wsdl:output message="tns:transfertMasseResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="deblocage" parameterOrder="input">
-<wsdl:documentation>Opération de déblocage de job
-         </wsdl:documentation>
-      <wsdl:input message="tns:deblocageRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:deblocageResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de déblocage de job</wsdl:documentation>
+      <wsdl:input message="tns:deblocageRequestMessage"/>
+      <wsdl:output message="tns:deblocageResponseMessage"/>
     </wsdl:operation>
     <wsdl:operation name="reprise" parameterOrder="input">
-<wsdl:documentation>Opération de reprise de job
-         </wsdl:documentation>
-      <wsdl:input message="tns:repriseRequestMessage">
-    </wsdl:input>
-      <wsdl:output message="tns:repriseResponseMessage">
-    </wsdl:output>
+      <wsdl:documentation>Opération de reprise de job</wsdl:documentation>
+      <wsdl:input message="tns:repriseRequestMessage"/>
+      <wsdl:output message="tns:repriseResponseMessage"/>
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="SaeServiceSoapBinding" type="tns:SaeServicePortType">
@@ -745,9 +530,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="archivageUnitaire">
-<wsdl:documentation>Service d'archivage unitaire de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service d'archivage unitaire de
+            document</wsdl:documentation>
       <soap:operation soapAction="archivageUnitaire"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -757,9 +541,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="archivageMasse">
-<wsdl:documentation>Service d'archivage de documents
-            multiples
-         </wsdl:documentation>
+      <wsdl:documentation>Service d'archivage de documents
+            multiples</wsdl:documentation>
       <soap:operation soapAction="archivageMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -769,9 +552,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="archivageMasseAvecHash">
-<wsdl:documentation>Opération d'archivage de documents
-            multiples avec un hash fournit pour le sommaire.xml
-         </wsdl:documentation>
+      <wsdl:documentation>Opération d'archivage de documents
+            multiples avec un hash fournit pour le sommaire.xml</wsdl:documentation>
       <soap:operation soapAction="archivageMasseAvecHash"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -781,10 +563,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="suppressionMasse">
-<wsdl:documentation>
-            Opération de suppression de documents en
-            masse
-         </wsdl:documentation>
+      <wsdl:documentation>Opération de suppression de documents en
+            masse</wsdl:documentation>
       <soap:operation soapAction="suppressionMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -794,9 +574,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="restoreMasse">
-<wsdl:documentation>
-            Opération de restaure de documents en masse
-         </wsdl:documentation>
+      <wsdl:documentation>Opération de restaure de documents en masse</wsdl:documentation>
       <soap:operation soapAction="restoreMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -806,10 +584,9 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="recherche">
-<wsdl:documentation>Service de recherche documentaire sur
+      <wsdl:documentation>Service de recherche documentaire sur
             le
-            SAE
-         </wsdl:documentation>
+            SAE</wsdl:documentation>
       <soap:operation soapAction="recherche"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -819,10 +596,9 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="consultation">
-<wsdl:documentation>Service de consultation documentaire
+      <wsdl:documentation>Service de consultation documentaire
             du
-            SAE
-         </wsdl:documentation>
+            SAE</wsdl:documentation>
       <soap:operation soapAction="consultation"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -832,11 +608,10 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="consultationMTOM">
-<wsdl:documentation>Service de consultationMTOM
+      <wsdl:documentation>Service de consultationMTOM
             documentaire
             du
-            SAE
-         </wsdl:documentation>
+            SAE</wsdl:documentation>
       <soap:operation soapAction="consultationMTOM"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -846,9 +621,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="archivageUnitairePJ">
-<wsdl:documentation>Service d'archivage unitaire de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service d'archivage unitaire de
+            document</wsdl:documentation>
       <soap:operation soapAction="archivageUnitairePJ"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -858,9 +632,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="modification">
-<wsdl:documentation>Service de modification unitaire de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service de modification unitaire de
+            document</wsdl:documentation>
       <soap:operation soapAction="modification"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -870,9 +643,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="suppression">
-<wsdl:documentation>Service de suppression unitaire de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service de suppression unitaire de
+            document</wsdl:documentation>
       <soap:operation soapAction="suppression"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -882,10 +654,9 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="recuperationMetadonnees">
-<wsdl:documentation>Service de récupération des
+      <wsdl:documentation>Service de récupération des
             métadonnées
-            disponible pour le client
-         </wsdl:documentation>
+            disponible pour le client</wsdl:documentation>
       <soap:operation soapAction="recuperationMetadonnees"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -895,9 +666,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="transfert">
-<wsdl:documentation>Service de transfert unitaire de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service de transfert unitaire de
+            document</wsdl:documentation>
       <soap:operation soapAction="transfert"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -907,11 +677,10 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="consultationAffichable">
-<wsdl:documentation>Service de consultationMTOM
+      <wsdl:documentation>Service de consultationMTOM
             documentaire
             du
-            SAE dans un format affichable
-         </wsdl:documentation>
+            SAE dans un format affichable</wsdl:documentation>
       <soap:operation soapAction="consultationAffichable"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -921,11 +690,10 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="rechercheNbRes">
-<wsdl:documentation>Service de recherche documentaire sur
+      <wsdl:documentation>Service de recherche documentaire sur
             le
             SAE
-            (avec retour du nombre de résultats)
-         </wsdl:documentation>
+            (avec retour du nombre de résultats)</wsdl:documentation>
       <soap:operation soapAction="rechercheNbRes"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -935,11 +703,10 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="rechercheParIterateur">
-<wsdl:documentation>Service de recherche documentaire sur
+      <wsdl:documentation>Service de recherche documentaire sur
             le
             SAE
-            (par iterateur)
-         </wsdl:documentation>
+            (par iterateur)</wsdl:documentation>
       <soap:operation soapAction="rechercheParIterateur"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -949,8 +716,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="ajoutNote">
-<wsdl:documentation>Service d'ajout de note à un document
-         </wsdl:documentation>
+      <wsdl:documentation>Service d'ajout de note à un document</wsdl:documentation>
       <soap:operation soapAction="ajoutNote"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -960,9 +726,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="stockageUnitaire">
-<wsdl:documentation>
-            Service de stockage unitaire de document
-         </wsdl:documentation>
+      <wsdl:documentation>Service de stockage unitaire de document</wsdl:documentation>
       <soap:operation soapAction="stockageUnitaire"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -972,10 +736,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="getDocFormatOrigine">
-<wsdl:documentation>
-            Service de récupération d'un document
-            rattaché au format d'origine
-         </wsdl:documentation>
+      <wsdl:documentation>Service de récupération d'un document
+            rattaché au format d'origine</wsdl:documentation>
       <soap:operation soapAction="getDocFormatOrigine"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -985,9 +747,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="etatTraitementsMasse">
-<wsdl:documentation>
-            Service de récupération des états des traitements de masse
-         </wsdl:documentation>
+      <wsdl:documentation>Service de récupération des états des traitements de masse</wsdl:documentation>
       <soap:operation soapAction="etatTraitementsMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -997,9 +757,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="copie">
-<wsdl:documentation>Service de copie de
-            document
-         </wsdl:documentation>
+      <wsdl:documentation>Service de copie de
+            document</wsdl:documentation>
       <soap:operation soapAction="copie"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1009,8 +768,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="documentExistant">
-<wsdl:documentation>Service verification existence du document
-         </wsdl:documentation>
+      <wsdl:documentation>Service verification existence du document</wsdl:documentation>
       <soap:operation soapAction="documentExistant"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1020,9 +778,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="consultationGNTGNS">
-<wsdl:documentation>Service de consultation GNT vers GNS de
-            documents
-         </wsdl:documentation>
+      <wsdl:documentation>Service de consultation GNT vers GNS de
+            documents</wsdl:documentation>
       <soap:operation soapAction="consultationGNTGNS"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1032,9 +789,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="modificationMasse">
-<wsdl:documentation>Service de modification en masse de
-            documents
-         </wsdl:documentation>
+      <wsdl:documentation>Service de modification en masse de
+            documents</wsdl:documentation>
       <soap:operation soapAction="modificationMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1044,9 +800,8 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="transfertMasse">
-<wsdl:documentation>Service de transfert de documents
-            multiples
-         </wsdl:documentation>
+      <wsdl:documentation>Service de transfert de documents
+            multiples</wsdl:documentation>
       <soap:operation soapAction="transfertMasse"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1056,8 +811,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="deblocage">
-<wsdl:documentation>Service de déblocage de job
-         </wsdl:documentation>
+      <wsdl:documentation>Service de déblocage de job</wsdl:documentation>
       <soap:operation soapAction="deblocage"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1067,8 +821,7 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="reprise">
-<wsdl:documentation>Service de reprise de job
-         </wsdl:documentation>
+      <wsdl:documentation>Service de reprise de job</wsdl:documentation>
       <soap:operation soapAction="reprise"/>
       <wsdl:input>
         <soap:body use="literal"/>
@@ -1080,7 +833,7 @@
   </wsdl:binding>
   <wsdl:service name="SaeService">
     <wsdl:port name="SaeServicePort" binding="tns:SaeServiceSoapBinding">
-      <soap:address location="http://localhost:8080/axis2/services/SaeService/"/>
+      <soap:address location="http://localhost:8080/sae-webservices/services/SaeService/"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
