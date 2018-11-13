@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae</artifactId>
-	<version>19.2.0.2-SNAPSHOT</version>
+	<version>19.2.0.2</version>
 	<packaging>pom</packaging>
 
 	<name>sae</name>
@@ -313,13 +313,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.2.0.2
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.2.0.2
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.2.0.2
       </connection>
 	</scm>
 

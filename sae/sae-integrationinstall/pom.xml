@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae</artifactId>
-		<version>19.2.0.2-SNAPSHOT</version>
+		<version>19.2.0.2</version>
 	</parent>
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-integrationinstall</artifactId>
-	<version>19.2.0.2-SNAPSHOT</version>
+	<version>19.2.0.2</version>
 
 	<name>sae-integrationinstall</name>
 
@@ -123,22 +123,22 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-lotinstallmaj</artifactId>
-			<version>19.2.0.2-SNAPSHOT</version>
+			<version>19.2.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-dfce-admin-exploit</artifactId>
-			<version>19.2.0.2-SNAPSHOT</version>
+			<version>19.2.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-rnd</artifactId>
-			<version>19.2.0.2-SNAPSHOT</version>
+			<version>19.2.0.2</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-igcmaj</artifactId>
-			<version>19.2.0.2-SNAPSHOT</version>
+			<version>19.2.0.2</version>
 		</dependency>
       
       <!-- Spring -->
