@@ -56,19 +56,6 @@
                </execution>
             </executions>
          </plugin>
-         <!-- PLUGIN HAWAI/FEDEX -->
-		<plugin>
-			<groupId>fr.acoss.industrialisation.maven</groupId>
-			<artifactId>hawai-maven-plugin</artifactId>
-			<configuration>
-				<projectName>ged</projectName>
-				<hawaiVersion>hawai6</hawaiVersion>
-				<applicationName>data-sae</applicationName>
-				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
-				<fedex>false</fedex>
-				<skip>false</skip>
-			</configuration>
-		</plugin>
       </plugins>
 
    </build>
@@ -91,5 +78,30 @@
       
    </dependencies>
    
+	<profiles>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
 
+			<build>
+				<plugins>
+					<!-- PLUGIN HAWAI/FEDEX -->
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<applicationName>data-sae</applicationName>
+							<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
+							<fedex>false</fedex>
+							<skip>false</skip>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

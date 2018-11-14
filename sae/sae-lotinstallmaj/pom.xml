@@ -87,18 +87,6 @@
 					<skipTests>true</skipTests>
 				</configuration>
 			</plugin>
-		
-		<!-- PLUGIN HAWAI/FEDEX -->
-			<plugin>
-				<groupId>fr.acoss.industrialisation.maven</groupId>
-				<artifactId>hawai-maven-plugin</artifactId>
-				<configuration>
-					<applicationName>${project.name}</applicationName>
-					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
-					<fedex>false</fedex>
-					<skip>false</skip>
-				</configuration>
-			</plugin>
 		</plugins>
 
 	</build>
@@ -171,6 +159,28 @@
 						</configuration>
 					</plugin>
 
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<!-- PLUGIN HAWAI/FEDEX -->
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<configuration>
+							<applicationName>${project.name}</applicationName>
+							<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
+							<fedex>false</fedex>
+							<skip>false</skip>
+						</configuration>
+					</plugin>
 				</plugins>
 			</build>
 		</profile>
