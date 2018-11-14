@@ -291,13 +291,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
       </connection>
 	</scm>
 
