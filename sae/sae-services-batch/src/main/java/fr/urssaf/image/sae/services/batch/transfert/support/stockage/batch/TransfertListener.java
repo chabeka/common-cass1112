@@ -138,7 +138,7 @@ public class TransfertListener extends AbstractListener {
     */
    @BeforeChunk
    protected final void beforeChunk() {
-      while (Boolean.TRUE.equals(executor.getIsInterrupted())) {
+      while (Boolean.TRUE.equals(executor.isInterrupted())) {
          try {
             LOGGER.debug("en attente de reprise de travail");
             Thread.sleep(THREAD_SLEEP);

@@ -87,7 +87,6 @@
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
                <listener ref="controleListener" />
-              <!-- <listener ref="controleMetaDocumentModificationProcessor" /> -->
                <listener ref="convertMetaDocumentModificationProcessor" />
                <listener ref="checkEcdePermissionAfterStepListener" />
             </listeners>

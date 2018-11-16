@@ -139,25 +139,17 @@ public class CoordinationServiceImpl implements CoordinationService {
       List<JobQueue> listeTraitement = this.decisionService
             .trouverListeJobALancer(jobsEnAttente, jobsEnCours);
 
-      // Etape 4 : vérification que le serveur DFCE est Up!
-      if (!dfceSuppport.isDfceUp()) {
-         LOG.debug("{} - DFCE n'est pas accessible avec la configuration",
-               PREFIX_LOG);
-         throw new AucunJobALancerException();
-
-      }
-
-      // Etape 5 : Réservation du traitement
+      // Etape 4 : Réservation du traitement
       JobQueue traitement = null;
       for (JobQueue jobQueue : listeTraitement) {
          if (isJobSelectionnableALancer(jobQueue)) {
             try {
-               // Etape 6 : Vérification que l'URL ECDE est toujours actif
+               // Etape 5 : Vérification que l'URL ECDE est toujours actif
                if (!Constantes.REPRISE_MASSE_JN.equals(jobQueue.getType())) {
                   this.decisionService
                         .controleDispoEcdeTraitementMasse(jobQueue);
                }
-               // Etape 7 : Positionne le sémaphore pour le traitement
+               // Etape 6 : Positionne le sémaphore pour le traitement
                // sélectionné
                traitement = this.jobService
                      .reserverCodeTraitementJobALancer(jobQueue);
@@ -187,7 +179,7 @@ public class CoordinationServiceImpl implements CoordinationService {
          throw new AucunJobALancerException();
       }
 
-      // Etape 8 : Réservation du Job
+      // Etape 7 : Réservation du Job
       LOG.debug("{} - traitement à lancer {}", PREFIX_LOG, toString(traitement));
       try {
 

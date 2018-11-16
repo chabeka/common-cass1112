@@ -18,20 +18,8 @@
       class="fr.urssaf.image.sae.services.batch.restore.support.stockage.multithreading.RestorePoolConfiguration">
       <property name="corePoolSize" value="${sae.restoremasse.pool.size}" />
    </bean>
-   
-   
-   <!-- Configuration de l'interruption du traitement -->
-   <bean id="captureMasseConfig"
-      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
-      <qualifier value="interruption_capture_masse" />
-      <property name="start" value="${sae.traitementmasse.interruption.heure}" />
-      <property name="delay" value="${sae.traitementmasse.interruption.delai}" />
-      <property name="tentatives"
-         value="${sae.traitementmasse.interruption.tentatives}" />
-   </bean>
 
    <!-- Import du fichier de définition du job de suppression de masse -->
-   <!-- import resource="applicationContext-sae-services-capturemasse-item.xml" /-->
    <import resource="jobs/job-sae-restore-masse.xml" />   
    
 </beans>

@@ -119,7 +119,16 @@
       de test) -->
    <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
 
-
+   <!-- Configuration de l'interruption du traitement -->
+   <bean id="traitementMasseConfig"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_traitement_masse" />
+      <property name="start" value="${sae.traitementmasse.interruption.heure}" />
+      <property name="delay" value="${sae.traitementmasse.interruption.delai}" />
+      <property name="tentatives"
+         value="${sae.traitementmasse.interruption.tentatives}" />
+   </bean>
+   
    <!-- Reprise du fichier applicationContext de la partie main -->
    <import resource="applicationContext-sae-services-capturemasse-main.xml" />
    <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />

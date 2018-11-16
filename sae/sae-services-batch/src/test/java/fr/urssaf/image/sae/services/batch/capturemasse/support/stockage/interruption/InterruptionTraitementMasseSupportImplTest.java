@@ -26,92 +26,96 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
                                    "/applicationContext-sae-services-batch-test.xml",
-"/applicationContext-sae-services-capturemasse-test-mock-dfcemanager.xml" })
+                                   "/applicationContext-sae-services-capturemasse-test-mock-dfcemanager.xml"})
 public class InterruptionTraitementMasseSupportImplTest {
 
-   /**
-    *
-    */
-   private static final String FORMAT_DATE = "HH:mm:ss";
+  /**
+   *
+   */
+  private static final String FORMAT_DATE = "HH:mm:ss";
 
-   @Autowired
-   private DFCEServices dfceServices;
+  @Autowired
+  private DFCEServices dfceServices;
 
-   @Autowired
-   private InterruptionTraitementMasseSupport support;
+  @Autowired
+  private InterruptionTraitementMasseSupport support;
 
-   @Autowired
-   @Qualifier("interruption_capture_masse")
-   private InterruptionTraitementConfig config;
+  @Autowired
+  @Qualifier("interruption_traitement_masse")
+  private InterruptionTraitementConfig config;
 
-   @Test
-   @DirtiesContext
-   public void testHasInterruptTrue() {
+  @Test
+  @DirtiesContext
+  public void testHasInterruptTrue() {
 
-      final Date dateNow = new Date();
-      final Date dateStart = DateUtils.addMinutes(dateNow, -1);
-      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      final String value = sdf.format(dateStart);
+    final Date dateNow = new Date();
+    final Date dateStart = DateUtils.addMinutes(dateNow, -1);
+    final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+    final String value = sdf.format(dateStart);
 
-      config.setStart(value);
-      config.setDelay(64);
+    config.setStart(value);
+    config.setDelay(64);
 
-      final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
-                                                                    .getTime()), config);
+    final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
+                                                                            .getTime()),
+                                                     config);
 
-      Assert.assertTrue("on doit etre en interruption", interrupt);
+    Assert.assertTrue("on doit etre en interruption", interrupt);
 
-   }
+  }
 
-   @Test
-   @DirtiesContext
-   public void testHasInterruptFalse() {
+  @Test
+  @DirtiesContext
+  public void testHasInterruptFalse() {
 
-      final Date dateNow = new Date();
-      final Date dateStart = DateUtils.addMinutes(dateNow, -1);
-      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      final String value = sdf.format(dateStart);
+    final Date dateNow = new Date();
+    final Date dateStart = DateUtils.addMinutes(dateNow, -1);
+    final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+    final String value = sdf.format(dateStart);
 
-      config.setStart(value);
-      config.setDelay(20);
+    config.setStart(value);
+    config.setDelay(20);
 
-      final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
-                                                                    .getTime()), config);
+    final boolean interrupt = support.hasInterrupted(new DateTime(new Date()
+                                                                            .getTime()),
+                                                     config);
 
-      Assert.assertFalse("on ne doit pas etre en interruption", interrupt);
-   }
+    Assert.assertFalse("on ne doit pas etre en interruption", interrupt);
+  }
 
-   @Test
-   public void testInterruptionError() throws ConnectionServiceEx,
-   InterruptionTraitementException {
+  @Test
+  public void testInterruptionError() throws ConnectionServiceEx,
+      InterruptionTraitementException {
 
-      dfceServices.reconnect();
+    dfceServices.reconnect();
 
-      EasyMock.expectLastCall().andThrow(new Error("erreur connexion")).once();
+    EasyMock.expectLastCall().andThrow(new Error("erreur connexion")).once();
 
-      EasyMock.replay(dfceServices);
+    EasyMock.replay(dfceServices);
 
-      final Date dateNow = new Date();
-      final Date dateStart = DateUtils.addSeconds(dateNow, -60);
-      final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
-      final String value = sdf.format(dateStart);
+    final Date dateNow = new Date();
+    final Date dateStart = DateUtils.addSeconds(dateNow, -60);
+    final SimpleDateFormat sdf = new SimpleDateFormat(FORMAT_DATE);
+    final String value = sdf.format(dateStart);
 
-      config.setStart(value);
-      config.setDelay(62);
-      config.setTentatives(1);
+    config.setStart(value);
+    config.setDelay(62);
+    config.setTentatives(1);
 
-      try {
-         support.interruption(new DateTime(new Date().getTime()), config);
-         Assert.fail("exception attendue");
+    try {
+      support.interruption(new DateTime(new Date().getTime()), config);
+      Assert.fail("exception attendue");
 
-      } catch (final Exception e) {
-         Assert.assertTrue(
-                           "on doit avoir une exception InterruptionTraitementException",
-                           e instanceof InterruptionTraitementException);
-         e.printStackTrace();
+    }
+    catch (final Exception e) {
+      Assert.assertTrue(
+                        "on doit avoir une exception InterruptionTraitementException",
+                        e instanceof InterruptionTraitementException);
+      e.printStackTrace();
 
-      } finally {
-         EasyMock.reset(dfceServices);
-      }
-   }
+    }
+    finally {
+      EasyMock.reset(dfceServices);
+    }
+  }
 }

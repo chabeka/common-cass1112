@@ -126,6 +126,12 @@
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-trace</artifactId>
 			<version>19.2.0.3-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>fr.urssaf.image.commons</groupId>
+					<artifactId>commons-dfce</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
       
        <!-- Pont entre Log4J et SLF4J -->

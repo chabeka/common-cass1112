@@ -61,6 +61,15 @@ public class InterruptionSupportValidationTest {
             return false;
          }
 
+        @Override
+        public boolean isInterrupted() {
+          return false;
+        }
+
+        @Override
+        public void verifyInterruptedProcess(InterruptionTraitementConfig config) throws InterruptionTraitementException {          
+        }
+
       };
 
       support.interruption(ARG_CURRENT_DATE, ARG_INTERRUPTION_CONFIG);
