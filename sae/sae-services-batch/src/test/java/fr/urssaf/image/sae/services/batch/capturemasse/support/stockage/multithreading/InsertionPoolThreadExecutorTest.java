@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multith
 import java.util.UUID;
 
 import org.easymock.EasyMock;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -32,250 +31,247 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class InsertionPoolThreadExecutorTest {
 
-   private InsertionCapturePoolThreadExecutor poolExecutor;
+  private InsertionCapturePoolThreadExecutor poolExecutor;
 
-   @Autowired
-   private InterruptionTraitementMasseSupport interruptionSupport;
+  @Autowired
+  private InterruptionTraitementMasseSupport interruptionSupport;
 
-   @Autowired
-   @Qualifier("storageDocumentService")
-   private StorageDocumentService storageDocumentService;
+  @Autowired
+  @Qualifier("storageDocumentService")
+  private StorageDocumentService storageDocumentService;
 
-   @Autowired
-   private StorageDocumentWriter writer;
+  @Autowired
+  private StorageDocumentWriter writer;
 
-   private InterruptionTraitementConfig interruptionConfig;
+  private InterruptionTraitementConfig interruptionConfig;
 
-   private InsertionRunnable insertionRunnable;
+  private InsertionRunnable insertionRunnable;
 
-   private static final StorageDocument DOCUMENT;
+  private static final StorageDocument DOCUMENT;
 
-   static {
+  static {
 
-      DOCUMENT = new StorageDocument();
-      DOCUMENT.setFilePath("path");
+    DOCUMENT = new StorageDocument();
+    DOCUMENT.setFilePath("path");
+    DOCUMENT.setUuid(UUID.randomUUID());
+
+  }
+
+  @Before
+  public void before() {
+
+    interruptionConfig = new InterruptionTraitementConfig();
+    interruptionConfig.setDelay(120);
+    interruptionConfig.setStart("02:00:00");
+    interruptionConfig.setTentatives(120);
+
+    final InsertionPoolConfiguration poolConfiguration = new InsertionPoolConfiguration();
+    poolConfiguration.setCorePoolSize(20);
+
+    poolExecutor = new InsertionCapturePoolThreadExecutor(poolConfiguration,
+                                                          interruptionSupport,
+                                                          interruptionConfig);
+
+    insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer, 0);
+  }
+
+  @After
+  public void after() {
+
+    EasyMock.reset(storageDocumentService);
+    EasyMock.reset(interruptionSupport);
+
+  }
+
+  @Test
+  public void execute_success() throws InsertionServiceEx,
+      InsertionIdGedExistantEx {
+
+    final int count = 1000;
+
+    // des insertions sont programmées
+    EasyMock
+            .expect(
+                    storageDocumentService.insertStorageDocument(EasyMock
+                                                                         .anyObject(StorageDocument.class)))
+            .andReturn(DOCUMENT)
+            .times(count);
+
+    try {
+      interruptionSupport.verifyInterruptedProcess(interruptionConfig);
+      EasyMock.expectLastCall().times(count);
+    }
+    catch (final InterruptionTraitementException e) {
+      Assert.fail("L'exception ne doit pas être levé ici");
+    }
+
+    EasyMock.replay(interruptionSupport);
+    EasyMock.replay(storageDocumentService);
+
+    for (int i = 0; i < count; i++) {
+      poolExecutor.execute(insertionRunnable);
+    }
+
+    // nécessaire pour le bon déroulement du test
+    poolExecutor.shutdown();
+    poolExecutor.waitFinishInsertion();
+
+    final InsertionMasseRuntimeException executeException = poolExecutor
+                                                                        .getInsertionMasseException();
+    Assert.assertNull("aucune exception de type " + executeException
+        + " n'est attendue", poolExecutor.getInsertionMasseException());
+
+    Assert.assertEquals("le nombre d'insertion de document est inattendu",
+                        count,
+                        poolExecutor.getIntegratedDocuments().size());
+
+    EasyMock.verify(interruptionSupport);
+    EasyMock.verify(storageDocumentService);
+
+  }
+
+  @Test
+  public void execute_success_interruption() throws InsertionServiceEx,
+      InterruptionTraitementException, InsertionIdGedExistantEx {
+
+    final int count = 1000;
+
+    try {
+      interruptionSupport.verifyInterruptedProcess(interruptionConfig);
+      EasyMock.expectLastCall().times(count);
+    }
+    catch (final InterruptionTraitementException e) {
+      Assert.fail("L'exception ne doit pas être levé ici");
+    }
+
+    // des insertions sont programmées
+    EasyMock
+            .expect(
+                    storageDocumentService.insertStorageDocument(EasyMock
+                                                                         .anyObject(StorageDocument.class)))
+            .andReturn(DOCUMENT)
+            .times(count);
+
+    EasyMock.replay(interruptionSupport);
+    EasyMock.replay(storageDocumentService);
+
+    for (int i = 0; i < count; i++) {
+      poolExecutor.execute(insertionRunnable);
+      // Recalcul l'UUID du document
       DOCUMENT.setUuid(UUID.randomUUID());
+    }
 
-   }
+    // nécessaire pour le bon déroulement du test
+    poolExecutor.shutdown();
+    poolExecutor.waitFinishInsertion();
 
-   @Before
-   public void before() {
+    final InsertionMasseRuntimeException executeException = poolExecutor
+                                                                        .getInsertionMasseException();
+    Assert.assertNull("aucune exception de type " + executeException
+        + " n'est attendue", poolExecutor.getInsertionMasseException());
 
-      interruptionConfig = new InterruptionTraitementConfig();
-      interruptionConfig.setDelay(120);
-      interruptionConfig.setStart("02:00:00");
-      interruptionConfig.setTentatives(120);
+    EasyMock.verify(interruptionSupport);
+    EasyMock.verify(storageDocumentService);
 
-      InsertionPoolConfiguration poolConfiguration = new InsertionPoolConfiguration();
-      poolConfiguration.setCorePoolSize(20);
+  }
 
-      poolExecutor = new InsertionCapturePoolThreadExecutor(poolConfiguration,
-            interruptionSupport, interruptionConfig);
+  @Test
+  public void execute_failure_interruption()
+      throws InterruptionTraitementException, InsertionServiceEx,
+      InsertionIdGedExistantEx {
 
-      insertionRunnable = new InsertionRunnable(0, DOCUMENT, writer, 0);
-   }
+    final int count = 1000;
 
-   @After
-   public void after() {
+    // l'interruption échoue
+    final InterruptionTraitementException interruptionException = EasyMock
+                                                                          .createMockBuilder(InterruptionTraitementException.class)
+                                                                          .withConstructor(InterruptionTraitementConfig.class,
+                                                                                           Throwable.class)
+                                                                          .withArgs(interruptionConfig, new ConnectionServiceEx())
+                                                                          .createMock();
+    try {
+      interruptionSupport.verifyInterruptedProcess(interruptionConfig);
+      EasyMock.expectLastCall().andThrow(interruptionException).times(1, count);
+    }
+    catch (final InterruptionTraitementException e) {
+      Assert.fail("L'exception ne doit pas être levé ici");
+    }
 
-      EasyMock.reset(storageDocumentService);
-      EasyMock.reset(interruptionSupport);
-
-   }
-
-   @Test
-   public void execute_success() throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
-
-      int count = 1000;
-
-      // aucune interruption n'est programmée
-      EasyMock
+    // des insertions sont programmées
+    EasyMock
             .expect(
-                  interruptionSupport.hasInterrupted(
-                        EasyMock.anyObject(DateTime.class),
-                        EasyMock.anyObject(InterruptionTraitementConfig.class)))
-            .andReturn(false).times(count);
-
-      // des insertions sont programmées
-      EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class))).andReturn(DOCUMENT)
-            .times(count);
-
-      EasyMock.replay(interruptionSupport);
-      EasyMock.replay(storageDocumentService);
-
-      for (int i = 0; i < count; i++) {
-         poolExecutor.execute(insertionRunnable);
-      }
-
-      // nécessaire pour le bon déroulement du test
-      poolExecutor.shutdown();
-      poolExecutor.waitFinishInsertion();
-
-      InsertionMasseRuntimeException executeException = poolExecutor
-            .getInsertionMasseException();
-      Assert.assertNull("aucune exception de type " + executeException
-            + " n'est attendue", poolExecutor.getInsertionMasseException());
-
-      Assert.assertEquals("le nombre d'insertion de document est inattendu",
-            count, poolExecutor.getIntegratedDocuments().size());
-
-      EasyMock.verify(interruptionSupport);
-      EasyMock.verify(storageDocumentService);
-
-   }
-
-   @Test
-   public void execute_success_interruption() throws InsertionServiceEx,
-         InterruptionTraitementException, InsertionIdGedExistantEx {
-
-      int count = 1000;
-
-      // aucune interruption n'est programmée
-      EasyMock
-            .expect(
-                  interruptionSupport.hasInterrupted(
-                        EasyMock.anyObject(DateTime.class),
-                        EasyMock.anyObject(InterruptionTraitementConfig.class)))
-            .andReturn(true).times(count);
-
-      interruptionSupport.interruption(EasyMock.anyObject(DateTime.class),
-            EasyMock.anyObject(InterruptionTraitementConfig.class));
-
-      // des insertions sont programmées
-      EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class))).andReturn(DOCUMENT)
-            .times(count);
-
-      EasyMock.replay(interruptionSupport);
-      EasyMock.replay(storageDocumentService);
-
-      for (int i = 0; i < count; i++) {
-         poolExecutor.execute(insertionRunnable);
-         // Recalcul l'UUID du document
-         DOCUMENT.setUuid(UUID.randomUUID());
-      }
-
-      // nécessaire pour le bon déroulement du test
-      poolExecutor.shutdown();
-      poolExecutor.waitFinishInsertion();
-
-      InsertionMasseRuntimeException executeException = poolExecutor
-            .getInsertionMasseException();
-      Assert.assertNull("aucune exception de type " + executeException
-            + " n'est attendue", poolExecutor.getInsertionMasseException());
-
-      EasyMock.verify(interruptionSupport);
-      EasyMock.verify(storageDocumentService);
-
-   }
-
-   @Test
-   public void execute_failure_interruption()
-         throws InterruptionTraitementException, InsertionServiceEx,
-         InsertionIdGedExistantEx {
-
-      int count = 1000;
-
-      // une interruption est programmée
-      EasyMock
-            .expect(
-                  interruptionSupport.hasInterrupted(
-                        EasyMock.anyObject(DateTime.class),
-                        EasyMock.anyObject(InterruptionTraitementConfig.class)))
-            .andReturn(true).times(1, count);
-
-      // l'interruption échoue
-      InterruptionTraitementException interruptionException = EasyMock
-            .createMockBuilder(InterruptionTraitementException.class)
-            .withConstructor(InterruptionTraitementConfig.class,
-                  Throwable.class)
-            .withArgs(interruptionConfig, new ConnectionServiceEx())
-            .createMock();
-
-      interruptionSupport.interruption(EasyMock.anyObject(DateTime.class),
-            EasyMock.anyObject(InterruptionTraitementConfig.class));
-
-      EasyMock.expectLastCall().andThrow(interruptionException);
-
-      // des insertions sont programmées
-      EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class))).andReturn(DOCUMENT)
+                    storageDocumentService.insertStorageDocument(EasyMock
+                                                                         .anyObject(StorageDocument.class)))
+            .andReturn(DOCUMENT)
             .times(0, count - 1);
 
-      EasyMock.replay(interruptionSupport);
-      EasyMock.replay(storageDocumentService);
+    EasyMock.replay(interruptionSupport);
+    EasyMock.replay(storageDocumentService);
 
-      for (int i = 0; i < count; i++) {
-         poolExecutor.execute(insertionRunnable);
-      }
+    for (int i = 0; i < count; i++) {
+      poolExecutor.execute(insertionRunnable);
+    }
 
-      // nécessaire pour le bon déroulement du test
-      poolExecutor.shutdown();
-      poolExecutor.waitFinishInsertion();
+    // nécessaire pour le bon déroulement du test
+    poolExecutor.shutdown();
+    poolExecutor.waitFinishInsertion();
 
-      InsertionMasseRuntimeException executeException = poolExecutor
-            .getInsertionMasseException();
-      Assert.assertTrue(
-            "une exception de type " + InterruptionTraitementException.class
-                  + " est attendue",
-            executeException.getCause() instanceof InterruptionTraitementException);
+    final InsertionMasseRuntimeException executeException = poolExecutor
+                                                                        .getInsertionMasseException();
+    Assert.assertTrue(
+                      "une exception de type " + InterruptionTraitementException.class
+                          + " est attendue",
+                      executeException.getCause() instanceof InterruptionTraitementException);
 
-      EasyMock.verify(interruptionSupport);
-      EasyMock.verify(storageDocumentService);
+    EasyMock.verify(interruptionSupport);
+    EasyMock.verify(storageDocumentService);
 
-   }
+  }
 
-   @Test
-   public void execute_failure_insertion()
-         throws InterruptionTraitementException, InsertionServiceEx,
-         InsertionIdGedExistantEx {
+  @Test
+  public void execute_failure_insertion()
+      throws InterruptionTraitementException, InsertionServiceEx,
+      InsertionIdGedExistantEx {
 
-      int count = 1000;
+    final int count = 1000;
 
-      // aucune interruption n'est programmée
-      EasyMock
+    try {
+      interruptionSupport.verifyInterruptedProcess(interruptionConfig);
+      EasyMock.expectLastCall().times(1, count);
+    }
+    catch (final InterruptionTraitementException e) {
+      Assert.fail("L'exception ne doit pas être levé ici");
+    }
+
+    // une des insertions échoue
+
+    EasyMock
             .expect(
-                  interruptionSupport.hasInterrupted(
-                        EasyMock.anyObject(DateTime.class),
-                        EasyMock.anyObject(InterruptionTraitementConfig.class)))
-            .andReturn(false).times(1, count);
-
-      // une des insertions échoue
-
-      EasyMock
-            .expect(
-                  storageDocumentService.insertStorageDocument(EasyMock
-                        .anyObject(StorageDocument.class)))
-            .andThrow(new InsertionServiceEx()).andReturn(DOCUMENT)
+                    storageDocumentService.insertStorageDocument(EasyMock
+                                                                         .anyObject(StorageDocument.class)))
+            .andThrow(new InsertionServiceEx("Exception volontaire pour test d'execution en echec."))
+            .andReturn(DOCUMENT)
             .times(0, count - 1);
 
-      EasyMock.replay(interruptionSupport);
-      EasyMock.replay(storageDocumentService);
+    EasyMock.replay(interruptionSupport);
+    EasyMock.replay(storageDocumentService);
 
-      for (int i = 0; i < count; i++) {
-         poolExecutor.execute(insertionRunnable);
-      }
+    for (int i = 0; i < count; i++) {
+      poolExecutor.execute(insertionRunnable);
+    }
 
-      // nécessaire pour le bon déroulement du test
-      poolExecutor.shutdown();
-      poolExecutor.waitFinishInsertion();
+    // nécessaire pour le bon déroulement du test
+    poolExecutor.shutdown();
+    poolExecutor.waitFinishInsertion();
 
-      InsertionMasseRuntimeException executeException = poolExecutor
-            .getInsertionMasseException();
-      Assert.assertTrue("une exception de type "
-            + InterruptionTraitementException.class + " est attendue",
-            executeException.getCause() instanceof InsertionServiceEx);
+    final InsertionMasseRuntimeException executeException = poolExecutor
+                                                                        .getInsertionMasseException();
+    Assert.assertTrue("une exception de type "
+        + InterruptionTraitementException.class + " est attendue",
+                      executeException.getCause() instanceof InsertionServiceEx);
 
-      EasyMock.verify(interruptionSupport);
-      EasyMock.verify(storageDocumentService);
-   }
+    EasyMock.verify(interruptionSupport);
+    EasyMock.verify(storageDocumentService);
+  }
 
 }
