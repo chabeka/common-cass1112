@@ -107,6 +107,9 @@ public final class CassandraCQLClientFactory implements DisposableBean {
         hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
         hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
       }
+      else {
+        hostsModifiedFinal = tmpHosts;
+      }
       String hosts = "";
       // Découpage des hosts si il y en a plusieurs
       if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
@@ -183,6 +186,9 @@ public final class CassandraCQLClientFactory implements DisposableBean {
       hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
       hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
     }
+    else {
+      hostsModifiedFinal = tmpHosts;
+    }
     String hosts = "";
     // Découpage des hosts si il y en a plusieurs
     if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
@@ -229,7 +235,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
       cluster = Cluster.builder().addContactPointsWithPorts(adresses).withCredentials(userName, password)
           .withPoolingOptions(poolingOptions).withQueryOptions(qo).build();
       session = cluster.connect('\"' + keyspaceName + '\"');
-      this.keyspaceName = keyspaceName;
+      this.keyspaceName = '\"' + keyspaceName + '\"';
     }
 
     server = cassandraServer;

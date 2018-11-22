@@ -89,6 +89,9 @@ public final class CassandraClientFactory implements DisposableBean {
         hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
         hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
       }
+      else {
+        hostsModifiedFinal = tmpHosts;
+      }
       String hosts = "";
       // Découpage des hosts si il y en a plusieurs
       if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
@@ -153,6 +156,9 @@ public final class CassandraClientFactory implements DisposableBean {
       // Remplacement par une chaîne vide
       hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
       hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
+    }
+    else {
+      hostsModifiedFinal = tmpHosts;
     }
     String hosts = "";
     // Découpage des hosts si il y en a plusieurs

@@ -31,76 +31,76 @@ import com.google.common.cache.LoadingCache;
  */
 public class CassandraApiGestionServiceImpl {
 
-   // Spring tire le client CQL factory pour effectuer la requête
-   // @Autowired
-   protected CassandraCQLClientFactory ccf;
+  // Spring tire le client CQL factory pour effectuer la requête
+  // @Autowired
+  protected CassandraCQLClientFactory ccf;
 
-   // Comme pour les services CQL le nom de la CF est présente ici
-   private final String cfName = "modeapi";
+  // Comme pour les services CQL le nom de la CF est présente ici
+  private final String cfName = "modeapi";
 
-   // Ajout du logger pour obtenir des traces si nécessaires
-   private static final Logger LOGGER = LoggerFactory.getLogger(CassandraApiGestionServiceImpl.class);
+  // Ajout du logger pour obtenir des traces si nécessaires
+  private static final Logger LOGGER = LoggerFactory.getLogger(CassandraApiGestionServiceImpl.class);
 
-   private final LoadingCache<String, HashMap<String, String>> modeApisList;
+  private final LoadingCache<String, HashMap<String, String>> modeApisList;
 
-   @Autowired
-   public CassandraApiGestionServiceImpl(final CassandraCQLClientFactory cassandraCQLClientFactory, @Value("${sae.api.gestion.profil.cache}") final int value,
-                                         @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
-      this.ccf = cassandraCQLClientFactory;
-      modeApisList = CacheBuilder.newBuilder()
-                                 .refreshAfterWrite(value,
-                                                    TimeUnit.MINUTES)
-                                 .build(
-                                        new CacheLoader<String, HashMap<String, String>>() {
+  @Autowired
+  public CassandraApiGestionServiceImpl(final CassandraCQLClientFactory cassandraCQLClientFactory, @Value("${sae.api.gestion.profil.cache}") final int value,
+                                        @Value("${sae.api.gestion.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {
+    ccf = cassandraCQLClientFactory;
+    modeApisList = CacheBuilder.newBuilder()
+        .refreshAfterWrite(value,
+                           TimeUnit.MINUTES)
+        .build(
+               new CacheLoader<String, HashMap<String, String>>() {
 
-                                           @Override
-                                           public HashMap<String, String> load(final String identifiant) throws FileNotFoundException {
-                                              return getApiModeFromConfiguration();
-                                           }
-                                        });
+                 @Override
+                 public HashMap<String, String> load(final String identifiant) throws FileNotFoundException {
+                   return getApiModeFromConfiguration();
+                 }
+               });
 
-      if (initCacheOnStartup) {
-         populateCache();
-      }
-   }
+    if (initCacheOnStartup) {
+      populateCache();
+    }
+  }
 
-   /**
-    * Méthode de récupératio en BDD du mode de gestion API
-    *
-    * @return HashMap<String, String>
-    * @throws FileNotFoundException
-    */
-   public HashMap<String, String> getApiModeFromConfiguration() throws FileNotFoundException {
-      // Initialisation de la HashMap
-      final HashMap<String, String> listeCfsModes = new HashMap<>();
-      // Requête en CQL via API Datastax pour aller scruter le contenu de la CF "modeapi"
-      final Select selectQuery = QueryBuilder.select().all().from(ccf.getKeyspace(), cfName);
-      // Parcours du ResultSet
-      final ResultSet results = ccf.getSession().execute(selectQuery);
-      final Iterator<Row> iter = results.iterator();
-      while (iter.hasNext()) {
-         final Row row = iter.next();
-         // Injection de la Row dans la HashMap
-         listeCfsModes.put(row.getString(0), row.getString(1));
-      }
-      ModeGestionAPI.setListeCfsModes(listeCfsModes);
-      // On retourne la HashMap
-      return listeCfsModes;
-   }
+  /**
+   * Méthode de récupératio en BDD du mode de gestion API
+   *
+   * @return HashMap<String, String>
+   * @throws FileNotFoundException
+   */
+  public HashMap<String, String> getApiModeFromConfiguration() throws FileNotFoundException {
+    // Initialisation de la HashMap
+    final HashMap<String, String> listeCfsModes = new HashMap<>();
+    // Requête en CQL via API Datastax pour aller scruter le contenu de la CF "modeapi"
+    final Select selectQuery = QueryBuilder.select().all().from(ccf.getKeyspace(), cfName);
+    // Parcours du ResultSet
+    final ResultSet results = ccf.getSession().execute(selectQuery);
+    final Iterator<Row> iter = results.iterator();
+    while (iter.hasNext()) {
+      final Row row = iter.next();
+      // Injection de la Row dans la HashMap
+      listeCfsModes.put(row.getString(0), row.getString(1));
+    }
+    ModeGestionAPI.setListeCfsModes(listeCfsModes);
+    // On retourne la HashMap
+    return listeCfsModes;
+  }
 
-   /**
-    * Méthode overridé du thread pour effectuer les appels régulier
-    * 5 min d'intervalle pour laisser le temps à chaque serveur
-    * de se mettre à jour
-    */
-   public void populateCache() {
-      try {
-         // On set la HashMap public avec le contenu retourné par la méthode du dessus
-         modeApisList.put(cfName, getApiModeFromConfiguration());
-      }
-      catch (final FileNotFoundException e) {
-         LOGGER.error(e.getMessage());
-      }
-   }
+  /**
+   * Méthode overridé du thread pour effectuer les appels régulier
+   * 5 min d'intervalle pour laisser le temps à chaque serveur
+   * de se mettre à jour
+   */
+  public void populateCache() {
+    try {
+      // On set la HashMap public avec le contenu retourné par la méthode du dessus
+      modeApisList.put(cfName, getApiModeFromConfiguration());
+    }
+    catch (final FileNotFoundException e) {
+      LOGGER.error(e.getMessage());
+    }
+  }
 
 }
