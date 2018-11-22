@@ -37,277 +37,279 @@ import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
 @Service
 public class JournalEvtServiceImpl implements JournalEvtService {
 
-   private final String cfName = "tracejournalevt";
+  private final String cfName = "tracejournalevt";
 
-   private final JournalEvtServiceThrift journalEvtServiceThrift;
+  private final JournalEvtServiceThrift journalEvtServiceThrift;
 
-   private final JournalEvtServiceCql journalEvtCqlService;
+  private final JournalEvtServiceCql journalEvtCqlService;
 
-   private static final String FIN_LOG = "{} - Fin";
+  private static final String FIN_LOG = "{} - Fin";
 
-   private static final String DEBUT_LOG = "{} - Début";
+  private static final String DEBUT_LOG = "{} - Début";
 
-   @Autowired
-   public JournalEvtServiceImpl(final JournalEvtServiceThrift journalEvtServiceThrift, final JournalEvtServiceCql journalEvtCqlService) {
-      super();
-      this.journalEvtServiceThrift = journalEvtServiceThrift;
-      this.journalEvtCqlService = journalEvtCqlService;
-   }
+  @Autowired
+  public JournalEvtServiceImpl(final JournalEvtServiceThrift journalEvtServiceThrift, final JournalEvtServiceCql journalEvtCqlService) {
+    super();
+    this.journalEvtServiceThrift = journalEvtServiceThrift;
+    this.journalEvtCqlService = journalEvtCqlService;
+  }
 
-   @Override
-   public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         return this.journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         return this.journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-      return null;
-   }
+  @Override
+  public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
+    }
+    return null;
+  }
 
-   public LoggerSupport getLoggerSupport() {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         return this.journalEvtCqlService.getLoggerSupport();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         return this.journalEvtServiceThrift.getLoggerSupport();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-      return null;
-   }
+  public LoggerSupport getLoggerSupport() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return journalEvtCqlService.getLoggerSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return journalEvtServiceThrift.getLoggerSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return journalEvtServiceThrift.getLoggerSupport();
+    }
+    return null;
+  }
 
-   public JobClockSupport getClockSupport() {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         return this.journalEvtCqlService.getClockSupport();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         return this.journalEvtServiceThrift.getClockSupport();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-      return null;
-   }
+  public JobClockSupport getClockSupport() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return journalEvtCqlService.getClockSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return journalEvtServiceThrift.getClockSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return journalEvtServiceThrift.getClockSupport();
+    }
+    return null;
+  }
 
-   public Logger getLogger() {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         return this.journalEvtCqlService.getLogger();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         return this.journalEvtServiceThrift.getLogger();
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-      return null;
-   }
+  public Logger getLogger() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return journalEvtCqlService.getLogger();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return journalEvtServiceThrift.getLogger();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return journalEvtServiceThrift.getLogger();
+    }
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public TraceJournalEvt lecture(final UUID identifiant) {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         final TraceJournalEvtCql tracecql = this.journalEvtCqlService.lecture(identifiant);
-         return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         return this.journalEvtServiceThrift.lecture(identifiant);
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-      return null;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public TraceJournalEvt lecture(final UUID identifiant) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final TraceJournalEvtCql tracecql = journalEvtCqlService.lecture(identifiant);
+      return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return journalEvtServiceThrift.lecture(identifiant);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return journalEvtServiceThrift.lecture(identifiant);
+    }
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public List<TraceJournalEvtIndex> lecture(final Date dateDebut, final Date dateFin, final int limite, final boolean reversed) {
-      final String prefix = "lecture()";
-      getLogger().debug(DEBUT_LOG, prefix);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<TraceJournalEvtIndex> lecture(final Date dateDebut, final Date dateFin, final int limite, final boolean reversed) {
+    final String prefix = "lecture()";
+    getLogger().debug(DEBUT_LOG, prefix);
 
-      final List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
-      getLogger().debug("{} - Liste des dates à regarder : {}", prefix, dates);
+    final List<Date> dates = DateRegUtils.getListFromDates(dateDebut, dateFin);
+    getLogger().debug("{} - Liste des dates à regarder : {}", prefix, dates);
 
-      List<TraceJournalEvtIndex> value = null;
-      List<TraceJournalEvtIndex> list;
-      if (reversed) {
-         list = findReversedOrder(dates, limite);
-      } else {
-         list = findNormalOrder(dates, limite);
-      }
+    List<TraceJournalEvtIndex> value = null;
+    List<TraceJournalEvtIndex> list;
+    if (reversed) {
+      list = findReversedOrder(dates, limite);
+    } else {
+      list = findNormalOrder(dates, limite);
+    }
 
-      if (CollectionUtils.isNotEmpty(list)) {
-         value = list;
-      }
+    if (CollectionUtils.isNotEmpty(list)) {
+      value = list;
+    }
 
-      getLogger().debug(FIN_LOG, prefix);
+    getLogger().debug(FIN_LOG, prefix);
 
-      return value;
-   }
+    return value;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void purge(final Date date) {
-      final String prefix = "purge()";
-      getLogger().debug(DEBUT_LOG, prefix);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void purge(final Date date) {
+    final String prefix = "purge()";
+    getLogger().debug(DEBUT_LOG, prefix);
 
-      final Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
+    final Date dateIndex = DateUtils.truncate(date, Calendar.DATE);
 
-      getLoggerSupport().logPurgeJourneeDebut(getLogger(),
-                                              prefix,
-                                              PurgeType.PURGE_EVT,
-                                              DateRegUtils.getJournee(date));
-
-      long nbTracesPurgees = 0;
-
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-         nbTracesPurgees = this.journalEvtCqlService.getSupport().delete(dateIndex,
-                                                                         getClockSupport().currentCLock());
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-         nbTracesPurgees = this.journalEvtServiceThrift.getSupport().delete(dateIndex,
-                                                                            getClockSupport().currentCLock());
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-
-      getLoggerSupport()
-                        .logPurgeJourneeFin(getLogger(),
+    getLoggerSupport().logPurgeJourneeDebut(getLogger(),
                                             prefix,
                                             PurgeType.PURGE_EVT,
-                                            DateRegUtils.getJournee(date),
-                                            nbTracesPurgees);
+                                            DateRegUtils.getJournee(date));
 
-      getLogger().debug(FIN_LOG, prefix);
-   }
+    long nbTracesPurgees = 0;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public boolean hasRecords(final Date date) {
-      final String trcPrefix = "hasRecords()";
-      getLogger().debug(DEBUT_LOG, trcPrefix);
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      nbTracesPurgees = journalEvtCqlService.getSupport().delete(dateIndex,
+                                                                 getClockSupport().currentCLock());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      nbTracesPurgees = journalEvtServiceThrift.getSupport().delete(dateIndex,
+                                                                    getClockSupport().currentCLock());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      nbTracesPurgees = journalEvtServiceThrift.getSupport()
+          .delete(dateIndex,
+                  getClockSupport().currentCLock());
+    }
 
-      final Date beginDate = DateUtils.truncate(date, Calendar.DATE);
-      Date endDate = DateUtils.addDays(beginDate, 1);
-      endDate = DateUtils.addMilliseconds(endDate, -1);
+    getLoggerSupport()
+    .logPurgeJourneeFin(getLogger(),
+                        prefix,
+                        PurgeType.PURGE_EVT,
+                        DateRegUtils.getJournee(date),
+                        nbTracesPurgees);
 
-      final List<TraceJournalEvtIndex> list = lecture(beginDate, endDate, 1, false);
+    getLogger().debug(FIN_LOG, prefix);
+  }
 
-      final boolean hasRecords = CollectionUtils.isNotEmpty(list);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean hasRecords(final Date date) {
+    final String trcPrefix = "hasRecords()";
+    getLogger().debug(DEBUT_LOG, trcPrefix);
 
-      if (!hasRecords) {
-         getLogger().info(
-                          "{} - Aucune trace trouvée pour la journée du {}",
-                          new Object[] {
-                                         trcPrefix,
-                                         new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                          .format(date) });
+    final Date beginDate = DateUtils.truncate(date, Calendar.DATE);
+    Date endDate = DateUtils.addDays(beginDate, 1);
+    endDate = DateUtils.addMilliseconds(endDate, -1);
+
+    final List<TraceJournalEvtIndex> list = lecture(beginDate, endDate, 1, false);
+
+    final boolean hasRecords = CollectionUtils.isNotEmpty(list);
+
+    if (!hasRecords) {
+      getLogger().info(
+                       "{} - Aucune trace trouvée pour la journée du {}",
+                       new Object[] {
+                                     trcPrefix,
+                                     new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
+                                     .format(date) });
+    }
+
+    getLogger().debug(FIN_LOG, trcPrefix);
+    return hasRecords;
+  }
+
+  private List<TraceJournalEvtIndex> findNormalOrder(final List<Date> dates, final int limite) {
+    int index = 0;
+    int countLeft = limite;
+    List<TraceJournalEvtIndex> result = new ArrayList<>();
+    final List<TraceJournalEvtIndex> values = new ArrayList<>();
+    Date currentDate, startDate, endDate;
+
+    do {
+      currentDate = dates.get(index);
+      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      endDate = DateRegUtils.getEndDate(currentDate, dates
+                                        .get(dates.size() - 1));
+
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+        final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
+        }
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+        result = journalEvtServiceThrift.getSupport().findByDates(startDate,
+                                                                  endDate,
+                                                                  countLeft,
+                                                                  true);
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+        result = journalEvtServiceThrift.getSupport()
+            .findByDates(startDate,
+                         endDate,
+                         countLeft,
+                         true);
       }
 
-      getLogger().debug(FIN_LOG, trcPrefix);
-      return hasRecords;
-   }
+      if (CollectionUtils.isNotEmpty(result)) {
+        values.addAll(result);
+        countLeft = limite - values.size();
+        result.clear();
+      }
+      index++;
+    } while (index < dates.size() && countLeft > 0
+        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
-   private List<TraceJournalEvtIndex> findNormalOrder(final List<Date> dates, final int limite) {
-      int index = 0;
-      int countLeft = limite;
-      List<TraceJournalEvtIndex> result = new ArrayList<>();
-      final List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
-      Date currentDate, startDate, endDate;
+    return values;
+  }
 
-      do {
-         currentDate = dates.get(index);
-         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-         endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                             .get(dates.size() - 1));
+  private List<TraceJournalEvtIndex> findReversedOrder(final List<Date> dates, final int limite) {
 
-         final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-            final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
-            if (resultCql != null) {
-               for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
-                  final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
-                  result.add(indexThrift);
-               }
-            }
-         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-            result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
-                                                                           endDate,
-                                                                           countLeft,
-                                                                           true);
-         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-            // Pour exemple
-            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-         }
+    int index = dates.size() - 1;
+    int countLeft = limite;
+    List<TraceJournalEvtIndex> result = new ArrayList<>();
+    final List<TraceJournalEvtIndex> values = new ArrayList<>();
+    Date currentDate, startDate, endDate;
 
-         if (CollectionUtils.isNotEmpty(result)) {
-            values.addAll(result);
-            countLeft = limite - values.size();
-            result.clear();
-         }
-         index++;
-      } while (index < dates.size() && countLeft > 0
-            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
+    do {
+      currentDate = dates.get(index);
+      startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
+      endDate = DateRegUtils.getEndDate(currentDate, dates
+                                        .get(dates.size() - 1));
 
-      return values;
-   }
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+        final List<TraceJournalEvtIndexCql> resultCql = journalEvtCqlService.getSupport().findByDate(currentDate, limite);
+        if (resultCql != null) {
+          for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
+            final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
+            result.add(indexThrift);
+          }
+        }
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+        result = journalEvtServiceThrift.getSupport().findByDates(startDate,
+                                                                  endDate,
+                                                                  countLeft,
+                                                                  true);
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+        result = journalEvtServiceThrift.getSupport()
+                                        .findByDates(startDate,
+                                                     endDate,
+                                                     countLeft,
+                                                     true);
+      }
 
-   private List<TraceJournalEvtIndex> findReversedOrder(final List<Date> dates, final int limite) {
+      if (CollectionUtils.isNotEmpty(result)) {
+        values.addAll(result);
+        countLeft = limite - values.size();
+        result.clear();
+      }
+      index--;
+    } while (index >= 0 && countLeft > 0
+        && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
-      int index = dates.size() - 1;
-      int countLeft = limite;
-      List<TraceJournalEvtIndex> result = new ArrayList<>();
-      final List<TraceJournalEvtIndex> values = new ArrayList<TraceJournalEvtIndex>();
-      Date currentDate, startDate, endDate;
-
-      do {
-         currentDate = dates.get(index);
-         startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
-         endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                             .get(dates.size() - 1));
-
-         final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-            final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
-            if (resultCql != null) {
-               for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
-                  final TraceJournalEvtIndex indexThrift = UtilsTraceMapper.createTraceJournalIndexFromCqlToThrift(traceJournalEvtIndexCql);
-                  result.add(indexThrift);
-               }
-            }
-         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-            result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
-                                                                           endDate,
-                                                                           countLeft,
-                                                                           true);
-         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-            // Pour exemple
-            // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-         }
-
-         if (CollectionUtils.isNotEmpty(result)) {
-            values.addAll(result);
-            countLeft = limite - values.size();
-            result.clear();
-         }
-         index--;
-      } while (index >= 0 && countLeft > 0
-            && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
-
-      return values;
-   }
+    return values;
+  }
 
 }

@@ -47,48 +47,45 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   private static final String DEBUT_LOG = "{} - Début";
 
-   @Autowired
+  @Autowired
   public RegSecuriteServiceImpl(final RegSecuriteServiceThrift regSecuriteThriftServiceImpl, final RegSecuriteServiceCql regSecuriteCqlServiceImpl) {
-      super();
-    this.regSecuriteCqlService = regSecuriteCqlServiceImpl;
-    this.regSecuriteThriftService = regSecuriteThriftServiceImpl;
+    super();
+    regSecuriteCqlService = regSecuriteCqlServiceImpl;
+    regSecuriteThriftService = regSecuriteThriftServiceImpl;
   }
 
   public LoggerSupport getLoggerSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      return this.regSecuriteCqlService.getLoggerSupport();
+      return regSecuriteCqlService.getLoggerSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return this.regSecuriteThriftService.getLoggerSupport();
+      return regSecuriteThriftService.getLoggerSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return regSecuriteThriftService.getLoggerSupport();
     }
     return null;
-   }
+  }
 
-   public JobClockSupport getClockSupport() {
+  public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      return this.regSecuriteCqlService.getClockSupport();
+      return regSecuriteCqlService.getClockSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return this.regSecuriteThriftService.getClockSupport();
+      return regSecuriteThriftService.getClockSupport();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return regSecuriteThriftService.getClockSupport();
     }
     return null;
-   }
+  }
 
   public Logger getLogger() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      return this.regSecuriteCqlService.getLogger();
+      return regSecuriteCqlService.getLogger();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return this.regSecuriteThriftService.getLogger();
+      return regSecuriteThriftService.getLogger();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return regSecuriteThriftService.getLogger();
     }
     return null;
   }
@@ -96,28 +93,27 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   /*
    * (non-Javadoc)
    * @see fr.urssaf.image.sae.trace.service.RegSecuriteService#lecture(java.util.UUID)
-    */
-   @Override
+   */
+  @Override
   public TraceRegSecurite lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       // ON MAP
-      final TraceRegSecuriteCql tracecql = this.regSecuriteCqlService.lecture(identifiant);
+      final TraceRegSecuriteCql tracecql = regSecuriteCqlService.lecture(identifiant);
       return UtilsTraceMapper.createTraceRegSecuriteFromCqlToThrift(tracecql);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return this.regSecuriteThriftService.lecture(identifiant);
+      return regSecuriteThriftService.lecture(identifiant);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return regSecuriteThriftService.lecture(identifiant);
     }
     return null;
-   }
+  }
 
   /*
    * (non-Javadoc)
    * @see fr.urssaf.image.sae.trace.service.RegSecuriteService#lecture(java.util.Date, java.util.Date, int, boolean)
-    */
-   @Override
+   */
+  @Override
   public List<TraceRegSecuriteIndex> lecture(final Date dateDebut, final Date dateFin, final int limite, final boolean reversed) {
     final String prefix = "lecture()";
     getLogger().debug(DEBUT_LOG, prefix);
@@ -131,7 +127,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
       list = findReversedOrder(dates, limite);
     } else {
       list = findNormalOrder(dates, limite);
-   }
+    }
 
     if (CollectionUtils.isNotEmpty(list)) {
       value = list;
@@ -145,8 +141,8 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
   /*
    * (non-Javadoc)
    * @see fr.urssaf.image.sae.trace.service.RegSecuriteService#purge(java.util.Date)
-    */
-   @Override
+   */
+  @Override
   public void purge(final Date date) {
     final String prefix = "purge()";
     getLogger().debug(DEBUT_LOG, prefix);
@@ -162,22 +158,23 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = this.regSecuriteCqlService.getSupport().delete(dateIndex,
-                                                                       getClockSupport().currentCLock());
+      nbTracesPurgees = regSecuriteCqlService.getSupport().delete(dateIndex,
+                                                                  getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      nbTracesPurgees = this.regSecuriteThriftService.getSupport().delete(dateIndex,
-                                                                          getClockSupport().currentCLock());
+      nbTracesPurgees = regSecuriteThriftService.getSupport().delete(dateIndex,
+                                                                     getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      nbTracesPurgees = regSecuriteThriftService.getSupport()
+          .delete(dateIndex,
+                  getClockSupport().currentCLock());
     }
 
     getLoggerSupport()
-                      .logPurgeJourneeFin(getLogger(),
-                                          prefix,
-                                          PurgeType.PURGE_EVT,
-                                          DateRegUtils.getJournee(date),
-                                          nbTracesPurgees);
+    .logPurgeJourneeFin(getLogger(),
+                        prefix,
+                        PurgeType.PURGE_EVT,
+                        DateRegUtils.getJournee(date),
+                        nbTracesPurgees);
 
     getLogger().debug(FIN_LOG, prefix);
   }
@@ -201,7 +198,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
                        new Object[] {
                                      trcPrefix,
                                      new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                      .format(date)});
+                                     .format(date)});
     }
 
     getLogger().debug(FIN_LOG, trcPrefix);
@@ -212,18 +209,18 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     int index = 0;
     int countLeft = limite;
     List<TraceRegSecuriteIndex> result = new ArrayList<>();
-    final List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
+    final List<TraceRegSecuriteIndex> values = new ArrayList<>();
     Date currentDate, startDate, endDate;
 
     do {
       currentDate = dates.get(index);
       startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
       endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+                                        .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+        final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
             final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceRegSecuIndexCql);
@@ -231,13 +228,16 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
           }
         }
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                        endDate,
-                                                                        countLeft,
-                                                                        true);
+        result = regSecuriteThriftService.getSupport().findByDates(startDate,
+                                                                   endDate,
+                                                                   countLeft,
+                                                                   true);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+        result = regSecuriteThriftService.getSupport()
+            .findByDates(startDate,
+                         endDate,
+                         countLeft,
+                         true);
       }
 
       if (CollectionUtils.isNotEmpty(result)) {
@@ -257,18 +257,18 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     int index = dates.size() - 1;
     int countLeft = limite;
     List<TraceRegSecuriteIndex> result = new ArrayList<>();
-    final List<TraceRegSecuriteIndex> values = new ArrayList<TraceRegSecuriteIndex>();
+    final List<TraceRegSecuriteIndex> values = new ArrayList<>();
     Date currentDate, startDate, endDate;
 
     do {
       currentDate = dates.get(index);
       startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
       endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+                                        .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
+        final List<TraceRegSecuriteIndexCql> resultCql = regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegSecuriteIndexCql traceJournalEvtIndexCql : resultCql) {
             final TraceRegSecuriteIndex indexThrift = UtilsTraceMapper.createTraceRegSecuIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -276,13 +276,16 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
           }
         }
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
-                                                                        endDate,
-                                                                        countLeft,
-                                                                        true);
+        result = regSecuriteThriftService.getSupport().findByDates(startDate,
+                                                                   endDate,
+                                                                   countLeft,
+                                                                   true);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+        result = regSecuriteThriftService.getSupport()
+                                         .findByDates(startDate,
+                                                      endDate,
+                                                      countLeft,
+                                                      true);
       }
 
       if (CollectionUtils.isNotEmpty(result)) {
@@ -295,6 +298,6 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
         && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
-   }
+  }
 
 }

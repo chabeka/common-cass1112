@@ -40,12 +40,12 @@ import fr.urssaf.image.sae.trace.utils.UtilsTraceMapper;
 @Service
 public class RegTechniqueServiceImpl implements RegTechniqueService {
 
-   private final JobClockSupport clockSupport;
+  private final JobClockSupport clockSupport;
 
-   private final LoggerSupport loggerSupport;
+  private final LoggerSupport loggerSupport;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(RegTechniqueServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(RegTechniqueServiceImpl.class);
 
   private static final String cfName = "traceregtechnique";
 
@@ -57,59 +57,58 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
   private static final String DEBUT_LOG = "{} - Début";
 
-   /**
-    * Constructeur
-    * 
-    * @param support
-    *           Support de la classe DAO TraceRegTechniqueDao
-    * @param clockSupport
-    *           JobClockSupport Cassandra
-    * @param loggerSupport
-    *           Support pour l'écriture des traces applicatives
-    */
-   @Autowired
+  /**
+   * Constructeur
+   * 
+   * @param support
+   *           Support de la classe DAO TraceRegTechniqueDao
+   * @param clockSupport
+   *           JobClockSupport Cassandra
+   * @param loggerSupport
+   *           Support pour l'écriture des traces applicatives
+   */
+  @Autowired
   public RegTechniqueServiceImpl(final RegTechniqueServiceCql regTechniqueServiceCql, final RegTechniqueServiceThrift regTechniqueServiceThrift,
                                  final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
-      super();
+    super();
     this.regTechniqueServiceCql = regTechniqueServiceCql;
     this.regTechniqueServiceThrift = regTechniqueServiceThrift;
-      this.clockSupport = clockSupport;
-      this.loggerSupport = loggerSupport;
-   }
+    this.clockSupport = clockSupport;
+    this.loggerSupport = loggerSupport;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   public JobClockSupport getClockSupport() {
-      return clockSupport;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  public JobClockSupport getClockSupport() {
+    return clockSupport;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   public Logger getLogger() {
-      return LOGGER;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  public Logger getLogger() {
+    return LOGGER;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   public LoggerSupport getLoggerSupport() {
-      return loggerSupport;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  public LoggerSupport getLoggerSupport() {
+    return loggerSupport;
+  }
 
-   @Override
+  @Override
   public TraceRegTechnique lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       // ON MAP
-      final TraceRegTechniqueCql tracecql = this.regTechniqueServiceCql.lecture(identifiant);
+      final TraceRegTechniqueCql tracecql = regTechniqueServiceCql.lecture(identifiant);
       return UtilsTraceMapper.createTraceRegTechniqueFromCqlToThrift(tracecql);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return this.regTechniqueServiceThrift.lecture(identifiant);
+      return regTechniqueServiceThrift.lecture(identifiant);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return regTechniqueServiceThrift.lecture(identifiant);
     }
     return null;
   }
@@ -155,22 +154,23 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = this.regTechniqueServiceCql.getSupport().delete(dateIndex,
-                                                                        getClockSupport().currentCLock());
+      nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex,
+                                                                   getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      nbTracesPurgees = this.regTechniqueServiceThrift.getSupport().delete(dateIndex,
-                                                                           getClockSupport().currentCLock());
+      nbTracesPurgees = regTechniqueServiceThrift.getSupport().delete(dateIndex,
+                                                                      getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      nbTracesPurgees = regTechniqueServiceThrift.getSupport()
+          .delete(dateIndex,
+                  getClockSupport().currentCLock());
     }
 
     getLoggerSupport()
-                      .logPurgeJourneeFin(getLogger(),
-                                          prefix,
-                                          PurgeType.PURGE_EVT,
-                                          DateRegUtils.getJournee(date),
-                                          nbTracesPurgees);
+    .logPurgeJourneeFin(getLogger(),
+                        prefix,
+                        PurgeType.PURGE_EVT,
+                        DateRegUtils.getJournee(date),
+                        nbTracesPurgees);
 
     getLogger().debug(FIN_LOG, prefix);
   }
@@ -194,7 +194,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
                        new Object[] {
                                      trcPrefix,
                                      new SimpleDateFormat("yyyy-MM-dd", Locale.FRENCH)
-                                                                                      .format(date)});
+                                     .format(date)});
     }
 
     getLogger().debug(FIN_LOG, trcPrefix);
@@ -205,18 +205,18 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     int index = 0;
     int countLeft = limite;
     List<TraceRegTechniqueIndex> result = new ArrayList<>();
-    final List<TraceRegTechniqueIndex> values = new ArrayList<TraceRegTechniqueIndex>();
+    final List<TraceRegTechniqueIndex> values = new ArrayList<>();
     Date currentDate, startDate, endDate;
 
     do {
       currentDate = dates.get(index);
       startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
       endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+                                        .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
+        final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
             final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -224,13 +224,16 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
           }
         }
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
-                                                                         endDate,
-                                                                         countLeft,
-                                                                         true);
+        result = regTechniqueServiceThrift.getSupport().findByDates(startDate,
+                                                                    endDate,
+                                                                    countLeft,
+                                                                    true);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+        result = regTechniqueServiceThrift.getSupport()
+            .findByDates(startDate,
+                         endDate,
+                         countLeft,
+                         true);
       }
 
       if (CollectionUtils.isNotEmpty(result)) {
@@ -250,18 +253,18 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     int index = dates.size() - 1;
     int countLeft = limite;
     List<TraceRegTechniqueIndex> result = new ArrayList<>();
-    final List<TraceRegTechniqueIndex> values = new ArrayList<TraceRegTechniqueIndex>();
+    final List<TraceRegTechniqueIndex> values = new ArrayList<>();
     Date currentDate, startDate, endDate;
 
     do {
       currentDate = dates.get(index);
       startDate = DateRegUtils.getStartDate(currentDate, dates.get(0));
       endDate = DateRegUtils.getEndDate(currentDate, dates
-                                                          .get(dates.size() - 1));
+                                        .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
+        final List<TraceRegTechniqueIndexCql> resultCql = regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
             final TraceRegTechniqueIndex indexThrift = UtilsTraceMapper.createTraceRegTechniqueIndexFromCqlToThrift(traceJournalEvtIndexCql);
@@ -269,13 +272,16 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
           }
         }
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
-                                                                         endDate,
-                                                                         countLeft,
-                                                                         true);
+        result = regTechniqueServiceThrift.getSupport().findByDates(startDate,
+                                                                    endDate,
+                                                                    countLeft,
+                                                                    true);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        // Pour exemple
-        // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+        result = regTechniqueServiceThrift.getSupport()
+                                          .findByDates(startDate,
+                                                       endDate,
+                                                       countLeft,
+                                                       true);
       }
 
       if (CollectionUtils.isNotEmpty(result)) {
@@ -288,5 +294,5 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
         && !DateUtils.isSameDay(dates.get(0), dates.get(dates.size() - 1)));
 
     return values;
-   }
+  }
 }

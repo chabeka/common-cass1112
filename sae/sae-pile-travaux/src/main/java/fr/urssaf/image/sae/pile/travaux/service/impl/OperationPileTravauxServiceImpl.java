@@ -37,12 +37,12 @@ public class OperationPileTravauxServiceImpl implements OperationPileTravauxServ
   public void purger(final Date dateMax) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.operationPileTravauxCqlService.purger(dateMax);
+      operationPileTravauxCqlService.purger(dateMax);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.operationPileTravauxThriftService.purger(dateMax);
+      operationPileTravauxThriftService.purger(dateMax);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      operationPileTravauxCqlService.purger(dateMax);
+      operationPileTravauxThriftService.purger(dateMax);
     }
   }
 

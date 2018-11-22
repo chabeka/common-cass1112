@@ -44,12 +44,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void addJob(final JobToCreate jobToCreate) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.addJob(jobToCreate);
+      jobQueueCqlService.addJob(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.addJob(jobToCreate);
+      jobQueueThriftService.addJob(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.addJob(jobToCreate);
+      jobQueueThriftService.addJob(jobToCreate);
     }
   }
 
@@ -58,12 +58,12 @@ public class JobQueueServiceImpl implements JobQueueService {
       throws JobDejaReserveException, JobInexistantException, LockTimeoutException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
+      jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.reserveJob(idJob, hostname, dateReservation);
+      jobQueueThriftService.reserveJob(idJob, hostname, dateReservation);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
+      jobQueueThriftService.reserveJob(idJob, hostname, dateReservation);
     }
   }
 
@@ -71,12 +71,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void startingJob(final UUID idJob, final Date dateDebutTraitement) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
+      jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.startingJob(idJob, dateDebutTraitement);
+      jobQueueThriftService.startingJob(idJob, dateDebutTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
+      jobQueueThriftService.startingJob(idJob, dateDebutTraitement);
     }
   }
 
@@ -84,12 +84,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement);
     }
   }
 
@@ -98,27 +98,27 @@ public class JobQueueServiceImpl implements JobQueueService {
       throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     }
   }
 
   @Override
   public void endingJob(final UUID idJob, final boolean succes, final Date dateFinTraitement, final String message, final String codeTraitement,
                         final int nbDocumentTraite)
-      throws JobInexistantException {
+                            throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
+      jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     }
   }
 
@@ -126,12 +126,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void addHistory(final UUID jobUuid, final UUID timeUuid, final String description) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
+      jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.addHistory(jobUuid, timeUuid, description);
+      jobQueueThriftService.addHistory(jobUuid, timeUuid, description);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
+      jobQueueThriftService.addHistory(jobUuid, timeUuid, description);
     }
   }
 
@@ -139,12 +139,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void renseignerPidJob(final UUID idJob, final Integer pid) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.renseignerPidJob(idJob, pid);
+      jobQueueCqlService.renseignerPidJob(idJob, pid);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.renseignerPidJob(idJob, pid);
+      jobQueueThriftService.renseignerPidJob(idJob, pid);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.renseignerPidJob(idJob, pid);
+      jobQueueThriftService.renseignerPidJob(idJob, pid);
     }
   }
 
@@ -152,12 +152,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void renseignerDocCountJob(final UUID idJob, final Integer nbDocs) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
+      jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.renseignerDocCountJob(idJob, nbDocs);
+      jobQueueThriftService.renseignerDocCountJob(idJob, nbDocs);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
+      jobQueueThriftService.renseignerDocCountJob(idJob, nbDocs);
     }
   }
 
@@ -165,12 +165,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void updateToCheckFlag(final UUID idJob, final Boolean toCheckFlag, final String raison) throws JobInexistantException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
+      jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.updateToCheckFlag(idJob, toCheckFlag, raison);
+      jobQueueThriftService.updateToCheckFlag(idJob, toCheckFlag, raison);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
+      jobQueueThriftService.updateToCheckFlag(idJob, toCheckFlag, raison);
     }
   }
 
@@ -178,12 +178,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void deleteJob(final UUID idJob) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.deleteJob(idJob);
+      jobQueueCqlService.deleteJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.deleteJob(idJob);
+      jobQueueThriftService.deleteJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.deleteJob(idJob);
+      jobQueueThriftService.deleteJob(idJob);
     }
   }
 
@@ -191,12 +191,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void resetJob(final UUID idJob) throws JobNonReinitialisableException {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.resetJob(idJob);
+      jobQueueCqlService.resetJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.resetJob(idJob);
+      jobQueueThriftService.resetJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.resetJob(idJob);
+      jobQueueThriftService.resetJob(idJob);
     }
   }
 
@@ -208,8 +208,7 @@ public class JobQueueServiceImpl implements JobQueueService {
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return jobQueueThriftService.getHosts();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      return jobQueueThriftService.getHosts();
     }
     return null;
   }
@@ -218,12 +217,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void addJobsQueue(final JobToCreate jobToCreate) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.addJobsQueue(jobToCreate);
+      jobQueueCqlService.addJobsQueue(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.addJobsQueue(jobToCreate);
+      jobQueueThriftService.addJobsQueue(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.addJobsQueue(jobToCreate);
+      jobQueueThriftService.addJobsQueue(jobToCreate);
     }
   }
 
@@ -231,12 +230,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void reserverJobDansJobsQueues(final UUID idJob, final String hostname, final String type, final Map<String, String> jobParameters) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
+      jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
+      jobQueueThriftService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
+      jobQueueThriftService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     }
   }
 
@@ -244,12 +243,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void deleteJobFromJobsQueues(final UUID idJob) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.deleteJobFromJobsQueues(idJob);
+      jobQueueCqlService.deleteJobFromJobsQueues(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.deleteJobFromJobsQueues(idJob);
+      jobQueueThriftService.deleteJobFromJobsQueues(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.deleteJobFromJobsQueues(idJob);
+      jobQueueThriftService.deleteJobFromJobsQueues(idJob);
     }
   }
 
@@ -257,12 +256,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate, final String message) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
+      jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
+      jobQueueThriftService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
+      jobQueueThriftService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     }
   }
 
@@ -270,12 +269,12 @@ public class JobQueueServiceImpl implements JobQueueService {
   public void deleteJobAndSemaphoreFromJobsQueues(final UUID idJob, final String codeTraitement) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      this.jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
+      jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      this.jobQueueThriftService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
+      jobQueueThriftService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
+      jobQueueThriftService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     }
   }
 

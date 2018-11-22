@@ -70,8 +70,7 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       listeTraceDestinataire = traceDestinataireSupport.findAll();
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-      // Pour exemple
-      // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
+      listeTraceDestinataire = traceDestinataireSupport.findAll();
     }
 
     final List<String> listeCodeEvenement = new ArrayList<>();
