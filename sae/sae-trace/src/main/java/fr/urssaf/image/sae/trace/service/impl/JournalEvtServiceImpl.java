@@ -57,11 +57,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    @Override
    public String export(final Date date, final String repertoire, final String idJournalPrecedent, final String hashJournalPrecedent) {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          return this.journalEvtCqlService.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          return this.journalEvtServiceThrift.export(date, repertoire, idJournalPrecedent, hashJournalPrecedent);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -70,11 +70,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
    public LoggerSupport getLoggerSupport() {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          return this.journalEvtCqlService.getLoggerSupport();
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          return this.journalEvtServiceThrift.getLoggerSupport();
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -83,11 +83,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
    public JobClockSupport getClockSupport() {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          return this.journalEvtCqlService.getClockSupport();
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          return this.journalEvtServiceThrift.getClockSupport();
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -96,11 +96,11 @@ public class JournalEvtServiceImpl implements JournalEvtService {
 
    public Logger getLogger() {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          return this.journalEvtCqlService.getLogger();
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          return this.journalEvtServiceThrift.getLogger();
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -113,12 +113,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
    @Override
    public TraceJournalEvt lecture(final UUID identifiant) {
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          final TraceJournalEvtCql tracecql = this.journalEvtCqlService.lecture(identifiant);
          return UtilsTraceMapper.createTraceJournalEvtFromCqlToThrift(tracecql);
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          return this.journalEvtServiceThrift.lecture(identifiant);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -171,13 +171,13 @@ public class JournalEvtServiceImpl implements JournalEvtService {
       long nbTracesPurgees = 0;
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          nbTracesPurgees = this.journalEvtCqlService.getSupport().delete(dateIndex,
                                                                          getClockSupport().currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          nbTracesPurgees = this.journalEvtServiceThrift.getSupport().delete(dateIndex,
                                                                             getClockSupport().currentCLock());
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -235,7 +235,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                                                              .get(dates.size() - 1));
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
             if (resultCql != null) {
                for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
@@ -243,12 +243,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                   result.add(indexThrift);
                }
             }
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
                                                                            endDate,
                                                                            countLeft,
                                                                            true);
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }
@@ -280,7 +280,7 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                                                              .get(dates.size() - 1));
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             final List<TraceJournalEvtIndexCql> resultCql = this.journalEvtCqlService.getSupport().findByDate(currentDate, limite);
             if (resultCql != null) {
                for (final TraceJournalEvtIndexCql traceJournalEvtIndexCql : resultCql) {
@@ -288,12 +288,12 @@ public class JournalEvtServiceImpl implements JournalEvtService {
                   result.add(indexThrift);
                }
             }
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             result = this.journalEvtServiceThrift.getSupport().findByDates(startDate,
                                                                            endDate,
                                                                            countLeft,
                                                                            true);
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }

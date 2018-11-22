@@ -204,11 +204,11 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       final String codeEvt = trace.getCodeEvt();
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
          traceDest = destCqlSupport.find(codeEvt);
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
          traceDest = destSupport.find(codeEvt);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
          // Pour exemple
          // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -319,13 +319,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                                                             timestampTrace);
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRefExploit);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
             traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
             exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             exploitSupport.create(traceExploit, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }
@@ -337,13 +337,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                                                      timestampTrace);
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegSecu);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
             traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
             secuCqlSupport.create(traceCql, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             secuSupport.create(traceSecurite, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }
@@ -356,13 +356,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                                                                         timestampTrace);
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegTech);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
             traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
             techCqlSupport.create(traceCql, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             techSupport.create(traceTechnique, clockSupport.currentCLock());
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }
@@ -378,7 +378,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
          final long currentCLock = clockSupport.currentCLock();
 
          final String modeApi = ModeGestionAPI.getModeApiCf(cfNameEvt);
-         if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+         if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
             TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
             traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
             evtCqlSupport.create(traceCql, currentCLock);
@@ -389,7 +389,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                   evtCqlSupport.addIndexDoc(traceCql, idDoc, currentCLock);
                }
             }
-         } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
             evtSupport.create(traceTechnique, currentCLock);
             final Map<String, Object> mapInfos = trace.getInfos();
             if (MapUtils.isNotEmpty(mapInfos)) {
@@ -398,7 +398,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
                   evtSupport.addIndexDoc(traceTechnique, idDoc, currentCLock);
                }
             }
-         } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+         } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
             // Pour exemple
             // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
          }

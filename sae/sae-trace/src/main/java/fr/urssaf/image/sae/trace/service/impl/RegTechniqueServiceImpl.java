@@ -101,13 +101,13 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    @Override
   public TraceRegTechnique lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       // ON MAP
       final TraceRegTechniqueCql tracecql = this.regTechniqueServiceCql.lecture(identifiant);
       return UtilsTraceMapper.createTraceRegTechniqueFromCqlToThrift(tracecql);
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return this.regTechniqueServiceThrift.lecture(identifiant);
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -154,13 +154,13 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
     long nbTracesPurgees = 0;
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       nbTracesPurgees = this.regTechniqueServiceCql.getSupport().delete(dateIndex,
                                                                         getClockSupport().currentCLock());
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = this.regTechniqueServiceThrift.getSupport().delete(dateIndex,
                                                                            getClockSupport().currentCLock());
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -215,7 +215,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
                                                           .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
@@ -223,12 +223,12 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
             result.add(indexThrift);
           }
         }
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
                                                                          endDate,
                                                                          countLeft,
                                                                          true);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -260,7 +260,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
                                                           .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         final List<TraceRegTechniqueIndexCql> resultCql = this.regTechniqueServiceCql.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegTechniqueIndexCql traceJournalEvtIndexCql : resultCql) {
@@ -268,12 +268,12 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
             result.add(indexThrift);
           }
         }
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         result = this.regTechniqueServiceThrift.getSupport().findByDates(startDate,
                                                                          endDate,
                                                                          countLeft,
                                                                          true);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }

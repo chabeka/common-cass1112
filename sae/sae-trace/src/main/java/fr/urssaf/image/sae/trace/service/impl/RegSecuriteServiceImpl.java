@@ -56,11 +56,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   public LoggerSupport getLoggerSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       return this.regSecuriteCqlService.getLoggerSupport();
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return this.regSecuriteThriftService.getLoggerSupport();
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -69,11 +69,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
    public JobClockSupport getClockSupport() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       return this.regSecuriteCqlService.getClockSupport();
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return this.regSecuriteThriftService.getClockSupport();
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -82,11 +82,11 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
 
   public Logger getLogger() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       return this.regSecuriteCqlService.getLogger();
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return this.regSecuriteThriftService.getLogger();
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -100,13 +100,13 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
    @Override
   public TraceRegSecurite lecture(final UUID identifiant) {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       // ON MAP
       final TraceRegSecuriteCql tracecql = this.regSecuriteCqlService.lecture(identifiant);
       return UtilsTraceMapper.createTraceRegSecuriteFromCqlToThrift(tracecql);
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       return this.regSecuriteThriftService.lecture(identifiant);
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -161,13 +161,13 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
     long nbTracesPurgees = 0;
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       nbTracesPurgees = this.regSecuriteCqlService.getSupport().delete(dateIndex,
                                                                        getClockSupport().currentCLock());
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = this.regSecuriteThriftService.getSupport().delete(dateIndex,
                                                                           getClockSupport().currentCLock());
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -222,7 +222,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
                                                           .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegSecuriteIndexCql traceRegSecuIndexCql : resultCql) {
@@ -230,12 +230,12 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
             result.add(indexThrift);
           }
         }
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
                                                                         endDate,
                                                                         countLeft,
                                                                         true);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }
@@ -267,7 +267,7 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
                                                           .get(dates.size() - 1));
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-      if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         final List<TraceRegSecuriteIndexCql> resultCql = this.regSecuriteCqlService.getSupport().findByDate(currentDate, limite);
         if (resultCql != null) {
           for (final TraceRegSecuriteIndexCql traceJournalEvtIndexCql : resultCql) {
@@ -275,12 +275,12 @@ public class RegSecuriteServiceImpl implements RegSecuriteService {
             result.add(indexThrift);
           }
         }
-      } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         result = this.regSecuriteThriftService.getSupport().findByDates(startDate,
                                                                         endDate,
                                                                         countLeft,
                                                                         true);
-      } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         // Pour exemple
         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
       }

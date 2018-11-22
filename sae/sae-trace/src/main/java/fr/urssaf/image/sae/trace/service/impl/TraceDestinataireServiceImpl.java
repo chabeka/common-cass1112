@@ -65,11 +65,11 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
 
-    if (modeApi == ModeGestionAPI.MODE_API.DATASTAX) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
-    } else if (modeApi == ModeGestionAPI.MODE_API.HECTOR) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       listeTraceDestinataire = traceDestinataireSupport.findAll();
-    } else if (modeApi == ModeGestionAPI.MODE_API.DUAL_MODE) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
