@@ -103,7 +103,6 @@
                writer="modificationDocumentWriter" commit-interval="10" />
             <listeners>
                <listener ref="checkEcdePermissionBeforeStepListener" />
-               <!-- <listener ref="controleMetaDocumentModificationProcessor" /> -->
                <listener ref="modificationDocumentWriter" />			   
                <listener ref="controleModificationDocumentProcessor" />
                <listener ref="convertMetaDocumentModificationProcessor" />
