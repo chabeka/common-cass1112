@@ -185,8 +185,8 @@ public class RegTechniqueServiceDatasTest {
    public void testSuppression() {
       createTraces();
 
-      service.purge(DATE_JOUR_PRECEDENT);
-      service.purge(DATE);
+      service.purge(DATE_JOUR_PRECEDENT, 500);
+      service.purge(DATE, 500);
 
       List<TraceRegTechniqueIndex> result = service.lecture(
                                                             DATE_JOUR_PRECEDENT, DATE, 100, false);

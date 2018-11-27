@@ -50,7 +50,7 @@ public class TraceDeleteSerializationException {
       Date date = gc.getTime();
       long nbTracesPurgees = 0;
       try {
-         nbTracesPurgees = supportTraceRegTechnique.delete(date, date.getTime());
+         nbTracesPurgees = supportTraceRegTechnique.delete(date, date.getTime(), 500);
 
          Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
                nbTracesPurgees);
@@ -60,7 +60,7 @@ public class TraceDeleteSerializationException {
       }
       
       try {
-         nbTracesPurgees = supportTraceJournalEvt.delete(date, date.getTime());
+         nbTracesPurgees = supportTraceJournalEvt.delete(date, date.getTime(), 500);
          Assert.fail("SerializationException attendue");
       } catch (Exception exception) {
          Assert.assertEquals("Exception de type SerializationException",
@@ -73,7 +73,7 @@ public class TraceDeleteSerializationException {
       Date date2 = gc.getTime();
 
       try {
-         nbTracesPurgees = supportTraceRegTechnique.delete(date2, date2.getTime());
+         nbTracesPurgees = supportTraceRegTechnique.delete(date2, date2.getTime(), 500);
          Assert.fail("SerializationException attendue");
       } catch (Exception exception) {
          Assert.assertEquals("Exception de type SerializationException",
@@ -81,7 +81,7 @@ public class TraceDeleteSerializationException {
       }
       
       try {
-         nbTracesPurgees = supportTraceJournalEvt.delete(date2, date2.getTime());
+         nbTracesPurgees = supportTraceJournalEvt.delete(date2, date2.getTime(), 500);
 
          Assert.assertEquals("Le nombre de traces purgées doit être 1", 1,
                nbTracesPurgees);

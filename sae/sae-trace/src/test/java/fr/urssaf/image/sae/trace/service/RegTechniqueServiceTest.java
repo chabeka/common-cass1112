@@ -149,7 +149,7 @@ public class RegTechniqueServiceTest {
    public void testPurgeDateDebutObligatoire() {
 
       try {
-         service.purge(null);
+         service.purge(null,0);
          Assert.fail(ILLEGAL_EXPECTED);
 
       } catch (IllegalArgumentException exception) {

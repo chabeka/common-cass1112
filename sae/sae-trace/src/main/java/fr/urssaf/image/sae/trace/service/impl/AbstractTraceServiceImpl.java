@@ -76,7 +76,7 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
     * {@inheritDoc}
     */
    @Override
-   public final void purge(Date date) {
+   public final void purge(Date date, int nbMaxLigneEvtToDelete) {
       String prefix = "purge()";
       getLogger().debug(DEBUT_LOG, prefix);
 
@@ -85,7 +85,7 @@ public abstract class AbstractTraceServiceImpl<T extends Trace, I extends TraceI
       getLoggerSupport().logPurgeJourneeDebut(getLogger(), prefix,
             PurgeType.PURGE_EVT, DateRegUtils.getJournee(date));
       long nbTracesPurgees = getSupport().delete(dateIndex,
-            getClockSupport().currentCLock());
+            getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
       getLoggerSupport()
             .logPurgeJourneeFin(getLogger(), prefix, PurgeType.PURGE_EVT,
                   DateRegUtils.getJournee(date), nbTracesPurgees);

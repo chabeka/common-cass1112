@@ -181,8 +181,8 @@ public class RegSecuriteServiceDatasTest {
    public void testSuppression() {
       createTraces();
 
-      service.purge(DATE_JOUR_PRECEDENT);
-      service.purge(DATE);
+      service.purge(DATE_JOUR_PRECEDENT, 500);
+      service.purge(DATE, 500);
 
       List<TraceRegSecuriteIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
                                                            DATE, 100, false);
