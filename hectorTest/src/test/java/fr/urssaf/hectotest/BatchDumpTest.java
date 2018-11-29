@@ -3,6 +3,9 @@ package fr.urssaf.hectotest;
 import java.io.PrintStream;
 import java.util.HashMap;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import me.prettyprint.cassandra.connection.DynamicLoadBalancingPolicy;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.model.CqlQuery;
@@ -16,27 +19,25 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.QueryResult;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-
 /**
  * Dump des données de spring batch
- * 
  */
 public class BatchDumpTest {
    Keyspace keyspace;
+
    Cluster cluster;
+
    PrintStream sysout;
+
    Dumper dumper;
 
    @SuppressWarnings("serial")
    @Before
    public void init() throws Exception {
-      ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
+      final ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
       ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
       ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
-      HashMap<String, String> credentials = new HashMap<String, String>() {
+      final HashMap<String, String> credentials = new HashMap<String, String>() {
          {
             put("username", "root");
          }
@@ -45,7 +46,6 @@ public class BatchDumpTest {
          }
       };
       String servers;
-
       // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
       // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
       // servers = "cer69imageint9.cer69.recouv:9160";
@@ -53,10 +53,10 @@ public class BatchDumpTest {
       // servers = "10.203.34.39:9160"; // Noufnouf
       // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
       // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
-      servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
-      
-      CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
-            servers);
+      // servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
+      servers = "hwi69intgnscas1.gidn.recouv:9160,hwi69intgnscas2.gidn.recouv:9160";
+
+      final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
       // cluster = HFactory.getOrCreateCluster("Docubase", hostConfigurator);
       // keyspace = HFactory.createKeyspace("Batch", cluster, ccl,
@@ -65,8 +65,11 @@ public class BatchDumpTest {
       // sysout = new PrintStream(System.out, true, "UTF-8");
 
       cluster = HFactory.getOrCreateCluster("Docubase", hostConfigurator);
-      keyspace = HFactory.createKeyspace("Docubase", cluster, ccl,
-            FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
+      keyspace = HFactory.createKeyspace("SAE",
+                                         cluster,
+                                         ccl,
+                                         FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE,
+                                         credentials);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
 
@@ -163,7 +166,7 @@ public class BatchDumpTest {
    }
 
    @Test
-   @Ignore
+   // @Ignore
    /**
     * Attention : supprime toutes les données
     */
@@ -187,13 +190,12 @@ public class BatchDumpTest {
     *           Nom de la famille de colonnes à vider
     * @throws Exception
     */
-   private void truncate(String cfName) throws Exception {
-      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      CqlQuery<byte[], byte[], byte[]> cqlQuery = new CqlQuery<byte[], byte[], byte[]>(
-            keyspace, bytesSerializer, bytesSerializer, bytesSerializer);
-      String query = "truncate " + cfName;
+   private void truncate(final String cfName) throws Exception {
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final CqlQuery<byte[], byte[], byte[]> cqlQuery = new CqlQuery<>(keyspace, bytesSerializer, bytesSerializer, bytesSerializer);
+      final String query = "truncate " + cfName;
       cqlQuery.setQuery(query);
-      QueryResult<CqlRows<byte[], byte[], byte[]>> result = cqlQuery.execute();
+      final QueryResult<CqlRows<byte[], byte[], byte[]>> result = cqlQuery.execute();
       dumper.dumpCqlQueryResult(result);
    }
 }

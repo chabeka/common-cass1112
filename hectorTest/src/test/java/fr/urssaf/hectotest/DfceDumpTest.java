@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,10 +20,7 @@ import com.google.common.base.Stopwatch;
 
 import me.prettyprint.cassandra.connection.DynamicLoadBalancingPolicy;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
-import me.prettyprint.cassandra.model.CqlQuery;
-import me.prettyprint.cassandra.model.CqlRows;
 import me.prettyprint.cassandra.model.IndexedSlicesQuery;
-import me.prettyprint.cassandra.model.thrift.ThriftCountQuery;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.CompositeSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -53,11 +49,11 @@ import me.prettyprint.hom.EntityManagerImpl;
 /**
  * Dump de données cassandra
  */
-public class DumpTest {
-
-   Keyspace keyspace;
+public class DfceDumpTest {
 
    Keyspace systemKeyspace;
+
+   Keyspace keyspace;
 
    Cluster cluster;
 
@@ -66,8 +62,6 @@ public class DumpTest {
    Dumper dumper;
 
    Dumper systemDumper;
-
-   Dumper dfceDumper;
 
    @SuppressWarnings("serial")
    @Before
@@ -84,8 +78,7 @@ public class DumpTest {
          }
       };
       String servers;
-      servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
-      // servers = "cnp69gnsp1cas1.cer69.recouv:9160"; // Paje
+      // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
       // servers = "cnp69saecas4.cer69.recouv:9160, cnp69saecas5.cer69.recouv:9160, cnp69saecas6.cer69.recouv:9160";
       // servers = "cnp69gntcas1:9160, cnp69gntcas2:9160, cnp69gntcas3:9160";
       // servers = "cnp69intgntcas1.gidn.recouv:9160,cnp69intgntcas2.gidn.recouv:9160,cnp69intgntcas3.gidn.recouv:9160";
@@ -114,28 +107,12 @@ public class DumpTest {
       // servers = "cnp69intgntc1cas1.gidn.recouv:9160,cnp69intgntc1cas2.gidn.recouv:9160,cnp69intgntc1cas3.gidn.recouv:9160";
       // servers = "cnp69gingntc1cas1.cer69.recouv:9160,cnp69gingntc1cas2.cer69.recouv:9160,cnp69gingntc1cas3.cer69.recouv:9160";
       // servers = "cnp69gingntp1cas1.cer69.recouv:9160,cnp69gingntp1cas2.cer69.recouv:9160,cnp69gingntp1cas3.cer69.recouv:9160";
-      // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
-      // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160";
-      // servers = "hwi54saecas1.cve.recouv:9160"; // CNH
-      // servers = "cer69imageint9.cer69.recouv:9160";
-      // servers = "cer69imageint10.cer69.recouv:9160";
-      // servers = "10.203.34.39:9160"; // Noufnouf
-      // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
-      // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
-      // servers = "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160";
-      // servers = "cer69-saeint3.cer69.recouv:9160";
-      // servers = "cnp69pprodsaecas1.cer69.recouv:9160,cnp69pprodsaecas2.cer69.recouv:9160,cnp69pprodsaecas3.cer69.recouv:9160";
-      // servers =
-      // "cnp6gntcvecas1.cve.recouv:9160,cnp3gntcvecas1.cve.recouv:9160,cnp7gntcvecas1.cve.recouv:9160";
-      // Charge GNT
-      servers = "cnp69miggntcas1.gidn.recouv:9160,cnp69miggntcas2.gidn.recouv:9160";
+      servers = "hwi69intgnscas1.gidn.recouv:9160,hwi69intgnscas2.gidn.recouv:9160";
 
-      final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(
-                                                                                       servers);
-
+      final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(servers);
       hostConfigurator.setLoadBalancingPolicy(new DynamicLoadBalancingPolicy());
-      cluster = HFactory.getOrCreateCluster("Docubase", hostConfigurator);
-      keyspace = HFactory.createKeyspace("Docubase", cluster, ccl, FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
+      cluster = HFactory.getOrCreateCluster("myCluster", hostConfigurator);
+      keyspace = HFactory.createKeyspace("dfce", cluster, ccl, FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
       systemKeyspace = HFactory.createKeyspace("system", cluster, ccl, FailoverPolicy.ON_FAIL_TRY_ALL_AVAILABLE, credentials);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
@@ -146,17 +123,6 @@ public class DumpTest {
       systemDumper = new Dumper(systemKeyspace, sysout);
    }
 
-   public static void main(final String[] args) throws Exception {
-      final DumpTest app = new DumpTest();
-      app.init();
-      /*
-       * app.testDumpDocInfo();
-       * app.close();
-       */
-      app.sysout.println("±ΰσ");
-      System.out.println("±ΰσ");
-   }
-
    @After
    public void close() {
       // cluster.getConnectionManager().shutdown();
@@ -164,26 +130,259 @@ public class DumpTest {
    }
 
    @Test
-   public void testDumpDocInfo() throws Exception {
-      dumper.printKeyInHex = true;
-      dumper.dumpCF("DocInfo", 500);
+   public void testDumpAcl() throws Exception {
+      dumper.dumpCF("acl", 100);
    }
 
    @Test
-   public void testDocInfoFreezer() throws Exception {
+   public void testDumpActionByDay() throws Exception {
+      dumper.dumpCF("action_by_day", 100);
+   }
+
+   @Test
+   public void testDumpActiveSession() throws Exception {
+      dumper.dumpCF("active_session", 100);
+   }
+
+   @Test
+   public void testDumpAnnotations() throws Exception {
+      dumper.dumpCF("annotations", 100);
+   }
+
+   @Test
+   public void testDumpBase() throws Exception {
+      dumper.dumpCF("base", 100);
+   }
+
+   @Test
+   public void testDumpBatchCounter() throws Exception {
+      dumper.dumpCF("batch_counter", 100);
+      // Ne marche pas
+   }
+
+   @Test
+   public void testDumpCompositeIndex() throws Exception {
+      dumper.dumpCF("composite_index", 100);
+   }
+
+   @Test
+   public void testDumpContentRepository() throws Exception {
+      dumper.dumpCF("content_repository", 100);
+   }
+
+   @Test
+   public void testDumpDictionary() throws Exception {
+      dumper.dumpCF("dictionary", 100);
+   }
+
+   @Test
+   public void testDumpDocEventByDate() throws Exception {
+      dumper.dumpCF("doc_event_by_date", 50);
+   }
+
+   @Test
+   public void testDumpDocEventByRegisterDate() throws Exception {
+      dumper.dumpCF("doc_event_by_register_date", 50);
+   }
+
+   @Test
+   public void testDumpDocInfo() throws Exception {
       dumper.printKeyInHex = true;
-      dumper.dumpCF("DocInfoFreezer", 150);
+      dumper.dumpCF("doc_info", 100);
    }
 
    @Test
    public void testExtractOneDocInfo() throws Exception {
       // extractOneDocInfo("7ea35959-f23e-4563-8519-d4a7a23c807b");
-      extractOneDocInfo("6ac0a224-2e09-4d1c-bd86-6328b1b109ec");
+      extractOneDocInfo("ff19c966-4ee2-4954-83ef-b46dee66763b");
       // extractOneDocInfo("645D0CBB-35EF-4AED-B380-F5BBB947AEF0");
       // extractOneDocInfo ("05A5CB97-196B-423C-9A3C-F438F160DD03");
       // extractOneDocInfo ("3E915A0A-3878-47B4-8225-666F1ECAB779");
       // extractOneDocInfo("1c577d7e-19bf-45b0-ae51-456b3ba084f8");
       // extractOneDocInfo("6fd809ec-8fd7-44f3-9d6f-ee655fa7e54a");
+   }
+
+   @Test
+   public void testDumpDocStatistics() throws Exception {
+      dumper.dumpCF("doc_statistics", 100);
+   }
+
+   @Test
+   public void testDumpDocTimeSeries() throws Exception {
+      dumper.dumpCF("doc_time_series", 150);
+   }
+
+   @Test
+   public void testDumpDocumentLifeCycle() throws Exception {
+      dumper.dumpCF("document_life_cycle", 150);
+   }
+
+   @Test
+   public void testDumpDocuments() throws Exception {
+      dumper.dumpCF("documents", 5);
+   }
+
+   @Test
+   public void testDumpDocVersion() throws Exception {
+      dumper.dumpCF("doc_version", 150);
+   }
+
+   @Test
+   public void testDumpEncryptedKey() throws Exception {
+      dumper.dumpCF("encrypted_key", 150);
+   }
+
+   @Test
+   public void testDumpEvent() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.dumpCF("event", 150);
+   }
+
+   @Test
+   public void testDumpExternalEvent() throws Exception {
+      dumper.dumpCF("external_event", 100);
+   }
+
+   @Test
+   public void testDumpGroup() throws Exception {
+      dumper.dumpCF("group", 100);
+   }
+
+   @Test
+   public void testDumpIndexableEntityEvent() throws Exception {
+      dumper.dumpCF("indexable_entity_event", 100);
+   }
+
+   @Test
+   public void testDumpIndexCounter() throws Exception {
+      // dumper.dumpCF("index_counter", 2);
+      // byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x07SM_UUID\\x00\\x00\\x10u\\x05\\x93s9}F\\xf7\\x8eϷ\\xfe\\xa6#\\xea?\\x00\\x00\\x06INSERT\\x00");
+
+      // C'est la clé correspondant à SM_UUID en prod et CSPP. En CSPP, la ligne est trop grosse.
+      final byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x07SM_UUID\\x00\\x00\\x10\\xf5s\\xae\\x93\\xacjF\\x15\\xa2;\\x15\\x0f\\xd6!\\xb5\\xa0\\x00\\x00\\x06INSERT\\x00");
+      // byte[] key = ConvertHelper.hexStringToByteArray("0007534d5f55554944000010f573ae93ac6a4615a23b150fd621b5a0000006494e5345525400");
+      // dumper.dumpCF("index_counter", key, 20);
+      dumper.dumpCF("index_counter", 10);
+   }
+
+   @Test
+   public void testDumpIndexReference() throws Exception {
+      dumper.dumpCF("index_reference", 2000);
+   }
+
+   @Test
+   public void testDump_job_execution_by_id() throws Exception {
+      dumper.dumpCF("job_execution_by_id", 1000);
+   }
+
+   @Test
+   public void testDump_job_execution_by_instance() throws Exception {
+      dumper.dumpCF("job_execution_by_instance", 100);
+   }
+
+   @Test
+   public void testDump_job() throws Exception {
+      dumper.dumpCF("job", 100);
+   }
+
+   @Test
+   public void testDump_job_instance_by_id() throws Exception {
+      dumper.dumpCF("job_instance_by_id", 100);
+   }
+
+   @Test
+   public void testDump_job_instance_by_name_and_id() throws Exception {
+      dumper.dumpCF("job_instance_by_name_and_id", 100);
+   }
+
+   @Test
+   public void testDump_job_instance_by_name_and_parameters() throws Exception {
+      dumper.dumpCF("job_instance_by_name_and_parameters", 9000);
+   }
+
+   @Test
+   public void testDump_key_reference() throws Exception {
+      dumper.dumpCF("key_reference", 100);
+   }
+
+   @Test
+   public void testDump_life_cycle_rule() throws Exception {
+      dumper.dumpCF("life_cycle_rule", 100);
+   }
+
+   @Test
+   public void testDump_life_cycle_step_history() throws Exception {
+      dumper.dumpCF("life_cycle_step_history", 100);
+   }
+
+   @Test
+   public void testDump_lock() throws Exception {
+      dumper.dumpCF("lock", 100);
+   }
+
+   @Test
+   public void testDump_metadata() throws Exception {
+      dumper.dumpCF("metadata", 100);
+   }
+
+   @Test
+   public void testDump_metadata_translation() throws Exception {
+      dumper.dumpCF("metadata_translation", 100);
+   }
+
+   @Test
+   public void testDump_note() throws Exception {
+      dumper.dumpCF("note", 100);
+   }
+
+   @Test
+   public void testDump_note_index() throws Exception {
+      dumper.dumpCF("note_index", 100);
+   }
+
+   @Test
+   public void testDump_running_job_executions() throws Exception {
+      dumper.dumpCF("running_job_executions", 100);
+   }
+
+   @Test
+   public void testDump_stat_history() throws Exception {
+      dumper.dumpCF("stat_history", 100);
+   }
+
+   @Test
+   public void testDump_stat_last_execution() throws Exception {
+      dumper.dumpCF("stat_last_execution", 100);
+   }
+
+   @Test
+   public void testDump_stat_series() throws Exception {
+      dumper.dumpCF("stat_series", 100);
+   }
+
+   @Test
+   public void testDump_step_execution_by_id() throws Exception {
+      dumper.dumpCF("step_execution_by_id", 100);
+   }
+
+   @Test
+   public void testDump_step_execution_by_job_execution() throws Exception {
+      dumper.dumpCF("step_execution_by_job_execution", 100);
+   }
+
+   @Test
+   public void testDump_sys_event_by_date() throws Exception {
+      dumper.dumpCF("sys_event_by_date", 100);
+   }
+
+   @Test
+   public void testDump_sys_event_by_register_date() throws Exception {
+      dumper.dumpCF("sys_event_by_register_date", 100);
+   }
+
+   @Test
+   public void testDump_temporary_token() throws Exception {
+      dumper.dumpCF("temporary_token", 100);
    }
 
    @Test
@@ -194,7 +393,7 @@ public class DumpTest {
       String uuid = "e46e2f91-3add-4ef4-bacb-a4da5de78008";
 
       while (true) {
-         final byte[] previousUUID = dumper.getColumnValue("DocInfo",
+         final byte[] previousUUID = dumper.getColumnValue("doc_info",
                                                            uuidToDocInfoKey(uuid),
                                                            ConvertHelper
                                                                         .stringToBytes("PREVIOUS_LOG_ARCHIVE_UUID"));
@@ -224,7 +423,7 @@ public class DumpTest {
          // Thread.sleep(150);
          // if (compteur == 0) break;
 
-         final byte[] previousUUID = dumper.getColumnValue("DocInfo",
+         final byte[] previousUUID = dumper.getColumnValue("doc_info",
                                                            uuidToDocInfoKey(uuid),
                                                            ConvertHelper
                                                                         .stringToBytes("PREVIOUS_LOG_ARCHIVE_UUID"));
@@ -237,14 +436,8 @@ public class DumpTest {
    }
 
    private void extractOneDocInfo(final String uuid) throws Exception {
-      /*
-       * // Version qui fonctionne avec DFCE 0.9
-       * byte[] key = ConvertHelper.stringToBytesWithDocubaseDelimiter(uuid + "|||0.0.0");
-       * dumper.dumpCF("DocInfo",key);
-       */
-
       final byte[] key = uuidToDocInfoKey(uuid);
-      dumper.dumpCF("DocInfo", key);
+      dumper.dumpCF("doc_info", key);
    }
 
    private byte[] uuidToDocInfoKey(final String uuid) {
@@ -265,155 +458,20 @@ public class DumpTest {
     * @throws Exception
     */
    private byte[] uuidToFileUUID(final String uuid) throws Exception {
-      final byte[] fileUUID = dumper.getColumnValue("DocInfo",
+      final byte[] fileUUID = dumper.getColumnValue("doc_info",
                                                     uuidToDocInfoKey(uuid),
                                                     ConvertHelper.stringToBytes("SM_FILE_UUID"));
       return fileUUID;
    }
 
    @Test
-   public void testGetDocCount() throws Exception {
-      // Ne compte que 2 blocs sur x
-      getDocCount(10000, 10);
-
-      // Comptage exhaustif, par bloc de 50
-      // getDocCount(50, 50);
-   }
-
-   /**
-    * Compte le nombre de documents de la base.
-    * Le comptage peut être long s'il y a beaucoup de documents. On compte donc par bloc,
-    * pour pouvoir afficher l'avancement du comptage.
-    * De plus, on permet de ne compter qu'une partie des documents, et d'évaluer le nombre
-    * total par extrapolation
-    * 
-    * @param blocCount
-    *           : l'espace des UUID sera divisé par ce nombre de bloc
-    * @param blocsToCount
-    *           : nombre de blocs à compter (égal à blocCount si on veut compter
-    *           tous les documents)
-    * @throws Exception
-    */
-   private void getDocCount(final int blocCount, final int blocsToCount) throws Exception {
-      /*
-       * //Méthode trop lente
-       * int count = dumper.getKeysCount("DocInfo");
-       * sysout.println("Nombre de clés dans DocInfo : " + count);
-       * count = dumper.getKeysCount("Documents");
-       * sysout.println("Nombre de clés dans Documents : " + count);
-       */
-
-      final int maxKeys = 1000;
-      final List<byte[]> keys = dumper.getKeys("TermInfoRangeUUID", maxKeys);
-      if (keys.size() == maxKeys) {
-         throw new Exception("Attention : trop de clés");
-      }
-      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-
-      // byte[] sliceStart = getTermInfoRangeUUIDSliceBytes("\u0000");
-      // byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes("\uFFFF");
-
-      // On découpe l'espace des UUID
-      final String[][] slices = getUUIDSlices(blocCount);
-
-      final int maxColPerBloc = 1000000;
-      int total = 0;
-
-      // Il faut parcourir plusieurs clés, car DFCE crée une clé par base DFCE, et
-      // il y a au moins 2 bases DFCE : la base SAE et la base DAILY_LOG_ARCHIVE_BASE
-      for (final byte[] key : keys) {
-         final String displayableKey = ConvertHelper.getReadableUTF8String(key);
-         if (displayableKey.contains("SM_UUID")) {
-            sysout.println("Nombre de colonnes pour la clé " + displayableKey + " ...");
-            final ThriftCountQuery<byte[], byte[]> cq = new ThriftCountQuery<>(keyspace, bytesSerializer, bytesSerializer);
-            cq.setColumnFamily("TermInfoRangeUUID").setKey(key);
-            int totalForKey = 0;
-            for (int i = 0; i < slices.length; i++) {
-               final byte[] sliceStart = getTermInfoRangeUUIDSliceBytes(slices[i][0]);
-               final byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes(slices[i][1]);
-               sysout.println("Recherche de " + ConvertHelper.getHexString(sliceStart) + " à " + ConvertHelper.getHexString(sliceEnd));
-               cq.setRange(sliceStart, sliceEnd, maxColPerBloc);
-               final QueryResult<Integer> r = cq.execute();
-               final int count = r.get();
-               if (count == maxColPerBloc) {
-                  throw new Exception("Attention : trop de colonnes");
-               }
-               totalForKey += count;
-               sysout.println(" compté : " + totalForKey);
-               if (i == blocsToCount - 1) {
-                  break;
-               }
-            }
-            total += totalForKey;
-            sysout.println();
-         }
-      }
-      sysout.println("Nombre total de documents comptés : " + total);
-      if (blocsToCount != blocCount) {
-         final int extrapolation = total * blocCount / blocsToCount;
-         sysout.println("Nombre total de documents (extrapolation) : " + extrapolation);
-      }
-   }
-
-   /**
-    * Permet de séparer l'espace des UUID en plusieurs tranches.
-    * Utile pour faire des traitements par blocs, sur des blocs d'UUID.
-    * 
-    * @param blocCount
-    *           : nombre de tranches à obtenir
-    * @return tableau de slices - un slice est un tableau à 2 éléments dont le 1er représente la borne
-    *         inférieure du slice et le 2ème représente la borne supérieure.
-    * @throws Exception
-    */
-   private String[][] getUUIDSlices(final int blocCount) throws Exception {
-      final byte[] maxUUID = ConvertHelper.hexStringToByteArray("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
-      final BigInteger max = new BigInteger(1, maxUUID);
-      BigInteger delta = max.divide(new BigInteger(Integer.toString(blocCount)));
-      final BigInteger un = new BigInteger("1");
-      delta = delta.subtract(un);
-      BigInteger b = new BigInteger("0");
-      final String[][] tab = new String[blocCount][];
-      for (int i = 0; i < blocCount; i++) {
-         String s1 = ConvertHelper.getHexString(b.toByteArray());
-         if (s1.startsWith("00")) {
-            s1 = s1.substring(2);
-         }
-         if (s1.equals("")) {
-            s1 = "00";
-         }
-         b = b.add(delta);
-         if (i == blocCount - 1) {
-            b = max;
-         }
-         String s2 = ConvertHelper.getHexString(b.toByteArray());
-         if (s2.startsWith("00")) {
-            s2 = s2.substring(2);
-         }
-         b = b.add(un);
-
-         // sysout.println(s1 + " - " + s2);
-         tab[i] = new String[2];
-         // padding sur 32 caractères avec des zéros à gauche
-         tab[i][0] = String.format("%32s", s1).replace(' ', '0');
-         tab[i][1] = String.format("%32s", s2).replace(' ', '0');
-         // sysout.println(tab[i][0] + " - " + tab[i][1]);
-      }
-      return tab;
-   }
-
-   @Test
-   public void testDumpDocuments() throws Exception {
-      dumper.dumpCF("Documents", 5);
-   }
-
-   @Test
    public void testDumpOneDocument() throws Exception {
-      dumper.dumpCF("Documents", "6eb39471-6d1d-42c5-8edd-56a82218e9ba");
+      dumper.dumpCF("documents", "f3347dee-fa1b-4568-9363-6ed6cbbe7b23");
    }
 
    @Test
    public void testExtractOneDocument() throws Exception {
-      ExtractOneDocument("8675D090-83F8-4A0B-8A18-04B0E3DA586A", "c:\\temp\\journal.gz");
+      ExtractOneDocument("c088b447-f501-4888-b6ae-a6705b2e4573", "c:\\temp\\doc.txt");
 
       // ExtractOneDocumentFromFileUUID("630a3663-df91-4166-adbc-c9a4a94d4a0f", "c:\\temp\\test.pdf");
       // ExtractOneDocument("8a43184c-81b1-4695-95b8-611734ac261d", "c:\\temp\\journal.txt");
@@ -480,7 +538,7 @@ public class DumpTest {
                                                                                                         stringSerializer,
                                                                                                         stringSerializer,
                                                                                                         bytesSerializer);
-      rangeSlicesQuery.setColumnFamily("Documents");
+      rangeSlicesQuery.setColumnFamily("documents");
       rangeSlicesQuery.setKeys(key, key);
       rangeSlicesQuery.setRange("chunk_0", "chunk_9", false, 200);
       final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
@@ -524,7 +582,7 @@ public class DumpTest {
       // byte[] startKey = ConvertHelper.hexStringToByteArray("000000000d534d5f46494e414c5f4441544500000000");
       final byte[] startKey = ConvertHelper.hexStringToByteArray("0000000011534d5f4152434849564147455f44415445000011323031333032303930323230333338333600");
       // dumper.dumpCF_StartKey("TermInfo", startKey, 100);
-      dumper.dumpCF_StartKey("TermInfo", startKey, 50);
+      dumper.dumpCF_StartKey("term_info", startKey, 50);
    }
 
    @Test
@@ -548,7 +606,7 @@ public class DumpTest {
       sysout.println("colonne cherchée :" + ConvertHelper.getHexString(searchedCol));
       dumper.printColumnNameInHex = true;
       dumper.deserializeValue = true;
-      dumper.dumpCF_slice("TermInfo", key, searchedCol, endCol, 10, false);
+      dumper.dumpCF_slice("term_info", key, searchedCol, endCol, 10, false);
    }
 
    /**
@@ -584,7 +642,7 @@ public class DumpTest {
       final byte[] key = getTermInfoKey(categorieName, value);
       dumper.printColumnNameInHex = true;
       dumper.deserializeValue = true;
-      dumper.dumpCF("TermInfo", key);
+      dumper.dumpCF("term_info", key);
    }
 
    @Test
@@ -592,7 +650,7 @@ public class DumpTest {
       dumper.deserializeValue = true;
       // dumper.printColumnNameInComposite = true;
       // dumper.compositeDisplayTypeMapper = new boolean[]{false, true, false};
-      dumper.dumpCF("TermInfoRangeDate", 15);
+      dumper.dumpCF("term_info_range_date", 15);
    }
 
    @Test
@@ -606,7 +664,7 @@ public class DumpTest {
       // byte[] key = ConvertHelper.hexStringToByteArray("0000000011534D5F4152434849564147455F44415445000010F573AE93AC6A4615A23B150FD621B5A00000010000");
       // byte[] key = ConvertHelper.hexStringToByteArray("0000000011534D5F4152434849564147455F44415445000010F573AE93AC6A4615A23B150FD621B5A00000010100");
       final byte[] key = ConvertHelper.hexStringToByteArray("0000000014534D5F4D4F44494649434154494F4E5F44415445000010F573AE93AC6A4615A23B150FD621B5A00000014C00");
-      dumper.dumpCF("TermInfoRangeDatetime", key, 2);
+      dumper.dumpCF("term_info_range_datetime", key, 2);
    }
 
    @Test
@@ -627,7 +685,7 @@ public class DumpTest {
       stop.addComponent("", StringSerializer.get());
       final byte[] slice_stop = new CompositeSerializer().toBytes(stop);
 
-      dumper.dumpCF_slice("TermInfoRangeDatetime", key, slice_start, slice_stop, 50, false);
+      dumper.dumpCF_slice("term_info_range_datetime", key, slice_start, slice_stop, 50, false);
    }
 
    @Test
@@ -640,28 +698,28 @@ public class DumpTest {
       // SM_LIFE_CYCLE_REFERENCE_DATE
       final byte[] sliceStart = getTermInfoRangeUUIDSliceBytes("20160402");
       final byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes("20160403");
-      dumper.dumpCF_slice("TermInfoRangeDatetime", sliceStart, sliceEnd, 500);
+      dumper.dumpCF_slice("term_info_range_datetime", sliceStart, sliceEnd, 500);
 
    }
 
    @Test
    public void testDumpTermInfoRangeDouble() throws Exception {
-      dumper.dumpCF("TermInfoRangeDouble", 15);
+      dumper.dumpCF("term_info_range_double", 15);
    }
 
    @Test
    public void testDumpTermInfoRangeFloat() throws Exception {
-      dumper.dumpCF("TermInfoRangeFloat", 15);
+      dumper.dumpCF("term_info_range_float", 15);
    }
 
    @Test
    public void testDumpTermInfoRangeInteger() throws Exception {
-      dumper.dumpCF("TermInfoRangeInteger", 15);
+      dumper.dumpCF("term_info_range_integer", 15);
    }
 
    @Test
    public void testDumpTermInfoRangeLong() throws Exception {
-      dumper.dumpCF("TermInfoRangeLong", 15);
+      dumper.dumpCF("term_info_range_long", 15);
    }
 
    @Test
@@ -670,7 +728,7 @@ public class DumpTest {
       // dumper.printColumnNameInComposite = true;
       // dumper.compositeDisplayTypeMapper = new boolean[]{false, true, false};
       dumper.printColumnNameInHex = true;
-      dumper.dumpCF("TermInfoRangeString", 100, 2);
+      dumper.dumpCF("term_info_range_string", 100, 2);
    }
 
    @Test
@@ -688,8 +746,8 @@ public class DumpTest {
       // byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes ("827000002150000737");
       final byte[] sliceStart = getTermInfoRangeUUIDSliceBytes("2014-12-30");
       final byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes("2014-12-308");
-      dumper.dumpCF_slice("TermInfoRangeString", key, sliceStart, sliceEnd, 150, false);
-      // dumper.dumpCF("TermInfoRangeString", key, false);
+      dumper.dumpCF_slice("term_info_range_string", key, sliceStart, sliceEnd, 150, false);
+      // dumper.dumpCF("term_info_range_string", key, false);
    }
 
    @Test
@@ -701,8 +759,8 @@ public class DumpTest {
       final byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x00\\x00\\x00\\x03red\\x00\\x00\\x10\\xe7+u%\\xa9aIǹ\\x03\\xd6\\xf2m*\\xce3\\x00\\x00\\x01\\x00\\x00");
       final byte[] sliceStart = getTermInfoRangeUUIDSliceBytes("444403");
       final byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes("444404");
-      dumper.dumpCF_slice("TermInfoRangeString", key, sliceStart, sliceEnd, 150, false);
-      // dumper.dumpCF("TermInfoRangeString", key, false);
+      dumper.dumpCF_slice("term_info_range_string", key, sliceStart, sliceEnd, 150, false);
+      // dumper.dumpCF("term_info_range_string", key, false);
    }
 
    @Test
@@ -711,7 +769,7 @@ public class DumpTest {
       // dumper.printColumnNameInComposite = true;
       // dumper.compositeDisplayTypeMapper = new boolean[]{false, true, false};
 
-      dumper.dumpCF("TermInfoRangeUUID", 30);
+      dumper.dumpCF("term_info_range_uuid", 30);
 
       // byte[]sliceStart = new byte[0];
       // byte[]sliceEnd = new byte[0];
@@ -735,7 +793,7 @@ public class DumpTest {
       final byte[] sliceEnd = getTermInfoRangeUUIDSliceBytes("1235");
       final byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x00\\x00\\x00\\x07SM_UUID\\x00\\x00\\x10\\xf5s\\xae\\x93\\xacjF\\x15\\xa2;\\x15\\x0f\\xd6!\\xb5\\xa0\\x00\\x00\\x01\\x00\\x00");
       final Stopwatch chrono = Stopwatch.createStarted();
-      dumper.dumpCF_slice("TermInfoRangeUUID", key, sliceStart, sliceEnd, 1, false);
+      dumper.dumpCF_slice("term_info_range_uuid", key, sliceStart, sliceEnd, 1, false);
       chrono.stop();
       System.out.println("Durée : " + chrono.elapsed(TimeUnit.MILLISECONDS) + " ms");
    }
@@ -747,7 +805,7 @@ public class DumpTest {
       final byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x00\\x00\\x00\\x07SM_UUID\\x00\\x00\\x10\\xf5s\\xae\\x93\\xacjF\\x15\\xa2;\\x15\\x0f\\xd6!\\xb5\\xa0\\x00\\x00\\x01\\x00\\x00");
       final byte[] columnName = ConvertHelper.hexStringToByteArray("002431323334303036352d346137382d346133612d386265342d626464336537393564613830000010123400654a784a3a8be4bdd3e795da80000005302e302e3000");
       final Stopwatch chrono = Stopwatch.createStarted();
-      final byte[] columnValue = dumper.getColumnValue("TermInfoRangeUUID", key, columnName);
+      final byte[] columnValue = dumper.getColumnValue("term_info_range_uuid", key, columnName);
       chrono.stop();
       final String displayValue = ConvertHelper.getReadableUTF8String(columnValue);
       System.out.println("Value : " + displayValue);
@@ -785,150 +843,28 @@ public class DumpTest {
    }
 
    @Test
-   public void testDumpNotes() throws Exception {
-      dumper.dumpCF("Notes", 15);
+   public void testDump_thumbnail() throws Exception {
+      dumper.dumpCF("thumbnail", 15);
    }
 
    @Test
-   public void testDumpAnnotations() throws Exception {
-      dumper.dumpCF("Annotations", 15);
+   public void testDump_translation_code() throws Exception {
+      dumper.dumpCF("translation_code", 15);
    }
 
    @Test
-   public void testDumpBaseCategoriesReference() throws Exception {
-      dumper.dumpCF("BaseCategoriesReference", 2000);
+   public void testDump_user() throws Exception {
+      dumper.dumpCF("user", 15);
    }
 
    @Test
-   public void testDumpCategoriesReference() throws Exception {
-      dumper.dumpCF("CategoriesReference", 2000);
+   public void testDump_user_preferences() throws Exception {
+      dumper.dumpCF("user_preferences", 15);
    }
 
    @Test
-   public void testDumpBasesReference() throws Exception {
-      dumper.dumpCF("BasesReference", 400);
-   }
-
-   @Test
-   public void testDumpCompositeIndexesReference() throws Exception {
-      dumper.dumpCF("CompositeIndexesReference", 300);
-   }
-
-   @Test
-   public void testDumpIndexReference() throws Exception {
-      dumper.dumpCF("IndexReference", 2000);
-   }
-
-   @Test
-   public void testDumpStatisticsDatas() throws Exception {
-      dumper.dumpCF("StatisticsDatas", 15);
-   }
-
-   @Test
-   public void testDumpStatistics() throws Exception {
-      dumper.dumpCF("Statistics", 15);
-   }
-
-   @Test
-   public void testDumpJobs() throws Exception {
-      dumper.dumpCF("Jobs", 1500);
-   }
-
-   @Test
-   public void testDumpLifeCycleRules() throws Exception {
-      dumper.dumpCF("LifeCycleRules", 2000);
-   }
-
-   @Test
-   public void testDumpStaticDictionaries() throws Exception {
-      dumper.dumpCF("StaticDictionaries", 15);
-   }
-
-   @Test
-   public void testDumpIndexCounter() throws Exception {
-      // dumper.dumpCF("IndexCounter", 2);
-      // byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x07SM_UUID\\x00\\x00\\x10u\\x05\\x93s9}F\\xf7\\x8eϷ\\xfe\\xa6#\\xea?\\x00\\x00\\x06INSERT\\x00");
-
-      // C'est la clé correspondant à SM_UUID en prod et CSPP. En CSPP, la ligne est trop grosse.
-      final byte[] key = ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x07SM_UUID\\x00\\x00\\x10\\xf5s\\xae\\x93\\xacjF\\x15\\xa2;\\x15\\x0f\\xd6!\\xb5\\xa0\\x00\\x00\\x06INSERT\\x00");
-      // byte[] key = ConvertHelper.hexStringToByteArray("0007534d5f55554944000010f573ae93ac6a4615a23b150fd621b5a0000006494e5345525400");
-      // dumper.dumpCF("IndexCounter", key, 20);
-      dumper.dumpCF("IndexCounter", 10);
-   }
-
-   @Test
-   public void testDump_index_counter() throws Exception {
-      dfceDumper.dumpCF("index_counter", 10);
-   }
-
-   @Test
-   public void testDumpSystemEventLog() throws Exception {
-      dumper.dumpCF("SystemEventLog", 10000);
-      // dumper.dumpCF("SystemEventLog", "7746d7bc-ee50-4193-8b31-6d1689fb3279");
-      // dumper.dumpCF("SystemEventLog", "7ef9eac0-d4c0-42c3-ae6c-fe6a80d393c5");
-      // dumper.dumpCF("SystemEventLog", "4dfe3263-cfda-4bd4-bfde-9d0e57e39cc2");
-   }
-
-   @Test
-   public void testSystemEventLogByTime() throws Exception {
-      // dumper.printColumnNameInComposite = true;
-      // dumper.compositeDisplayTypeMapper = new boolean[]{true, true};
-      dumper.dumpCF("SystemEventLogByTime", 30);
-      // dumper.dumpCF("SystemEventLogByTime", "20170503");
-   }
-
-   @Test
-   public void testSystemEventLogByTimeSerialized() throws Exception {
-      // dumper.printColumnNameInComposite = true;
-      dumper.deserializeValue = true;
-      dumper.dumpCF("SystemEventLogByTimeSerialized", 2);
-      // dumper.dumpCF("SystemEventLogByTimeSerialized", "20170429");
-   }
-
-   @Test
-   public void testDumpDocEventLog() throws Exception {
-      dumper.dumpCF("DocEventLog", 3000);
-      // dumper.dumpCF("DocEventLog", "41a275d4-4561-437d-a1be-b6287119445b");
-      // dumper.dumpCF("DocEventLog", "36f3a4ff-d065-4289-af18-f67482bdf13e");
-      // dumper.dumpCF("DocEventLog", "183e71e7-54d8-43e7-bafa-96c52e9ef6d4");
-      // dumper.dumpCF("DocEventLog", "4dfe3263-cfda-4bd4-bfde-9d0e57e39cc2");
-   }
-
-   @Test
-   // Plus utilisé
-   public void testDumpDocEventLogByTime() throws Exception {
-      // dumper.printColumnNameInComposite = true;
-      // dumper.compositeDisplayTypeMapper = new boolean[]{true, true};
-      dumper.dumpCF("DocEventLogByTime", 10);
-      // dumper.dumpCF("DocEventLogByTime", "20130124");
-   }
-
-   @Test
-   public void DocEventLogByTimeSerialized() throws Exception {
-      // dumper.printColumnNameInComposite = true;
-      // dumper.compositeDisplayTypeMapper = new boolean[]{true, true};
-      // dumper.dumpCF("DocEventLogByTimeSerialized", 10);
-      dumper.dumpCF("DocEventLogByTimeSerialized", ConvertHelper.stringToBytes("20181106"), 10);
-   }
-
-   @Test
-   public void testDumpUser() throws Exception {
-      dumper.dumpCF("User", 15);
-   }
-
-   @Test
-   public void testDumpUserGroup() throws Exception {
-      dumper.dumpCF("UserGroup", 15);
-   }
-
-   @Test
-   public void testDumpUserSearchFilters() throws Exception {
-      dumper.dumpCF("UserSearchFilters", 15);
-   }
-
-   @Test
-   public void testDumpVersions() throws Exception {
-      dumper.dumpCF("Versions", 15);
+   public void testDump_users_by_group() throws Exception {
+      dumper.dumpCF("users_by_group", 15);
    }
 
    @SuppressWarnings("unchecked")
@@ -941,7 +877,7 @@ public class DumpTest {
    public void testLookForDoublons() throws Exception {
       int compteurKO = 0;
       int compteurOK = 0;
-      final List<byte[]> keys = dumper.getKeys("TermInfo", 5000);
+      final List<byte[]> keys = dumper.getKeys("term_info", 5000);
       for (int i = 0; i < keys.size(); i++) {
          final byte[] key = keys.get(i);
          final String displayableKey = ConvertHelper.getReadableUTF8String(key);
@@ -992,38 +928,23 @@ public class DumpTest {
    }
 
    @Test
-   public void testCQL() throws Exception {
-      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      final CqlQuery<byte[], byte[], byte[]> cqlQuery = new CqlQuery<>(keyspace, bytesSerializer, bytesSerializer, bytesSerializer);
-      // String query = "select * from DocInfo where Key ='" + ConvertHelper.stringToHex("DOCUBASE") + "efbfbf" + ConvertHelper.stringToHex("dd258958-24ff-486e-84b8-4f6b2714aaff") + "'";
-      // String query = "select * from DocInfo where Key ='" + ConvertHelper.stringToHex("DOCUBASE") + "efbfbf" + ConvertHelper.stringToHex("d6db9900-4e83-401f-ac82-21e88b804503") + "'";
-      // String query = "select * from BasesReference where Key ='" + ConvertHelper.stringToHex("SAE") + "'";
-      final String query = "select * from Documents where Key ='" + ConvertHelper.stringToHex("dd258958-24ff-486e-84b8-4f6b2714aaff_v1") + "'";
-      // String query = "select * from SystemEventLog WHERE KEY >'" + ConvertHelper.stringToHex("20110819000000000") + "' LIMIT 100";
-      // String query = "select * from DocEventLogByTime WHERE KEY >'" + ConvertHelper.stringToHex("20110819000000000") + "' LIMIT 100";
-      // String query = "select * from DocEventLog WHERE KEY >'" + ConvertHelper.stringToHex("d6db9900-4e83-401f-ac82-21e88b804503") + "' LIMIT 50";
-      cqlQuery.setQuery(query);
-      final QueryResult<CqlRows<byte[], byte[], byte[]>> result = cqlQuery.execute();
-      dumper.dumpCqlQueryResult(result);
-   }
-
-   @Test
    public void testDelete() throws Exception {
       final StringSerializer keySerializer = StringSerializer.get();
       final Mutator<String> mutator = HFactory.createMutator(keyspace, keySerializer);
       final StringSerializer nameSerializer = keySerializer;
-      final String cf = "Documents";
+      final String cf = "documents";
       final String key = "156432135";
       mutator.delete(key, cf, null, nameSerializer);
    }
 
    public void testUpdate() {
       final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(keyspace,
-                                                                                             "myColFamily",
-                                                                                             StringSerializer.get(),
-                                                                                             StringSerializer.get());
+                                                                                                           "myColFamily",
+                                                                                                           StringSerializer.get(),
+                                                                                                           StringSerializer.get());
       final ColumnFamilyUpdater<String, String> updater = template.createUpdater("a key");
       updater.setString("domain", "www.datastax.com");
+
    }
 
    @Test
@@ -1045,112 +966,6 @@ public class DumpTest {
       } else {
          sysout.println("Long prop = " + pojo2.getLongProp1());
       }
-   }
-
-   @Test
-   public void testDumpBatchCounter() throws Exception {
-      dumper.dumpCF("BatchCounter", 10);
-   }
-
-   @Test
-   public void testDumpDocEventLogByTimeSerialized() throws Exception {
-      dumper.printColumnNameInHex = true;
-      dumper.dumpCF("DocEventLogByTimeSerialized", 150);
-   }
-
-   @Test
-   public void testDumpDocInfoFreezer() throws Exception {
-      dumper.dumpCF("DocInfoFreezer", 50);
-   }
-
-   @Test
-   public void testDumpJobInstance() throws Exception {
-      dumper.deserializeValue = true;
-      dumper.dumpCF("JobInstance", 15000);
-   }
-
-   @Test
-   public void getDumpJobInstanceDoublon() throws Exception {
-      dumper.dumpCFDoublon("JobInstance", "jobInstanceId", 50000);
-   }
-
-   @Test
-   public void testDumpJobExecution() throws Exception {
-      dumper.dumpCF("JobExecution", 10000);
-   }
-
-   @Test
-   public void testDumpLocker() throws Exception {
-      dumper.dumpCF("Locker", 50);
-   }
-
-   @Test
-   public void testDumpAce() throws Exception {
-      dumper.dumpCF("Ace", 50);
-   }
-
-   @Test
-   public void testDumpAcl() throws Exception {
-      dumper.dumpCF("Acl", 50);
-   }
-
-   @Test
-   public void testDumpContentRepository() throws Exception {
-      dumper.dumpCF("ContentRepository", 50);
-   }
-
-   @Test
-   public void testDumpCounters() throws Exception {
-      dumper.dumpCF("Counters", 50);
-   }
-
-   @Test
-   public void testDumpDocStatistics() throws Exception {
-      dumper.dumpCF("DocStatistics", 50);
-   }
-
-   @Test
-   public void testDumpDocTimeSeries() throws Exception {
-      dumper.dumpCF("DocTimeSeries", 200);
-   }
-
-   @Test
-   public void testDumpDocumentLifeCycle() throws Exception {
-      dumper.dumpCF("DocumentLifeCycle", 50);
-   }
-
-   @Test
-   public void testDumpKeyReference() throws Exception {
-      dumper.dumpCF("KeyReference", 50);
-   }
-
-   @Test
-   public void testDumpTasks() throws Exception {
-      dumper.dumpCF("Tasks", 50);
-   }
-
-   @Test
-   public void testDumpTemporaryToken() throws Exception {
-      dumper.dumpCF("TemporaryToken", 50);
-   }
-
-   @Test
-   public void testDumpThumbnails() throws Exception {
-      dumper.dumpCF("Thumbnails", 50);
-   }
-
-   @Test
-   public void testDumpVersionsHistory() throws Exception {
-      dumper.dumpCF("VersionsHistory", 50);
-   }
-
-   @Test
-   public void testDumpStepExecution() throws Exception {
-      dumper.dumpCF("StepExecution", 50000);
-      // dumper.dumpCF("StepExecution", ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x00\\x00\\x00\\x00\\x00\\x04\\xe4"));
-      // dumper.dumpCF("StepExecution", ConvertHelper.getBytesFromReadableUTF8String("\\x00\\x00\\x00\\x00\\x00\\x00\\x05S"));
-      // dumper.dumpCF("StepExecution", LongSerializer.get().toBytes(2L));
-      // dumper.dumpCF("StepExecution", ConvertHelper.hexStringToByteArray("00000000000070e5"));
    }
 
    @Test
@@ -1236,7 +1051,7 @@ public class DumpTest {
                                                                                                         stringSerializer,
                                                                                                         stringSerializer,
                                                                                                         bytesSerializer);
-      rangeSlicesQuery.setColumnFamily("Documents");
+      rangeSlicesQuery.setColumnFamily("documents");
       rangeSlicesQuery.setKeys(key, key);
       rangeSlicesQuery.setRange("chunk_0", "chunk_9", false, 1000);
       final QueryResult<OrderedRows<String, String, byte[]>> result = rangeSlicesQuery
@@ -1267,7 +1082,7 @@ public class DumpTest {
     * @throws Exception
     */
    public UUID getBaseUUID(final String baseName) throws Exception {
-      final byte[] uuidAsBytes = dumper.getColumnValue("BasesReference",
+      final byte[] uuidAsBytes = dumper.getColumnValue("base",
                                                        ConvertHelper.stringToBytes(baseName),
                                                        ConvertHelper.stringToBytes("uuid"));
       return ConvertHelper.byteArrayToUUID(uuidAsBytes);

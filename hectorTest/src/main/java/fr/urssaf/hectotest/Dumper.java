@@ -1,6 +1,8 @@
 package fr.urssaf.hectotest;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
@@ -44,7 +46,7 @@ public class Dumper {
    /**
     * On n'affiche que les maxValueLenght 1er caractères
     */
-   public int maxValueLenght = 200;
+   public int maxValueLenght = 2000;
 
    /**
     * Si on affiche le nom de colonne en mode "composite", on peut indiquer dans
@@ -164,13 +166,21 @@ public class Dumper {
       dumpCF_slice(CFName, new byte[0], new byte[0], count, siAuMoinsUneCol);
    }
 
+   public void dumpCF(String CFName, int keyCount, int colCount) throws Exception {
+	      dumpCF_slice(CFName, new byte[0], new byte[0], keyCount, colCount, false);
+   }
+
    public void dumpCF_slice(String CFName, byte[] sliceStart, byte[] sliceEnd,
          int count) throws Exception {
       dumpCF_slice(CFName, sliceStart, sliceEnd, count, false);
    }
 
    public void dumpCF_slice(String CFName, byte[] sliceStart, byte[] sliceEnd,
-         int count, boolean siAuMoinsUneCol) throws Exception {
+	         int count, boolean siAuMoinsUneCol) throws Exception {
+	   dumpCF_slice(CFName, sliceStart, sliceEnd, count, count,siAuMoinsUneCol);
+   }
+   public void dumpCF_slice(String CFName, byte[] sliceStart, byte[] sliceEnd,
+         int keyCount, int colCount, boolean siAuMoinsUneCol) throws Exception {
       BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       RangeSlicesQuery<byte[], byte[], byte[]> rangeSlicesQuery = HFactory
             .createRangeSlicesQuery(keyspace, bytesSerializer, bytesSerializer,
@@ -178,8 +188,8 @@ public class Dumper {
       rangeSlicesQuery.setColumnFamily(CFName);
       // rangeSlicesQuery.setKeys(
       // "SrMd8I1c￿0002dfa8-4085-45f9-9554-d036b105c968", "");
-      rangeSlicesQuery.setRange(sliceStart, sliceEnd, false, count);
-      rangeSlicesQuery.setRowCount(count);
+      rangeSlicesQuery.setRange(sliceStart, sliceEnd, false, colCount);
+      rangeSlicesQuery.setRowCount(keyCount);
       QueryResult<OrderedRows<byte[], byte[], byte[]>> result = rangeSlicesQuery
             .execute();
       dumpQueryResult(result, siAuMoinsUneCol);
@@ -202,6 +212,10 @@ public class Dumper {
 
    public void dumpCF(String CFName, byte[] key) throws Exception {
       dumpCF(CFName, key, false);
+   }
+
+   public void dumpCF(String CFName, byte[] key, int maxCols) throws Exception {
+	   dumpCF_slice(CFName, key, new byte[0], new byte[0], maxCols, false);
    }
 
    /**
@@ -505,7 +519,7 @@ public class Dumper {
       return result;
    }
 
-   private void dumpColumns(List<HColumn<byte[], byte[]>> columns)
+   public void dumpColumns(List<HColumn<byte[], byte[]>> columns)
          throws Exception {
       System.out.println("Nombre de colonnes : " + columns.size());
       for (HColumn<byte[], byte[]> column : columns) {
@@ -514,8 +528,7 @@ public class Dumper {
             s = "Name (hex) : " + ConvertHelper.getHexString(column.getName());
          } else if (printColumnNameInComposite) {
             s = "Name (composite) : (";
-            Composite comp = new CompositeSerializer().fromBytes(column
-                  .getName());
+            Composite comp = new CompositeSerializer().fromBytes(column.getName());
             int i = 0;
             for (Component<?> c : comp.getComponents()) {
                ByteBuffer buffer = (ByteBuffer) c.getValue();
@@ -540,20 +553,43 @@ public class Dumper {
          }
          byte[] value = column.getValue();
 
+         boolean printed = false;
          if (deserializeValue) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(value);
-            ObjectInputStream ois = new ObjectInputStream(bis);
-            Object o = ois.readObject();
-            s += " - DeseriazedValue : " + o.toString();
-         } else {
-            if (value.length > maxValueLenght) {
+            try
+            {
+               ByteArrayInputStream bis = new ByteArrayInputStream(value);
+               ObjectInputStream ois = new ObjectInputStream(bis);
+               Object o = ois.readObject();
+               s += " - DeseriazedValue : " + o.toString();
+               printed = true;
+            }
+            catch(Exception e) {
+            	//e.printStackTrace();
+            }
+         }
+         if (!printed) {
+            int length = value.length;
+            if (length > maxValueLenght) {
                byte[] dst = new byte[maxValueLenght];
-               System.arraycopy(value, 0, dst, 0, maxValueLenght);
+               System.arraycopy(value, 0, dst, 0, 2000);
+               
+               if (length > 15000000) {
+                  File file = new File("D:\\temp\\out2.txt");
+                  FileOutputStream fos = new FileOutputStream(file);
+                  fos.write(value);
+                  fos.close();
+               }
+               
                value = dst;
             }
             // int ttl = column.getTtl();
             // s += " - ttl : " + ttl;
             String stringValue = ConvertHelper.getReadableUTF8String(value);
+            if (length > maxValueLenght) {
+                stringValue = "(taille " + length + ")" + stringValue;
+                sysout.println(stringValue);
+                sysout.println("fini");
+            }
             s += " - StringValue : " + stringValue;
             if (value.length <= 4) {
                int intValue = ConvertHelper.byteArrayToInt(value, 0);

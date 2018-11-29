@@ -39,8 +39,8 @@
             <artifactId>maven-compiler-plugin</artifactId>
             <version>${maven-compiler-plugin.version}</version>
             <configuration>
-               <source>1.6</source>
-               <target>1.6</target>
+               <source>1.8</source>
+               <target>1.8</target>
                <encoding>${project.build.sourceEncoding}</encoding>
             </configuration>
          </plugin>
@@ -94,7 +94,6 @@
          <groupId>junit</groupId>
          <artifactId>junit</artifactId>
          <version>${junit.version}</version>
-         <scope>test</scope>
       </dependency>
       
       <!-- SLF4J et Logback -->
@@ -132,7 +131,19 @@
          <artifactId>commons-collections</artifactId>
          <version>${apache.commons-collections.version}</version>
       </dependency>
+      <!-- Guava -->
+      <dependency>
+         <groupId>com.google.guava</groupId>
+         <artifactId>guava</artifactId>
+         <version>18.0</version>
+      </dependency>
       
+      <!-- Spring batch core, pour désérialisation de JobInstance -->
+		<dependency>
+		  <groupId>org.springframework.batch</groupId>
+		  <artifactId>spring-batch-core</artifactId>
+		  <version>2.1.9.RELEASE</version>
+		</dependency>           
    </dependencies>
    
 </project>
