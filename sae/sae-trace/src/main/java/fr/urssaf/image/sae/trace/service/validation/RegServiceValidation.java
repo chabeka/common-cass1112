@@ -24,7 +24,7 @@ public class RegServiceValidation {
    private static final String LECTURE_METHOD = "execution(fr.urssaf.image.sae.trace.dao.model.* "
          + CLASS_NAME + "lecture(*))" + " && args(uuid)";
    private static final String PURGE_METHOD = "execution(void " + CLASS_NAME
-         + "purge(*))" + " && args(date)";
+         + "purge(*,*))" + " && args(date, nbMaxLigneEvtToDelete)";
    private static final String HAS_RECORDS_METHOD = "execution(boolean "
          + CLASS_NAME + "hasRecords(*))" + " && args(date)";
 
@@ -48,9 +48,11 @@ public class RegServiceValidation {
     * 
     * @param date
     *           date de la purge
+    * @param nbMaxLigneEvtToDelete Nombre maximun de ligne d'evennement à supprimer
+    * 
     */
    @Before(PURGE_METHOD)
-   public final void testPurge(Date date) {
+   public final void testPurge(Date date, int nbMaxLigneEvtToDelete) {
       if (date == null) {
          throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                "{0}", "date de purge"));
