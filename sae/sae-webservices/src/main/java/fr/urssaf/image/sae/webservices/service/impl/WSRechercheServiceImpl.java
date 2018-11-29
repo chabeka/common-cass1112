@@ -564,10 +564,15 @@ public class WSRechercheServiceImpl implements WSRechercheService {
         // utiliser pour la recherche
         final UntypedMetadata varyingMetadata = new UntypedMetadata(untypedRangeMeta.getLongCode(),
                                                                     untypedRangeMeta.getValeurMin());
+      final List<UntypedMetadata> listMetaDataFromRequest = new ArrayList<>();
 
-        final List<UntypedMetadata> listMetaDataFromRequest = new ArrayList<>();
-        listMetaDataFromRequest.addAll(listeFixedMeta);
-        listMetaDataFromRequest.add(varyingMetadata);
+      for (final UntypedMetadata meta : listeFixedMeta) {
+        if (!meta.getValue().isEmpty()) {
+          listMetaDataFromRequest.add(meta);
+        }
+      }
+
+      listMetaDataFromRequest.add(varyingMetadata);
 
         // Maping des codes des metadatas
         if (!listMetaDataFromRequest.isEmpty()) {
