@@ -1,0 +1,28 @@
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.cirtil.fr/saeIntegration/soapFaults"
+   xmlns:this="http://www.cirtil.fr/saeIntegration/soapFaults"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified">
+   
+   <!-- Elément racine -->
+   <xsd:element name="SoapFaults" type="this:ListeSoapFaultType" />
+   
+   
+   <xsd:complexType name="ListeSoapFaultType">
+      <xsd:sequence>
+         <xsd:element name="SoapFault" type="this:SoapFaultType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="SoapFaultType">
+      <xsd:sequence>
+         <xsd:element name="id" type="xsd:string" />
+         <xsd:element name="namespace" type="xsd:string" />
+         <xsd:element name="prefixe" type="xsd:string" />
+         <xsd:element name="localPart" type="xsd:string" />
+         <xsd:element name="message" type="xsd:string" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+</xsd:schema>

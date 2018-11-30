@@ -1,0 +1,33 @@
+<xsd:schema
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   targetNamespace="http://www.cirtil.fr/saeIntegration/referentielMetadonnees"
+   xmlns:this="http://www.cirtil.fr/saeIntegration/referentielMetadonnees"
+   elementFormDefault="qualified"
+   attributeFormDefault="unqualified">
+   
+   <!-- Elément racine -->
+   <xsd:element name="ReferentielMetadonnees" type="this:ListeMetadonneesType" />
+   
+   
+   <xsd:complexType name="ListeMetadonneesType">
+      <xsd:sequence>
+         <xsd:element name="Metadonnee" type="this:MetadonneeType" minOccurs="0" maxOccurs="unbounded" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+   <xsd:complexType name="MetadonneeType">
+      <xsd:sequence>
+         <xsd:element name="codeLong" type="xsd:string" />
+         <xsd:element name="codeCourt" type="xsd:string" />
+         <xsd:element name="archivablePossible" type="xsd:boolean" />
+         <xsd:element name="archivableObligatoire" type="xsd:boolean" />
+         <xsd:element name="consulteeParDefaut" type="xsd:boolean" />
+         <xsd:element name="consultable" type="xsd:boolean" />
+         <xsd:element name="critereRecherche" type="xsd:boolean" />
+         <xsd:element name="client" type="xsd:boolean" />
+         <xsd:element name="obligatoireAuStockage" type="xsd:boolean" />
+         <xsd:element name="typeDfce" type="xsd:string" />
+      </xsd:sequence>
+   </xsd:complexType>
+   
+</xsd:schema>
