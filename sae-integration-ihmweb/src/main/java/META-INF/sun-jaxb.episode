@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.2.5-2 
+Voir <a href="http://java.sun.com/xml/jaxb">http://java.sun.com/xml/jaxb</a> 
+Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+Généré le : 2016.11.17 à 03:49:54 PM CET 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/commun_sommaire_et_resultat">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat"/>
+    </schemaBindings>
+    <bindings scd="~tns:integratedDocumentVirtuelType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.IntegratedDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:documentVirtuelType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.DocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedVirtualDocumentType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedVirtualDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:integratedDocumentType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.IntegratedDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:listeIntegratedDocumentsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeIntegratedDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:documentType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.DocumentType"/>
+    </bindings>
+    <bindings scd="~tns:listeNonIntegratedDocumentsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeNonIntegratedDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedComposantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:fichierType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.FichierType"/>
+    </bindings>
+    <bindings scd="~tns:listeDocumentsVirtuelsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedDocumentType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.NonIntegratedDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:listeIntegratedDocumentsVirtuelsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeIntegratedDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings scd="~tns:metadonneeType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.MetadonneeType"/>
+    </bindings>
+    <bindings scd="~tns:erreurType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ErreurType"/>
+    </bindings>
+    <bindings scd="~tns:listeMetadonneeType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeMetadonneeType"/>
+    </bindings>
+    <bindings scd="~tns:integratedComposantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.IntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:listeDocumentsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:composantDocumentVirtuelType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:listeNonIntegratedVirtualDocumentsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeNonIntegratedVirtualDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:listeErreurType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.ListeErreurType"/>
+    </bindings>
+    <bindings scd="~tns:batchModeType">
+      <typesafeEnumClass ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.commun_sommaire_et_resultat.BatchModeType"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/sommaireXml">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.sae.integration.ihmweb.modele.somres.sommaire"/>
+    </schemaBindings>
+    <bindings scd="~tns:sommaireType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.sommaire.SommaireType"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/resultatsXml">
+    <schemaBindings map="false">
+      <package name="fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats"/>
+    </schemaBindings>
+    <bindings scd="~tns:resultatsType">
+      <class ref="fr.urssaf.image.sae.integration.ihmweb.modele.somres.resultats.ResultatsType"/>
+    </bindings>
+  </bindings>
+</bindings>
+
