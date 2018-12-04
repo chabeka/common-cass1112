@@ -12,15 +12,6 @@
 <script type="text/javascript" src="js/extjs/adapter/ext/ext-base.js"></script>
 <script type="text/javascript" src="js/extjs/ext-all-debug.js"></script>
 <script type="text/javascript" src="js/extjs/src/locale/ext-lang-fr.js"></script>
-<script>
-   function DelComment() {
-      if (confirm("Informations avant de lancer les tests de regression ? \n-Il est nécessaire de préalablement configurer le chemin vers le répertoire où se situe les tests depuis la page \"Configuration de l'application\".\n-Ces tests peuvent prendre plusieurs minutes.")) {
-         window.location = "testRegression.do"
-      } else {
-         alert("Les test n'ont pas été lancé.")
-      }
-   }
-</script>
 </head>
 <body>
 	<div class="container">
@@ -29,7 +20,7 @@
 			<table class="table table-bordered">
 				<tbody>
 					<tr>
-						<td><a href="listeTests.do">Liste des tests</a></td>
+						<td><a href="listeTests.do">Gestion des tests</a></td>
 					</tr>
 					<tr>
 						<td><a href="testRegression.do">Test de non regression</a></td>
@@ -41,6 +32,12 @@
 						<td><a href="config.do">Configuration de l'application</a></td>
 					</tr>
 					<tr>
+						<td><a href="jeuxTestInjectionConfig.do.do">Jeux de test à injecter : Configuration</a></td>
+					</tr>
+					<tr>
+						<td><a href="jeuxTestInjectionLancement.do">Jeux de test à injecter : Lancement</a></td>
+					</tr>
+					<tr>
 						<td><a href="calcTemp.do">Calculatrice temporelle</a></td>
 					</tr>
 					<tr>
@@ -48,6 +45,9 @@
 					</tr>
 					<tr>
 						<td><a href="gelDocument.do">Gel de document</a></td>
+					</tr>
+					<tr>
+						<td><a href="calculatriceHash.do">Calculatrice de Hash</a></td>
 					</tr>
 				</tbody>
 			</table>

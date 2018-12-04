@@ -21,8 +21,19 @@ public class ConfigFormulaire {
    
    private String cheminTestXml;
    
+   private String cheminTestAttendu;
    
    
+   
+   
+   public String getCheminTestAttendu() {
+      return cheminTestAttendu;
+   }
+
+   public void setCheminTestAttendu(String cheminTestAttendu) {
+      this.cheminTestAttendu = cheminTestAttendu;
+   }
+
    public String getCheminTestXml() {
       return cheminTestXml;
    }

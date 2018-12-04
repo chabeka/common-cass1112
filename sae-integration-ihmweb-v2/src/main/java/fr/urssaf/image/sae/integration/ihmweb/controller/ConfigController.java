@@ -23,7 +23,7 @@ import fr.urssaf.image.sae.integration.ihmweb.service.ecde.file.EcdeSourceManage
 public class ConfigController {
 
    private static final String NOM_VUE = "config";
-   
+
    @Autowired
    private TestConfig testConfig;
 
@@ -55,6 +55,7 @@ public class ConfigController {
       form.setUrlWS(testConfig.getUrlSaeService());
       form.setCheminTest(testConfig.getTestRegression());
       form.setCheminTestXml(testConfig.getTestXml());
+      form.setCheminTestAttendu(testConfig.getTestAttendu());
       model.addAttribute("formulaire", form);
 
       return NOM_VUE;
@@ -71,8 +72,7 @@ public class ConfigController {
     * @return la page de redirection
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=add" })
-   public final String saveListeEcdeSources(Model model,
-         ConfigFormulaire form) {
+   public final String saveListeEcdeSources(Model model, ConfigFormulaire form) {
 
       List<EcdeSource> listEcde = form.getEcdeSources().getSources();
       listEcde.add(form.getSource());
@@ -121,8 +121,7 @@ public class ConfigController {
     */
    @RequestMapping(method = RequestMethod.POST, params = { "action=generate" })
    public final String generateListeEcdeSources(Model model,
-         ConfigFormulaire form, BindingResult errors)
-         throws Exception {
+         ConfigFormulaire form, BindingResult errors) throws Exception {
 
       ecdeSourceManager.generate(form.getEcdeSources().getSources());
 
@@ -155,7 +154,15 @@ public class ConfigController {
 
       return NOM_VUE;
    }
-   
+
+   /**
+    * Sauvegarde du chemin vers le dossier contenant les tests de non regression
+    * 
+    * @param model
+    * @param form
+    * @return
+    * @throws Exception
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=saveTestRegression" })
    public final String saveTestRegression(Model model, ConfigFormulaire form)
          throws Exception {
@@ -165,12 +172,39 @@ public class ConfigController {
 
       return NOM_VUE;
    }
-   
+
+   /**
+    * Sauvegarde du chemin vers le dossier contenant les tests au format XML
+    * 
+    * @param model
+    * @param form
+    * @return
+    * @throws Exception
+    */
    @RequestMapping(method = RequestMethod.POST, params = { "action=saveTestXml" })
    public final String saveTestXml(Model model, ConfigFormulaire form)
          throws Exception {
 
       testConfig.setTestXml(form.getCheminTestXml());
+      model.addAttribute("formulaire", form);
+
+      return NOM_VUE;
+   }
+
+   /**
+    * Sauvegarde du chemin vers les tests contenant l'attendu pour les tests de
+    * non regression
+    * 
+    * @param model
+    * @param form
+    * @return
+    * @throws Exception
+    */
+   @RequestMapping(method = RequestMethod.POST, params = { "action=saveTestAttendu" })
+   public final String saveTestAttendu(Model model, ConfigFormulaire form)
+         throws Exception {
+
+      testConfig.setTestAttendu(form.getCheminTestAttendu());
       model.addAttribute("formulaire", form);
 
       return NOM_VUE;

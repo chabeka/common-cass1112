@@ -20,9 +20,20 @@ public class TestConfig {
    
    private String testRegression;
    private String testXml;
+   private String testAttendu;
    
    
    
+   public String getTestAttendu() {
+      return testAttendu;
+   }
+
+
+   public void setTestAttendu(String testAttendu) {
+      this.testAttendu = testAttendu;
+   }
+
+
    public String getTestXml() {
       return testXml;
    }

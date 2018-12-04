@@ -7,37 +7,37 @@
    <Environment
       name="SAE_Fichier_Configuration"
       type="java.lang.String"
-      value="C:\sae\integration\ecdesources.xml" />
+      value="C:\hawai\data\integration\ecdesources.xml" />
       
    <Environment
       name="SAE_Fichier_Referentiel_Test"
       type="java.lang.String"
-      value="C:\sae\integration\ecdetests.xml" />
+      value="C:\hawai\data\integration\ecdetests.xml" />
       
    <Environment
       name="IHM_TEST_CONFIG"
       type="java.lang.String"
-      value="C:\sae\integration\ihmtests-config.properties" />
+      value="C:\hawai\data\integration\ihmtests-config.properties" />
  
       
-   <!-- Serveur linux -->
+   <!-- Serveur linux 
    
       
-<!--    <Environment -->
-<!--       name="SAE_Fichier_Configuration" -->
-<!--       type="java.lang.String" -->
-<!--       value="/appl/sae_integration/ecdesources.xml" /> -->
+   <Environment
+      name="SAE_Fichier_Configuration"
+      type="java.lang.String"
+      value="/appl/sae_integration/ecdesources.xml" />
    
-<!--    <Environment -->
-<!--       name="SAE_Fichier_Referentiel_Test" -->
-<!--       type="java.lang.String" -->
-<!--       value="/appl/sae_integration/ecdetests.xml" /> -->
+   <Environment
+      name="SAE_Fichier_Referentiel_Test"
+      type="java.lang.String"
+      value="/appl/sae_integration/ecdetests.xml" />
       
-<!--    <Environment -->
-<!--       name="IHM_TEST_CONFIG" -->
-<!--       type="java.lang.String" -->
-<!--              value="/appl/sae_integration/ihmtests-config.properties" /> -->
+   <Environment
+      name="IHM_TEST_CONFIG"
+      type="java.lang.String"
+             value="/appl/sae_integration/ihmtests-config.properties" />
 
-  
+  -->
   
 </Context>

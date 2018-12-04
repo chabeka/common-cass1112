@@ -110,6 +110,9 @@
       <property name="testXml">
          <value>${config.testXml}</value>
       </property>
+      <property name="testAttendu">
+         <value>${config.testAttendu}</value>
+      </property>
    </bean>
 
 
