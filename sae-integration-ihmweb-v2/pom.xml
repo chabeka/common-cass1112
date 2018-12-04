@@ -3,7 +3,7 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.urssaf.image</groupId>
-	<artifactId>IHM-Integration-V2</artifactId>
+	<artifactId>sae-integration-ihmweb-v2</artifactId>
 	<packaging>war</packaging>
 	<version>2.0.1-SNAPSHOT</version>
 	<name>sae-integration-ihmweb-v2</name>
@@ -61,7 +61,7 @@
 
 	<build>
 
-		<finalName>sae-integration-ihmweb-v2</finalName>
+		<finalName>IHM-Integration-V2</finalName>
 
 		<pluginManagement>
 			<plugins>

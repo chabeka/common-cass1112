@@ -63,7 +63,7 @@
 
 	<build>
 
-		<finalName>sae-integration-ihmweb</finalName>
+		<finalName>IHM-Integration-V1</finalName>
 
 		<pluginManagement>
 			<plugins>
