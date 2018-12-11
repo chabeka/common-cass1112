@@ -31,13 +31,13 @@
 		<logback.version>0.9.30</logback.version>
 		<jsr303.api.version>1.0.0.GA</jsr303.api.version>
 		<jsr303.impl.hibernate.version>4.0.2.GA</jsr303.impl.hibernate.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<jstl.version>1.2</jstl.version>
 
 		<sae.anais.framework.version>1.0.2</sae.anais.framework.version>
-		<commons.maquette.version>2.0.1</commons.maquette.version>
+		<commons.maquette.version>2.0.3-SNAPSHOT</commons.maquette.version>
 
-		<sae.version>19.2.3</sae.version>
+		<sae.version>19.6.1-SNAPSHOT</sae.version>
 
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
