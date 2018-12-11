@@ -20,6 +20,7 @@
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
       
       <!-- version des framework -->
 		<junit.version>4.8.2</junit.version>
@@ -96,6 +97,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -105,7 +107,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
+					<additionalparam>${javadoc.opts}</additionalparam>
+					<doclint>none</doclint>
 				</configuration>
 			</plugin>
 

@@ -39,13 +39,13 @@
 		<google.guava.version>13.0.1</google.guava.version>
 		<lucene.version>2.9.1</lucene.version>
 		<hector.version>1.1-4</hector.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 		<cassandra-all.version>1.2.18</cassandra-all.version>
 		<aspectj.version>1.8.13</aspectj.version>
-		<spring.security.version>3.0.5.RELEASE</spring.security.version>
+		<spring.security.version>4.2.10.RELEASE</spring.security.version>
 		<dozer.version>5.3.1</dozer.version>
-		<jackson-annotations.version>2.4.5</jackson-annotations.version>
+		<jackson-annotations.version>2.8.0</jackson-annotations.version>
 		<logback.version>0.9.30</logback.version>
 
 	</properties>
@@ -310,8 +310,8 @@
 				<configuration>
 					<argumentFileName>builddef-commons-dfce.lst</argumentFileName>
 					<complianceLevel>1.8</complianceLevel>
-					<source>${maven.compiler.source}</source>
-					<target>${maven.compiler.target}</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<showWeaveInfo>true</showWeaveInfo>	
 				</configuration>
 				<executions>
@@ -372,7 +372,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${javadoc.version}</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -382,8 +382,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<quiet>true</quiet>
-					<additionalparam>-Xdoclint:none</additionalparam>
+					<additionalparam>${javadoc.opts}</additionalparam>
+					<doclint>none</doclint>
 				</configuration>
 			</plugin>
 		

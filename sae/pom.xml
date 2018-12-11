@@ -1,10 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae</artifactId>
-	<version>19.2.4-SNAPSHOT</version>
+	<version>19.6.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>sae</name>
@@ -23,7 +25,7 @@
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
 		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
-		<maven-assembly-plugin.version>2.2.2</maven-assembly-plugin.version>
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
 		<maven-replacer-plugin.version>1.3.6</maven-replacer-plugin.version>
 		<wagon-webdav.version>1.0-beta-2</wagon-webdav.version>
 		<maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
@@ -32,85 +34,45 @@
 		<sonar-maven-plugin.version>3.2</sonar-maven-plugin.version>
 		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
 		<maven-war-plugin.version>2.5</maven-war-plugin.version>
-      <!--
-      =========================================================
-      Version des dépendances des librairies réutilisables Image
-      =========================================================
-      -->
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<!-- ========================================================= Version 
+			des dépendances des librairies réutilisables Image ========================================================= -->
 
 
-      <!--
-      ==========================================
-      commons-cassandra
-      ==========================================
-      -->
-		<commons.cassandra>1.0.2</commons.cassandra>
+		<!-- ========================================== commons-cassandra ========================================== -->
+		<commons.cassandra>1.0.3-SNAPSHOT</commons.cassandra>
 
-      <!--
-      ==========================================
-      commons-cassandra-spring-batch
-      ==========================================
-      -->
-		<commons.cassandra.spring.batch>1.0.1</commons.cassandra.spring.batch>
+		<!-- ========================================== commons-cassandra-spring-batch 
+			========================================== -->
+		<commons.cassandra.spring.batch>1.0.2-SNAPSHOT</commons.cassandra.spring.batch>
 
-      <!--
-      ==========================================
-      commons-dfce
-      ==========================================
-      -->
-		<commons.dfce>1.9.13</commons.dfce>
+		<!-- ========================================== commons-dfce ========================================== -->
+		<commons.dfce>1.9.14-SNAPSHOT</commons.dfce>
 
-      <!--
-      ==========================================
-      commons-pdfbox
-      ==========================================
-      -->
+		<!-- ========================================== commons-pdfbox ========================================== -->
 		<commons-pdfbox>1.0.1</commons-pdfbox>
 
-      <!--
-      ==========================================
-      commons-droid
-      ==========================================
-      -->
-		<commons-droid>1.0.1</commons-droid>
+		<!-- ========================================== commons-droid ========================================== -->
+		<commons-droid>1.0.2-SNAPSHOT</commons-droid>
 
-      <!--
-      ==========================================
-      commons-itext
-      ==========================================
-      -->
-		<commons-itext>1.0.1</commons-itext>
+		<!-- ========================================== commons-itext ========================================== -->
+		<commons-itext>1.0.2-SNAPSHOT</commons-itext>
 
-      <!--
-      =========================================================
-      Version des framework/dépendances
-      =========================================================
-      -->
+		<!-- ========================================================= Version 
+			des framework/dépendances ========================================================= -->
 
 
-      <!--
-      ==========================================
-      JUnit
-      http://junit.org/
-      ==========================================
-      -->
+		<!-- ========================================== JUnit http://junit.org/ 
+			========================================== -->
 		<junit.version>4.8.2</junit.version>
 
-      <!--
-      ==========================================
-      SLF4J (Simple Logging Facade for Java)
-      http://www.slf4j.org/
-      ==========================================
-      -->
+		<!-- ========================================== SLF4J (Simple Logging Facade 
+			for Java) http://www.slf4j.org/ ========================================== -->
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 
 
-      <!--
-      ==========================================
-      Ponts entre SLF4J et d'autres frameworks de log
-      http://www.slf4j.org/legacy.html
-      ==========================================
-      -->
+		<!-- ========================================== Ponts entre SLF4J et d'autres 
+			frameworks de log http://www.slf4j.org/legacy.html ========================================== -->
 
 		<!-- JCL (Jakarta Commons Logging) vers SLF4J -->
 		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
@@ -118,34 +80,19 @@
 		<!-- Log4J vers SLF4J -->
 		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
 
-      <!--
-      ==========================================
-      Logback
-      
-      http://logback.qos.ch/
-      ==========================================
-      -->
+		<!-- ========================================== Logback http://logback.qos.ch/ 
+			========================================== -->
 		<logback.version>0.9.30</logback.version>
 
 
-      <!--
-      ==========================================
-      Spring
-      
-      http://www.springsource.org/
-      ==========================================
-      -->
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<spring.security.version>3.0.5.RELEASE</spring.security.version>
-		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+		<!-- ========================================== Spring http://www.springsource.org/ 
+			========================================== -->
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<spring.security.version>4.2.10.RELEASE</spring.security.version>
+		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 
-      <!--
-      ==========================================
-      Apache Commons
-      
-      http://commons.apache.org/
-      ==========================================
-      -->
+		<!-- ========================================== Apache Commons http://commons.apache.org/ 
+			========================================== -->
 
 		<apache.commons-configuration.version>1.6</apache.commons-configuration.version>
 		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
@@ -155,119 +102,56 @@
 		<apache.commons-compress.version>1.4.1</apache.commons-compress.version>
 		<apache.commons-beanutils.version>1.8.3</apache.commons-beanutils.version>
 
-      <!--
-      ==========================================
-      JDOM      
-      http://www.jdom.org/
-      ==========================================
-      -->
+		<!-- ========================================== JDOM http://www.jdom.org/ 
+			========================================== -->
 		<org.jdom.version>1.1</org.jdom.version>
 
 
-      <!--
-      ==========================================
-      Joda Time (Java date and time API)
-      http://joda-time.sourceforge.net/
-      ==========================================
-      -->
+		<!-- ========================================== Joda Time (Java date and 
+			time API) http://joda-time.sourceforge.net/ ========================================== -->
 		<joda-time.version>2.0</joda-time.version>
 
-      <!--
-      ==========================================
-      Java Servlet API
-
-      Spécifications de la version 2.3 (JSR 53) :
-      http://www.jcp.org/en/jsr/detail?id=53
-      
-      Spécifications des versions 2.4 et 2.5 (JSR 154) :
-      http://www.jcp.org/en/jsr/detail?id=154
-      
-      Spécifications de la version 3.0 (JSR 315) :
-      http://www.jcp.org/en/jsr/detail?id=315
-      ==========================================
-      -->
+		<!-- ========================================== Java Servlet API Spécifications 
+			de la version 2.3 (JSR 53) : http://www.jcp.org/en/jsr/detail?id=53 Spécifications 
+			des versions 2.4 et 2.5 (JSR 154) : http://www.jcp.org/en/jsr/detail?id=154 
+			Spécifications de la version 3.0 (JSR 315) : http://www.jcp.org/en/jsr/detail?id=315 
+			========================================== -->
 		<javax.servlet.version>2.5</javax.servlet.version>
 
 
-      <!--
-      ==========================================
-      AspectJ
-      
-      http://www.eclipse.org/aspectj/
-      ==========================================
-      -->
+		<!-- ========================================== AspectJ http://www.eclipse.org/aspectj/ 
+			========================================== -->
 		<aspectj.version>1.8.13</aspectj.version>
 
-      <!--
-      ==========================================
-      Axis 2
-      
-      http://ws.apache.org/axis/
-      ==========================================
-      -->
+		<!-- ========================================== Axis 2 http://ws.apache.org/axis/ 
+			========================================== -->
 		<axis2.version>1.7.7</axis2.version>
 
-      <!--
-      ==========================================
-      XStream
-      
-      http://xstream.codehaus.org/
-      ==========================================
-      -->
+		<!-- ========================================== XStream http://xstream.codehaus.org/ 
+			========================================== -->
 		<xstream.version>1.3.1</xstream.version>
 
-      <!--
-      ==========================================
-      EasyMock
-      
-      http://www.easymock.org/
-      ==========================================
-      -->
+		<!-- ========================================== EasyMock http://www.easymock.org/ 
+			========================================== -->
 		<easymock.version>3.0</easymock.version>
 
-      <!--
-      ==========================================
-      JUnitPerf
-      
-      http://www.clarkware.com/software/JUnitPerf.html
-      ==========================================
-      -->
+		<!-- ========================================== JUnitPerf http://www.clarkware.com/software/JUnitPerf.html 
+			========================================== -->
 		<junitperf.version>1.9.1</junitperf.version>
 
-      <!--
-      ==========================================
-      Google Guava
-      
-      http://code.google.com/p/guava-libraries/
-      ==========================================
-      -->
+		<!-- ========================================== Google Guava http://code.google.com/p/guava-libraries/ 
+			========================================== -->
 		<guava.version>13.0.1</guava.version>
-     
-      
-      <!--
-      ==========================================
-      Javassist
-      
-      http://www.javassist.org/
-      
-      On embarque Javassist par transitivité,
-      on fixe la version pour résoudre les conflits
-      de version.
-      ==========================================
-      -->
+
+
+		<!-- ========================================== Javassist http://www.javassist.org/ 
+			On embarque Javassist par transitivité, on fixe la version pour résoudre 
+			les conflits de version. ========================================== -->
 		<javassist.version>3.18.1-GA</javassist.version>
-      
-      <!--
-      ==========================================
-      Bouncy Castle Cryptography APIs
-      
-      http://www.bouncycastle.org/java.html
-      
-      On embarque Bouncy Castle par transitivité,
-      on fixe la version pour résoudre les conflits
-      de version.
-      ==========================================
-      -->
+
+		<!-- ========================================== Bouncy Castle Cryptography 
+			APIs http://www.bouncycastle.org/java.html On embarque Bouncy Castle par 
+			transitivité, on fixe la version pour résoudre les conflits de version. ========================================== -->
 		<bcprov-jdk16.version>140</bcprov-jdk16.version>
 	</properties>
 
@@ -372,17 +256,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
-				</configuration>
 			</plugin>
 
 			<!-- Pour la gestion des release -->
@@ -402,7 +275,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 			</plugin>
 
-         	<!-- Déploiement réalisé uniquement à la fin du build de tous les modules, et pas module par module. -->
+			<!-- Déploiement réalisé uniquement à la fin du build de tous les modules, 
+				et pas module par module. -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -558,6 +432,23 @@
 					<artifactId>maven-war-plugin</artifactId>
 					<version>${maven-war-plugin.version}</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>attach-javadocs</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
+					<configuration>
+						<additionalparam>${javadoc.opts}</additionalparam>
+						<doclint>none</doclint>
+					</configuration>
+				</plugin>
 			</plugins>
 
 		</pluginManagement>
@@ -577,7 +468,8 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>${junit.version}</version><!--$NO-MVN-MAN-VER$--><!-- VERSION PLUS RECENTE DE JUNIT (Utilisation des annotations et autres) -->
+			<version>${junit.version}</version><!--$NO-MVN-MAN-VER$ --><!-- VERSION PLUS RECENTE DE JUNIT 
+				(Utilisation des annotations et autres) -->
 			<scope>test</scope>
 		</dependency>
 
@@ -601,7 +493,7 @@
 
 	<profiles>
 		<profile>
-		<id>hawai_livraison</id>
+			<id>hawai_livraison</id>
 			<activation>
 				<activeByDefault>false</activeByDefault>
 			</activation>
@@ -652,7 +544,8 @@
 							<artifactId>jacoco-maven-plugin</artifactId>
 							<version>${jacoco.maven.plugin}</version>
 							<executions>
-							    <!-- Prepares a variable, surefireArgLine, that contains the info to be passed to the JVM hosting the code being tested. -->
+								<!-- Prepares a variable, surefireArgLine, that contains the info 
+									to be passed to the JVM hosting the code being tested. -->
 								<execution>
 									<id>default-prepare-agent</id>
 									<goals>
@@ -729,9 +622,6 @@
 							<configuration combine.self="override">
 								<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
 								<forkMode>pertest</forkMode>
-								<!-- <forkCount>1</forkCount> <reuseForks>false</reuseForks> <parallel>classes</parallel> 
-									<useUnlimitedThreads>true</useUnlimitedThreads> -->
-								<!-- Specific to generate mapping between tests and covered code -->
 								<properties>
 									<property>
 										<name>listener</name>
@@ -752,7 +642,8 @@
 			</build>
 			<dependencies>
 				<dependency>
-				<!-- The Sonar Jacoco Listener for JUnit to extract coverage details per test -->
+					<!-- The Sonar Jacoco Listener for JUnit to extract coverage details 
+						per test -->
 					<groupId>org.codehaus.sonar-plugins.java</groupId>
 					<artifactId>sonar-jacoco-listeners</artifactId>
 					<version>${sonar-jacoco-listeners.version}</version>

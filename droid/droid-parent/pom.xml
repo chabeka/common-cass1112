@@ -21,7 +21,7 @@
 	<properties>
 		<project.build.source>1.8</project.build.source>
 		<project.build.target>1.8</project.build.target>
-		<spring.version>3.0.5.RELEASE</spring.version>
+		<spring.version>4.3.21.RELEASE</spring.version>
 		<hibernate.version>3.4.0.GA</hibernate.version>
 		<derby.version>10.8.2.2</derby.version>
 		<antlr.version>3.2</antlr.version>

@@ -20,6 +20,7 @@
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
       
       <!-- version des framework -->
 		<junit.version>4.8.2</junit.version>
@@ -27,8 +28,8 @@
 		<logback.version>0.9.30</logback.version>
 		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
 		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<droid.version>7.0</droid.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<droid.version>7.1-SNAPSHOT</droid.version>
 
 	</properties>
    
@@ -97,6 +98,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -106,8 +108,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<javadocVersion>1.6</javadocVersion>
-					<quiet>true</quiet>
+					<additionalparam>${javadoc.opts}</additionalparam>
+					<doclint>none</doclint>
 				</configuration>
 			</plugin>
 

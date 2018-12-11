@@ -26,7 +26,7 @@
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 		<logback.version>0.9.30</logback.version>
 
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 
 		<apache.commons-io.version>2.0.1</apache.commons-io.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>

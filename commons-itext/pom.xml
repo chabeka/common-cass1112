@@ -22,6 +22,7 @@
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 
       <!-- numéro de version de dépendance de itext -->
       <!-- cette version est une version en AGPL v3 -->
@@ -31,7 +32,7 @@
 		<junit.version>4.8.2</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 		<logback.version>0.9.30</logback.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<apache.commons-io.version>2.0.1</apache.commons-io.version>
 
 	</properties>
@@ -101,6 +102,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -110,7 +112,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
+					<additionalparam>${javadoc.opts}</additionalparam>
+					<doclint>none</doclint>
 				</configuration>
 			</plugin>
 

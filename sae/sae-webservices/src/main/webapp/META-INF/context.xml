@@ -15,7 +15,7 @@
     
     
    <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
-      value="c:/hawai/data/sae/sae-config.properties" />
+      value="c:/hawai/data/sae_env_dev_hwi6/sae-config.properties" />
    
       
    <!-- 

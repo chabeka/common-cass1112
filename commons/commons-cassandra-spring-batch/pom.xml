@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -8,36 +10,36 @@
 
 	<name>commons-cassandra-spring-batch</name>
 
-    <!-- Utilisation du fichier POM parent ALTAIR -->
+	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
 		<groupId>fr.pnr.altair</groupId>
 		<artifactId>parent</artifactId>
 		<version>1.1.3</version>
 	</parent>
 
-	<properties>      
-      <!-- Version des plug-ins Maven -->
+	<properties>
+		<!-- Version des plug-ins Maven -->
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
-      
-      <!-- Version de commons-cassandra -->
-		<commons-cassandra.version>1.0.2</commons-cassandra.version>
-      
-      <!-- Version des framework -->
+
+		<!-- Version de commons-cassandra -->
+		<commons-cassandra.version>1.0.3-SNAPSHOT</commons-cassandra.version>
+
+		<!-- Version des framework -->
 		<junit.version>4.8.2</junit.version>
 		<slf4j-api.version>1.6.1</slf4j-api.version>
 		<logback.version>0.9.30</logback.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 
-		<spring-batch-admin-manager.version>1.2.1.RELEASE</spring-batch-admin-manager.version>
-		<spring-batch-integration.version>1.2.1.RELEASE</spring-batch-integration.version>
+		<spring-batch-admin-manager.version>1.3.1.RELEASE</spring-batch-admin-manager.version>
+		<spring-batch-integration.version>1.3.1.RELEASE</spring-batch-integration.version>
 	</properties>
-   
-   <!-- Configuration SVN pour le plug-in maven-release -->
+
+	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-cassandra-spring-batch
@@ -51,8 +53,8 @@
 	</scm>
 
 	<dependencies>
-   
-      <!-- Librairie CIRTIL: commons-cassandra -->
+
+		<!-- Librairie CIRTIL: commons-cassandra -->
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>
 			<artifactId>commons-cassandra</artifactId>
@@ -60,7 +62,7 @@
 		</dependency>
 
 
-      <!-- Spring et SPRING BATCH -->
+		<!-- Spring et SPRING BATCH -->
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -82,6 +84,30 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
 			<version>${spring.batch.version}</version>
@@ -92,6 +118,12 @@
 			<artifactId>spring-batch-test</artifactId>
 			<version>${spring.batch.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -144,8 +176,20 @@
 			</exclusions>
 		</dependency>
 
+		<!-- JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.11.3</version>
+		</dependency>
 
-      <!-- JUNIT -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.8.11</version>
+		</dependency>
+
+		<!-- JUNIT -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -154,7 +198,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!--  Loggers -->
+		<!-- Loggers -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -171,7 +215,7 @@
 			<version>${logback.version}</version>
 		</dependency>
 
-      <!--  Divers -->
+		<!-- Divers -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -230,10 +274,8 @@
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>${sonar-maven-plugin.version}</version>
 			</plugin>
-         
-         <!--
-         Pour la gestion des release
-         -->
+
+			<!-- Pour la gestion des release -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
