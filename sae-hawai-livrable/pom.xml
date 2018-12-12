@@ -25,7 +25,7 @@
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<maven-scm-plugin.version>1.9.5</maven-scm-plugin.version>
 		<!--VERSION BINAIRE A MODIFIER AVANT LANCEMENT DU BUILD  -->
-		<sae.version>18.9.7-SNAPSHOT</sae.version>
+		<sae.version>18.9.12-SNAPSHOT</sae.version>
 		<dfce-webapp.version>1.9.5</dfce-webapp.version>
 		<sae-anais-portail.version>1.0.11-SNAPSHOT</sae-anais-portail.version>
 		<sae-ihm-web-exploit.version>1.0.22-SNAPSHOT</sae-ihm-web-exploit.version>

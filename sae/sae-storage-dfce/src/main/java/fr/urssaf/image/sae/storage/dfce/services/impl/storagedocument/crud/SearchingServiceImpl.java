@@ -72,15 +72,13 @@ import net.docubase.toolkit.model.search.SortedSearchQuery;
 
 /**
  * Implémente les services de l'interface {@link SearchingService} .
- *
- *
  */
 @Service
 @Qualifier("searchingService")
 public class SearchingServiceImpl extends AbstractServices implements
-SearchingService {
+                                  SearchingService {
    private static final Logger LOG = LoggerFactory
-         .getLogger(SearchingServiceImpl.class);
+                                                  .getLogger(SearchingServiceImpl.class);
 
    private static final String SEPARATOR_STRING = ", ";
 
@@ -88,6 +86,7 @@ SearchingService {
 
    @Autowired
    private MetadataReferenceDAO referenceDAO;
+
    @Autowired
    private SAEConvertMetadataService convertService;
 
@@ -101,9 +100,10 @@ SearchingService {
    private String nomPlateforme;
 
    public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(
-         "yyyyMMddHHmmssSSS");
+                                                                                "yyyyMMddHHmmssSSS");
+
    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-         "yyyyMMdd");
+                                                                           "yyyyMMdd");
 
    /**
     * {@inheritDoc}
@@ -112,48 +112,65 @@ SearchingService {
    @Loggable(LogLevel.TRACE)
    @ServiceChecked
    public StorageDocuments searchStorageDocumentByLuceneCriteria(
-                                                                 final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
-   QueryParseServiceEx {
+                                                                 final LuceneCriteria luceneCriteria)
+         throws SearchingServiceEx,
+         QueryParseServiceEx {
       final String prefixTrace = "searchStorageDocumentByLuceneCriteria()";
-      final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
+      final List<StorageDocument> storageDocuments = new ArrayList<>();
       try {
 
-         LOG.debug("{} - Requête Lucene envoyée à DFCE: \"{}\"", prefixTrace,
+         LOG.debug("{} - Requête Lucene envoyée à DFCE: \"{}\"",
+                   prefixTrace,
                    luceneCriteria.getLuceneQuery());
 
          final SortedSearchQuery paramSearchQuery = ToolkitFactory.getInstance()
-               .createMonobaseSortedQuery(luceneCriteria.getLuceneQuery(),
-                                          getBaseDFCE());
+                                                                  .createMonobaseSortedQuery(luceneCriteria.getLuceneQuery(),
+                                                                                             getBaseDFCE());
          paramSearchQuery.setPageSize(luceneCriteria.getLimit());
          paramSearchQuery.setOffset(0);
          final SearchResult searchResult = getDfceServices().search(paramSearchQuery);
 
          for (final Document document : Utils.nullSafeIterable(searchResult
-                                                               .getDocuments())) {
+                                                                           .getDocuments())) {
 
             storageDocuments.add(BeanMapper.dfceDocumentToStorageDocument(
-                                                                          document, luceneCriteria.getDesiredStorageMetadatas(),
-                                                                          getDfceServices(), nomPlateforme, true, false));
+                                                                          document,
+                                                                          luceneCriteria.getDesiredStorageMetadatas(),
+                                                                          getDfceServices(),
+                                                                          nomPlateforme,
+                                                                          true,
+                                                                          false));
          }
-      } catch (final SearchQueryParseException except) {
+      }
+      catch (final SearchQueryParseException except) {
          throw new QueryParseServiceEx(StorageMessageHandler
-                                       .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
+                                                            .getMessage(Constants.SRH_CODE_ERROR),
+                                       except.getMessage(),
                                        except);
-      } catch (final StorageException srcSerEx) {
+      }
+      catch (final StorageException srcSerEx) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      srcSerEx.getMessage(),
                                       srcSerEx);
-      } catch (final IOException ioExcept) {
+      }
+      catch (final IOException ioExcept) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), ioExcept.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      ioExcept.getMessage(),
                                       ioExcept);
-      } catch (final ExceededSearchLimitException exceedSearchEx) {
+      }
+      catch (final ExceededSearchLimitException exceedSearchEx) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), exceedSearchEx
-                                      .getMessage(), exceedSearchEx);
-      } catch (final Exception except) {
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      exceedSearchEx
+                                                    .getMessage(),
+                                      exceedSearchEx);
+      }
+      catch (final Exception except) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      except.getMessage(),
                                       except);
       }
       return new StorageDocuments(storageDocuments);
@@ -167,12 +184,14 @@ SearchingService {
    @ServiceChecked
    public StorageDocument searchStorageDocumentByUUIDCriteria(
                                                               final UUIDCriteria uUIDCriteria, final boolean forConsultation)
-                                                                    throws SearchingServiceEx {
+         throws SearchingServiceEx {
 
       // -- Recherche du document
       return storageDocumentServiceSupport.searchStorageDocumentByUUIDCriteria(
-                                                                               getDfceServices(), uUIDCriteria,
-                                                                               forConsultation, LOG);
+                                                                               getDfceServices(),
+                                                                               uUIDCriteria,
+                                                                               forConsultation,
+                                                                               LOG);
    }
 
    /**
@@ -181,24 +200,33 @@ SearchingService {
    @Override
    @ServiceChecked
    public StorageDocument searchMetaDatasByUUIDCriteria(
-                                                        final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
+                                                        final UUIDCriteria uuidCriteria)
+         throws SearchingServiceEx {
       try {
          final Document docDfce = getDfceServices().getDocumentByUUID(uuidCriteria.getUuid());
 
-         return BeanMapper.dfceMetaDataToStorageDocument(docDfce, uuidCriteria
-                                                         .getDesiredStorageMetadatas(), getDfceServices());
+         return BeanMapper.dfceMetaDataToStorageDocument(docDfce,
+                                                         uuidCriteria
+                                                                     .getDesiredStorageMetadatas(),
+                                                         getDfceServices());
 
-      } catch (final StorageException srcSerEx) {
+      }
+      catch (final StorageException srcSerEx) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      srcSerEx.getMessage(),
                                       srcSerEx);
-      } catch (final IOException ioExcept) {
+      }
+      catch (final IOException ioExcept) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), ioExcept.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      ioExcept.getMessage(),
                                       ioExcept);
-      } catch (final Exception except) {
+      }
+      catch (final Exception except) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), except.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      except.getMessage(),
                                       except);
       }
    }
@@ -209,32 +237,29 @@ SearchingService {
    @Override
    public PaginatedStorageDocuments searchPaginatedStorageDocuments(
                                                                     final PaginatedLuceneCriteria paginatedLuceneCriteria)
-                                                                          throws SearchingServiceEx, QueryParseServiceEx {
+         throws SearchingServiceEx, QueryParseServiceEx {
 
-      return searchByIterator(paginatedLuceneCriteria, null,  false, true);
+      return searchByIterator(paginatedLuceneCriteria, null, false, true);
    }
 
-   
-   
-   
    /**
     * {@inheritDoc}
     */
    @Override
-   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
-                                                                    final PaginatedLuceneCriteria paginatedLuceneCriteria, 
-                                                                    final List<String> indexOrderPreferenceList)
-                                                                          throws SearchingServiceEx, QueryParseServiceEx {
+   public PaginatedStorageDocuments searchPaginatedStorageDocumentsWithBestIndex(final PaginatedLuceneCriteria paginatedLuceneCriteria,
+                                                                                 final List<String> bestIndex)
+         throws SearchingServiceEx, QueryParseServiceEx {
 
-      return searchByIterator(paginatedLuceneCriteria, indexOrderPreferenceList,  false, true);
+      return searchByIterator(paginatedLuceneCriteria, bestIndex, false, true);
    }
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
    public byte[] searchStorageDocumentContentByUUIDCriteria(
-                                                            final UUIDCriteria uUIDCriteria) throws IOException {
+                                                            final UUIDCriteria uUIDCriteria)
+         throws IOException {
       final Document docDfce = getDfceServices().getDocumentByUUID(uUIDCriteria.getUuid());
       final InputStream docContent = getDfceServices().getDocumentFile(docDfce);
       return IOUtils.toByteArray(docContent);
@@ -262,36 +287,36 @@ SearchingService {
                                                       final List<String> indexOrderPreferenceList,
                                                       final boolean searchInRecycleBean,
                                                       final boolean useChainedFilter)
-                                                            throws SearchingServiceEx, QueryParseServiceEx {
+         throws SearchingServiceEx, QueryParseServiceEx {
       final PaginatedStorageDocuments paginatedStorageDocuments = new PaginatedStorageDocuments();
       try {
          final String prefixeTrc = "searchByIterator()";
 
-         final List<StorageDocument> storageDocuments = new ArrayList<StorageDocument>();
+         final List<StorageDocument> storageDocuments = new ArrayList<>();
 
          // Création de la SearchQuery
          final SearchQuery searchQuery = ToolkitFactory.getInstance()
-               .createMonobaseQuery(paginatedLuceneCriteria.getLuceneQuery(),
-                                    getBaseDFCE());
+                                                       .createMonobaseQuery(paginatedLuceneCriteria.getLuceneQuery(),
+                                                                            getBaseDFCE());
          // Récupération du référentiel des métadonnés pour les différentes
          // vérifications
          final Map<String, MetadataReference> referentielMeta = referenceDAO
-               .getAllMetadataReferencesPourVerifDroits();
+                                                                            .getAllMetadataReferencesPourVerifDroits();
 
          if (useChainedFilter) {
             // Création de la chainedFilter
             final ChainedFilter chainedFilter = createChaineFilter(
-                                                                   paginatedLuceneCriteria, referentielMeta);
+                                                                   paginatedLuceneCriteria,
+                                                                   referentielMeta);
             // On l'ajoute à la searchQuery
             searchQuery.setChainedFilter(chainedFilter);
          }
          // On fixe le pas d'execution de l'itérateur
          searchQuery.setSearchLimit(LIMITE);
-         
-         
+
          // charger l'index à utliser dans l'objet searchQuery
-         if(indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()){
-        	 searchQuery.setIndexOrderPreference(indexOrderPreferenceList);
+         if (indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()) {
+            searchQuery.setIndexOrderPreference(indexOrderPreferenceList);
          }
 
          // Recherche des documents par l'itérateur DFCE
@@ -307,8 +332,8 @@ SearchingService {
 
          // On récupère la liste complète des métadonnées du référentiel afin de
          // pouvoir tester les droits
-         final List<String> metadonneesRef = new ArrayList<String>(referentielMeta
-               .keySet());
+         final List<String> metadonneesRef = new ArrayList<>(referentielMeta
+                                                                            .keySet());
 
          List<StorageMetadata> allMeta = null;
          // dans le cas de la recherche dans la corbeille, on ne vérifie pas les droits pour éviter de récupérer le flag GEL dans le mauvais index
@@ -334,13 +359,17 @@ SearchingService {
          while (iterateur.hasNext()) {
             final Document doc = iterateur.next();
             final StorageDocument storageDocument = BeanMapper
-                  .dfceDocumentToStorageDocument(doc, allMeta,
-                                                 getDfceServices(), nomPlateforme, true, false);
+                                                              .dfceDocumentToStorageDocument(doc,
+                                                                                             allMeta,
+                                                                                             getDfceServices(),
+                                                                                             nomPlateforme,
+                                                                                             true,
+                                                                                             false);
             UntypedDocument untypedDocument = null;
             // Vérification des droits
             if (storageDocument != null) {
                untypedDocument = mappingService
-                     .storageDocumentToUntypedDocument(storageDocument);
+                                               .storageDocumentToUntypedDocument(storageDocument);
             }
 
             if (compteur < limite) {
@@ -351,25 +380,30 @@ SearchingService {
                if (!searchInRecycleBean) {
                   LOG.debug("{} - Récupération des droits", prefixeTrc);
                   final AuthenticationToken token = AuthenticationContext
-                        .getAuthenticationToken();
-                  final List<SaePrmd> saePrmds = token.getSaeDroits().get(
-                        "recherche_iterateur");
+                                                                         .getAuthenticationToken();
+                  final List<SaePrmd> saePrmds = token.getSaeDroits()
+                                                      .get(
+                                                           "recherche_iterateur");
                   LOG.debug("{} - Vérification des droits", prefixeTrc);
                   isPermitted = prmdService.isPermitted(untypedDocument
-                                                        .getUMetadatas(), saePrmds);
+                                                                       .getUMetadatas(),
+                                                        saePrmds);
                }
 
                if (isPermitted) {
                   storageDocuments.add(BeanMapper
-                                       .dfceDocumentToStorageDocument(doc,
-                                                                      paginatedLuceneCriteria
-                                                                      .getDesiredStorageMetadatas(),
-                                                                      getDfceServices(), nomPlateforme, true, false));
+                                                 .dfceDocumentToStorageDocument(doc,
+                                                                                paginatedLuceneCriteria
+                                                                                                       .getDesiredStorageMetadatas(),
+                                                                                getDfceServices(),
+                                                                                nomPlateforme,
+                                                                                true,
+                                                                                false));
                   compteur++;
                }
             } else {
                paginatedStorageDocuments
-               .setAllStorageDocuments(storageDocuments);
+                                        .setAllStorageDocuments(storageDocuments);
                paginatedStorageDocuments.setLastPage(false);
                break;
             }
@@ -382,40 +416,60 @@ SearchingService {
          }
 
          final String codeCourtVaryingMeta = paginatedLuceneCriteria
-               .getCodeCourtVaryingMeta();
+                                                                    .getCodeCourtVaryingMeta();
 
          // Si la recherche renvoie des documents, on récupère la valeur de la
          // métadonnée variable afin de pouvoir la transmettre au client dans
          // l'identifiant de la dernière page
          if (storageDocuments.size() > 0) {
             final String valeurMetaLastPage = recupererValeurMetaLastPage(
-                                                                          storageDocuments, codeCourtVaryingMeta);
+                                                                          storageDocuments,
+                                                                          codeCourtVaryingMeta);
             paginatedStorageDocuments.setValeurMetaLastPage(valeurMetaLastPage);
          }
 
-      } catch (final ReferentialException e) {
+      }
+      catch (final ReferentialException e) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
-      } catch (final MetadonneeInexistante e) {
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      e.getMessage(),
+                                      e);
+      }
+      catch (final MetadonneeInexistante e) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
-      } catch (final StorageException srcSerEx) {
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      e.getMessage(),
+                                      e);
+      }
+      catch (final StorageException srcSerEx) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), srcSerEx.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      srcSerEx.getMessage(),
                                       srcSerEx);
-      } catch (final IOException ioExcept) {
+      }
+      catch (final IOException ioExcept) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), ioExcept.getMessage(),
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      ioExcept.getMessage(),
                                       ioExcept);
-      } catch (final InvalidSAETypeException e) {
+      }
+      catch (final InvalidSAETypeException e) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
-      } catch (final MappingFromReferentialException e) {
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      e.getMessage(),
+                                      e);
+      }
+      catch (final MappingFromReferentialException e) {
          throw new SearchingServiceEx(StorageMessageHandler
-                                      .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
-      } catch (final SearchQueryParseException e) {
+                                                           .getMessage(Constants.SRH_CODE_ERROR),
+                                      e.getMessage(),
+                                      e);
+      }
+      catch (final SearchQueryParseException e) {
          throw new QueryParseServiceEx(StorageMessageHandler
-                                       .getMessage(Constants.SRH_CODE_ERROR), e.getMessage(), e);
+                                                            .getMessage(Constants.SRH_CODE_ERROR),
+                                       e.getMessage(),
+                                       e);
       }
       return paginatedStorageDocuments;
    }
@@ -424,7 +478,8 @@ SearchingService {
                                               final List<StorageDocument> storageDocuments,
                                               final String codeCourtVaryingMeta) {
       final StorageDocument storageDocument = storageDocuments.get(storageDocuments
-                                                                   .size() - 1);
+                                                                                   .size()
+            - 1);
       final List<StorageMetadata> listeSMeta = storageDocument.getMetadatas();
       String valeurMetaLastPage = "";
       for (final StorageMetadata storageMetadata : listeSMeta) {
@@ -434,10 +489,10 @@ SearchingService {
                   // Convert Local Time to UTC (Works Fine)
                   DATE_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
                   valeurMetaLastPage = DATE_TIME_FORMAT.format(storageMetadata
-                                                               .getValue());
+                                                                              .getValue());
                } else {
                   valeurMetaLastPage = DATE_FORMAT.format(storageMetadata
-                                                          .getValue());
+                                                                         .getValue());
                }
             } else {
                valeurMetaLastPage = storageMetadata.getValue().toString();
@@ -459,52 +514,72 @@ SearchingService {
                                             final PaginatedLuceneCriteria paginatedLuceneCriteria,
                                             final Map<String, MetadataReference> referentielMeta) {
       final ChainedFilter chainedFilter = ToolkitFactory.getInstance()
-            .createChainedFilter();
+                                                        .createChainedFilter();
 
       final List<AbstractFilter> listeFiltres = paginatedLuceneCriteria.getFilters();
       // On parcourt les filtres pour les ajouter à la chainedFilter
       for (final AbstractFilter filtre : listeFiltres) {
          if (filtre instanceof ValueFilter) {
             final Object value = ((ValueFilter) filtre).getValue();
-            chainedFilter.addTermFilter(filtre.getShortCode(), (String) value,
+            chainedFilter.addTermFilter(filtre.getShortCode(),
+                                        (String) value,
                                         ChainedFilterOperator.AND);
          } else if (filtre instanceof RangeFilter) {
             final Object minValue = ((RangeFilter) filtre).getMinValue();
             final Object maxValue = ((RangeFilter) filtre).getMaxValue();
             final String typeMeta = referentielMeta.get(
-                                                        ((RangeFilter) filtre).getLongCode()).getType();
+                                                        ((RangeFilter) filtre).getLongCode())
+                                                   .getType();
             if ("Integer".equals(typeMeta) || "Long".equals(typeMeta)) {
-               chainedFilter.addIntRangeFilter(filtre.getShortCode(), Integer
-                                               .parseInt((String) minValue), Integer
-                                               .parseInt((String) maxValue), true, true,
+               chainedFilter.addIntRangeFilter(filtre.getShortCode(),
+                                               Integer
+                                                      .parseInt((String) minValue),
+                                               Integer
+                                                      .parseInt((String) maxValue),
+                                               true,
+                                               true,
                                                ChainedFilterOperator.AND);
             } else {
                chainedFilter.addTermRangeFilter(filtre.getShortCode(),
-                                                (String) minValue, (String) maxValue, true, true,
+                                                (String) minValue,
+                                                (String) maxValue,
+                                                true,
+                                                true,
                                                 ChainedFilterOperator.AND);
             }
          } else if (filtre instanceof NotValueFilter) {
             final Object value = ((NotValueFilter) filtre).getValue();
             if (value instanceof String) {
                chainedFilter.addTermFilter(filtre.getShortCode(),
-                                           (String) value, ChainedFilterOperator.ANDNOT);
+                                           (String) value,
+                                           ChainedFilterOperator.ANDNOT);
             } else if (value instanceof Integer) {
-               chainedFilter.addTermFilter(filtre.getShortCode(), Integer
-                                           .toString((Integer) value), ChainedFilterOperator.ANDNOT);
+               chainedFilter.addTermFilter(filtre.getShortCode(),
+                                           Integer
+                                                  .toString((Integer) value),
+                                           ChainedFilterOperator.ANDNOT);
             }
          } else if (filtre instanceof NotRangeFilter) {
             final Object minValue = ((NotRangeFilter) filtre).getMinValue();
             final Object maxValue = ((NotRangeFilter) filtre).getMaxValue();
             final String typeMeta = referentielMeta.get(
-                                                        ((NotRangeFilter) filtre).getLongCode()).getType();
+                                                        ((NotRangeFilter) filtre).getLongCode())
+                                                   .getType();
             if ("Integer".equals(typeMeta) || "Long".equals(typeMeta)) {
-               chainedFilter.addIntRangeFilter(filtre.getShortCode(), Integer
-                                               .parseInt((String) minValue), Integer
-                                               .parseInt((String) maxValue), true, true,
+               chainedFilter.addIntRangeFilter(filtre.getShortCode(),
+                                               Integer
+                                                      .parseInt((String) minValue),
+                                               Integer
+                                                      .parseInt((String) maxValue),
+                                               true,
+                                               true,
                                                ChainedFilterOperator.ANDNOT);
             } else {
                chainedFilter.addTermRangeFilter(filtre.getShortCode(),
-                                                (String) minValue, (String) maxValue, true, true,
+                                                (String) minValue,
+                                                (String) maxValue,
+                                                true,
+                                                true,
                                                 ChainedFilterOperator.ANDNOT);
             }
 
@@ -524,15 +599,18 @@ SearchingService {
     */
    private List<StorageMetadata> convertToStorageMeta(final List<String> listeMeta)
          throws MetadonneeInexistante {
-      final List<StorageMetadata> metadatas = new ArrayList<StorageMetadata>();
-      final List<String> keyList = new ArrayList<String>();
+      final List<StorageMetadata> metadatas = new ArrayList<>();
+      final List<String> keyList = new ArrayList<>();
       Map<String, String> mapShortCode = null;
       try {
          mapShortCode = convertService.longCodeToShortCode(listeMeta);
-      } catch (final LongCodeNotFoundException longExcept) {
+      }
+      catch (final LongCodeNotFoundException longExcept) {
          final String message = ResourceMessagesUtils.loadMessage(
-                                                                  "consultation.metadonnees.inexistante", StringUtils.join(
-                                                                                                                           longExcept.getListCode(), SEPARATOR_STRING));
+                                                                  "consultation.metadonnees.inexistante",
+                                                                  StringUtils.join(
+                                                                                   longExcept.getListCode(),
+                                                                                   SEPARATOR_STRING));
          throw new MetadonneeInexistante(message);
       }
       keyList.addAll(mapShortCode.keySet());
@@ -549,7 +627,7 @@ SearchingService {
    @Override
    public PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
                                                                         final PaginatedLuceneCriteria paginatedLuceneCriteria)
-                                                                              throws SearchingServiceEx, QueryParseServiceEx {
+         throws SearchingServiceEx, QueryParseServiceEx {
 
       return searchByIterator(paginatedLuceneCriteria, null, true, false);
    }

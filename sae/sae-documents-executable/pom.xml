@@ -53,6 +53,11 @@
 			<artifactId>sae-vi</artifactId>
 			<version>19.2.4-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-storage-dfce</artifactId>
+			<version>19.2.4-SNAPSHOT</version>
+		</dependency>
 
       <!-- AspectJ -->
 		<dependency>

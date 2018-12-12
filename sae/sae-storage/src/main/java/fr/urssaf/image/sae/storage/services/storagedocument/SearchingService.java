@@ -35,9 +35,7 @@ public interface SearchingService {
     * 
     * @param luceneCriteria
     *           : La requête Lucene
-    * 
     * @return Les résultats de la recherche
-    * 
     * @throws SearchingServiceEx
     *            Exception lévée lorsque la recherche ne se déroule pas bien.
     * @throws QueryParseServiceEx
@@ -45,7 +43,8 @@ public interface SearchingService {
     */
 
    StorageDocuments searchStorageDocumentByLuceneCriteria(
-         final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
+                                                          final LuceneCriteria luceneCriteria)
+         throws SearchingServiceEx,
          QueryParseServiceEx;
 
    /**
@@ -53,17 +52,14 @@ public interface SearchingService {
     * 
     * @param uuidCriteria
     *           : L'UUID du document à rechercher
-    * 
     * @param forConsultation
     *           True si consultation, false sinon.
-    * 
     * @return un strorageDocument
-    * 
     * @throws SearchingServiceEx
     *            Exception lévée lorsque la recherche ne se déroule pas bien.
     */
    StorageDocument searchStorageDocumentByUUIDCriteria(
-         final UUIDCriteria uuidCriteria, boolean forConsultation)
+                                                       final UUIDCriteria uuidCriteria, boolean forConsultation)
          throws SearchingServiceEx;
 
    /**
@@ -71,9 +67,7 @@ public interface SearchingService {
     * 
     * @param uuidCriteria
     *           : L'UUID du document à rechercher
-    * 
     * @return Le resultat de la recherche
-    * 
     * @throws SearchingServiceEx
     *            Exception lévée lorsque la recherche ne se déroule pas bien.
     */
@@ -92,7 +86,7 @@ public interface SearchingService {
     *            Une exception est levée lors de la recherche
     */
    PaginatedStorageDocuments searchPaginatedStorageDocuments(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
+                                                             PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
 
    /**
@@ -107,7 +101,7 @@ public interface SearchingService {
     *            Une exception est levée lors de la recherche
     */
    PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
+                                                                 PaginatedLuceneCriteria paginatedLuceneCriteria)
          throws SearchingServiceEx, QueryParseServiceEx;
 
    /**
@@ -115,24 +109,25 @@ public interface SearchingService {
     * 
     * @param uuidCriteria
     *           : L'UUID du document à rechercher
-    * 
     * @throws IOException
     * @{@link IOException}
-    * 
     * @return Le contenu du document recherché.
     */
    byte[] searchStorageDocumentContentByUUIDCriteria(UUIDCriteria uUIDCriteria)
          throws IOException;
 
-   
    /**
-    * Permet de faire une recherche paginée avec un indexComposite
+    * Permet de faire une recherche paginée, en utilisant le meilleur index possible
+    * 
     * @param paginatedLuceneCriteria
-    * @param indexOrderPreferenceList
+    *           Les critères de recherche
+    * @param bestIndex
+    *           L'index le plus pertinent pour la recherche (liste des codes court des méta composant l'index)
     * @return
     * @throws SearchingServiceEx
     * @throws QueryParseServiceEx
     */
-   PaginatedStorageDocuments searchPaginatedStorageDocuments(PaginatedLuceneCriteria paginatedLuceneCriteria,
-		List<String> indexOrderPreferenceList) throws SearchingServiceEx, QueryParseServiceEx;
+   PaginatedStorageDocuments searchPaginatedStorageDocumentsWithBestIndex(PaginatedLuceneCriteria paginatedLuceneCriteria,
+                                                                          List<String> bestIndex)
+         throws SearchingServiceEx, QueryParseServiceEx;
 }
