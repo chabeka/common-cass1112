@@ -32,101 +32,101 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
 @ContextConfiguration(locations = {"/applicationContext-sae-metadata-test.xml"})
 public class IndexCompositeServiceImplTest {
 
-   @Autowired
-   private IndexCompositeServiceImpl indexCompositeService;
+  @Autowired
+  private IndexCompositeServiceImpl indexCompositeService;
 
-   @Autowired // C'est un mock défini dans la configuration spring
-   private StorageServiceProvider storageServiceProvider;
+  @Autowired // C'est un mock défini dans la configuration spring
+  private StorageServiceProvider storageServiceProvider;
 
-   @Before
-   public void setUp() {
-      configureCompositeIndexProvider();
-   }
+  @Before
+  public void setUp() {
+    configureCompositeIndexProvider();
+  }
 
-   @Test
-   public void getAllComputedIndexCompositeTest() throws Exception {
-      final List<SaeIndexComposite> indexList = indexCompositeService.getAllComputedIndexComposite();
-      Assert.assertEquals("Nombre d'index composité computed trouvés", 4, indexList.size());
-   }
+  @Test
+  public void getAllComputedIndexCompositeTest() throws Exception {
+    final List<SaeIndexComposite> indexList = indexCompositeService.getAllComputedIndexComposite();
+    Assert.assertEquals("Nombre d'index composité computed trouvés", 4, indexList.size());
+  }
 
-   @Test
-   public void checkIndexCompositeValidKOTest() throws Exception {
-      final SaeIndexComposite indexComposite = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
-      final Collection<String> listShortCodeMetadatas = Arrays.asList("cot", "mch");
-      final boolean isValid = indexCompositeService.checkIndexCompositeValid(indexComposite, listShortCodeMetadatas);
-      Assert.assertEquals(false, isValid);
-   }
+  @Test
+  public void checkIndexCompositeValidKOTest() throws Exception {
+    final SaeIndexComposite indexComposite = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
+    final Collection<String> listShortCodeMetadatas = Arrays.asList("cot", "mch");
+    final boolean isValid = indexCompositeService.checkIndexCompositeValid(indexComposite, listShortCodeMetadatas);
+    Assert.assertEquals(false, isValid);
+  }
 
-   @Test
-   public void checkIndexCompositeValidOKTest() throws Exception {
-      final SaeIndexComposite indexComposite = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
-      final Collection<String> listShortCodeMetadatas = Arrays.asList("zob", "cot", "mch", "zib", "cot");
-      final boolean isValid = indexCompositeService.checkIndexCompositeValid(indexComposite, listShortCodeMetadatas);
-      Assert.assertEquals(false, isValid);
-   }
+  @Test
+  public void checkIndexCompositeValidOKTest() throws Exception {
+    final SaeIndexComposite indexComposite = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
+    final Collection<String> listShortCodeMetadatas = Arrays.asList("zob", "cot", "mch", "zib", "cot");
+    final boolean isValid = indexCompositeService.checkIndexCompositeValid(indexComposite, listShortCodeMetadatas);
+    Assert.assertEquals(false, isValid);
+  }
 
-   @Test
-   public void getBestIndexCompositeTest() throws Exception {
-      final SaeIndexComposite indexComposite1 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
-      final SaeIndexComposite indexComposite2 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop"), true));
-      final SaeIndexComposite indexComposite3 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cop"), true));
-      final SaeIndexComposite best = indexCompositeService.getBestIndexComposite(Arrays.asList(indexComposite1, indexComposite2, indexComposite3));
-      Assert.assertEquals(indexComposite1, best);
-   }
+  @Test
+  public void getBestIndexCompositeTest() throws Exception {
+    final SaeIndexComposite indexComposite1 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
+    final SaeIndexComposite indexComposite2 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cot", "cop"), true));
+    final SaeIndexComposite indexComposite3 = new SaeIndexComposite(createCompositeIndex(Arrays.asList("cop"), true));
+    final SaeIndexComposite best = indexCompositeService.getBestIndexComposite(Arrays.asList(indexComposite1, indexComposite2, indexComposite3));
+    Assert.assertEquals(indexComposite1, best);
+  }
 
-   @Test
-   public void getBestIndexForQueryTest1() throws Exception {
-      final List<String> metaInQuery = Arrays.asList("cot", "cop", "mch", "cpt", "sco", "SM_DOCUMENT_TYPE", "nti");
-      final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
-      assertThat(best, is(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nti")));
-   }
+  @Test
+  public void getBestIndexForQueryTest1() throws Exception {
+    final List<String> metaInQuery = Arrays.asList("cot", "cop", "mch", "cpt", "sco", "SM_DOCUMENT_TYPE", "nti");
+    final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
+    assertThat(best, is(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nti")));
+  }
 
-   @Test
-   public void getBestIndexForQueryTest2() throws Exception {
-      final List<String> metaInQuery = Arrays.asList("cot", "cop");
-      final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
-      // Il n'y a aucun index composite ou simple qui peut répondre à cette requête
-      Assert.assertNull(best);
-   }
+  @Test
+  public void getBestIndexForQueryTest2() throws Exception {
+    final List<String> metaInQuery = Arrays.asList("cot", "cop");
+    final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
+    // Il n'y a aucun index composite ou simple qui peut répondre à cette requête
+    Assert.assertNull(best);
+  }
 
-   @Test
-   public void getBestIndexForQueryTest3() throws Exception {
-      final List<String> metaInQuery = Arrays.asList("srt", "cop");
-      final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
-      // C'est un index simple qui peut répondre à la requête
-      assertThat(best, is(Arrays.asList("srt")));
-   }
+  @Test
+  public void getBestIndexForQueryTest3() throws Exception {
+    final List<String> metaInQuery = Arrays.asList("srt", "cop");
+    final List<String> best = indexCompositeService.getBestIndexForQuery(metaInQuery);
+    // C'est un index simple qui peut répondre à la requête
+    assertThat(best, is(Arrays.asList("srt")));
+  }
 
-   /**
-    * Permet de créer et configurer un mock qui renvoie une liste d'index composites
-    */
-   private void configureCompositeIndexProvider() {
-      final Set<CompositeIndex> compositeIndexList = new HashSet<>();
-      compositeIndexList.add(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
-      compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nti"), true));
-      compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nds"), true));
-      compositeIndexList.add(createCompositeIndex(Arrays.asList("drs", "apr", "atr", "ame", "SM_ARCHIVAGE_DATE"), true));
-      // Index non "computed"
-      compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nco"), false));
+  /**
+   * Permet de créer et configurer un mock qui renvoie une liste d'index composites
+   */
+  private void configureCompositeIndexProvider() {
+    final Set<CompositeIndex> compositeIndexList = new HashSet<>();
+    compositeIndexList.add(createCompositeIndex(Arrays.asList("cot", "cop", "mch"), true));
+    compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nti"), true));
+    compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nds"), true));
+    compositeIndexList.add(createCompositeIndex(Arrays.asList("drs", "apr", "atr", "ame", "SM_ARCHIVAGE_DATE"), true));
+    // Index non "computed"
+    compositeIndexList.add(createCompositeIndex(Arrays.asList("cpt", "sco", "SM_DOCUMENT_TYPE", "nco"), false));
 
-      final StorageDocumentService storageDocumentService = EasyMock.createMock(StorageDocumentService.class);
-      EasyMock.expect(storageDocumentService.getAllCompositeIndex()).andReturn(compositeIndexList).anyTimes();
-      EasyMock.replay(storageDocumentService);
-      EasyMock.reset(storageServiceProvider);
-      EasyMock.expect(storageServiceProvider.getStorageDocumentService()).andReturn(storageDocumentService).anyTimes();
-      EasyMock.replay(storageServiceProvider);
-   }
+    final StorageDocumentService storageDocumentService = EasyMock.createMock(StorageDocumentService.class);
+    EasyMock.expect(storageDocumentService.getAllIndexComposite()).andReturn(compositeIndexList).anyTimes();
+    EasyMock.replay(storageDocumentService);
+    EasyMock.reset(storageServiceProvider);
+    EasyMock.expect(storageServiceProvider.getStorageDocumentService()).andReturn(storageDocumentService).anyTimes();
+    EasyMock.replay(storageServiceProvider);
+  }
 
-   private CompositeIndex createCompositeIndex(final List<String> categories, final boolean computed) {
-      final CompositeIndex index = new CompositeIndex();
-      index.setComputed(computed);
-      final List<Category> catList = new ArrayList<>();
-      for (final String categoryName : categories) {
-         final Category cat = new Category();
-         cat.setName(categoryName);
-         catList.add(cat);
-      }
-      index.setCategories(catList);
-      return index;
-   }
+  private CompositeIndex createCompositeIndex(final List<String> categories, final boolean computed) {
+    final CompositeIndex index = new CompositeIndex();
+    index.setComputed(computed);
+    final List<Category> catList = new ArrayList<>();
+    for (final String categoryName : categories) {
+      final Category cat = new Category();
+      cat.setName(categoryName);
+      catList.add(cat);
+    }
+    index.setCategories(catList);
+    return index;
+  }
 }
