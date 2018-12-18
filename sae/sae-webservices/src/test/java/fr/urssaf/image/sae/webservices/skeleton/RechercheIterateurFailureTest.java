@@ -17,6 +17,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.cirtil.www.saeservice.RechercheParIterateur;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -40,6 +42,9 @@ public class RechercheIterateurFailureTest {
   @Autowired
   private SAEDocumentService documentService;
 
+  @Autowired
+  private IndexCompositeService indexCompositeService;
+
   private static final String VIDE = "";
 
   private static final String TITRE = "Titre";
@@ -48,7 +53,7 @@ public class RechercheIterateurFailureTest {
 
   @After
   public void after() {
-    EasyMock.reset(documentService);
+    EasyMock.reset(documentService, indexCompositeService);
   }
 
   private RechercheParIterateur createSearchIterateurType(final String filePath) {
@@ -92,12 +97,13 @@ public class RechercheIterateurFailureTest {
    * @throws SaeAccessDeniedAxisFault
    * @throws UnknownFiltresMetadataEx
    * @throws DoublonFiltresMetadataEx
+   * @throws IndexCompositeException
    */
   @Test
   public void searchFailureSAESearchServiceEx() throws SAESearchServiceEx,
       MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
       UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-      SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final List<String> listMetaDesired = new ArrayList<>();
     listMetaDesired.add("TailleFichier");
@@ -120,7 +126,11 @@ public class RechercheIterateurFailureTest {
                                                            "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
                                                                + listMetaDesired + "."));
 
-      EasyMock.replay(documentService);
+      EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+      EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+      EasyMock.replay(documentService, indexCompositeService);
 
       final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_failure_01.xml");
 

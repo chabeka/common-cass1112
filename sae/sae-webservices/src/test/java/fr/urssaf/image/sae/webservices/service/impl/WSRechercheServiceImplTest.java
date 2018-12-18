@@ -30,6 +30,7 @@ import fr.cirtil.www.saeservice.RechercheParIterateur;
 import fr.cirtil.www.saeservice.RechercheParIterateurRequestType;
 import fr.cirtil.www.saeservice.RequetePrincipaleType;
 import fr.cirtil.www.saeservice.UuidType;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
 import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
@@ -87,7 +88,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -106,7 +107,11 @@ public class WSRechercheServiceImplTest {
 
     EasyMock.expect(indexCompositeService.getAllComputedIndexComposite()).andReturn(new ArrayList<>()).anyTimes();
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -136,7 +141,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -154,7 +159,11 @@ public class WSRechercheServiceImplTest {
 
     EasyMock.expect(indexCompositeService.getAllComputedIndexComposite()).andReturn(new ArrayList<>()).anyTimes();
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -183,7 +192,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -201,7 +210,11 @@ public class WSRechercheServiceImplTest {
                                                          "test-unitaire : meta non recherchable"))
             .times(3);
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -231,7 +244,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -250,7 +263,11 @@ public class WSRechercheServiceImplTest {
 
     EasyMock.expect(indexCompositeService.getAllComputedIndexComposite()).andReturn(new ArrayList<>()).anyTimes();
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -279,7 +296,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -296,7 +313,11 @@ public class WSRechercheServiceImplTest {
                       new UnknownDesiredMetadataEx(
                                                    "test-unitaire : meta souhaitee inconnue"));
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -387,7 +408,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -407,7 +428,11 @@ public class WSRechercheServiceImplTest {
 
     EasyMock.expect(indexCompositeService.getAllComputedIndexComposite()).andReturn(new ArrayList<>());
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 
@@ -437,7 +462,7 @@ public class WSRechercheServiceImplTest {
       throws RechercheAxis2Fault, MetaDataUnauthorizedToSearchEx,
       MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
       SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final RechercheParIterateur request = creationRequest();
 
@@ -456,7 +481,11 @@ public class WSRechercheServiceImplTest {
 
     EasyMock.expect(indexCompositeService.getAllComputedIndexComposite()).andReturn(new ArrayList<>()).anyTimes();
 
-    EasyMock.replay(saeService);
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.replay(saeService, indexCompositeService);
 
     try {
 

@@ -28,6 +28,8 @@ import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -49,6 +51,9 @@ public class RechercheIterateurTest {
 
   @Autowired
   private SAEDocumentService documentService;
+
+  @Autowired
+  private IndexCompositeService indexCompositeService;
 
   private static final String NB_MD_INATTENDU = "nombre de metadatas inattendu";
 
@@ -93,7 +98,7 @@ public class RechercheIterateurTest {
   public void searchSuccess() throws IOException, SAESearchServiceEx,
       MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
       UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+      UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
     final PaginatedUntypedDocuments documents = new PaginatedUntypedDocuments();
     final UntypedDocument document1 = new UntypedDocument();
@@ -160,8 +165,13 @@ public class RechercheIterateurTest {
                                                     EasyMock.anyObject(),
                                                     EasyMock.anyObject()))
             .andReturn(documents);
+
+    EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
+    EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+
     // permet de sauvegarder l'enregistrement
-    EasyMock.replay(documentService);
+    EasyMock.replay(documentService, indexCompositeService);
 
     final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_success_01.xml");
 
