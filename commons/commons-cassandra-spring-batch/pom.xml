@@ -6,7 +6,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra-spring-batch</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<name>commons-cassandra-spring-batch</name>
 
@@ -28,7 +28,7 @@
 		<commons-cassandra.version>1.0.3-SNAPSHOT</commons-cassandra.version>
 
 		<!-- Version des framework -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.6.1</slf4j-api.version>
 		<logback.version>0.9.30</logback.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>

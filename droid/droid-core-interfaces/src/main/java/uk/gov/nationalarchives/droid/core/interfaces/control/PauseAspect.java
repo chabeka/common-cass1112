@@ -43,6 +43,7 @@ import org.aspectj.lang.annotation.Before;
  *
  */
 @Aspect
+@Component
 public class PauseAspect {
 
     private boolean isPaused;

@@ -10,7 +10,7 @@
 	
 	<groupId>fr.urssaf.image</groupId>
 	<artifactId>sae-client-vi</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>sae-client-vi</name>
@@ -31,7 +31,7 @@
       
       <!-- Version des framework -->
 		<axis.version>1.7.7</axis.version>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<apache.commons-io.version>2.0.1</apache.commons-io.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
 		<xalan.version>2.7.1</xalan.version>

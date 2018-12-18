@@ -8,63 +8,65 @@ import java.io.File;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 /**
  * Validation des paramètres passés en arguments des implémentations de
  * {@link fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport}
  * . La validation est basée sur la programmation Aspect
- * 
  */
 @Aspect
+@Component
 public class SommaireFormatValidationSupportValidation {
 
-   private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
+  private static final String ARGUMENT_REQUIRED = "L'argument '%s' doit être renseigné ou être non null.";
 
-   private static final String CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport.validationSommaire(*))"
-         + " && args(sommaireFile)";
-   private static final String BATCH_METHOD = "execution(void fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport.validerModeBatch(*,*))"
-         + " && args(sommaireFile, batchMode)";
+  private static final String CONTROLES_METHOD = "execution(void fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport.validationSommaire(*))"
+      + " && args(sommaireFile)";
 
-   /**
-    * permet de vérifier que l'ensemble des paramètres de la méthode
-    * controleSAEDocument possède tous les arguments renseignés
-    * 
-    * @param sommaireFile
-    *           chemin absolu du fichier sommaire.xml
-    */
-   @Before(CONTROLES_METHOD)
-   public final void checkValidationSommaire(final File sommaireFile) {
+  private static final String BATCH_METHOD = "execution(void fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport.validerModeBatch(*,*))"
+      + " && args(sommaireFile, batchMode)";
 
-      if (sommaireFile == null) {
-         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
-               "sommaireFile"));
-      }
+  /**
+   * permet de vérifier que l'ensemble des paramètres de la méthode
+   * controleSAEDocument possède tous les arguments renseignés
+   * 
+   * @param sommaireFile
+   *          chemin absolu du fichier sommaire.xml
+   */
+  @Before(CONTROLES_METHOD)
+  public final void checkValidationSommaire(final File sommaireFile) {
 
-   }
+    if (sommaireFile == null) {
+      throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+                                                       "sommaireFile"));
+    }
 
-   /**
-    * permet de vérifier que l'ensemble des paramètres de la méthode
-    * controleSAEDocument possède tous les arguments renseignés
-    * 
-    * @param sommaireFile
-    *           chemin absolu du fichier sommaire.xml
-    * @param batchMode
-    *           mode de batch attendu
-    */
-   @Before(BATCH_METHOD)
-   public final void checkValidationBatch(final File sommaireFile,
-         final String batchMode) {
+  }
 
-      if (sommaireFile == null) {
-         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
-               "sommaireFile"));
-      }
+  /**
+   * permet de vérifier que l'ensemble des paramètres de la méthode
+   * controleSAEDocument possède tous les arguments renseignés
+   * 
+   * @param sommaireFile
+   *          chemin absolu du fichier sommaire.xml
+   * @param batchMode
+   *          mode de batch attendu
+   */
+  @Before(BATCH_METHOD)
+  public final void checkValidationBatch(final File sommaireFile,
+                                         final String batchMode) {
 
-      if (StringUtils.isBlank(batchMode)) {
-         throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
-               "batchMode"));
-      }
+    if (sommaireFile == null) {
+      throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+                                                       "sommaireFile"));
+    }
 
-   }
+    if (StringUtils.isBlank(batchMode)) {
+      throw new IllegalArgumentException(String.format(ARGUMENT_REQUIRED,
+                                                       "batchMode"));
+    }
+
+  }
 
 }

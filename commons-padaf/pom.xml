@@ -23,7 +23,7 @@
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
       
       <!-- version des framework -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 		<logback.version>0.9.30</logback.version>
 		<apache.commons-email.version>1.2</apache.commons-email.version>

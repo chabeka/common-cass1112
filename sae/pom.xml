@@ -40,23 +40,23 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>1.0.3-SNAPSHOT</commons.cassandra>
+		<commons.cassandra>1.1.1-SNAPSHOT</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
-		<commons.cassandra.spring.batch>1.0.2-SNAPSHOT</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>1.1.1-SNAPSHOT</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>1.9.14-SNAPSHOT</commons.dfce>
+		<commons.dfce>1.10.1-SNAPSHOT</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
 		<commons-pdfbox>1.0.1</commons-pdfbox>
 
 		<!-- ========================================== commons-droid ========================================== -->
-		<commons-droid>1.0.2-SNAPSHOT</commons-droid>
+		<commons-droid>1.1.1-SNAPSHOT</commons-droid>
 
 		<!-- ========================================== commons-itext ========================================== -->
-		<commons-itext>1.0.2-SNAPSHOT</commons-itext>
+		<commons-itext>1.1.1-SNAPSHOT</commons-itext>
 
 		<!-- ========================================================= Version 
 			des framework/dépendances ========================================================= -->
@@ -64,7 +64,7 @@
 
 		<!-- ========================================== JUnit http://junit.org/ 
 			========================================== -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 
 		<!-- ========================================== SLF4J (Simple Logging Facade 
 			for Java) http://www.slf4j.org/ ========================================== -->
@@ -121,7 +121,7 @@
 
 		<!-- ========================================== AspectJ http://www.eclipse.org/aspectj/ 
 			========================================== -->
-		<aspectj.version>1.8.13</aspectj.version>
+		<aspectj.version>1.9.2</aspectj.version>
 
 		<!-- ========================================== Axis 2 http://ws.apache.org/axis/ 
 			========================================== -->
@@ -348,7 +348,9 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<execute />
+										<execute>
+											<runOnIncremental>false</runOnIncremental>
+										</execute>
 									</action>
 								</pluginExecution>
 								<pluginExecution>
@@ -384,8 +386,19 @@
 						<source>1.8</source>
 						<target>1.8</target>
 						<complianceLevel>1.8</complianceLevel>
+						<showWeaveInfo>true</showWeaveInfo>
+						<verbose>true</verbose>
 						<Xlint>ignore</Xlint>
+						<encoding>UTF-8 </encoding>
 					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.aspectj</groupId>
+							<artifactId>aspectjtools</artifactId>
+							<version>${aspectj.version}</version>
+							<scope>compile</scope>
+						</dependency>
+					</dependencies>
 					<executions>
 						<execution>
 							<goals>

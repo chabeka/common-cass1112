@@ -21,7 +21,7 @@
       <maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
       <maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
       
-      <junit.version>4.8.2</junit.version>
+      <junit.version>4.12</junit.version>
       
       <commons.maquette.version>0.0.2-SNAPSHOT</commons.maquette.version>
       

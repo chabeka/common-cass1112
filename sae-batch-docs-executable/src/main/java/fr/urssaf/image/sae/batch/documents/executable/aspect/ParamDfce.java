@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.batch.documents.executable.utils.Constantes;
  * Classe de validation des paramètres obligatoires.
  */
 @Aspect
+@Component
 public class ParamDfce {
 
    /********************************************************* SERVICE *********************************************************************************/

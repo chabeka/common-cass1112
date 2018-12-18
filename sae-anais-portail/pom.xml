@@ -11,7 +11,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-anais-portail</artifactId>
-	<version>1.0.23-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<packaging>war</packaging>
 
@@ -26,7 +26,7 @@
 		<maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
 		<sonar.maven.plugin.version>1.0-beta-2</sonar.maven.plugin.version>
 
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
 		<logback.version>0.9.30</logback.version>
 		<jsr303.api.version>1.0.0.GA</jsr303.api.version>
@@ -35,7 +35,7 @@
 		<jstl.version>1.2</jstl.version>
 
 		<sae.anais.framework.version>1.0.2</sae.anais.framework.version>
-		<commons.maquette.version>2.0.3-SNAPSHOT</commons.maquette.version>
+		<commons.maquette.version>2.1.1-SNAPSHOT</commons.maquette.version>
 
 		<sae.version>19.6.1-SNAPSHOT</sae.version>
 

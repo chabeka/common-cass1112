@@ -1,0 +1,8 @@
+<aspectj>
+    <aspects>
+        <aspect name="fr.urssaf.image.commons.dfce.service.impl.DFCEReconnectionAspect"/>
+        <weaver options="-verbose -showWeaveInfo">
+            <include within="fr.urssaf.image.commons.dfce.service.impl.*"/>
+        </weaver>
+    </aspects>
+</aspectj>

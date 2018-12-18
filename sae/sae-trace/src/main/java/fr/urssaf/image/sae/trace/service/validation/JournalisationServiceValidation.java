@@ -9,84 +9,90 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.model.JournalisationType;
 
 /**
  * Classe de validation des implémentations des méthodes de l'interface
  * RegService
- * 
  */
 @Aspect
+@Component
 public class JournalisationServiceValidation {
 
-   private static final String ARG_0 = "{0}";
+  private static final String ARG_0 = "{0}";
 
-   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
+  private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
-   private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.JournalisationService.";
+  private static final String CLASS_NAME = "fr.urssaf.image.sae.trace.service.JournalisationService.";
 
-   private static final String EXPORT_METHOD = "execution(java.lang.String "
-         + CLASS_NAME + "exporterTraces(*,*,*))"
-         + " && args(type,repertoire,date)";
-   private static final String RECUPERER_METHOD = "execution(java.util.List "
-         + CLASS_NAME + "recupererDates(*))" + " && args(type)";
+  private static final String EXPORT_METHOD = "execution(java.lang.String "
+      + CLASS_NAME + "exporterTraces(*,*,*))"
+      + " && args(type,repertoire,date)";
 
-   /**
-    * Réalise la validation de la méthode export de l'interface
-    * JournalisationService
-    * 
-    * @param type
-    *           type de la purge
-    * @param repertoire
-    *           repertoire dans lequel réaliser l'export
-    * @param date
-    *           date pour laquelle réaliser l'export
-    */
-   @Before(EXPORT_METHOD)
-   public final void testExport(JournalisationType type, String repertoire,
-         Date date) {
+  private static final String RECUPERER_METHOD = "execution(java.util.List "
+      + CLASS_NAME + "recupererDates(*))" + " && args(type)";
 
-      if (type == null) {
-         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "type de journalisation"));
-      }
+  /**
+   * Réalise la validation de la méthode export de l'interface
+   * JournalisationService
+   * 
+   * @param type
+   *          type de la purge
+   * @param repertoire
+   *          repertoire dans lequel réaliser l'export
+   * @param date
+   *          date pour laquelle réaliser l'export
+   */
+  @Before(EXPORT_METHOD)
+  public final void testExport(final JournalisationType type, final String repertoire,
+                               final Date date) {
 
-      if (StringUtils.isEmpty(repertoire)) {
-         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "repertoire"));
-      }
+    if (type == null) {
+      throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+                                                             ARG_0,
+                                                             "type de journalisation"));
+    }
 
-      if (date == null) {
-         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date"));
-      }
+    if (StringUtils.isEmpty(repertoire)) {
+      throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+                                                             ARG_0,
+                                                             "repertoire"));
+    }
 
-      File file = new File(repertoire);
+    if (date == null) {
+      throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+                                                             ARG_0,
+                                                             "date"));
+    }
 
-      if (!file.exists()) {
-         throw new IllegalArgumentException("le répertoire n'existe pas");
-      }
+    final File file = new File(repertoire);
 
-      if (!file.isDirectory()) {
-         throw new IllegalArgumentException(
-               "le chemin spécifié n'est pas un répertoire");
-      }
-   }
+    if (!file.exists()) {
+      throw new IllegalArgumentException("le répertoire n'existe pas");
+    }
 
-   /**
-    * Réalise la validation de la méthode recupererDates de l'interface
-    * JournalisationService
-    * 
-    * @param type
-    *           type de la purge
-    */
-   @Before(RECUPERER_METHOD)
-   public final void testRecup(JournalisationType type) {
+    if (!file.isDirectory()) {
+      throw new IllegalArgumentException(
+                                         "le chemin spécifié n'est pas un répertoire");
+    }
+  }
 
-      if (type == null) {
-         throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "type de journalisation"));
-      }
-   }
+  /**
+   * Réalise la validation de la méthode recupererDates de l'interface
+   * JournalisationService
+   * 
+   * @param type
+   *          type de la purge
+   */
+  @Before(RECUPERER_METHOD)
+  public final void testRecup(final JournalisationType type) {
+
+    if (type == null) {
+      throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
+                                                             ARG_0,
+                                                             "type de journalisation"));
+    }
+  }
 }

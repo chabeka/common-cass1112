@@ -1,39 +1,42 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-dfce</artifactId>
-	<version>1.9.14-SNAPSHOT</version>
+	<version>1.10.1-SNAPSHOT</version>
 
 	<name>commons-dfce</name>
 
 	<description>Module pour l'intégration de DFCE</description>
 
-    <!-- Utilisation du fichier POM parent ALTAIR -->
+	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
 		<groupId>fr.pnr.altair</groupId>
 		<artifactId>parent</artifactId>
 		<version>1.1.3</version>
 	</parent>
 
-	<properties>	  
-      <!-- Version des plug-ins Maven -->
+	<properties>
+		<!-- Version des plug-ins Maven -->
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
 
-      <!-- numéro de version des dépendances de DFCE -->
+		<!-- numéro de version des dépendances de DFCE -->
 		<dfce.serialization>1.2.2</dfce.serialization>
 		<dfce.toolkit.client>1.9.5</dfce.toolkit.client>
 		<dfce.toolkit.pojo>1.9.5</dfce.toolkit.pojo>
 		<dfce.pojo>1.9.5</dfce.pojo>
 		<dfce.toolkit.service>1.9.5</dfce.toolkit.service>
-		<dfce.commons>1.9.5</dfce.commons> 
+		<dfce.commons>1.9.5</dfce.commons>
 
-      <!-- Autres versions -->
-		<junit.version>4.8.2</junit.version>
+		<!-- Autres versions -->
+		<junit.version>4.12</junit.version>
 		<apache.commons-io.version>1.4</apache.commons-io.version>
 		<apache.commons-lang.version>2.5</apache.commons-lang.version>
 		<google.guava.version>13.0.1</google.guava.version>
@@ -42,17 +45,17 @@
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 		<cassandra-all.version>1.2.18</cassandra-all.version>
-		<aspectj.version>1.8.13</aspectj.version>
+		<aspectj.version>1.9.2</aspectj.version>
 		<spring.security.version>4.2.10.RELEASE</spring.security.version>
 		<dozer.version>5.3.1</dozer.version>
 		<jackson-annotations.version>2.8.0</jackson-annotations.version>
 		<logback.version>0.9.30</logback.version>
 
 	</properties>
-   
+
 	<dependencies>
 
-      <!-- DFCE -->
+		<!-- DFCE -->
 		<dependency>
 			<groupId>com.docubase</groupId>
 			<artifactId>dfce-serialization</artifactId>
@@ -89,7 +92,7 @@
 			<version>${dfce.commons}</version>
 		</dependency>
 
-      <!-- COMMONS APACHE -->
+		<!-- COMMONS APACHE -->
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
@@ -102,7 +105,7 @@
 			<version>${apache.commons-lang.version}</version>
 		</dependency>
 
-      <!-- LUCENE -->
+		<!-- LUCENE -->
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
@@ -115,7 +118,7 @@
 			<version>${lucene.version}</version>
 		</dependency>
 
-      <!-- HECTOR -->
+		<!-- HECTOR -->
 		<dependency>
 			<groupId>org.hectorclient</groupId>
 			<artifactId>hector-core</artifactId>
@@ -148,18 +151,15 @@
 			</exclusions>
 		</dependency>
 
-      <!-- GUAVA -->
+		<!-- GUAVA -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${google.guava.version}</version>
 		</dependency>
 
-      <!-- SPRING BATCH -->
-      <!--
-         la dépendance à spring batch est uniquement utile pour les
-         exceptions
-      -->
+		<!-- SPRING BATCH -->
+		<!-- la dépendance à spring batch est uniquement utile pour les exceptions -->
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
@@ -209,7 +209,7 @@
 			</exclusions>
 		</dependency>
 
-      <!-- JUNIT -->
+		<!-- JUNIT -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -218,7 +218,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!-- SPRING pour les tests -->
+		<!-- SPRING pour les tests -->
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -239,37 +239,31 @@
 			<version>${spring.framework.version}</version>
 			<scope>test</scope>
 		</dependency>
-      
-      <!-- SPRING SECURITY -->
-      <!--
-         la dépendance à spring security est uniquement utile pour les
-         exceptions, qui sont renvoyés sérialisées côté serveur par DFCE, 
-         puis désérialisées dans leur API cliente
-      -->
+
+		<!-- SPRING SECURITY -->
+		<!-- la dépendance à spring security est uniquement utile pour les exceptions, 
+			qui sont renvoyés sérialisées côté serveur par DFCE, puis désérialisées dans 
+			leur API cliente -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
 			<version>${spring.security.version}</version>
 		</dependency>
-      
-      
-      <!-- DOZER -->
-      <!--
-         la dépendance à Dozer est uniquement utile pour les
-         exceptions, qui sont renvoyés sérialisées côté serveur par DFCE, 
-         puis désérialisées dans leur API cliente
-      -->
+
+
+		<!-- DOZER -->
+		<!-- la dépendance à Dozer est uniquement utile pour les exceptions, qui 
+			sont renvoyés sérialisées côté serveur par DFCE, puis désérialisées dans 
+			leur API cliente -->
 		<dependency>
 			<groupId>net.sf.dozer</groupId>
 			<artifactId>dozer</artifactId>
 			<version>${dozer.version}</version>
 		</dependency>
-      
-      <!-- JACKSON ANNOTATION -->
-      <!--
-         la dépendance à Jackson Annotation est uniquement utile pour l'utilisation
-         des nouveau pojo du toolkit DFCE 
-       -->
+
+		<!-- JACKSON ANNOTATION -->
+		<!-- la dépendance à Jackson Annotation est uniquement utile pour l'utilisation 
+			des nouveau pojo du toolkit DFCE -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
@@ -290,9 +284,20 @@
 			<artifactId>aspectjrt</artifactId>
 			<version>${aspectj.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+
 	</dependencies>
 
-   <!-- Configuration SVN pour le plug-in maven-release -->
+	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-dfce</url>
 		<developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-dfce</developerConnection>
@@ -312,8 +317,19 @@
 					<complianceLevel>1.8</complianceLevel>
 					<source>1.8</source>
 					<target>1.8</target>
-					<showWeaveInfo>true</showWeaveInfo>	
+					<showWeaveInfo>true</showWeaveInfo>
+					<verbose>true</verbose>
+					<Xlint>ignore</Xlint>
+					<encoding>UTF-8 </encoding>
 				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.aspectj</groupId>
+						<artifactId>aspectjtools</artifactId>
+						<version>${aspectj.version}</version>
+						<scope>compile</scope>
+					</dependency>
+				</dependencies>
 				<executions>
 					<execution>
 						<goals>
@@ -323,11 +339,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-			<!--
-			On spécifie la version du JDK et l'encodage de caractères
-			des sources
-			-->
+
+			<!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -338,11 +351,9 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-		
-			<!--
-			Dans le cas d'un packaging JAR, on demande que le JAR des
-			sources soit également généré
-			-->
+
+			<!-- Dans le cas d'un packaging JAR, on demande que le JAR des sources 
+				soit également généré -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -356,9 +367,9 @@
 					</execution>
 				</executions>
 			</plugin>
-		
-		
-			<!-- On spécifie l'encodage de caractères des ressources-->
+
+
+			<!-- On spécifie l'encodage de caractères des ressources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -367,12 +378,12 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-		
+
 			<!-- On demande la génération de la Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>3.0.1</version>
+				<version>${maven-javadoc-plugin.version}</version><!--$NO-MVN-MAN-VER$-->
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -386,7 +397,7 @@
 					<doclint>none</doclint>
 				</configuration>
 			</plugin>
-		
+
 			<!-- Pour la gestion des release -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -411,10 +422,25 @@
 					<skipDeploy>true</skipDeploy>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<argLine>-javaagent:${basedir}/../lib/aspectjweaver-${aspectj.version}.jar
+						${debug}</argLine>
+					<systemProperties>
+						<property>
+							<name>aj.weaving.verbose</name>
+							<value>true</value>
+						</property>
+					</systemProperties>
+				</configuration>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -433,7 +459,9 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore />
+										<execute>
+											<runOnIncremental>false</runOnIncremental>
+										</execute>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>

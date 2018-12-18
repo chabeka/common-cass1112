@@ -9,6 +9,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
@@ -16,92 +17,91 @@ import fr.urssaf.image.sae.saml.modele.SignatureVerificationResult;
 /**
  * La classe implémenté en AOP permet de vérifier les arguments des méthodes
  * dans {@link fr.urssaf.image.sae.vi.service.impl.WebServiceVIServiceImpl}<br>
- * 
- * 
  */
 @Aspect
+@Component
 public class WebServiceVIValidateServiceValidate {
 
-   private static final String VALIDATE_PCK = "fr.urssaf.image.sae.vi.service.WebServiceVIValidateService";
+  private static final String VALIDATE_PCK = "fr.urssaf.image.sae.vi.service.WebServiceVIValidateService";
 
-   private static final String CERTIFICATS = "execution(public final void "
-         + VALIDATE_PCK
-         + ".validateCertificates(*,*)) && args(contract, result)";
+  private static final String CERTIFICATS = "execution(public final void "
+      + VALIDATE_PCK
+      + ".validateCertificates(*,*)) && args(contract, result)";
 
-   private static final String ARG_EMPTY = "Le paramètre [${0}] n'est pas renseigné alors qu'il est obligatoire";
+  private static final String ARG_EMPTY = "Le paramètre [${0}] n'est pas renseigné alors qu'il est obligatoire";
 
-   /**
-    * Vérification des paramètres d'entrée de la méthode
-    * {@link fr.urssaf.image.sae.vi.service.WebServiceVIValidateService#validateCertificates}
-    * <br>
-    * <ul>
-    * <li>pagm : doit avoir au moins un droit renseigné</li>
-    * <li>issuer : doit être renseigné</li>
-    * <li>keystore : doit être renseigné</li>
-    * <li>alias : doit être renseigné</li>
-    * <li>password: doit être renseigné</li>
-    * </ul>
-    * 
-    * @param contract
-    *           le contrat de service
-    * @param result
-    *           certificat client utilisé pour signer le VI
-    */
-   @Before(CERTIFICATS)
-   public final void validateCertificates(ServiceContract contract,
-         SignatureVerificationResult result) {
+  /**
+   * Vérification des paramètres d'entrée de la méthode
+   * {@link fr.urssaf.image.sae.vi.service.WebServiceVIValidateService#validateCertificates}
+   * <br>
+   * <ul>
+   * <li>pagm : doit avoir au moins un droit renseigné</li>
+   * <li>issuer : doit être renseigné</li>
+   * <li>keystore : doit être renseigné</li>
+   * <li>alias : doit être renseigné</li>
+   * <li>password: doit être renseigné</li>
+   * </ul>
+   * 
+   * @param contract
+   *          le contrat de service
+   * @param result
+   *          certificat client utilisé pour signer le VI
+   */
+  @Before(CERTIFICATS)
+  public final void validateCertificates(final ServiceContract contract,
+                                         final SignatureVerificationResult result) {
 
-      notNullValidate(contract, "contrat");
+    notNullValidate(contract, "contrat");
 
-      if (StringUtils.isBlank(contract.getIdPki())
-            && listIsEmpty(contract.getListPki())) {
-         notNullValidate(contract.getIdPki(), "identifiant de la PKI");
-      }
+    if (StringUtils.isBlank(contract.getIdPki())
+        && listIsEmpty(contract.getListPki())) {
+      notNullValidate(contract.getIdPki(), "identifiant de la PKI");
+    }
 
-      if (contract.isVerifNommage()
-            && StringUtils.isEmpty(contract.getIdCertifClient())
-            && listIsEmpty(contract.getListCertifsClient())) {
-         notNullValidate(contract.getIdCertifClient(),
-               "identifiant du certificat client");
-      }
+    if (contract.isVerifNommage()
+        && StringUtils.isEmpty(contract.getIdCertifClient())
+        && listIsEmpty(contract.getListCertifsClient())) {
+      notNullValidate(contract.getIdCertifClient(),
+                      "identifiant du certificat client");
+    }
 
-      notNullValidate(result, "certificats entrés en jeu");
-      notNullValidate(result.getPki(), "AC racine");
-      notNullValidate(result.getCertificat(), "certificat client");
+    notNullValidate(result, "certificats entrés en jeu");
+    notNullValidate(result.getPki(), "AC racine");
+    notNullValidate(result.getCertificat(), "certificat client");
 
-   }
+  }
 
-   private void notNullValidate(Object obj, String name) {
+  private void notNullValidate(final Object obj, final String name) {
 
-      if (obj == null) {
+    if (obj == null) {
 
-         Map<String, String> args = new HashMap<String, String>();
-         args.put("0", name);
+      final Map<String, String> args = new HashMap<>();
+      args.put("0", name);
 
-         throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
-               args));
-      }
+      throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
+                                                                args));
+    }
 
-   }
+  }
 
-   private void notNullValidate(String obj, String name) {
+  private void notNullValidate(final String obj, final String name) {
 
-      if (StringUtils.isBlank(obj)) {
+    if (StringUtils.isBlank(obj)) {
 
-         Map<String, String> args = new HashMap<String, String>();
-         args.put("0", name);
+      final Map<String, String> args = new HashMap<>();
+      args.put("0", name);
 
-         throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
-               args));
-      }
+      throw new IllegalArgumentException(StrSubstitutor.replace(ARG_EMPTY,
+                                                                args));
+    }
 
-   }
+  }
 
-   private boolean listIsEmpty(List<String> liste) {
+  private boolean listIsEmpty(final List<String> liste) {
 
-      return (CollectionUtils.isEmpty(liste) || (StringUtils.isBlank(liste
-            .get(0))));
+    return CollectionUtils.isEmpty(liste) || StringUtils.isBlank(liste
+                                                                      .get(0));
 
-   }
+  }
 
 }

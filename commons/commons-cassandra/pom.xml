@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra</artifactId>
-	<version>1.0.3-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<name>commons-cassandra</name>
 
@@ -30,7 +30,7 @@
       
       <!-- Version des framework -->
 
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.6.1</slf4j-api.version>
 		<logback.version>0.9.30</logback.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>

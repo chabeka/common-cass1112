@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
  * automatique à DFCE. La reconnexion est gérée en Aspect par {@link DFCEReconnectionAspect}
  *
  */
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Retention(RetentionPolicy.CLASS)
 public @interface AutoReconnectDfceServiceAnnotation {
 
 }

@@ -95,7 +95,6 @@ public class AuthenticateHandler {
       }
 
       // LOG.debug("axis fault", exception);
-
    }
 
    /**
