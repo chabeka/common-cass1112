@@ -137,17 +137,19 @@
    -->
    
    
-   <!-- Pour tout le SAE, ou plus precisement pour le package de plus haut niveau -->
+   <!-- Pour tout le SAE, ou plus précisément pour le package de plus haut niveau -->
    <!--
    <logger name="fr.urssaf.image.sae" level="DEBUG" additivity="false">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
-      <appender-ref ref="http-file" />
    </logger>
    -->
      
-   <!-- Pour sae-webservices -->
-   <logger name="fr.urssaf.image.sae.webservices" level="INFO" additivity="false">
+   <!-- Pour logger les appels des webservices et leur durée -->
+   <logger name="fr.urssaf.image.sae.webservices.handler.LogHandler" level="INFO" additivity="false">
+      <appender-ref ref="http-file" />
+   </logger>  
+   <logger name="fr.urssaf.image.sae.webservices.aspect.LogSkeletonAspect" level="INFO" additivity="false">
       <appender-ref ref="http-file" />
    </logger>  
    
@@ -180,7 +182,6 @@
    <root level="WARN">
       <appender-ref ref="log-file" />
       <appender-ref ref="debug-file" />
-      <appender-ref ref="http-file" />
    </root>
    
    
