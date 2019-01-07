@@ -1,5 +1,6 @@
 package fr.urssaf.image.commons.dfce.service.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -51,7 +52,7 @@ public class DFCEReconnectionAspect {
             // Si ok, on quitte
             return proceed;
          }
-         catch (final HessianConnectionException | NullPointerException ex) {
+         catch (final HessianConnectionException | NullPointerException | IOException ex) {
             LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
                      new Object[] {LOG_PREFIX},
                      ex);
