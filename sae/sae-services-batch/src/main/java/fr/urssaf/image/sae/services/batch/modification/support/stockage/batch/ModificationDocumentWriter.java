@@ -102,7 +102,8 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
             poolExecutor.getIntegratedDocuments().add(
                   new TraitementMasseIntegratedDocument(storageDocument
                         .getUuid(), null,
-                        index));
+                        getStepExecution().getReadCount()
+                        + index));
          }
          index++;
 
