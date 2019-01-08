@@ -17,44 +17,44 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
 @Component
 public class IndexCompositeComponent {
 
-  /**
-   * Liste des index composite
-   */
-  private static Set<CompositeIndex> indexCompositeList;
+   /**
+    * Liste des index composite
+    */
+   private static Set<CompositeIndex> indexCompositeList;
 
-  private final DFCEServices dfceServices;
+   private final DFCEServices dfceServices;
 
-  /**
-   * Constructeur
-   * 
-   * @param dfceServices
-   *          service de connexion à DFCE
-   */
-  @Autowired
-  public IndexCompositeComponent(final DFCEServices dfceServices) {
-    this.dfceServices = dfceServices;
-  }
+   /**
+    * Constructeur
+    * 
+    * @param dfceServices
+    *           service de connexion à DFCE
+    */
+   @Autowired
+   public IndexCompositeComponent(final DFCEServices dfceServices) {
+      this.dfceServices = dfceServices;
+   }
 
-  /**
-   * @return la liste des index composites
-   */
-  public final Set<CompositeIndex> getIndexCompositeList() {
-    if (indexCompositeList == null) {
-      synchronized (IndexCompositeComponent.class) {
-        if (indexCompositeList == null) {
-          loadIndexCompositeList();
-        }
+   /**
+    * @return la liste des index composites
+    */
+   public final Set<CompositeIndex> getIndexCompositeList() {
+      if (indexCompositeList == null) {
+         synchronized (IndexCompositeComponent.class) {
+            if (indexCompositeList == null) {
+               loadIndexCompositeList();
+            }
+         }
       }
-    }
-    return indexCompositeList;
-  }
+      return indexCompositeList;
+   }
 
-  /**
-   * Charge la liste des index composite
-   */
-  public void loadIndexCompositeList() {
-    // Récupération la liste des index composites
-    indexCompositeList = dfceServices.fetchAllCompositeIndex();
-  }
+   /**
+    * Charge la liste des index composite
+    */
+   private void loadIndexCompositeList() {
+      // Récupération la liste des index composites
+      indexCompositeList = dfceServices.fetchAllCompositeIndex();
+   }
 
 }

@@ -15,7 +15,6 @@ import net.docubase.toolkit.model.reference.LifeCycleRule;
 
 /**
  * Objet représentant la liste de type de documents
- *
  */
 @Component
 public class DocumentsTypeList {
@@ -38,7 +37,6 @@ public class DocumentsTypeList {
       this.dfceServices = dfceServices;
    }
 
-
    /**
     * @return la liste des documents supportés
     */
@@ -56,10 +54,10 @@ public class DocumentsTypeList {
    /**
     * Charge la liste des types de documents supportés
     */
-   public void loadDocumentTypeList() {
+   private void loadDocumentTypeList() {
       final Set<LifeCycleRule> lifeCycleRules = dfceServices.getAllLifeCycleRules();
 
-      types = new ArrayList<String>();
+      types = new ArrayList<>();
 
       for (final LifeCycleRule rule : lifeCycleRules) {
          types.add(rule.getDocumentType());
