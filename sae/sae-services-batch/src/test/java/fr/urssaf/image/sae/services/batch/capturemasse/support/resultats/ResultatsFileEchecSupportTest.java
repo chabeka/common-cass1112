@@ -164,7 +164,7 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception IllegalArgumentException attendue");
+      Assert.fail("exception CaptureMasseRuntimeException attendue");
     }
 
   }
@@ -180,7 +180,7 @@ public class ResultatsFileEchecSupportTest {
                                         0,
                                         Constantes.BATCH_MODE.TOUT_OU_RIEN.getModeNom(),
                                         new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
-      Assert.fail("exception IllegalArgumentException attendue");
+      Assert.fail("exception CaptureMasseRuntimeException attendue");
 
     }
     catch (final CaptureMasseRuntimeException exception) {
@@ -192,7 +192,7 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception IllegalArgumentException attendue");
+      Assert.fail("exception CaptureMasseRuntimeException attendue");
     }
   }
 
@@ -219,7 +219,7 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception IllegalArgumentException attendue");
+      Assert.fail("exception CaptureMasseRuntimeException attendue");
     }
 
   }
