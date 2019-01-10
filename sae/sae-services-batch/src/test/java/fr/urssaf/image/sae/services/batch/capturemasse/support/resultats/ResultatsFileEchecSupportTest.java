@@ -154,7 +154,6 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final IllegalArgumentException exception) {
-      Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception
                                  .getCause()
@@ -183,7 +182,6 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final IllegalArgumentException exception) {
-      Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception.getCause()
                                  .getMessage()
@@ -210,7 +208,6 @@ public class ResultatsFileEchecSupportTest {
 
     }
     catch (final IllegalArgumentException exception) {
-      Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception.getCause()
                                  .getMessage()
