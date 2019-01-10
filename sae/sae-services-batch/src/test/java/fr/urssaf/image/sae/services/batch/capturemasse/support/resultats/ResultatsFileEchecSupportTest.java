@@ -29,7 +29,6 @@ import fr.urssaf.image.sae.commons.xml.StaxValidateUtils;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.CaptureMasseErreur;
-import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
@@ -60,7 +59,7 @@ public class ResultatsFileEchecSupportTest {
     }
   }
 
-  @Test(expected = CaptureMasseRuntimeException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testEcdeDirectoryObligatoire() {
     support.writeResultatsFile(null,
                                new File(""),
@@ -71,7 +70,7 @@ public class ResultatsFileEchecSupportTest {
                                new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
   }
 
-  @Test(expected = CaptureMasseRuntimeException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testSommaireObligatoire() {
     support.writeResultatsFile(new File(""),
                                null,
@@ -82,7 +81,7 @@ public class ResultatsFileEchecSupportTest {
                                new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>());
   }
 
-  @Test(expected = CaptureMasseRuntimeException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testErreurObligatoire() {
     support.writeResultatsFile(new File(""),
                                new File(""),
@@ -154,17 +153,17 @@ public class ResultatsFileEchecSupportTest {
       Assert.fail("exception IllegalArgumentException attendue");
 
     }
-    catch (final CaptureMasseRuntimeException exception) {
+    catch (final IllegalArgumentException exception) {
       Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception
                                  .getCause()
                                  .getMessage()
-                                 .contains("Le sommaire est obligatoire pour la création du fichier résultat"));
+                                 .contains("ecdeDirectory"));
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception CaptureMasseRuntimeException attendue");
+      Assert.fail("exception IllegalArgumentException attendue");
     }
 
   }
@@ -183,16 +182,16 @@ public class ResultatsFileEchecSupportTest {
       Assert.fail("exception CaptureMasseRuntimeException attendue");
 
     }
-    catch (final CaptureMasseRuntimeException exception) {
+    catch (final IllegalArgumentException exception) {
       Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception.getCause()
                                  .getMessage()
-                                 .contains("Le sommaire est obligatoire pour la création du fichier résultat"));
+                                 .contains("sommaireFile"));
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception CaptureMasseRuntimeException attendue");
+      Assert.fail("exception IllegalArgumentException attendue");
     }
   }
 
@@ -210,16 +209,16 @@ public class ResultatsFileEchecSupportTest {
       Assert.fail("exception IllegalArgumentException attendue");
 
     }
-    catch (final CaptureMasseRuntimeException exception) {
+    catch (final IllegalArgumentException exception) {
       Assert.assertNotNull(exception.getCause());
       Assert.assertTrue("le message doit être correct",
                         exception.getCause()
                                  .getMessage()
-                                 .contains("Le sommaire est obligatoire pour la création du fichier résultat"));
+                                 .contains("erreur"));
 
     }
     catch (final Exception exception) {
-      Assert.fail("exception CaptureMasseRuntimeException attendue");
+      Assert.fail("exception IllegalArgumentException attendue");
     }
 
   }
