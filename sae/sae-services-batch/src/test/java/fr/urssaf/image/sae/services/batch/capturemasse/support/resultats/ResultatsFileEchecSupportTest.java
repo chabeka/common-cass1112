@@ -156,7 +156,6 @@ public class ResultatsFileEchecSupportTest {
     catch (final IllegalArgumentException exception) {
       Assert.assertTrue("le message doit être correct",
                         exception
-                                 .getCause()
                                  .getMessage()
                                  .contains("ecdeDirectory"));
 
@@ -183,8 +182,7 @@ public class ResultatsFileEchecSupportTest {
     }
     catch (final IllegalArgumentException exception) {
       Assert.assertTrue("le message doit être correct",
-                        exception.getCause()
-                                 .getMessage()
+                        exception.getMessage()
                                  .contains("sommaireFile"));
 
     }
@@ -209,8 +207,7 @@ public class ResultatsFileEchecSupportTest {
     }
     catch (final IllegalArgumentException exception) {
       Assert.assertTrue("le message doit être correct",
-                        exception.getCause()
-                                 .getMessage()
+                        exception.getMessage()
                                  .contains("erreur"));
 
     }
