@@ -428,7 +428,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
-					<argLine>-javaagent:${basedir}/../lib/aspectjweaver-${aspectj.version}.jar
+					<argLine>-javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar
 						${debug}</argLine>
 					<systemProperties>
 						<property>
