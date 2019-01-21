@@ -1,5 +1,6 @@
 package fr.urssaf.image.commons.dfce.service.impl;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -46,30 +47,30 @@ public class DFCEReconnectionAspect {
 
     Object proceed = null;
 
-    // On tente plusieurs fois, pour gérer les exceptions "AlreadyLockedObjectException" qui peut nécessiter plusieurs secondes de temporisation
-    for (int retryIndex = 0; retryIndex < MAX_RETRY_COUNT; retryIndex++) {
-      try {
-        // On tente d'exécuter le service DFCE
-        proceed = joinPoint.proceed();
-        // Si ok, on quitte
-        return proceed;
-      }
-      catch (final HessianConnectionException | NullPointerException ex) {
-        LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
-                 new Object[] {LOG_PREFIX},
-                 ex);
-        // On se reconnecte
-        dfceServices.reconnect();
-        // On remet les inputStream à leur position d'origine
-        resetInputStreams(joinPoint);
-      }
-      catch (final DFCERuntimeException ex) {
-        // Gestion des exceptions "AlreadyLockedObjectException" uniquement
-        if (ex.getMessage() != null && !ex.getMessage().contains("AlreadyLockedObjectException")) {
-          throw ex;
-        }
-        LOG.warn("{} - On retente l'appel à {} suite à la réception de l'exception AlreadyLockedObjectException sur la tentative n°{}",
-                 new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
+      // On tente plusieurs fois, pour gérer les exceptions "AlreadyLockedObjectException" qui peut nécessiter plusieurs secondes de temporisation
+      for (int retryIndex = 0; retryIndex < MAX_RETRY_COUNT; retryIndex++) {
+         try {
+            // On tente d'exécuter le service DFCE
+            proceed = joinPoint.proceed();
+            // Si ok, on quitte
+            return proceed;
+         }
+         catch (final HessianConnectionException | NullPointerException | IOException ex) {
+            LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
+                     new Object[] {LOG_PREFIX},
+                     ex);
+            // On se reconnecte
+            dfceServices.reconnect();
+            // On remet les inputStream à leur position d'origine
+            resetInputStreams(joinPoint);
+         }
+         catch (final DFCERuntimeException ex) {
+            // Gestion des exceptions "AlreadyLockedObjectException" uniquement
+            if (ex.getMessage() != null && !ex.getMessage().contains("AlreadyLockedObjectException")) {
+               throw (ex);
+            }
+            LOG.warn("{} - On retente l'appel à {} suite à la réception de l'exception AlreadyLockedObjectException sur la tentative n°{}",
+                     new Object[] {LOG_PREFIX, joinPoint.getSignature(), retryIndex});
 
         // Temporisation d'une seconde
         Thread.sleep(1000);
