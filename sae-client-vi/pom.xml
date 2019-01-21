@@ -23,9 +23,9 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
       <!-- Version des plug-ins Maven -->
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
       
@@ -292,13 +292,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-client-vi/
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-client-vi/
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-client-vi/
       </connection>
    </scm>
 

@@ -18,15 +18,15 @@
 	<properties>
      
       <!-- Version des plug-ins Maven -->
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
       
       <!-- version des framework -->
 		<junit.version>4.12</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<apache.commons-email.version>1.2</apache.commons-email.version>
 		<pdfbox.version>1.8.1.1</pdfbox.version>
 
@@ -36,13 +36,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-pdfbox
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons-pdfbox
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-pdfbox
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons-pdfbox
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons-pdfbox
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons-pdfbox
       </connection>
 	</scm>
 

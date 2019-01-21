@@ -11,7 +11,7 @@
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-batch-docs-executable</artifactId>
 	<name>sae-batch-docs-executable</name>
-	<version>19.2.4-SNAPSHOT</version>
+	<version>19.6.1-SNAPSHOT</version>
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
@@ -20,24 +20,24 @@
 		<sae.version>19.6.1-SNAPSHOT</sae.version>
 		<commons.dfce.version>1.10.1-SNAPSHOT</commons.dfce.version>
 		<aspectj.version>1.9.2</aspectj.version>
-		<easymock.version>3.0</easymock.version>
+		<easymock.version>4.0.2</easymock.version>
 		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
 		<apache.commons-beanutils.version>1.8.3</apache.commons-beanutils.version>
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
-		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 	</properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-batch-docs-executable/
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-batch-docs-executable/
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-batch-docs-executable/
       </connection>
 	</scm>
 

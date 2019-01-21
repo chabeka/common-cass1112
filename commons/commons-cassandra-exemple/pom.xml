@@ -18,7 +18,7 @@
    </parent>
    
    <properties>
-      <logback.version>0.9.30</logback.version>
+      <logback.version>1.2.3</logback.version>
       <org.slf4j.version>1.6.1</org.slf4j.version>
       <commons.cassandra.version>0.0.10-SNAPSHOT</commons.cassandra.version>
       <spring.batch.version>2.1.8.RELEASE</spring.batch.version>

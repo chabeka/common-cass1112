@@ -35,9 +35,9 @@
    
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
-      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</url>
-      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</developerConnection>
-      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/PDFbox-1.8</connection>
+      <url>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/PDFbox-1.8</url>
+      <developerConnection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/PDFbox-1.8</developerConnection>
+      <connection>scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/PDFbox-1.8</connection>
    </scm>
 
    <properties>

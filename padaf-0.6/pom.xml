@@ -22,13 +22,13 @@
 	   <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/padaf-0.6
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/padaf-0.6
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/padaf-0.6
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/padaf-0.6
       </connection>
 	</scm>
 

@@ -19,9 +19,9 @@
 
 	<properties>
 		<!-- Version des plug-ins Maven -->
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
 
 		<!-- Version de commons-cassandra -->
@@ -30,7 +30,7 @@
 		<!-- Version des framework -->
 		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.6.1</slf4j-api.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
@@ -42,13 +42,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons/commons-cassandra-spring-batch
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons/commons-cassandra-spring-batch
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/commons/commons-cassandra-spring-batch
       </connection>
 	</scm>
 

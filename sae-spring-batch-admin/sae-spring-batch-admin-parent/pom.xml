@@ -20,13 +20,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-spring-batch-admin/
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-spring-batch-admin/
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-spring-batch-admin/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-spring-batch-admin/
       </connection>
 	</scm>
 
@@ -208,13 +208,13 @@
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
-				<version>4.8.2</version>
+				<version>4.12</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
 				<artifactId>easymock</artifactId>
-				<version>2.3</version>
+				<version>4.0.2</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>

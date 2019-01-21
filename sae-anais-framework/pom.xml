@@ -20,16 +20,17 @@
 	<properties>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<maven.source.plugin.version>2.1.2</maven.source.plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<maven.source.plugin.version>3.0.1</maven.source.plugin.version>
 		<maven.javadoc.plugin.version>2.7</maven.javadoc.plugin.version>
-		<maven.surefire.plugin.version>2.12</maven.surefire.plugin.version>
-		<sonar.maven.plugin.version>1.0-beta-2</sonar.maven.plugin.version>
-		<aspectj.maven.plugin.version>1.3</aspectj.maven.plugin.version>
+		<maven.surefire.plugin.version>2.22.1</maven.surefire.plugin.version>
+		<sonar.maven.plugin.version>3.2</sonar.maven.plugin.version>
+		<aspectj.maven.plugin.version>1.11</aspectj.maven.plugin.version>
 
 		<junit.version>4.12</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<aspectj.version>1.6.10</aspectj.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
 		<apache.commons-configuration.version>1.6</apache.commons-configuration.version>
@@ -50,6 +51,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -83,6 +85,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
 				<configuration>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
@@ -211,13 +214,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-anais-framework/
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-anais-framework/
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-anais-framework/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-anais-framework/
       </connection>
 	</scm>
 
