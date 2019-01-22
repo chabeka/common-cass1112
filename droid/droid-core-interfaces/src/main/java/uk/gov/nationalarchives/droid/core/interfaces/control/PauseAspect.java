@@ -37,70 +37,74 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 /**
  * @author rflitcroft
- *
  */
 @Aspect
 @Component
 public class PauseAspect {
 
-    private boolean isPaused;
-    private ReentrantLock pauseLock = new ReentrantLock();
-    private Condition unpaused = pauseLock.newCondition();
-    
-    private ThreadWaitingHandler threadWaitingHandler;
+  private boolean isPaused;
 
-    /**
-     * Blocks until the executor is not paused.
-     */
-    @Before("@annotation(uk.gov.nationalarchives.droid.core.interfaces.control.PauseBefore)")
-    @After("@annotation(uk.gov.nationalarchives.droid.core.interfaces.control.PauseAfter)")
-    public void awaitUnpaused() {
-        pauseLock.lock();
-        try {
-            while (isPaused) {
-                threadWaitingHandler.onThreadWaiting();
-                unpaused.awaitUninterruptibly();
-            }
-        } finally {
-            pauseLock.unlock();
-        }
+  private final ReentrantLock pauseLock = new ReentrantLock();
+
+  private final Condition unpaused = pauseLock.newCondition();
+
+  private ThreadWaitingHandler threadWaitingHandler;
+
+  /**
+   * Blocks until the executor is not paused.
+   */
+  @Before("@annotation(uk.gov.nationalarchives.droid.core.interfaces.control.PauseBefore)")
+  @After("@annotation(uk.gov.nationalarchives.droid.core.interfaces.control.PauseAfter)")
+  public void awaitUnpaused() {
+    pauseLock.lock();
+    try {
+      while (isPaused) {
+        threadWaitingHandler.onThreadWaiting();
+        unpaused.awaitUninterruptibly();
+      }
     }
-    
-    /**
-     * Pauses the executor.
-     */
-    public void pause() {
-        pauseLock.lock();
-        try {
-            isPaused = true;
-        } finally {
-            pauseLock.unlock();
-        }
+    finally {
+      pauseLock.unlock();
     }
-    
-    /**
-     * Resumes the executor.
-     */
-    public void resume() {
-        pauseLock.lock();
-        try {
-            isPaused = false;
-            unpaused.signalAll();
-        } finally {
-            pauseLock.unlock();
-        }
+  }
+
+  /**
+   * Pauses the executor.
+   */
+  public void pause() {
+    pauseLock.lock();
+    try {
+      isPaused = true;
     }
-    
-    /**
-     * @param threadWaitingHandler the threadWaitingHandler to set
-     */
-    public void setThreadWaitingHandler(ThreadWaitingHandler threadWaitingHandler) {
-        this.threadWaitingHandler = threadWaitingHandler;
+    finally {
+      pauseLock.unlock();
     }
-    
-    
+  }
+
+  /**
+   * Resumes the executor.
+   */
+  public void resume() {
+    pauseLock.lock();
+    try {
+      isPaused = false;
+      unpaused.signalAll();
+    }
+    finally {
+      pauseLock.unlock();
+    }
+  }
+
+  /**
+   * @param threadWaitingHandler
+   *          the threadWaitingHandler to set
+   */
+  public void setThreadWaitingHandler(final ThreadWaitingHandler threadWaitingHandler) {
+    this.threadWaitingHandler = threadWaitingHandler;
+  }
 
 }
