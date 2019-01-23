@@ -31,6 +31,7 @@
  */
 package uk.gov.nationalarchives.droid.profile.types;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.PreparedStatement;
@@ -38,86 +39,115 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.type.StringType;
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.usertype.UserType;
 
 /**
  * @author rflitcroft
- *
  */
-public class UriType extends StringType {
+public class UriType implements UserType {
 
-    private static final long serialVersionUID = -5484571563787862267L;
+  private static final long serialVersionUID = -5484571563787862267L;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object get(ResultSet rs, String name) throws SQLException {
-        return newUri(rs.getString(name));
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int[] sqlTypes() {
+    return new int[] {Types.VARCHAR};
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Class<URI> getReturnedClass() {
-        return URI.class;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Class returnedClass() {
+    return URI.class;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void set(PreparedStatement st, Object value, int index) throws SQLException {
-        st.setString(index, value == null ? null : value.toString());
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean equals(final Object x, final Object y) throws HibernateException {
+    return x != null && y != null && x.equals(y);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int sqlType() {
-        return Types.VARCHAR;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int hashCode(final Object x) throws HibernateException {
+    return x != null ? x.hashCode() : 0;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getName() {
-        return "uri"; 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object nullSafeGet(final ResultSet rs, final String[] names, final SessionImplementor session, final Object owner)
+      throws HibernateException, SQLException {
+    try {
+      return new URI(rs.getString(names[0]));
     }
+    catch (final URISyntaxException e) {
+      throw new HibernateException(e);
+    }
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object stringToObject(String xml) {
-        return newUri(xml);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void nullSafeSet(final PreparedStatement st, final Object value, final int index, final SessionImplementor session)
+      throws HibernateException, SQLException {
+    if (value == null) {
+      st.setObject(index, null, Types.OTHER);
+    } else {
+      final URI theUri = (URI) value;
+      st.setObject(index, theUri.toString(), Types.OTHER);
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String toString(Object value) {
-        return value == null ? null : value.toString();
-    }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object deepCopy(final Object value) throws HibernateException {
+    return value;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Object fromStringValue(String xml) {
-        return newUri(xml);
-    }
-    
-    private static URI newUri(String s) {
-        try {
-            return s == null ? null : new URI(s);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-    
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isMutable() {
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Serializable disassemble(final Object value) throws HibernateException {
+    return (Serializable) value;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object assemble(final Serializable cached, final Object owner) throws HibernateException {
+    return cached;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Object replace(final Object original, final Object target, final Object owner) throws HibernateException {
+    return target;
+  }
+
 }
