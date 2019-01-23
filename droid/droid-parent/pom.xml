@@ -22,7 +22,7 @@
 		<project.build.source>1.8</project.build.source>
 		<project.build.target>1.8</project.build.target>
 		<spring.version>4.3.21.RELEASE</spring.version>
-		<hibernate.version>3.4.0.GA</hibernate.version>
+		<hibernate.version>4.3.11.Final</hibernate.version>
 		<derby.version>10.8.2.2</derby.version>
 		<antlr.version>3.2</antlr.version>
 		<cxf.version>2.2.12</cxf.version>
