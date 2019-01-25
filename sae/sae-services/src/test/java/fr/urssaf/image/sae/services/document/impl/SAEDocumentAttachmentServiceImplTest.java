@@ -150,8 +150,8 @@ public class SAEDocumentAttachmentServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "archivage_unitaire",
-                                            "ajout_doc_attache", "consultation" };
+      final String[] roles = new String[] { "ROLE_archivage_unitaire",
+                                            "ROLE_ajout_doc_attache", "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
@@ -673,7 +673,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
@@ -755,7 +755,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
@@ -857,7 +857,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);

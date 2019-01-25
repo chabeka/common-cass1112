@@ -69,7 +69,7 @@ public class RequeteLuceneValidationSupportTest {
       SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "suppression_masse" };
+      String[] roles = new String[] { "ROLE_suppression_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression_masse", saePrmds);

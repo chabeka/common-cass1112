@@ -290,7 +290,7 @@ public class CaptureSupportTest {
       prmd.setBean("permitDomaineTechnique");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire", "consultation" };
+      String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);

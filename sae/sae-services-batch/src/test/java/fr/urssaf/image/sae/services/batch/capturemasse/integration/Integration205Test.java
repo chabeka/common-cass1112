@@ -123,7 +123,7 @@ public class Integration205Test {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "archivage_masse" };
+      final String[] roles = new String[] { "ROLE_archivage_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);

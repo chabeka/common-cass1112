@@ -182,7 +182,7 @@ public class SAEEnrichmentMetadataServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "capture_masse" };
+      String[] roles = new String[] { "ROLE_capture_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("capture_masse", saePrmds);

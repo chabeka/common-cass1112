@@ -135,7 +135,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 *             Permet de vérifier les droits avant le transfert
 	 */
 	@Override
-	public final void controleDroitTransfert(final UUID idArchive)
+	public void controleDroitTransfert(final UUID idArchive)
 			throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
 		// On récupère les métadonnées du document à partir de l'UUID, avec
@@ -180,7 +180,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 *             Permet de vérifier les droits avant le transfert de masse
 	 */
 	@Override
-	public final void controleDroitTransfertMasse(final List<StorageMetadata> allMeta)
+	public void controleDroitTransfertMasse(final List<StorageMetadata> allMeta)
 			throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
 		if (allMeta.size() != 0) {
@@ -201,7 +201,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	}
 
 	@Override
-	public final StorageDocument transfertControlePlateforme(StorageDocument document, final UUID idArchive,
+	public StorageDocument transfertControlePlateforme(StorageDocument document, final UUID idArchive,
 			boolean isReprise, UUID idTraitementMasse) throws ArchiveAlreadyTransferedException, SearchingServiceEx,
 			ReferentialException, ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
 		String message = null;
@@ -281,7 +281,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 *             Fonction de transfert du document avec notes et doc attachés
 	 */
 	@Override
-	public final void transfertDocument(StorageDocument document) throws TransfertException {
+	public void transfertDocument(StorageDocument document) throws TransfertException {
 		final String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
 		try {
@@ -344,7 +344,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 *             Fonction permet suppression doc sur GNT après le transfert
 	 */
 	@Override
-	public final void deleteDocApresTransfert(final UUID idArchive)
+	public void deleteDocApresTransfert(final UUID idArchive)
 			throws SearchingServiceEx, ReferentialException, TransfertException {
 		// -- Suppression du document transféré de la GNT
 		final String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
@@ -379,7 +379,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 *             transférables
 	 */
 	@Override
-	public final StorageDocument recupererDocMetaTransferable(final UUID idArchive)
+	public StorageDocument recupererDocMetaTransferable(final UUID idArchive)
 			throws ReferentialException, SearchingServiceEx {
 		// On récupère le document avec uniquement les méta transférables
 		final List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
@@ -389,7 +389,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	}
 
 	@Override
-	public final void transfertDocMasse(final StorageDocument document)
+	public void transfertDocMasse(final StorageDocument document)
 			throws TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, ReferentialException,
 			RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
@@ -490,7 +490,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 * @throws UnknownCodeRndEx
 	 */
 	@Override
-	public final StorageDocument updateMetaDocumentForTransfertMasse(final StorageDocument document,
+	public StorageDocument updateMetaDocumentForTransfertMasse(final StorageDocument document,
 			final List<StorageMetadata> listeMeta, UUID idTraitementMasse)
 			throws ReferentialException, TransfertException, UnknownCodeRndEx {
 
@@ -724,7 +724,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	}
 
 	@Override
-	public final StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
+	public StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
 			final List<StorageMetadata> storageMetas, final boolean isReprise, final UUID idTraitementMasse)
 			throws TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
 			TraitementRepriseAlreadyDoneException, UnknownCodeRndEx {
@@ -794,7 +794,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	 * @throws InsertionIdGedExistantEx
 	 */
 	@Override
-	public final void transfertDoc(final UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
+	public void transfertDoc(final UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
 			ArchiveInexistanteEx, InsertionIdGedExistantEx {
 
 		// -- On trace le début du transfert

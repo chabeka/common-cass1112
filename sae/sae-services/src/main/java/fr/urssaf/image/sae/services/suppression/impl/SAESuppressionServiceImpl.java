@@ -66,7 +66,7 @@ public class SAESuppressionServiceImpl extends AbstractSAEServices implements SA
 	 * {@inheritDoc}
 	 */
 	@Override
-	public final void suppression(UUID idArchive) throws SuppressionException, ArchiveInexistanteEx {
+	public void suppression(UUID idArchive) throws SuppressionException, ArchiveInexistanteEx {
 		final String trcPrefix = "suppression";
 		LOG.debug("{} - début", trcPrefix);
 		LOG.debug("{} - Début de suppression du document {}", new Object[] { trcPrefix, idArchive.toString() });

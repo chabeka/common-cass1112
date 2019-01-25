@@ -137,7 +137,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -266,7 +266,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -396,7 +396,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -528,7 +528,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace

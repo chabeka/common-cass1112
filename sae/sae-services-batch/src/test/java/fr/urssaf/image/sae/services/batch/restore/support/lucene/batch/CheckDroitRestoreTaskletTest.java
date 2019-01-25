@@ -61,7 +61,7 @@ public class CheckDroitRestoreTaskletTest {
       SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "restore_masse" };
+      String[] roles = new String[] { "ROLE_restore_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("restore_masse", saePrmds);

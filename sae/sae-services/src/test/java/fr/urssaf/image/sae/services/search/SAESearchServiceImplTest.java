@@ -56,7 +56,7 @@ public class SAESearchServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "recherche" };
+      String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);

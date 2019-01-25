@@ -145,8 +145,8 @@ public class SAETransfertMasseServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "modification", "recherche",
-            "suppression", "transfert", "archivage_unitaire", "transfert_masse" };
+      String[] roles = new String[] { "ROLE_modification", "ROLE_recherche",
+            "ROLE_suppression", "ROLE_transfert", "ROLE_archivage_unitaire", "ROLE_transfert_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression", saePrmds);

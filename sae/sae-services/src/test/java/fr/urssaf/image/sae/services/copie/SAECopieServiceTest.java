@@ -110,7 +110,7 @@ public class SAECopieServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "copie" };
+      String[] roles = new String[] { "ROLE_copie" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("copie", saePrmds);

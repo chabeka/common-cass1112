@@ -97,7 +97,7 @@ public class SAEModificationMasseTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "modification_masse" };
+      String[] roles = new String[] { "ROLE_modification_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("modification_masse", saePrmds);

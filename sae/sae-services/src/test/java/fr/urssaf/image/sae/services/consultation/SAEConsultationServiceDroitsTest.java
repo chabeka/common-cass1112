@@ -125,7 +125,7 @@ public class SAEConsultationServiceDroitsTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "recherche" };
+      String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
@@ -157,7 +157,7 @@ public class SAEConsultationServiceDroitsTest {
       prmd.setBean("permitNothing");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "consultation" };
+      String[] roles = new String[] { "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("consultation", saePrmds);
@@ -190,7 +190,7 @@ public class SAEConsultationServiceDroitsTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "consultation" };
+      String[] roles = new String[] { "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("consultation", saePrmds);

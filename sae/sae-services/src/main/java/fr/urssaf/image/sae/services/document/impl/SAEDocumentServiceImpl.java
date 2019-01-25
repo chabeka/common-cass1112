@@ -79,7 +79,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
    /**
     * {@inheritDoc}
     */
-   public final List<UntypedDocument> search(final String requete,
+   public List<UntypedDocument> search(final String requete,
          final List<String> listMetaDesired) throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
@@ -90,7 +90,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(UUID idArchive)
+   public UntypedDocument consultation(UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
       return saeConsultationService.consultation(idArchive);
@@ -100,7 +100,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(ConsultParams consultParams)
+   public UntypedDocument consultation(ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
       return saeConsultationService.consultation(consultParams);
@@ -110,7 +110,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final List<UntypedDocument> search(String requete,
+   public List<UntypedDocument> search(String requete,
          List<String> listMetaDesired, int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
@@ -122,7 +122,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultationAffichable(
+   public UntypedDocument consultationAffichable(
          ConsultParams consultParams) throws SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
@@ -136,7 +136,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws DoublonFiltresMetadataEx
     */
    @Override
-   public final PaginatedUntypedDocuments searchPaginated(
+   public PaginatedUntypedDocuments searchPaginated(
          List<UntypedMetadata> fixedMetadatas,
          UntypedRangeMetadata varyingMetadata,
          List<AbstractMetadata> listeFiltreEgalite,
@@ -158,7 +158,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws ArchiveInexistanteEx
     */
    @Override
-   public final void addDocumentNote(UUID docUuid, String contenu, String login)
+   public void addDocumentNote(UUID docUuid, String contenu, String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx {
       saeNoteService.addDocumentNote(docUuid, contenu, login);
    }
@@ -167,7 +167,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
+   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
          throws SAEDocumentNoteException {
       return saeNoteService.getDocumentNotes(docUuid);
    }

@@ -92,7 +92,7 @@ public class SAEConsultationServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "consultation" };
+      final String[] roles = new String[] { "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("consultation", saePrmds);

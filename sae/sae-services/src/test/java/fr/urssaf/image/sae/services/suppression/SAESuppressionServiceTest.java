@@ -126,7 +126,7 @@ public class SAESuppressionServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "suppression", "archivage_unitaire" };
+      final String[] roles = new String[] { "ROLE_suppression", "ROLE_archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression", saePrmds);

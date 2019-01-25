@@ -226,8 +226,8 @@ public class RepriseCaptureMasseInitTaskletTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse", "recherche",
-            "recherche_iterateur" };
+      String[] roles = new String[] { "ROLE_archivage_masse", "ROLE_recherche",
+            "ROLE_recherche_iterateur" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);

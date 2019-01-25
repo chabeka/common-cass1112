@@ -106,7 +106,7 @@ public class SAECommonCaptureServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      String[] roles = new String[] { "ROLE_archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);

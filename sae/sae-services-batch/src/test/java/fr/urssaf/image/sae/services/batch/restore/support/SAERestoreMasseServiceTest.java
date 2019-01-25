@@ -72,7 +72,7 @@ public class SAERestoreMasseServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "restore_masse" };
+      String[] roles = new String[] { "ROLE_restore_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("restore_masse", saePrmds);
