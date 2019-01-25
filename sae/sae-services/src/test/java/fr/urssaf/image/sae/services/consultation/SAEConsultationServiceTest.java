@@ -24,6 +24,7 @@ import java.util.UUID;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.hamcrest.CoreMatchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -606,10 +607,10 @@ public class SAEConsultationServiceTest {
       final Date tomorowDate = c.getTime();
       final String tomorowString = dateFormat.format(tomorowDate);
 
-      Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"note du document\""));
-      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
-                        .or(JUnitMatchers.containsString(tomorowString)));
-      Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":null}]"));
+      Assert.assertThat(contenu, CoreMatchers.containsString("[{\"contenu\":\"note du document\""));
+      Assert.assertThat(contenu, CoreMatchers.either(CoreMatchers.containsString(todayString))
+                        .or(CoreMatchers.containsString(tomorowString)));
+      Assert.assertThat(contenu, CoreMatchers.containsString("\"auteur\":null}]"));
    }
 
 }
