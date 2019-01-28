@@ -145,7 +145,7 @@ public class TraitementAsynchroneServiceImpl implements
    * {@inheritDoc}
    */
   @Override
-  public final void lancerJob(final UUID idJob) throws JobInexistantException,
+  public void lancerJob(final UUID idJob) throws JobInexistantException,
       JobNonReserveException {
 
     final JobRequest job = jobLectureService.getJobRequest(idJob);

@@ -31,9 +31,9 @@ public class BatchAuthentificationUtilsTest {
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
             .getAuthorities();
-      List<String> sAuthorities = Arrays.asList("recherche",
-            "recherche_iterateur", "archivage_unitaire", "archivage_masse",
-            "consultation");
+      List<String> sAuthorities = Arrays.asList("ROLE_recherche",
+            "ROLE_recherche_iterateur", "ROLE_archivage_unitaire", "ROLE_archivage_masse",
+            "ROLE_consultation");
       Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
             5, authorities.size());
       List<String> authList = new ArrayList<String>();
@@ -56,8 +56,8 @@ public class BatchAuthentificationUtilsTest {
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
             .getAuthorities();
-      List<String> sAuthorities = Arrays.asList("recherche",
-            "recherche_iterateur");
+      List<String> sAuthorities = Arrays.asList("ROLE_recherche",
+            "ROLE_recherche_iterateur");
       Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
             2, authorities.size());
       List<String> authList = new ArrayList<String>();
@@ -80,7 +80,7 @@ public class BatchAuthentificationUtilsTest {
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
             .getAuthorities();
-      List<String> sAuthorities = Arrays.asList("recherche", "archivage_masse");
+      List<String> sAuthorities = Arrays.asList("ROLE_recherche", "ROLE_archivage_masse");
       Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
             3, authorities.size());
       List<String> authList = new ArrayList<String>();
@@ -103,8 +103,8 @@ public class BatchAuthentificationUtilsTest {
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
             .getAuthorities();
-      List<String> sAuthorities = Arrays.asList("recherche_iterateur",
-            "suppression_masse");
+      List<String> sAuthorities = Arrays.asList("ROLE_recherche_iterateur",
+            "ROLE_suppression_masse");
       Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
             3, authorities.size());
       List<String> authList = new ArrayList<String>();
@@ -127,8 +127,8 @@ public class BatchAuthentificationUtilsTest {
       Assert.assertNotNull("le token ne doit pas etre null", token);
       List<GrantedAuthority> authorities = (List<GrantedAuthority>) token
             .getAuthorities();
-      List<String> sAuthorities = Arrays.asList("recherche_iterateur",
-            "restore_masse");
+      List<String> sAuthorities = Arrays.asList("ROLE_recherche_iterateur",
+            "ROLE_restore_masse");
       Assert.assertEquals("il doit y avoir le nombre correct d'autorisations",
             3, authorities.size());
       List<String> authList = new ArrayList<String>();
