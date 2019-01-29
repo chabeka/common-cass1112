@@ -125,7 +125,7 @@ public class CheckFileSommaireTaskletCheckEcdeTest {
 
       controleService.checkEcdeWrite(EasyMock.anyObject(File.class));
       EasyMock.expectLastCall().andThrow(
-            new CaptureMasseRuntimeException("Erreur technique")).times(3);
+            new CaptureMasseRuntimeException("Erreur technique")).anyTimes();
       EasyMock.replay(controleService);
 
       service.captureMasse(ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
