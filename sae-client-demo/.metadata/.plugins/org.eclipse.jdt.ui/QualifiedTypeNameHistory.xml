@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="org.springframework.cassandra.core.CqlOperations"/>
+<fullyQualifiedTypeName name="org.springframework.data.repository.CrudRepository"/>
+<fullyQualifiedTypeName name="java.io.Serializable"/>
+<fullyQualifiedTypeName name="fr.urssaf.image.sae.service.ITestpoc3Service"/>
+<fullyQualifiedTypeName name="fr.urssaf.image.sae.model.testpoc3"/>
+<fullyQualifiedTypeName name="com.datastax.driver.mapping.annotations.Table"/>
+<fullyQualifiedTypeName name="com.datastax.driver.mapping.annotations.PartitionKey"/>
+</qualifiedTypeNameHistroy>
