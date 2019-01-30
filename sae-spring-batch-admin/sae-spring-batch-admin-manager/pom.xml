@@ -42,6 +42,10 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
                <groupId>fr.urssaf.image.sae</groupId>
                <artifactId>spring-batch-admin-resources</artifactId>
             </exclusion>
+            <exclusion>
+            	<groupId>org.springframework</groupId>
+  				<artifactId>spring-beans</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
 
@@ -94,15 +98,17 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
       <dependency>
          <groupId>org.springframework.batch</groupId>
          <artifactId>spring-batch-test</artifactId>
+         <exclusions>
+         	<exclusion>
+		       <groupId>org.springframework</groupId>
+				<artifactId>spring-jdbc</artifactId>
+        	</exclusion>
+         </exclusions>
          <scope>test</scope>
       </dependency>
       <dependency>
          <groupId>org.springframework.batch</groupId>
          <artifactId>spring-batch-core</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.springframework</groupId>
-         <artifactId>spring-jdbc</artifactId>
       </dependency>
       <dependency>
          <groupId>org.springframework</groupId>
@@ -220,8 +226,8 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
             <configuration>
-               <source>1.5</source>
-               <target>1.5</target>
+               <source>1.8</source>
+               <target>1.8</target>
             </configuration>
          </plugin>
          <plugin>
