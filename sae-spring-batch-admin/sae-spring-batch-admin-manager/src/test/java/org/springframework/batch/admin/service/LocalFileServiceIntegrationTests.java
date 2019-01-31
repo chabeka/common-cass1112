@@ -14,60 +14,58 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageDeliveryException;
-import org.springframework.integration.MessageHandlingException;
-import org.springframework.integration.MessageRejectedException;
-import org.springframework.integration.core.MessageHandler;
-import org.springframework.integration.core.SubscribableChannel;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @ContextConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 public class LocalFileServiceIntegrationTests {
-	
-	private static Log logger = LogFactory.getLog(LocalFileServiceIntegrationTests.class);
 
-	@Autowired
-	private LocalFileService service;
+  private static Log logger = LogFactory.getLog(LocalFileServiceIntegrationTests.class);
 
-	@Autowired
-	@Qualifier("input-files")
-	private SubscribableChannel files;
-	
-	private static File trigger;
+  @Autowired
+  private LocalFileService service;
 
-	private static MessageHandler handler = new MessageHandler() {
-		public void handleMessage(Message<?> message) throws MessageRejectedException, MessageHandlingException,
-				MessageDeliveryException {
-			logger.debug("Handled " + message);
-			trigger = (File) message.getPayload();
-		}
-	};
+  @Autowired
+  @Qualifier("input-files")
+  private SubscribableChannel files;
 
-	@Before
-	public void setUp() throws Exception {
-		FileUtils.deleteDirectory(service.getUploadDirectory());
-		files.unsubscribe(handler);
-		files.subscribe(handler);
-	}
+  private static File trigger;
 
-	@Test
-	public void testUpload() throws Exception {
-		FileInfo info = service.createFile("spam/bucket");
-		Resource file = service.getResource(info.getPath());
-		assertTrue(file.exists());
-		assertTrue(file.getFile().getParentFile().exists());
-	}
+  private static MessageHandler handler = new MessageHandler() {
+    @Override
+    public void handleMessage(final Message<?> message) throws MessagingException {
+      logger.debug("Handled " + message);
+      trigger = (File) message.getPayload();
+    }
+  };
 
-	@Test
-	public void testTrigger() throws Exception {
-		FileInfo info = service.createFile("spam/bucket/crap");
-		Resource file = service.getResource(info.getPath());
-		assertTrue(file.exists());
-		service.publish(info);
-		assertNotNull(trigger);
-	}
+  @Before
+  public void setUp() throws Exception {
+    FileUtils.deleteDirectory(service.getUploadDirectory());
+    files.unsubscribe(handler);
+    files.subscribe(handler);
+  }
+
+  @Test
+  public void testUpload() throws Exception {
+    final FileInfo info = service.createFile("spam/bucket");
+    final Resource file = service.getResource(info.getPath());
+    assertTrue(file.exists());
+    assertTrue(file.getFile().getParentFile().exists());
+  }
+
+  @Test
+  public void testTrigger() throws Exception {
+    final FileInfo info = service.createFile("spam/bucket/crap");
+    final Resource file = service.getResource(info.getPath());
+    assertTrue(file.exists());
+    service.publish(info);
+    assertNotNull(trigger);
+  }
 
 }

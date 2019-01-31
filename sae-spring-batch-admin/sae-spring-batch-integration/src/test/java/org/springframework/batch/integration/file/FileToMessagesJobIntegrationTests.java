@@ -27,49 +27,51 @@ import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.integration.Message;
-import org.springframework.integration.core.MessageHandler;
-import org.springframework.integration.core.SubscribableChannel;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.SubscribableChannel;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Dave Syer
- * 
  */
 @ContextConfiguration()
 @RunWith(SpringJUnit4ClassRunner.class)
 public class FileToMessagesJobIntegrationTests implements MessageHandler {
 
-	@Autowired
-	@Qualifier("requests")
-	private SubscribableChannel requests;
+  @Autowired
+  @Qualifier("requests")
+  private SubscribableChannel requests;
 
-	@Autowired
-	private Job job;
+  @Autowired
+  private Job job;
 
-	@Autowired
-	private JobLauncher jobLauncher;
+  @Autowired
+  private JobLauncher jobLauncher;
 
-	int count = 0;
+  int count = 0;
 
-	public void handleMessage(Message<?> message) {
-		count++;
-	}
+  @Override
+  public void handleMessage(final Message<?> message) {
+    count++;
+  }
 
-	@Before
-	public void setUp() {
-		requests.subscribe(this);
-	}
+  @Before
+  public void setUp() {
+    requests.subscribe(this);
+  }
 
-	@Test
-	public void testFileSent() throws Exception {
+  @Test
+  public void testFileSent() throws Exception {
 
-		JobExecution execution = jobLauncher.run(job, new JobParametersBuilder().addLong("time.stamp",
-				System.currentTimeMillis()).toJobParameters());
-		assertEquals(BatchStatus.COMPLETED, execution.getStatus());
-		// 2 chunks sent to channel (5 items and commit-interval=3)
-		assertEquals(2, count);
-	}
+    final JobExecution execution = jobLauncher.run(job,
+                                                   new JobParametersBuilder().addLong("time.stamp",
+                                                                                      System.currentTimeMillis())
+                                                                             .toJobParameters());
+    assertEquals(BatchStatus.COMPLETED, execution.getStatus());
+    // 2 chunks sent to channel (5 items and commit-interval=3)
+    assertEquals(2, count);
+  }
 
 }

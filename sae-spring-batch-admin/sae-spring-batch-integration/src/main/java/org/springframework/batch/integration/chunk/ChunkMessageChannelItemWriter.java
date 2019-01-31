@@ -34,306 +34,327 @@ import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.ItemStream;
 import org.springframework.batch.item.ItemStreamException;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.integration.Message;
-import org.springframework.integration.core.MessagingOperations;
-import org.springframework.integration.core.PollableChannel;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.integration.core.MessagingTemplate;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.PollableChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.util.Assert;
 
-public class ChunkMessageChannelItemWriter<T> extends StepExecutionListenerSupport implements ItemWriter<T>,
-		ItemStream, StepContributionSource {
+public class ChunkMessageChannelItemWriter<T> extends StepExecutionListenerSupport implements
+                                          ItemWriter<T>,
+                                          ItemStream,
+                                          StepContributionSource {
 
-	private static final Log logger = LogFactory.getLog(ChunkMessageChannelItemWriter.class);
+  private static final Log logger = LogFactory.getLog(ChunkMessageChannelItemWriter.class);
 
-	static final String ACTUAL = ChunkMessageChannelItemWriter.class.getName() + ".ACTUAL";
+  static final String ACTUAL = ChunkMessageChannelItemWriter.class.getName() + ".ACTUAL";
 
-	static final String EXPECTED = ChunkMessageChannelItemWriter.class.getName() + ".EXPECTED";
+  static final String EXPECTED = ChunkMessageChannelItemWriter.class.getName() + ".EXPECTED";
 
-	private static final long DEFAULT_THROTTLE_LIMIT = 6;
+  private static final long DEFAULT_THROTTLE_LIMIT = 6;
 
-	private MessagingOperations messagingGateway;
+  private MessagingTemplate messagingGateway;
 
-	private LocalState localState = new LocalState();
+  private final LocalState localState = new LocalState();
 
-	private long throttleLimit = DEFAULT_THROTTLE_LIMIT;
+  private long throttleLimit = DEFAULT_THROTTLE_LIMIT;
 
-	private int DEFAULT_MAX_WAIT_TIMEOUTS = 40;
+  private final int DEFAULT_MAX_WAIT_TIMEOUTS = 40;
 
-	private int maxWaitTimeouts = DEFAULT_MAX_WAIT_TIMEOUTS;
+  private int maxWaitTimeouts = DEFAULT_MAX_WAIT_TIMEOUTS;
 
-	private PollableChannel replyChannel;
+  private PollableChannel replyChannel;
 
-	/**
-	 * The maximum number of times to wait at the end of a step for a non-null result from the remote workers. This is a
-	 * multiplier on the receive timeout set separately on the gateway. The ideal value is a compromise between allowing
-	 * slow workers time to finish, and responsiveness if there is a dead worker. Defaults to 40.
-	 * 
-	 * @param maxWaitTimeouts the maximum number of wait timeouts
-	 */
-	public void setMaxWaitTimeouts(int maxWaitTimeouts) {
-		this.maxWaitTimeouts = maxWaitTimeouts;
-	}
+  /**
+   * The maximum number of times to wait at the end of a step for a non-null result from the remote workers. This is a
+   * multiplier on the receive timeout set separately on the gateway. The ideal value is a compromise between allowing
+   * slow workers time to finish, and responsiveness if there is a dead worker. Defaults to 40.
+   * 
+   * @param maxWaitTimeouts
+   *          the maximum number of wait timeouts
+   */
+  public void setMaxWaitTimeouts(final int maxWaitTimeouts) {
+    this.maxWaitTimeouts = maxWaitTimeouts;
+  }
 
-	/**
-	 * Public setter for the throttle limit. This limits the number of pending requests for chunk processing to avoid
-	 * overwhelming the receivers.
-	 * @param throttleLimit the throttle limit to set
-	 */
-	public void setThrottleLimit(long throttleLimit) {
-		this.throttleLimit = throttleLimit;
-	}
+  /**
+   * Public setter for the throttle limit. This limits the number of pending requests for chunk processing to avoid
+   * overwhelming the receivers.
+   * 
+   * @param throttleLimit
+   *          the throttle limit to set
+   */
+  public void setThrottleLimit(final long throttleLimit) {
+    this.throttleLimit = throttleLimit;
+  }
 
-	public void setMessagingOperations(MessagingOperations messagingGateway) {
-		this.messagingGateway = messagingGateway;
-	}
+  public void setReplyChannel(final PollableChannel replyChannel) {
+    this.replyChannel = replyChannel;
+  }
 
-	public void setReplyChannel(PollableChannel replyChannel) {
-		this.replyChannel = replyChannel;
-	}
+  @Override
+  public void write(final List<? extends T> items) throws Exception {
 
-	public void write(List<? extends T> items) throws Exception {
+    // Block until expecting <= throttle limit
+    while (localState.getExpecting() > throttleLimit) {
+      getNextResult();
+    }
 
-		// Block until expecting <= throttle limit
-		while (localState.getExpecting() > throttleLimit) {
-			getNextResult();
-		}
+    if (!items.isEmpty()) {
 
-		if (!items.isEmpty()) {
+      final ChunkRequest<T> request = localState.getRequest(items);
+      if (logger.isDebugEnabled()) {
+        logger.debug("Dispatching chunk: " + request);
+      }
+      messagingGateway.send(new GenericMessage<>(request));
+      localState.incrementExpected();
 
-			ChunkRequest<T> request = localState.getRequest(items);
-			if (logger.isDebugEnabled()) {
-				logger.debug("Dispatching chunk: " + request);
-			}
-			messagingGateway.send(new GenericMessage<ChunkRequest<T>>(request));
-			localState.incrementExpected();
+    }
 
-		}
+  }
 
-	}
+  @Override
+  public void beforeStep(final StepExecution stepExecution) {
+    localState.setStepExecution(stepExecution);
+  }
 
-	@Override
-	public void beforeStep(StepExecution stepExecution) {
-		localState.setStepExecution(stepExecution);
-	}
+  @Override
+  public ExitStatus afterStep(final StepExecution stepExecution) {
+    if (!(stepExecution.getStatus() == BatchStatus.COMPLETED)) {
+      return ExitStatus.EXECUTING;
+    }
+    final long expecting = localState.getExpecting();
+    boolean timedOut;
+    try {
+      logger.debug("Waiting for results in step listener...");
+      timedOut = !waitForResults();
+      logger.debug("Finished waiting for results in step listener.");
+    }
+    catch (final RuntimeException e) {
+      logger.debug("Detected failure waiting for results in step listener.", e);
+      stepExecution.setStatus(BatchStatus.FAILED);
+      return ExitStatus.FAILED.addExitDescription(e.getClass().getName() + ": " + e.getMessage());
+    }
+    finally {
 
-	@Override
-	public ExitStatus afterStep(StepExecution stepExecution) {
-		if (!(stepExecution.getStatus() == BatchStatus.COMPLETED)) {
-			return ExitStatus.EXECUTING;
-		}
-		long expecting = localState.getExpecting();
-		boolean timedOut;
-		try {
-			logger.debug("Waiting for results in step listener...");
-			timedOut = !waitForResults();
-			logger.debug("Finished waiting for results in step listener.");
-		}
-		catch (RuntimeException e) {
-			logger.debug("Detected failure waiting for results in step listener.", e);
-			stepExecution.setStatus(BatchStatus.FAILED);
-			return ExitStatus.FAILED.addExitDescription(e.getClass().getName() + ": " + e.getMessage());
-		}
-		finally {
+      if (logger.isDebugEnabled()) {
+        logger.debug("Finished waiting for results in step listener.  Still expecting: "
+            + localState.getExpecting());
+      }
 
-			if (logger.isDebugEnabled()) {
-				logger.debug("Finished waiting for results in step listener.  Still expecting: "
-						+ localState.getExpecting());
-			}
+      for (final StepContribution contribution : getStepContributions()) {
+        stepExecution.apply(contribution);
+      }
+    }
+    if (timedOut) {
+      stepExecution.setStatus(BatchStatus.FAILED);
+      return ExitStatus.FAILED.addExitDescription("Timed out waiting for " + localState.getExpecting()
+          + " backlog at end of step");
+    }
+    return ExitStatus.COMPLETED.addExitDescription("Waited for " + expecting + " results.");
+  }
 
-			for (StepContribution contribution : getStepContributions()) {
-				stepExecution.apply(contribution);
-			}
-		}
-		if (timedOut) {
-			stepExecution.setStatus(BatchStatus.FAILED);
-			return ExitStatus.FAILED.addExitDescription("Timed out waiting for " + localState.getExpecting()
-					+ " backlog at end of step");
-		}
-		return ExitStatus.COMPLETED.addExitDescription("Waited for " + expecting + " results.");
-	}
+  @Override
+  public void close() throws ItemStreamException {
+    localState.reset();
+  }
 
-	public void close() throws ItemStreamException {
-		localState.reset();
-	}
+  @Override
+  public void open(final ExecutionContext executionContext) throws ItemStreamException {
+    if (executionContext.containsKey(EXPECTED)) {
+      localState.open(executionContext.getInt(EXPECTED), executionContext.getInt(ACTUAL));
+      if (!waitForResults()) {
+        throw new ItemStreamException("Timed out waiting for back log on open");
+      }
+    }
+  }
 
-	public void open(ExecutionContext executionContext) throws ItemStreamException {
-		if (executionContext.containsKey(EXPECTED)) {
-			localState.open(executionContext.getInt(EXPECTED), executionContext.getInt(ACTUAL));
-			if (!waitForResults()) {
-				throw new ItemStreamException("Timed out waiting for back log on open");
-			}
-		}
-	}
+  @Override
+  public void update(final ExecutionContext executionContext) throws ItemStreamException {
+    executionContext.putInt(EXPECTED, localState.expected.intValue());
+    executionContext.putInt(ACTUAL, localState.actual.intValue());
+  }
 
-	public void update(ExecutionContext executionContext) throws ItemStreamException {
-		executionContext.putInt(EXPECTED, localState.expected.intValue());
-		executionContext.putInt(ACTUAL, localState.actual.intValue());
-	}
+  @Override
+  public Collection<StepContribution> getStepContributions() {
+    final List<StepContribution> contributions = new ArrayList<>();
+    for (final ChunkResponse response : localState.pollChunkResponses()) {
+      final StepContribution contribution = response.getStepContribution();
+      if (logger.isDebugEnabled()) {
+        logger.debug("Applying: " + response);
+      }
+      contributions.add(contribution);
+    }
+    return contributions;
+  }
 
-	public Collection<StepContribution> getStepContributions() {
-		List<StepContribution> contributions = new ArrayList<StepContribution>();
-		for (ChunkResponse response : localState.pollChunkResponses()) {
-			StepContribution contribution = response.getStepContribution();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Applying: " + response);
-			}
-			contributions.add(contribution);
-		}
-		return contributions;
-	}
+  /**
+   * Wait until all the results that are in the pipeline come back to the reply channel.
+   * 
+   * @return true if successfully received a result, false if timed out
+   */
+  private boolean waitForResults() throws AsynchronousFailureException {
+    int count = 0;
+    final int maxCount = maxWaitTimeouts;
+    Throwable failure = null;
+    logger.info("Waiting for " + localState.getExpecting() + " results");
+    while (localState.getExpecting() > 0 && count++ < maxCount) {
+      try {
+        getNextResult();
+      }
+      catch (final Throwable t) {
+        logger.error("Detected error in remote result. Trying to recover " + localState.getExpecting()
+            + " outstanding results before completing.", t);
+        failure = t;
+      }
+    }
+    if (failure != null) {
+      throw wrapIfNecessary(failure);
+    }
+    return count < maxCount;
+  }
 
-	/**
-	 * Wait until all the results that are in the pipeline come back to the reply channel.
-	 * 
-	 * @return true if successfully received a result, false if timed out
-	 */
-	private boolean waitForResults() throws AsynchronousFailureException {
-		int count = 0;
-		int maxCount = maxWaitTimeouts;
-		Throwable failure = null;
-		logger.info("Waiting for " + localState.getExpecting() + " results");
-		while (localState.getExpecting() > 0 && count++ < maxCount) {
-			try {
-				getNextResult();
-			}
-			catch (Throwable t) {
-				logger.error("Detected error in remote result. Trying to recover " + localState.getExpecting()
-						+ " outstanding results before completing.", t);
-				failure = t;
-			}
-		}
-		if (failure != null) {
-			throw wrapIfNecessary(failure);
-		}
-		return count < maxCount;
-	}
+  /**
+   * Get the next result if it is available (within the timeout specified in the gateway), otherwise do nothing.
+   * 
+   * @throws AsynchronousFailureException
+   *           If there is a response and it contains a failed chunk response.
+   * @throws IllegalStateException
+   *           if the result contains the wrong job instance id (maybe we are sharing a channel
+   *           and we shouldn't be)
+   */
+  private void getNextResult() throws AsynchronousFailureException {
+    final Message<ChunkResponse> message = (Message<ChunkResponse>) messagingGateway.receive(replyChannel);
+    if (message != null) {
+      final ChunkResponse payload = message.getPayload();
+      if (logger.isDebugEnabled()) {
+        logger.debug("Found result: " + payload);
+      }
+      final Long jobInstanceId = payload.getJobId();
+      Assert.state(jobInstanceId != null, "Message did not contain job instance id.");
+      Assert.state(jobInstanceId.equals(localState.getJobId()),
+                   "Message contained wrong job instance id ["
+                       + jobInstanceId + "] should have been [" + localState.getJobId() + "].");
+      if (payload.isRedelivered()) {
+        logger
+              .warn("Redelivered result detected, which may indicate stale state. In the best case, we just picked up a timed out message "
+                  + "from a previous failed execution. In the worst case (and if this is not a restart), "
+                  + "the step may now timeout.  In that case if you believe that all messages "
+                  + "from workers have been sent, the business state "
+                  + "is probably inconsistent, and the step will fail.");
+        localState.incrementRedelivered();
+      }
+      localState.pushResponse(payload);
+      localState.incrementActual();
+      if (!payload.isSuccessful()) {
+        throw new AsynchronousFailureException("Failure or interrupt detected in handler: "
+            + payload.getMessage());
+      }
+    }
+  }
 
-	/**
-	 * Get the next result if it is available (within the timeout specified in the gateway), otherwise do nothing.
-	 * 
-	 * @throws AsynchronousFailureException If there is a response and it contains a failed chunk response.
-	 * 
-	 * @throws IllegalStateException if the result contains the wrong job instance id (maybe we are sharing a channel
-	 * and we shouldn't be)
-	 */
-	private void getNextResult() throws AsynchronousFailureException {
-		Message<ChunkResponse> message = messagingGateway.receive(replyChannel);
-		if (message != null) {
-			ChunkResponse payload = message.getPayload();
-			if (logger.isDebugEnabled()) {
-				logger.debug("Found result: " + payload);
-			}
-			Long jobInstanceId = payload.getJobId();
-			Assert.state(jobInstanceId != null, "Message did not contain job instance id.");
-			Assert.state(jobInstanceId.equals(localState.getJobId()), "Message contained wrong job instance id ["
-					+ jobInstanceId + "] should have been [" + localState.getJobId() + "].");
-			if (payload.isRedelivered()) {
-				logger
-						.warn("Redelivered result detected, which may indicate stale state. In the best case, we just picked up a timed out message "
-								+ "from a previous failed execution. In the worst case (and if this is not a restart), "
-								+ "the step may now timeout.  In that case if you believe that all messages "
-								+ "from workers have been sent, the business state "
-								+ "is probably inconsistent, and the step will fail.");
-				localState.incrementRedelivered();
-			}
-			localState.pushResponse(payload);
-			localState.incrementActual();
-			if (!payload.isSuccessful()) {
-				throw new AsynchronousFailureException("Failure or interrupt detected in handler: "
-						+ payload.getMessage());
-			}
-		}
-	}
+  /**
+   * Re-throws the original throwable if it is unchecked, wraps checked exceptions into
+   * {@link AsynchronousFailureException}.
+   */
+  private static AsynchronousFailureException wrapIfNecessary(final Throwable throwable) {
+    if (throwable instanceof Error) {
+      throw (Error) throwable;
+    } else if (throwable instanceof AsynchronousFailureException) {
+      return (AsynchronousFailureException) throwable;
+    } else {
+      return new AsynchronousFailureException("Exception in remote process", throwable);
+    }
+  }
 
-	/**
-	 * Re-throws the original throwable if it is unchecked, wraps checked exceptions into
-	 * {@link AsynchronousFailureException}.
-	 */
-	private static AsynchronousFailureException wrapIfNecessary(Throwable throwable) {
-		if (throwable instanceof Error) {
-			throw (Error) throwable;
-		}
-		else if (throwable instanceof AsynchronousFailureException) {
-			return (AsynchronousFailureException) throwable;
-		}
-		else {
-			return new AsynchronousFailureException("Exception in remote process", throwable);
-		}
-	}
+  private static class LocalState {
 
-	private static class LocalState {
+    private final AtomicInteger current = new AtomicInteger(-1);
 
-		private AtomicInteger current = new AtomicInteger(-1);
+    private final AtomicInteger actual = new AtomicInteger();
 
-		private AtomicInteger actual = new AtomicInteger();
+    private final AtomicInteger expected = new AtomicInteger();
 
-		private AtomicInteger expected = new AtomicInteger();
+    private final AtomicInteger redelivered = new AtomicInteger();
 
-		private AtomicInteger redelivered = new AtomicInteger();
+    private StepExecution stepExecution;
 
-		private StepExecution stepExecution;
+    private final Queue<ChunkResponse> contributions = new LinkedBlockingQueue<>();
 
-		private Queue<ChunkResponse> contributions = new LinkedBlockingQueue<ChunkResponse>();
+    public int getExpecting() {
+      return expected.get() - actual.get();
+    }
 
-		public int getExpecting() {
-			return expected.get() - actual.get();
-		}
+    public <T> ChunkRequest<T> getRequest(final List<? extends T> items) {
+      return new ChunkRequest<>(current.incrementAndGet(), items, getJobId(), createStepContribution());
+    }
 
-		public <T> ChunkRequest<T> getRequest(List<? extends T> items) {
-			return new ChunkRequest<T>(current.incrementAndGet(), items, getJobId(), createStepContribution());
-		}
+    public void open(final int expectedValue, final int actualValue) {
+      actual.set(actualValue);
+      expected.set(expectedValue);
+    }
 
-		public void open(int expectedValue, int actualValue) {
-			actual.set(actualValue);
-			expected.set(expectedValue);
-		}
+    public Collection<ChunkResponse> pollChunkResponses() {
+      final Collection<ChunkResponse> set = new ArrayList<>();
+      synchronized (contributions) {
+        ChunkResponse item = contributions.poll();
+        while (item != null) {
+          set.add(item);
+          item = contributions.poll();
+        }
+      }
+      return set;
+    }
 
-		public Collection<ChunkResponse> pollChunkResponses() {
-			Collection<ChunkResponse> set = new ArrayList<ChunkResponse>();
-			synchronized (contributions) {
-				ChunkResponse item = contributions.poll();
-				while (item != null) {
-					set.add(item);
-					item = contributions.poll();
-				}
-			}
-			return set;
-		}
+    public void pushResponse(final ChunkResponse stepContribution) {
+      synchronized (contributions) {
+        contributions.add(stepContribution);
+      }
+    }
 
-		public void pushResponse(ChunkResponse stepContribution) {
-			synchronized (contributions) {
-				contributions.add(stepContribution);
-			}
-		}
+    public void incrementRedelivered() {
+      redelivered.incrementAndGet();
+    }
 
-		public void incrementRedelivered() {
-			redelivered.incrementAndGet();
-		}
+    public void incrementActual() {
+      actual.incrementAndGet();
+    }
 
-		public void incrementActual() {
-			actual.incrementAndGet();
-		}
+    public void incrementExpected() {
+      expected.incrementAndGet();
+    }
 
-		public void incrementExpected() {
-			expected.incrementAndGet();
-		}
+    public StepContribution createStepContribution() {
+      return stepExecution.createStepContribution();
+    }
 
-		public StepContribution createStepContribution() {
-			return stepExecution.createStepContribution();
-		}
+    public Long getJobId() {
+      return stepExecution.getJobExecution().getJobId();
+    }
 
-		public Long getJobId() {
-			return stepExecution.getJobExecution().getJobId();
-		}
+    public void setStepExecution(final StepExecution stepExecution) {
+      this.stepExecution = stepExecution;
+    }
 
-		public void setStepExecution(StepExecution stepExecution) {
-			this.stepExecution = stepExecution;
-		}
+    public void reset() {
+      expected.set(0);
+      actual.set(0);
+    }
+  }
 
-		public void reset() {
-			expected.set(0);
-			actual.set(0);
-		}
-	}
+  /**
+   * @return the messagingGateway
+   */
+  public MessagingTemplate getMessagingGateway() {
+    return messagingGateway;
+  }
+
+  /**
+   * @param messagingGateway
+   *          the messagingGateway to set
+   */
+  public void setMessagingGateway(final MessagingTemplate messagingGateway) {
+    this.messagingGateway = messagingGateway;
+  }
 
 }

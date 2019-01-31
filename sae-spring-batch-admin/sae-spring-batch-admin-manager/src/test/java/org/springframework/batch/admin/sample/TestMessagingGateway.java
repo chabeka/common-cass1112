@@ -18,58 +18,55 @@ package org.springframework.batch.admin.sample;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.springframework.batch.core.JobExecution;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageChannel;
-import org.springframework.integration.MessageDeliveryException;
-import org.springframework.integration.MessageHandlingException;
-import org.springframework.integration.MessageRejectedException;
-import org.springframework.integration.core.MessageHandler;
-import org.springframework.integration.core.SubscribableChannel;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
+import org.springframework.messaging.SubscribableChannel;
+import org.springframework.messaging.support.GenericMessage;
 
 /**
  * @author Dave Syer
- * 
  */
 public class TestMessagingGateway {
 
-	private AtomicReference<Object> reference = new AtomicReference<Object>();
+  private final AtomicReference<Object> reference = new AtomicReference<>();
 
-	private MessageChannel requestChannel;
+  private final MessageChannel requestChannel;
 
-	private SubscribableChannel replyChannel;
+  private final SubscribableChannel replyChannel;
 
-	private MessageHandler handler = new MessageHandler() {
-		public void handleMessage(Message<?> message) throws MessageRejectedException, MessageHandlingException,
-				MessageDeliveryException {
-			reference.set((JobExecution) message.getPayload());
-		}
-	};
+  private final MessageHandler handler = new MessageHandler() {
+    @Override
+    public void handleMessage(final Message<?> message) throws MessagingException {
+      reference.set(message.getPayload());
+    }
+  };
 
-	/**
-	 * @param requests
-	 * @param replies
-	 */
-	public TestMessagingGateway(MessageChannel requestChannel, SubscribableChannel replyChannel) {
-		this.requestChannel = requestChannel;
-		this.replyChannel = replyChannel;
-	}
+  /**
+   * @param requests
+   * @param replies
+   */
+  public TestMessagingGateway(final MessageChannel requestChannel, final SubscribableChannel replyChannel) {
+    this.requestChannel = requestChannel;
+    this.replyChannel = replyChannel;
+  }
 
-	/**
-	 * @param object a payload to send
-	 * @return the returned messages payload
-	 * @see org.springframework.integration.gateway.AbstractMessagingGateway#sendAndReceive(java.lang.Object)
-	 */
-	public Object sendAndReceive(Object object) {
-		replyChannel.subscribe(handler);
-		requestChannel.send(new GenericMessage<Object>(object));
-		try {
-			return reference.get();
-		}
-		finally {
-			replyChannel.unsubscribe(handler);
-		}
-	}
+  /**
+   * @param object
+   *          a payload to send
+   * @return the returned messages payload
+   * @see org.springframework.integration.gateway.AbstractMessagingGateway#sendAndReceive(java.lang.Object)
+   */
+  public Object sendAndReceive(final Object object) {
+    replyChannel.subscribe(handler);
+    requestChannel.send(new GenericMessage<>(object));
+    try {
+      return reference.get();
+    }
+    finally {
+      replyChannel.unsubscribe(handler);
+    }
+  }
 
 }

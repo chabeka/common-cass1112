@@ -25,54 +25,52 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.io.Resource;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageChannel;
 import org.springframework.integration.annotation.MessageEndpoint;
 import org.springframework.integration.annotation.Splitter;
-import org.springframework.integration.core.PollableChannel;
-import org.springframework.integration.message.GenericMessage;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.PollableChannel;
+import org.springframework.messaging.support.GenericMessage;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * @author Dave Syer
- * 
  */
 @ContextConfiguration()
 @RunWith(SpringJUnit4ClassRunner.class)
 @MessageEndpoint
 public class ResourceSplitterIntegrationTests {
 
-	@Autowired
-	@Qualifier("resources")
-	private MessageChannel resources;
+  @Autowired
+  @Qualifier("resources")
+  private MessageChannel resources;
 
-	@Autowired
-	@Qualifier("requests")
-	private PollableChannel requests;
+  @Autowired
+  @Qualifier("requests")
+  private PollableChannel requests;
 
-	/*
-	 * This is so cool (but see INT-190)...<br/>
-	 * 
-	 * The incoming message is a Resource pattern, and it is converted to the
-	 * correct payload type with Spring's default strategy
-	 */
-	@Splitter(inputChannel = "resources", outputChannel = "requests")
-	public Resource[] handle(Resource[] message) {
-		List<Resource> list = Arrays.asList(message);
-		System.err.println(list);
-		return message;
-	}
+  /*
+   * This is so cool (but see INT-190)...<br/>
+   * The incoming message is a Resource pattern, and it is converted to the
+   * correct payload type with Spring's default strategy
+   */
+  @Splitter(inputChannel = "resources", outputChannel = "requests")
+  public Resource[] handle(final Resource[] message) {
+    final List<Resource> list = Arrays.asList(message);
+    System.err.println(list);
+    return message;
+  }
 
-	@SuppressWarnings("unchecked")
-	@Test
-	// This broke with Integration 2.0 in a milestone, so watch out when upgrading...
-	public void testVanillaConversion() throws Exception {
-		resources.send(new GenericMessage<String>("classpath:*-context.xml"));
-		Message<Resource> message = (Message<Resource>) requests.receive(200L);
-		assertNotNull(message);
-		message = (Message<Resource>) requests.receive(100L);
-		assertNotNull(message);
-	}
+  @SuppressWarnings("unchecked")
+  @Test
+  // This broke with Integration 2.0 in a milestone, so watch out when upgrading...
+  public void testVanillaConversion() throws Exception {
+    resources.send(new GenericMessage<>("classpath:*-context.xml"));
+    Message<Resource> message = (Message<Resource>) requests.receive(200L);
+    assertNotNull(message);
+    message = (Message<Resource>) requests.receive(100L);
+    assertNotNull(message);
+  }
 
 }

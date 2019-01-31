@@ -18,11 +18,11 @@ package org.springframework.batch.integration.async;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.scope.context.StepContext;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
-import org.springframework.integration.Message;
-import org.springframework.integration.MessageChannel;
-import org.springframework.integration.channel.ChannelInterceptor;
-import org.springframework.integration.channel.interceptor.ChannelInterceptorAdapter;
 import org.springframework.integration.support.MessageBuilder;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.support.ChannelInterceptor;
+import org.springframework.messaging.support.ChannelInterceptorAdapter;
 
 /**
  * A {@link ChannelInterceptor} that adds the current {@link StepExecution} (if
@@ -32,22 +32,21 @@ import org.springframework.integration.support.MessageBuilder;
  * the scope context is not available.
  * 
  * @author Dave Syer
- * 
  */
 public class StepExecutionInterceptor extends ChannelInterceptorAdapter {
 
-	/**
-	 * The name of the header
-	 */
-	public static final String STEP_EXECUTION = "stepExecution";
+  /**
+   * The name of the header
+   */
+  public static final String STEP_EXECUTION = "stepExecution";
 
-	@Override
-	public Message<?> preSend(Message<?> message, MessageChannel channel) {
-		StepContext context = StepSynchronizationManager.getContext();
-		if (context == null) {
-			return message;
-		}
-		return MessageBuilder.fromMessage(message).setHeader(STEP_EXECUTION, context.getStepExecution()).build();
-	}
+  @Override
+  public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
+    final StepContext context = StepSynchronizationManager.getContext();
+    if (context == null) {
+      return message;
+    }
+    return MessageBuilder.fromMessage(message).setHeader(STEP_EXECUTION, context.getStepExecution()).build();
+  }
 
 }
