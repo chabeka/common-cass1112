@@ -106,10 +106,7 @@ public class WebApplicationContextLoader extends AbstractContextLoader {
     prepareContext(context, mergedConfig);
     customizeBeanFactory(context.getDefaultListableBeanFactory());
     loadBeanDefinitions(context, mergedConfig);
-    AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
-    customizeContext(context);
-    context.refresh();
-    context.registerShutdownHook();
+
     return context;
   }
 
@@ -137,6 +134,7 @@ public class WebApplicationContextLoader extends AbstractContextLoader {
   protected void loadBeanDefinitions(final GenericWebApplicationContext context, final String[] locations) {
     new XmlBeanDefinitionReader(context).loadBeanDefinitions(locations);
     AnnotationConfigUtils.registerAnnotationConfigProcessors(context);
+    customizeContext(context);
     context.refresh();
     context.registerShutdownHook();
   }
