@@ -2,7 +2,7 @@
 
    <configuration>
       <nom>DEVELOPPPEMENT_GNS</nom>
-      <dfceAddress>http://hwi69dev2saeapp1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31dev2gntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-DEV</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -12,7 +12,7 @@
    
    <configuration>
       <nom>DEVELOPPPEMENT_GNT</nom>
-      <dfceAddress>http://hwi69dev2gntappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31dev2gnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-DEV2</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -22,7 +22,7 @@
 
    <configuration>
       <nom>INTEGRATION_INTERNE_GNS</nom>
-      <dfceAddress>http://hwi69devsaeapp1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31devgnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -32,7 +32,7 @@
    
    <configuration>
       <nom>INTEGRATION_INTERNE_GNT</nom>
-      <dfceAddress>http://hwi69devgntappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31devgntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-DEV</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -42,7 +42,7 @@
    
    <configuration>
       <nom>INTEGRATION_INTERNE_2_GNT</nom>
-      <dfceAddress>http://hwi69intgnt2appli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31int2gntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT2-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -51,8 +51,8 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_INTERNE_CESU_GNS</nom>
-      <dfceAddress>http://hwi69intgnsc1appli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_CESU_GNS</nom>
+      <dfceAddress>http://hwi31intgnscesuboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>CESU-GNS-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -61,8 +61,8 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_INTERNE_CESU_GNT</nom>
-      <dfceAddress>http://hwi69intgntc1appli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_CESU_GNT</nom>
+      <dfceAddress>http://hwi31intgntcesuboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>CESU-GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -71,8 +71,8 @@
    </configuration>
 
    <configuration>
-      <nom>INTEGRATION_INTERNE_PAJE_GNS</nom>
-      <dfceAddress>	http://hwi69intgnsp1app1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_PAJE_GNS</nom>
+      <dfceAddress>http://hwi31intgnspajeboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>PAJE-GNS-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -81,8 +81,8 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_INTERNE_PAJE_GNT</nom>
-      <dfceAddress>http://hwi69intgntp1appli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_PAJE_GNT</nom>
+      <dfceAddress>http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>PAJE-GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -92,8 +92,8 @@
       
       
    <configuration>
-      <nom>INTEGRATION_COMMUNE_GNS</nom>
-      <dfceAddress>http://hwi69intgnsapp1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_GNS</nom>
+      <dfceAddress>http://hwi31intgnsboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -102,8 +102,8 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_COMMUNE_GNT</nom>
-      <dfceAddress>http://hwi69intgntappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_CLIENTE_GNT</nom>
+      <dfceAddress>http://hwi31intgntv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -112,8 +112,8 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_NATIONALE_GNS</nom>
-      <dfceAddress>http://hwi69ginsaeappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_NATIONALE_C1_GNS</nom>
+      <dfceAddress>http://hwi31ginc1gnsboappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -122,8 +122,28 @@
    </configuration>
    
    <configuration>
-      <nom>INTEGRATION_NATIONALE_GNT</nom>
-      <dfceAddress>http://hwi69gingntappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>INTEGRATION_NATIONALE_C1_GNT</nom>
+      <dfceAddress>http://hwi31ginc1gntv6boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceBaseName>GNT-INT</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>  
+   </configuration>
+   
+      <configuration>
+      <nom>INTEGRATION_NATIONALE_C2_GNS</nom>
+      <dfceAddress>http://hwi31ginc2gnsboappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceBaseName>SAE-INT</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>  
+   </configuration>
+   
+   <configuration>
+      <nom>INTEGRATION_NATIONALE_C2_GNT</nom>
+      <dfceAddress>http://hwi31ginc2gntv6boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -132,8 +152,8 @@
    </configuration>
    
    <configuration>
-      <nom>VALIDATION_NATIONALE_GNS</nom>
-      <dfceAddress>http://hwi69givnsaeappli.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>VALIDATION_NATIONALE_L1_GNS</nom>
+      <dfceAddress>http://hwi31givngnsl1boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-GIVN</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -142,8 +162,28 @@
    </configuration>
    
    <configuration>
-      <nom>VALIDATION_NATIONALE_GNT</nom>
-      <dfceAddress>http://hwi69givngntappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <nom>VALIDATION_NATIONALE_L1_GNT</nom>
+      <dfceAddress>http://hwi31givngntl1boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceBaseName>GNT-GIVN</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>        
+   </configuration>
+   
+      <configuration>
+      <nom>VALIDATION_NATIONALE_L4_GNS</nom>
+      <dfceAddress>http://hwi31givngnsl4v6boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceBaseName>SAE-GIVN</dfceBaseName>
+      <dfceLogin>_ADMIN</dfceLogin>
+      <dfcePwd>DOCUBASE</dfcePwd>
+      <dfceTimeout>30000</dfceTimeout>
+      <dfceSecure>false</dfceSecure>       
+   </configuration>
+   
+   <configuration>
+      <nom>VALIDATION_NATIONALE_L4_GNT</nom>
+      <dfceAddress>http://hwi31givngntl4v6boappli1.cer31.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-GIVN</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -173,7 +213,7 @@
    
    <configuration>
       <nom>PRODUCTION_GNS</nom>
-      <dfceAddress>http://hwi69saeappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi69progednatgnscot1boappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-PROD</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -183,7 +223,7 @@
    
    <configuration>
       <nom>PRODUCTION_GNT</nom>
-      <dfceAddress>http://hwi69gntappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi69progednatgntcot1boappli1.cer69.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-PROD</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
