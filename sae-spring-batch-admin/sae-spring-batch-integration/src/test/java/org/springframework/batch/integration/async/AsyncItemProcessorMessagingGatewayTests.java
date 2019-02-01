@@ -31,88 +31,107 @@ import org.junit.runners.model.FrameworkMethod;
 import org.junit.runners.model.Statement;
 import org.springframework.batch.core.JobParametersBuilder;
 import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.scope.StepScope;
+import org.springframework.batch.core.scope.context.StepSynchronizationManager;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.test.MetaDataInstanceFactory;
 import org.springframework.batch.test.StepScopeTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.core.task.SimpleAsyncTaskExecutor;
-import org.springframework.integration.annotation.MessageEndpoint;
-import org.springframework.integration.annotation.ServiceActivator;
+import org.springframework.stereotype.Component;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@Configuration
 public class AsyncItemProcessorMessagingGatewayTests {
 
-	private AsyncItemProcessor<String, String> processor = new AsyncItemProcessor<String, String>();
+  private final AsyncItemProcessor<String, String> processor = new AsyncItemProcessor<>();
 
-	private StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(new JobParametersBuilder().addLong("factor", 2L).toJobParameters());;
+  private final StepExecution stepExecution = MetaDataInstanceFactory.createStepExecution(new JobParametersBuilder().addLong("factor", 2L).toJobParameters());;
 
-	@Rule
-	public MethodRule rule = new MethodRule() {
-		public Statement apply(final Statement base, FrameworkMethod method, Object target) {
-			return new Statement() {
-				public void evaluate() throws Throwable {
-					StepScopeTestUtils.doInStepScope(stepExecution, new Callable<Void>() {
-						public Void call() throws Exception {
-							try {
-								base.evaluate();
-							}
-							catch (Exception e) {
-								throw e;
-							}
-							catch (Throwable e) {
-								throw new Error(e);
-							}
-							return null;
-						}
-					});
-				};
-			};
-		}
-	};
+  @Rule
+  public MethodRule rule = new MethodRule() {
+    @Override
+    public Statement apply(final Statement base, final FrameworkMethod method, final Object target) {
+      return new Statement() {
+        @Override
+        public void evaluate() throws Throwable {
+          StepScopeTestUtils.doInStepScope(stepExecution, new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+              try {
+                base.evaluate();
+              }
+              catch (final Exception e) {
+                throw e;
+              }
+              catch (final Throwable e) {
+                throw new Error(e);
+              }
+              return null;
+            }
+          });
+        };
+      };
+    }
+  };
 
-	@Autowired
-	private ItemProcessor<String, String> delegate;
+  @Autowired
+  private ItemProcessor<String, String> delegate;
 
-	@Test
-	public void testMultiExecution() throws Exception {
-		processor.setDelegate(delegate);
-		processor.setTaskExecutor(new SimpleAsyncTaskExecutor());
-		List<Future<String>> list = new ArrayList<Future<String>>();
-		for (int count = 0; count < 10; count++) {
-			list.add(processor.process("foo" + count));
-		}
-		for (Future<String> future : list) {
-			String value = future.get();
-			/**
-			 * This delegate is a Spring Integration MessagingGateway. It can
-			 * easily return null because of a timeout, but that will be treated
-			 * by Batch as a filtered item, whereas it is really more like a
-			 * skip. So we have to throw an exception in the processor if an
-			 * unexpected null value comes back.
-			 */
-			assertNotNull(value);
-			assertTrue(value.matches("foo.*foo.*"));
-		}
-	}
+  @Test
+  public void testMultiExecution() throws Exception {
+    processor.setDelegate(delegate);
+    processor.setTaskExecutor(new SimpleAsyncTaskExecutor());
+    final List<Future<String>> list = new ArrayList<>();
+    for (int count = 0; count < 10; count++) {
+      list.add(processor.process("foo" + count));
+    }
+    for (final Future<String> future : list) {
+      final String value = future.get();
+      /**
+       * This delegate is a Spring Integration MessagingGateway. It can
+       * easily return null because of a timeout, but that will be treated
+       * by Batch as a filtered item, whereas it is really more like a
+       * skip. So we have to throw an exception in the processor if an
+       * unexpected null value comes back.
+       */
+      assertNotNull(value);
+      assertTrue(value.matches("foo.*foo.*"));
+    }
+  }
 
-	@MessageEndpoint
-	public static class Doubler {
-		private int factor = 1;
+  @Bean
+  public StepScope stepScope() {
+    StepSynchronizationManager.register(stepExecution);
+    final StepScope stepScope = new StepScope();
+    stepScope.setProxyTargetClass(true);
+    return stepScope;
+  }
 
-		public void setFactor(int factor) {
-			this.factor = factor;
-		}
+  @Component(value = "doubler")
+  @Scope(value = "step", proxyMode = ScopedProxyMode.DEFAULT)
+  public static class Doubler {
+    private int factor = 1;
 
-		@ServiceActivator
-		public String cat(String value) {
-			for (int i=1; i<factor; i++) {
-				value += value;
-			}
-			return value;
-		}
-	}
+    @Value("#{jobParameters['factor']}")
+    public void setFactor(final int factor) {
+      this.factor = factor;
+    }
+
+    public String cat(String value) {
+      for (int i = 1; i < factor; i++) {
+        value += value;
+      }
+      return value;
+    }
+  }
 
 }

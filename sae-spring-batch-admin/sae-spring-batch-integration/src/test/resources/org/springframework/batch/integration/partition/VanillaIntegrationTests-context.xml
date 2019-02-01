@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:integration="http://www.springframework.org/schema/integration" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-1.0.xsd
-		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
-		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.1.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch-2.1.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.1.xsd">
 
 	<import resource="classpath:/simple-job-launcher-context.xml" />
 
@@ -18,15 +18,11 @@
 
 	<service-activator ref="stepExecutionRequestHandler" input-channel="requests" output-channel="staging"
 		xmlns="http://www.springframework.org/schema/integration">
-		<poller>
-			<interval-trigger interval="10" />
-		</poller>
+		<poller fixed-rate="10" />
 	</service-activator>
-	<aggregator ref="partitionHandler" timeout="10000" input-channel="staging"
+	<aggregator ref="partitionHandler" input-channel="staging"
 		xmlns="http://www.springframework.org/schema/integration">
-		<poller>
-			<interval-trigger interval="10" />
-		</poller>
+		<poller fixed-rate="10" />
 	</aggregator>
 
 	<!-- This is the "remote" worker (which in this case is local) -->
@@ -40,7 +36,7 @@
 	</bean>
 
 	<bean id="partitionHandler" class="org.springframework.batch.integration.partition.MessageChannelPartitionHandler">
-		<property name="messagingOperations">
+		<property name="messagingGateway">
 			<bean class="org.springframework.integration.core.MessagingTemplate">
 				<property name="defaultChannel" ref="requests" />
 				<property name="receiveTimeout" value="10000" />
