@@ -106,9 +106,14 @@ public class RepeatTransactionalPollingIntegrationTests implements ApplicationCo
 		lifecycle.start();
 		int timeout = 0;
 		while (processed.size() < count && timeout++ < maxTries) {
-			Thread.sleep(5);
+			Thread.sleep(1);
 		}
 		lifecycle.stop();
+    while (lifecycle.isRunning()) {
+      Thread.sleep(5);
+      logger.debug("lifecycle.stop : En cours");
+    }
+    logger.debug("lifecycle.stop : Fin");
 	}
 
 }
