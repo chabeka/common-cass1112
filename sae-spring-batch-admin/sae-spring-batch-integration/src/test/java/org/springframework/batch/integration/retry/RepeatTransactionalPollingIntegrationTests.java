@@ -97,7 +97,7 @@ public class RepeatTransactionalPollingIntegrationTests implements ApplicationCo
 				.commaDelimitedListToStringArray("a,b,fail,d,e,f,g,h,j,k")));
 		expected = Arrays.asList(StringUtils
 				.commaDelimitedListToStringArray("a,b,fail,fail"));
-		waitForResults(bus, expected.size(), 60);
+		waitForResults(bus, expected.size(), 200);
 		assertEquals(expected,processed);
 		assertEquals(2, handled.size()); // a,b
 	}

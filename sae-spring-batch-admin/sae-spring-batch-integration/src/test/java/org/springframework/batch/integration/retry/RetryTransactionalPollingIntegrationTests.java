@@ -73,7 +73,7 @@ public class RetryTransactionalPollingIntegrationTests implements ApplicationCon
 				.commaDelimitedListToStringArray("a,b,c,d,e,f,g,h,j,k")));
 		List<String> expected = Arrays.asList(StringUtils.commaDelimitedListToStringArray("a,b,c,d"));
 		service.setExpected(expected);
-		waitForResults(bus, expected.size(), 60);
+		waitForResults(bus, expected.size(), 200);
 		assertEquals(4, service.getProcessed().size()); // a,b,c,d
 		assertEquals(expected, service.getProcessed());
 	}

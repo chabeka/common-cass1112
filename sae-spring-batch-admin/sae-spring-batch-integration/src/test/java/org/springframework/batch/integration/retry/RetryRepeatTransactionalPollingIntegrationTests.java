@@ -85,7 +85,7 @@ public class RetryRepeatTransactionalPollingIntegrationTests implements Applicat
                                                                                          .commaDelimitedListToStringArray("a,b,fail,d,e,f,g,h,j,k")));
     final List<String> expected = Arrays.asList(StringUtils.commaDelimitedListToStringArray("a,b,fail,fail,d,e,f"));
     service.setExpected(expected);
-    waitForResults(lifecycle, expected.size(), 60); // (a,b), (fail), (fail), ([fail],d), (e,f)
+    waitForResults(lifecycle, expected.size(), 200); // (a,b), (fail), (fail), ([fail],d), (e,f)
     System.err.println(service.getProcessed());
     assertEquals(7, service.getProcessed().size()); // a,b,fail,fail,d,e,f
     assertEquals(1, recoverer.getRecovered().size()); // fail
