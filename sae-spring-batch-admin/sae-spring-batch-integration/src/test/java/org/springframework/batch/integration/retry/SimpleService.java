@@ -12,37 +12,40 @@ import org.springframework.integration.annotation.ServiceActivator;
 @MessageEndpoint
 public class SimpleService implements Service {
 
-	private Log logger = LogFactory.getLog(getClass());
+  private final Log logger = LogFactory.getLog(getClass());
 
-	private List<String> processed = new CopyOnWriteArrayList<String>();
+  private final List<String> processed = new CopyOnWriteArrayList<>();
 
-	private List<String> expected = new ArrayList<String>();
+  private List<String> expected = new ArrayList<>();
 
-	private int count = 0;
+  private int count = 0;
 
-	public void setExpected(List<String> expected) {
-		this.expected = expected;
-	}
+  public void setExpected(final List<String> expected) {
+    this.expected = expected;
+  }
 
-	/**
-	 * Public getter for the processed.
-	 * @return the processed
-	 */
-	public List<String> getProcessed() {
-		return processed;
-	}
+  /**
+   * Public getter for the processed.
+   * 
+   * @return the processed
+   */
+  public List<String> getProcessed() {
+    return processed;
+  }
 
-	@ServiceActivator(inputChannel = "requests", outputChannel = "replies")
-	public String process(String message) {
-		String result = message + ": " + (count++);
-		logger.debug("Handling: " + message);
-		if (count <= expected.size()) {
-			processed.add(message);
-		}
-		if ("fail".equals(message)) {
-			throw new RuntimeException("Planned failure");
-		}
-		return result;
-	}
+  @Override
+  @ServiceActivator(inputChannel = "requests", outputChannel = "replies")
+  public String process(final String message) {
+    final String result = message + ": " + count++;
+    logger.debug("Handling: " + result);
+    if (count <= expected.size()) {
+      processed.add(message);
+      logger.debug("Processed add : " + message);
+    }
+    if ("fail".equals(message)) {
+      throw new RuntimeException("Planned failure");
+    }
+    return result;
+  }
 
 }
