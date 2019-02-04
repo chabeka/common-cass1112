@@ -35,9 +35,7 @@
 
 	<file:inbound-channel-adapter directory="${batch.job.configuration.file.dir}" channel="job-configuration-files"
 		filename-pattern=".*\.xml">
-		<poller max-messages-per-poll="1" >
-            <interval-trigger interval="60" time-unit="SECONDS"/>
-         </poller>
+		<poller max-messages-per-poll="1" fixed-rate="60" time-unit="SECONDS"/>
 	</file:inbound-channel-adapter>
 
 </beans:beans>

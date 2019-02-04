@@ -64,7 +64,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
       <dependency>
          <groupId>org.cassandraunit</groupId>
          <artifactId>cassandra-unit</artifactId>
-         <version>1.0.3.1</version>
+         <version>1.1.2.1</version>
          <scope>test</scope>
          <exclusions>
             <exclusion>

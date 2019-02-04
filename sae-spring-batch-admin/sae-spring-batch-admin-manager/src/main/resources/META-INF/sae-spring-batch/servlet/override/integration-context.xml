@@ -2,7 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:integration="http://www.springframework.org/schema/integration" xmlns:http="http://www.springframework.org/schema/integration/http"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
-                                 http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                                 http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
                                  http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.1.xsd
                                  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd">
 
@@ -15,11 +15,11 @@
 		<bean class="org.springframework.batch.admin.integration.MultipartToJobConfigurationRequestTransformer" />
 	</integration:transformer>
 
-	<http:inbound-channel-adapter name="/job-configuration" channel="job-configuration-multipart"
+	<http:inbound-channel-adapter id="httpChannelAdapter" path="/job-configuration" channel="job-configuration-multipart"
 		request-payload-type="org.springframework.batch.admin.integration.MultipartJobConfigurationRequest" view-name="redirect:jobs"
 		supported-methods="POST" message-converters="multipartJobConfigurationRequestHttpMessageConverter" />
 
-	<http:inbound-gateway name="/job-configuration.json" request-channel="job-configurations"
+	<http:inbound-gateway id="httpController" path="/job-configuration.json" request-channel="job-configurations"
 		reply-key="jobs" reply-channel="job-registrations" request-payload-type="org.springframework.core.io.Resource"
 		view-name="jobs" supported-methods="POST" message-converters="resourceHttpMessageConverter" />
 

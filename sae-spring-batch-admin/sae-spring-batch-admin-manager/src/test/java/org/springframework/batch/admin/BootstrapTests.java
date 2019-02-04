@@ -72,7 +72,7 @@ public class BootstrapTests {
 		ClassPathXmlApplicationContext parent = new ClassPathXmlApplicationContext(
 				"classpath:/org/springframework/batch/admin/web/resources/webapp-config.xml");
 		ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(
-				new String[] { "classpath:/org/springframework/batch/admin/web/resources/servlet-config.xml" }, parent);
+				new String[] { "classpath:/org/springframework/batch/admin/web/resources/override/servlet-config.xml" }, parent);
 
 		assertTrue(context.containsBean("jobRepository"));
 		String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(context.getBeanFactory(),
