@@ -1,0 +1,110 @@
+
+package sae.client.demo.webservice.modele;
+
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+
+
+/**
+ * <p>Java class for rechercheParIterateurResponseType complex type.
+ * 
+ * <p>The following schema fragment specifies the expected content contained within this class.
+ * 
+ * <pre>
+ * &lt;complexType name="rechercheParIterateurResponseType">
+ *   &lt;complexContent>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheType"/>
+ *         &lt;element name="identifiantPageSuivante" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/>
+ *         &lt;element name="dernierePage" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
+ *   &lt;/complexContent>
+ * &lt;/complexType>
+ * </pre>
+ * 
+ * 
+ */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(name = "rechercheParIterateurResponseType", propOrder = {
+    "resultats",
+    "identifiantPageSuivante",
+    "dernierePage"
+})
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
+public class RechercheParIterateurResponseType {
+
+    @XmlElement(required = true)
+    protected ListeResultatRechercheType resultats;
+    protected IdentifiantPageType identifiantPageSuivante;
+    protected boolean dernierePage;
+
+    /**
+     * Gets the value of the resultats property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ListeResultatRechercheType }
+     *     
+     */
+    public ListeResultatRechercheType getResultats() {
+        return resultats;
+    }
+
+    /**
+     * Sets the value of the resultats property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ListeResultatRechercheType }
+     *     
+     */
+    public void setResultats(ListeResultatRechercheType value) {
+        this.resultats = value;
+    }
+
+    /**
+     * Gets the value of the identifiantPageSuivante property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link IdentifiantPageType }
+     *     
+     */
+    public IdentifiantPageType getIdentifiantPageSuivante() {
+        return identifiantPageSuivante;
+    }
+
+    /**
+     * Sets the value of the identifiantPageSuivante property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link IdentifiantPageType }
+     *     
+     */
+    public void setIdentifiantPageSuivante(IdentifiantPageType value) {
+        this.identifiantPageSuivante = value;
+    }
+
+    /**
+     * Gets the value of the dernierePage property.
+     * 
+     */
+    public boolean isDernierePage() {
+        return dernierePage;
+    }
+
+    /**
+     * Sets the value of the dernierePage property.
+     * 
+     */
+    public void setDernierePage(boolean value) {
+        this.dernierePage = value;
+    }
+
+}
