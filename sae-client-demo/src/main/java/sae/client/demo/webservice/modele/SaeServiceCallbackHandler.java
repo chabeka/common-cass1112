@@ -11,7 +11,9 @@ package sae.client.demo.webservice.modele;
  *  SaeServiceCallbackHandler Callback class, Users can extend this class and implement
  *  their own receiveResult and receiveError methods.
  */
-public abstract class SaeServiceCallbackHandler {
+// CHECKSTYLE:OFF
+@SuppressWarnings("all")
+public class SaeServiceCallbackHandler {
     protected Object clientData;
 
     /**
@@ -84,21 +86,6 @@ public abstract class SaeServiceCallbackHandler {
     }
 
     /**
-     * auto generated Axis2 call back method for archivageUnitaire method
-     * override this method for handling normal response from archivageUnitaire operation
-     */
-    public void receiveResultarchivageUnitaire(
-        sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitaireResponse result) {
-    }
-
-    /**
-     * auto generated Axis2 Error handler
-     * override this method for handling error response from archivageUnitaire operation
-     */
-    public void receiveErrorarchivageUnitaire(java.lang.Exception e) {
-    }
-
-    /**
      * auto generated Axis2 call back method for getDocFormatOrigine method
      * override this method for handling normal response from getDocFormatOrigine operation
      */
@@ -129,21 +116,6 @@ public abstract class SaeServiceCallbackHandler {
     }
 
     /**
-     * auto generated Axis2 call back method for archivageMasse method
-     * override this method for handling normal response from archivageMasse operation
-     */
-    public void receiveResultarchivageMasse(
-        sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseResponse result) {
-    }
-
-    /**
-     * auto generated Axis2 Error handler
-     * override this method for handling error response from archivageMasse operation
-     */
-    public void receiveErrorarchivageMasse(java.lang.Exception e) {
-    }
-
-    /**
      * auto generated Axis2 call back method for transfert method
      * override this method for handling normal response from transfert operation
      */
@@ -156,6 +128,21 @@ public abstract class SaeServiceCallbackHandler {
      * override this method for handling error response from transfert operation
      */
     public void receiveErrortransfert(java.lang.Exception e) {
+    }
+
+    /**
+     * auto generated Axis2 call back method for rechercheParIterateurV2 method
+     * override this method for handling normal response from rechercheParIterateurV2 operation
+     */
+    public void receiveResultrechercheParIterateurV2(
+        sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from rechercheParIterateurV2 operation
+     */
+    public void receiveErrorrechercheParIterateurV2(java.lang.Exception e) {
     }
 
     /**
@@ -219,21 +206,6 @@ public abstract class SaeServiceCallbackHandler {
     }
 
     /**
-     * auto generated Axis2 call back method for documentExistant method
-     * override this method for handling normal response from documentExistant operation
-     */
-    public void receiveResultdocumentExistant(
-        sae.client.demo.webservice.modele.SaeServiceStub.DocumentExistantResponse result) {
-    }
-
-    /**
-     * auto generated Axis2 Error handler
-     * override this method for handling error response from documentExistant operation
-     */
-    public void receiveErrordocumentExistant(java.lang.Exception e) {
-    }
-
-    /**
      * auto generated Axis2 call back method for rechercheParIterateur method
      * override this method for handling normal response from rechercheParIterateur operation
      */
@@ -264,6 +236,21 @@ public abstract class SaeServiceCallbackHandler {
     }
 
     /**
+     * auto generated Axis2 call back method for suppressionArchivageMasse method
+     * override this method for handling normal response from suppressionArchivageMasse operation
+     */
+    public void receiveResultsuppressionArchivageMasse(
+        sae.client.demo.webservice.modele.SaeServiceStub.SuppressionArchivageMasseResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from suppressionArchivageMasse operation
+     */
+    public void receiveErrorsuppressionArchivageMasse(java.lang.Exception e) {
+    }
+
+    /**
      * auto generated Axis2 call back method for deblocage method
      * override this method for handling normal response from deblocage operation
      */
@@ -276,6 +263,21 @@ public abstract class SaeServiceCallbackHandler {
      * override this method for handling error response from deblocage operation
      */
     public void receiveErrordeblocage(java.lang.Exception e) {
+    }
+
+    /**
+     * auto generated Axis2 call back method for suppressionMasseV2 method
+     * override this method for handling normal response from suppressionMasseV2 operation
+     */
+    public void receiveResultsuppressionMasseV2(
+        sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseResponse result) {
+    }
+
+    /**
+     * auto generated Axis2 Error handler
+     * override this method for handling error response from suppressionMasseV2 operation
+     */
+    public void receiveErrorsuppressionMasseV2(java.lang.Exception e) {
     }
 
     /**
@@ -306,21 +308,6 @@ public abstract class SaeServiceCallbackHandler {
      * override this method for handling error response from suppressionMasse operation
      */
     public void receiveErrorsuppressionMasse(java.lang.Exception e) {
-    }
-
-    /**
-     * auto generated Axis2 call back method for consultationGNTGNS method
-     * override this method for handling normal response from consultationGNTGNS operation
-     */
-    public void receiveResultconsultationGNTGNS(
-        sae.client.demo.webservice.modele.SaeServiceStub.ConsultationGNTGNSResponse result) {
-    }
-
-    /**
-     * auto generated Axis2 Error handler
-     * override this method for handling error response from consultationGNTGNS operation
-     */
-    public void receiveErrorconsultationGNTGNS(java.lang.Exception e) {
     }
 
     /**
