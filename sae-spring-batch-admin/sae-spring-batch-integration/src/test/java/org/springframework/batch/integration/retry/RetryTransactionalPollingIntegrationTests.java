@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,7 +45,7 @@ public class RetryTransactionalPollingIntegrationTests implements ApplicationCon
 
 	private static volatile int count = 0;
 
-	@Before
+	@After
 	public void clearLists() {
 		list.clear();
 		count = 0;
