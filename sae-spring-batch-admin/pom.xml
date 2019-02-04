@@ -132,8 +132,9 @@
 				<plugin>
 				  <artifactId>maven-javadoc-plugin</artifactId>
 				  <configuration>
-					 <additionalparam>-Xdoclint:none</additionalparam>
-                  </configuration>
+					<quiet>true</quiet>
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 				  <executions>
 					<execution>
 						<id>aggregate</id>
@@ -368,7 +369,8 @@
 				<configuration>
 					<aggregate>true</aggregate>
 					<breakiterator>true</breakiterator>
-					 <additionalparam>-Xdoclint:none</additionalparam>
+					<quiet>true</quiet>
+					<additionalparam>-Xdoclint:none</additionalparam>
 					<links>
 						<link>http://java.sun.com/j2ee/1.4/docs/api</link>
 						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
