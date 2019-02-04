@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -79,10 +79,10 @@ public class RepriseTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "ErreurInterneReprise",
-               "Impossible de lancer, de modifier ou de réserver le traitement n°991d7027-6b1b-43a3-b0a3-b22cdf117192 car il n'existe pas.");
+               "urn:frontal:faultcodes",
+               "ns1",
+               "TraitementMasseNonTrouve",
+               "Le traitement de masse 991d7027-6b1b-43a3-b0a3-b22cdf117192 n'a été trouvé dans aucunes des instances de la GED.");
 
       } catch (RemoteException exception) {
 

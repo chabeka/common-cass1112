@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import sae.client.demo.exception.DemoRuntimeException;
+import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
@@ -42,7 +43,7 @@ public class ConsultationMTOMTest {
   public void consultationMTOM_success() throws RemoteException {
 
     // Identifiant unique d'archivage de l'archive que l'on veut consulter
-    final String idArchive = "EA6DC1AE-D226-4765-853E-4CACED884C18";
+    final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
     // Construction du Stub
     final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -165,10 +166,10 @@ public class ConsultationMTOMTest {
       // Vérification de la SoapFault
       TestUtils.assertSoapFault(
                                 fault,
-                                "urn:sae:faultcodes",
-                                "sae",
+                                "urn:frontal:faultcodes",
+                                "ns1",
                                 "ArchiveNonTrouvee",
-                                "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'");
+                                "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.");
 
     }
     catch (final RemoteException exception) {
@@ -193,7 +194,7 @@ public class ConsultationMTOMTest {
   public void consultationMTOM_avecMeta_success() throws RemoteException {
 
     // Identifiant unique d'archivage de l'archive que l'on veut consulter
-    final String idArchive = "EA6DC1AE-D226-4765-853E-4CACED884C18";
+    final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
     // Métadonnées souhaitées en retour de la consultation
     final List<String> codesMetasSouhaites = new ArrayList<String>();

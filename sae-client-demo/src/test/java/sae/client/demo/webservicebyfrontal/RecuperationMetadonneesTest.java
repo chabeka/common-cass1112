@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -23,30 +23,30 @@ public class RecuperationMetadonneesTest {
     * web SaeService<br>
     * <br>
     * Cas normal (réussite)
-    * 
+    *
     * @throws RemoteException
     */
    @Test
    public void recuperationMetadonnees_success() throws RemoteException {
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
 
       // Appel de l'opération RecuperationMetadonnees
-      RecuperationMetadonneesResponseType response = saeService
-            .recuperationMetadonnees(new RecuperationMetadonnees())
-            .getRecuperationMetadonneesResponse();
+      final RecuperationMetadonneesResponseType response = saeService
+                                                                     .recuperationMetadonnees(new RecuperationMetadonnees())
+                                                                     .getRecuperationMetadonneesResponse();
 
       assertNotNull("La réponse ne doit pas être nulle", response);
 
       assertNotNull("La liste des métadonnées ne doit pas être nulle", response
-            .getMetadonnees());
+                                                                               .getMetadonnees());
 
       assertNotNull("La liste des métadonnées ne doit pas être nulle", response
-            .getMetadonnees().getMetadonnee());
+                                                                               .getMetadonnees().getMetadonnee());
 
       assertTrue("Le contenu de la réponse ne doit pas être nulle", response
-            .getMetadonnees().getMetadonnee().length > 0);
+                                                                            .getMetadonnees().getMetadonnee().length > 0);
 
       // Affichage de la liste des métadonnées
       afficheListeMetadonnees(response);
@@ -64,14 +64,14 @@ public class RecuperationMetadonneesTest {
     * <li>Code : wsse:SecurityTokenUnavailable</li>
     * <li>Message : La référence au jeton de sécurité est introuvable</li>
     * </ul>
-    * 
+    *
     * @throws RemoteException
     */
    @Test
    public void recuperationMetadonnees_failure() {
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
+      final SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
 
       // Appel de l'opération RecuperationMetadonnees
       try {
@@ -84,20 +84,23 @@ public class RecuperationMetadonneesTest {
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
 
-      } catch (AxisFault fault) {
+      }
+      catch (final AxisFault fault) {
 
          // sysout
          TestUtils.sysoutAxisFault(fault);
 
          // Vérification de la SoapFault
          TestUtils
-               .assertSoapFault(
-                     fault,
-                     "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                     "wsse", "SecurityTokenUnavailable",
-                     "La référence au jeton de sécurité est introuvable");
+                  .assertSoapFault(
+                                   fault,
+                                   "urn:frontal:faultcodes",
+                                   "ns1",
+                                   "InvalidPAGM",
+                                   "Le PAGM est invalide");
 
-      } catch (RemoteException exception) {
+      }
+      catch (final RemoteException exception) {
 
          fail("Une RemoteException a été levée, alors qu'on attendait une AxisFault\r\n"
                + exception);
@@ -107,10 +110,10 @@ public class RecuperationMetadonneesTest {
    }
 
    private void afficheListeMetadonnees(
-         RecuperationMetadonneesResponseType response) {
+                                        final RecuperationMetadonneesResponseType response) {
 
-      for (MetadonneeDispoType metadonnee : response.getMetadonnees()
-            .getMetadonnee()) {
+      for (final MetadonneeDispoType metadonnee : response.getMetadonnees()
+                                                          .getMetadonnee()) {
 
          System.out.println(metadonnee.getCodeLong());
          System.out.println("Libellé: " + metadonnee.getLibelle());

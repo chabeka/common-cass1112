@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -14,23 +14,23 @@ import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
-import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbRes;
-import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResResponse;
-import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResResponseType;
+import sae.client.demo.webservice.modele.SaeServiceStub.Recherche;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheResponse;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheResponseType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ResultatRechercheType;
 
-public class RechercheNbResTest {
+public class RechercheTest {
 
    
    /**
-    * Exemple de consommation de l'opération rechercheNbRes du service web SaeService<br>
+    * Exemple de consommation de l'opération recherche du service web SaeService<br>
     * <br>
     * Cas sans erreur
     * 
     * @throws RemoteException 
     */
    @Test
-   public void rechercheNbRes_success() throws RemoteException {
+   public void recherche_success() throws RemoteException {
       
       // Requête de recherche
       String requeteRecherche = "Siren:123456789"; 
@@ -57,11 +57,11 @@ public class RechercheNbResTest {
       
       // Construction du paramètre d'entrée de l'opération recherche, 
       //  avec les objets modèle générés par Axis2.
-      RechercheNbRes paramsEntree = Axis2ObjectFactory.contruitParamsEntreeRechercheNbRes(
+      Recherche paramsEntree = Axis2ObjectFactory.contruitParamsEntreeRecherche(
             requeteRecherche,codesMetasSouhaitess);
       
       // Appel du service web de recherche
-      RechercheNbResResponse reponse = saeService.rechercheNbRes(paramsEntree);
+      RechercheResponse reponse = saeService.recherche(paramsEntree);
       
       // Affichage dans la console du résultat de la recherche
       afficheResultatsRecherche(reponse);
@@ -70,44 +70,34 @@ public class RechercheNbResTest {
    
    
    private void afficheResultatsRecherche(
-         RechercheNbResResponse reponse)  {
+         RechercheResponse reponse)  {
     
 
-      RechercheNbResResponseType rechercheNbResResponse = 
-         reponse.getRechercheNbResResponse();
+      RechercheResponseType rechercheResponse = 
+         reponse.getRechercheResponse();
       
       // Affichage dans la console du flag de resultats tronques
       System.out.println(
             "Résultats tronqués => " + 
-                  rechercheNbResResponse.getResultatTronque());
+            rechercheResponse.getResultatTronque());
       
       // Regarde si on a eu au moins 1 résultat de recherche
       if (
-            (rechercheNbResResponse.getResultats()==null) || 
-            (rechercheNbResResponse.getResultats().getResultat()==null) || 
-            (rechercheNbResResponse.getResultats().getResultat().length==0)) {
+            (rechercheResponse.getResultats()==null) || 
+            (rechercheResponse.getResultats().getResultat()==null) || 
+            (rechercheResponse.getResultats().getResultat().length==0)) {
          
          System.out.println("La recherche n'a pas ramené de résultats");
          
       } else {
          
          ResultatRechercheType[] tabResRecherche = 
-               rechercheNbResResponse.getResultats().getResultat();
+            rechercheResponse.getResultats().getResultat();
          
-         // Affiche le nombre de résultats 
-         // (le nombre de résultat est tronqué à 200 documents)
-         // La taille de la liste sera donc au maximum de 200 documents
+         // Affiche le nombre de résultats
          System.out.println(
                "La recherche a ramené " + 
                tabResRecherche.length + 
-               " résultats");
-         System.out.println("");
-         
-         // Affiche le nombre "réel" de résultats
-         // C'est a dire le nombre total de document correspond à cette recherche
-         System.out.println(
-               "La recherche a ramené " + 
-               rechercheNbResResponse.getNbResultats() + 
                " résultats");
          System.out.println("");
          
@@ -150,7 +140,7 @@ public class RechercheNbResTest {
    
    
    /**
-    * Exemple de consommation de l'opération rechercheNbRes du service web SaeService<br>
+    * Exemple de consommation de l'opération recherche du service web SaeService<br>
     * <br>
     * Cas avec erreur : On utilise une métadonnée inconnue du SAE dans la requête de recherche<br>
     * <br>
@@ -162,7 +152,7 @@ public class RechercheNbResTest {
     * 
     */
    @Test
-   public void rechercheNbRes_failure() {
+   public void recherche_failure() {
       
       // Requête de recherche
       String requeteRecherche = "Toto:123456789"; 
@@ -175,15 +165,15 @@ public class RechercheNbResTest {
       
       // Construction du paramètre d'entrée de l'opération recherche, 
       //  avec les objets modèle générés par Axis2.
-      RechercheNbRes paramsEntree = Axis2ObjectFactory.contruitParamsEntreeRechercheNbRes(
+      Recherche paramsEntree = Axis2ObjectFactory.contruitParamsEntreeRecherche(
             requeteRecherche,codesMetasSouhaitess);
       
       // Appel de l'opération recherche
       try {
       
-         // Appel de l'opération rechercheNbRes
+         // Appel de l'opération recherche
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
-         saeService.rechercheNbRes(paramsEntree);
+         saeService.recherche(paramsEntree);
          
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
@@ -196,9 +186,9 @@ public class RechercheNbResTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "RechercheMetadonneesInconnues",
+               "urn:frontal:faultcodes",
+               "ns1",
+               "sae:RechercheMetadonneesInconnues",
                "La ou les métadonnées suivantes, utilisées dans la requête de recherche, n'existent pas dans le référentiel des métadonnées : Toto");
        
       } catch (RemoteException exception) {

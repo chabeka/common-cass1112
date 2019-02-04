@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -17,6 +17,7 @@ import org.apache.axis2.AxisFault;
 import org.junit.Test;
 
 import sae.client.demo.exception.DemoRuntimeException;
+import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
@@ -44,7 +45,7 @@ public class ConsultationTest {
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
       // On part ici du principe que le document existe, un autre test permet
       // d'illuster le cas où le document n'existe pas
-      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
+      String idArchive = ArchivageUtils.archivageUnitairePJ();
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
@@ -166,10 +167,10 @@ public class ConsultationTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
+               "urn:frontal:faultcodes",
+               "ns1",
                "ArchiveNonTrouvee",
-               "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'");
+               "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.");
        
       } catch (RemoteException exception) {
          
@@ -196,7 +197,7 @@ public class ConsultationTest {
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
       // On part ici du principe que le document existe, un autre test permet
       // d'illuster le cas où le document n'existe pas
-      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
+      String idArchive = ArchivageUtils.archivageUnitairePJ();
       
       // Métadonnées souhaitées en retour de la consultation
       List<String> codesMetasSouhaites = new ArrayList<String>();

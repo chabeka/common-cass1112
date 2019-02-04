@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -9,6 +9,7 @@ import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.junit.Test;
 
+import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
@@ -31,7 +32,7 @@ public class ModificationTest {
       
       // Identifiant unique d'archivage de l'archive que l'on veut modifier
       // On part ici du principe que le document existe
-      String idArchive = "5A06E1C2-048A-4E46-B7F2-9A93D48300AB";
+      String idArchive =  ArchivageUtils.archivageUnitairePJ();
       
       // Les métadonnées que l'on veut modifier
       // On renseigne une liste de paire clés/valeur
@@ -115,10 +116,10 @@ public class ModificationTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "ModificationArchiveNonTrouvee",
-               "Il n'existe aucun document pour l'identifiant d'archivage 00000000-0000-0000-0000-000000000000");
+               "urn:frontal:faultcodes",
+               "ns1",
+               "ArchiveNonTrouvee",
+               "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.");
        
       } catch (RemoteException exception) {
          
@@ -139,13 +140,14 @@ public class ModificationTest {
     *    <li>Code : sae:ModificationMetadonneeNonModifiable</li>
     *    <li>Message : La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice</li>
     * </ul>
+    * @throws RemoteException 
     */
    @Test
-   public void modification_failure_metadonneeNonModifiable() {
+   public void modification_failure_metadonneeNonModifiable() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut modifier
       // On part ici du principe que le document existe
-      String idArchive = "5A06E1C2-048A-4E46-B7F2-9A93D48300AB";
+      String idArchive = ArchivageUtils.archivageUnitairePJ();
       
       // Les métadonnées que l'on veut modifier
       Map<String, String> metadonnees = new HashMap<String, String>();
@@ -177,9 +179,9 @@ public class ModificationTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "ModificationMetadonneeNonModifiable",
+               "urn:frontal:faultcodes",
+               "ns1",
+               "sae:ModificationMetadonneeNonModifiable",
                "La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice");
        
       } catch (RemoteException exception) {

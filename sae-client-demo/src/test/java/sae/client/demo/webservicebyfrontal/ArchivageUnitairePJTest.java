@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -92,7 +92,7 @@ public class ArchivageUnitairePJTest {
       // Construction du paramètre d'entrée de l'opération archivageUnitairePJ,
       // avec les objets modèle générés par Axis2.
       final ArchivageUnitairePJ paramsEntree = Axis2ObjectFactory.contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
-                                                                                                                     prop.getProperty("URLECDE_FICHIER_ARCH_UNI_PJ_SUCCES"),
+                                                                                                                     prop.getProperty("URLECDE_FICHIER_DOC1_PDF"),
                                                                                                                      metadonnees);
 
       // Appel de l'opération archivageUnitairePJ
@@ -218,7 +218,7 @@ public class ArchivageUnitairePJTest {
       // Construction du paramètre d'entrée de l'opération archivageUnitairePJ,
       // avec les objets modèle générés par Axis2.
       final ArchivageUnitairePJ paramsEntree = Axis2ObjectFactory.contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
-                                                                                                                     prop.getProperty("URLECDE_FICHIER_ARCH_UNI_PJ_FAILURE"),
+                                                                                                                     prop.getProperty("URLECDE_FICHIER_ARCH_DOC1_INEXISTANT"),
                                                                                                                      metadonnees);
 
       // Appel de l'opération archivageUnitaire
@@ -240,10 +240,10 @@ public class ArchivageUnitairePJTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                                    fault,
-                                   "urn:sae:faultcodes",
-                                   "sae",
-                                   "CaptureUrlEcdeFichierIntrouvable",
-                                   "Le fichier pointé par l'URL ECDE est introuvable (" + prop.getProperty("URLECDE_FICHIER_ARCH_UNI_PJ_SUCCES") + ")");
+                                   "urn:frontal:faultcodes",
+                                   "ns1",
+                                   "sae:CaptureUrlEcdeFichierIntrouvable",
+                                   "Le fichier pointé par l'URL ECDE est introuvable (" + prop.getProperty("URLECDE_FICHIER_ARCH_DOC1_INEXISTANT") + ")");
 
       }
       catch (final RemoteException exception) {

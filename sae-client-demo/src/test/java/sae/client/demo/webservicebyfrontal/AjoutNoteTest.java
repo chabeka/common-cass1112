@@ -1,9 +1,10 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import java.rmi.RemoteException;
 
 import org.junit.Test;
 
+import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
@@ -24,7 +25,7 @@ public class AjoutNoteTest {
 
       // Identifiant unique d'archivage de l'archive que l'on veut modifier
       // On part ici du principe que le document existe
-      final String idArchive = "271669AA-07ED-4385-828F-F2F5DDD3A872";
+      final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
       // La note à ajouter à un document (Pour info, une note peut être ajouter
       // dès l'archivage d'un document, en utilisant la métadonnée Note)

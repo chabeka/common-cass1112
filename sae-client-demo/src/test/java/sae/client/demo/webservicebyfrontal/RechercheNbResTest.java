@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -196,9 +196,9 @@ public class RechercheNbResTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
-               "RechercheMetadonneesInconnues",
+               "urn:frontal:faultcodes",
+               "ns1",
+               "sae:RechercheMetadonneesInconnues",
                "La ou les métadonnées suivantes, utilisées dans la requête de recherche, n'existent pas dans le référentiel des métadonnées : Toto");
        
       } catch (RemoteException exception) {

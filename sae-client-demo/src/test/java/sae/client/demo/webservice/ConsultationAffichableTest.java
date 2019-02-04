@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import sae.client.demo.exception.DemoRuntimeException;
+import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;

@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static org.junit.Assert.fail;
 
@@ -10,28 +10,29 @@ import java.io.OutputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 
 import org.apache.axis2.AxisFault;
+import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
 
 import sae.client.demo.exception.DemoRuntimeException;
+import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
-import sae.client.demo.webservice.modele.SaeServiceStub.Consultation;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationResponse;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationResponseType;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichable;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableResponse;
+import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableResponseType;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
-import sae.client.demo.webservice.modele.SaeServiceStub.ObjetNumeriqueConsultationType;
 
-public class ConsultationTest {
+public class ConsultationAffichableTest {
 
-   
    /**
-    * Exemple de consommation de l'opération consultation du service web SaeService<br>
+    * Exemple de consommation de l'opération consultationAffichable du service web SaeService<br>
     * <br>
     * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
     * dans le test corresponde à une archive en base)
@@ -39,22 +40,20 @@ public class ConsultationTest {
     * @throws RemoteException 
     */
    @Test
-   public void consultation_success() throws RemoteException {
+   public void consultationAffichable_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      // On part ici du principe que le document existe, un autre test permet
-      // d'illuster le cas où le document n'existe pas
-      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
+      String idArchive = ArchivageUtils.archivageUnitairePJ();
       
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultation, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      Consultation paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultation(idArchive);
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(idArchive);
       
       // Appel du service web de consultation
-      ConsultationResponse reponse = saeService.consultation(paramsEntree);
+      ConsultationAffichableResponse reponse = saeService.consultationAffichable(paramsEntree);
       
       // Affichage du résultat de la consultation
       afficheResultatConsultation(reponse);
@@ -62,10 +61,11 @@ public class ConsultationTest {
    }
    
    
-   private void afficheResultatConsultation(ConsultationResponse reponse) {
+   private void afficheResultatConsultation(ConsultationAffichableResponse reponse) {
 
-      ConsultationResponseType consultationResponse = reponse
-            .getConsultationResponse();
+      
+      ConsultationAffichableResponseType consultationResponse = reponse
+            .getConsultationAffichableResponse();
 
       // Les métadonnées
 
@@ -91,14 +91,14 @@ public class ConsultationTest {
          }
 
       }
+      if (StringUtils.isBlank(valeurMetaNomFichier)) {
+         valeurMetaNomFichier = UUID.randomUUID().toString() + ".tmp";
+      }
 
       // Le fichier
-      ObjetNumeriqueConsultationType objetNumerique = consultationResponse
-            .getObjetNumerique();
-
-      // Récupère le flux base64 renvoyé
-      DataHandler contenu = objetNumerique
-            .getObjetNumeriqueConsultationTypeChoice_type0().getContenu();
+      DataHandler contenu = consultationResponse.getContenu();
+      
+      // TODO : est-ce que le fichier est bien renvoyé en MTOM
 
       // On va créér un fichier dans le répertoire temporaire de l'OS
       String repTempOs = System.getProperty("java.io.tmpdir");
@@ -110,10 +110,14 @@ public class ConsultationTest {
          outputStream = new FileOutputStream(file);
       } catch (FileNotFoundException e) {
          throw new DemoRuntimeException(e);
+      } catch (Exception e) {
+         throw new DemoRuntimeException(e);
       }
       try {
          contenu.writeTo(outputStream);
       } catch (IOException e) {
+         throw new DemoRuntimeException(e);
+      } catch (Exception e) {
          throw new DemoRuntimeException(e);
       }
 
@@ -125,7 +129,7 @@ public class ConsultationTest {
    
    
    /**
-    * Exemple de consommation de l'opération consultation du service web SaeService<br>
+    * Exemple de consommation de l'opération consultationAffichable du service web SaeService<br>
     * <br>
     * Cas avec erreur : On demande un identifiant unique d'archivage qui n'existe pas dans le SAE<br>
     * <br>
@@ -136,7 +140,7 @@ public class ConsultationTest {
     * </ul>
     */
    @Test
-   public void consultation_failure() {
+   public void consultationAffichable_failure() {
       
       // Identifiant unique d'archivage inexistant
       String idArchive = "00000000-0000-0000-0000-000000000000";
@@ -144,16 +148,16 @@ public class ConsultationTest {
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultation, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      Consultation paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultation(idArchive);
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(idArchive);
       
-      // Appel de l'opération consultation
+      // Appel de l'opération consultationAffichable
       try {
          
-         // Appel de l'opération consultation
+         // Appel de l'opération consultationAffichable
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
-         saeService.consultation(paramsEntree);
+         saeService.consultationAffichable(paramsEntree);
          
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
@@ -166,10 +170,10 @@ public class ConsultationTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "urn:sae:faultcodes",
-               "sae",
+               "urn:frontal:faultcodes",
+               "ns1",
                "ArchiveNonTrouvee",
-               "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'");
+               "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.");
        
       } catch (RemoteException exception) {
          
@@ -191,12 +195,10 @@ public class ConsultationTest {
     * @throws RemoteException 
     */
    @Test
-   public void consultation_avecMeta_success() throws RemoteException {
+   public void consultationAffichable_avecMeta_success() throws RemoteException {
       
       // Identifiant unique d'archivage de l'archive que l'on veut consulter
-      // On part ici du principe que le document existe, un autre test permet
-      // d'illuster le cas où le document n'existe pas
-      String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117193";
+      String idArchive = ArchivageUtils.archivageUnitairePJ();
       
       // Métadonnées souhaitées en retour de la consultation
       List<String> codesMetasSouhaites = new ArrayList<String>();
@@ -208,17 +210,16 @@ public class ConsultationTest {
       // Construction du Stub
       SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
       
-      // Construction du paramètre d'entrée de l'opération consultation, 
+      // Construction du paramètre d'entrée de l'opération consultationAffichable, 
       //  avec les objets modèle générés par Axis2.
-      Consultation paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultation(
+      ConsultationAffichable paramsEntree = Axis2ObjectFactory.contruitParamsEntreeConsultationAffichable(
             idArchive,codesMetasSouhaites);
       
       // Appel du service web de consultation
-      ConsultationResponse reponse = saeService.consultation(paramsEntree);
+      ConsultationAffichableResponse reponse = saeService.consultationAffichable(paramsEntree);
       
       // Affichage du résultat de la consultation
       afficheResultatConsultation(reponse);
       
    }
-   
 }

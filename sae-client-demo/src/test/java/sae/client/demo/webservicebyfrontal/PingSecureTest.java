@@ -1,4 +1,4 @@
-package sae.client.demo.webservice;
+package sae.client.demo.webservicebyfrontal;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -82,10 +82,10 @@ public class PingSecureTest {
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
                fault,
-               "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-               "wsse",
-               "SecurityTokenUnavailable",
-               "La référence au jeton de sécurité est introuvable");
+               "urn:frontal:faultcodes",
+               "ns1",
+               "InvalidPAGM",
+               "Le PAGM est invalide");
          
       } catch (RemoteException exception) {
          
