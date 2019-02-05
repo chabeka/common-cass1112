@@ -40,6 +40,12 @@
 		<dist.filePath>target/${dist.fileName}</dist.filePath>
 		<dist.bucketName>dist.springframework.org</dist.bucketName>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+		<maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+		<maven-ant-plugin.version>1.9.4</maven-ant-plugin.version>
+		<maven-invoker-plugin.version>3.2.0</maven-invoker-plugin.version>
+		<doxia-maven-plugin.version>1.2</doxia-maven-plugin.version>
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
 	</properties>
 	<modules>
 		<module>sae-spring-batch-admin-parent</module>
@@ -89,6 +95,7 @@
 						<!-- After the file count, we build the sample -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-invoker-plugin</artifactId>
+						<version>${maven-invoker-plugin.version}</version>
 						<configuration>
 							<projectsDirectory>target/it</projectsDirectory>
 							<localRepositoryPath>target/local-repo</localRepositoryPath>
@@ -164,7 +171,6 @@
 				<plugin>
 				  <groupId>org.apache.maven.plugins</groupId>
 				  <artifactId>maven-antrun-plugin</artifactId>
-				  <version>1.4</version>
 				  <executions>
 					<execution>
 					  <id>upload-dist</id>
@@ -211,22 +217,24 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
+					<version>${maven-antrun-plugin.version}</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.ant</groupId>
 							<artifactId>ant</artifactId>
-							<version>1.7.0</version>
+							<version>${maven-ant-plugin.version}</version>
 						</dependency>
 						<dependency>
 							<groupId>org.apache.ant</groupId>
 							<artifactId>ant-apache-regexp</artifactId>
-							<version>1.7.0</version>
+							<version>${maven-ant-plugin.version}</version>
 						</dependency>
 					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
 					<configuration>
 						<junitArtifactName>junit:junit</junitArtifactName>
 					</configuration>
@@ -234,7 +242,7 @@
 				<plugin>
 				  <groupId>org.apache.maven.doxia</groupId>
 				  <artifactId>doxia-maven-plugin</artifactId>
-				  <version>1.2</version>
+				  <version>${doxia-maven-plugin.version}</version>
 				  <configuration>
 				    <books>
 				      <book>
@@ -256,7 +264,9 @@
 				  </configuration>
 				</plugin>
 				<plugin>
+				  <groupId>org.apache.maven.plugins</groupId>
 				  <artifactId>maven-assembly-plugin</artifactId>
+				  <version>${maven-assembly-plugin.version}</version>
 				  <inherited>false</inherited>
 				  <configuration>
 				    <descriptors>
@@ -265,13 +275,17 @@
 				    <appendAssemblyId>false</appendAssemblyId>
 				  </configuration>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>${maven-deploy-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
-				<version>${maven-deploy-plugin.version}</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>

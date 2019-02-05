@@ -35,7 +35,21 @@
 		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 		<spring.framework.version>4.1.9.RELEASE</spring.framework.version>
 		<spring.integration.version>4.1.9.RELEASE</spring.integration.version>
+		<!-- Version des plug-ins Maven -->
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<wagon-webdav.version>3.2.0</wagon-webdav.version>		
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
+		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
+		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+		<com.springsource.bundlor.maven.version>1.0.0.RELEASE</com.springsource.bundlor.maven.version>
+		<maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
+		
 	</properties>
 
 	<build>
@@ -139,12 +153,79 @@
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
+				<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>bind-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				</plugin>
+				<!-- On spécifie l'encodage de caractères des ressources -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-plugin.version}</version>
+					<configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-war-plugin</artifactId>
+					<version>${maven-war-plugin.version}</version>					
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>${maven-javadoc-plugin.version}</version>
+					<configuration>
+						<minmemory>128m</minmemory>
+						<maxmemory>512m</maxmemory>						
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.jxr</groupId>
+					<artifactId>maven-jxr-plugin</artifactId>
+					<version>${maven-jxr-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-report-plugin</artifactId>
+					<version>${maven-surefire-plugin.version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-project-info-reports-plugin</artifactId>
+					<version>${maven-project-info-reports-plugin.version}</version>
+				</plugin>
+				<plugin>
+		            <groupId>com.springsource.bundlor</groupId>
+		            <artifactId>com.springsource.bundlor.maven</artifactId>
+		            <version>${com.springsource.bundlor.maven.version}</version>
+		        </plugin>
+		        <plugin>
+		            <groupId>org.mortbay.jetty</groupId>
+		            <artifactId>maven-jetty-plugin</artifactId>
+		            <version>${maven-jetty-plugin.version}</version>
+		        </plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
@@ -168,22 +249,26 @@
 	<reporting>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.jxr</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
 				<configuration>
 					<aggregate>true</aggregate>
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-project-info-reports-plugin</artifactId>
-				<version>2.1</version>
+				<version>${maven-project-info-reports-plugin.version}</version>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<configuration>
 					<quiet>true</quiet>
