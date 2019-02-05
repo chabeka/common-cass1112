@@ -39,6 +39,7 @@
 		<dist.fileName>${dist.finalName}.zip</dist.fileName>
 		<dist.filePath>target/${dist.fileName}</dist.filePath>
 		<dist.bucketName>dist.springframework.org</dist.bucketName>
+		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 	</properties>
 	<modules>
 		<module>sae-spring-batch-admin-parent</module>
