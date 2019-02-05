@@ -12,9 +12,9 @@
 
 	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
-		<groupId>fr.pnr.altair</groupId>
-		<artifactId>parent</artifactId>
-		<version>1.1.3</version>
+		<groupId>fr.urssaf.image.sae</groupId>
+		<artifactId>sae-spring-batch-admin</artifactId>
+		<version>1.2.3.1-SNAPSHOT</version>
 	</parent>
 
 	<!-- Configuration SVN pour le plug-in maven-release -->
@@ -103,6 +103,7 @@
 				<plugin>
 					<groupId>com.springsource.bundlor</groupId>
 					<artifactId>com.springsource.bundlor.maven</artifactId>
+					<version>${com.springsource.bundlor.maven.version}</version>
 					<inherited>true</inherited>
 					<executions>
 						<execution>
@@ -209,11 +210,6 @@
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>${maven-project-info-reports-plugin.version}</version>
 				</plugin>
-				<plugin>
-		            <groupId>com.springsource.bundlor</groupId>
-		            <artifactId>com.springsource.bundlor.maven</artifactId>
-		            <version>${com.springsource.bundlor.maven.version}</version>
-		        </plugin>
 		        <plugin>
 		            <groupId>org.mortbay.jetty</groupId>
 		            <artifactId>maven-jetty-plugin</artifactId>
