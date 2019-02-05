@@ -45,156 +45,172 @@ import org.springframework.web.client.RestTemplate;
 
 /**
  * @author Dave Syer
- * 
  */
 public class JsonIntegrationTests {
 
-	@Rule
-	public static ServerRunning serverRunning = ServerRunning
-			.isRunning("${SERVER_URL:http://localhost:8080/spring-batch-admin-sample}");
+  @Rule
+  public ServerRunning serverRunning = ServerRunning
+                                                    .isRunning("${SERVER_URL:http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin}");
 
-	@Test
-	public void testHomePage() throws Exception {
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/home.json", HttpMethod.GET, null,
-				String.class);
-		JsonWrapper wrapper = new JsonWrapper(result.getBody());
-		assertNotNull(wrapper.get("feed.resources"));
-		assertNotNull(wrapper.get("feed.resources['/files'].uri"));
-	}
+  @Test
+  public void testHomePage() throws Exception {
+    final RestTemplate template = new RestTemplate();
+    final ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/home.json",
+                                                            HttpMethod.GET,
+                                                            null,
+                                                            String.class);
+    final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+    assertNotNull(wrapper.get("feed.resources"));
+    assertNotNull(wrapper.get("feed.resources['/files'].uri"));
+  }
 
-	@Test
-	public void testJobsPage() throws Exception {
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/jobs.json", HttpMethod.GET, null,
-				String.class);
-		JsonWrapper wrapper = new JsonWrapper(result.getBody());
-		// System.err.println(wrapper);
-		assertNotNull(wrapper.get("jobs.resource"));
-		assertNotNull(wrapper.get("jobs.registrations.infinite.name"));
-	}
+  @Test
+  public void testJobsPage() throws Exception {
+    final RestTemplate template = new RestTemplate();
+    final ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/jobs.json",
+                                                            HttpMethod.GET,
+                                                            null,
+                                                            String.class);
+    final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+    // System.err.println(wrapper);
+    assertNotNull(wrapper.get("jobs.resource"));
+    assertNotNull(wrapper.get("jobs.registrations.infinite.name"));
+  }
 
-	@Test
-	public void testJobConfigurationUpload() throws Exception {
-		RestTemplate template = new RestTemplate();
-		HttpEntity<String> request = new HttpEntity<String>(FileUtils.readFileToString(new File(
-				"src/test/resources/test-job-context.xml")));
-		ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/job-configuration.json",
-				HttpMethod.POST, request, String.class);
-		JsonWrapper wrapper = new JsonWrapper(result.getBody());
-		// System.err.println(wrapper);
-		assertNotNull(wrapper.get("jobs.resource"));
-		assertNotNull(wrapper.get("jobs.registrations['test-job'].name"));
-	}
+  @Test
+  public void testJobConfigurationUpload() throws Exception {
+    final RestTemplate template = new RestTemplate();
+    final HttpEntity<String> request = new HttpEntity<>(FileUtils.readFileToString(new File(
+                                                                                            "src/test/resources/test-job-context.xml")));
+    final ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/job-configuration.json",
+                                                            HttpMethod.POST,
+                                                            request,
+                                                            String.class);
+    final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+    // System.err.println(wrapper);
+    assertNotNull(wrapper.get("jobs.resource"));
+    assertNotNull(wrapper.get("jobs.registrations['test-job'].name"));
+  }
 
-	@Test
-	public void testJobLaunch() throws Exception {
+  @Test
+  public void testJobLaunch() throws Exception {
 
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/jobs/job2.json?jobParameters=fail=true", HttpMethod.POST,
-				null, String.class);
-		JsonWrapper wrapper = new JsonWrapper(result.getBody());
-		// System.err.println(wrapper);
-		assertNotNull(wrapper.get("jobExecution.resource"));
-		assertNotNull(wrapper.get("jobExecution.status"));
-		assertNotNull(wrapper.get("jobExecution.id"));
+    final RestTemplate template = new RestTemplate();
+    ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + "/jobs/job2.json?jobParameters=fail=true",
+                                                      HttpMethod.POST,
+                                                      null,
+                                                      String.class);
+    JsonWrapper wrapper = new JsonWrapper(result.getBody());
+    // System.err.println(wrapper);
+    assertNotNull(wrapper.get("jobExecution.resource"));
+    assertNotNull(wrapper.get("jobExecution.status"));
+    assertNotNull(wrapper.get("jobExecution.id"));
 
-		// Poll for the completed job execution
-		final String resource = wrapper.get("jobExecution.resource", String.class);
-		Poller<JsonWrapper> poller = new DirectPoller<JsonWrapper>(100L);
-		Future<JsonWrapper> poll = poller.poll(new Callable<JsonWrapper>() {
-			public JsonWrapper call() throws Exception {
-				RestTemplate template = new RestTemplate();
-				ResponseEntity<String> result = template.exchange(resource, HttpMethod.GET, null, String.class);
-				JsonWrapper wrapper = new JsonWrapper(result.getBody());
-				// System.err.println(wrapper);
-				Map<?, ?> map = wrapper.get("jobExecution.stepExecutions", Map.class);
-				return map.isEmpty() || wrapper.get("jobExecution.stepExecutions['job2.step1']['resource']") == null ? null
-						: wrapper;
-			}
-		});
-		JsonWrapper jobExecution = poll.get(500L, TimeUnit.MILLISECONDS);
-		assertNotNull(jobExecution);
-		// System.err.println(jobExecution);
+    // Poll for the completed job execution
+    final String resource = wrapper.get("jobExecution.resource", String.class);
+    final Poller<JsonWrapper> poller = new DirectPoller<>(100L);
+    final Future<JsonWrapper> poll = poller.poll(new Callable<JsonWrapper>() {
+      @Override
+      public JsonWrapper call() throws Exception {
+        final RestTemplate template = new RestTemplate();
+        final ResponseEntity<String> result = template.exchange(resource, HttpMethod.GET, null, String.class);
+        final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+        // System.err.println(wrapper);
+        final Map<?, ?> map = wrapper.get("jobExecution.stepExecutions", Map.class);
+        return map.isEmpty() || wrapper.get("jobExecution.stepExecutions['job2.step1']['resource']") == null ? null
+            : wrapper;
+      }
+    });
+    final JsonWrapper jobExecution = poll.get(1000L, TimeUnit.MILLISECONDS);
+    assertNotNull(jobExecution);
+    // System.err.println(jobExecution);
 
-		// Verify that there is a step execution in the result
-		result = template.exchange(
-				jobExecution.get("jobExecution.stepExecutions['job2.step1'].resource", String.class), HttpMethod.GET,
-				null, String.class);
-		wrapper = new JsonWrapper(result.getBody());
-		// System.err.println(wrapper);
-		assertNotNull(wrapper.get("stepExecution.id"));
-		assertNotNull(wrapper.get("stepExecution.status"));
-		assertNotNull(wrapper.get("jobExecution.resource"));
-		assertNotNull(wrapper.get("jobExecution.status"));
-		assertNotNull(wrapper.get("jobExecution.id"));
+    // Verify that there is a step execution in the result
+    result = template.exchange(
+                               jobExecution.get("jobExecution.stepExecutions['job2.step1'].resource", String.class),
+                               HttpMethod.GET,
+                               null,
+                               String.class);
+    wrapper = new JsonWrapper(result.getBody());
+    // System.err.println(wrapper);
+    assertNotNull(wrapper.get("stepExecution.id"));
+    assertNotNull(wrapper.get("stepExecution.status"));
+    assertNotNull(wrapper.get("jobExecution.resource"));
+    assertNotNull(wrapper.get("jobExecution.status"));
+    assertNotNull(wrapper.get("jobExecution.id"));
 
-	}
+  }
 
-	@Test
-	public void testJobStop() throws Exception {
+  @Test
+  public void testJobStop() throws Exception {
 
-		RestTemplate template = new RestTemplate();
-		ResponseEntity<String> result = template.exchange(serverRunning.getUrl()
-				+ "/jobs/infinite.json?jobParameters=timestamp=" + System.currentTimeMillis(), HttpMethod.POST, null,
-				String.class);
-		JsonWrapper wrapper = new JsonWrapper(result.getBody());
-		// System.err.println(wrapper);
-		assertNotNull(wrapper.get("jobExecution.resource"));
-		assertNotNull(wrapper.get("jobExecution.status"));
-		assertNotNull(wrapper.get("jobExecution.id"));
+    final RestTemplate template = new RestTemplate();
+    final ResponseEntity<String> result = template.exchange(serverRunning.getUrl()
+        + "/jobs/infinite.json?jobParameters=timestamp=" + System.currentTimeMillis(),
+                                                            HttpMethod.POST,
+                                                            null,
+                                                            String.class);
+    final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+    // System.err.println(wrapper);
+    assertNotNull(wrapper.get("jobExecution.resource"));
+    assertNotNull(wrapper.get("jobExecution.status"));
+    assertNotNull(wrapper.get("jobExecution.id"));
 
-		template.exchange(wrapper.get("jobExecution.resource", String.class), HttpMethod.DELETE, null, String.class);
+    template.exchange(wrapper.get("jobExecution.resource", String.class), HttpMethod.DELETE, null, String.class);
 
-		// Poll for the completed job execution
-		final String resource = wrapper.get("jobExecution.resource", String.class);
-		Poller<JsonWrapper> poller = new DirectPoller<JsonWrapper>(100L);
-		Future<JsonWrapper> poll = poller.poll(new Callable<JsonWrapper>() {
-			public JsonWrapper call() throws Exception {
-				RestTemplate template = new RestTemplate();
-				ResponseEntity<String> result = template.exchange(resource, HttpMethod.GET, null, String.class);
-				JsonWrapper wrapper = new JsonWrapper(result.getBody());
-				// System.err.println(wrapper);
-				BatchStatus status = wrapper.get("jobExecution.status", BatchStatus.class);
-				return status.isGreaterThan(BatchStatus.STOPPING) ? wrapper : null;
-			}
-		});
-		JsonWrapper jobExecution = poll.get(500L, TimeUnit.MILLISECONDS);
-		assertNotNull(jobExecution);
+    // Poll for the completed job execution
+    final String resource = wrapper.get("jobExecution.resource", String.class);
+    final Poller<JsonWrapper> poller = new DirectPoller<>(100L);
+    final Future<JsonWrapper> poll = poller.poll(new Callable<JsonWrapper>() {
+      @Override
+      public JsonWrapper call() throws Exception {
+        final RestTemplate template = new RestTemplate();
+        final ResponseEntity<String> result = template.exchange(resource, HttpMethod.GET, null, String.class);
+        final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+        // System.err.println(wrapper);
+        final BatchStatus status = wrapper.get("jobExecution.status", BatchStatus.class);
+        return status.isGreaterThan(BatchStatus.STOPPING) ? wrapper : null;
+      }
+    });
+    final JsonWrapper jobExecution = poll.get(1000L, TimeUnit.MILLISECONDS);
+    assertNotNull(jobExecution);
 
-		BatchStatus status = jobExecution.get("jobExecution.status", BatchStatus.class);
-		assertEquals(BatchStatus.STOPPED, status);
+    final BatchStatus status = jobExecution.get("jobExecution.status", BatchStatus.class);
+    assertEquals(BatchStatus.STOPPED, status);
 
-	}
-	
-	@Test
-	public void testListedResourcesWithGet() throws Exception {
-		
-		Map<String,String> params = new HashMap<String, String>();
-		params.put("jobName", "job2");
-		// These should be there if the previous test cases worked
-		params.put("jobInstanceId", "0");
-		params.put("jobExecutionId", "0");
-		params.put("stepExecutionId", "0");
+  }
 
-		RestTemplate template = new RestTemplate();
+  @Test
+  public void testListedResourcesWithGet() throws Exception {
 
-		PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
-		propertiesFactoryBean.setLocation(new ClassPathResource("/org/springframework/batch/admin/web/manager/json-resources.properties"));
-		propertiesFactoryBean.afterPropertiesSet();
-		Properties properties = propertiesFactoryBean.getObject();
+    final Map<String, String> params = new HashMap<>();
+    params.put("jobName", "job2");
+    // These should be there if the previous test cases worked
+    params.put("jobInstanceId", "1");
+    params.put("jobExecutionId", "1");
+    params.put("stepExecutionId", "1");
 
-		for (String path : properties.stringPropertyNames()) {
-			if (!StringUtils.hasText(path) || !path.startsWith("GET")) {
-				continue;
-			}
-			path = path.substring(path.indexOf("/"));
-			ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + path, HttpMethod.GET,
-					null, String.class, params);
-			JsonWrapper wrapper = new JsonWrapper(result.getBody());
-			// System.err.println(wrapper);
-			assertNotNull(wrapper);
-		}
-	}
+    final RestTemplate template = new RestTemplate();
+
+    final PropertiesFactoryBean propertiesFactoryBean = new PropertiesFactoryBean();
+    propertiesFactoryBean.setLocation(new ClassPathResource("/org/springframework/batch/admin/web/manager/json-resources.properties"));
+    propertiesFactoryBean.afterPropertiesSet();
+    final Properties properties = propertiesFactoryBean.getObject();
+
+    for (String path : properties.stringPropertyNames()) {
+      if (!StringUtils.hasText(path) || !path.startsWith("GET")) {
+        continue;
+      }
+      path = path.substring(path.indexOf("/"));
+      final ResponseEntity<String> result = template.exchange(serverRunning.getUrl() + path,
+                                                              HttpMethod.GET,
+                                                              null,
+                                                              String.class,
+                                                              params);
+      final JsonWrapper wrapper = new JsonWrapper(result.getBody());
+      // System.err.println(wrapper);
+      assertNotNull(wrapper);
+    }
+  }
 
 }

@@ -49,7 +49,7 @@ public class JobExecutionsRssViewTests extends AbstractManagerViewTests {
 	public void testLaunchedJobExecutions() throws Exception {
 		JobExecution jobExecution = MetaDataInstanceFactory.createJobExecution();
 		jobExecution.setEndTime(new Date());
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution, TimeZone.getTimeZone("GMT"))));
 		model.put("currentTime", new Date());
 		view.render(model, request, response);
@@ -65,7 +65,7 @@ public class JobExecutionsRssViewTests extends AbstractManagerViewTests {
 		JobExecution jobExecution1 = MetaDataInstanceFactory.createJobExecution();
 		JobExecution jobExecution2 = MetaDataInstanceFactory.createJobExecution(13L);
 		jobExecution2.setEndTime(new Date());
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution1,
 				TimeZone.getTimeZone("GMT")), new JobExecutionInfo(jobExecution2,
 						TimeZone.getTimeZone("GMT"))));

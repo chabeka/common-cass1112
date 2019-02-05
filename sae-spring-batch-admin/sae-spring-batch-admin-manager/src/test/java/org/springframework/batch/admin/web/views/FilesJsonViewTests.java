@@ -45,7 +45,7 @@ public class FilesJsonViewTests extends AbstractManagerViewTests {
 	@Test
 	public void testListViewWithJobs() throws Exception {
 		model.put("files", Arrays.asList(new FileInfo("foo"), new FileInfo("bar")));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		view.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);

@@ -4,60 +4,63 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.junit.Assert;
 import org.junit.Assume;
-import org.junit.rules.TestWatchman;
-import org.junit.runners.model.FrameworkMethod;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.client.RestTemplate;
 
-public class ServerRunning extends TestWatchman {
+public class ServerRunning extends TestWatcher {
 
-	private static Log logger = LogFactory.getLog(ServerRunning.class);
+  private static Log logger = LogFactory.getLog(ServerRunning.class);
 
-	private boolean serverOnline = true;
+  private boolean serverOnline = true;
 
-	private final String url;
+  private final String url;
 
-	/**
-	 * @return a new rule that assumes an existing running broker
-	 */
-	public static ServerRunning isRunning(String url) {
-		return new ServerRunning(SystemPropertyUtils.resolvePlaceholders(url));
-	}
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Statement apply(final Statement base, final Description description) {
+    // Check at the beginning, so this can be used as a static field
+    Assume.assumeTrue(serverOnline);
 
-	private ServerRunning(String url) {
-		this.url = url;
-	}
+    try {
 
-	@Override
-	public Statement apply(Statement base, FrameworkMethod method, Object target) {
+      final RestTemplate template = new RestTemplate();
+      final ResponseEntity<String> result = template.exchange(url + "/home.json",
+                                                              HttpMethod.GET,
+                                                              null,
+                                                              String.class);
+      final String body = result.getBody();
+      Assert.assertTrue("No home page found", body != null && body.length() > 0);
 
-		// Check at the beginning, so this can be used as a static field
-		Assume.assumeTrue(serverOnline);
+    }
+    catch (final Exception e) {
+      logger.warn("Not executing tests because basic connectivity test failed", e);
+      serverOnline = false;
+      Assume.assumeNoException(e);
+    }
 
-		try {
+    return super.apply(base, description);
+  }
 
-			RestTemplate template = new RestTemplate();
-			ResponseEntity<String> result = template.exchange(url + "/home.json", HttpMethod.GET, null,
-					String.class);
-			String body = result.getBody();
-			Assert.assertTrue("No home page found", body != null && body.length() > 0);
+  /**
+   * @return a new rule that assumes an existing running broker
+   */
+  public static ServerRunning isRunning(final String url) {
+    return new ServerRunning(SystemPropertyUtils.resolvePlaceholders(url));
+  }
 
-		}
-		catch (Exception e) {
-			logger.warn("Not executing tests because basic connectivity test failed", e);
-			serverOnline = false;
-			Assume.assumeNoException(e);
-		}
+  private ServerRunning(final String url) {
+    this.url = url;
+  }
 
-		return super.apply(base, method, target);
-
-	}
-
-	public String getUrl() {
-		return this.url;
-	}
+  public String getUrl() {
+    return url;
+  }
 
 }

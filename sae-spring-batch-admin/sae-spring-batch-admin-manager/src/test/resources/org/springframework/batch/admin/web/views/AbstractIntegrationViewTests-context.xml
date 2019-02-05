@@ -8,8 +8,8 @@
                                  http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration-4.1.xsd">
 
 	<import resource="classpath*:/META-INF/sae-spring-batch/servlet/resources/*-context.xml"/>
-	<import resource="classpath*:/META-INF/sae-spring-batch/servlet/manager/manager-context.xml"/>
-	<import resource="classpath*:/META-INF/sae-spring-batch/servlet/manager/integration-context.xml"/>
+	<import resource="classpath*:/META-INF/sae-spring-batch/servlet/override/manager-context.xml"/>
+	<import resource="classpath*:/META-INF/sae-spring-batch/servlet/override/integration-context.xml"/>
 	<import resource="classpath*:/META-INF/sae-spring-batch/bootstrap/integration/file-context.xml"/>
 	
 	<bean id="resourceService" class="org.springframework.batch.admin.web.resources.DefaultResourceService"/>

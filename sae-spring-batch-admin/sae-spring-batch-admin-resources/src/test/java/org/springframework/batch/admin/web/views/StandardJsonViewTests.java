@@ -42,7 +42,7 @@ public class StandardJsonViewTests extends AbstractResourceViewTests {
 
 	@Test
 	public void testEmptyJsonView() throws Exception {
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		standard.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -55,7 +55,7 @@ public class StandardJsonViewTests extends AbstractResourceViewTests {
 		BindException errors = new BindException(new Object(), "baseUrl");
 		errors.reject("foo", "Foo");
 		model.put("errors", errors);
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		standard.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);

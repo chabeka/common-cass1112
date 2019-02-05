@@ -61,7 +61,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		model.put("jobInfo", new JobInfo("foo", 1));
 		model.put("jobInstances", Arrays.asList(new JobInstanceInfo(MetaDataInstanceFactory.createJobInstance("foo",
 				1L, "bar=spam"), new ArrayList<JobExecution>())));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("startJobInstance", 11);
 		model.put("endJobInstance", 30);
 		model.put("totalJobInstances", 100);
@@ -82,7 +82,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		model.put("jobInfo", new JobInfo("foo", 1));
 		model.put("jobInstances", Arrays.asList(new JobInstanceInfo(MetaDataInstanceFactory.createJobInstance("foo",
 				1L, "bar=spam"), new ArrayList<JobExecution>())));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("startJobInstance", 11);
 		model.put("endJobInstance", 30);
 		model.put("totalJobInstances", 100);
@@ -99,7 +99,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		BindException errors = new BindException(new Object(), "launchRequest");
 		model.put("errors", errors);
 		errors.reject("no.such.job", "No such Job");
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		job.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -114,7 +114,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		BindException errors = new BindException(new Object(), "launchRequest");
 		model.put("errors", errors);
 		errors.reject("job.already.complete", "Already complete");
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		job.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -129,7 +129,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		model.put("jobInfo", new JobInfo("foo", 1));
 		model.put("jobInstances", Arrays.asList(new JobInstanceInfo(MetaDataInstanceFactory.createJobInstance("foo",
 				123456789L, "bar=spam"), Arrays.asList(MetaDataInstanceFactory.createJobExecution()))));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		job.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -140,7 +140,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 	@Test
 	public void testListViewWithJobs() throws Exception {
 		model.put("jobs", Arrays.asList(new JobInfo("foo", 1, true), new JobInfo("bar", 2)));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("startJob", 11);
 		model.put("endJob", 30);
 		model.put("totalJobs", 100);
@@ -157,7 +157,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 	@Test
 	public void testListViewWithJobsNoPages() throws Exception {
 		model.put("jobs", Arrays.asList(new JobInfo("foo", 1, true), new JobInfo("bar", 2)));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("startJob", 11);
 		model.put("endJob", 30);
 		model.put("totalJobs", 100);

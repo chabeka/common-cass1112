@@ -9,7 +9,7 @@ Running Spring Batch Admin
   
   If the WAR file is called <<<spring-batch-admin-sample.war>>> (it may have a version 
   number appended), then when you load the application in a browser 
-  at {{http://localhost:8080/spring-batch-admin-sample)}}) it should show a 
+  at {{http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin)}}) it should show a 
   listing of the contents of the application:
   
 [images/home-page.jpg]Home page screenshot 

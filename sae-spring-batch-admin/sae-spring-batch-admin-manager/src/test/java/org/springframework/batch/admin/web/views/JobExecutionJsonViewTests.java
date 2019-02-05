@@ -52,7 +52,7 @@ public class JobExecutionJsonViewTests extends AbstractManagerViewTests {
 		JobExecution jobExecution = MetaDataInstanceFactory.createJobExecutionWithStepExecutions(123L, Arrays.asList(
 				"foo", "bar"));
 		model.put("jobExecutionInfo", new JobExecutionInfo(jobExecution, TimeZone.getDefault()));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		view.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -60,7 +60,7 @@ public class JobExecutionJsonViewTests extends AbstractManagerViewTests {
 		JsonWrapper wrapper = new JsonWrapper(content);
 		assertEquals("STARTING", wrapper.get("jobExecution.status"));
 		assertEquals(2, wrapper.get("jobExecution.stepExecutions", Map.class).size());
-		assertEquals("http://localhost:8080/springsource/jobs/executions/123/steps/1235.json", wrapper
+		assertEquals("http://hwi31picgntboappli1.gidn.recouv:8080/springsource/jobs/executions/123/steps/1235.json", wrapper
 				.get("jobExecution.stepExecutions.bar.resource"));
 	}
 
@@ -71,7 +71,7 @@ public class JobExecutionJsonViewTests extends AbstractManagerViewTests {
 		model.put("jobExecutionInfo", new JobExecutionInfo(jobExecution, TimeZone.getDefault()));
 		model.put("stepExecutionInfos", Arrays.asList(new StepExecutionInfo(jobExecution.getStepExecutions().iterator()
 				.next(), TimeZone.getTimeZone("GMT")), new StepExecutionInfo("job", 123L, "bar", TimeZone.getTimeZone("GMT"))));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		view.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -79,7 +79,7 @@ public class JobExecutionJsonViewTests extends AbstractManagerViewTests {
 		JsonWrapper wrapper = new JsonWrapper(content);
 		assertEquals("STARTING", wrapper.get("jobExecution.status"));
 		assertEquals(2, wrapper.get("jobExecution.stepExecutions", Map.class).size());
-		assertEquals("http://localhost:8080/springsource/jobs/executions/123/steps/1234.json", wrapper
+		assertEquals("http://hwi31picgntboappli1.gidn.recouv:8080/springsource/jobs/executions/123/steps/1234.json", wrapper
 				.get("jobExecution.stepExecutions.foo.resource"));
 	}
 

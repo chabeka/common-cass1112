@@ -20,13 +20,13 @@ JSON API
   registered by sending it a GET request:
 
 +---
-$ curl -s http://localhost:8080/spring-batch-admin-sample/batch/jobs.json
+$ curl -s http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs.json
 {"jobs" : { 
-    "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs.json",
+    "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs.json",
     "registrations" : {
         "infinite" : {
             "name" : "infinite",
-            "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/infinite.json",
+            "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/infinite.json",
             "description" : "No description",
             "executionCount" : 0,
             "launchable" : true,
@@ -51,13 +51,13 @@ $ curl -s http://localhost:8080/spring-batch-admin-sample/batch/jobs.json
   links to other interesting resources, e.g.
 
 +---
-$ curl -s http://localhost:8080/sprin-batch-admin-sample/batch/jobs/job1.json
+$ curl -s http://hwi31picgntboappli1.gidn.recouv:8080/sprin-batch-admin-sample/batch/jobs/job1.json
 {"job" : { 
-    "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/job1.json",
+    "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/job1.json",
     "name" : "job1",
     "jobInstances" : {
         "0" : {
-            "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/job1/0/executions.json",
+            "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/job1/0/executions.json",
             "executionCount" : 1,
             "lastJobExecution" : "/spring-batch-admin-sample/batch/jobs/executions/0.json",
             "lastJobExecutionStatus" : "FAILED",
@@ -81,16 +81,16 @@ $ curl -s http://localhost:8080/sprin-batch-admin-sample/batch/jobs/job1.json
   You can launch a job with a POST request to the job resource:
 
 +----
-$ curl -d jobParameters=fail=false http://localhost:8080/spring-batch-admin-sample/batch/jobs/job1.json
+$ curl -d jobParameters=fail=false http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/job1.json
 {"jobExecution" : { 
-    "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/executions/2.json",
+    "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/executions/2.json",
     "id" : "2",
     "status" : "STARTING",
     "startTime" : "",
     "duration" : "",
     "exitCode" : "UNKNOWN",
     "exitDescription" : "",
-    "jobInstance" : { "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/job1/1.json" },
+    "jobInstance" : { "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/job1/1.json" },
     "stepExecutions" : {
     }
   }
@@ -108,22 +108,22 @@ $ curl -d jobParameters=fail=false http://localhost:8080/spring-batch-admin-samp
   executions.  E.g. (with another GET):
 
 +---
-$ curl -s http://localhost:8080/spring-batch-admin-sample/batch/jobs/executions/2.json
+$ curl -s http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/executions/2.json
 {"jobExecution" : { 
-    "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/executions/2.json",
+    "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/executions/2.json",
     "id" : "3",
     "status" : "COMPLETED",
     "startTime" : "17:44:52",
     "duration" : "00:00:00",
     "exitCode" : "COMPLETED",
     "exitDescription" : "",
-    "jobInstance" : { "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/job1/2.json" },
+    "jobInstance" : { "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/job1/2.json" },
     "stepExecutions" : {
         "step1" : {
        	    "status" : "COMPLETED",
        	    "exitCode" : "COMPLETED",
        	    "id" : "3",
-	        "resource" : "http://localhost:8080/spring-batch-admin-sample/batch/jobs/executions/2/steps/2.json",
+	        "resource" : "http://hwi31picgntboappli1.gidn.recouv:8080/sae-spring-batch-admin/batch/jobs/executions/2/steps/2.json",
        	    "readCount" : "5",
        	    "writeCount" : "5",
        	    "commitCount" : "6",

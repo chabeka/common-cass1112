@@ -51,14 +51,14 @@ public class StepExecutionJsonViewTests extends AbstractManagerViewTests {
 	public void testLaunchViewWithJobExecutionInfo() throws Exception {
 		model.put("stepExecutionInfo", new StepExecutionInfo(MetaDataInstanceFactory.createStepExecution(), TimeZone
 				.getTimeZone("GMT")));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		view.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
 		assertTrue(content.contains("\"duration\" : \""));
 		JsonWrapper wrapper = new JsonWrapper(content);
 		assertEquals(0, wrapper.get("stepExecution.commitCount"));
-		assertEquals("http://localhost:8080/springsource/jobs/executions/123.json", wrapper.get("jobExecution.resource"));
+		assertEquals("http://hwi31picgntboappli1.gidn.recouv:8080/springsource/jobs/executions/123.json", wrapper.get("jobExecution.resource"));
 	}
 
 	@Test
@@ -69,14 +69,14 @@ public class StepExecutionJsonViewTests extends AbstractManagerViewTests {
 		stepExecution.setExitStatus(ExitStatus.FAILED.addExitDescription(description.toString()));
 		model.put("stepExecutionInfo", new StepExecutionInfo(stepExecution, TimeZone
 				.getTimeZone("GMT")));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		view.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
 		assertTrue(content.contains("\"duration\" : \""));
 		JsonWrapper wrapper = new JsonWrapper(content);
 		assertEquals(0, wrapper.get("stepExecution.commitCount"));
-		assertEquals("http://localhost:8080/springsource/jobs/executions/123.json", wrapper.get("jobExecution.resource"));
+		assertEquals("http://hwi31picgntboappli1.gidn.recouv:8080/springsource/jobs/executions/123.json", wrapper.get("jobExecution.resource"));
 		assertEquals(stepExecution.getId(), wrapper.get("stepExecution.id", Long.class));
 		assertEquals(stepExecution.getJobExecution().getStatus().toString(), wrapper.get("jobExecution.status"));
 		assertEquals(stepExecution.getJobExecutionId(), wrapper.get("jobExecution.id", Long.class));

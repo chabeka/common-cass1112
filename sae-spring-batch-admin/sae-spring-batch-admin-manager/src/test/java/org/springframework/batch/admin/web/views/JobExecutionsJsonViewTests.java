@@ -53,7 +53,7 @@ public class JobExecutionsJsonViewTests extends AbstractManagerViewTests {
 	public void testJobExecutionsForInstance() throws Exception {
 		JobExecution jobExecution = MetaDataInstanceFactory.createJobExecution();
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution, TimeZone.getTimeZone("GMT"))));
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobInfo", new JobInfo("foo", 1, 123L, false, false));
 		model.put("jobInstanceInfo", new JobInstanceInfo(MetaDataInstanceFactory.createJobInstance("job", 112L,
 				"foo=bar,spam=foo"), Arrays.asList(jobExecution)));
@@ -71,7 +71,7 @@ public class JobExecutionsJsonViewTests extends AbstractManagerViewTests {
 		JobExecution jobExecution1 = MetaDataInstanceFactory.createJobExecution();
 		JobExecution jobExecution2 = MetaDataInstanceFactory.createJobExecution(13L);
 		jobExecution2.setEndTime(new Date());
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution1, TimeZone.getTimeZone("GMT")),
 				new JobExecutionInfo(jobExecution2, TimeZone.getTimeZone("GMT"))));
 		model.put("currentTime", new Date());
@@ -87,7 +87,7 @@ public class JobExecutionsJsonViewTests extends AbstractManagerViewTests {
 		JobExecution jobExecution1 = MetaDataInstanceFactory.createJobExecution();
 		JobExecution jobExecution2 = MetaDataInstanceFactory.createJobExecution(13L);
 		jobExecution2.setEndTime(new Date());
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution1, TimeZone.getTimeZone("GMT")),
 				new JobExecutionInfo(jobExecution2, TimeZone.getTimeZone("GMT"))));
 		model.put("currentTime", new Date());
@@ -109,7 +109,7 @@ public class JobExecutionsJsonViewTests extends AbstractManagerViewTests {
 		JobExecution jobExecution1 = MetaDataInstanceFactory.createJobExecution();
 		JobExecution jobExecution2 = MetaDataInstanceFactory.createJobExecution(13L);
 		jobExecution2.setEndTime(new Date());
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		model.put("jobExecutions", Arrays.asList(new JobExecutionInfo(jobExecution1, TimeZone.getTimeZone("GMT")),
 				new JobExecutionInfo(jobExecution2, TimeZone.getTimeZone("GMT"))));
 		model.put("currentTime", new Date());

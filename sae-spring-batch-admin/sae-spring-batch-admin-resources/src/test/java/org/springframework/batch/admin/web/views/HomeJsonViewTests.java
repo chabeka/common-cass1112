@@ -51,11 +51,11 @@ public class HomeJsonViewTests extends AbstractResourceViewTests {
 		resources.add(new ResourceInfo("/local", RequestMethod.GET));
 		resources.add(new ResourceInfo("/jobs/{jobName}.json", RequestMethod.GET, "foo"));
 		model.put("resources", resources);
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		standard.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
-		assertTrue(content.contains("\"http://localhost:8080/springsource/jobs/{jobName}.json\""));
+		assertTrue(content.contains("\"http://hwi31picgntboappli1.gidn.recouv:8080/springsource/jobs/{jobName}.json\""));
 		JsonWrapper wrapper = new JsonWrapper(content);
 		assertEquals(2, wrapper.get("feed.resources", Map.class).size());
 		assertEquals("foo", wrapper.get("feed.resources['/jobs/{jobName}'].description"));
@@ -67,7 +67,7 @@ public class HomeJsonViewTests extends AbstractResourceViewTests {
 		BindException errors = new BindException(new Object(), "baseUrl");
 		errors.reject("no.resources", "No Resources");
 		model.put("errors", errors);
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		standard.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
@@ -78,7 +78,7 @@ public class HomeJsonViewTests extends AbstractResourceViewTests {
 
 	@Test
 	public void testEmptyJsonView() throws Exception {
-		model.put("baseUrl", "http://localhost:8080/springsource");
+		model.put("baseUrl", "http://hwi31picgntboappli1.gidn.recouv:8080/springsource");
 		standard.render(model, request, response);
 		String content = response.getContentAsString();
 		// System.err.println(content);
