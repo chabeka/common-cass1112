@@ -233,6 +233,7 @@
 				<plugin>
 				  <groupId>org.apache.maven.doxia</groupId>
 				  <artifactId>doxia-maven-plugin</artifactId>
+				  <version>1.2</version>
 				  <configuration>
 				    <books>
 				      <book>
@@ -269,6 +270,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
+				<version>${maven-deploy-plugin.version}</version>
 				<configuration>
 					<skip>true</skip>
 				</configuration>
