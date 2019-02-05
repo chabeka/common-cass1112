@@ -81,7 +81,7 @@ public class TransfertMasseTest {
       // Construction du paramètre d'entrée de l'opération transfertMasse,
       // avec les objets modèle générés par Axis2.
       TransfertMasse paramsEntree = Axis2ObjectFactory
-            .contruitParamsEntreeTransfertMasse(prop.getProperty("URLECDE_SOM_TRANSMASS_SUCCES"), hash, typeHash);
+            .contruitParamsEntreeTransfertMasse(prop.getProperty("URLECDE_SOM_TRANSMASS"), hash, typeHash);
 
       // Appel de l'opération tranfertMasse
       // => en attendu, l'identifiant unique de traitement de masse affecté par
@@ -92,7 +92,7 @@ public class TransfertMasseTest {
       // sysout
       System.out
             .println("La demande de prise en compte du transfert de masse a été envoyée");
-      System.out.println("URL ECDE du sommaire.xml : " + prop.getProperty("URLECDE_SOM_TRANSMASS_SUCCES"));
+      System.out.println("URL ECDE du sommaire.xml : " + prop.getProperty("URLECDE_SOM_TRANSMASS"));
       System.out.println("Hash SHA-1 du sommaire.xml : " + hash);
       System.out
             .println("Identifiant unique du traitement de masse affecté par le SAE : "
@@ -127,7 +127,7 @@ public class TransfertMasseTest {
    // Construction du paramètre d'entrée de l'opération transfertMasse,
       // avec les objets modèle générés par Axis2.
       TransfertMasse paramsEntree = Axis2ObjectFactory
-            .contruitParamsEntreeTransfertMasse(prop.getProperty("URLECDE_SOM_TRANSMASS_FAILURE"), hash, typeHash);
+            .contruitParamsEntreeTransfertMasse(prop.getProperty("URLECDE_SOM_TRANSMASS"), hash, typeHash);
       
       // Appel de l'opération archivageMasseAvecHash
       try {
