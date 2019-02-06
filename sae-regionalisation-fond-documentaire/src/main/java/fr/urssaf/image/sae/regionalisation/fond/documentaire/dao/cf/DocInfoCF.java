@@ -7,8 +7,6 @@ import com.netflix.astyanax.serializers.StringSerializer;
 /**
  * Classe des serializer de définition de la famille de colonne
  * TermInfoRangeString
- * 
- * 
  */
 public final class DocInfoCF {
 
@@ -16,11 +14,13 @@ public final class DocInfoCF {
    }
 
    public static final AnnotatedCompositeSerializer<DocInfoKey> KEY_SERIALIZER = new AnnotatedCompositeSerializer<DocInfoKey>(
-         DocInfoKey.class);
+                                                                                                                              DocInfoKey.class);
 
    public static final StringSerializer COLUMN_SERIALIZER = StringSerializer
-         .get();
+                                                                            .get();
 
    public static final ColumnFamily<DocInfoKey, String> CF_DOC_INFO = new ColumnFamily<DocInfoKey, String>(
-         "DocInfo", KEY_SERIALIZER, COLUMN_SERIALIZER);
+                                                                                                           "doc_info",
+                                                                                                           KEY_SERIALIZER,
+                                                                                                           COLUMN_SERIALIZER);
 }
