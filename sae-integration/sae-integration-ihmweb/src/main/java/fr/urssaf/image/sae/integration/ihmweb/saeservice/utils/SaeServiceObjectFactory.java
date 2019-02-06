@@ -9,9 +9,9 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
-import org.apache.axiom.attachments.utils.IOUtils;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
+import org.apache.commons.io.IOUtils;
 import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.sae.integration.ihmweb.exception.IntegrationRuntimeException;
@@ -91,1102 +91,1111 @@ import fr.urssaf.image.sae.integration.ihmweb.saeservice.modele.SaeServiceStub.U
 @SuppressWarnings("PMD.TooManyMethods")
 public final class SaeServiceObjectFactory {
 
-   private SaeServiceObjectFactory() {
+  private SaeServiceObjectFactory() {
 
-   }
+  }
 
-   /**
-    * Construit un objet URL ECDE pour la couche WebService à partir d'une
-    * String
-    * 
-    * @param urlEcde
-    *           l'URL ECDE sous la forme d'une String
-    * @return l'URL ECDE sous la forme attendu par la couche WebService
-    * @throws MalformedURIException
-    *            en cas d'URI incorrect
-    */
-   public static EcdeUrlType buildEcdeUrl(String urlEcde)
-         throws MalformedURIException {
-      EcdeUrlType ecdeUrlType = new EcdeUrlType();
-      
+  /**
+   * Construit un objet URL ECDE pour la couche WebService à partir d'une
+   * String
+   * 
+   * @param urlEcde
+   *          l'URL ECDE sous la forme d'une String
+   * @return l'URL ECDE sous la forme attendu par la couche WebService
+   * @throws MalformedURIException
+   *           en cas d'URI incorrect
+   */
+  public static EcdeUrlType buildEcdeUrl(final String urlEcde)
+      throws MalformedURIException {
+    final EcdeUrlType ecdeUrlType = new EcdeUrlType();
+
+    try {
+      ecdeUrlType.setEcdeUrlType(new URI(urlEcde));
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+
+    return ecdeUrlType;
+  }
+
+  /**
+   * Construit un objet URL ECDE pour la couche WebService à partir d'une
+   * String
+   * 
+   * @param urlEcdeSommaire
+   *          l'URL ECDE d'un sommaire.xml sous la forme d'une String
+   * @return l'URL ECDE sous la forme attendu par la couche WebService
+   * @throws MalformedURIException
+   *           en cas d'URI incorrect
+   */
+  public static EcdeUrlSommaireType buildEcdeUrlSommaire(final String urlEcdeSommaire)
+      throws MalformedURIException {
+    final EcdeUrlSommaireType ecdeUrl = new EcdeUrlSommaireType();
+    ecdeUrl.setEcdeUrlSommaireType(new URI(urlEcdeSommaire));
+    return ecdeUrl;
+  }
+
+  /**
+   * Construit un objet "Liste de métadonnées" pour la couche WebService
+   * 
+   * @param metadonnees
+   *          la liste des métadonnées à utiliser
+   * @return l'objet pour la couche WebService
+   */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+  public static ListeMetadonneeType buildListeMetadonnes(
+                                                         final MetadonneeValeurList metadonnees) {
+
+    final ListeMetadonneeType listeMetadonneeType = new ListeMetadonneeType();
+
+    final MetadonneeType[] tabMetadonneeType = new MetadonneeType[metadonnees
+                                                                             .size()];
+    listeMetadonneeType.setMetadonnee(tabMetadonneeType);
+
+    int indice = 0;
+    MetadonneeType metadonneeType;
+    MetadonneeCodeType codeType;
+    MetadonneeValeurType valeurType;
+    for (final MetadonneeValeur meta : metadonnees) {
+
+      metadonneeType = new MetadonneeType();
+      tabMetadonneeType[indice] = metadonneeType;
+      indice++;
+
+      // Le code
+      codeType = new MetadonneeCodeType();
+      codeType.setMetadonneeCodeType(meta.getCode());
+      metadonneeType.setCode(codeType);
+
+      // La valeur
+      valeurType = new MetadonneeValeurType();
+      valeurType.setMetadonneeValeurType(meta.getValeur());
+      metadonneeType.setValeur(valeurType);
+
+    }
+
+    return listeMetadonneeType;
+
+  }
+
+  /**
+   * Construit un objet "Requete Lucune" pour la couche WebService
+   * 
+   * @param requeteLucene
+   *          la requête LUCENE sous forme de chaîne de caractères
+   * @return l'objet pour la couche WebService
+   */
+  public static RequeteRechercheType buildRequeteLucene(final String requeteLucene) {
+
+    final RequeteRechercheType requeteRechercheType = new RequeteRechercheType();
+
+    requeteRechercheType.setRequeteRechercheType(requeteLucene);
+
+    return requeteRechercheType;
+  }
+
+  /**
+   * Construit un objet "Requete Lucune" pour la couche WebService
+   * 
+   * @param requeteLucene
+   *          la requête LUCENE sous forme de chaîne de caractères
+   * @return l'objet pour la couche WebService
+   */
+  public static RequeteRechercheNbResType buildRequeteLucene2(
+                                                              final String requeteLucene) {
+
+    final RequeteRechercheNbResType requeteRechercheType = new RequeteRechercheNbResType();
+
+    requeteRechercheType.setRequeteRechercheNbResType(requeteLucene);
+
+    return requeteRechercheType;
+  }
+
+  /**
+   * Construit un objet "Liste de codes de métadonnées" pour la couche
+   * WebService
+   * 
+   * @param codesMetadonnees
+   *          la liste des codes des métadonnées, sous la forme d'une List
+   * @return l'objet pour la couche WebService
+   */
+  @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
+  public static ListeMetadonneeCodeType buildListeCodesMetadonnes(
+                                                                  final List<String> codesMetadonnees) {
+
+    final ListeMetadonneeCodeType listeMetadonneeCodeType = new ListeMetadonneeCodeType();
+
+    final MetadonneeCodeType[] tabMetadonneeCodeType = new MetadonneeCodeType[codesMetadonnees
+                                                                                              .size()];
+    listeMetadonneeCodeType.setMetadonneeCode(tabMetadonneeCodeType);
+
+    int indice = 0;
+    MetadonneeCodeType metadonneeCodeType;
+
+    final Iterator<String> iterator = codesMetadonnees.iterator();
+    while (iterator.hasNext()) {
+
+      metadonneeCodeType = new MetadonneeCodeType();
+      tabMetadonneeCodeType[indice] = metadonneeCodeType;
+      indice++;
+
+      metadonneeCodeType.setMetadonneeCodeType(iterator.next());
+
+    }
+
+    return listeMetadonneeCodeType;
+
+  }
+
+  /**
+   * Construit un objet "UUID" pour la couche WebService
+   * 
+   * @param uuid
+   *          l'UUID sous la forme d'une chaîne de caractères
+   * @return l'objet pour la couche WebService
+   */
+  public static UuidType buildUuid(final String uuid) {
+
+    final UuidType uuidType = new UuidType();
+
+    uuidType.setUuidType(uuid);
+
+    return uuidType;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "archivageUnitaire"
+   * 
+   * @param urlEcde
+   *          l'URL ECDE du document à archiver
+   * @param metadonnees
+   *          les métadonnées associés au document
+   * @return l'objet pour la couche web service
+   */
+  public static ArchivageUnitaire buildArchivageUnitaireRequest(
+                                                                final String urlEcde, final MetadonneeValeurList metadonnees) {
+
+    final ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
+
+    final ArchivageUnitaireRequestType archivageUnitaireReqType = new ArchivageUnitaireRequestType();
+
+    archivageUnitaire.setArchivageUnitaire(archivageUnitaireReqType);
+
+    // L'URL ECDE
+    try {
+      archivageUnitaireReqType.setEcdeUrl(buildEcdeUrl(urlEcde));
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+
+    // Les métadonnées
+    final ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+    archivageUnitaireReqType.setMetadonnees(listeMetadonneeType);
+
+    // fin
+    return archivageUnitaire;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "stockageUnitaire"
+   * 
+   * @param urlEcde
+   *          l'URL ECDE du document à archiver
+   * @param urlEcdeOrig
+   *          l'URL ECDE du document origine à archiver
+   * @param metadonnees
+   *          les métadonnées associés au document
+   * @return l'objet pour la couche web service
+   */
+  public static StockageUnitaire buildStockageUnitaireRequest(
+                                                              final String urlEcde, final String urlEcdeOrig, final MetadonneeValeurList metadonnees) {
+
+    final StockageUnitaire stockageUnitaire = new StockageUnitaire();
+
+    final StockageUnitaireRequestType stockageUnitaireReqType = new StockageUnitaireRequestType();
+
+    stockageUnitaire.setStockageUnitaire(stockageUnitaireReqType);
+
+    final StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+    stockageUnitaireReqType
+                           .setStockageUnitaireRequestTypeChoice_type0(choice0);
+
+    // URL ECDE du document parent
+    EcdeUrlType ecdeUrlFichier = null;
+    try {
+      ecdeUrlFichier = buildEcdeUrl(urlEcde);
+      choice0.setUrlEcdeDoc(ecdeUrlFichier);
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+
+    // URL ECDE du document au format d'origine
+    final StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+    stockageUnitaireReqType
+                           .setStockageUnitaireRequestTypeChoice_type1(choice1);
+    EcdeUrlType ecdeUrlFichierOrig = null;
+    if (!urlEcdeOrig.isEmpty()) {
       try {
-         ecdeUrlType.setEcdeUrlType(new URI(urlEcde));
-        } catch (MalformedURIException e) {
-           throw new IntegrationRuntimeException(e);
-        }       
-
-      return ecdeUrlType;
-   }
-
-   /**
-    * Construit un objet URL ECDE pour la couche WebService à partir d'une
-    * String
-    * 
-    * @param urlEcdeSommaire
-    *           l'URL ECDE d'un sommaire.xml sous la forme d'une String
-    * @return l'URL ECDE sous la forme attendu par la couche WebService
-    * @throws MalformedURIException
-    *            en cas d'URI incorrect
-    */
-   public static EcdeUrlSommaireType buildEcdeUrlSommaire(String urlEcdeSommaire)
-         throws MalformedURIException {
-      EcdeUrlSommaireType ecdeUrl = new EcdeUrlSommaireType();
-      ecdeUrl.setEcdeUrlSommaireType(new URI(urlEcdeSommaire));
-      return ecdeUrl;
-   }
-
-   /**
-    * Construit un objet "Liste de métadonnées" pour la couche WebService
-    * 
-    * @param metadonnees
-    *           la liste des métadonnées à utiliser
-    * @return l'objet pour la couche WebService
-    */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-   public static ListeMetadonneeType buildListeMetadonnes(
-         MetadonneeValeurList metadonnees) {
-
-      ListeMetadonneeType listeMetadonneeType = new ListeMetadonneeType();
-
-      MetadonneeType[] tabMetadonneeType = new MetadonneeType[metadonnees
-            .size()];
-      listeMetadonneeType.setMetadonnee(tabMetadonneeType);
-
-      int indice = 0;
-      MetadonneeType metadonneeType;
-      MetadonneeCodeType codeType;
-      MetadonneeValeurType valeurType;
-      for (MetadonneeValeur meta : metadonnees) {
-
-         metadonneeType = new MetadonneeType();
-         tabMetadonneeType[indice] = metadonneeType;
-         indice++;
-
-         // Le code
-         codeType = new MetadonneeCodeType();
-         codeType.setMetadonneeCodeType(meta.getCode());
-         metadonneeType.setCode(codeType);
-
-         // La valeur
-         valeurType = new MetadonneeValeurType();
-         valeurType.setMetadonneeValeurType(meta.getValeur());
-         metadonneeType.setValeur(valeurType);
-
+        ecdeUrlFichierOrig = buildEcdeUrl(urlEcdeOrig);
+        choice1.setUrlEcdeDocOrigine(ecdeUrlFichierOrig);
       }
-
-      return listeMetadonneeType;
-
-   }
-
-   /**
-    * Construit un objet "Requete Lucune" pour la couche WebService
-    * 
-    * @param requeteLucene
-    *           la requête LUCENE sous forme de chaîne de caractères
-    * @return l'objet pour la couche WebService
-    */
-   public static RequeteRechercheType buildRequeteLucene(String requeteLucene) {
-
-      RequeteRechercheType requeteRechercheType = new RequeteRechercheType();
-
-      requeteRechercheType.setRequeteRechercheType(requeteLucene);
-
-      return requeteRechercheType;
-   }
-
-   /**
-    * Construit un objet "Requete Lucune" pour la couche WebService
-    * 
-    * @param requeteLucene
-    *           la requête LUCENE sous forme de chaîne de caractères
-    * @return l'objet pour la couche WebService
-    */
-   public static RequeteRechercheNbResType buildRequeteLucene2(
-         String requeteLucene) {
-
-      RequeteRechercheNbResType requeteRechercheType = new RequeteRechercheNbResType();
-
-      requeteRechercheType.setRequeteRechercheNbResType(requeteLucene);
-
-      return requeteRechercheType;
-   }
-
-   /**
-    * Construit un objet "Liste de codes de métadonnées" pour la couche
-    * WebService
-    * 
-    * @param codesMetadonnees
-    *           la liste des codes des métadonnées, sous la forme d'une List
-    * @return l'objet pour la couche WebService
-    */
-   @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
-   public static ListeMetadonneeCodeType buildListeCodesMetadonnes(
-         List<String> codesMetadonnees) {
-
-      ListeMetadonneeCodeType listeMetadonneeCodeType = new ListeMetadonneeCodeType();
-
-      MetadonneeCodeType[] tabMetadonneeCodeType = new MetadonneeCodeType[codesMetadonnees
-            .size()];
-      listeMetadonneeCodeType.setMetadonneeCode(tabMetadonneeCodeType);
-
-      int indice = 0;
-      MetadonneeCodeType metadonneeCodeType;
-
-      Iterator<String> iterator = codesMetadonnees.iterator();
-      while (iterator.hasNext()) {
-
-         metadonneeCodeType = new MetadonneeCodeType();
-         tabMetadonneeCodeType[indice] = metadonneeCodeType;
-         indice++;
-
-         metadonneeCodeType.setMetadonneeCodeType(iterator.next());
-
+      catch (final MalformedURIException e) {
+        throw new IntegrationRuntimeException(e);
       }
+    }
 
-      return listeMetadonneeCodeType;
+    // Les métadonnées
+    final ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+    stockageUnitaireReqType.setMetadonnees(listeMetadonneeType);
 
-   }
+    // fin
+    return stockageUnitaire;
 
-   /**
-    * Construit un objet "UUID" pour la couche WebService
-    * 
-    * @param uuid
-    *           l'UUID sous la forme d'une chaîne de caractères
-    * @return l'objet pour la couche WebService
-    */
-   public static UuidType buildUuid(String uuid) {
+  }
 
-      UuidType uuidType = new UuidType();
+  /**
+   * Construit un objet de requête pour l'opération "stockageUnitairePJContenuSansMtom"
+   * 
+   * @param urlEcde
+   *          l'URL ECDE du document à archiver
+   * @param contenu
+   *          le flux pointant vers le fichier à archiver
+   * @param urlEcdeOrig
+   *          l'URL ECDE du document origine à archiver
+   * @param contenuOrig
+   *          le flux pointant vers le fichier à archiver
+   * @param metadonnees
+   *          les métadonnées associés au document
+   * @return l'objet pour la couche web service
+   */
 
+  public static StockageUnitaire buildStockageUnitaireRequestavecContenu(
+                                                                         final String urlEcde, final InputStream contenu,
+                                                                         final String urlEcdeOrig, final InputStream contenuFormatOrigine,
+                                                                         final MetadonneeValeurList metadonnees) {
+
+    final StockageUnitaire stockageUnitaire = new StockageUnitaire();
+    final StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+    stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
+
+    // Nom et contenu du fichier
+    final DataFileType dataFile = new DataFileType();
+    dataFile.setFileName(urlEcde);
+    byte[] contenuBytes;
+    try {
+      contenuBytes = IOUtils.toByteArray(contenu);
+    }
+    catch (final IOException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+    final ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
+    final DataHandler dataHandler = new DataHandler(byteArray);
+    dataFile.setFile(dataHandler);
+    final StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+    stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type0(choice0);
+    choice0.setDataFileDoc(dataFile);
+
+    // Nom et contenu du fichier au format d'origine
+    final DataFileType dataFileFormatOrigine = new DataFileType();
+    dataFileFormatOrigine.setFileName(urlEcdeOrig);
+    byte[] contenuBytesFormatOrigine;
+    try {
+      contenuBytesFormatOrigine = IOUtils.toByteArray(contenuFormatOrigine);
+    }
+    catch (final IOException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+    final ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(contenuBytesFormatOrigine);
+    final DataHandler dataHandlerFormatOrigine = new DataHandler(byteArrayFormatOrigine);
+    dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
+    final StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+    stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type1(choice1);
+    choice1.setDataFileAttached(dataFileFormatOrigine);
+
+    // Métadonnées
+    final ListeMetadonneeType listeMetadonnee = buildListeMetadonnes(metadonnees);
+    stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
+
+    // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
+    return stockageUnitaire;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
+   * comme paramètre d'entrée une URL ECDE
+   * 
+   * @param urlEcde
+   *          l'URL ECDE
+   * @param metadonnees
+   *          les métadonnées
+   * @return l'objet pour la couche web service
+   */
+  public static ArchivageUnitairePJ buildArchivageUnitairePJRequestAvecUrlEcde(
+                                                                               final String urlEcde, final MetadonneeValeurList metadonnees) {
+
+    // Construit la partie commune à tous les appels à archivageUnitairePJ
+    final ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+    final ArchivageUnitairePJRequestTypeChoice_type0 choice = buildArchivageUnitairePJRequestCommon(
+                                                                                                    archivageUnitairePJ,
+                                                                                                    metadonnees);
+
+    // L'URL ECDE
+    try {
+      choice.setEcdeUrl(buildEcdeUrl(urlEcde));
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+
+    // fin
+    return archivageUnitairePJ;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
+   * comme paramètre d'entrée un contenu de fichier
+   * 
+   * @param contenu
+   *          le contenu du fichier
+   * @param nomFichier
+   *          le nom du fichier associé au contenu
+   * @param metadonnees
+   *          les métadonnées
+   * @return l'objet pour la couche web service
+   */
+  public static ArchivageUnitairePJ buildArchivageUnitairePJRequestAvecContenu(
+                                                                               final DataHandler contenu, final String nomFichier,
+                                                                               final MetadonneeValeurList metadonnees) {
+
+    // Construit la partie commune à tous les appels à archivageUnitairePJ
+    final ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+    final ArchivageUnitairePJRequestTypeChoice_type0 choice = buildArchivageUnitairePJRequestCommon(
+                                                                                                    archivageUnitairePJ,
+                                                                                                    metadonnees);
+
+    // Le contenu
+    final DataFileType dataFile = new DataFileType();
+    choice.setDataFile(dataFile);
+    dataFile.setFileName(nomFichier);
+    dataFile.setFile(contenu);
+
+    // fin
+    return archivageUnitairePJ;
+
+  }
+
+  private static ArchivageUnitairePJRequestTypeChoice_type0 buildArchivageUnitairePJRequestCommon(
+                                                                                                  final ArchivageUnitairePJ archivageUnitairePJ,
+                                                                                                  final MetadonneeValeurList metadonnees) {
+
+    // La sauce technique
+    final ArchivageUnitairePJRequestType archivageUnitairePJReqType = new ArchivageUnitairePJRequestType();
+
+    archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJReqType);
+
+    final ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
+    archivageUnitairePJReqType
+                              .setArchivageUnitairePJRequestTypeChoice_type0(choice);
+
+    // Les métadonnées
+    final ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+    archivageUnitairePJReqType.setMetadonnees(listeMetadonneeType);
+
+    // Renvoie l'objet à setter au cas par cas
+    return choice;
+
+  }
+
+  /**
+   * Renvoie un objet de requête pour le service web archivageMasse
+   * 
+   * @param urlSommaire
+   *          l'URL du fichier sommaire.xml
+   * @return l'objet pour la couche WebService
+   */
+  public static ArchivageMasse buildArchivageMasseRequest(final String urlSommaire) {
+
+    final ArchivageMasse archivageMasse = new ArchivageMasse();
+
+    final ArchivageMasseRequestType archivageMasseReqType = new ArchivageMasseRequestType();
+
+    archivageMasse.setArchivageMasse(archivageMasseReqType);
+
+    // URL de sommaire.xml
+    EcdeUrlSommaireType urlEcdeSommaire;
+    try {
+      urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+    archivageMasseReqType.setUrlSommaire(urlEcdeSommaire);
+
+    // fin
+    return archivageMasse;
+
+  }
+
+  /**
+   * Renvoie un objet de requête pour le service web archivageMasseAvecHash
+   * 
+   * @param urlSommaire
+   *          l'URL du fichier sommaire.xml
+   * @return l'objet pour la couche WebService
+   */
+  public static ArchivageMasseAvecHash buildArchivageMasseAvecHashRequest(
+                                                                          final String urlSommaire, final String hash, final String typeHash) {
+
+    final ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
+
+    final ArchivageMasseAvecHashRequestType archivageMasseAvecHashReqType = new ArchivageMasseAvecHashRequestType();
+
+    archivageMasseAvecHash
+                          .setArchivageMasseAvecHash(archivageMasseAvecHashReqType);
+
+    // URL de sommaire.xml
+    EcdeUrlSommaireType urlEcdeSommaire;
+    try {
+      urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
+    }
+    catch (final MalformedURIException e) {
+      throw new IntegrationRuntimeException(e);
+    }
+    archivageMasseAvecHashReqType.setUrlSommaire(urlEcdeSommaire);
+
+    // Le hash
+    archivageMasseAvecHashReqType.setHash(hash);
+
+    // Le type de hash
+    archivageMasseAvecHashReqType.setTypeHash(typeHash);
+
+    // fin
+    return archivageMasseAvecHash;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "consultation"
+   * 
+   * @param idArchivage
+   *          l'identifiant d'archivage
+   * @param codeMetadonnees
+   *          la liste des codes des métadonnées souhaitées
+   * @return l'objet pour la couche WebService
+   */
+  public static Consultation buildConsultationRequest(final String idArchivage,
+                                                      final CodeMetadonneeList codeMetadonnees) {
+
+    final Consultation consultation = new Consultation();
+
+    final ConsultationRequestType consultationReqType = new ConsultationRequestType();
+
+    consultation.setConsultation(consultationReqType);
+
+    // UUID
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    consultationReqType.setIdArchive(uuid);
+
+    // Les codes des métadonnées souhaitées
+    // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+    // demandée
+    if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+      final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                              .buildListeCodesMetadonnes(codeMetadonnees);
+      consultationReqType.setMetadonnees(codesMetadonnees);
+    }
+
+    // fin
+    return consultation;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "getDocFormatOrigine"
+   * 
+   * @param uuidDocParent
+   *          l'identifiant d'archivage du document parent
+   * @return l'objet pour la couche WebService
+   */
+  public static GetDocFormatOrigine buildGetDocFormatOrigineRequest(final String uuidDocParent) {
+    final GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
+    final GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
+    getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
+
+    // UUID du document parent
+    final UuidType uuidType = new UuidType();
+    uuidType.setUuidType(uuidDocParent.toString());
+    getDocFormatOrigineRequest.setIdDoc(uuidType);
+
+    return getDocFormatOrigine;
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "consultationMTOM"
+   * 
+   * @param idArchivage
+   *          l'identifiant d'archivage
+   * @param codeMetadonnees
+   *          la liste des codes des métadonnées souhaitées
+   * @return l'objet pour la couche WebService
+   */
+  public static ConsultationMTOM buildConsultationMTOMRequest(
+                                                              final String idArchivage, final CodeMetadonneeList codeMetadonnees) {
+
+    final ConsultationMTOM consultation = new ConsultationMTOM();
+
+    final ConsultationMTOMRequestType consultationReqType = new ConsultationMTOMRequestType();
+
+    consultation.setConsultationMTOM(consultationReqType);
+
+    // UUID
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    consultationReqType.setIdArchive(uuid);
+
+    // Les codes des métadonnées souhaitées
+    // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+    // demandée
+    if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+      final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                              .buildListeCodesMetadonnes(codeMetadonnees);
+      consultationReqType.setMetadonnees(codesMetadonnees);
+    }
+
+    // fin
+    return consultation;
+
+  }
+
+  public static ConsultationGNTGNS buildConsultationGNTGNSRequest(
+                                                                  final String idArchivage, final CodeMetadonneeList codeMetadonnees) {
+
+    final ConsultationGNTGNS consultation = new ConsultationGNTGNS();
+
+    final ConsultationGNTGNSRequestType consultationReqType = new ConsultationGNTGNSRequestType();
+
+    consultation.setConsultationGNTGNS(consultationReqType);
+
+    // UUID
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    consultationReqType.setIdArchive(uuid);
+
+    // Les codes des métadonnées souhaitées
+    // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+    // demandée
+    if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+      final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                              .buildListeCodesMetadonnes(codeMetadonnees);
+      consultationReqType.setMetadonnees(codesMetadonnees);
+    }
+
+    // fin
+    return consultation;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "consultationAffichable"
+   * 
+   * @param idArchivage
+   *          l'identifiant d'archivage
+   * @param codeMetadonnees
+   *          la liste des codes des métadonnées souhaitées
+   * @return l'objet pour la couche WebService
+   */
+  public static ConsultationAffichable buildConsultationAffichableRequest(
+                                                                          final String idArchivage, final CodeMetadonneeList codeMetadonnees,
+                                                                          final Integer numeroPage, final Integer nombrePages) {
+
+    final ConsultationAffichable consultation = new ConsultationAffichable();
+
+    final ConsultationAffichableRequestType consultationReqType = new ConsultationAffichableRequestType();
+
+    consultation.setConsultationAffichable(consultationReqType);
+
+    // UUID
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    consultationReqType.setIdArchive(uuid);
+
+    // Les codes des métadonnées souhaitées
+    // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+    // demandée
+    if (!CollectionUtils.isEmpty(codeMetadonnees)) {
+      final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                              .buildListeCodesMetadonnes(codeMetadonnees);
+      consultationReqType.setMetadonnees(codesMetadonnees);
+    }
+
+    // Numero de page
+    if (numeroPage != null) {
+      consultationReqType.setNumeroPage(numeroPage.intValue());
+    }
+
+    // Nombre de pages
+    if (nombrePages != null) {
+      consultationReqType.setNombrePages(nombrePages.intValue());
+    }
+
+    // fin
+    return consultation;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "recherche"
+   * 
+   * @param requeteLucene
+   *          la requête LUCENE
+   * @param codeMetadonnees
+   *          la liste des codes des métadonnées que l'on veut dans les
+   *          résultats de recherche
+   * @return l'objet pour la couche WebService
+   */
+  public static Recherche buildRechercheRequest(final String requeteLucene,
+                                                final CodeMetadonneeList codeMetadonnees) {
+
+    final Recherche recherche = new Recherche();
+
+    final RechercheRequestType rechercheReqType = new RechercheRequestType();
+
+    recherche.setRecherche(rechercheReqType);
+
+    // La requête Lucene
+    final RequeteRechercheType requeteLuceneWs = SaeServiceObjectFactory
+                                                                        .buildRequeteLucene(requeteLucene);
+    rechercheReqType.setRequete(requeteLuceneWs);
+
+    // Les codes des métadonnées souhaitées
+    final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                            .buildListeCodesMetadonnes(codeMetadonnees);
+    rechercheReqType.setMetadonnees(codesMetadonnees);
+
+    // fin
+    return recherche;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web
+   * "recherche avec nb de resultats"
+   * 
+   * @param requeteLucene
+   *          la requête LUCENE
+   * @param codeMetadonnees
+   *          la liste des codes des métadonnées que l'on veut dans les
+   *          résultats de recherche
+   * @return l'objet pour la couche WebService
+   */
+  public static RechercheNbRes buildRechercheWithNbResRequest(
+                                                              final String requeteLucene, final CodeMetadonneeList codeMetadonnees) {
+
+    final RechercheNbRes recherche = new RechercheNbRes();
+
+    final RechercheNbResRequestType rechercheReqType = new RechercheNbResRequestType();
+
+    recherche.setRechercheNbRes(rechercheReqType);
+
+    // La requête Lucene
+    final RequeteRechercheNbResType requeteLuceneWs = SaeServiceObjectFactory
+                                                                             .buildRequeteLucene2(requeteLucene);
+    rechercheReqType.setRequete(requeteLuceneWs);
+
+    // Les codes des métadonnées souhaitées
+    final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                            .buildListeCodesMetadonnes(codeMetadonnees);
+    rechercheReqType.setMetadonnees(codesMetadonnees);
+
+    // fin
+    return recherche;
+  }
+
+  /**
+   * Construit un objet de requête pour le service web
+   * "recherche par itérateur"
+   * 
+   * @param metaFixes
+   *          les métadonnées fixes de la requête principale
+   * @param metaVariable
+   *          la métadonnée variable de la requête principale
+   * @param equalFilter
+   *          les filtres de type equal
+   * @param notEqualFilter
+   *          les filtres de type notEqual
+   * @param rangeFilter
+   *          les filtres de type range
+   * @param nbDocParPage
+   *          le nombre de document par page
+   * @param idPage
+   *          l'identifiant de la page
+   * @param codeMetadonnees
+   *          les métadonnées souhaitées en retour
+   * @return l'objet pour la couche WebService
+   */
+  public static RechercheParIterateur buildRechercheParIterateurRequest(
+                                                                        final MetadonneeValeurList metaFixes, final MetadonneeRangeValeur metaVariable,
+                                                                        final MetadonneeValeurList equalFilter, final MetadonneeValeurList notEqualFilter,
+                                                                        final MetadonneeRangeValeurList rangeFilter, final int nbDocParPage,
+                                                                        final IdentifiantPage idPage, final CodeMetadonneeList codeMetadonnees) {
+
+    final RechercheParIterateur recherche = new RechercheParIterateur();
+
+    final RechercheParIterateurRequestType rechercheReqType = new RechercheParIterateurRequestType();
+
+    recherche.setRechercheParIterateur(rechercheReqType);
+
+    // La requête principale
+    final RequetePrincipaleType reqPrincipaleType = buildRequetePrincipale(
+                                                                           metaFixes,
+                                                                           metaVariable);
+    rechercheReqType.setRequetePrincipale(reqPrincipaleType);
+
+    // Les filtres
+    final FiltreType filtreType = buildFiltres(equalFilter, notEqualFilter, rangeFilter);
+    rechercheReqType.setFiltres(filtreType);
+
+    // Le nombre de documents par pages
+    rechercheReqType.setNbDocumentsParPage(nbDocParPage);
+
+    // L'identifiant de la page
+    final IdentifiantPageType idPageType = buildIdPage(idPage);
+    if (idPageType != null) {
+      rechercheReqType.setIdentifiantPage(idPageType);
+    }
+
+    // Les codes des métadonnées souhaitées
+    final ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
+                                                                            .buildListeCodesMetadonnes(codeMetadonnees);
+    rechercheReqType.setMetadonnees(codesMetadonnees);
+
+    recherche.setRechercheParIterateur(rechercheReqType);
+    // fin
+    return recherche;
+  }
+
+  private static RequetePrincipaleType buildRequetePrincipale(
+                                                              final MetadonneeValeurList metaFixes, final MetadonneeRangeValeur metaVariable) {
+    // Les métadonnées fixes
+    final RequetePrincipaleType reqPrincipaleType = new RequetePrincipaleType();
+    final ListeMetadonneeType listeMetaType = new ListeMetadonneeType();
+    for (final MetadonneeValeur metaValeur : metaFixes) {
+      final MetadonneeType metaType = new MetadonneeType();
+      final MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+      metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+      metaType.setCode(metaCodeType);
+      final MetadonneeValeurType metaValType = new MetadonneeValeurType();
+      metaValType.setMetadonneeValeurType(metaValeur.getValeur());
+      metaType.setValeur(metaValType);
+      listeMetaType.addMetadonnee(metaType);
+    }
+    reqPrincipaleType.setFixedMetadatas(listeMetaType);
+
+    // La métadonnée variable
+    final RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
+    final MetadonneeCodeType rangeMetaCodeType = new MetadonneeCodeType();
+    rangeMetaCodeType.setMetadonneeCodeType(metaVariable.getCode());
+    rangeMetaType.setCode(rangeMetaCodeType);
+    final MetadonneeValeurType rangeMetaValMinType = new MetadonneeValeurType();
+    rangeMetaValMinType.setMetadonneeValeurType(metaVariable.getValeurMin());
+    rangeMetaType.setValeurMin(rangeMetaValMinType);
+    final MetadonneeValeurType rangeMetaValMaxType = new MetadonneeValeurType();
+    rangeMetaValMaxType.setMetadonneeValeurType(metaVariable.getValeurMax());
+    rangeMetaType.setValeurMax(rangeMetaValMaxType);
+    reqPrincipaleType.setVaryingMetadata(rangeMetaType);
+    return reqPrincipaleType;
+  }
+
+  private static IdentifiantPageType buildIdPage(final IdentifiantPage idPage) {
+    IdentifiantPageType idPageType = null;
+    if (idPage.getIdArchive() != null && idPage.getValeur() != null) {
+      idPageType = new IdentifiantPageType();
+      final UuidType uuidType = new UuidType();
+      uuidType.setUuidType(idPage.getIdArchive().toString());
+
+      idPageType.setIdArchive(uuidType);
+      final MetadonneeValeurType metaValType = new MetadonneeValeurType();
+      metaValType.setMetadonneeValeurType(idPage.getValeur());
+      idPageType.setValeur(metaValType);
+    }
+    return idPageType;
+  }
+
+  /**
+   * Construit un objet FiltreType pour l'opération de rechercher par itérateur
+   * 
+   * @param equalFilter
+   *          Filtres de type equal
+   * @param notEqualFilter
+   *          Filtres de type notEqual
+   * @param rangeFilter
+   *          Filtres de type range
+   * @return l'objet de type FiltreType
+   */
+  private static FiltreType buildFiltres(final MetadonneeValeurList equalFilter,
+                                         final MetadonneeValeurList notEqualFilter, final MetadonneeRangeValeurList rangeFilter) {
+    final FiltreType filtreType = new FiltreType();
+    final ListeMetadonneeType listeMeta = new ListeMetadonneeType();
+    for (final MetadonneeValeur metaValeur : equalFilter) {
+      final MetadonneeType metaType = new MetadonneeType();
+      final MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+      metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+      metaType.setCode(metaCodeType);
+      final MetadonneeValeurType metaValType = new MetadonneeValeurType();
+      metaValType.setMetadonneeValeurType(metaValeur.getValeur());
+      metaType.setValeur(metaValType);
+      listeMeta.addMetadonnee(metaType);
+    }
+    filtreType.setEqualFilter(listeMeta);
+
+    final ListeMetadonneeType listeMetaNE = new ListeMetadonneeType();
+    for (final MetadonneeValeur metaValeurNE : notEqualFilter) {
+      final MetadonneeType metaTypeNE = new MetadonneeType();
+      final MetadonneeCodeType metaCodeTypeNE = new MetadonneeCodeType();
+      metaCodeTypeNE.setMetadonneeCodeType(metaValeurNE.getCode());
+      metaTypeNE.setCode(metaCodeTypeNE);
+      final MetadonneeValeurType metaValTypeNE = new MetadonneeValeurType();
+      metaValTypeNE.setMetadonneeValeurType(metaValeurNE.getValeur());
+      metaTypeNE.setValeur(metaValTypeNE);
+      listeMetaNE.addMetadonnee(metaTypeNE);
+    }
+    filtreType.setNotEqualFilter(listeMetaNE);
+
+    final ListeRangeMetadonneeType listeRangeMeta = new ListeRangeMetadonneeType();
+    for (final MetadonneeRangeValeur metaValeur : rangeFilter) {
+      final RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
+
+      final MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
+      metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
+      rangeMetaType.setCode(metaCodeType);
+      final MetadonneeValeurType metaValTypeMin = new MetadonneeValeurType();
+      metaValTypeMin.setMetadonneeValeurType(metaValeur.getValeurMin());
+      rangeMetaType.setValeurMin(metaValTypeMin);
+      final MetadonneeValeurType metaValTypeMax = new MetadonneeValeurType();
+      metaValTypeMax.setMetadonneeValeurType(metaValeur.getValeurMax());
+      rangeMetaType.setValeurMax(metaValTypeMax);
+      listeRangeMeta.addRangeMetadonnee(rangeMetaType);
+    }
+
+    filtreType.setRangeFilter(listeRangeMeta);
+
+    return filtreType;
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "modification"
+   * 
+   * @param idDocument
+   *          l'identifiant unique du document à modifier
+   * @param metadonnees
+   *          les métadonnées à modifier
+   * @return l'objet pour la couche web service
+   */
+  public static Modification buildModificationRequest(final UUID idDocument,
+                                                      final MetadonneeValeurList metadonnees) {
+
+    final Modification modification = new Modification();
+
+    final ModificationRequestType modificationReqType = new ModificationRequestType();
+
+    modification.setModification(modificationReqType);
+
+    // L'identifiant du document
+    if (idDocument == null) {
+      throw new IntegrationRuntimeException(
+                                            "L'identifiant du document à modifier doit obligatoirement être renseigné");
+    } else {
+      modificationReqType.setUuid(buildUuid(idDocument.toString()));
+    }
+
+    // Les métadonnées
+    final ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
+    modificationReqType.setMetadonnees(listeMetadonneeType);
+
+    // fin
+    return modification;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "modification"
+   * 
+   * @param idDocument
+   *          l'identifiant unique du document à modifier
+   * @return l'objet pour la couche web service
+   */
+  public static Suppression buildSuppressionRequest(final UUID idDocument) {
+
+    final Suppression suppression = new Suppression();
+
+    final SuppressionRequestType suppressionReqType = new SuppressionRequestType();
+
+    suppression.setSuppression(suppressionReqType);
+
+    // L'identifiant du document
+    if (idDocument == null) {
+      throw new IntegrationRuntimeException(
+                                            "L'identifiant du document à supprimer doit obligatoirement être renseigné");
+    } else {
+      suppressionReqType.setUuid(buildUuid(idDocument.toString()));
+    }
+
+    // fin
+    return suppression;
+
+  }
+
+  /**
+   * Construit un objet de requête pour l'opération "transfert"
+   * 
+   * @param idDocument
+   *          l'identifiant unique du document à transférer
+   * @return l'objet pour la couche web service
+   */
+  public static Transfert buildTransfertRequest(final UUID idDocument) {
+
+    final Transfert transfert = new Transfert();
+
+    final TransfertRequestType transfertReqType = new TransfertRequestType();
+
+    transfert.setTransfert(transfertReqType);
+
+    // L'identifiant du document
+    if (idDocument == null) {
+      throw new IntegrationRuntimeException(
+                                            "L'identifiant du document à transférer doit obligatoirement être renseigné");
+    } else {
+      transfertReqType.setUuid(buildUuid(idDocument.toString()));
+    }
+
+    // fin
+    return transfert;
+
+  }
+
+  /**
+   * Construit un objet "Note" pour la couche WebService
+   * 
+   * @param note
+   *          La note sous la forme d'une chaîne de caractères
+   * @return l'objet pour la couche WebService
+   */
+  public static NoteTxtType buildNote(final String note) {
+
+    final NoteTxtType noteType = new NoteTxtType();
+
+    noteType.setNoteTxtType(note);
+
+    return noteType;
+
+  }
+
+  /**
+   * Construit un objet de requête pour le service web "ajoutNote"
+   * 
+   * @param idArchivage
+   *          l'identifiant d'archivage
+   * @param contenuNote
+   *          le texte de la note
+   * @return l'objet pour la couche WebService
+   */
+  public static AjoutNote buildAjoutNoteRequest(final String idArchivage,
+                                                final String contenuNote) {
+
+    final AjoutNote ajoutnote = new AjoutNote();
+
+    // -- UUID & NOTE
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    final NoteTxtType texteNote = SaeServiceObjectFactory.buildNote(contenuNote);
+
+    final AjoutNoteRequestType ajoutnoteReqType = new AjoutNoteRequestType();
+    ajoutnoteReqType.setUuid(uuid);
+    ajoutnoteReqType.setNote(texteNote);
+
+    ajoutnote.setAjoutNote(ajoutnoteReqType);
+
+    return ajoutnote;
+  }
+
+  public static SuppressionMasse buildSuppressionMasseRequest(final String requeteLucene) {
+
+    final SuppressionMasse suppressionmasse = new SuppressionMasse();
+    final SuppressionMasseRequestType requestType = new SuppressionMasseRequestType();
+    final RequeteRechercheType requeteRechType = new RequeteRechercheType();
+    requestType.setRequete(requeteRechType);
+    suppressionmasse.setSuppressionMasse(requestType);
+
+    suppressionmasse.getSuppressionMasse().getRequete().setRequeteRechercheType(requeteLucene);
+    return suppressionmasse;
+  }
+
+  public static RestoreMasse buildRestoreMasseRequest(final String idArchivage) {
+
+    final RestoreMasse restoremasse = new RestoreMasse();
+    final RestoreMasseRequestType restoremasseReqType = new RestoreMasseRequestType();
+
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
+    restoremasseReqType.setUuid(uuid);
+    restoremasse.setRestoreMasse(restoremasseReqType);
+
+    return restoremasse;
+
+  }
+
+  public static EtatTraitementsMasse buildEtatTraitementMasseRequest(final List<String> listeUuid) {
+
+    final EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();
+    final EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
+    etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
+
+    final ListeUuidType listeUuidType = new ListeUuidType();
+    for (final String uuid : listeUuid) {
+      final UuidType uuidType = new UuidType();
       uuidType.setUuidType(uuid);
-
-      return uuidType;
-
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "archivageUnitaire"
-    * 
-    * @param urlEcde
-    *           l'URL ECDE du document à archiver
-    * @param metadonnees
-    *           les métadonnées associés au document
-    * @return l'objet pour la couche web service
-    */
-   public static ArchivageUnitaire buildArchivageUnitaireRequest(
-         String urlEcde, MetadonneeValeurList metadonnees) {
-
-      ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
-
-      ArchivageUnitaireRequestType archivageUnitaireReqType = new ArchivageUnitaireRequestType();
-
-      archivageUnitaire.setArchivageUnitaire(archivageUnitaireReqType);
-
-      // L'URL ECDE
-      try {
-         archivageUnitaireReqType.setEcdeUrl(buildEcdeUrl(urlEcde));
-      } catch (MalformedURIException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-
-      // Les métadonnées
-      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
-      archivageUnitaireReqType.setMetadonnees(listeMetadonneeType);
-
-      // fin
-      return archivageUnitaire;
-
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "stockageUnitaire"
-    * 
-    * @param urlEcde
-    *           l'URL ECDE du document à archiver
-    * @param urlEcdeOrig
-    *           l'URL ECDE du document origine à archiver
-    * @param metadonnees
-    *           les métadonnées associés au document
-    * @return l'objet pour la couche web service
-    */
-   public static StockageUnitaire buildStockageUnitaireRequest(
-         String urlEcde,String urlEcdeOrig, MetadonneeValeurList metadonnees) {
-     
-      StockageUnitaire stockageUnitaire = new StockageUnitaire();
-
-      StockageUnitaireRequestType stockageUnitaireReqType = new StockageUnitaireRequestType();
-
-      stockageUnitaire.setStockageUnitaire(stockageUnitaireReqType);
-      
-      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
-      stockageUnitaireReqType
-            .setStockageUnitaireRequestTypeChoice_type0(choice0);
-      
-      // URL ECDE du document parent
-      EcdeUrlType ecdeUrlFichier = null;
-      try {
-         ecdeUrlFichier = buildEcdeUrl(urlEcde);
-         choice0.setUrlEcdeDoc(ecdeUrlFichier);
-        } catch (MalformedURIException e) {
-         throw new IntegrationRuntimeException(e);
-      } 
-      
-      // URL ECDE du document au format d'origine
-        StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
-        stockageUnitaireReqType
-              .setStockageUnitaireRequestTypeChoice_type1(choice1);       
-        EcdeUrlType ecdeUrlFichierOrig = null;
-        if (!urlEcdeOrig.isEmpty()){
-           try {
-              ecdeUrlFichierOrig = buildEcdeUrl(urlEcdeOrig);
-              choice1.setUrlEcdeDocOrigine(ecdeUrlFichierOrig);
-              } catch (MalformedURIException e) {
-                 throw new IntegrationRuntimeException(e);
-              }
-        }
-        
-      // Les métadonnées
-      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
-      stockageUnitaireReqType.setMetadonnees(listeMetadonneeType);
-     
-      // fin
-      return stockageUnitaire;
-
-   }
-   
-   /**
-    * Construit un objet de requête pour l'opération "stockageUnitairePJContenuSansMtom"
-    * 
-    * @param urlEcde
-    *           l'URL ECDE du document à archiver
-    * @param contenu
-    *           le flux pointant vers le fichier à archiver     
-    * @param urlEcdeOrig
-    *           l'URL ECDE du document origine à archiver
-    * @param contenuOrig
-    *           le flux pointant vers le fichier à archiver
-    * @param metadonnees
-    *           les métadonnées associés au document
-    * @return l'objet pour la couche web service
-    */
-
-   public static StockageUnitaire buildStockageUnitaireRequestavecContenu(
-         String urlEcde, InputStream contenu,
-         String urlEcdeOrig, InputStream contenuFormatOrigine,
-         MetadonneeValeurList metadonnees) {
-
-      StockageUnitaire stockageUnitaire = new StockageUnitaire();
-      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
-      stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
-
-      // Nom et contenu du fichier
-      DataFileType dataFile = new DataFileType();
-      dataFile.setFileName(urlEcde);
-      byte[] contenuBytes;
-      try {
-         contenuBytes = IOUtils.getStreamAsByteArray(contenu);
-      } catch (IOException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-      ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
-      DataHandler dataHandler = new DataHandler(byteArray);
-      dataFile.setFile(dataHandler);
-      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
-      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type0(choice0);
-      choice0.setDataFileDoc(dataFile);
-      
-      // Nom et contenu du fichier au format d'origine
-      DataFileType dataFileFormatOrigine = new DataFileType();
-      dataFileFormatOrigine.setFileName(urlEcdeOrig);
-      byte[] contenuBytesFormatOrigine;
-      try {
-         contenuBytesFormatOrigine = IOUtils.getStreamAsByteArray(contenuFormatOrigine);
-      } catch (IOException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(contenuBytesFormatOrigine);
-      DataHandler dataHandlerFormatOrigine = new DataHandler(byteArrayFormatOrigine);
-      dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
-      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
-      stockageUnitaireRequest.setStockageUnitaireRequestTypeChoice_type1(choice1);
-      choice1.setDataFileAttached(dataFileFormatOrigine);
-
-      // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMetadonnes(metadonnees);
-      stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
-
-      // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
-      return stockageUnitaire;
-
-   }
-
-   
-   /**
-    * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
-    * comme paramètre d'entrée une URL ECDE
-    * 
-    * @param urlEcde
-    *           l'URL ECDE
-    * @param metadonnees
-    *           les métadonnées
-    * @return l'objet pour la couche web service
-    */
-   public static ArchivageUnitairePJ buildArchivageUnitairePJRequestAvecUrlEcde(
-         String urlEcde, MetadonneeValeurList metadonnees) {
-
-      // Construit la partie commune à tous les appels à archivageUnitairePJ
-      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
-      ArchivageUnitairePJRequestTypeChoice_type0 choice = buildArchivageUnitairePJRequestCommon(
-            archivageUnitairePJ, metadonnees);
-
-      // L'URL ECDE
-      try {
-         choice.setEcdeUrl(buildEcdeUrl(urlEcde));
-      } catch (MalformedURIException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-
-      // fin
-      return archivageUnitairePJ;
-
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "archivageUnitairePJ" avec
-    * comme paramètre d'entrée un contenu de fichier
-    * 
-    * @param contenu
-    *           le contenu du fichier
-    * @param nomFichier
-    *           le nom du fichier associé au contenu
-    * @param metadonnees
-    *           les métadonnées
-    * @return l'objet pour la couche web service
-    */
-   public static ArchivageUnitairePJ buildArchivageUnitairePJRequestAvecContenu(
-         DataHandler contenu, String nomFichier,
-         MetadonneeValeurList metadonnees) {
-
-      // Construit la partie commune à tous les appels à archivageUnitairePJ
-      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
-      ArchivageUnitairePJRequestTypeChoice_type0 choice = buildArchivageUnitairePJRequestCommon(
-            archivageUnitairePJ, metadonnees);
-
-      // Le contenu
-      DataFileType dataFile = new DataFileType();
-      choice.setDataFile(dataFile);
-      dataFile.setFileName(nomFichier);
-      dataFile.setFile(contenu);
-
-      // fin
-      return archivageUnitairePJ;
-
-   }
-
-   private static ArchivageUnitairePJRequestTypeChoice_type0 buildArchivageUnitairePJRequestCommon(
-         ArchivageUnitairePJ archivageUnitairePJ,
-         MetadonneeValeurList metadonnees) {
-
-      // La sauce technique
-      ArchivageUnitairePJRequestType archivageUnitairePJReqType = new ArchivageUnitairePJRequestType();
-
-      archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJReqType);
-
-      ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
-      archivageUnitairePJReqType
-            .setArchivageUnitairePJRequestTypeChoice_type0(choice);
-
-      // Les métadonnées
-      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
-      archivageUnitairePJReqType.setMetadonnees(listeMetadonneeType);
-
-      // Renvoie l'objet à setter au cas par cas
-      return choice;
-
-   }
-
-   /**
-    * Renvoie un objet de requête pour le service web archivageMasse
-    * 
-    * @param urlSommaire
-    *           l'URL du fichier sommaire.xml
-    * @return l'objet pour la couche WebService
-    */
-   public static ArchivageMasse buildArchivageMasseRequest(String urlSommaire) {
-
-      ArchivageMasse archivageMasse = new ArchivageMasse();
-
-      ArchivageMasseRequestType archivageMasseReqType = new ArchivageMasseRequestType();
-
-      archivageMasse.setArchivageMasse(archivageMasseReqType);
-
-      // URL de sommaire.xml
-      EcdeUrlSommaireType urlEcdeSommaire;
-      try {
-         urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
-      } catch (MalformedURIException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-      archivageMasseReqType.setUrlSommaire(urlEcdeSommaire);
-
-      // fin
-      return archivageMasse;
-
-   }
-
-   /**
-    * Renvoie un objet de requête pour le service web archivageMasseAvecHash
-    * 
-    * @param urlSommaire
-    *           l'URL du fichier sommaire.xml
-    * @return l'objet pour la couche WebService
-    */
-   public static ArchivageMasseAvecHash buildArchivageMasseAvecHashRequest(
-         String urlSommaire, String hash, String typeHash) {
-
-      ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
-
-      ArchivageMasseAvecHashRequestType archivageMasseAvecHashReqType = new ArchivageMasseAvecHashRequestType();
-
-      archivageMasseAvecHash
-            .setArchivageMasseAvecHash(archivageMasseAvecHashReqType);
-
-      // URL de sommaire.xml
-      EcdeUrlSommaireType urlEcdeSommaire;
-      try {
-         urlEcdeSommaire = buildEcdeUrlSommaire(urlSommaire);
-      } catch (MalformedURIException e) {
-         throw new IntegrationRuntimeException(e);
-      }
-      archivageMasseAvecHashReqType.setUrlSommaire(urlEcdeSommaire);
-
-      // Le hash
-      archivageMasseAvecHashReqType.setHash(hash);
-
-      // Le type de hash
-      archivageMasseAvecHashReqType.setTypeHash(typeHash);
-
-      // fin
-      return archivageMasseAvecHash;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web "consultation"
-    * 
-    * @param idArchivage
-    *           l'identifiant d'archivage
-    * @param codeMetadonnees
-    *           la liste des codes des métadonnées souhaitées
-    * @return l'objet pour la couche WebService
-    */
-   public static Consultation buildConsultationRequest(String idArchivage,
-         CodeMetadonneeList codeMetadonnees) {
-
-      Consultation consultation = new Consultation();
-
-      ConsultationRequestType consultationReqType = new ConsultationRequestType();
-
-      consultation.setConsultation(consultationReqType);
-
-      // UUID
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      consultationReqType.setIdArchive(uuid);
-
-      // Les codes des métadonnées souhaitées
-      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
-      // demandée
-      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
-         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-               .buildListeCodesMetadonnes(codeMetadonnees);
-         consultationReqType.setMetadonnees(codesMetadonnees);
-      }
-
-      // fin
-      return consultation;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web "getDocFormatOrigine"
-    * 
-    * @param uuidDocParent
-    *           l'identifiant d'archivage du document parent
-    * @return l'objet pour la couche WebService
-    */
-   public static GetDocFormatOrigine buildGetDocFormatOrigineRequest(String uuidDocParent) {
-      GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
-      GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
-      getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
-
-      // UUID du document parent
-      UuidType uuidType = new UuidType();
-      uuidType.setUuidType(uuidDocParent.toString());
-      getDocFormatOrigineRequest.setIdDoc(uuidType);
-      
-      return getDocFormatOrigine;
-   }
-   
-   /**
-    * Construit un objet de requête pour le service web "consultationMTOM"
-    * 
-    * @param idArchivage
-    *           l'identifiant d'archivage
-    * @param codeMetadonnees
-    *           la liste des codes des métadonnées souhaitées
-    * @return l'objet pour la couche WebService
-    */
-   public static ConsultationMTOM buildConsultationMTOMRequest(
-         String idArchivage, CodeMetadonneeList codeMetadonnees) {
-
-      ConsultationMTOM consultation = new ConsultationMTOM();
-
-      ConsultationMTOMRequestType consultationReqType = new ConsultationMTOMRequestType();
-
-      consultation.setConsultationMTOM(consultationReqType);
-
-      // UUID
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      consultationReqType.setIdArchive(uuid);
-
-      // Les codes des métadonnées souhaitées
-      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
-      // demandée
-      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
-         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-               .buildListeCodesMetadonnes(codeMetadonnees);
-         consultationReqType.setMetadonnees(codesMetadonnees);
-      }
-
-      // fin
-      return consultation;
-
-   }
-   
-   public static ConsultationGNTGNS buildConsultationGNTGNSRequest(
-         String idArchivage, CodeMetadonneeList codeMetadonnees) {
-
-      ConsultationGNTGNS consultation = new ConsultationGNTGNS();
-
-      ConsultationGNTGNSRequestType consultationReqType = new ConsultationGNTGNSRequestType();
-
-      consultation.setConsultationGNTGNS(consultationReqType);
-
-      // UUID
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      consultationReqType.setIdArchive(uuid);
-
-      // Les codes des métadonnées souhaitées
-      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
-      // demandée
-      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
-         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-               .buildListeCodesMetadonnes(codeMetadonnees);
-         consultationReqType.setMetadonnees(codesMetadonnees);
-      }
-
-      // fin
-      return consultation;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web "consultationAffichable"
-    * 
-    * @param idArchivage
-    *           l'identifiant d'archivage
-    * @param codeMetadonnees
-    *           la liste des codes des métadonnées souhaitées
-    * @return l'objet pour la couche WebService
-    */
-   public static ConsultationAffichable buildConsultationAffichableRequest(
-         String idArchivage, CodeMetadonneeList codeMetadonnees,
-         Integer numeroPage, Integer nombrePages) {
-
-      ConsultationAffichable consultation = new ConsultationAffichable();
-
-      ConsultationAffichableRequestType consultationReqType = new ConsultationAffichableRequestType();
-
-      consultation.setConsultationAffichable(consultationReqType);
-
-      // UUID
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      consultationReqType.setIdArchive(uuid);
-
-      // Les codes des métadonnées souhaitées
-      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
-      // demandée
-      if (!CollectionUtils.isEmpty(codeMetadonnees)) {
-         ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-               .buildListeCodesMetadonnes(codeMetadonnees);
-         consultationReqType.setMetadonnees(codesMetadonnees);
-      }
-
-      // Numero de page
-      if (numeroPage != null) {
-         consultationReqType.setNumeroPage(numeroPage.intValue());
-      }
-
-      // Nombre de pages
-      if (nombrePages != null) {
-         consultationReqType.setNombrePages(nombrePages.intValue());
-      }
-
-      // fin
-      return consultation;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web "recherche"
-    * 
-    * @param requeteLucene
-    *           la requête LUCENE
-    * @param codeMetadonnees
-    *           la liste des codes des métadonnées que l'on veut dans les
-    *           résultats de recherche
-    * @return l'objet pour la couche WebService
-    */
-   public static Recherche buildRechercheRequest(String requeteLucene,
-         CodeMetadonneeList codeMetadonnees) {
-
-      Recherche recherche = new Recherche();
-
-      RechercheRequestType rechercheReqType = new RechercheRequestType();
-
-      recherche.setRecherche(rechercheReqType);
-
-      // La requête Lucene
-      RequeteRechercheType requeteLuceneWs = SaeServiceObjectFactory
-            .buildRequeteLucene(requeteLucene);
-      rechercheReqType.setRequete(requeteLuceneWs);
-
-      // Les codes des métadonnées souhaitées
-      ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-            .buildListeCodesMetadonnes(codeMetadonnees);
-      rechercheReqType.setMetadonnees(codesMetadonnees);
-
-      // fin
-      return recherche;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web
-    * "recherche avec nb de resultats"
-    * 
-    * @param requeteLucene
-    *           la requête LUCENE
-    * @param codeMetadonnees
-    *           la liste des codes des métadonnées que l'on veut dans les
-    *           résultats de recherche
-    * @return l'objet pour la couche WebService
-    */
-   public static RechercheNbRes buildRechercheWithNbResRequest(
-         String requeteLucene, CodeMetadonneeList codeMetadonnees) {
-
-      RechercheNbRes recherche = new RechercheNbRes();
-
-      RechercheNbResRequestType rechercheReqType = new RechercheNbResRequestType();
-
-      recherche.setRechercheNbRes(rechercheReqType);
-
-      // La requête Lucene
-      RequeteRechercheNbResType requeteLuceneWs = SaeServiceObjectFactory
-            .buildRequeteLucene2(requeteLucene);
-      rechercheReqType.setRequete(requeteLuceneWs);
-
-      // Les codes des métadonnées souhaitées
-      ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-            .buildListeCodesMetadonnes(codeMetadonnees);
-      rechercheReqType.setMetadonnees(codesMetadonnees);
-
-      // fin
-      return recherche;
-   }
-
-   /**
-    * Construit un objet de requête pour le service web
-    * "recherche par itérateur"
-    * 
-    * @param metaFixes
-    *           les métadonnées fixes de la requête principale
-    * @param metaVariable
-    *           la métadonnée variable de la requête principale
-    * @param equalFilter
-    *           les filtres de type equal
-    * @param notEqualFilter
-    *           les filtres de type notEqual          
-    * @param rangeFilter
-    *           les filtres de type range
-    * @param nbDocParPage
-    *           le nombre de document par page
-    * @param idPage
-    *           l'identifiant de la page
-    * @param codeMetadonnees
-    *           les métadonnées souhaitées en retour
-    * @return l'objet pour la couche WebService
-    */
-   public static RechercheParIterateur buildRechercheParIterateurRequest(
-         MetadonneeValeurList metaFixes, MetadonneeRangeValeur metaVariable,
-         MetadonneeValeurList equalFilter, MetadonneeValeurList notEqualFilter,
-         MetadonneeRangeValeurList rangeFilter, int nbDocParPage,
-         IdentifiantPage idPage, CodeMetadonneeList codeMetadonnees) {
-
-      RechercheParIterateur recherche = new RechercheParIterateur();
-
-      RechercheParIterateurRequestType rechercheReqType = new RechercheParIterateurRequestType();
-
-      recherche.setRechercheParIterateur(rechercheReqType);
-
-      // La requête principale
-      RequetePrincipaleType reqPrincipaleType = buildRequetePrincipale(
-            metaFixes, metaVariable);
-      rechercheReqType.setRequetePrincipale(reqPrincipaleType);
-
-      // Les filtres
-      FiltreType filtreType = buildFiltres(equalFilter, notEqualFilter, rangeFilter);
-      rechercheReqType.setFiltres(filtreType);
-
-      // Le nombre de documents par pages
-      rechercheReqType.setNbDocumentsParPage(nbDocParPage);
-
-      // L'identifiant de la page
-      IdentifiantPageType idPageType = buildIdPage(idPage);
-      if (idPageType != null) {
-         rechercheReqType.setIdentifiantPage(idPageType);
-      }
-
-      // Les codes des métadonnées souhaitées
-      ListeMetadonneeCodeType codesMetadonnees = SaeServiceObjectFactory
-            .buildListeCodesMetadonnes(codeMetadonnees);
-      rechercheReqType.setMetadonnees(codesMetadonnees);
-
-      recherche.setRechercheParIterateur(rechercheReqType);
-      // fin
-      return recherche;
-   }
-
-   private static RequetePrincipaleType buildRequetePrincipale(
-         MetadonneeValeurList metaFixes, MetadonneeRangeValeur metaVariable) {
-      // Les métadonnées fixes
-      RequetePrincipaleType reqPrincipaleType = new RequetePrincipaleType();
-      ListeMetadonneeType listeMetaType = new ListeMetadonneeType();
-      for (MetadonneeValeur metaValeur : metaFixes) {
-         MetadonneeType metaType = new MetadonneeType();
-         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
-         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
-         metaType.setCode(metaCodeType);
-         MetadonneeValeurType metaValType = new MetadonneeValeurType();
-         metaValType.setMetadonneeValeurType(metaValeur.getValeur());
-         metaType.setValeur(metaValType);
-         listeMetaType.addMetadonnee(metaType);
-      }
-      reqPrincipaleType.setFixedMetadatas(listeMetaType);
-
-      // La métadonnée variable
-      RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
-      MetadonneeCodeType rangeMetaCodeType = new MetadonneeCodeType();
-      rangeMetaCodeType.setMetadonneeCodeType(metaVariable.getCode());
-      rangeMetaType.setCode(rangeMetaCodeType);
-      MetadonneeValeurType rangeMetaValMinType = new MetadonneeValeurType();
-      rangeMetaValMinType.setMetadonneeValeurType(metaVariable.getValeurMin());
-      rangeMetaType.setValeurMin(rangeMetaValMinType);
-      MetadonneeValeurType rangeMetaValMaxType = new MetadonneeValeurType();
-      rangeMetaValMaxType.setMetadonneeValeurType(metaVariable.getValeurMax());
-      rangeMetaType.setValeurMax(rangeMetaValMaxType);
-      reqPrincipaleType.setVaryingMetadata(rangeMetaType);
-      return reqPrincipaleType;
-   }
-
-   private static IdentifiantPageType buildIdPage(IdentifiantPage idPage) {
-      IdentifiantPageType idPageType = null;
-      if (idPage.getIdArchive() != null && idPage.getValeur() != null) {
-         idPageType = new IdentifiantPageType();
-         UuidType uuidType = new UuidType();
-         uuidType.setUuidType(idPage.getIdArchive().toString());
-
-         idPageType.setIdArchive(uuidType);
-         MetadonneeValeurType metaValType = new MetadonneeValeurType();
-         metaValType.setMetadonneeValeurType(idPage.getValeur());
-         idPageType.setValeur(metaValType);
-      }
-      return idPageType;
-   }
-
-   /**
-    * Construit un objet FiltreType pour l'opération de rechercher par itérateur
-    * 
-    * @param equalFilter
-    *           Filtres de type equal
-    * @param notEqualFilter
-    *           Filtres de type notEqual          
-    * @param rangeFilter
-    *           Filtres de type range
-    * @return l'objet de type FiltreType
-    */
-   private static FiltreType buildFiltres(MetadonneeValeurList equalFilter,
-         MetadonneeValeurList notEqualFilter, MetadonneeRangeValeurList rangeFilter) {
-      FiltreType filtreType = new FiltreType();
-      ListeMetadonneeType listeMeta = new ListeMetadonneeType();
-      for (MetadonneeValeur metaValeur : equalFilter) {
-         MetadonneeType metaType = new MetadonneeType();
-         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
-         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
-         metaType.setCode(metaCodeType);
-         MetadonneeValeurType metaValType = new MetadonneeValeurType();
-         metaValType.setMetadonneeValeurType(metaValeur.getValeur());
-         metaType.setValeur(metaValType);
-         listeMeta.addMetadonnee(metaType);
-      }
-      filtreType.setEqualFilter(listeMeta);
-
-      ListeMetadonneeType listeMetaNE = new ListeMetadonneeType();
-      for (MetadonneeValeur metaValeurNE : notEqualFilter) {
-         MetadonneeType metaTypeNE = new MetadonneeType();
-         MetadonneeCodeType metaCodeTypeNE = new MetadonneeCodeType();
-         metaCodeTypeNE.setMetadonneeCodeType(metaValeurNE.getCode());
-         metaTypeNE.setCode(metaCodeTypeNE);
-         MetadonneeValeurType metaValTypeNE = new MetadonneeValeurType();
-         metaValTypeNE.setMetadonneeValeurType(metaValeurNE.getValeur());
-         metaTypeNE.setValeur(metaValTypeNE);
-         listeMetaNE.addMetadonnee(metaTypeNE);
-      }
-      filtreType.setNotEqualFilter(listeMetaNE);
-      
-      ListeRangeMetadonneeType listeRangeMeta = new ListeRangeMetadonneeType();
-      for (MetadonneeRangeValeur metaValeur : rangeFilter) {
-         RangeMetadonneeType rangeMetaType = new RangeMetadonneeType();
-
-         MetadonneeCodeType metaCodeType = new MetadonneeCodeType();
-         metaCodeType.setMetadonneeCodeType(metaValeur.getCode());
-         rangeMetaType.setCode(metaCodeType);
-         MetadonneeValeurType metaValTypeMin = new MetadonneeValeurType();
-         metaValTypeMin.setMetadonneeValeurType(metaValeur.getValeurMin());
-         rangeMetaType.setValeurMin(metaValTypeMin);
-         MetadonneeValeurType metaValTypeMax = new MetadonneeValeurType();
-         metaValTypeMax.setMetadonneeValeurType(metaValeur.getValeurMax());
-         rangeMetaType.setValeurMax(metaValTypeMax);
-         listeRangeMeta.addRangeMetadonnee(rangeMetaType);
-      }
-
-      filtreType.setRangeFilter(listeRangeMeta);
-
-      return filtreType;
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "modification"
-    * 
-    * @param idDocument
-    *           l'identifiant unique du document à modifier
-    * @param metadonnees
-    *           les métadonnées à modifier
-    * @return l'objet pour la couche web service
-    */
-   public static Modification buildModificationRequest(UUID idDocument,
-         MetadonneeValeurList metadonnees) {
-
-      Modification modification = new Modification();
-
-      ModificationRequestType modificationReqType = new ModificationRequestType();
-
-      modification.setModification(modificationReqType);
-
-      // L'identifiant du document
-      if (idDocument == null) {
-         throw new IntegrationRuntimeException(
-               "L'identifiant du document à modifier doit obligatoirement être renseigné");
-      } else {
-         modificationReqType.setUuid(buildUuid(idDocument.toString()));
-      }
-
-      // Les métadonnées
-      ListeMetadonneeType listeMetadonneeType = buildListeMetadonnes(metadonnees);
-      modificationReqType.setMetadonnees(listeMetadonneeType);
-
-      // fin
-      return modification;
-
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "modification"
-    * 
-    * @param idDocument
-    *           l'identifiant unique du document à modifier
-    * @return l'objet pour la couche web service
-    */
-   public static Suppression buildSuppressionRequest(UUID idDocument) {
-
-      Suppression suppression = new Suppression();
-
-      SuppressionRequestType suppressionReqType = new SuppressionRequestType();
-
-      suppression.setSuppression(suppressionReqType);
-
-      // L'identifiant du document
-      if (idDocument == null) {
-         throw new IntegrationRuntimeException(
-               "L'identifiant du document à supprimer doit obligatoirement être renseigné");
-      } else {
-         suppressionReqType.setUuid(buildUuid(idDocument.toString()));
-      }
-
-      // fin
-      return suppression;
-
-   }
-
-   /**
-    * Construit un objet de requête pour l'opération "transfert"
-    * 
-    * @param idDocument
-    *           l'identifiant unique du document à transférer
-    * @return l'objet pour la couche web service
-    */
-   public static Transfert buildTransfertRequest(UUID idDocument) {
-
-      Transfert transfert = new Transfert();
-
-      TransfertRequestType transfertReqType = new TransfertRequestType();
-
-      transfert.setTransfert(transfertReqType);
-
-      // L'identifiant du document
-      if (idDocument == null) {
-         throw new IntegrationRuntimeException(
-               "L'identifiant du document à transférer doit obligatoirement être renseigné");
-      } else {
-         transfertReqType.setUuid(buildUuid(idDocument.toString()));
-      }
-
-      // fin
-      return transfert;
-
-   }
-   
-   /**
-    * Construit un objet "Note" pour la couche WebService
-    * 
-    * @param note
-    *           La note sous la forme d'une chaîne de caractères
-    * @return l'objet pour la couche WebService
-    */
-   public static NoteTxtType buildNote(String note) {
-
-      NoteTxtType noteType = new NoteTxtType();
-
-      noteType.setNoteTxtType(note);
-
-      return noteType;
-
-   }
-
-   /**
-    * Construit un objet de requête pour le service web "ajoutNote"
-    * 
-    * @param idArchivage
-    *           l'identifiant d'archivage
-    * @param contenuNote
-    *           le texte de la note
-    * @return l'objet pour la couche WebService
-    */
-   public static AjoutNote buildAjoutNoteRequest(String idArchivage,
-         String contenuNote) {
-
-      AjoutNote ajoutnote = new AjoutNote();
-
-      //-- UUID & NOTE
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      NoteTxtType texteNote = SaeServiceObjectFactory.buildNote(contenuNote);
-      
-      AjoutNoteRequestType ajoutnoteReqType = new AjoutNoteRequestType();
-      ajoutnoteReqType.setUuid(uuid);
-      ajoutnoteReqType.setNote(texteNote);
-      
-      ajoutnote.setAjoutNote(ajoutnoteReqType);
-
-      return ajoutnote;
-   }
-
-
-   public static SuppressionMasse buildSuppressionMasseRequest(String requeteLucene) {
-
-      SuppressionMasse suppressionmasse = new SuppressionMasse();
-      SuppressionMasseRequestType requestType = new SuppressionMasseRequestType();
-      RequeteRechercheType requeteRechType = new RequeteRechercheType();  
-      requestType.setRequete(requeteRechType);
-      suppressionmasse.setSuppressionMasse(requestType);
-      
-      suppressionmasse.getSuppressionMasse().getRequete().setRequeteRechercheType(requeteLucene);
-      return suppressionmasse;
-   }
-
-
-   public static RestoreMasse buildRestoreMasseRequest(String idArchivage) {
-
-      RestoreMasse restoremasse = new RestoreMasse();
-      RestoreMasseRequestType restoremasseReqType = new RestoreMasseRequestType();
-      
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idArchivage);
-      restoremasseReqType.setUuid(uuid);
-      restoremasse.setRestoreMasse(restoremasseReqType);
-      
-      return restoremasse;
-      
-   }
-
-   public static EtatTraitementsMasse buildEtatTraitementMasseRequest( List<String> listeUuid) {
-
-      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();     
-      EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
-      etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
-      
-      ListeUuidType listeUuidType = new ListeUuidType();
-      for (String uuid : listeUuid) {
-         UuidType uuidType = new UuidType();
-         uuidType.setUuidType(uuid);
-         listeUuidType.addUuid(uuidType);
-      }
-      etatTraitementsMasseRequest.setListeUuid(listeUuidType);
-      
-      return etatTraitementsMasse;
-   }
-
-   /**
-    * Methode permettant de construire le bean {@link Copie}
-    * 
-    * @param idGed
-    *           Identifiant de l'archive GED
-    * @param listeMetadonnees
-    *           Liste des metadonnées
-    * @return
-    */
-   public static Copie buildCopieRequest(String idGed,
-         MetadonneeValeurList listeMetadonnees) {
-
-      Copie copie = new Copie();
-
-      CopieRequestType copieReqType = new CopieRequestType();
-
-      copie.setCopie(copieReqType);
-
-      // UUID
-      UuidType uuid = SaeServiceObjectFactory.buildUuid(idGed);
-      copieReqType.setIdGed(uuid);
-
-      // Les codes des métadonnées souhaitées
-      // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
-      // demandée
-      if (!CollectionUtils.isEmpty(listeMetadonnees)) {
-         ListeMetadonneeType listeMetadonneesType = SaeServiceObjectFactory
-               .buildListeMetadonnes(listeMetadonnees);
-         copieReqType.setMetadonnees(listeMetadonneesType);
-      }
-
-      // fin
-      return copie;
-
-   }
+      listeUuidType.addUuid(uuidType);
+    }
+    etatTraitementsMasseRequest.setListeUuid(listeUuidType);
+
+    return etatTraitementsMasse;
+  }
+
+  /**
+   * Methode permettant de construire le bean {@link Copie}
+   * 
+   * @param idGed
+   *          Identifiant de l'archive GED
+   * @param listeMetadonnees
+   *          Liste des metadonnées
+   * @return
+   */
+  public static Copie buildCopieRequest(final String idGed,
+                                        final MetadonneeValeurList listeMetadonnees) {
+
+    final Copie copie = new Copie();
+
+    final CopieRequestType copieReqType = new CopieRequestType();
+
+    copie.setCopie(copieReqType);
+
+    // UUID
+    final UuidType uuid = SaeServiceObjectFactory.buildUuid(idGed);
+    copieReqType.setIdGed(uuid);
+
+    // Les codes des métadonnées souhaitées
+    // Les métadonnées ne sont ajoutées que SI au moins 1 métadonnée est
+    // demandée
+    if (!CollectionUtils.isEmpty(listeMetadonnees)) {
+      final ListeMetadonneeType listeMetadonneesType = SaeServiceObjectFactory
+                                                                              .buildListeMetadonnes(listeMetadonnees);
+      copieReqType.setMetadonnees(listeMetadonneesType);
+    }
+
+    // fin
+    return copie;
+
+  }
 }

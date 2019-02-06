@@ -141,7 +141,7 @@
    <!-- ====================================================== -->
    
    
-   <p class="titre2">3) Configuration du chemin vers les tests de regression</p>
+   <p class="titre2">3) Configuration du chemin vers les tests de non-regression</p>
    
    <p style="color:red; font-style:italic; font-weight:bold;">Attention : cette modification n'est valable que pour la session en cours. Pour une modification définitive, il faut modifier le fichier de configuration de l'application.</p>
    
@@ -186,6 +186,35 @@
                <input
                   type="submit"
 					   onclick="document.getElementById('action').value='saveTestXml'"
+					   value="Changer le chemin" />
+            </td>
+			</tr>
+		</tbody>
+	</table>
+   
+   <br /><br /><br /><br />
+   
+    <!-- ====================================================== -->
+   <!-- La configuration du chemin vers les tests de regression -->
+   <!-- ====================================================== -->
+   
+   
+   <p class="titre2">3) Configuration du chemin vers les fichiers des résultats attendus pour les tests de non-regression</p>
+   
+   <p style="color:red; font-style:italic; font-weight:bold;">Attention : cette modification n'est valable que pour la session en cours. Pour une modification définitive, il faut modifier le fichier de configuration de l'application.</p>
+   
+	<table width="100%">
+		<tbody>
+			<tr>
+				<td>Chemin vers le dossier contenant les résultats attendus des tests de non-regression</td>
+				<td><form:input path="cheminTestAttendu" size="100" /></td>
+			</tr>
+			<tr>
+				<td><h3 style="color: red">modifier le chemin</h3></td>
+				<td>
+               <input
+                  type="submit"
+					   onclick="document.getElementById('action').value='saveTestAttendu'"
 					   value="Changer le chemin" />
             </td>
 			</tr>

@@ -9,18 +9,43 @@ public class TestProprietes {
    private String messageAttendu;
    private String[] checkboxValue;
    private Map<String, Map<String, String>> resStub;
-   private Map<String, Map<String, String>> messageInOut;
+   private Map<String, Map<String, Map<String, String>>> messageInOut;
+   private Map<String, String> testOkKo;
+   private Map<String, Map<String, String>> mapRegressionMasse;
+   
    
    public TestProprietes(){
       resStub = new LinkedHashMap<String, Map<String, String>>();
+      messageInOut =  new LinkedHashMap<String, Map<String, Map<String, String>>>();
+      testOkKo =  new LinkedHashMap<String, String>();
+      mapRegressionMasse = new LinkedHashMap<String, Map<String, String>>();
    }
    
    public TestProprietes(String name){
       this.name = name;
       resStub = new LinkedHashMap<String, Map<String, String>>();
+      messageInOut =  new LinkedHashMap<String, Map<String, Map<String, String>>>();
+      testOkKo =  new LinkedHashMap<String, String>();
    }
    
    
+   public Map<String, Map<String, String>> getMapRegressionMasse() {
+      return mapRegressionMasse;
+   }
+
+   public void setMapRegressionMasse(
+         Map<String, Map<String, String>> mapRegressionMasse) {
+      this.mapRegressionMasse = mapRegressionMasse;
+   }
+
+   public Map<String, String> getTestOkKo() {
+      return testOkKo;
+   }
+
+   public void setTestOkKo(Map<String, String> testOkKo) {
+      this.testOkKo = testOkKo;
+   }
+
    public String getName() {
       return name;
    }
@@ -49,11 +74,11 @@ public class TestProprietes {
       this.checkboxValue = checkboxValue;
    }
 
-   public Map<String, Map<String, String>> getMessageInOut() {
+   public Map<String, Map<String, Map<String, String>>> getMessageInOut() {
       return messageInOut;
    }
 
-   public void setMessageInOut(Map<String, Map<String, String>> mesageInOut) {
+   public void setMessageInOut(Map<String, Map<String, Map<String, String>>> mesageInOut) {
       this.messageInOut = mesageInOut;
    } 
 }

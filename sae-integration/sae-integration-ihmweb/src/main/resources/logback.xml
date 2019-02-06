@@ -11,7 +11,7 @@
      <!--
       <file>C:/sae/integration/logs/logs_appli_integration.log</file>
    -->
-      <file>/appl/sae_integration/logs/logs_appli_integration.log</file>
+      <file>/hawai/logs/ged/logs_sae_integration.log</file>
    
       
       <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -19,7 +19,7 @@
          <fileNamePattern>c:/logs/logs_appli_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
    -->
      
-         <fileNamePattern>/appl/sae_integration/logs/logs_appli_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
+         <fileNamePattern>/hawai/logs/ged/logs_sae_integration.%d{yyyy-MM-dd}.log</fileNamePattern>
    
         
          <maxHistory>30</maxHistory>
@@ -37,7 +37,7 @@
    <logger name="fr.urssaf.image.sae" level="debug"/>
    -->
    
-   <root level="warn">
+   <root level="INFO">
       <appender-ref ref="STDOUT" />
       <appender-ref ref="FILE" />
    </root>
