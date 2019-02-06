@@ -15,7 +15,7 @@ import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
 import fr.urssaf.image.sae.storage.dfce.messages.StorageMessageHandler;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.support.TracesDfceSupport;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
@@ -31,7 +31,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
  */
 @Service
 @Qualifier("deletionService")
-public class DeletionServiceImpl extends AbstractCommonServices implements
+public class DeletionServiceImpl extends AbstractServices implements
 DeletionService {
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DeletionServiceImpl.class);
@@ -67,8 +67,7 @@ DeletionService {
          throws DeletionServiceEx {
 
       //-- Suppression du ducument
-      storageDocumentServiceSupport.deleteStorageDocument(getDfceService(), 
-            getCnxParameters(), uuid, LOGGER, tracesSupport);
+      storageDocumentServiceSupport.deleteStorageDocument(getDfceServices(), uuid, LOGGER, tracesSupport);
    }
 
    /**
@@ -84,24 +83,24 @@ DeletionService {
       try {
          storageDocuments = searchingService
                .searchStorageDocumentByLuceneCriteria(new LuceneCriteria(
-                     lucene, Integer.parseInt(StorageMessageHandler
-                           .getMessage("max.lucene.results")), null));
-         for (StorageDocument storageDocument : storageDocuments
+                                                                         lucene, Integer.parseInt(StorageMessageHandler
+                                                                                                  .getMessage("max.lucene.results")), null));
+         for (final StorageDocument storageDocument : storageDocuments
                .getAllStorageDocuments()) {
             deleteStorageDocument(storageDocument.getUuid());
          }
-      } catch (NumberFormatException numberExcept) {
+      } catch (final NumberFormatException numberExcept) {
          throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR),
-               numberExcept.getMessage(), numberExcept);
-      } catch (SearchingServiceEx searchingExcept) {
+                                     .getMessage(Constants.DEL_CODE_ERROR),
+                                     numberExcept.getMessage(), numberExcept);
+      } catch (final SearchingServiceEx searchingExcept) {
          new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR), searchingExcept
-               .getMessage(), searchingExcept);
-      } catch (QueryParseServiceEx searchingExcept) {
+                               .getMessage(Constants.DEL_CODE_ERROR), searchingExcept
+                               .getMessage(), searchingExcept);
+      } catch (final QueryParseServiceEx searchingExcept) {
          throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR), searchingExcept
-               .getMessage(), searchingExcept);
+                                     .getMessage(Constants.DEL_CODE_ERROR), searchingExcept
+                                     .getMessage(), searchingExcept);
       }
    }
 
@@ -109,29 +108,29 @@ DeletionService {
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocForTransfert(UUID uuid) throws DeletionServiceEx {
+   public void deleteStorageDocForTransfert(final UUID uuid) throws DeletionServiceEx {
 
       //-- Traces debug - entrée méthode
-      String prefixeTrc = "deleteStorageDocForTransfert()";
+      final String prefixeTrc = "deleteStorageDocForTransfert()";
       LOGGER.debug("{} - Début", prefixeTrc);
       //-- Fin des traces debug - entrée méthode
       try {
          LOGGER.debug("{} - UUID à transférer : {}", prefixeTrc, uuid);
-         getDfceService().getStoreService().deleteDocument(uuid);
+         getDfceServices().deleteDocument(uuid);
 
          //-- Trace l'événement "Suppression d'un document de DFCE"
          tracesSupport.traceTransfertDocumentDeDFCE(uuid);
 
          LOGGER.debug("{} - Sortie", prefixeTrc);
 
-      } catch (FrozenDocumentException frozenExcept) {
+      } catch (final FrozenDocumentException frozenExcept) {
          LOGGER
          .debug(
-               "{} - Une exception a été levée lors du transfert du document : {}",
-               prefixeTrc, frozenExcept.getMessage());
+                "{} - Une exception a été levée lors du transfert du document : {}",
+                prefixeTrc, frozenExcept.getMessage());
          throw new DeletionServiceEx(StorageMessageHandler
-               .getMessage(Constants.DEL_CODE_ERROR),
-               frozenExcept.getMessage(), frozenExcept);
+                                     .getMessage(Constants.DEL_CODE_ERROR),
+                                     frozenExcept.getMessage(), frozenExcept);
       }
    }
 

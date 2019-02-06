@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
@@ -16,12 +16,12 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * Ecouteur pour la partie rollback
- * 
+ *
  */
 @Component
 public class RollbackVirtualListener
-      extends
-      AbstractRollbackListener<VirtualStorageDocument, CaptureMasseVirtualDocument> {
+extends
+AbstractRollbackListener<VirtualStorageDocument, CaptureMasseVirtualDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(RollbackVirtualListener.class);

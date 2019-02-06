@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.executable.service.impl;
 
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableException;
 import fr.urssaf.image.sae.trace.executable.exception.TraceExecutableRuntimeException;
 import fr.urssaf.image.sae.trace.executable.service.TraitementService;
@@ -29,7 +29,7 @@ import fr.urssaf.image.sae.trace.service.StatusService;
  * Classe d'implémentation du support {@link TraitementService}. Cette classe
  * est un singleton et peut être accessible par le mécanisme d'injection IOC
  * avec l'annotation @Autowired
- * 
+ *
  */
 @Service
 public class TraitementServiceImpl implements TraitementService {
@@ -41,7 +41,7 @@ public class TraitementServiceImpl implements TraitementService {
    private PurgeService purgeService;
 
    @Autowired
-   private ServiceProviderSupport providerSupport;
+   private DFCEServices dfceServices;
 
    @Autowired
    private JournalisationService journalisationService;
@@ -59,15 +59,15 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public final void purger(PurgeType purgeType) {
+   public final void purger(final PurgeType purgeType) {
 
-      String trcPrefix = "purge()";
+      final String trcPrefix = "purge()";
 
       try {
-         providerSupport.connect();
+         dfceServices.connectTheFistTime();
 
          LOGGER.info("{} - début du traitement de la purge pour le type {}",
-               new Object[] { trcPrefix, purgeType.toString() });
+                     new Object[] { trcPrefix, purgeType.toString() });
 
          if (PurgeType.PURGE_EVT.equals(purgeType)) {
             purgeService.purgerJournal(purgeType);
@@ -75,10 +75,10 @@ public class TraitementServiceImpl implements TraitementService {
             purgeService.purgerRegistre(purgeType);
          }
          LOGGER.info("{} - fin du traitement de la purge pour le type {}",
-               new Object[] { trcPrefix, purgeType.toString() });
+                     new Object[] { trcPrefix, purgeType.toString() });
 
       } finally {
-         providerSupport.disconnect();
+         dfceServices.closeConnexion();
       }
 
    }
@@ -87,57 +87,57 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public final void journaliser(JournalisationType typeJournalisation)
+   public final void journaliser(final JournalisationType typeJournalisation)
          throws TraceExecutableException {
 
       authentificationSupport.authentifier();
 
-      String trcPrefix = "journaliser()";
+      final String trcPrefix = "journaliser()";
 
-      boolean isRunning = statusService
+      final boolean isRunning = statusService
             .isJournalisationRunning(typeJournalisation);
 
       if (isRunning) {
          throw new TraceExecutableRuntimeException(StringUtils.replace(
-               "la journalisation {0} est déjà en cours", "{0}",
-               typeJournalisation.toString()));
+                                                                       "la journalisation {0} est déjà en cours", "{0}",
+                                                                       typeJournalisation.toString()));
       }
 
       LOGGER.info(
-            "{} - début du traitement de la journalisation pour le type {}",
-            new Object[] { trcPrefix, typeJournalisation.toString() });
+                  "{} - début du traitement de la journalisation pour le type {}",
+                  new Object[] { trcPrefix, typeJournalisation.toString() });
 
       statusService
-            .updateJournalisationStatus(typeJournalisation, Boolean.TRUE);
-      List<Date> dates = journalisationService
+      .updateJournalisationStatus(typeJournalisation, Boolean.TRUE);
+      final List<Date> dates = journalisationService
             .recupererDates(typeJournalisation);
 
       try {
-         for (Date date : dates) {
+         for (final Date date : dates) {
             LOGGER
-                  .info(
-                        "{} - début du traitement de la journalisation pour le type {} et à la date du {}",
-                        new Object[] { trcPrefix,
-                              typeJournalisation.toString(),
-                              DateFormatUtils.ISO_DATE_FORMAT.format(date) });
+            .info(
+                  "{} - début du traitement de la journalisation pour le type {} et à la date du {}",
+                  new Object[] { trcPrefix,
+                                 typeJournalisation.toString(),
+                                 DateFormatUtils.ISO_DATE_FORMAT.format(date) });
 
             journalisationSupport.journaliser(typeJournalisation, date);
 
             LOGGER
-                  .info(
-                        "{} - fin du traitement de la journalisation pour le type {} et à la date du {}",
-                        new Object[] { trcPrefix,
-                              typeJournalisation.toString(),
-                              DateFormatUtils.ISO_DATE_FORMAT.format(date) });
+            .info(
+                  "{} - fin du traitement de la journalisation pour le type {} et à la date du {}",
+                  new Object[] { trcPrefix,
+                                 typeJournalisation.toString(),
+                                 DateFormatUtils.ISO_DATE_FORMAT.format(date) });
          }
 
          LOGGER.info(
-               "{} - fin du traitement de la journalisation pour le type {}",
-               new Object[] { trcPrefix, typeJournalisation.toString() });
+                     "{} - fin du traitement de la journalisation pour le type {}",
+                     new Object[] { trcPrefix, typeJournalisation.toString() });
 
       } finally {
          statusService.updateJournalisationStatus(typeJournalisation,
-               Boolean.FALSE);
+                                                  Boolean.FALSE);
       }
 
    }

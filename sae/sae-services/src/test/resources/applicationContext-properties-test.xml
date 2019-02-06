@@ -36,23 +36,10 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
-   <bean id="dfceConnectionTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg type="java.io.File" value="${sae.dfce.transfert.cheminFichierConfig}" />
-   </bean>   
-   
    <bean id="saeServiceTestProviderTransfert"
       class="fr.urssaf.image.sae.services.SAEServiceTestProviderTransfert"
       factory-method="createSAEServiceTestProviderTransfert">
-      <constructor-arg ref="dfceConnectionTransfert" />
+      <constructor-arg ref="dfceServicesTransfert" />
    </bean>
 
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
-      <constructor-arg ref="dfceConnection" />
-   </bean><!--
-   
-   <bean id="storageTransfertService" class="fr.urssaf.image.sae.utils.MockFactoryBean"
-      factory-method="createStorageTransfertService" primary="true" />
---></beans>
+</beans>

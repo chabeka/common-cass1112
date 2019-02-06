@@ -12,19 +12,18 @@ import org.springframework.stereotype.Service;
 import fr.urssaf.image.sae.storage.dfce.annotations.Loggable;
 import fr.urssaf.image.sae.storage.dfce.annotations.ServiceChecked;
 import fr.urssaf.image.sae.storage.dfce.messages.LogLevel;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractCommonServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.services.storagedocument.DocumentNoteService;
 
 /**
  * Implémente les services de l'interface {@link DocumentNoteService}.
- * 
+ *
  */
 @Service
 @Qualifier("documentNoteService")
-public class DocumentNoteServiceImpl extends AbstractCommonServices implements
-DocumentNoteService {
+public class DocumentNoteServiceImpl extends AbstractServices implements DocumentNoteService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(DocumentNoteServiceImpl.class);
@@ -36,10 +35,10 @@ DocumentNoteService {
    @Override
    @ServiceChecked
    @Loggable(LogLevel.TRACE)
-   public void addDocumentNote(UUID docUuid, String contenu, String login, Date dateCreation, UUID noteUuid)
+   public void addDocumentNote(final UUID docUuid, final String contenu, final String login, final Date dateCreation, final UUID noteUuid)
          throws DocumentNoteServiceEx {
-      storageDocumentServiceSupport.addDocumentNote(getDfceService(), docUuid,
-            contenu, login, dateCreation, noteUuid, LOGGER);
+      storageDocumentServiceSupport.addDocumentNote(getDfceServices(), docUuid,
+                                                    contenu, login, dateCreation, noteUuid, LOGGER);
 
    }
 
@@ -49,9 +48,9 @@ DocumentNoteService {
    @Override
    @ServiceChecked
    @Loggable(LogLevel.TRACE)
-   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid) {
-      return storageDocumentServiceSupport.getDocumentNotes(getDfceService(),
-            docUuid, LOGGER);
+   public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid) {
+      return storageDocumentServiceSupport.getDocumentNotes(getDfceServices(),
+                                                            docUuid, LOGGER);
    }
 
 }

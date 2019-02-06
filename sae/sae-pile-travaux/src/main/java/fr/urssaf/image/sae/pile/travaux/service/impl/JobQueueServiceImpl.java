@@ -7,18 +7,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-import me.prettyprint.hector.api.beans.HColumn;
-
 import org.apache.commons.lang.StringUtils;
+import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import com.netflix.curator.framework.CuratorFramework;
 
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
@@ -38,6 +33,9 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupport;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
+import me.prettyprint.hector.api.beans.HColumn;
 
 /**
  * Implémentation du service {@link JobQueueService}

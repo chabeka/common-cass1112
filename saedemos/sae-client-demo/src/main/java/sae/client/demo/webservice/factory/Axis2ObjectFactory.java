@@ -9,27 +9,21 @@ import java.util.UUID;
 import javax.activation.DataHandler;
 
 import org.apache.axiom.attachments.ByteArrayDataSource;
-import org.apache.axiom.attachments.utils.IOUtils;
 import org.apache.axis2.databinding.types.URI;
 import org.apache.axis2.databinding.types.URI.MalformedURIException;
+import org.apache.commons.io.IOUtils;
 
 import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.webservice.modele.SaeServiceStub.AjoutNote;
 import sae.client.demo.webservice.modele.SaeServiceStub.AjoutNoteRequestType;
-import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasse;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHash;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseAvecHashRequestType;
-import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageMasseRequestType;
-import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitaire;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJ;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJRequestTypeChoice_type0;
-import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitaireRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Consultation;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichable;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationAffichableRequestType;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationGNTGNS;
-import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationGNTGNSRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOM;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationMTOMRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.ConsultationRequestType;
@@ -64,6 +58,8 @@ import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbRes;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheNbResRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateur;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurV2;
+import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateurV2RequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Reprise;
 import sae.client.demo.webservice.modele.SaeServiceStub.RepriseRequestType;
@@ -79,6 +75,7 @@ import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireRequestT
 import sae.client.demo.webservice.modele.SaeServiceStub.Suppression;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasse;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseRequestType;
+import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseV2;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionRequestType;
 import sae.client.demo.webservice.modele.SaeServiceStub.Transfert;
 import sae.client.demo.webservice.modele.SaeServiceStub.TransfertMasse;
@@ -98,44 +95,39 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param urlEcdeFichier
     *           l'URL ECDE du fichier à archiver
     * @param metadonnees
     *           les métadonnées à associer au fichier
     * @return le paramètre d'entrée de l'opération "archivageUnitaire"
     */
-   public static ArchivageUnitaire contruitParamsEntreeArchivageUnitaire(
-         String urlEcdeFichier, Map<String, String> metadonnees) {
-
-      ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
-
-      ArchivageUnitaireRequestType archivageUnitaireRequest = new ArchivageUnitaireRequestType();
-
-      archivageUnitaire.setArchivageUnitaire(archivageUnitaireRequest);
-
-      // URL ECDE
-      EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
-      archivageUnitaireRequest.setEcdeUrl(ecdeUrl);
-
-      // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
-      archivageUnitaireRequest.setMetadonnees(listeMetadonnee);
-
-      // Renvoie du paramètre d'entrée de l'opération archivageUnitaire
-      return archivageUnitaire;
-
-   }
+   /*
+    * public static ArchivageUnitaire contruitParamsEntreeArchivageUnitaire(
+    * final String urlEcdeFichier, final Map<String, String> metadonnees) {
+    * final ArchivageUnitaire archivageUnitaire = new ArchivageUnitaire();
+    * final ArchivageUnitaireRequestType archivageUnitaireRequest = new ArchivageUnitaireRequestType();
+    * archivageUnitaire.setArchivageUnitaire(archivageUnitaireRequest);
+    * // URL ECDE
+    * final EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
+    * archivageUnitaireRequest.setEcdeUrl(ecdeUrl);
+    * // Métadonnées
+    * final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+    * archivageUnitaireRequest.setMetadonnees(listeMetadonnee);
+    * // Renvoie du paramètre d'entrée de l'opération archivageUnitaire
+    * return archivageUnitaire;
+    * }
+    */
 
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @return le paramètre d'entrée de l'opération "consultation"
     */
-   public static Consultation contruitParamsEntreeConsultation(String idArchive) {
+   public static Consultation contruitParamsEntreeConsultation(final String idArchive) {
 
       return contruitParamsEntreeConsultation(idArchive, null);
 
@@ -144,27 +136,27 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @return le paramètre d'entrée de l'opération "consultationGNTGNS"
     */
-   public static ConsultationGNTGNS contruitParamsEntreeConsultationGNTGNS(String idArchive) {
-
-      return contruitParamsEntreeConsultationGNTGNS(idArchive, null);
-
-   }
+   /*
+    * public static ConsultationGNTGNS contruitParamsEntreeConsultationGNTGNS(final String idArchive) {
+    * return contruitParamsEntreeConsultationGNTGNS(idArchive, null);
+    * }
+    */
 
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @return le paramètre d'entrée de l'opération "consultationMTOM"
     */
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
-         String idArchive) {
+                                                                       final String idArchive) {
 
       return contruitParamsEntreeConsultationMTOM(idArchive, null);
 
@@ -173,20 +165,20 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @return le paramètre d'entrée de l'opération "consultationAffichable"
     */
    public static ConsultationAffichable contruitParamsEntreeConsultationAffichable(
-         String idArchive) {
+                                                                                   final String idArchive) {
 
       return contruitParamsEntreeConsultationAffichable(idArchive, null);
 
    }
 
-   private static UuidType buildUuid(String uuid) {
-      UuidType uuidType = new UuidType();
+   private static UuidType buildUuid(final String uuid) {
+      final UuidType uuidType = new UuidType();
       uuidType.setUuidType(uuid);
       return uuidType;
    }
@@ -194,7 +186,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @param codesMetasSouhaites
@@ -203,11 +195,11 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "consultation"
     */
    public static Consultation contruitParamsEntreeConsultation(
-         String idArchive, List<String> codesMetasSouhaites) {
+                                                               final String idArchive, final List<String> codesMetasSouhaites) {
 
-      Consultation consultation = new Consultation();
+      final Consultation consultation = new Consultation();
 
-      ConsultationRequestType consultationRequest = new ConsultationRequestType();
+      final ConsultationRequestType consultationRequest = new ConsultationRequestType();
 
       consultation.setConsultation(consultationRequest);
 
@@ -215,10 +207,10 @@ public final class Axis2ObjectFactory {
       consultationRequest.setIdArchive(buildUuid(idArchive));
 
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -227,7 +219,7 @@ public final class Axis2ObjectFactory {
             arrMetadonneeCode[i] = metadonneeCode;
          }
 
-         ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+         final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
          consultationRequest.setMetadonnees(listeMetadonneeCode);
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
 
@@ -238,30 +230,29 @@ public final class Axis2ObjectFactory {
 
    }
 
-
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @param metadonnees
     *           la liste des métadonnées que l'on souhaite modifier avant la copie
     * @return le paramètre d'entrée de l'opération "copie"
     */
-   public static Copie contruitParamsEntreeCopie(String idArchive,
-         Map<String, String> metadonnees) {
+   public static Copie contruitParamsEntreeCopie(final String idArchive,
+                                                 final Map<String, String> metadonnees) {
 
-      Copie copie = new Copie();
+      final Copie copie = new Copie();
 
-      CopieRequestType copieRequest = new CopieRequestType();
+      final CopieRequestType copieRequest = new CopieRequestType();
 
       copie.setCopie(copieRequest);
 
       copieRequest.setIdGed(buildUuid(idArchive));
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
 
       copieRequest.setMetadonnees(listeMetadonnee);
 
@@ -272,7 +263,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @param codesMetasSouhaites
@@ -281,11 +272,11 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "consultationMTOM"
     */
    public static ConsultationMTOM contruitParamsEntreeConsultationMTOM(
-         String idArchive, List<String> codesMetasSouhaites) {
+                                                                       final String idArchive, final List<String> codesMetasSouhaites) {
 
-      ConsultationMTOM consultation = new ConsultationMTOM();
+      final ConsultationMTOM consultation = new ConsultationMTOM();
 
-      ConsultationMTOMRequestType consultationRequest = new ConsultationMTOMRequestType();
+      final ConsultationMTOMRequestType consultationRequest = new ConsultationMTOMRequestType();
 
       consultation.setConsultationMTOM(consultationRequest);
 
@@ -293,10 +284,10 @@ public final class Axis2ObjectFactory {
       consultationRequest.setIdArchive(buildUuid(idArchive));
 
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -305,7 +296,7 @@ public final class Axis2ObjectFactory {
             arrMetadonneeCode[i] = metadonneeCode;
          }
 
-         ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+         final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
          consultationRequest.setMetadonnees(listeMetadonneeCode);
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
 
@@ -319,7 +310,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @param codesMetasSouhaites
@@ -327,46 +318,37 @@ public final class Axis2ObjectFactory {
     *           web
     * @return le paramètre d'entrée de l'opération "consultationGNTGNS"
     */
-   public static ConsultationGNTGNS contruitParamsEntreeConsultationGNTGNS(
-         String idArchive, List<String> codesMetasSouhaites) {
-
-      ConsultationGNTGNS consultation = new ConsultationGNTGNS();
-
-      ConsultationGNTGNSRequestType consultationRequest = new ConsultationGNTGNSRequestType();
-
-      consultation.setConsultationGNTGNS(consultationRequest);
-
-      // L'identifiant unique de l'archive
-      consultationRequest.setIdArchive(buildUuid(idArchive));
-
-      // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
-
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
-
-         MetadonneeCodeType metadonneeCode;
-         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
-            metadonneeCode = new MetadonneeCodeType();
-            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
-            arrMetadonneeCode[i] = metadonneeCode;
-         }
-
-         ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
-         consultationRequest.setMetadonnees(listeMetadonneeCode);
-         listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
-
-      }
-
-      // Renvoie du paramètre d'entrée de l'opération consultation
-      return consultation;
-
-   }
+   /*
+    * public static ConsultationGNTGNS contruitParamsEntreeConsultationGNTGNS(
+    * final String idArchive, final List<String> codesMetasSouhaites) {
+    * final ConsultationGNTGNS consultation = new ConsultationGNTGNS();
+    * final ConsultationGNTGNSRequestType consultationRequest = new ConsultationGNTGNSRequestType();
+    * consultation.setConsultationGNTGNS(consultationRequest);
+    * // L'identifiant unique de l'archive
+    * consultationRequest.setIdArchive(buildUuid(idArchive));
+    * // Les codes des métadonnées souhaitées
+    * if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
+    * final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+    * .size()];
+    * MetadonneeCodeType metadonneeCode;
+    * for (int i = 0; i < codesMetasSouhaites.size(); i++) {
+    * metadonneeCode = new MetadonneeCodeType();
+    * metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
+    * arrMetadonneeCode[i] = metadonneeCode;
+    * }
+    * final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+    * consultationRequest.setMetadonnees(listeMetadonneeCode);
+    * listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
+    * }
+    * // Renvoie du paramètre d'entrée de l'opération consultation
+    * return consultation;
+    * }
+    */
 
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document que l'on veut consulter
     * @param codesMetasSouhaites
@@ -375,11 +357,11 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "consultationAffichable"
     */
    public static ConsultationAffichable contruitParamsEntreeConsultationAffichable(
-         String idArchive, List<String> codesMetasSouhaites) {
+                                                                                   final String idArchive, final List<String> codesMetasSouhaites) {
 
-      ConsultationAffichable consultation = new ConsultationAffichable();
+      final ConsultationAffichable consultation = new ConsultationAffichable();
 
-      ConsultationAffichableRequestType consultationRequest = new ConsultationAffichableRequestType();
+      final ConsultationAffichableRequestType consultationRequest = new ConsultationAffichableRequestType();
 
       consultation.setConsultationAffichable(consultationRequest);
 
@@ -387,10 +369,10 @@ public final class Axis2ObjectFactory {
       consultationRequest.setIdArchive(buildUuid(idArchive));
 
       // Les codes des métadonnées souhaitées
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -399,7 +381,7 @@ public final class Axis2ObjectFactory {
             arrMetadonneeCode[i] = metadonneeCode;
          }
 
-         ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+         final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
          consultationRequest.setMetadonnees(listeMetadonneeCode);
          listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
 
@@ -413,36 +395,35 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param requeteRecherche
     *           la requête de recherche
     * @param codesMetasSouhaites
     *           les codes de métadonnées souhaitées dans les résultats de
     *           recherche.
-    * 
     * @return le paramètre d'entrée pour l'opération "recherche"
     */
    public static Recherche contruitParamsEntreeRecherche(
-         String requeteRecherche, List<String> codesMetasSouhaites) {
+                                                         final String requeteRecherche, final List<String> codesMetasSouhaites) {
 
-      Recherche recherche = new Recherche();
+      final Recherche recherche = new Recherche();
 
-      RechercheRequestType rechercheRequest = new RechercheRequestType();
+      final RechercheRequestType rechercheRequest = new RechercheRequestType();
 
       recherche.setRecherche(rechercheRequest);
 
       // Requête de recherche
-      RequeteRechercheType requeteRechercheObj = new RequeteRechercheType();
+      final RequeteRechercheType requeteRechercheObj = new RequeteRechercheType();
       requeteRechercheObj.setRequeteRechercheType(requeteRecherche);
       rechercheRequest.setRequete(requeteRechercheObj);
 
       // Codes des métadonnées souhaitées dans les résultats de recherche
-      ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+      final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
       rechercheRequest.setMetadonnees(listeMetadonneeCode);
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -465,36 +446,35 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param requeteRechercheNbRes
     *           la requête de recherche
     * @param codesMetasSouhaites
     *           les codes de métadonnées souhaitées dans les résultats de
     *           recherche.
-    * 
     * @return le paramètre d'entrée pour l'opération "rechercheNbRes"
     */
    public static RechercheNbRes contruitParamsEntreeRechercheNbRes(
-         String requeteRecherche, List<String> codesMetasSouhaites) {
+                                                                   final String requeteRecherche, final List<String> codesMetasSouhaites) {
 
-      RechercheNbRes recherche = new RechercheNbRes();
+      final RechercheNbRes recherche = new RechercheNbRes();
 
-      RechercheNbResRequestType rechercheRequest = new RechercheNbResRequestType();
+      final RechercheNbResRequestType rechercheRequest = new RechercheNbResRequestType();
 
       recherche.setRechercheNbRes(rechercheRequest);
 
       // Requête de recherche
-      RequeteRechercheNbResType requeteRechercheObj = new RequeteRechercheNbResType();
+      final RequeteRechercheNbResType requeteRechercheObj = new RequeteRechercheNbResType();
       requeteRechercheObj.setRequeteRechercheNbResType(requeteRecherche);
       rechercheRequest.setRequete(requeteRechercheObj);
 
       // Codes des métadonnées souhaitées dans les résultats de recherche
-      ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+      final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
       rechercheRequest.setMetadonnees(listeMetadonneeCode);
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -517,7 +497,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param listeMetasFixes
     *           La liste des métadonnées fixes
     * @param codeMetaVariable
@@ -545,28 +525,29 @@ public final class Axis2ObjectFactory {
     * @return
     */
    public static RechercheParIterateur contruitParamsEntreeRechercheParIterateur(
-         Map<String, String> listeMetasFixes, String codeMetaVariable,
-         String valeurMinMetaVar, String valeurMaxMetaVar,
-         Map<String, String> equalFilter, Map<String, String> notEqualFilter,
-         Map<String, String[]> rangeFilter,
-         Map<String, String[]> notInRangeFilter, String nombreDocParPage,
-         List<String> codesMetasSouhaites, String valeurIdentifiantPage,
-         String idArchive) {
+                                                                                 final Map<String, String> listeMetasFixes, final String codeMetaVariable,
+                                                                                 final String valeurMinMetaVar, final String valeurMaxMetaVar,
+                                                                                 final Map<String, String> equalFilter,
+                                                                                 final Map<String, String> notEqualFilter,
+                                                                                 final Map<String, String[]> rangeFilter,
+                                                                                 final Map<String, String[]> notInRangeFilter, final String nombreDocParPage,
+                                                                                 final List<String> codesMetasSouhaites, final String valeurIdentifiantPage,
+                                                                                 final String idArchive) {
 
-      RechercheParIterateur rechercheParIterateur = new RechercheParIterateur();
+      final RechercheParIterateur rechercheParIterateur = new RechercheParIterateur();
 
-      RechercheParIterateurRequestType rechercheParIterateurRequest = new RechercheParIterateurRequestType();
+      final RechercheParIterateurRequestType rechercheParIterateurRequest = new RechercheParIterateurRequestType();
 
       rechercheParIterateur
-      .setRechercheParIterateur(rechercheParIterateurRequest);
+                           .setRechercheParIterateur(rechercheParIterateurRequest);
 
       // Requête principale
-      RechercheParIterateurRequestType requeteParIterateurObj = new RechercheParIterateurRequestType();
-      RequetePrincipaleType requetePrincipaleType = new RequetePrincipaleType();
+      final RechercheParIterateurRequestType requeteParIterateurObj = new RechercheParIterateurRequestType();
+      final RequetePrincipaleType requetePrincipaleType = new RequetePrincipaleType();
 
       // - Liste des métadonnées fixes (facultatif)
       ListeMetadonneeType listeMetadonneeFixes = new ListeMetadonneeType();
-      if ((listeMetasFixes != null) && (!listeMetasFixes.isEmpty())) {
+      if (listeMetasFixes != null && !listeMetasFixes.isEmpty()) {
          listeMetadonneeFixes = buildListeMeta(listeMetasFixes);
       } else {
          listeMetadonneeFixes.setMetadonnee(null);
@@ -574,16 +555,16 @@ public final class Axis2ObjectFactory {
       requetePrincipaleType.setFixedMetadatas(listeMetadonneeFixes);
 
       // - Métadonnée variable (obligatoire)
-      RangeMetadonneeType rangeMetadonnee = new RangeMetadonneeType();
-      MetadonneeCodeType metaCode = new MetadonneeCodeType();
+      final RangeMetadonneeType rangeMetadonnee = new RangeMetadonneeType();
+      final MetadonneeCodeType metaCode = new MetadonneeCodeType();
       metaCode.setMetadonneeCodeType(codeMetaVariable);
       rangeMetadonnee.setCode(metaCode);
 
-      MetadonneeValeurType metaValeurMin = new MetadonneeValeurType();
+      final MetadonneeValeurType metaValeurMin = new MetadonneeValeurType();
       metaValeurMin.setMetadonneeValeurType(valeurMinMetaVar);
       rangeMetadonnee.setValeurMin(metaValeurMin);
 
-      MetadonneeValeurType metaValeurMax = new MetadonneeValeurType();
+      final MetadonneeValeurType metaValeurMax = new MetadonneeValeurType();
       metaValeurMax.setMetadonneeValeurType(valeurMaxMetaVar);
       rangeMetadonnee.setValeurMax(metaValeurMax);
 
@@ -592,31 +573,31 @@ public final class Axis2ObjectFactory {
       requeteParIterateurObj.setRequetePrincipale(requetePrincipaleType);
 
       // Filtre (facultatif)
-      FiltreType filtreType = new FiltreType();
-      if ((equalFilter != null) && (!equalFilter.isEmpty())) {
-         ListeMetadonneeType listeMetaEqual = buildListeMeta(equalFilter);
+      final FiltreType filtreType = new FiltreType();
+      if (equalFilter != null && !equalFilter.isEmpty()) {
+         final ListeMetadonneeType listeMetaEqual = buildListeMeta(equalFilter);
          filtreType.setEqualFilter(listeMetaEqual);
       } else {
          filtreType.setEqualFilter(new ListeMetadonneeType());
       }
 
-      FiltreType filtreNotEqualType = new FiltreType();
-      if ((notEqualFilter != null) && (!notEqualFilter.isEmpty())) {
-         ListeMetadonneeType listeMetaNotEqual = buildListeMeta(notEqualFilter);
+      final FiltreType filtreNotEqualType = new FiltreType();
+      if (notEqualFilter != null && !notEqualFilter.isEmpty()) {
+         final ListeMetadonneeType listeMetaNotEqual = buildListeMeta(notEqualFilter);
          filtreType.setNotEqualFilter(listeMetaNotEqual);
       } else {
          filtreType.setNotEqualFilter(new ListeMetadonneeType());
       }
 
-      if ((rangeFilter != null) && (!rangeFilter.isEmpty())) {
-         ListeRangeMetadonneeType listeRangeMeta = buildListeRangeMeta(rangeFilter);
+      if (rangeFilter != null && !rangeFilter.isEmpty()) {
+         final ListeRangeMetadonneeType listeRangeMeta = buildListeRangeMeta(rangeFilter);
          filtreType.setRangeFilter(listeRangeMeta);
       } else {
          filtreType.setRangeFilter(new ListeRangeMetadonneeType());
       }
 
-      if ((notInRangeFilter != null) && (!notInRangeFilter.isEmpty())) {
-         ListeRangeMetadonneeType listeNotInRangeMeta = buildListeRangeMeta(rangeFilter);
+      if (notInRangeFilter != null && !notInRangeFilter.isEmpty()) {
+         final ListeRangeMetadonneeType listeNotInRangeMeta = buildListeRangeMeta(rangeFilter);
          filtreType.setNotInRangeFilter(listeNotInRangeMeta);
       } else {
          filtreType.setNotInRangeFilter(new ListeRangeMetadonneeType());
@@ -628,24 +609,24 @@ public final class Axis2ObjectFactory {
       if (idArchive != null && !idArchive.isEmpty()
             && valeurIdentifiantPage != null
             && !valeurIdentifiantPage.isEmpty()) {
-         IdentifiantPageType identifiantPage = new IdentifiantPageType();
-         UuidType uuidType = new UuidType();
+         final IdentifiantPageType identifiantPage = new IdentifiantPageType();
+         final UuidType uuidType = new UuidType();
          uuidType.setUuidType(idArchive);
          identifiantPage.setIdArchive(uuidType);
-         MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         final MetadonneeValeurType metaValType = new MetadonneeValeurType();
          metaValType.setMetadonneeValeurType(valeurIdentifiantPage);
          identifiantPage.setValeur(metaValType);
          requeteParIterateurObj.setIdentifiantPage(identifiantPage);
       }
 
       // Codes des métadonnées souhaitées dans les résultats de recherche
-      ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+      final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
 
       requeteParIterateurObj.setMetadonnees(listeMetadonneeCode);
-      if ((codesMetasSouhaites != null) && (!codesMetasSouhaites.isEmpty())) {
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
 
-         MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
-                                                                         .size()];
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
 
          MetadonneeCodeType metadonneeCode;
          for (int i = 0; i < codesMetasSouhaites.size(); i++) {
@@ -661,7 +642,7 @@ public final class Axis2ObjectFactory {
       }
 
       requeteParIterateurObj.setNbDocumentsParPage(Integer
-            .parseInt(nombreDocParPage));
+                                                          .parseInt(nombreDocParPage));
 
       rechercheParIterateur.setRechercheParIterateur(requeteParIterateurObj);
       // Renvoie du paramètre d'entrée de l'opération recherche
@@ -672,51 +653,205 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
+    * @param listeMetasFixes
+    *           La liste des métadonnées fixes
+    * @param codeMetaVariable
+    *           Le code de la méta variable
+    * @param valeurMinMetaVar
+    *           La valeur min de la méta variable
+    * @param valeurMaxMetaVar
+    *           La valeur max de la méta variable
+    * @param equalFilter
+    *           La liste des filtres de type égalité
+    * @param notEqualFilter
+    *           La liste des filtres de type non égalité
+    * @param rangeFilter
+    *           La liste des filtres de type range
+    * @param notInRangeFilter
+    *           La liste des filtres de type not in range
+    * @param nombreDocParPage
+    *           Le nombre de document par page
+    * @param codesMetasSouhaites
+    *           La liste des métadonnées souhaitées en retour
+    * @param valeurIdentifiantPage
+    *           La valeur de l'identifiant de la page
+    * @param idArchive
+    *           L'identifiant de l'archive
+    * @return
+    */
+   public static RechercheParIterateurV2 contruitParamsEntreeRechercheParIterateurV2(
+                                                                                     final Map<String, String> listeMetasFixes, final String codeMetaVariable,
+                                                                                     final String valeurMinMetaVar, final String valeurMaxMetaVar,
+                                                                                     final Map<String, String> equalFilter,
+                                                                                     final Map<String, String> notEqualFilter,
+                                                                                     final Map<String, String[]> rangeFilter,
+                                                                                     final Map<String, String[]> notInRangeFilter,
+                                                                                     final String nombreDocParPage,
+                                                                                     final List<String> codesMetasSouhaites, final String valeurIdentifiantPage,
+                                                                                     final String idArchive) {
+
+      final RechercheParIterateurV2 rechercheParIterateurV2 = new RechercheParIterateurV2();
+
+      final RechercheParIterateurV2RequestType rechercheParIterateurRequestV2 = new RechercheParIterateurV2RequestType();
+
+      rechercheParIterateurV2.setRechercheParIterateurV2(rechercheParIterateurRequestV2);
+
+      // Requête principale
+      final RechercheParIterateurV2RequestType requeteParIterateurObj = new RechercheParIterateurV2RequestType();
+      final RequetePrincipaleType requetePrincipaleType = new RequetePrincipaleType();
+
+      // - Liste des métadonnées fixes (facultatif)
+      ListeMetadonneeType listeMetadonneeFixes = new ListeMetadonneeType();
+      if (listeMetasFixes != null && !listeMetasFixes.isEmpty()) {
+         listeMetadonneeFixes = buildListeMeta(listeMetasFixes);
+      } else {
+         listeMetadonneeFixes.setMetadonnee(null);
+      }
+      requetePrincipaleType.setFixedMetadatas(listeMetadonneeFixes);
+
+      // - Métadonnée variable (obligatoire)
+      final RangeMetadonneeType rangeMetadonnee = new RangeMetadonneeType();
+      final MetadonneeCodeType metaCode = new MetadonneeCodeType();
+      metaCode.setMetadonneeCodeType(codeMetaVariable);
+      rangeMetadonnee.setCode(metaCode);
+
+      final MetadonneeValeurType metaValeurMin = new MetadonneeValeurType();
+      metaValeurMin.setMetadonneeValeurType(valeurMinMetaVar);
+      rangeMetadonnee.setValeurMin(metaValeurMin);
+
+      final MetadonneeValeurType metaValeurMax = new MetadonneeValeurType();
+      metaValeurMax.setMetadonneeValeurType(valeurMaxMetaVar);
+      rangeMetadonnee.setValeurMax(metaValeurMax);
+
+      requetePrincipaleType.setVaryingMetadata(rangeMetadonnee);
+
+      requeteParIterateurObj.setRequetePrincipale(requetePrincipaleType);
+
+      // Filtre (facultatif)
+      final FiltreType filtreType = new FiltreType();
+      if (equalFilter != null && !equalFilter.isEmpty()) {
+         final ListeMetadonneeType listeMetaEqual = buildListeMeta(equalFilter);
+         filtreType.setEqualFilter(listeMetaEqual);
+      } else {
+         filtreType.setEqualFilter(new ListeMetadonneeType());
+      }
+
+      final FiltreType filtreNotEqualType = new FiltreType();
+      if (notEqualFilter != null && !notEqualFilter.isEmpty()) {
+         final ListeMetadonneeType listeMetaNotEqual = buildListeMeta(notEqualFilter);
+         filtreType.setNotEqualFilter(listeMetaNotEqual);
+      } else {
+         filtreType.setNotEqualFilter(new ListeMetadonneeType());
+      }
+
+      if (rangeFilter != null && !rangeFilter.isEmpty()) {
+         final ListeRangeMetadonneeType listeRangeMeta = buildListeRangeMeta(rangeFilter);
+         filtreType.setRangeFilter(listeRangeMeta);
+      } else {
+         filtreType.setRangeFilter(new ListeRangeMetadonneeType());
+      }
+
+      if (notInRangeFilter != null && !notInRangeFilter.isEmpty()) {
+         final ListeRangeMetadonneeType listeNotInRangeMeta = buildListeRangeMeta(rangeFilter);
+         filtreType.setNotInRangeFilter(listeNotInRangeMeta);
+      } else {
+         filtreType.setNotInRangeFilter(new ListeRangeMetadonneeType());
+      }
+
+      requeteParIterateurObj.setFiltres(filtreType);
+
+      // Identifiant de la page
+      if (idArchive != null && !idArchive.isEmpty()
+            && valeurIdentifiantPage != null
+            && !valeurIdentifiantPage.isEmpty()) {
+         final IdentifiantPageType identifiantPage = new IdentifiantPageType();
+         final UuidType uuidType = new UuidType();
+         uuidType.setUuidType(idArchive);
+         identifiantPage.setIdArchive(uuidType);
+         final MetadonneeValeurType metaValType = new MetadonneeValeurType();
+         metaValType.setMetadonneeValeurType(valeurIdentifiantPage);
+         identifiantPage.setValeur(metaValType);
+         requeteParIterateurObj.setIdentifiantPage(identifiantPage);
+      }
+
+      // Codes des métadonnées souhaitées dans les résultats de recherche
+      final ListeMetadonneeCodeType listeMetadonneeCode = new ListeMetadonneeCodeType();
+
+      requeteParIterateurObj.setMetadonnees(listeMetadonneeCode);
+      if (codesMetasSouhaites != null && !codesMetasSouhaites.isEmpty()) {
+
+         final MetadonneeCodeType[] arrMetadonneeCode = new MetadonneeCodeType[codesMetasSouhaites
+                                                                                                  .size()];
+
+         MetadonneeCodeType metadonneeCode;
+         for (int i = 0; i < codesMetasSouhaites.size(); i++) {
+            metadonneeCode = new MetadonneeCodeType();
+            metadonneeCode.setMetadonneeCodeType(codesMetasSouhaites.get(i));
+            arrMetadonneeCode[i] = metadonneeCode;
+         }
+
+         listeMetadonneeCode.setMetadonneeCode(arrMetadonneeCode);
+
+      } else {
+         listeMetadonneeCode.setMetadonneeCode(null);
+      }
+
+      requeteParIterateurObj.setNbDocumentsParPage(Integer
+                                                          .parseInt(nombreDocParPage));
+
+      rechercheParIterateurV2.setRechercheParIterateurV2(requeteParIterateurObj);
+      // Renvoie du paramètre d'entrée de l'opération recherche
+      return rechercheParIterateurV2;
+
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    *
     * @param urlEcdeSommaire
     *           l'URL ECDE du fichier sommaire.xml
     * @return le paramètre d'entrée pour l'opération "archivageMasse"
     */
-   public static ArchivageMasse contruitParamsEntreeArchivageMasse(
-         String urlEcdeSommaire) {
+   /*
+    * public static ArchivageMasse contruitParamsEntreeArchivageMasse(
+    * final String urlEcdeSommaire) {
+    * final ArchivageMasse archivageMasse = new ArchivageMasse();
+    * final ArchivageMasseRequestType archivageMasseRequest = new ArchivageMasseRequestType();
+    * archivageMasse.setArchivageMasse(archivageMasseRequest);
+    * // URL ECDE du sommaire
+    * final EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+    * archivageMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
+    * URI ecdeUriSommaireUri;
+    * try {
+    * ecdeUriSommaireUri = new URI(urlEcdeSommaire);
+    * }
+    * catch (final MalformedURIException e) {
+    * throw new DemoRuntimeException(e);
+    * }
+    * ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
+    * // Renvoie du paramètre d'entrée de l'opération archivageMasse
+    * return archivageMasse;
+    * }
+    */
 
-      ArchivageMasse archivageMasse = new ArchivageMasse();
+   public static TransfertMasse contruitParamsEntreeTransfertMasse(final String urlEcdeSommaire, final String hash, final String typeHash) {
 
-      ArchivageMasseRequestType archivageMasseRequest = new ArchivageMasseRequestType();
+      final TransfertMasse transfertMasse = new TransfertMasse();
 
-      archivageMasse.setArchivageMasse(archivageMasseRequest);
-
-      // URL ECDE du sommaire
-      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
-      archivageMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
-      URI ecdeUriSommaireUri;
-      try {
-         ecdeUriSommaireUri = new URI(urlEcdeSommaire);
-      } catch (MalformedURIException e) {
-         throw new DemoRuntimeException(e);
-      }
-      ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
-
-      // Renvoie du paramètre d'entrée de l'opération archivageMasse
-      return archivageMasse;
-
-   }
-
-   public static TransfertMasse contruitParamsEntreeTransfertMasse(String urlEcdeSommaire, String hash, String typeHash){
-
-      TransfertMasse transfertMasse = new TransfertMasse();
-
-      TransfertMasseRequestType transfertMasseRequest = new TransfertMasseRequestType();
+      final TransfertMasseRequestType transfertMasseRequest = new TransfertMasseRequestType();
 
       transfertMasse.setTransfertMasse(transfertMasseRequest);
 
       // URL ECDE du sommaire
-      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+      final EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
       transfertMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
       URI ecdeUriSommaireUri;
       try {
          ecdeUriSommaireUri = new URI(urlEcdeSommaire);
-      } catch (MalformedURIException e) {
+      }
+      catch (final MalformedURIException e) {
          throw new DemoRuntimeException(e);
       }
       ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
@@ -725,27 +860,28 @@ public final class Axis2ObjectFactory {
 
       transfertMasseRequest.setTypeHash(typeHash);
 
-      return transfertMasse;    
+      return transfertMasse;
 
    }
 
-   public static Deblocage contruitParamsEntreeDeblocage(String uuidJob){
-      Deblocage deblocage = new Deblocage();
-      DeblocageRequestType deblocageRequest = new DeblocageRequestType();
-      UuidType uuid = new UuidType();
+   public static Deblocage contruitParamsEntreeDeblocage(final String uuidJob) {
+      final Deblocage deblocage = new Deblocage();
+      final DeblocageRequestType deblocageRequest = new DeblocageRequestType();
+      final UuidType uuid = new UuidType();
       uuid.setUuidType(uuidJob);
       deblocageRequest.setUuid(uuid);
       deblocage.setDeblocage(deblocageRequest);
       return deblocage;
    }
 
-   private static EcdeUrlType buildEcdeUrl(String urlEcde) {
+   private static EcdeUrlType buildEcdeUrl(final String urlEcde) {
 
-      EcdeUrlType ecdeUrl = new EcdeUrlType();
+      final EcdeUrlType ecdeUrl = new EcdeUrlType();
       URI uriEcdeFichier;
       try {
          uriEcdeFichier = new URI(urlEcde);
-      } catch (MalformedURIException e) {
+      }
+      catch (final MalformedURIException e) {
          throw new DemoRuntimeException(e);
       }
       ecdeUrl.setEcdeUrlType(uriEcdeFichier);
@@ -755,16 +891,16 @@ public final class Axis2ObjectFactory {
    }
 
    private static ListeMetadonneeType buildListeMeta(
-         Map<String, String> metadonnees) {
+                                                     final Map<String, String> metadonnees) {
 
-      ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
+      final ListeMetadonneeType listeMetadonnee = new ListeMetadonneeType();
 
       MetadonneeType metadonnee;
       MetadonneeCodeType metaCode;
       MetadonneeValeurType metaValeur;
       String code;
       String valeur;
-      for (Map.Entry<String, String> entry : metadonnees.entrySet()) {
+      for (final Map.Entry<String, String> entry : metadonnees.entrySet()) {
 
          code = entry.getKey();
          valeur = entry.getValue();
@@ -788,9 +924,9 @@ public final class Axis2ObjectFactory {
    }
 
    private static ListeRangeMetadonneeType buildListeRangeMeta(
-         Map<String, String[]> metadonnees) {
+                                                               final Map<String, String[]> metadonnees) {
 
-      ListeRangeMetadonneeType listeMetadonnee = new ListeRangeMetadonneeType();
+      final ListeRangeMetadonneeType listeMetadonnee = new ListeRangeMetadonneeType();
 
       RangeMetadonneeType metadonnee;
       MetadonneeCodeType metaCode;
@@ -799,7 +935,7 @@ public final class Axis2ObjectFactory {
       String code;
       String valeurMin;
       String valeurMax;
-      for (Map.Entry<String, String[]> entry : metadonnees.entrySet()) {
+      for (final Map.Entry<String, String[]> entry : metadonnees.entrySet()) {
 
          code = entry.getKey();
          valeurMin = entry.getValue()[0];
@@ -830,7 +966,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param urlEcdeFichier
     *           l'URL ECDE du fichier à archiver
     * @param metadonnees
@@ -838,23 +974,23 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "archivageUnitairePJ"
     */
    public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecUrlEcde(
-         String urlEcdeFichier, Map<String, String> metadonnees) {
+                                                                                        final String urlEcdeFichier, final Map<String, String> metadonnees) {
 
-      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+      final ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
 
-      ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
+      final ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
 
       archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJRequest);
 
       // URL ECDE
-      EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
-      ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
+      final EcdeUrlType ecdeUrl = buildEcdeUrl(urlEcdeFichier);
+      final ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
       archivageUnitairePJRequest
-      .setArchivageUnitairePJRequestTypeChoice_type0(choice);
+                                .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setEcdeUrl(ecdeUrl);
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       archivageUnitairePJRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
@@ -865,7 +1001,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param nomFichier
     *           le nom du fichier à archiver
     * @param contenu
@@ -875,33 +1011,35 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "archivageUnitairePJ"
     */
    public static ArchivageUnitairePJ contruitParamsEntreeArchivageUnitairePJavecContenu(
-         String nomFichier, InputStream contenu, Map<String, String> metadonnees) {
+                                                                                        final String nomFichier, final InputStream contenu,
+                                                                                        final Map<String, String> metadonnees) {
 
-      ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
+      final ArchivageUnitairePJ archivageUnitairePJ = new ArchivageUnitairePJ();
 
-      ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
+      final ArchivageUnitairePJRequestType archivageUnitairePJRequest = new ArchivageUnitairePJRequestType();
 
       archivageUnitairePJ.setArchivageUnitairePJ(archivageUnitairePJRequest);
 
       // Nom et contenu du fichier
-      DataFileType dataFile = new DataFileType();
+      final DataFileType dataFile = new DataFileType();
       dataFile.setFileName(nomFichier);
       byte[] contenuBytes;
       try {
-         contenuBytes = IOUtils.getStreamAsByteArray(contenu);
-      } catch (IOException e) {
+         contenuBytes = IOUtils.toByteArray(contenu);
+      }
+      catch (final IOException e) {
          throw new DemoRuntimeException(e);
       }
-      ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
-      DataHandler dataHandler = new DataHandler(byteArray);
+      final ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
+      final DataHandler dataHandler = new DataHandler(byteArray);
       dataFile.setFile(dataHandler);
-      ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
+      final ArchivageUnitairePJRequestTypeChoice_type0 choice = new ArchivageUnitairePJRequestTypeChoice_type0();
       archivageUnitairePJRequest
-      .setArchivageUnitairePJRequestTypeChoice_type0(choice);
+                                .setArchivageUnitairePJRequestTypeChoice_type0(choice);
       choice.setDataFile(dataFile);
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       archivageUnitairePJRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
@@ -912,7 +1050,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param urlEcdeSommaire
     *           l'URL ECDE du sommaire.xml
     * @param typeHash
@@ -922,22 +1060,23 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "archivageMasseAvecHash"
     */
    public static ArchivageMasseAvecHash contruitParamsEntreeArchivageMasseAvecHash(
-         String urlEcdeSommaire, String typeHash, String hash) {
+                                                                                   final String urlEcdeSommaire, final String typeHash, final String hash) {
 
-      ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
+      final ArchivageMasseAvecHash archivageMasseAvecHash = new ArchivageMasseAvecHash();
 
-      ArchivageMasseAvecHashRequestType archivageMasseAvecHashRequest = new ArchivageMasseAvecHashRequestType();
+      final ArchivageMasseAvecHashRequestType archivageMasseAvecHashRequest = new ArchivageMasseAvecHashRequestType();
 
       archivageMasseAvecHash
-      .setArchivageMasseAvecHash(archivageMasseAvecHashRequest);
+                            .setArchivageMasseAvecHash(archivageMasseAvecHashRequest);
 
       // URL ECDE du sommaire
-      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+      final EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
       archivageMasseAvecHashRequest.setUrlSommaire(ecdeUrlSommaireObj);
       URI ecdeUriSommaireUri;
       try {
          ecdeUriSommaireUri = new URI(urlEcdeSommaire);
-      } catch (MalformedURIException e) {
+      }
+      catch (final MalformedURIException e) {
          throw new DemoRuntimeException(e);
       }
       ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
@@ -954,16 +1093,16 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant du document à supprimer
     * @return le paramètre d'entrée de l'opération "suppression"
     */
-   public static Suppression contruitParamsEntreeSuppression(String idArchive) {
+   public static Suppression contruitParamsEntreeSuppression(final String idArchive) {
 
-      Suppression suppression = new Suppression();
+      final Suppression suppression = new Suppression();
 
-      SuppressionRequestType suppressionRequest = new SuppressionRequestType();
+      final SuppressionRequestType suppressionRequest = new SuppressionRequestType();
 
       suppression.setSuppression(suppressionRequest);
 
@@ -978,16 +1117,16 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant du document à transférer
     * @return le paramètre d'entrée de l'opération "transfert"
     */
-   public static Transfert contruitParamsEntreeTransfert(String idArchive) {
+   public static Transfert contruitParamsEntreeTransfert(final String idArchive) {
 
-      Transfert transfert = new Transfert();
+      final Transfert transfert = new Transfert();
 
-      TransfertRequestType transfertRequest = new TransfertRequestType();
+      final TransfertRequestType transfertRequest = new TransfertRequestType();
 
       transfert.setTransfert(transfertRequest);
 
@@ -1002,7 +1141,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idArchive
     *           l'identifiant unique du document à modifier
     * @param metadonnees
@@ -1010,11 +1149,11 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "modification"
     */
    public static Modification contruitParamsEntreeModification(
-         String idArchive, Map<String, String> metadonnees) {
+                                                               final String idArchive, final Map<String, String> metadonnees) {
 
-      Modification modification = new Modification();
+      final Modification modification = new Modification();
 
-      ModificationRequestType modificationRequest = new ModificationRequestType();
+      final ModificationRequestType modificationRequest = new ModificationRequestType();
 
       modification.setModification(modificationRequest);
 
@@ -1022,7 +1161,7 @@ public final class Axis2ObjectFactory {
       modificationRequest.setUuid(buildUuid(idArchive));
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       modificationRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération modification
@@ -1030,17 +1169,17 @@ public final class Axis2ObjectFactory {
 
    }
 
-   public static AjoutNote contruitParamsEntreeAjoutNote(String idArchive,
-         String contenuNote) {
-      AjoutNote ajoutNote = new AjoutNote();
-      AjoutNoteRequestType ajoutNoteRequest = new AjoutNoteRequestType();
+   public static AjoutNote contruitParamsEntreeAjoutNote(final String idArchive,
+                                                         final String contenuNote) {
+      final AjoutNote ajoutNote = new AjoutNote();
+      final AjoutNoteRequestType ajoutNoteRequest = new AjoutNoteRequestType();
       ajoutNote.setAjoutNote(ajoutNoteRequest);
 
       // Identifiant de l'archive
       ajoutNoteRequest.setUuid(buildUuid(idArchive));
 
       // Contenu de la note à ajouter au document
-      NoteTxtType paramNote = new NoteTxtType();
+      final NoteTxtType paramNote = new NoteTxtType();
       paramNote.setNoteTxtType(contenuNote);
       ajoutNoteRequest.setNote(paramNote);
 
@@ -1052,7 +1191,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param urlEcdeFichier
     *           l'URL ECDE du fichier à archiver
     * @param urlEcdeFichierFormatOrigine
@@ -1062,29 +1201,29 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "stockageUnitaire"
     */
    public static StockageUnitaire contruitParamsEntreeStockageUnitaireAvecUrlEcde(
-         String urlEcdeFichier, String urlEcdeFichierFormatOrigine,
-         Map<String, String> metadonnees) {
+                                                                                  final String urlEcdeFichier, final String urlEcdeFichierFormatOrigine,
+                                                                                  final Map<String, String> metadonnees) {
 
-      StockageUnitaire stockageUnitaire = new StockageUnitaire();
-      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+      final StockageUnitaire stockageUnitaire = new StockageUnitaire();
+      final StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
       stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
 
       // URL ECDE du document parent
-      EcdeUrlType ecdeUrlFichier = buildEcdeUrl(urlEcdeFichier);
-      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      final EcdeUrlType ecdeUrlFichier = buildEcdeUrl(urlEcdeFichier);
+      final StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
       stockageUnitaireRequest
-      .setStockageUnitaireRequestTypeChoice_type0(choice0);
+                             .setStockageUnitaireRequestTypeChoice_type0(choice0);
       choice0.setUrlEcdeDoc(ecdeUrlFichier);
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
 
       // URL ECDE du document au format d'origine
-      EcdeUrlType ecdeUrlFichierFormatOrigine = buildEcdeUrl(urlEcdeFichierFormatOrigine);
-      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      final EcdeUrlType ecdeUrlFichierFormatOrigine = buildEcdeUrl(urlEcdeFichierFormatOrigine);
+      final StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
       stockageUnitaireRequest
-      .setStockageUnitaireRequestTypeChoice_type1(choice1);
+                             .setStockageUnitaireRequestTypeChoice_type1(choice1);
       choice1.setUrlEcdeDocOrigine(ecdeUrlFichierFormatOrigine);
 
       return stockageUnitaire;
@@ -1094,7 +1233,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param nomFichier
     *           le nom du fichier à archiver
     * @param contenu
@@ -1108,53 +1247,54 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "stockageUnitaire"
     */
    public static StockageUnitaire contruitParamsEntreeStockageUnitaireavecContenu(
-         String nomFichier, InputStream contenu,
-         String nomFichierFormatOrigine, InputStream contenuFormatOrigine,
-         Map<String, String> metadonnees) {
+                                                                                  final String nomFichier, final InputStream contenu,
+                                                                                  final String nomFichierFormatOrigine, final InputStream contenuFormatOrigine,
+                                                                                  final Map<String, String> metadonnees) {
 
-      StockageUnitaire stockageUnitaire = new StockageUnitaire();
-      StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
+      final StockageUnitaire stockageUnitaire = new StockageUnitaire();
+      final StockageUnitaireRequestType stockageUnitaireRequest = new StockageUnitaireRequestType();
       stockageUnitaire.setStockageUnitaire(stockageUnitaireRequest);
 
       // Nom et contenu du fichier
-      DataFileType dataFile = new DataFileType();
+      final DataFileType dataFile = new DataFileType();
       dataFile.setFileName(nomFichier);
       byte[] contenuBytes;
       try {
-         contenuBytes = IOUtils.getStreamAsByteArray(contenu);
-      } catch (IOException e) {
+         contenuBytes = IOUtils.toByteArray(contenu);
+      }
+      catch (final IOException e) {
          throw new DemoRuntimeException(e);
       }
-      ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
-      DataHandler dataHandler = new DataHandler(byteArray);
+      final ByteArrayDataSource byteArray = new ByteArrayDataSource(contenuBytes);
+      final DataHandler dataHandler = new DataHandler(byteArray);
       dataFile.setFile(dataHandler);
-      StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
+      final StockageUnitaireRequestTypeChoice_type0 choice0 = new StockageUnitaireRequestTypeChoice_type0();
       stockageUnitaireRequest
-      .setStockageUnitaireRequestTypeChoice_type0(choice0);
+                             .setStockageUnitaireRequestTypeChoice_type0(choice0);
       choice0.setDataFileDoc(dataFile);
 
       // Nom et contenu du fichier au format d'origine
-      DataFileType dataFileFormatOrigine = new DataFileType();
+      final DataFileType dataFileFormatOrigine = new DataFileType();
       dataFileFormatOrigine.setFileName(nomFichierFormatOrigine);
       byte[] contenuBytesFormatOrigine;
       try {
-         contenuBytesFormatOrigine = IOUtils
-               .getStreamAsByteArray(contenuFormatOrigine);
-      } catch (IOException e) {
+         contenuBytesFormatOrigine = IOUtils.toByteArray(contenuFormatOrigine);
+      }
+      catch (final IOException e) {
          throw new DemoRuntimeException(e);
       }
-      ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(
-            contenuBytesFormatOrigine);
-      DataHandler dataHandlerFormatOrigine = new DataHandler(
-            byteArrayFormatOrigine);
+      final ByteArrayDataSource byteArrayFormatOrigine = new ByteArrayDataSource(
+                                                                                 contenuBytesFormatOrigine);
+      final DataHandler dataHandlerFormatOrigine = new DataHandler(
+                                                                   byteArrayFormatOrigine);
       dataFileFormatOrigine.setFile(dataHandlerFormatOrigine);
-      StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
+      final StockageUnitaireRequestTypeChoice_type1 choice1 = new StockageUnitaireRequestTypeChoice_type1();
       stockageUnitaireRequest
-      .setStockageUnitaireRequestTypeChoice_type1(choice1);
+                             .setStockageUnitaireRequestTypeChoice_type1(choice1);
       choice1.setDataFileAttached(dataFileFormatOrigine);
 
       // Métadonnées
-      ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
+      final ListeMetadonneeType listeMetadonnee = buildListeMeta(metadonnees);
       stockageUnitaireRequest.setMetadonnees(listeMetadonnee);
 
       // Renvoie du paramètre d'entrée de l'opération archivageUnitairePJ
@@ -1165,21 +1305,21 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param uuidDocParent
     *           L'UUID du document dont on cherche le document au format
     *           d'origine
     * @return le paramètre d'entrée de l'opération "getDocFormatOrigine"
     */
    public static GetDocFormatOrigine contruitParamsEntreeGetDocFormatOrigine(
-         UUID uuidDocParent) {
+                                                                             final UUID uuidDocParent) {
 
-      GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
-      GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
+      final GetDocFormatOrigine getDocFormatOrigine = new GetDocFormatOrigine();
+      final GetDocFormatOrigineRequestType getDocFormatOrigineRequest = new GetDocFormatOrigineRequestType();
       getDocFormatOrigine.setGetDocFormatOrigine(getDocFormatOrigineRequest);
 
       // UUID du document parent
-      UuidType uuidType = new UuidType();
+      final UuidType uuidType = new UuidType();
       uuidType.setUuidType(uuidDocParent.toString());
       getDocFormatOrigineRequest.setIdDoc(uuidType);
 
@@ -1190,19 +1330,19 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param requete
     *           La requête de suppression des documents
     * @return le paramètre d'entrée de l'opération "suppressionMasse"
     */
    public static SuppressionMasse contruitParamsEntreeSuppressionMasse(
-         String requete) {
-      SuppressionMasse suppressionMasse = new SuppressionMasse();
-      SuppressionMasseRequestType suppressionMasseRequest = new SuppressionMasseRequestType();
+                                                                       final String requete) {
+      final SuppressionMasse suppressionMasse = new SuppressionMasse();
+      final SuppressionMasseRequestType suppressionMasseRequest = new SuppressionMasseRequestType();
       suppressionMasse.setSuppressionMasse(suppressionMasseRequest);
 
       // Requete de suppression
-      RequeteRechercheType requeteType = new RequeteRechercheType();
+      final RequeteRechercheType requeteType = new RequeteRechercheType();
       requeteType.setRequeteRechercheType(requete);
       suppressionMasseRequest.setRequete(requeteType);
 
@@ -1212,20 +1352,45 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
+    * @param requete
+    *           La requête de suppression des documents
+    * @return le paramètre d'entrée de l'opération "suppressionMasse"
+    */
+   public static SuppressionMasseV2 contruitParamsEntreeSuppressionMasseV2(
+                                                                           final String requete) {
+      final SuppressionMasseV2 suppressionMasseV2 = new SuppressionMasseV2();
+      final sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseV2RequestType suppressionMasseV2RequestType = new sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseV2RequestType();
+      suppressionMasseV2.setSuppressionMasseV2(suppressionMasseV2RequestType);
+
+      // Requete de suppression
+      final RequeteRechercheType requeteType = new RequeteRechercheType();
+      requeteType.setRequeteRechercheType(requete);
+      suppressionMasseV2RequestType.setRequete(requeteType);
+
+      return suppressionMasseV2;
+   }
+
+   /**
+    * Transformation des objets "pratiques" en objets Axis2 pour un appel de
+    * service web
+    *
     * @param idTraitementSuppression
     *           L'identifiant du traitement de suppression de masse à restorer
     * @return le paramètre d'entrée de l'opération "restoreMasse"
     */
    public static RestoreMasse contruitParamsEntreeRestoreMasse(
-         String idTraitementSuppression) {
-      RestoreMasse restoreMasse = new RestoreMasse();
-      RestoreMasseRequestType restoreMasseRequest = new RestoreMasseRequestType();
+                                                               final String idTraitementSuppression) {
+      final RestoreMasse restoreMasse = new RestoreMasse();
+      final RestoreMasseRequestType restoreMasseRequest = new RestoreMasseRequestType();
       restoreMasse.setRestoreMasse(restoreMasseRequest);
 
-      UuidType requeteType = new UuidType();
+      final UuidType requeteType = new UuidType();
       requeteType.setUuidType(idTraitementSuppression);
-      restoreMasseRequest.setUuid(requeteType);
+
+      final ListeUuidType listUuid = new ListeUuidType();
+      listUuid.addUuid(requeteType);
+      restoreMasseRequest.setUuid(listUuid);
 
       return restoreMasse;
    }
@@ -1233,21 +1398,21 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param listeUuid
     *           La liste des uuid des traitements de masse
     * @return le paramètre d'entrée de l'opération "etatTraitementsMasse"
     */
    public static EtatTraitementsMasse contruitParamsEntreeEtatTraitementsMasse(
-         List<String> listeUuid) {
+                                                                               final List<String> listeUuid) {
 
-      EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();
-      EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
+      final EtatTraitementsMasse etatTraitementsMasse = new EtatTraitementsMasse();
+      final EtatTraitementsMasseRequestType etatTraitementsMasseRequest = new EtatTraitementsMasseRequestType();
       etatTraitementsMasse.setEtatTraitementsMasse(etatTraitementsMasseRequest);
 
-      ListeUuidType listeUuidType = new ListeUuidType();
-      for (String uuid : listeUuid) {
-         UuidType uuidType = new UuidType();
+      final ListeUuidType listeUuidType = new ListeUuidType();
+      for (final String uuid : listeUuid) {
+         final UuidType uuidType = new UuidType();
          uuidType.setUuidType(uuid);
          listeUuidType.addUuid(uuidType);
       }
@@ -1259,7 +1424,7 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param urlEcdeSommaire
     *           l'URL ECDE du sommaire.xml
     * @param typeHash
@@ -1269,22 +1434,23 @@ public final class Axis2ObjectFactory {
     * @return le paramètre d'entrée de l'opération "ModificationMasse"
     */
    public static ModificationMasse contruitParamsEntreeModificationMasse(
-         String urlEcdeSommaire, String typeHash, String hash,
-         String codeTraitement) {
+                                                                         final String urlEcdeSommaire, final String typeHash, final String hash,
+                                                                         final String codeTraitement) {
 
-      ModificationMasse modificationMasse = new ModificationMasse();
+      final ModificationMasse modificationMasse = new ModificationMasse();
 
-      ModificationMasseRequestType modificationMasseRequest = new ModificationMasseRequestType();
+      final ModificationMasseRequestType modificationMasseRequest = new ModificationMasseRequestType();
 
       modificationMasse.setModificationMasse(modificationMasseRequest);
 
       // URL ECDE du sommaire
-      EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
+      final EcdeUrlSommaireType ecdeUrlSommaireObj = new EcdeUrlSommaireType();
       modificationMasseRequest.setUrlSommaire(ecdeUrlSommaireObj);
       URI ecdeUriSommaireUri;
       try {
          ecdeUriSommaireUri = new URI(urlEcdeSommaire);
-      } catch (MalformedURIException e) {
+      }
+      catch (final MalformedURIException e) {
          throw new DemoRuntimeException(e);
       }
       ecdeUrlSommaireObj.setEcdeUrlSommaireType(ecdeUriSommaireUri);
@@ -1304,17 +1470,17 @@ public final class Axis2ObjectFactory {
    /**
     * Transformation des objets "pratiques" en objets Axis2 pour un appel de
     * service web
-    * 
+    *
     * @param idJob
     *           l'identifiant unique du job que l'on veut relancer en mode
     *           "Reprise".
     * @return le paramètre d'entrée de l'opération "copie"
     */
-   public static Reprise contruitParamsEntreeReprise(String idJob) {
+   public static Reprise contruitParamsEntreeReprise(final String idJob) {
 
-      Reprise reprise = new Reprise();
+      final Reprise reprise = new Reprise();
 
-      RepriseRequestType repriseRequest = new RepriseRequestType();
+      final RepriseRequestType repriseRequest = new RepriseRequestType();
 
       reprise.setReprise(repriseRequest);
 

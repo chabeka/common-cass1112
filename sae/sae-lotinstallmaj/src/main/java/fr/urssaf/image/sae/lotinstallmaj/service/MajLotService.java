@@ -17,16 +17,6 @@ public interface MajLotService {
     */
    void demarre(String nomOperation, String[] argSpecifiques);
    
-   
-   /**
-    * Réalise toutes les opérations de mise à jour de la base de données pour
-    * les serveurs d'integration (Tests d'integration) sur la base DFCE.
-    * 
-    * @param argSpecifiques
-    *           Application concernée par la modification de base de données.
-    */
-   void demarreUpdateDFCE(final String applicationConcernee);
-
    /**
     * Réalise toutes les opérations de création des metadatas et indexes
     * composites de la base de données pour les serveurs d'integration (Tests

@@ -7,27 +7,26 @@ import java.util.List;
 public class SearchObjectClassUtil {
 
    /**
-    * Methode utilitaire permettant de retrouver une classe dans un object à
-    * analyser. Cette utilitaire ne gére pas les type primitifs.
-    * 
+    * Méthode utilitaire permettant de retrouver une classe dans un object à
+    * analyser. Cette utilitaire ne gère pas les type primitifs.
+    *
     * @param objAnalyse
     *           Object à analyser
     * @param arrayKlazzSearch
     *           Classes recherchées
     * @return Objet trouvé
     */
-   public static Object searchObjectByClass(Object objAnalyse,
-         String... arrayKlazzSearch) {
-      List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
-      String lofPrefix = "searchObjectByClass - ";
+   public static Object searchObjectByClass(final Object objAnalyse,
+                                            final String... arrayKlazzSearch) {
+      final List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
+      final String lofPrefix = "searchObjectByClass - ";
       Object objFind = null;
       if (objAnalyse == null || arrayKlazzSearch == null) {
-         System.out.println(lofPrefix
-               + "'obj' ou 'klazzSearch' ne peut être null");
+         return null;
       } else {
-         Class klazz = objAnalyse.getClass();
+         final Class klazz = objAnalyse.getClass();
          if (!(klazz.isPrimitive() || objAnalyse instanceof String
-               || objAnalyse instanceof Integer 
+               || objAnalyse instanceof Integer
                || objAnalyse instanceof Double
                || objAnalyse instanceof Long
                || objAnalyse instanceof Float
@@ -37,18 +36,14 @@ public class SearchObjectClassUtil {
                || objAnalyse instanceof Void
                || objAnalyse instanceof Character)) {
             try {
-               for (Field field : klazz.getDeclaredFields()) {
+               for (final Field field : klazz.getDeclaredFields()) {
                   field.setAccessible(true);
-                  Object f = field.get(objAnalyse);
+                  final Object f = field.get(objAnalyse);
                   if (f != null) {
                      field.setAccessible(false);
 
-                     Class klazzFind = f.getClass();
+                     final Class klazzFind = f.getClass();
                      if (listeKlazzSearch.contains(klazzFind.toString())) {
-                        System.out.println(lofPrefix + "Valeur recherchée :"
-                              + arrayKlazzSearch.toString()
-                              + " - valeur trouvée : "
-                              + f.toString());
                         return f;
                      } else {
                         objFind = searchObjectByClass(f, arrayKlazzSearch);
@@ -59,9 +54,9 @@ public class SearchObjectClassUtil {
                      }
                   }
                }
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                e.printStackTrace();
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                e.printStackTrace();
             }
          }

@@ -4,6 +4,8 @@ import org.easymock.EasyMock;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.ecde.service.EcdeServices;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.batch.TraitementAsynchroneService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.capture.SAECaptureService;
@@ -18,144 +20,142 @@ import fr.urssaf.image.sae.services.transfert.SAETransfertService;
 
 /**
  * Implémentation des Mocks des services SAE
- * 
- * 
  */
 @Component
 public class SAEServiceFactory {
 
-   /**
-    * 
-    * @return instance de {@link SAECaptureService}
-    */
-   public final SAECaptureService createSAECaptureService() {
+  /**
+   * @return instance de {@link SAECaptureService}
+   */
+  public final SAECaptureService createSAECaptureService() {
 
-      SAECaptureService service = EasyMock.createMock(SAECaptureService.class);
+    final SAECaptureService service = EasyMock.createMock(SAECaptureService.class);
 
-      return service;
-   }
+    return service;
+  }
 
-   /**
-    * 
-    * @return instance de {@link SAECopieService}
-    */
-   public final SAECopieService createSAECopieService() {
+  /**
+   * @return instance de {@link SAECopieService}
+   */
+  public final SAECopieService createSAECopieService() {
 
-      SAECopieService service = EasyMock.createMock(SAECopieService.class);
+    final SAECopieService service = EasyMock.createMock(SAECopieService.class);
 
-      return service;
-   }
-   
-   public final SAEDocumentExistantService createSAEDocumentExistantService() {
+    return service;
+  }
 
-      SAEDocumentExistantService service = EasyMock.createMock(SAEDocumentExistantService.class);
+  public final SAEDocumentExistantService createSAEDocumentExistantService() {
 
-      return service;
-   }
+    final SAEDocumentExistantService service = EasyMock.createMock(SAEDocumentExistantService.class);
 
-   /**
-    * 
-    * @return instance de {@link SAEModificationService}
-    */
-   public final SAEModificationService createSAEModificationService() {
+    return service;
+  }
 
-      SAEModificationService service = EasyMock
-            .createMock(SAEModificationService.class);
+  /**
+   * @return instance de {@link SAEModificationService}
+   */
+  public final SAEModificationService createSAEModificationService() {
 
-      return service;
-   }
+    final SAEModificationService service = EasyMock
+                                                   .createMock(SAEModificationService.class);
 
-   /**
-    * 
-    * @return instance de {@link SAESuppressionService}
-    */
-   public final SAESuppressionService createSAESuppressionService() {
+    return service;
+  }
 
-      SAESuppressionService service = EasyMock
-            .createMock(SAESuppressionService.class);
+  /**
+   * @return instance de {@link SAESuppressionService}
+   */
+  public final SAESuppressionService createSAESuppressionService() {
 
-      return service;
-   }
+    final SAESuppressionService service = EasyMock
+                                                  .createMock(SAESuppressionService.class);
 
-   /**
-    * 
-    * @return instance de {@link SAEControlesCaptureService}
-    */
-   public final SAEControlesCaptureService createSAEControlesCaptureService() {
+    return service;
+  }
 
-      SAEControlesCaptureService service = EasyMock
-            .createMock(SAEControlesCaptureService.class);
+  /**
+   * @return instance de {@link SAEControlesCaptureService}
+   */
+  public final SAEControlesCaptureService createSAEControlesCaptureService() {
 
-      return service;
-   }
+    final SAEControlesCaptureService service = EasyMock
+                                                       .createMock(SAEControlesCaptureService.class);
 
-   /**
-    * 
-    * @return instance de {@link SAEControleSupportService}
-    */
-   public final SAEControleSupportService createSAEControlesSupportService() {
+    return service;
+  }
 
-      SAEControleSupportService service = EasyMock
-            .createMock(SAEControleSupportService.class);
+  /**
+   * @return instance de {@link SAEControleSupportService}
+   */
+  public final SAEControleSupportService createSAEControlesSupportService() {
 
-      return service;
-   }
+    final SAEControleSupportService service = EasyMock
+                                                      .createMock(SAEControleSupportService.class);
 
-   /**
-    * 
-    * @return instance de {@link TraitementAsynchroneService}
-    */
-   public final TraitementAsynchroneService createTraitementAsynchroneService() {
+    return service;
+  }
 
-      TraitementAsynchroneService service = EasyMock
-            .createMock(TraitementAsynchroneService.class);
+  /**
+   * @return instance de {@link TraitementAsynchroneService}
+   */
+  public final TraitementAsynchroneService createTraitementAsynchroneService() {
 
-      return service;
-   }
+    final TraitementAsynchroneService service = EasyMock
+                                                        .createMock(TraitementAsynchroneService.class);
 
-   /**
-    * 
-    * @return instance de EcdeServices
-    */
-   public final EcdeServices createEcdeServices() {
+    return service;
+  }
 
-      EcdeServices service = EasyMock.createMock(EcdeServices.class);
+  /**
+   * @return instance de EcdeServices
+   */
+  public final EcdeServices createEcdeServices() {
 
-      return service;
-   }
+    final EcdeServices service = EasyMock.createMock(EcdeServices.class);
 
-   /**
-    * 
-    * @return instance de MetadataService
-    */
-   public final MetadataService createMetadataService() {
+    return service;
+  }
 
-      MetadataService service = EasyMock.createMock(MetadataService.class);
+  /**
+   * @return instance de MetadataService
+   */
+  public final MetadataService createMetadataService() {
 
-      return service;
-   }
+    final MetadataService service = EasyMock.createMock(MetadataService.class);
 
-   /**
-    * 
-    * @return instance de TracesControlesSupport
-    */
-   public final TracesControlesSupport createTracesControlesSupport() {
+    return service;
+  }
 
-      TracesControlesSupport support = EasyMock
-            .createMock(TracesControlesSupport.class);
+  /**
+   * @return instance de TracesControlesSupport
+   */
+  public final TracesControlesSupport createTracesControlesSupport() {
 
-      return support;
-   }
+    final TracesControlesSupport support = EasyMock
+                                                   .createMock(TracesControlesSupport.class);
 
-   /**
-    * 
-    * @return instance de SAETransfertService
-    */
-   public final SAETransfertService createSAETransfertService() {
+    return support;
+  }
 
-      SAETransfertService transfertSce = EasyMock
-            .createMock(SAETransfertService.class);
+  /**
+   * @return instance de SAETransfertService
+   */
+  public final SAETransfertService createSAETransfertService() {
 
-      return transfertSce;
-   }
+    final SAETransfertService transfertSce = EasyMock
+                                                     .createMock(SAETransfertService.class);
+
+    return transfertSce;
+  }
+
+  /**
+   * @return instance de IndexCompositeService
+   * @throws IndexCompositeException
+   * @{@link IndexCompositeException}
+   */
+  public final IndexCompositeService createIndexCompositeService() throws IndexCompositeException {
+    final IndexCompositeService indexCompositeService = EasyMock
+                                                                .createMock(IndexCompositeService.class);
+    return indexCompositeService;
+  }
 }

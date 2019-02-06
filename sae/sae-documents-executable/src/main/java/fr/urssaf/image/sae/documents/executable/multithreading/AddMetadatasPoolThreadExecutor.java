@@ -32,9 +32,10 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     */
    private int pasExecution;
 
+
    /**
     * Construteur.
-    * 
+    *
     * @param parametres
     *           parametres
     */
@@ -50,7 +51,7 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
 
       // -- On incrémenter le compteur d’éléments traités
@@ -65,32 +66,18 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
    public final void waitFinishAddMetadata() {
-
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+      }
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-   }
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -99,7 +86,7 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -110,7 +97,7 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -120,7 +107,7 @@ public class AddMetadatasPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

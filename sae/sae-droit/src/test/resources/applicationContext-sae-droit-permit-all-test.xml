@@ -24,4 +24,10 @@
 
    <bean class="fr.urssaf.image.sae.droit.cache.CacheConfig" id="cacheConfig" />
 
+   <!--
+      Importation de la définition du keyspace cassandra et du client
+      zookeeper (zkClient)
+   -->
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   
 </beans>

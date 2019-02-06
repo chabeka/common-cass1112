@@ -292,7 +292,7 @@ public class PurgeJournauxDatasTest {
    }
 
    @Test
-   public void testPurgeJournalAntérieureJournalisation()
+   public void testPurgeJournalAnterieureJournalisation()
          throws ParameterNotFoundException {
 
       Date date = DateUtils.addDays(DATE, -10);

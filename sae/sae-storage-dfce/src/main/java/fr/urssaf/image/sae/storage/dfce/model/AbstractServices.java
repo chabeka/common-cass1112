@@ -1,13 +1,11 @@
 package fr.urssaf.image.sae.storage.dfce.model;
 
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
-import fr.urssaf.image.commons.dfce.model.DFCEConnection;
-import fr.urssaf.image.commons.dfce.util.ConnexionServiceProvider;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
+import net.docubase.toolkit.model.base.Base;
 
 /**
  * Classe abstraite contenant les attributs communs de toutes les
@@ -30,11 +28,9 @@ import fr.urssaf.image.sae.storage.dfce.support.StorageDocumentServiceSupport;
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 public abstract class AbstractServices {
 
-   /**
-    * Provider de connexion du service DFCe
-    */
    @Autowired
-   protected ConnexionServiceProvider connexionServiceProvider;
+   @Qualifier("dfceServices")
+   protected DFCEServices dfceServices;
 
    /**
     * Service utilitaire de mutualisation du code des implémentations des
@@ -43,28 +39,20 @@ public abstract class AbstractServices {
    @Autowired
    protected StorageDocumentServiceSupport storageDocumentServiceSupport;
 
-   /**
-    * @return Les services DFCE.
-    */
-   public final ServiceProvider getDfceService() {
-      return connexionServiceProvider
-            .getServiceProviderByConnectionParams(getCnxParameters());
-   }
-
-   /**
-    * @return Les paramètres de connection
-    */
-   public abstract DFCEConnection getCnxParameters();
-
 
    /**
     * @return Une occurrence de la base DFCE.
     */
    public Base getBaseDFCE() {
-      return storageDocumentServiceSupport
-            .getBaseDFCE(connexionServiceProvider
-                  .getServiceProviderByConnectionParams(getCnxParameters()),
-                  getCnxParameters());
+      return dfceServices.getBase();
+   }
+
+   public DFCEServices getDfceServices() {
+      return dfceServices;
+   }
+
+   public void setDfceServices(final DFCEServices dfceServices) {
+      this.dfceServices = dfceServices;
    }
 
 }

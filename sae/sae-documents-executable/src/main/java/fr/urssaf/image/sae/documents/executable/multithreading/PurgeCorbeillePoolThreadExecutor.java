@@ -34,12 +34,12 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Construteur.
-    * 
+    *
     * @param parametres
     *           parametres
     */
    public PurgeCorbeillePoolThreadExecutor(
-         final PurgeCorbeilleParametres parametres) {
+                                           final PurgeCorbeilleParametres parametres) {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
             TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(
                   parametres.getTailleQueue()), new DiscardPolicy());
@@ -51,7 +51,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
 
       // -- On incrémente le compteur d’éléments traités
@@ -66,32 +66,18 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
    public final void waitFinishPurgeCorbeille() {
-
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+      }
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-   }
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -100,7 +86,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -111,7 +97,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -121,7 +107,7 @@ public class PurgeCorbeillePoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traiter pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

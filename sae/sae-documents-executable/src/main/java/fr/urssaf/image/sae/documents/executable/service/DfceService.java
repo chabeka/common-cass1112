@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.service.ServiceProvider;
 
 /**
  * Service permettant de réaliser des opérations sur DFCE.
@@ -26,7 +26,7 @@ public interface DfceService {
 
    /**
     * Retourne des documents concernés par la requête.
-    * 
+    *
     * @param requeteLucene
     *           La requête à exécuter
     * @return Liste des documents correspondants à la recherche
@@ -34,11 +34,11 @@ public interface DfceService {
     */
    Iterator<Document> executerRequete(String requeteLucene)
          throws SearchQueryParseException;
-   
-   
+
+
    /**
     * Retourne des documents de la corbeille concernés par la requête.
-    * 
+    *
     * @param requeteLucene
     *           La requête à exécuter
     * @return Liste des documents correspondants à la recherche
@@ -49,7 +49,7 @@ public interface DfceService {
 
    /**
     * Retourne le contenu du document.
-    * 
+    *
     * @param document
     *           Le document
     * @return Le contenu du document
@@ -57,14 +57,14 @@ public interface DfceService {
    InputStream recupererContenu(Document document);
 
    /**
-    * Permet de récupérer le provider de service de DFCE.
-    * 
-    * @return ServiceProvider
+    * Permet de récupérer la connexion vers les services de DFCE.
+    *
+    * @return DFCEServices
     */
-   ServiceProvider getServiceProvider();
-   
+   DFCEServices getDFCEServices();
+
    /**
-    * Recupere un document par son identifiant.
+    * Recupère un document par son identifiant.
     * @param idDoc identifiant du doc.
     * @return Document
     */

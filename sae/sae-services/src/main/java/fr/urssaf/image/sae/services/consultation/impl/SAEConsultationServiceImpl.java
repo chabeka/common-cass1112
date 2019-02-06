@@ -60,14 +60,14 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Implémentation du service {@link SAEConsultationService}
- * 
+ *
  */
 @Service
 @Qualifier("saeConsultationService")
 public class SAEConsultationServiceImpl extends AbstractSAEServices implements
 SAEConsultationService {
    /**
-    * 
+    *
     */
    private static final String SEPARATOR_STRING = ", ";
 
@@ -94,16 +94,16 @@ SAEConsultationService {
 
    /**
     * attribution des paramètres de l'implémentation
-    * 
+    *
     * @param referenceDAO
     *           instance du service des métadonnées de référence
     * @param mappingService
     *           instance du service de mapping du SAE
-    * 
+    *
     */
    @Autowired
-   public SAEConsultationServiceImpl(MetadataReferenceDAO referenceDAO,
-         MappingDocumentService mappingService) {
+   public SAEConsultationServiceImpl(final MetadataReferenceDAO referenceDAO,
+                                     final MappingDocumentService mappingService) {
       super();
       this.referenceDAO = referenceDAO;
       this.mappingService = mappingService;
@@ -113,11 +113,11 @@ SAEConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(UUID idArchive)
+   public final UntypedDocument consultation(final UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
-      ConsultParams consultParams = new ConsultParams(idArchive);
+      final ConsultParams consultParams = new ConsultParams(idArchive);
 
       return consultation(consultParams);
    }
@@ -126,52 +126,52 @@ SAEConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(ConsultParams consultParams)
+   public final UntypedDocument consultation(final ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
-      UUID idArchive = consultParams.getIdArchive();
+      final UUID idArchive = consultParams.getIdArchive();
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultation()";
+      final String prefixeTrc = "consultation()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
-            idArchive);
+                idArchive);
       // Fin des traces debug - entrée méthode
 
       try {
 
          // Liste des métadonnées à consulter
-         List<String> metadatas = manageMetaDataNames(consultParams);
+         final List<String> metadatas = manageMetaDataNames(consultParams);
 
          LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
-               prefixeTrc, buildMessageFromList(metadatas));
+                   prefixeTrc, buildMessageFromList(metadatas));
 
-         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
-         Map<String, MetadataReference> listeAllMeta = referenceDAO
+         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         final Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferences();
          String shortCode;
-         for (String mapKey : listeAllMeta.keySet()) {
+         for (final String mapKey : listeAllMeta.keySet()) {
             shortCode = listeAllMeta.get(mapKey).getShortCode();
             // On ne récupère la note, le gel et la durée de conservation que si
             // elle est demandée à la consulation (car sinon cela génère un
             // appel à DFCE inutile)
             if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(shortCode)) {
                if (metadatas.contains(StorageTechnicalMetadatas.NOTE
-                     .getLongCode())) {
+                                      .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
-                  shortCode)) {
+                                                                           shortCode)) {
                if (metadatas.contains(StorageTechnicalMetadatas.GEL
-                     .getLongCode())) {
+                                      .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
                   .getShortCode().equals(shortCode)) {
                if (metadatas
                      .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
-                           .getLongCode())) {
+                               .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else {
@@ -180,12 +180,11 @@ SAEConsultationService {
 
          }
 
-         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+         final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
          // On récupère le document à partir de l'UUID, avec toutes les
          // métadonnées du référentiel
-         StorageDocument storageDocument = this.getStorageServiceProvider()
-               .getStorageDocumentService()
+         final StorageDocument storageDocument = this.getStorageDocumentService()
                .retrieveStorageDocumentByUUID(uuidCriteria);
 
          UntypedDocument untypedDocument = null;
@@ -196,12 +195,12 @@ SAEConsultationService {
                   .storageDocumentToUntypedDocument(storageDocument);
 
             LOG.debug("{} - Récupération des droits", prefixeTrc);
-            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                   .getContext().getAuthentication();
-            List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+            final List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
             LOG.debug("{} - Vérification des droits", prefixeTrc);
-            boolean isPermitted = prmdService.isPermitted(
-                  untypedDocument.getUMetadatas(), saePrmds);
+            final boolean isPermitted = prmdService.isPermitted(
+                                                                untypedDocument.getUMetadatas(), saePrmds);
 
             if (!isPermitted) {
                throw new AccessDeniedException(
@@ -210,8 +209,8 @@ SAEConsultationService {
 
             // On filtre uniquement sur les métadonnées souhaitées à la
             // consultation
-            List<UntypedMetadata> list = filterMetadatas(metadatas,
-                  untypedDocument.getUMetadatas());
+            final List<UntypedMetadata> list = filterMetadatas(metadatas,
+                                                               untypedDocument.getUMetadatas());
             untypedDocument.setUMetadatas(list);
 
          }
@@ -220,19 +219,19 @@ SAEConsultationService {
          // Fin des traces debug - sortie méthode
          return untypedDocument;
 
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (ReferentialException e) {
+      } catch (final ReferentialException e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
 
          throw new SAEConsultationServiceException(e);
 
@@ -244,51 +243,51 @@ SAEConsultationService {
     */
    @Override
    public final UntypedDocument consultationAffichable(
-         ConsultParams consultParams) throws SAEConsultationServiceException,
-         UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
-         SAEConsultationAffichableParametrageException {
+                                                       final ConsultParams consultParams) throws SAEConsultationServiceException,
+   UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
+   SAEConsultationAffichableParametrageException {
 
-      UUID idArchive = consultParams.getIdArchive();
+      final UUID idArchive = consultParams.getIdArchive();
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "consultationAffichable()";
+      final String prefixeTrc = "consultationAffichable()";
       LOG.debug("{} - Début", prefixeTrc);
       LOG.debug("{} - UUID envoyé par l'application cliente : {}", prefixeTrc,
-            idArchive);
+                idArchive);
       // Fin des traces debug - entrée méthode
 
       try {
-         List<String> metadatas = manageMetaDataNames(consultParams);
+         final List<String> metadatas = manageMetaDataNames(consultParams);
 
          LOG.debug("{} - Liste des métadonnées consultable : \"{}\"",
-               prefixeTrc, buildMessageFromList(metadatas));
+                   prefixeTrc, buildMessageFromList(metadatas));
 
-         List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
+         final List<StorageMetadata> allMeta = new ArrayList<StorageMetadata>();
 
-         Map<String, MetadataReference> listeAllMeta = referenceDAO
+         final Map<String, MetadataReference> listeAllMeta = referenceDAO
                .getAllMetadataReferences();
          String shortCode;
-         for (String mapKey : listeAllMeta.keySet()) {
+         for (final String mapKey : listeAllMeta.keySet()) {
             shortCode = listeAllMeta.get(mapKey).getShortCode();
             // On ne récupère la note, le gel et la durée de conservation que
             // si elle est demandée à la consulation (car sinon cela génère
             // un appel à DFCE inutile)
             if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(shortCode)) {
                if (metadatas.contains(StorageTechnicalMetadatas.NOTE
-                     .getLongCode())) {
+                                      .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else if (StorageTechnicalMetadatas.GEL.getShortCode().equals(
-                  shortCode)) {
+                                                                           shortCode)) {
                if (metadatas.contains(StorageTechnicalMetadatas.GEL
-                     .getLongCode())) {
+                                      .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else if (StorageTechnicalMetadatas.DUREE_CONSERVATION
                   .getShortCode().equals(shortCode)) {
                if (metadatas
                      .contains(StorageTechnicalMetadatas.DUREE_CONSERVATION
-                           .getLongCode())) {
+                               .getLongCode())) {
                   allMeta.add(new StorageMetadata(shortCode));
                }
             } else {
@@ -296,12 +295,11 @@ SAEConsultationService {
             }
          }
 
-         UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
+         final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, allMeta);
 
          // On récupère le document à partir de l'UUID, avec toutes les
          // métadonnées du référentiel
-         StorageDocument storageDocument = this.getStorageServiceProvider()
-               .getStorageDocumentService()
+         final StorageDocument storageDocument = this.getStorageDocumentService()
                .retrieveStorageDocumentByUUID(uuidCriteria);
 
          UntypedDocument untypedDocument = null;
@@ -311,12 +309,12 @@ SAEConsultationService {
                   .storageDocumentToUntypedDocument(storageDocument);
 
             LOG.debug("{} - Récupération des droits", prefixeTrc);
-            AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
+            final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder
                   .getContext().getAuthentication();
-            List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
+            final List<SaePrmd> saePrmds = token.getSaeDroits().get("consultation");
             LOG.debug("{} - Vérification des droits", prefixeTrc);
-            boolean isPermitted = prmdService.isPermitted(
-                  untypedDocument.getUMetadatas(), saePrmds);
+            final boolean isPermitted = prmdService.isPermitted(
+                                                                untypedDocument.getUMetadatas(), saePrmds);
 
             if (!isPermitted) {
                throw new AccessDeniedException(
@@ -324,31 +322,31 @@ SAEConsultationService {
             }
 
             // recuperation de l'identifiant de format
-            String idFormat = UntypedMetadataFinderUtils.valueMetadataFinder(
-                  untypedDocument.getUMetadatas(), "FormatFichier");
+            final String idFormat = UntypedMetadataFinderUtils.valueMetadataFinder(
+                                                                                   untypedDocument.getUMetadatas(), "FormatFichier");
 
             // On filtre uniquement sur les métadonnées souhaitées à la
             // consultation
-            List<UntypedMetadata> list = filterMetadatas(metadatas,
-                  untypedDocument.getUMetadatas());
+            final List<UntypedMetadata> list = filterMetadatas(metadatas,
+                                                               untypedDocument.getUMetadatas());
             untypedDocument.setUMetadatas(list);
 
             // recupere le train de byte au format natif
             final InputStream inputContent = untypedDocument.getContent()
                   .getInputStream();
-            byte[] byteArray = org.apache.commons.io.IOUtils
+            final byte[] byteArray = org.apache.commons.io.IOUtils
                   .toByteArray(inputContent);
 
             // conversion du fichier
-            byte[] fichierConverti = conversionService.convertirFichier(
-                  idFormat, byteArray, consultParams.getNumeroPage(),
-                  consultParams.getNombrePages());
+            final byte[] fichierConverti = conversionService.convertirFichier(
+                                                                              idFormat, byteArray, consultParams.getNumeroPage(),
+                                                                              consultParams.getNombrePages());
 
             // remplacement du fichier d'origine par le fichier converti
             // TODO : voir comment remplacer le application/pdf
-            ByteArrayDataSource dataSource = new ByteArrayDataSource(
-                  fichierConverti, "application/pdf");
-            DataHandler dataHandler = new DataHandler(dataSource);
+            final ByteArrayDataSource dataSource = new ByteArrayDataSource(
+                                                                           fichierConverti, "application/pdf");
+            final DataHandler dataHandler = new DataHandler(dataSource);
             untypedDocument.setContent(dataHandler);
          }
 
@@ -356,32 +354,32 @@ SAEConsultationService {
          // Fin des traces debug - sortie méthode
          return untypedDocument;
 
-      } catch (RetrievalServiceEx e) {
+      } catch (final RetrievalServiceEx e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (ReferentialException e) {
+      } catch (final ReferentialException e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (InvalidSAETypeException e) {
+      } catch (final InvalidSAETypeException e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (MappingFromReferentialException e) {
+      } catch (final MappingFromReferentialException e) {
 
          throw new SAEConsultationServiceException(e);
 
-      } catch (IOException ex) {
+      } catch (final IOException ex) {
          throw new SAEConsultationServiceException(ex);
-      } catch (ConvertisseurInitialisationException ex) {
+      } catch (final ConvertisseurInitialisationException ex) {
          throw new SAEConsultationServiceException(ex);
-      } catch (UnknownFormatException ex) {
+      } catch (final UnknownFormatException ex) {
          throw new SAEConsultationServiceException(ex);
-      } catch (ConversionParametrageException ex) {
+      } catch (final ConversionParametrageException ex) {
          throw new SAEConsultationAffichableParametrageException(
-               ex.getMessage(), ex);
-      } catch (ConversionRuntimeException ex) {
+                                                                 ex.getMessage(), ex);
+      } catch (final ConversionRuntimeException ex) {
          throw new SAEConsultationServiceException(ex);
       }
    }
@@ -391,10 +389,10 @@ SAEConsultationService {
     * @param uMetadatas
     * @return
     */
-   private List<UntypedMetadata> filterMetadatas(List<String> metadatas,
-         List<UntypedMetadata> uMetadatas) {
+   private List<UntypedMetadata> filterMetadatas(final List<String> metadatas,
+                                                 final List<UntypedMetadata> uMetadatas) {
 
-      List<UntypedMetadata> metaList = uMetadatas;
+      final List<UntypedMetadata> metaList = uMetadatas;
       UntypedMetadata currentMetadata;
 
       for (int index = uMetadatas.size() - 1; index >= 0; index--) {
@@ -411,7 +409,7 @@ SAEConsultationService {
    /**
     * Retourne la liste des metadatas à renvoyer en fonction de celles stockées
     * dans l'objet de paramétrage
-    * 
+    *
     * @param consultParams
     *           paramètres de consultation
     * @return la liste des metadatas à consulter
@@ -422,18 +420,18 @@ SAEConsultationService {
     * @throws MetaDataUnauthorizedToConsultEx
     *            levée lorsqu'au moins une metadata n'est pas consultable
     */
-   private List<String> manageMetaDataNames(ConsultParams consultParams)
+   private List<String> manageMetaDataNames(final ConsultParams consultParams)
          throws UnknownDesiredMetadataEx, ReferentialException,
          MetaDataUnauthorizedToConsultEx {
 
-      List<String> keyList = new ArrayList<String>();
+      final List<String> keyList = new ArrayList<String>();
 
       if (CollectionUtils.isEmpty(consultParams.getMetadonnees())) {
 
-         Map<String, MetadataReference> map = this.referenceDAO
+         final Map<String, MetadataReference> map = this.referenceDAO
                .getDefaultConsultableMetadataReferences();
 
-         for (MetadataReference metaRef : map.values()) {
+         for (final MetadataReference metaRef : map.values()) {
             keyList.add(metaRef.getLongCode());
          }
 
@@ -442,20 +440,20 @@ SAEConsultationService {
          try {
             controlService.controlLongCodeExist(consultParams.getMetadonnees());
 
-         } catch (LongCodeNotFoundException longExcept) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.inexistante",
-                  StringUtils.join(longExcept.getListCode(), SEPARATOR_STRING));
+         } catch (final LongCodeNotFoundException longExcept) {
+            final String message = ResourceMessagesUtils.loadMessage(
+                                                                     "consultation.metadonnees.inexistante",
+                                                                     StringUtils.join(longExcept.getListCode(), SEPARATOR_STRING));
             throw new UnknownDesiredMetadataEx(message, longExcept);
          }
 
          try {
             controlService.controlLongCodeIsAFConsultation(consultParams
-                  .getMetadonnees());
-         } catch (LongCodeNotFoundException longNotFoundEx) {
-            String message = ResourceMessagesUtils.loadMessage(
-                  "consultation.metadonnees.non.consultable", StringUtils.join(
-                        longNotFoundEx.getListCode(), SEPARATOR_STRING));
+                                                           .getMetadonnees());
+         } catch (final LongCodeNotFoundException longNotFoundEx) {
+            final String message = ResourceMessagesUtils.loadMessage(
+                                                                     "consultation.metadonnees.non.consultable", StringUtils.join(
+                                                                                                                                  longNotFoundEx.getListCode(), SEPARATOR_STRING));
             throw new MetaDataUnauthorizedToConsultEx(message, longNotFoundEx);
          }
 
@@ -472,17 +470,17 @@ SAEConsultationService {
     * Exemple : "UntypedMetadata[code long:=Titre,value=Attestation],
     * UntypedMetadata[code long:=DateCreation,value=2011-09-01],
     * UntypedMetadata[code long:=ApplicationProductrice,value=ADELAIDE]"
-    * 
+    *
     * @param <T>
     *           le type d'objet
     * @param list
     *           : liste des objets à afficher.
     * @return Une chaîne qui représente l'ensemble des objets à afficher.
     */
-   private <T> String buildMessageFromList(Collection<T> list) {
+   private <T> String buildMessageFromList(final Collection<T> list) {
       final ToStringBuilder toStrBuilder = new ToStringBuilder(this,
-            ToStringStyle.SIMPLE_STYLE);
-      for (T o : Utils.nullSafeIterable(list)) {
+                                                               ToStringStyle.SIMPLE_STYLE);
+      for (final T o : Utils.nullSafeIterable(list)) {
          if (o != null) {
             toStrBuilder.append(o.toString());
          }

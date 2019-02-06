@@ -4,9 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
-import junit.framework.Assert;
-
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -23,6 +22,7 @@ import fr.urssaf.image.sae.batch.documents.executable.model.ConfigurationsEnviro
 import fr.urssaf.image.sae.batch.documents.executable.service.DfceService;
 import fr.urssaf.image.sae.batch.documents.executable.service.impl.ConfigurationServiceImpl;
 import fr.urssaf.image.sae.batch.documents.executable.service.impl.DfceServiceImpl;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-test.xml" })
@@ -55,6 +55,7 @@ public class ParamDfceTest {
    }
 
    @Test
+  @Ignore
    public void validExecuterRequeteRequeteLuceneNull() throws SearchQueryParseException {
       try {
          dfceService.executerRequete(null);
@@ -70,6 +71,7 @@ public class ParamDfceTest {
    }
 
    @Test
+  @Ignore
    public void validRecupererContenuDocumentNull() {
       try {
          dfceService.recupererContenu(null);

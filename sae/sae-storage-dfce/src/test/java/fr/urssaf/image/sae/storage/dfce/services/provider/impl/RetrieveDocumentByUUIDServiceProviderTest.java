@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.storage.dfce.services.provider.impl;
 import java.io.IOException;
 import java.text.ParseException;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +17,8 @@ import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
+import junit.framework.Assert;
 
 /**
  * Classe permettant de test la récupération d'un document en base.
@@ -30,29 +30,26 @@ public class RetrieveDocumentByUUIDServiceProviderTest {
 
    @Autowired
    private CommonsServices commonsServices;
+   @Autowired
+   private StorageDocumentService storageDocumentService;
 
    @Before
    public void init() throws ConnectionServiceEx, IOException, ParseException {
-      commonsServices.initServicesParameters();
       commonsServices.initStorageDocumens();
    }
 
    // Ici on test la récupération du document
    @Test
    public final void retrieveDocument() throws ConnectionServiceEx,
-         RetrievalServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
+   RetrievalServiceEx, InsertionServiceEx, InsertionIdGedExistantEx {
 
-      // On récupère la connexion
-      commonsServices.getServiceProvider().openConnexion();
       // on insert le document.
-      StorageDocument document = commonsServices.getServiceProvider()
-            .getStorageDocumentService().insertStorageDocument(
-                  commonsServices.getStorageDocument());
+      final StorageDocument document = storageDocumentService.insertStorageDocument(
+                                                                                    commonsServices.getStorageDocument());
       // on test ici si on a un UUID
       Assert.assertNotNull(document.getUuid());
-      StorageDocument storageDocument = commonsServices.getServiceProvider()
-            .getStorageDocumentService().retrieveStorageDocumentByUUID(
-                  new UUIDCriteria(document.getUuid(), null));
+      final StorageDocument storageDocument = storageDocumentService.retrieveStorageDocumentByUUID(
+                                                                                                   new UUIDCriteria(document.getUuid(), null));
       // ici on vérifie qu'on a bien un contenu
       Assert.assertNotNull(storageDocument.getContent());
       // ici on vérifie qu'on a bien des métadonnées

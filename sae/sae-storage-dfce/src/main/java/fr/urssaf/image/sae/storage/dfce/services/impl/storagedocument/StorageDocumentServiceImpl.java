@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.activation.DataHandler;
@@ -11,8 +12,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.storage.dfce.annotations.FacadePattern;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractServiceProvider;
+import fr.urssaf.image.sae.storage.dfce.bo.IndexCompositeComponent;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.DeletionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.InsertionServiceImpl;
 import fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud.SearchingServiceImpl;
@@ -48,6 +49,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.RetrievalService;
 import fr.urssaf.image.sae.storage.services.storagedocument.SearchingService;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
+import net.docubase.toolkit.model.reference.CompositeIndex;
 
 /**
  * Façade des services de gestions de StorageDocument :
@@ -57,373 +59,419 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
  * <li>{@link SearchingServiceImpl}</li>
  * <li>{@link DeletionServiceImpl}</li>
  * </ul>
- * 
  */
 @Service("storageDocumentService")
-@FacadePattern(participants = { InsertionServiceImpl.class,
-      RetrievalServiceImpl.class, SearchingServiceImpl.class,
-      DeletionServiceImpl.class }, comment = "Fournit les services des classes participantes")
-public class StorageDocumentServiceImpl extends AbstractServiceProvider
-implements StorageDocumentService {
-   @Autowired
-   @Qualifier("insertionService")
-   private InsertionService insertionService;
-   @Autowired
-   @Qualifier("searchingService")
-   private SearchingService searchingService;
-   @Autowired
-   @Qualifier("retrievalService")
-   private RetrievalService retrievalService;
-   @Autowired
-   @Qualifier("deletionService")
-   private DeletionService deletionService;
-   @Autowired
-   private UpdateService updateService;
-   @Autowired
-   @Qualifier("documentNoteService")
-   private DocumentNoteService documentNoteService;
-   @Autowired
-   @Qualifier("documentAttachmentService")
-   private DocumentAttachmentService documentAttachmentService;
-   @Autowired
-   @Qualifier("recycleBinService")
-   private RecycleBinService recycleBinService;
+@FacadePattern(participants = {InsertionServiceImpl.class,
+                               RetrievalServiceImpl.class, SearchingServiceImpl.class,
+                               DeletionServiceImpl.class},
+               comment = "Fournit les services des classes participantes")
+public class StorageDocumentServiceImpl extends AbstractServices
+                                        implements
+                                        StorageDocumentService {
+  @Autowired
+  @Qualifier("insertionService")
+  private InsertionService insertionService;
 
-   /**
-    * @return les services de suppression
-    */
-   public final DeletionService getDeletionService() {
-      return deletionService;
-   }
+  @Autowired
+  @Qualifier("searchingService")
+  private SearchingService searchingService;
 
-   /**
-    * @param deletionService
-    *           : les services de suppression
-    */
-   public final void setDeletionService(final DeletionService deletionService) {
-      this.deletionService = deletionService;
-   }
+  @Autowired
+  @Qualifier("retrievalService")
+  private RetrievalService retrievalService;
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @throws InsertionIdGedExistantEx
-    */
+  @Autowired
+  @Qualifier("deletionService")
+  private DeletionService deletionService;
 
-   @Override
-   public StorageDocument insertStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
-      return insertionService.insertStorageDocument(storageDocument);
-   }
+  @Autowired
+  private UpdateService updateService;
 
-   /**
-    * {@inheritDoc}
-    * 
-    * @throws InsertionIdGedExistantEx
-    */
-   @Override
-   public StorageDocument insertBinaryStorageDocument(
-         final StorageDocument storageDocument) throws InsertionServiceEx,
-         InsertionIdGedExistantEx {
-      return insertionService.insertBinaryStorageDocument(storageDocument);
-   }
+  @Autowired
+  @Qualifier("documentNoteService")
+  private DocumentNoteService documentNoteService;
 
-   /**
-    * 
-    * @return Les services d'insertions
-    */
-   public final InsertionService getInsertionService() {
-      return insertionService;
-   }
+  @Autowired
+  @Qualifier("documentAttachmentService")
+  private DocumentAttachmentService documentAttachmentService;
 
-   /**
-    * 
-    * @return les services de recherche
-    */
-   public final SearchingService getSearchingService() {
-      return searchingService;
-   }
+  @Autowired
+  @Qualifier("recycleBinService")
+  private RecycleBinService recycleBinService;
 
-   /**
-    * 
-    * @return les services de récupération
-    */
-   public final RetrievalService getRetrievalService() {
-      return retrievalService;
-   }
+  @Autowired
+  private IndexCompositeComponent indexCompositeService;
 
-   /**
-    * {@inheritDoc}
-    */
+  /**
+   * @return les services de suppression
+   */
+  public final DeletionService getDeletionService() {
+    return deletionService;
+  }
 
-   @Override
-   public StorageDocuments searchStorageDocumentByLuceneCriteria(
-         final LuceneCriteria luceneCriteria) throws SearchingServiceEx,
-         QueryParseServiceEx {
-      return searchingService
-            .searchStorageDocumentByLuceneCriteria(luceneCriteria);
-   }
+  /**
+   * @param deletionService
+   *          : les services de suppression
+   */
+  public final void setDeletionService(final DeletionService deletionService) {
+    this.deletionService = deletionService;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
+  /**
+   * {@inheritDoc}
+   *
+   * @throws InsertionIdGedExistantEx
+   */
 
-   @Override
-   public StorageDocument searchStorageDocumentByUUIDCriteria(
-         final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
-      return searchingService.searchStorageDocumentByUUIDCriteria(uUIDCriteria,
-            false);
-   }
+  @Override
+  public StorageDocument insertStorageDocument(
+                                               final StorageDocument storageDocument)
+      throws InsertionServiceEx,
+      InsertionIdGedExistantEx {
+    return insertionService.insertStorageDocument(storageDocument);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final StorageDocument retrieveStorageDocumentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
-      return retrievalService.retrieveStorageDocumentByUUID(uUIDCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   *
+   * @throws InsertionIdGedExistantEx
+   */
+  @Override
+  public StorageDocument insertBinaryStorageDocument(
+                                                     final StorageDocument storageDocument)
+      throws InsertionServiceEx,
+      InsertionIdGedExistantEx {
+    return insertionService.insertBinaryStorageDocument(storageDocument);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
+  /**
+   * @return Les services d'insertions
+   */
+  public final InsertionService getInsertionService() {
+    return insertionService;
+  }
 
-   @Override
-   public final byte[] retrieveStorageDocumentContentByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
-      return retrievalService
-            .retrieveStorageDocumentContentByUUID(uUIDCriteria);
-   }
+  /**
+   * @return les services de recherche
+   */
+  public final SearchingService getSearchingService() {
+    return searchingService;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
+  /**
+   * @return les services de récupération
+   */
+  public final RetrievalService getRetrievalService() {
+    return retrievalService;
+  }
 
-   @Override
-   public List<StorageMetadata> retrieveStorageDocumentMetaDatasByUUID(
-         final UUIDCriteria uUIDCriteria) throws RetrievalServiceEx {
-      return retrievalService
-            .retrieveStorageDocumentMetaDatasByUUID(uUIDCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   */
 
-   /**
-    * Initialise les services d'insertion
-    * 
-    * @param insertionService
-    *           : les services d'insertions
-    */
-   public final void setInsertionService(final InsertionService insertionService) {
-      this.insertionService = insertionService;
-   }
+  @Override
+  public StorageDocuments searchStorageDocumentByLuceneCriteria(
+                                                                final LuceneCriteria luceneCriteria)
+      throws SearchingServiceEx,
+      QueryParseServiceEx {
+    return searchingService
+                           .searchStorageDocumentByLuceneCriteria(luceneCriteria);
+  }
 
-   /**
-    * Initialise les services de recherche
-    * 
-    * @param searchingService
-    *           : Le service de recherche
-    */
-   public final void setSearchingService(final SearchingService searchingService) {
-      this.searchingService = searchingService;
-   }
+  /**
+   * {@inheritDoc}
+   */
 
-   /**
-    * Initialise les services de récupération
-    * 
-    * @param retrievalService
-    *           : les services de récupération
-    */
-   public final void setRetrievalService(final RetrievalService retrievalService) {
-      this.retrievalService = retrievalService;
-   }
+  @Override
+  public StorageDocument searchStorageDocumentByUUIDCriteria(
+                                                             final UUIDCriteria uUIDCriteria)
+      throws SearchingServiceEx {
+    return searchingService.searchStorageDocumentByUUIDCriteria(uUIDCriteria,
+                                                                false);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void deleteStorageDocument(final UUID uuid)
-         throws DeletionServiceEx {
-      this.deletionService.deleteStorageDocument(uuid);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final StorageDocument retrieveStorageDocumentByUUID(
+                                                             final UUIDCriteria uUIDCriteria)
+      throws RetrievalServiceEx {
+    return retrievalService.retrieveStorageDocumentByUUID(uUIDCriteria);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public StorageDocument searchMetaDatasByUUIDCriteria(
-         final UUIDCriteria uuidCriteria) throws SearchingServiceEx {
-      return searchingService.searchMetaDatasByUUIDCriteria(uuidCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   */
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void rollBack(final String processId) throws DeletionServiceEx {
-      deletionService.rollBack(processId);
-   }
+  @Override
+  public final byte[] retrieveStorageDocumentContentByUUID(
+                                                           final UUIDCriteria uUIDCriteria)
+      throws RetrievalServiceEx {
+    return retrievalService
+                           .retrieveStorageDocumentContentByUUID(uUIDCriteria);
+  }
 
-   @Override
-   public StorageReferenceFile insertStorageReference(
-         VirtualStorageReference reference) throws InsertionServiceEx {
-      return insertionService.insertStorageReference(reference);
-   }
+  /**
+   * {@inheritDoc}
+   */
 
-   @Override
-   public UUID insertVirtualStorageDocument(
-         VirtualStorageDocument document) throws InsertionServiceEx {
-      return insertionService.insertVirtualStorageDocument(document);
-   }
+  @Override
+  public List<StorageMetadata> retrieveStorageDocumentMetaDatasByUUID(
+                                                                      final UUIDCriteria uUIDCriteria)
+      throws RetrievalServiceEx {
+    return retrievalService
+                           .retrieveStorageDocumentMetaDatasByUUID(uUIDCriteria);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void updateStorageDocument(UUID uuid,
-         List<StorageMetadata> modifiedMetadatas,
-         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
-      updateService.updateStorageDocument(null, uuid, modifiedMetadatas,
-            deletedMetadatas);
+  /**
+   * Initialise les services d'insertion
+   *
+   * @param insertionService
+   *          : les services d'insertions
+   */
+  public final void setInsertionService(final InsertionService insertionService) {
+    this.insertionService = insertionService;
+  }
 
-   }
+  /**
+   * Initialise les services de recherche
+   *
+   * @param searchingService
+   *          : Le service de recherche
+   */
+  public final void setSearchingService(final SearchingService searchingService) {
+    this.searchingService = searchingService;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void updateStorageDocument(UUID uuidJob, UUID uuid,
-         List<StorageMetadata> modifiedMetadatas,
-         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {      
-      if( uuidJob== null){
-         updateStorageDocument(uuid, modifiedMetadatas, deletedMetadatas);
-      } else {
-         updateService.updateStorageDocument(uuidJob, uuid, modifiedMetadatas,
-               deletedMetadatas);
-      }
-   }
+  /**
+   * Initialise les services de récupération
+   *
+   * @param retrievalService
+   *          : les services de récupération
+   */
+  public final void setRetrievalService(final RetrievalService retrievalService) {
+    this.retrievalService = retrievalService;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void deleteStorageDocumentTraceTransfert(final UUID uuid)
-         throws DeletionServiceEx {
-      deletionService.deleteStorageDocForTransfert(uuid);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void deleteStorageDocument(final UUID uuid)
+      throws DeletionServiceEx {
+    deletionService.deleteStorageDocument(uuid);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public PaginatedStorageDocuments searchPaginatedStorageDocuments(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
-               throws SearchingServiceEx, QueryParseServiceEx {
-      return searchingService
-            .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public StorageDocument searchMetaDatasByUUIDCriteria(
+                                                       final UUIDCriteria uuidCriteria)
+      throws SearchingServiceEx {
+    return searchingService.searchMetaDatasByUUIDCriteria(uuidCriteria);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login)
-         throws DocumentNoteServiceEx {
-      documentNoteService.addDocumentNote(docUuid, contenu, login, null, null);
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void rollBack(final String processId) throws DeletionServiceEx {
+    deletionService.rollBack(processId);
+  }
 
-   }
+  @Override
+  public StorageReferenceFile insertStorageReference(
+                                                     final VirtualStorageReference reference)
+      throws InsertionServiceEx {
+    return insertionService.insertStorageReference(reference);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public List<StorageDocumentNote> getDocumentsNotes(UUID docUuid) {
-      return documentNoteService.getDocumentNotes(docUuid);
-   }
+  @Override
+  public UUID insertVirtualStorageDocument(
+                                           final VirtualStorageDocument document)
+      throws InsertionServiceEx {
+    return insertionService.insertVirtualStorageDocument(document);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void addDocumentAttachment(UUID docUuid, String docName,
-         String extension, DataHandler contenu)
-               throws StorageDocAttachmentServiceEx {
-      documentAttachmentService.addDocumentAttachment(docUuid, docName,
-            extension, contenu);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void updateStorageDocument(final UUID uuid,
+                                          final List<StorageMetadata> modifiedMetadatas,
+                                          final List<StorageMetadata> deletedMetadatas)
+      throws UpdateServiceEx {
+    updateService.updateStorageDocument(null,
+                                        uuid,
+                                        modifiedMetadatas,
+                                        deletedMetadatas);
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
-         throws StorageDocAttachmentServiceEx {
-      return documentAttachmentService.getDocumentAttachments(docUuid);
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void moveStorageDocumentToRecycleBin(UUID uuid)
-         throws RecycleBinServiceEx {
-      recycleBinService.moveStorageDocumentToRecycleBin(uuid);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void updateStorageDocument(final UUID uuidJob, final UUID uuid,
+                                    final List<StorageMetadata> modifiedMetadatas,
+                                    final List<StorageMetadata> deletedMetadatas)
+      throws UpdateServiceEx {
+    if (uuidJob == null) {
+      updateStorageDocument(uuid, modifiedMetadatas, deletedMetadatas);
+    } else {
+      updateService.updateStorageDocument(uuidJob,
+                                          uuid,
+                                          modifiedMetadatas,
+                                          deletedMetadatas);
+    }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void restoreStorageDocumentFromRecycleBin(UUID uuid)
-         throws RecycleBinServiceEx {
-      recycleBinService.restoreStorageDocumentFromRecycleBin(uuid);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void deleteStorageDocumentTraceTransfert(final UUID uuid)
+      throws DeletionServiceEx {
+    deletionService.deleteStorageDocForTransfert(uuid);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void deleteStorageDocumentFromRecycleBin(UUID uuid)
-         throws RecycleBinServiceEx {
-      recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PaginatedStorageDocuments searchPaginatedStorageDocuments(
+                                                                   final PaginatedLuceneCriteria paginatedLuceneCriteria)
+      throws SearchingServiceEx, QueryParseServiceEx {
+    return searchingService
+                           .searchPaginatedStorageDocuments(paginatedLuceneCriteria);
+  }
 
-   /**
-    * {@inheritDoc}
-    * @throws IOException 
-    * @throws StorageException 
-    */
-   @Override
-   public StorageDocument getStorageDocumentFromRecycleBin(UUIDCriteria uuidCriteria)
-         throws StorageException, IOException {
-      return recycleBinService.getStorageDocumentFromRecycleBin(uuidCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PaginatedStorageDocuments searchPaginatedStorageDocumentsWithBestIndex(final PaginatedLuceneCriteria paginatedLuceneCriteria,
+                                                                                final List<String> bestIndex)
+      throws SearchingServiceEx, QueryParseServiceEx {
+    return searchingService.searchPaginatedStorageDocumentsWithBestIndex(paginatedLuceneCriteria, bestIndex);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
-         PaginatedLuceneCriteria paginatedLuceneCriteria)
-               throws SearchingServiceEx, QueryParseServiceEx {
-      return searchingService
-            .searchStorageDocumentsInRecycleBean(paginatedLuceneCriteria);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addDocumentNote(final UUID docUuid, final String contenu, final String login)
+      throws DocumentNoteServiceEx {
+    documentNoteService.addDocumentNote(docUuid, contenu, login, null, null);
 
-   /**
-    * Setter pour recycleBinService
-    * 
-    * @param recycleBinService
-    *           the recycleBinService to set
-    */
-   public final void setRecycleBinService(RecycleBinService recycleBinService) {
-      this.recycleBinService = recycleBinService;
-   }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final DFCEServicesManager getDfceServicesManager() {
-      return dfceServicesManager;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<StorageDocumentNote> getDocumentsNotes(final UUID docUuid) {
+    return documentNoteService.getDocumentNotes(docUuid);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void addDocumentAttachment(final UUID docUuid, final String docName,
+                                    final String extension, final DataHandler contenu)
+      throws StorageDocAttachmentServiceEx {
+    documentAttachmentService.addDocumentAttachment(docUuid,
+                                                    docName,
+                                                    extension,
+                                                    contenu);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public StorageDocumentAttachment getDocumentAttachment(final UUID docUuid)
+      throws StorageDocAttachmentServiceEx {
+    return documentAttachmentService.getDocumentAttachments(docUuid);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void moveStorageDocumentToRecycleBin(final UUID uuid)
+      throws RecycleBinServiceEx {
+    recycleBinService.moveStorageDocumentToRecycleBin(uuid);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void restoreStorageDocumentFromRecycleBin(final UUID uuid)
+      throws RecycleBinServiceEx {
+    recycleBinService.restoreStorageDocumentFromRecycleBin(uuid);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void deleteStorageDocumentFromRecycleBin(final UUID uuid)
+      throws RecycleBinServiceEx {
+    recycleBinService.deleteStorageDocumentFromRecycleBin(uuid);
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @throws IOException
+   * @throws StorageException
+   */
+  @Override
+  public StorageDocument getStorageDocumentFromRecycleBin(final UUIDCriteria uuidCriteria)
+      throws StorageException, IOException {
+    return recycleBinService.getStorageDocumentFromRecycleBin(uuidCriteria);
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public PaginatedStorageDocuments searchStorageDocumentsInRecycleBean(
+                                                                       final PaginatedLuceneCriteria paginatedLuceneCriteria)
+      throws SearchingServiceEx, QueryParseServiceEx {
+    return searchingService
+                           .searchStorageDocumentsInRecycleBean(paginatedLuceneCriteria);
+  }
+
+  /**
+   * Setter pour recycleBinService
+   *
+   * @param recycleBinService
+   *          the recycleBinService to set
+   */
+  public final void setRecycleBinService(final RecycleBinService recycleBinService) {
+    this.recycleBinService = recycleBinService;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<CompositeIndex> getAllCompositeIndex() {
+    return dfceServices.fetchAllCompositeIndex();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Set<CompositeIndex> getAllIndexComposite() {
+    return indexCompositeService.getIndexCompositeList();
+  }
+
 }

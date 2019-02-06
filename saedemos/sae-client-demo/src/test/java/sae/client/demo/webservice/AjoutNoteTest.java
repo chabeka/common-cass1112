@@ -16,7 +16,7 @@ public class AjoutNoteTest {
     * <br>
     * Cas sans erreur (sous réserve que l'identifiant unique d'archivage utilisé
     * dans le test corresponde à une archive en base)
-    * 
+    *
     * @throws RemoteException
     */
    @Test
@@ -24,19 +24,19 @@ public class AjoutNoteTest {
 
       // Identifiant unique d'archivage de l'archive que l'on veut modifier
       // On part ici du principe que le document existe
-      String idArchive = "5A06E1C2-048A-4E46-B7F2-9A93D48300AB";
+      final String idArchive = "271669AA-07ED-4385-828F-F2F5DDD3A872";
 
       // La note à ajouter à un document (Pour info, une note peut être ajouter
       // dès l'archivage d'un document, en utilisant la métadonnée Note)
-      String contenuNote = "Contenu de la note";
+      final String contenuNote = "Contenu de la note";
 
       // Construction du paramètre d'entrée de l'opération ajoutNote,
       // avec les objets modèle générés par Axis2.
-      AjoutNote paramsEntree = Axis2ObjectFactory
-            .contruitParamsEntreeAjoutNote(idArchive, contenuNote);
+      final AjoutNote paramsEntree = Axis2ObjectFactory
+                                                       .contruitParamsEntreeAjoutNote(idArchive, contenuNote);
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
 
       // Appel du service web de modification
       saeService.ajoutNote(paramsEntree);

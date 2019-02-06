@@ -30,11 +30,10 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 
 /**
  * Item writer du transfert des documents dans la GNS
- * 
+ *
  */
 @Component
 public class TransfertDocumentWriter extends AbstractDocumentWriterListener
@@ -62,12 +61,6 @@ implements ItemWriter<StorageDocument> {
    private StorageDocumentToRecycleWriter suppressionService;
 
    /**
-    * Provider pour les traces.
-    */
-   @Autowired
-   private ServiceProviderSupport traceServiceSupport;
-
-   /**
     * Provider de service pour la connexion DFCE de la GNS
     */
    @Autowired
@@ -92,30 +85,30 @@ implements ItemWriter<StorageDocument> {
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
-   public UUID launchTraitement(final AbstractStorageDocument storageDocument, int indexRun)
+   public UUID launchTraitement(final AbstractStorageDocument storageDocument, final int indexRun)
          throws Exception {
 
       StorageDocument document = new StorageDocument();
-      String actionType = checkActionType((StorageDocument) storageDocument);
+      final String actionType = checkActionType((StorageDocument) storageDocument);
       if (actionType != null) {
          if (actionType.equals("SUPPRESSION")) {
-        	 StorageDocument storageDoc = (StorageDocument) storageDocument;
-        	 storageDoc.getMetadatas().add(
-					new StorageMetadata(
-							Constantes.CODE_COURT_META_DATE_CORBEILLE,
-							new Date()));
-            document = moveDocumentToRecycleBin((StorageDocument) storageDoc);
+            final StorageDocument storageDoc = (StorageDocument) storageDocument;
+            storageDoc.getMetadatas().add(
+                                          new StorageMetadata(
+                                                              Constantes.CODE_COURT_META_DATE_CORBEILLE,
+                                                              new Date()));
+            document = moveDocumentToRecycleBin(storageDoc);
          } else {
             document = transfertDocument((StorageDocument) storageDocument);
-         }  
+         }
       }
-      UUID uuid = document != null ? document.getUuid() : null;
+      final UUID uuid = document != null ? document.getUuid() : null;
       return uuid;
    }
 
    /**
     * Transfert du document
-    * 
+    *
     * @param document
     * @return Le document transféré
     * @throws TransfertException
@@ -126,17 +119,17 @@ implements ItemWriter<StorageDocument> {
          throws TransfertException {
       try {
          transfertService.transfertDocMasse(document);
-      } catch (Throwable except) {
+      } catch (final Throwable except) {
          throw new TransfertException(
-               "Erreur transfert - identifiant archivage " + document.getUuid()
-               + " : " + except.getMessage(), except);
+                                      "Erreur transfert - identifiant archivage " + document.getUuid()
+                                      + " : " + except.getMessage(), except);
       }
       return document;
    }
 
    /**
     * Mise en corbeille du document passé en paramètre
-    * 
+    *
     * @param document
     * @return le document supprimé
     * @throws SuppressionException
@@ -148,7 +141,7 @@ implements ItemWriter<StorageDocument> {
 
       try {
          // Récuperer l'id du traitement en cours
-         String idJob = getStepExecution().getJobParameters()
+         final String idJob = getStepExecution().getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);
 
          UUID uuidJob = null;
@@ -158,10 +151,10 @@ implements ItemWriter<StorageDocument> {
          }
 
          suppressionService.moveToRecycleBeanStorageDocument(uuidJob, document);
-      } catch (Throwable except) {
+      } catch (final Throwable except) {
          throw new SuppressionException(
-               "Erreur Suppression - identifiant archivage "
-                     + document.getUuid() + " : " + except.getMessage(), except);
+                                        "Erreur Suppression - identifiant archivage "
+                                              + document.getUuid() + " : " + except.getMessage(), except);
       }
       return document;
    }
@@ -186,37 +179,40 @@ implements ItemWriter<StorageDocument> {
 
       Runnable command;
 
-      for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
-         boolean isdocumentATraite = isDocumentATraite(index);
+      for (final StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
+         final boolean isdocumentATraite = isDocumentATraite(index);
          // Si le document n'est pas en erreur ou dans la liste de document déjà
          // traité (Reprise), on traite, sinon on passe au suivant.
          if (isdocumentATraite) {
             command = new InsertionRunnable(getStepExecution().getReadCount()
-                  + index, storageDocument, this, getStepExecution()
-                  .getReadCount() + index);
+                                            + index, storageDocument, this, getStepExecution()
+                                            .getReadCount() + index);
 
             try {
                poolExecutor.execute(command);
-            } catch (Exception e) {
+            } catch (final Exception e) {
                if (isModePartielBatch()) {
                   getCodesErreurListe().add(Constantes.ERR_BUL002);
                   getIndexErreurListe().add(
-                        getStepExecution().getExecutionContext().getInt(
-                              Constantes.CTRL_INDEX));
+                                            getStepExecution().getExecutionContext().getInt(
+                                                                                            Constantes.CTRL_INDEX));
                   getErrorMessageList().add(e.getMessage());
                   LOGGER.warn("Erreur lors de transfert du document en GNS", e);
                }
 
             }
             LOGGER.debug(
-                  "{} - nombre de documents en attente dans le pool : {}",
-                  TRC_INSERT, poolExecutor.getQueue().size());
+                         "{} - nombre de documents en attente dans le pool : {}",
+                         TRC_INSERT,
+                         "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
+                               + poolExecutor.getActiveCount());
 
          } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
             poolExecutor.getIntegratedDocuments().add(
-                  new TraitementMasseIntegratedDocument(storageDocument
-                        .getUuid(), null,
-                        index));
+                                                      new TraitementMasseIntegratedDocument(storageDocument
+                                                                                            .getUuid(), null,
+                                                                                            getStepExecution().getReadCount()
+                                                                                            + index));
          }
 
          index++;
@@ -231,16 +227,16 @@ implements ItemWriter<StorageDocument> {
     */
    @Override
    protected void specificInitOperations() {
-      String trcPrefix = "specificInitOperations()";
+      final String trcPrefix = "specificInitOperations()";
 
       super.specificInitOperations();
 
       try {
          storageTransfertService.openConnexion();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",
-               trcPrefix, e);
+                          trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -257,15 +253,14 @@ implements ItemWriter<StorageDocument> {
     */
    @Override
    protected ExitStatus specificAfterStepOperations() {
-      String trcPrefix = "specificAfterStepOperations()";
+      final String trcPrefix = "specificAfterStepOperations()";
       ExitStatus exitStatus = super.specificAfterStepOperations();
       try {
          storageTransfertService.closeConnexion();
-         traceServiceSupport.disconnect();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable e) {
+      } catch (final Throwable e) {
          getLogger().warn("{} - erreur lors de la fermeture des services de transfert",
-               trcPrefix, e);
+                          trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());

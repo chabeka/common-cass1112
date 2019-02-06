@@ -353,8 +353,8 @@ public class PersistanceDocumentsVirtuelsStepTest {
       JobExecution execution = launcher.launchStep(
             "persistanceDocumentsVirtuels", jobParameters, contextParam);
 
-      Assert.assertEquals("le status de sortie doit etre à COMPLETED",
-            ExitStatus.COMPLETED.getExitCode(), execution.getExitStatus()
+      Assert.assertEquals("le status de sortie doit etre à FAILED",
+            ExitStatus.FAILED.getExitCode(), execution.getExitStatus()
             .getExitCode());
       @SuppressWarnings("unchecked")
       ConcurrentLinkedQueue<String> codeExceptionList = (ConcurrentLinkedQueue<String>) execution

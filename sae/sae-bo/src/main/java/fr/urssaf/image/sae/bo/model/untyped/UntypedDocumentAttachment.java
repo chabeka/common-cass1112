@@ -9,9 +9,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * <br>Classe représentant un document attaché c'est-à-dire un tableau de byte
+ * Classe représentant un document attaché c'est-à-dire un tableau de byte
  * correspondant au contenu du document et la liste des métadonnées(liste de
- * paires (code, valeur) dont les valeurs sont non typées).<br>
+ * paires (code, valeur) dont les valeurs sont non typées).
  * Elle contient les attributs :
  * <ul>
  * <li>uMetadatas : La liste des métadonnées non typées.</li>

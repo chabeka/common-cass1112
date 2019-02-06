@@ -39,7 +39,7 @@ public interface RegService<T extends Trace, I extends TraceIndex> {
     * @param limite
     *           Nombre de traces maximum à récupérer
     * @param reversed
-    *           booleen indiquant si l'ordre décroissant doit etre appliqué<br>
+    *           booléen indiquant si l'ordre décroissant doit être appliqué<br>
     *           <ul>
     *           <li>true : ordre décroissant</li>
     *           <li>false : ordre croissant</li>
@@ -53,8 +53,10 @@ public interface RegService<T extends Trace, I extends TraceIndex> {
     * 
     * @param date
     *           date à laquelle réaliser la purge
+    * @param nbMaxLigneEvtToDelete
+    *           Nombre maximum de lignes d'événements à supprimer
     */
-   void purge(Date date);
+   void purge(Date date, int nbMaxLigneEvtToDelete);
 
    /**
     * Renvoie un indicateur de présence d'enregistrements pour la date donnée

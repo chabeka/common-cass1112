@@ -52,7 +52,8 @@
    </bean>
    
    
-   <!-- Fichier de contexte de l'artéfact sae-trace -->
+   <!-- Fichier de contexte des autres l'artéfacts -->
    <import resource="applicationContext-sae-trace.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
 
 </beans>

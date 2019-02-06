@@ -23,4 +23,15 @@
       factory-method="createDFCEConnectionTransfertBySAEConfigurationResource">
       <constructor-arg ref="saeConfigResource" />
    </bean>
+   
+   <bean id="dfceServices"
+      class = "fr.urssaf.image.commons.dfce.service.impl.DFCEServicesImpl">
+      <constructor-arg ref="dfceConnection"/>
+   </bean>
+
+   <bean id="dfceServicesTransfert" autowire-candidate="false"
+      class = "fr.urssaf.image.commons.dfce.service.impl.DFCEServicesImpl">
+      <constructor-arg ref="dfceConnectionTransfert"/>
+   </bean>
+  
 </beans>

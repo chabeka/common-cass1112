@@ -19,7 +19,6 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.padaf</groupId>
 	<artifactId>preflight</artifactId>
 
 	<name>PDF/A Validation</name>
@@ -32,7 +31,7 @@
 	<parent>
 		<groupId>net.padaf</groupId>
 		<artifactId>padaf</artifactId>
-		<version>0.6.2-CRTL-2-SNAPSHOT</version>
+		<version>0.6.3.9-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 
@@ -54,10 +53,22 @@
 				</includes>
 			</resource>
 		</resources>
+		<testResources>
+	        <testResource>
+	            <directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>project.version</include>
+				</includes>
+	        </testResource>
+	        <testResource>
+	            <directory>src/test/resources</directory>
+				<filtering>false</filtering>
+	        </testResource>
+    	</testResources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -80,7 +91,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>javacc-maven-plugin</artifactId>
-				<version>2.6</version>
 				<executions>
 					<execution>
 						<id>javacc</id>
@@ -94,7 +104,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.3</version>
 				<configuration>
 					<instrumentation>
 						<ignores>
@@ -117,22 +126,29 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.2</version>
 				<configuration>
 					<configLocation>atos-edoc-checkstyle.xml</configLocation>
 				</configuration>
 			</plugin>
 			<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-source-plugin</artifactId>
-			<executions>
-				<execution>
-					<id>attach-sources</id>
-					<goals>
-						<goal>jar</goal>
-					</goals>
-				</execution>
-			</executions>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<!-- <quiet>true</quiet> -->
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -152,7 +168,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.8.2</version><!--$NO-MVN-MAN-VER$-->
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -167,12 +183,6 @@
 			<version>1.2.12</version>
 			<scope>compile</scope>
 		</dependency>
-		<!-- dependency>
-			<groupId>org.pdfa</groupId>
-			<artifactId>isartor</artifactId>
-			<version>1.0-20080813</version>
-			<scope>test</scope>
-		</dependency-->
 	</dependencies>
 
 	<reporting>
@@ -204,14 +214,11 @@
 					</tagListOptions>
 				</configuration>
 			</plugin>
-
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
 				<version>2.3</version>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
@@ -227,13 +234,19 @@
 					</reportSet>
 				</reportSets>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
 				<version>2.0.1</version>
 				<configuration>
 					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
 		</plugins>

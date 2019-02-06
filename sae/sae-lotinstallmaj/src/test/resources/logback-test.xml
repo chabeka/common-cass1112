@@ -13,7 +13,8 @@
    <logger name="org.apache.cassandra" level="WARN" />
    <logger name="me.prettyprint.cassandra" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
-   <logger name="com.netflix.curator" level="WARN" />
+   <logger name="org.apache.curator" level="WARN" />
+   <logger name="net.docubase.toolkit" level="WARN" />
    
    <logger name="fr.urssaf.image.commons" level="WARN" />
    

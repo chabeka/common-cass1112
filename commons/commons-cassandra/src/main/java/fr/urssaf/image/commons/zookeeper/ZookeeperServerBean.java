@@ -1,11 +1,10 @@
 package fr.urssaf.image.commons.zookeeper;
 
+import org.apache.curator.test.TestingServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
-
-import com.netflix.curator.test.TestingServer;
 
 /**
  * Classe utilitaire facilitant la création d'un serveur zookeeper local

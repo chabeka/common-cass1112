@@ -19,69 +19,70 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * implémentation du support {@link RollbackSupport}
- * 
  */
 @Component
 public class RollbackSupportImpl implements RollbackSupport {
 
-   private final StorageServiceProvider serviceProvider;
+  private final StorageServiceProvider serviceProvider;
 
-   private final InterruptionTraitementConfig config;
+  private final InterruptionTraitementConfig config;
 
-   private final InterruptionTraitementMasseSupport support;
+  private final InterruptionTraitementMasseSupport support;
 
-   private static final String CATCH = "AvoidCatchingThrowable";
+  private static final String CATCH = "AvoidCatchingThrowable";
 
-   /**
-    * 
-    * @param serviceProvider
-    *           ensemble des services de DFCE
-    * @param config
-    *           configuration de l'interruption programmée du traitement de
-    *           capture en masse
-    * @param support
-    *           service d'interruption programmée des traitements
-    */
-   @Autowired
-   public RollbackSupportImpl(
-         @Qualifier("storageServiceProvider") StorageServiceProvider serviceProvider,
-         @Qualifier("interruption_capture_masse") InterruptionTraitementConfig config,
-         InterruptionTraitementMasseSupport support) {
+  /**
+   * @param serviceProvider
+   *          ensemble des services de DFCE
+   * @param config
+   *          configuration de l'interruption programmée du traitement de
+   *          capture en masse
+   * @param support
+   *          service d'interruption programmée des traitements
+   */
+  @Autowired
+  public RollbackSupportImpl(
+                             @Qualifier("storageServiceProvider") final StorageServiceProvider serviceProvider,
+                             @Qualifier("interruption_traitement_masse") final InterruptionTraitementConfig config,
+                             final InterruptionTraitementMasseSupport support) {
 
-      this.serviceProvider = serviceProvider;
-      this.config = config;
-      this.support = support;
-   }
+    this.serviceProvider = serviceProvider;
+    this.config = config;
+    this.support = support;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @SuppressWarnings(CATCH)
-   @Override
-   public final void rollback(final UUID identifiant)
-         throws InterruptionTraitementException, DeletionServiceEx {
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings(CATCH)
+  @Override
+  public final void rollback(final UUID identifiant)
+      throws InterruptionTraitementException, DeletionServiceEx {
 
-      interruptionTraitement();
+    interruptionTraitement();
 
-      try {
-         serviceProvider.getStorageDocumentService().deleteStorageDocument(
-               identifiant);
+    try {
+      serviceProvider.getStorageDocumentService()
+                     .deleteStorageDocument(
+                                            identifiant);
 
-         /* récupération des erreurs de DFCE */
-      } catch (Throwable throwable) {
+      /* récupération des erreurs de DFCE */
+    }
+    catch (final Throwable throwable) {
 
-         throw new DeletionServiceEx("SAE-ST-DEL001", throwable.getMessage(),
-               throwable);
-      }
+      throw new DeletionServiceEx("SAE-ST-DEL001",
+                                  throwable.getMessage(),
+                                  throwable);
+    }
 
-   }
+  }
 
-   private void interruptionTraitement() throws InterruptionTraitementException {
+  private void interruptionTraitement() throws InterruptionTraitementException {
 
-      DateTime currentDate = new DateTime();
+    final DateTime currentDate = new DateTime();
 
-      support.interruption(currentDate, config);
+    support.interruption(currentDate, config);
 
-   }
+  }
 
 }

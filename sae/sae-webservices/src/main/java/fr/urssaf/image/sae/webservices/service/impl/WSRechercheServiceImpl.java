@@ -35,6 +35,8 @@ import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedRangeMetadata;
+import fr.urssaf.image.sae.metadata.exceptions.IndexCompositeException;
+import fr.urssaf.image.sae.metadata.referential.services.IndexCompositeService;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
 import fr.urssaf.image.sae.services.exception.UnknownDesiredMetadataEx;
 import fr.urssaf.image.sae.services.exception.consultation.MetaDataUnauthorizedToConsultEx;
@@ -56,8 +58,8 @@ import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
  */
 @Service
 public class WSRechercheServiceImpl implements WSRechercheService {
-   private static final Logger LOG = LoggerFactory
-         .getLogger(WSRechercheServiceImpl.class);
+   private static final Logger LOG = LoggerFactory.getLogger(WSRechercheServiceImpl.class);
+
    private static final String VIDE = "";
 
    /**
@@ -69,62 +71,58 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    @Autowired
    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
 
+   @Autowired
+   private IndexCompositeService indexCompositeService;
+
    /**
     * {@inheritDoc}
-    * 
-    * */
+    */
    @Override
-   public final RechercheResponse search(Recherche request)
-         throws RechercheAxis2Fault {
+   public final RechercheResponse search(final Recherche request) throws RechercheAxis2Fault {
       // Traces debug - entrée méthode
-      String prefixeTrc = "search()";
+      final String prefixeTrc = "search()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
-      int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
-      LOG.debug(
-            "{} - Le nombre maximum de documents à renvoyer dans les résultats de "
-                  + "recherche au niveau de la couche webservice est {}",
-            prefixeTrc, maxResult);
+      final int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
+      LOG.debug("{} - Le nombre maximum de documents à renvoyer dans les résultats de "
+            + "recherche au niveau de la couche webservice est {}", prefixeTrc, maxResult);
       boolean resultatTronque = false;
       RechercheResponse response;
       String requeteLucene = VIDE;
       try {
          requeteLucene = recupererReqLucene(request);
          checkNotNull(requeteLucene);
-         List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
-         List<UntypedDocument> untypedDocuments = documentService.search(
-               requeteLucene, listMDDesired);
+         final List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
+         final List<UntypedDocument> untypedDocuments = documentService.search(requeteLucene, listMDDesired);
          if (untypedDocuments.size() > maxResult) {
             resultatTronque = true;
-            LOG.debug(
-                  "{} - Les résultats de recherche sont tronqués à {} résultats",
-                  prefixeTrc, maxResult);
+            LOG.debug("{} - Les résultats de recherche sont tronqués à {} résultats", prefixeTrc, maxResult);
          }
 
          response = createRechercheResponse(untypedDocuments, resultatTronque);
 
-      } catch (SAESearchServiceEx except) {
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
-               except.getMessage(), except);
-      } catch (MetaDataUnauthorizedToSearchEx except) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
-               except.getMessage(), except);
-      } catch (MetaDataUnauthorizedToConsultEx except) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
-               except.getMessage(), except);
-      } catch (UnknownDesiredMetadataEx except) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
-               except.getMessage(), except);
-      } catch (UnknownLuceneMetadataEx except) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
-               except.getMessage(), except);
-      } catch (SyntaxLuceneEx except) {
-         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
-               except.getMessage(), except);
-      } catch (RechercheAxis2Fault except) {
-         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
-               except.getMessage(), except);
+      }
+      catch (final SAESearchServiceEx except) {
+         throw new RechercheAxis2Fault("ErreurInterneRecherche", except.getMessage(), except);
+      }
+      catch (final MetaDataUnauthorizedToSearchEx except) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite", except.getMessage(), except);
+      }
+      catch (final MetaDataUnauthorizedToConsultEx except) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite", except.getMessage(), except);
+      }
+      catch (final UnknownDesiredMetadataEx except) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues", except.getMessage(), except);
+      }
+      catch (final UnknownLuceneMetadataEx except) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues", except.getMessage(), except);
+      }
+      catch (final SyntaxLuceneEx except) {
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide", except.getMessage(), except);
+      }
+      catch (final RechercheAxis2Fault except) {
+         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull", except.getMessage(), except);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -132,60 +130,56 @@ public class WSRechercheServiceImpl implements WSRechercheService {
 
    /**
     * {@inheritDoc}
-    * 
-    * */
+    */
    @Override
-   public RechercheNbResResponse searchWithNbRes(RechercheNbRes request)
-         throws RechercheAxis2Fault {
+   public RechercheNbResResponse searchWithNbRes(final RechercheNbRes request) throws RechercheAxis2Fault {
 
       // -- Traces debug - entrée méthode
-      String prefixeTrc = "searchWithNbRes()";
+      final String prefixeTrc = "searchWithNbRes()";
       LOG.debug("{} - Début", prefixeTrc);
 
-      int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
-      int maxResultRechDfce = RechercheConstantes.NB_MAX_RESULTATS_RECH_DFCE;
-      LOG.debug(
-            "{} - Le nombre maximum de documents à renvoyer dans les résultats de "
-                  + "recherche au niveau de la couche webservice est {}",
-            prefixeTrc, maxResult);
+      final int maxResult = RechercheConstantes.NB_MAX_RESULTATS_RECHERCHE;
+      final int maxResultRechDfce = RechercheConstantes.NB_MAX_RESULTATS_RECH_DFCE;
+      LOG.debug("{} - Le nombre maximum de documents à renvoyer dans les résultats de "
+            + "recherche au niveau de la couche webservice est {}", prefixeTrc, maxResult);
       boolean resultatTronque = false;
       RechercheNbResResponse response;
       String requeteLucene = VIDE;
       try {
          requeteLucene = recupererReqLucene(request);
          checkNotNull(requeteLucene);
-         List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
-         List<UntypedDocument> untypedDocuments = documentService.search(
-               requeteLucene, listMDDesired, maxResultRechDfce);
+         final List<String> listMDDesired = recupererListMDDesired(recupererListMDSearch(request));
+         final List<UntypedDocument> untypedDocuments = documentService.search(requeteLucene,
+                                                                               listMDDesired,
+                                                                               maxResultRechDfce);
          if (untypedDocuments.size() > maxResult) {
             resultatTronque = true;
-            String mssg = "{} - Les résultats de recherche sont tronqués à {} résultats";
+            final String mssg = "{} - Les résultats de recherche sont tronqués à {} résultats";
             LOG.debug(mssg, prefixeTrc, maxResult);
          }
-         response = createRechercheNbResResponse(untypedDocuments,
-               resultatTronque, maxResult);
+         response = createRechercheNbResResponse(untypedDocuments, resultatTronque, maxResult);
 
-      } catch (SAESearchServiceEx except) {
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
-               except.getMessage(), except);
-      } catch (MetaDataUnauthorizedToSearchEx except) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
-               except.getMessage(), except);
-      } catch (MetaDataUnauthorizedToConsultEx except) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
-               except.getMessage(), except);
-      } catch (UnknownDesiredMetadataEx except) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
-               except.getMessage(), except);
-      } catch (UnknownLuceneMetadataEx except) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
-               except.getMessage(), except);
-      } catch (SyntaxLuceneEx except) {
-         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
-               except.getMessage(), except);
-      } catch (RechercheAxis2Fault except) {
-         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
-               except.getMessage(), except);
+      }
+      catch (final SAESearchServiceEx except) {
+         throw new RechercheAxis2Fault("ErreurInterneRecherche", except.getMessage(), except);
+      }
+      catch (final MetaDataUnauthorizedToSearchEx except) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite", except.getMessage(), except);
+      }
+      catch (final MetaDataUnauthorizedToConsultEx except) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite", except.getMessage(), except);
+      }
+      catch (final UnknownDesiredMetadataEx except) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues", except.getMessage(), except);
+      }
+      catch (final UnknownLuceneMetadataEx except) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues", except.getMessage(), except);
+      }
+      catch (final SyntaxLuceneEx except) {
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide", except.getMessage(), except);
+      }
+      catch (final RechercheAxis2Fault except) {
+         throw new RechercheAxis2Fault("RequeteLuceneVideOuNull", except.getMessage(), except);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
       return response;
@@ -193,33 +187,32 @@ public class WSRechercheServiceImpl implements WSRechercheService {
 
    /**
     * {@inheritDoc}
-    * 
-    * */
+    */
    @Override
-   public RechercheParIterateurResponse rechercheParIterateur(
-         RechercheParIterateur request) throws RechercheAxis2Fault {
+   public RechercheParIterateurResponse rechercheParIterateur(final RechercheParIterateur request)
+         throws RechercheAxis2Fault {
 
       // Traces debug - entrée méthode
-      String prefixeTrc = "rechercheParIterateur()";
+      final String prefixeTrc = "rechercheParIterateur()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
 
       RechercheParIterateurResponse response;
 
-      RechercheParIterateurRequestType params = request
-            .getRechercheParIterateur();
+      final RechercheParIterateurRequestType params = request.getRechercheParIterateur();
 
-      // Récupération de la requête principale à partir des paramètres d'entrée
-      RequetePrincipaleType requetePrincipale = params.getRequetePrincipale();
+      // Récupération de la requête principale à partir des paramètres
+      // d'entrée
+      final RequetePrincipaleType requetePrincipale = params.getRequetePrincipale();
       // Récupération de l'identifiant de la page à partir des paramètres
       // d'entrée
-      IdentifiantPageType identifiantPage = params.getIdentifiantPage();
+      final IdentifiantPageType identifiantPage = params.getIdentifiantPage();
 
       // Métadonnées fixes
-      List<UntypedMetadata> listeFixedMeta = recupererFixedMetadatas(requetePrincipale);
+      final List<UntypedMetadata> listeFixedMeta = recupererFixedMetadatas(requetePrincipale);
 
-      // Métadonnées variables
-      UntypedRangeMetadata untypedRangeMeta = recupererRangeMetadata(requetePrincipale);
+      // Métadonnée variable
+      final UntypedRangeMetadata untypedRangeMeta = recupererRangeMetadata(requetePrincipale);
 
       // Si l'identifiant de la page est renseigné (lorsque ce n'est pas le
       // premier appel)
@@ -227,30 +220,29 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       // valeur de l'identifiant
       UUID idDoc = null;
       if (identifiantPage != null) {
-         untypedRangeMeta.setValeurMin(identifiantPage.getValeur()
-               .getMetadonneeValeurType());
+         untypedRangeMeta.setValeurMin(identifiantPage.getValeur().getMetadonneeValeurType());
          idDoc = UUID.fromString(identifiantPage.getIdArchive().getUuidType());
       }
 
-      FiltreType filtres = params.getFiltres();
+      final FiltreType filtres = params.getFiltres();
       // Filtres de type "égal à" ou "contenu dans" (pour les range)
-      List<AbstractMetadata> listeFiltreEgalite = recupererFiltresEgalite(filtres);
+      final List<AbstractMetadata> listeFiltreEgalite = recupererFiltresEgalite(filtres);
       // Filtres de type "différent" ou "non contenu dans" (pour les range)
-      List<AbstractMetadata> listeFiltreDifferent = recupererFiltresDifferent(filtres);
+      final List<AbstractMetadata> listeFiltreDifferent = recupererFiltresDifferent(filtres);
 
       // Nombre de documents par page
-      int nbDocsParPage = params.getNbDocumentsParPage();
+      final int nbDocsParPage = params.getNbDocumentsParPage();
 
       // Liste des métadonnées souhaitées en retour de recherche
       List<String> listeMetaSouhaitees = recupererListMDDesired(recupererListMDSearch(request));
 
-      // On ajoute la métadonnée variable dans la liste des méta désirés, car on
-      // a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
+      // On ajoute la métadonnée variable dans la liste des méta désirés, car
+      // on a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
       // l'identifiant de la dernière page
       boolean isMetaVariableAjoute = false;
       if (!listeMetaSouhaitees.contains(untypedRangeMeta.getLongCode())) {
          if (listeMetaSouhaitees.isEmpty()) {
-            listeMetaSouhaitees = new ArrayList<String>();
+            listeMetaSouhaitees = new ArrayList<>();
             listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
             isMetaVariableAjoute = true;
          } else {
@@ -261,14 +253,21 @@ public class WSRechercheServiceImpl implements WSRechercheService {
 
       try {
 
-         // Lancement de la recherche paginée
-         PaginatedUntypedDocuments paginatedUDoc = documentService
-               .searchPaginated(listeFixedMeta, untypedRangeMeta,
-                     listeFiltreEgalite, listeFiltreDifferent, nbDocsParPage,
-                     idDoc, listeMetaSouhaitees);
+         // Identification de l'indexComposite ou simple à utiliser pour la recherche
+         final List<String> indexOrderPreferenceList = getBestIndex(listeFixedMeta, untypedRangeMeta);
 
-         List<UntypedDocument> listeUDoc = paginatedUDoc.getDocuments();
-         boolean lastPage = paginatedUDoc.getLastPage();
+         // Lancement de la recherche paginée
+         final PaginatedUntypedDocuments paginatedUDoc = documentService.searchPaginated(listeFixedMeta,
+                                                                                         untypedRangeMeta,
+                                                                                         listeFiltreEgalite,
+                                                                                         listeFiltreDifferent,
+                                                                                         nbDocsParPage,
+                                                                                         idDoc,
+                                                                                         listeMetaSouhaitees,
+                                                                                         indexOrderPreferenceList);
+
+         final List<UntypedDocument> listeUDoc = paginatedUDoc.getDocuments();
+         final boolean lastPage = paginatedUDoc.getLastPage();
 
          // Récupération de l'UUID du dernier document retourné
          UUID lastUuid = null;
@@ -278,94 +277,85 @@ public class WSRechercheServiceImpl implements WSRechercheService {
             lastUuid = lastDoc.getUuid();
          }
 
-         response = createRechercheParIterateurResponse(listeUDoc, isMetaVariableAjoute, untypedRangeMeta.getLongCode());
-         // RechercheParIterateurResponseType rechParItRespType = new
-         // RechercheParIterateurResponseType();
+         response = createRechercheParIterateurResponse(listeUDoc,
+                                                        isMetaVariableAjoute,
+                                                        untypedRangeMeta.getLongCode());
 
-         // Boolean pour indiquer s'il s'agit de la dernière page ou non
-         // rechParItRespType.setDernierePage(lastPage);
          response.getRechercheParIterateurResponse().setDernierePage(lastPage);
 
-         // Identifiant de la dernière page retournée par la recherche
-         IdentifiantPageType idPage = recupererIdPage(paginatedUDoc, lastUuid);
+         // Identifiant de la derniere page retournee par la recherche
+         final IdentifiantPageType idPage = recupererIdPage(paginatedUDoc, lastUuid);
 
          // recupererIdPage(requetePrincipale, lastDoc, lastUuid);
          // rechParItRespType.setIdentifiantPageSuivante(idPage);
-         response.getRechercheParIterateurResponse()
-               .setIdentifiantPageSuivante(idPage);
+         response.getRechercheParIterateurResponse().setIdentifiantPageSuivante(idPage);
 
-         // Liste des résultats de la recherche par itérateur
-         // ListeResultatRechercheType listeRes =
-         // recupererListeResRechParIterateur(listeUDoc);
-         // rechParItRespType.setResultats(listeRes);
-
-         // response.setRechercheParIterateurResponse(rechParItRespType);
-
-      } catch (MetaDataUnauthorizedToSearchEx e) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite",
-               e.getMessage(), e);
-      } catch (MetaDataUnauthorizedToConsultEx e) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite",
-               e.getMessage(), e);
-      } catch (UnknownLuceneMetadataEx e) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
-               e.getMessage(), e);
-      } catch (SAESearchServiceEx e) {
-         throw new RechercheAxis2Fault("ErreurInterneRecherche",
-               e.getMessage(), e);
-      } catch (SyntaxLuceneEx e) {
-         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide",
-               e.getMessage(), e);
-      } catch (UnknownDesiredMetadataEx e) {
-         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues",
-               e.getMessage(), e);
-      } catch (UnknownFiltresMetadataEx e) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues",
-               e.getMessage(), e);
-      } catch (DoublonFiltresMetadataEx e) {
-         throw new RechercheAxis2Fault("RechercheMetadonneesDoublons",
-               e.getMessage(), e);
+      }
+      catch (final MetaDataUnauthorizedToSearchEx e) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInterdite", e.getMessage(), e);
+      }
+      catch (final MetaDataUnauthorizedToConsultEx e) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInterdite", e.getMessage(), e);
+      }
+      catch (final UnknownLuceneMetadataEx e) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues", e.getMessage(), e);
+      }
+      catch (final SAESearchServiceEx e) {
+         throw new RechercheAxis2Fault("ErreurInterneRecherche", e.getMessage(), e);
+      }
+      catch (final SyntaxLuceneEx e) {
+         throw new RechercheAxis2Fault("SyntaxeLuceneNonValide", e.getMessage(), e);
+      }
+      catch (final UnknownDesiredMetadataEx e) {
+         throw new RechercheAxis2Fault("ConsultationMetadonneesInconnues", e.getMessage(), e);
+      }
+      catch (final UnknownFiltresMetadataEx e) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesInconnues", e.getMessage(), e);
+      }
+      catch (final DoublonFiltresMetadataEx e) {
+         throw new RechercheAxis2Fault("RechercheMetadonneesDoublons", e.getMessage(), e);
+      }
+      catch (final IndexCompositeException e) {
+         throw new RechercheAxis2Fault("IndexCompositeInconnue", e.getMessage(), e);
       }
       LOG.debug("{} - Sortie", prefixeTrc);
+
       return response;
 
    }
 
-   private IdentifiantPageType recupererIdPage(
-         PaginatedUntypedDocuments paginatedUDoc, UUID lastUuid) {
+   private IdentifiantPageType recupererIdPage(final PaginatedUntypedDocuments paginatedUDoc, final UUID lastUuid) {
       IdentifiantPageType idPage = null;
       if (lastUuid != null) {
          idPage = new IdentifiantPageType();
-         UuidType lastUuidType = new UuidType();
+         final UuidType lastUuidType = new UuidType();
          lastUuidType.setUuidType(lastUuid.toString());
          idPage.setIdArchive(lastUuidType);
 
-         MetadonneeValeurType metaLastDoc = new MetadonneeValeurType();
-         metaLastDoc.setMetadonneeValeurType(paginatedUDoc
-               .getValeurMetaLastPage());
+         final MetadonneeValeurType metaLastDoc = new MetadonneeValeurType();
+         metaLastDoc.setMetadonneeValeurType(paginatedUDoc.getValeurMetaLastPage());
          idPage.setValeur(metaLastDoc);
       }
       return idPage;
    }
 
    /**
-    * Récuperation de la liste des filtres de type "egal à" ou "contenu dans" et
-    * conversion en liste de métadonnées
+    * Récuperation de la liste des filtres de type "egal à" ou "contenu dans"
+    * et conversion en liste de métadonnées
     * 
     * @param filtres
     * @return la liste des métadonnées
     */
-   private List<AbstractMetadata> recupererFiltresEgalite(FiltreType filtres) {
-      List<AbstractMetadata> listeAbstractMeta = new ArrayList<AbstractMetadata>();
+   private List<AbstractMetadata> recupererFiltresEgalite(final FiltreType filtres) {
+      final List<AbstractMetadata> listeAbstractMeta = new ArrayList<>();
       if (filtres != null) {
          if (filtres.getEqualFilter() != null) {
-            MetadonneeType[] listeEqualFilter = filtres.getEqualFilter()
-                  .getMetadonnee();
+            final MetadonneeType[] listeEqualFilter = filtres.getEqualFilter().getMetadonnee();
             if (listeEqualFilter != null) {
-               for (MetadonneeType metadonneeType : listeEqualFilter) {
-                  UntypedMetadata abstractMeta = new UntypedMetadata(
-                        metadonneeType.getCode().getMetadonneeCodeType(),
-                        metadonneeType.getValeur().getMetadonneeValeurType());
+               for (final MetadonneeType metadonneeType : listeEqualFilter) {
+                  final UntypedMetadata abstractMeta = new UntypedMetadata(
+                                                                           metadonneeType.getCode().getMetadonneeCodeType(),
+                                                                           metadonneeType.getValeur().getMetadonneeValeurType());
 
                   listeAbstractMeta.add(abstractMeta);
                }
@@ -373,15 +363,13 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          }
 
          if (filtres.getRangeFilter() != null) {
-            RangeMetadonneeType[] listeRangeFilter = filtres.getRangeFilter()
-                  .getRangeMetadonnee();
+            final RangeMetadonneeType[] listeRangeFilter = filtres.getRangeFilter().getRangeMetadonnee();
             if (listeRangeFilter != null) {
-               for (RangeMetadonneeType rangeMetadonneeType : listeRangeFilter) {
-                  UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
-                        rangeMetadonneeType.getCode().getMetadonneeCodeType(),
-                        rangeMetadonneeType.getValeurMin()
-                              .getMetadonneeValeurType(), rangeMetadonneeType
-                              .getValeurMax().getMetadonneeValeurType());
+               for (final RangeMetadonneeType rangeMetadonneeType : listeRangeFilter) {
+                  final UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
+                                                                                     rangeMetadonneeType.getCode().getMetadonneeCodeType(),
+                                                                                     rangeMetadonneeType.getValeurMin().getMetadonneeValeurType(),
+                                                                                     rangeMetadonneeType.getValeurMax().getMetadonneeValeurType());
 
                   listeAbstractMeta.add(abstractMeta);
                }
@@ -392,24 +380,23 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    }
 
    /**
-    * Récuperation de la liste des filtres de type "different de" ou
-    * "non contenu dans" et conversion en liste de métadonnées
+    * Récuperation de la liste des filtres de type "different de" ou "non
+    * contenu dans" et conversion en liste de métadonnées
     * 
     * @param filtres
     * @return la liste des métadonnées
     */
-   private List<AbstractMetadata> recupererFiltresDifferent(FiltreType filtres) {
-      List<AbstractMetadata> listeAbstractMeta = new ArrayList<AbstractMetadata>();
+   private List<AbstractMetadata> recupererFiltresDifferent(final FiltreType filtres) {
+      final List<AbstractMetadata> listeAbstractMeta = new ArrayList<>();
       if (filtres != null) {
 
          if (filtres.getNotEqualFilter() != null) {
-            MetadonneeType[] listeNotEqualFilter = filtres.getNotEqualFilter()
-                  .getMetadonnee();
+            final MetadonneeType[] listeNotEqualFilter = filtres.getNotEqualFilter().getMetadonnee();
             if (listeNotEqualFilter != null) {
-               for (MetadonneeType metadonneeType : listeNotEqualFilter) {
-                  UntypedMetadata abstractMeta = new UntypedMetadata(
-                        metadonneeType.getCode().getMetadonneeCodeType(),
-                        metadonneeType.getValeur().getMetadonneeValeurType());
+               for (final MetadonneeType metadonneeType : listeNotEqualFilter) {
+                  final UntypedMetadata abstractMeta = new UntypedMetadata(
+                                                                           metadonneeType.getCode().getMetadonneeCodeType(),
+                                                                           metadonneeType.getValeur().getMetadonneeValeurType());
 
                   listeAbstractMeta.add(abstractMeta);
                }
@@ -417,15 +404,13 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          }
 
          if (filtres.getNotInRangeFilter() != null) {
-            RangeMetadonneeType[] listeNotInRangeFilter = filtres
-                  .getNotInRangeFilter().getRangeMetadonnee();
+            final RangeMetadonneeType[] listeNotInRangeFilter = filtres.getNotInRangeFilter().getRangeMetadonnee();
             if (listeNotInRangeFilter != null) {
-               for (RangeMetadonneeType rangeMetadonneeType : listeNotInRangeFilter) {
-                  UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
-                        rangeMetadonneeType.getCode().getMetadonneeCodeType(),
-                        rangeMetadonneeType.getValeurMin()
-                              .getMetadonneeValeurType(), rangeMetadonneeType
-                              .getValeurMax().getMetadonneeValeurType());
+               for (final RangeMetadonneeType rangeMetadonneeType : listeNotInRangeFilter) {
+                  final UntypedRangeMetadata abstractMeta = new UntypedRangeMetadata(
+                                                                                     rangeMetadonneeType.getCode().getMetadonneeCodeType(),
+                                                                                     rangeMetadonneeType.getValeurMin().getMetadonneeValeurType(),
+                                                                                     rangeMetadonneeType.getValeurMax().getMetadonneeValeurType());
 
                   listeAbstractMeta.add(abstractMeta);
                }
@@ -442,16 +427,14 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     * @param requetePrincipale
     * @return La liste des métadonnées
     */
-   private List<UntypedMetadata> recupererFixedMetadatas(
-         RequetePrincipaleType requetePrincipale) {
-      ListeMetadonneeType fixedMeta = requetePrincipale.getFixedMetadatas();
-      List<UntypedMetadata> listeFixedMeta = new ArrayList<UntypedMetadata>();
-      MetadonneeType[] tabMetaType = fixedMeta.getMetadonnee();
+   private List<UntypedMetadata> recupererFixedMetadatas(final RequetePrincipaleType requetePrincipale) {
+      final ListeMetadonneeType fixedMeta = requetePrincipale.getFixedMetadatas();
+      final List<UntypedMetadata> listeFixedMeta = new ArrayList<>();
+      final MetadonneeType[] tabMetaType = fixedMeta.getMetadonnee();
       if (tabMetaType != null) {
-         for (MetadonneeType metadonneType : tabMetaType) {
-            UntypedMetadata untypedMeta = new UntypedMetadata(metadonneType
-                  .getCode().getMetadonneeCodeType(), metadonneType.getValeur()
-                  .getMetadonneeValeurType());
+         for (final MetadonneeType metadonneType : tabMetaType) {
+            final UntypedMetadata untypedMeta = new UntypedMetadata(metadonneType.getCode().getMetadonneeCodeType(),
+                                                                    metadonneType.getValeur().getMetadonneeValeurType());
             listeFixedMeta.add(untypedMeta);
          }
       }
@@ -464,13 +447,11 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     * @param requetePrincipale
     * @return La métadonnée de type range
     */
-   private UntypedRangeMetadata recupererRangeMetadata(
-         RequetePrincipaleType requetePrincipale) {
-      RangeMetadonneeType varyingMeta = requetePrincipale.getVaryingMetadata();
-      UntypedRangeMetadata untypedRangeMeta = new UntypedRangeMetadata(
-            varyingMeta.getCode().getMetadonneeCodeType(), varyingMeta
-                  .getValeurMin().getMetadonneeValeurType(), varyingMeta
-                  .getValeurMax().getMetadonneeValeurType());
+   private UntypedRangeMetadata recupererRangeMetadata(final RequetePrincipaleType requetePrincipale) {
+      final RangeMetadonneeType varyingMeta = requetePrincipale.getVaryingMetadata();
+      final UntypedRangeMetadata untypedRangeMeta = new UntypedRangeMetadata(varyingMeta.getCode().getMetadonneeCodeType(),
+                                                                             varyingMeta.getValeurMin().getMetadonneeValeurType(),
+                                                                             varyingMeta.getValeurMax().getMetadonneeValeurType());
       return untypedRangeMeta;
    }
 
@@ -480,72 +461,62 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     * @throws RechercheAxis2Fault
     *            Une exception est levée lors de la recherche.
     */
-   private void checkNotNull(String requeteLucene) throws RechercheAxis2Fault {
+   private void checkNotNull(final String requeteLucene) throws RechercheAxis2Fault {
       // Traces debug - entrée méthode
-      String prefixeTrc = "checkNotNull()";
+      final String prefixeTrc = "checkNotNull()";
       LOG.debug("{} - Début", prefixeTrc);
       // Fin des traces debug - entrée méthode
-      LOG.debug(
-            "{} - Début de la vérification : La requête de recherche est renseignée",
-            prefixeTrc);
+      LOG.debug("{} - Début de la vérification : La requête de recherche est renseignée", prefixeTrc);
       if (isEmpty(requeteLucene.trim())) {
          throw new RechercheAxis2Fault("RequeteLuceneVideOuNull",
-               wsMessageRessourcesUtils.recupererMessage(
-                     "search.lucene.videornull", null));
+                                       wsMessageRessourcesUtils.recupererMessage("search.lucene.videornull", null));
       }
-      LOG.debug(
-            "{} - Fin de la vérification : La requête de recherche est renseignée",
-            prefixeTrc);
+      LOG.debug("{} - Fin de la vérification : La requête de recherche est renseignée", prefixeTrc);
       LOG.debug("{} - Sortie", prefixeTrc);
    }
 
    /**
     * Récupérer la liste des codes des meta données souhaitées.
     */
-   protected static List<String> recupererListMDDesired(
-         MetadonneeCodeType[] listeMDSearch) {
+   protected static List<String> recupererListMDDesired(final MetadonneeCodeType[] listeMDSearch) {
 
-      return CollectionUtils.loadListNotNull(ObjectTypeFactory
-            .buildMetaCodeFromWS(listeMDSearch));
+      return CollectionUtils.loadListNotNull(ObjectTypeFactory.buildMetaCodeFromWS(listeMDSearch));
 
    }
 
    /**
     * Récupérer la requête Lucene
     */
-   private String recupererReqLucene(Recherche request) {
+   private String recupererReqLucene(final Recherche request) {
       return request.getRecherche().getRequete().getRequeteRechercheType();
    }
 
    /**
     * Récupérer la requête Lucene
     */
-   private String recupererReqLucene(RechercheNbRes request) {
-      return request.getRechercheNbRes().getRequete()
-            .getRequeteRechercheNbResType();
+   private String recupererReqLucene(final RechercheNbRes request) {
+      return request.getRechercheNbRes().getRequete().getRequeteRechercheNbResType();
    }
 
    /**
     * Récupérer La liste métadonnées souhaitées.
     */
-   private MetadonneeCodeType[] recupererListMDSearch(Recherche request) {
+   private MetadonneeCodeType[] recupererListMDSearch(final Recherche request) {
       return request.getRecherche().getMetadonnees().getMetadonneeCode();
    }
 
    /**
     * Récupérer La liste métadonnées souhaitées.
     */
-   private MetadonneeCodeType[] recupererListMDSearch(RechercheNbRes request) {
+   private MetadonneeCodeType[] recupererListMDSearch(final RechercheNbRes request) {
       return request.getRechercheNbRes().getMetadonnees().getMetadonneeCode();
    }
 
    /**
     * Récupérer La liste métadonnées souhaitées.
     */
-   private MetadonneeCodeType[] recupererListMDSearch(
-         RechercheParIterateur request) {
-      return request.getRechercheParIterateur().getMetadonnees()
-            .getMetadonneeCode();
+   private MetadonneeCodeType[] recupererListMDSearch(final RechercheParIterateur request) {
+      return request.getRechercheParIterateur().getMetadonnees().getMetadonneeCode();
    }
 
    /**
@@ -561,8 +532,38 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     *           : Le provider pour les services de Capture, recherche et
     *           consultation.
     */
-   public final void setDocumentService(SAEDocumentService documentService) {
+   public final void setDocumentService(final SAEDocumentService documentService) {
       this.documentService = documentService;
+   }
+
+   /**
+    * Renvoie l'indexComposite ou simple à utiliser pour la recherche
+    * 
+    * @return
+    *         Liste des code courts des métadonnées composant l'index
+    * @throws IndexCompositeException
+    * @{@link IndexCompositeException}
+    */
+   private List<String> getBestIndex(final List<UntypedMetadata> listeFixedMeta, final UntypedRangeMetadata untypedRangeMeta)
+         throws IndexCompositeException {
+
+      // On souhaite trouver un index dont l'ensemble des métadonnées qui le composent sont valorisées à partir
+      // des métadonnées fixes et variables de la requête
+      final List<UntypedMetadata> listMetaDataFromRequest = new ArrayList<>();
+      for (final UntypedMetadata meta : listeFixedMeta) {
+         if (!meta.getValue().isEmpty()) {
+            listMetaDataFromRequest.add(meta);
+         }
+      }
+      final UntypedMetadata varyingMetadata = new UntypedMetadata(untypedRangeMeta.getLongCode(),
+                                                                  untypedRangeMeta.getValeurMin());
+      listMetaDataFromRequest.add(varyingMetadata);
+
+      // Conversion des métadonnées en code court
+      final List<String> shortCodeRequiredMetadatas = indexCompositeService.untypedMetadatasToShortCodeMetadatas(listMetaDataFromRequest);
+      // On cherche le meilleur index à partit de ces métadonnées
+      return indexCompositeService.getBestIndexForQuery(shortCodeRequiredMetadatas);
+
    }
 
 }

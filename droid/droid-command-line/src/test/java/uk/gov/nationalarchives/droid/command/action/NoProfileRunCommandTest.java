@@ -31,13 +31,12 @@
  */
 package uk.gov.nationalarchives.droid.command.action;
 
-import java.io.File;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.File;
+
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -116,9 +115,9 @@ public class NoProfileRunCommandTest {
     @Test
     public void testNoProfileRunWithNoExtensionFilter() throws Exception {
         
-        command.setSignatureFile("../droid-core/test_sig_files/DROID_SignatureFile_V26.xml");
+    command.setSignatureFile("../droid-core-fork/test_sig_files/DROID_SignatureFile_V26.xml");
         command.setResources(new String[] {
-            "../droid-core/test_sig_files"
+                                       "../droid-core-fork/test_sig_files"
         });
         command.execute();
     }
@@ -126,9 +125,9 @@ public class NoProfileRunCommandTest {
     @Test
     public void testNoProfileRunWithExtensionFilter() throws Exception {
         
-        command.setSignatureFile("../droid-core/test_sig_files/DROID_SignatureFile_V26.xml");
+        command.setSignatureFile("../droid-core-fork/test_sig_files/DROID_SignatureFile_V26.xml");
         command.setResources(new String[] {
-            "../droid-core/test_sig_files"
+            "../droid-core-fork/test_sig_files"
         });
         command.setExtensionFilter(new String[] {"oojah", "maflip"});
         command.execute();

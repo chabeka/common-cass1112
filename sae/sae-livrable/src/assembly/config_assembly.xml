@@ -105,7 +105,7 @@
       <fileSet>
          <directory>src/pki/</directory>
          <includes>
-            <include>AC_RACINE_IGCN_RECOUV_2012.crt</include>
+            <include>ACOSS_Reseau_des_URSSAF.crt</include>
          </includes>
          <outputDirectory />
       </fileSet>
@@ -134,30 +134,69 @@
          <outputDirectory />
       </fileSet>
       
+     <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-batch-docs-executable.xml</include>
+         </includes>
+         <outputDirectory>sae-batch-docs-executable</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>purgeCorbeille.properties</include>
+         </includes>
+         <outputDirectory>sae-documents-executable</outputDirectory>
+      </fileSet>
+      
+     <fileSet>
+         <directory>src/config/</directory>
+         <includes>
+            <include>logback-sae-integrationinstall.xml</include>
+         </includes>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
+      </fileSet>
+      
+      <fileSet>
+         <directory>src/scripts/</directory>
+         <includes>
+            <include>sae-AR-instances-integration.sh</include>
+            <include>sae-integrationinstall.sh</include>
+         </includes>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
+      </fileSet>
+      
    </fileSets>
       
    <files>
    
       <file>
-         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable.jar</source>
          <outputDirectory>sae-documents-executable</outputDirectory>
          <destName>sae-documents-executable.jar</destName>
        </file>
       
        <file>
-         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur.jar</source>
          <outputDirectory>sae-ordonnanceur</outputDirectory>
          <destName>sae-ordonnanceur.jar</destName>
        </file>
        
        <file>
-         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj-${version}.jar</source>
+         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj.jar</source>
          <outputDirectory>sae-lotinstallmaj</outputDirectory>
          <destName>sae-lotinstallmaj.jar</destName>
        </file>
    
        <file>
-         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices-${version}.war</source>
+         <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall.jar</source>
+         <outputDirectory>sae-integrationinstall</outputDirectory>
+         <destName>sae-integrationinstall.jar</destName>
+       </file>
+   
+       <file>
+         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices.war</source>
          <outputDirectory/>
          <destName>sae.war</destName>
        </file>
@@ -165,7 +204,7 @@
        
        <!-- Le Tar GZ précédemment crée -->
        <file>
-         <source>target/sae-livrable-${version}-data_sae.tar.gz</source>
+         <source>target/data_sae.tar.gz</source>
          <outputDirectory/>
          <destName>data_sae.tar.gz</destName>
        </file>

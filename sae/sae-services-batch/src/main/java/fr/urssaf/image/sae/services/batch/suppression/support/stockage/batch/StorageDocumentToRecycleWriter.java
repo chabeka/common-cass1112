@@ -61,7 +61,8 @@ public class StorageDocumentToRecycleWriter implements
          poolExecutor.execute(command);
 
          LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-               TRC_INSERT, poolExecutor.getQueue().size());
+                   TRC_INSERT,
+                   "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : " + poolExecutor.getActiveCount());
       }
    }
 

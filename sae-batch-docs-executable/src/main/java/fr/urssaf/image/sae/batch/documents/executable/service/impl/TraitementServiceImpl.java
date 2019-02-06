@@ -14,11 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.document.Criterion;
-import net.docubase.toolkit.model.document.Document;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -37,6 +32,10 @@ import fr.urssaf.image.sae.batch.documents.executable.multithreading.ExportDocsR
 import fr.urssaf.image.sae.batch.documents.executable.multithreading.ImportDocsRunnable;
 import fr.urssaf.image.sae.batch.documents.executable.service.DfceService;
 import fr.urssaf.image.sae.batch.documents.executable.service.TraitementService;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.document.Criterion;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Classe d'implémentation du service <b>TraitementService</b>. Cette classe est
@@ -57,21 +56,21 @@ public class TraitementServiceImpl implements TraitementService {
 
    /**
     * Constructeur
-    * 
+    *
     * @param dfceService
     */
-   public TraitementServiceImpl(DfceService dfceService) {
+   public TraitementServiceImpl(final DfceService dfceService) {
       this.dfceService = dfceService;
    }
 
    private final String SOMMAIRE = "__SOMMAIRE.TXT";
 
    private final String[] DATE_CRITERIONS = { "dre", "dfc", "dsi", "dcr",
-         "dag", "dcd", "dfa", "dpa", "dsf", "ddf", "dli", "dad", "dbp", "dcc",
-         "def", "djc", "dns", "dmc" };
+                                              "dag", "dcd", "dfa", "dpa", "dsf", "ddf", "dli", "dad", "dbp", "dcc",
+                                              "def", "djc", "dns", "dmc" };
 
    private final String[] BOOL_CRITERIONS = { "gel", "sfa", "bap", "cco",
-         "cot", "cpt", "drh", "dar", "dte", "frd", "dfo", "ats", "drs" };
+                                              "cot", "cpt", "drh", "dar", "dte", "frd", "dfo", "ats", "drs" };
 
    private final String[] INTG_CRITERIONS = { "dco", "nbp", "aex", "dne", "dpr" };
    private final String[] LONG_CRITETIONS = { "mch" };
@@ -82,7 +81,7 @@ public class TraitementServiceImpl implements TraitementService {
    /**
     * Permet de récupérer le service permettant de réaliser des opérations sur
     * DFCE.
-    * 
+    *
     * @return DfceService
     */
    public final DfceService getDfceService() {
@@ -92,7 +91,7 @@ public class TraitementServiceImpl implements TraitementService {
    /**
     * Permet de modifier le service permettant de réaliser des opérations sur
     * DFCE.
-    * 
+    *
     * @param dfceService
     *           service permettant de réaliser des opérations sur DFCE.
     */
@@ -101,12 +100,12 @@ public class TraitementServiceImpl implements TraitementService {
    }
 
    /**
-    * Methode permettant d'attendre la fin du traitement de suppression
-    * 
+    * Méthode permettant d'attendre la fin du traitement de suppression
+    *
     * @param poolThead
     *           pool de thread
     */
-   private void waitFinTraitement(DocumentsThreadExecutor poolThead) {
+   private void waitFinTraitement(final DocumentsThreadExecutor poolThead) {
       poolThead.shutdown();
 
       // -- On attend la fin de l'execution du poolThead
@@ -117,14 +116,12 @@ public class TraitementServiceImpl implements TraitementService {
 
    public class SommaireLineMapper {
 
-      private Document document;
+      private final Document document;
       private String docFilename;
       private String docExtension;
 
       public SommaireLineMapper(final String line) throws ParseException {
-         String baseName = dfceService.getDfceConnection().getBaseName();
-         Base base = dfceService.getServiceProvider()
-               .getBaseAdministrationService().getBase(baseName);
+         final Base base = dfceService.getDfceServices().getBase();
          document = ToolkitFactory.getInstance().createDocumentTag(base);
          initDocument(line);
       }
@@ -142,19 +139,19 @@ public class TraitementServiceImpl implements TraitementService {
       }
 
       /**
-       * Deserialise une ligne du fichier sommaire Structure d'une ligne :
+       * Désérialise une ligne du fichier sommaire Structure d'une ligne :
        * uuid||
        * type||title||lifecyclerefdate||creationdate||filename||extension||
        * CRITERIONS avec CRITERIONS sous la forme : key1:|:val1:|:key2:|:val2
        * ...
-       * 
+       *
        * @param line
        * @return
        * @throws ParseException
        */
-      private void initDocument(String line) throws ParseException {
+      private void initDocument(final String line) throws ParseException {
 
-         String[] data = line.split("\\|\\|");
+         final String[] data = line.split("\\|\\|");
 
          // -- Champs objet document
          document.setUuid(UUID.fromString(data[0]));
@@ -171,9 +168,9 @@ public class TraitementServiceImpl implements TraitementService {
          // -- Critérions
          for (int i = 7; i < data.length; i++) {
 
-            String[] item = data[i].split(":\\|:");
-            String critKey = item[0];
-            String critVal = item[1];
+            final String[] item = data[i].split(":\\|:");
+            final String critKey = item[0];
+            final String critVal = item[1];
 
             if (ArrayUtils.contains(DATE_CRITERIONS, critKey)) {
                document.addCriterion(critKey, dtFormatter.parse(critVal));
@@ -197,19 +194,19 @@ public class TraitementServiceImpl implements TraitementService {
     * Ecrit une ligne dans le fichier sommaire à partir d'un {@link Document} au
     * format :
     * "uuid||type||title||lifecyclerefdate||creationdate||filename||extension||CRITERIONS"
-    * 
+    *
     * avec CRITERIONS = key1:|:val1:|:key2:|:val2 ...
-    * 
+    *
     * @param doc
     *           : le document
     * @param bWriter
     *           : le buffer writer du fichier sommaire
     */
-   private void writeSommaireMetas(Document doc, BufferedWriter bWriter) {
-      List<Criterion> criterions = doc.getAllCriterions();
+   private void writeSommaireMetas(final Document doc, final BufferedWriter bWriter) {
+      final List<Criterion> criterions = doc.getAllCriterions();
 
       // -- Infos objet document
-      StringBuilder sb = new StringBuilder();
+      final StringBuilder sb = new StringBuilder();
       sb.append(doc.getUuid()); // index=0
       sb.append("||");
       sb.append(doc.getType()); // index=1
@@ -225,15 +222,15 @@ public class TraitementServiceImpl implements TraitementService {
       sb.append(doc.getExtension()); // index=6
 
       // -- Critérions : index=[5,...]
-      for (Criterion criterion : criterions) {
-         String name = criterion.getCategoryName();
+      for (final Criterion criterion : criterions) {
+         final String name = criterion.getCategoryName();
          sb.append("||");
          sb.append(name);
          sb.append(":|:");
          if (!ArrayUtils.contains(DATE_CRITERIONS, name)) {
             sb.append(criterion.getWord());
          } else {
-            String date = dtFormatter.format((Date) criterion.getWord());
+            final String date = dtFormatter.format((Date) criterion.getWord());
             sb.append(date);
          }
       }
@@ -241,9 +238,9 @@ public class TraitementServiceImpl implements TraitementService {
          bWriter.write(sb.toString());
          bWriter.newLine();
 
-      } catch (Exception e) {
+      } catch (final Exception e) {
          LOGGER.error(e.getMessage());
-         String mssg = "Une erreur s'est produite sur le fichier sommaire";
+         final String mssg = "Une erreur s'est produite sur le fichier sommaire";
          throw new ExportDocsRuntimeException(mssg, e);
       }
    }
@@ -252,12 +249,12 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public void deleteDocuments(DeleteDocsParametres parametres) {
+   public void deleteDocuments(final DeleteDocsParametres parametres) {
       // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
 
       DocumentsThreadExecutor poolThread = null;
-      String requeteLucene = parametres.getRequeteLucene();
+      final String requeteLucene = parametres.getRequeteLucene();
 
       try {
          Iterator<Document> it;
@@ -266,7 +263,7 @@ public class TraitementServiceImpl implements TraitementService {
 
          // -- On bouble sur la liste des résultats
          while (it.hasNext()) {
-            Document document = (Document) it.next();
+            final Document document = it.next();
             DeleteDocsRunnable deleteDocRun;
             deleteDocRun = new DeleteDocsRunnable(getDfceService(), document);
             poolThread.execute(deleteDocRun);
@@ -276,11 +273,11 @@ public class TraitementServiceImpl implements TraitementService {
          waitFinTraitement(poolThread);
 
          LOGGER.info("{} documents traités au total",
-               poolThread.getNombreTraites());
-      } catch (SearchQueryParseException ex) {
+                     poolThread.getNombreTraites());
+      } catch (final SearchQueryParseException ex) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
-               ex.getMessage());
-      } catch (Error ex) {
+                      ex.getMessage());
+      } catch (final Error ex) {
          // gestion des erreurs grave de la jvm
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {
@@ -289,7 +286,7 @@ public class TraitementServiceImpl implements TraitementService {
          }
          // et on envoie l'erreur à l'appelant
          throw ex;
-      } catch (RuntimeException ex) {
+      } catch (final RuntimeException ex) {
          // gestion des erreurs de types runtime
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {
@@ -308,7 +305,7 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public void exportDocuments(ExportDocsParametres parameters) {
+   public void exportDocuments(final ExportDocsParametres parameters) {
       // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
 
@@ -317,10 +314,10 @@ public class TraitementServiceImpl implements TraitementService {
       // ------------------------------------------
       // 1. Création du dossier de destination des documents
       // ------------------------------------------
-      File dir = new File(exportDir);
+      final File dir = new File(exportDir);
       if (!dir.exists()) {
          if (!dir.mkdir()) {
-            String mssg = "Impossible de creer le dossier de destinantion des documents";
+            final String mssg = "Impossible de creer le dossier de destinantion des documents";
             LOGGER.error(mssg);
             throw new ExportDocsRuntimeException(mssg);
          }
@@ -330,8 +327,8 @@ public class TraitementServiceImpl implements TraitementService {
       // ------------------------------------------
       // 2. Création du fichier sommaire
       // ------------------------------------------
-      String sommaire = dir + File.separator + SOMMAIRE;
-      File fSommaire = new File(sommaire);
+      final String sommaire = dir + File.separator + SOMMAIRE;
+      final File fSommaire = new File(sommaire);
       FileWriter fWriter = null;
       BufferedWriter bWriter = null;
 
@@ -339,13 +336,13 @@ public class TraitementServiceImpl implements TraitementService {
          LOGGER.warn("Création du fichier {}", sommaire);
          try {
             if (!fSommaire.createNewFile()) {
-               String message = "Impossible de creer le fichier " + sommaire;
+               final String message = "Impossible de creer le fichier " + sommaire;
                throw new ExportDocsRuntimeException(message);
             }
             fWriter = new FileWriter(fSommaire, true);
             bWriter = new BufferedWriter(fWriter);
-         } catch (IOException e) {
-            String message = "Impossible de creer le fichier sommaire";
+         } catch (final IOException e) {
+            final String message = "Impossible de creer le fichier sommaire";
             throw new ExportDocsRuntimeException(message, e);
          }
       }
@@ -355,7 +352,7 @@ public class TraitementServiceImpl implements TraitementService {
       // ------------------------------------------
 
       DocumentsThreadExecutor poolThread = null;
-      String requeteLucene = parameters.getRequeteLucene();
+      final String requeteLucene = parameters.getRequeteLucene();
 
       try {
          Iterator<Document> it;
@@ -366,7 +363,7 @@ public class TraitementServiceImpl implements TraitementService {
 
          // -- On boucle sur la liste des résultats
          while (it.hasNext()) {
-            Document document = (Document) it.next();
+            final Document document = it.next();
 
             // -- Ecriture du fichier sommaire
             writeSommaireMetas(document, bWriter);
@@ -374,14 +371,14 @@ public class TraitementServiceImpl implements TraitementService {
             // -- Enregistrement du binaire (pile multi-thread)
             ExportDocsRunnable exportDocRun;
             exportDocRun = new ExportDocsRunnable(getDfceService(), document,
-                  exportDir);
+                                                  exportDir);
             poolThread.execute(exportDocRun);
          }
 
          // -- Fermertur du buffer d'écriture dans le fichier sommaire
          try {
             bWriter.close();
-         } catch (IOException e) {
+         } catch (final IOException e) {
             LOGGER.warn(e.getMessage(), e);
          }
 
@@ -389,11 +386,11 @@ public class TraitementServiceImpl implements TraitementService {
          waitFinTraitement(poolThread);
 
          LOGGER.info("Total documents traités: {}",
-               poolThread.getNombreTraites());
-      } catch (SearchQueryParseException e) {
+                     poolThread.getNombreTraites());
+      } catch (final SearchQueryParseException e) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
-               e.getMessage());
-      } catch (Error ex) {
+                      e.getMessage());
+      } catch (final Error ex) {
          // gestion des erreurs grave de la jvm
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {
@@ -402,7 +399,7 @@ public class TraitementServiceImpl implements TraitementService {
          }
          // et on envoie l'erreur à l'appelant
          throw ex;
-      } catch (RuntimeException ex) {
+      } catch (final RuntimeException ex) {
          // gestion des erreurs de types runtime
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {
@@ -421,14 +418,14 @@ public class TraitementServiceImpl implements TraitementService {
     * {@inheritDoc}
     */
    @Override
-   public void importDocuments(ImportDocsParametres parameters) {
+   public void importDocuments(final ImportDocsParametres parameters) {
 
       // -- Overture connexion dfce
       getDfceService().ouvrirConnexion();
 
       final String basePath = parameters.getImportDir() + File.separator;
-      String sommaire = basePath + SOMMAIRE;
-      File fichierSommaire = new File(sommaire);
+      final String sommaire = basePath + SOMMAIRE;
+      final File fichierSommaire = new File(sommaire);
 
       FileReader fileReader = null;
       DocumentsThreadExecutor poolThread = null;
@@ -436,7 +433,7 @@ public class TraitementServiceImpl implements TraitementService {
 
       try {
          fileReader = new FileReader(fichierSommaire);
-         BufferedReader bufReader = new BufferedReader(fileReader);
+         final BufferedReader bufReader = new BufferedReader(fileReader);
          String line;
          int index = 0;
          while ((line = bufReader.readLine()) != null) {
@@ -448,19 +445,19 @@ public class TraitementServiceImpl implements TraitementService {
                try {
                   mapper = new SommaireLineMapper(line);
                   document = mapper.getDocument();
-               } catch (ParseException e) {
+               } catch (final ParseException e) {
                   LOGGER.error(
-                        "Erreur lecture fichier sommaire ligne {} :"
-                              + e.getMessage(), index);
+                               "Erreur lecture fichier sommaire ligne {} :"
+                                     + e.getMessage(), index);
                   continue;
                }
 
                boolean skipDoc = false;
                // -- Fichier à insérer en base
-               File docFile = new File(basePath + document.getUuid());
+               final File docFile = new File(basePath + document.getUuid());
                if (!docFile.exists()) {
                   LOGGER.error("Erreur: fichier introuvable {}", basePath
-                        + document.getUuid());
+                               + document.getUuid());
                   // bug DFCe : certains docs de production GNT sont encore
                   // indexés alors qu'il n'existe plus.
                   skipDoc = true;
@@ -470,7 +467,7 @@ public class TraitementServiceImpl implements TraitementService {
                   // -- Enregistrement en base (pile multi-thread)
                   ImportDocsRunnable importDocRun;
                   importDocRun = new ImportDocsRunnable(getDfceService(),
-                        mapper, docFile);
+                                                        mapper, docFile);
                   poolThread.execute(importDocRun);
                }
             }
@@ -479,18 +476,18 @@ public class TraitementServiceImpl implements TraitementService {
          // -- Fermerture buffer lecture fichier sommaire
          try {
             bufReader.close();
-         } catch (IOException e) {
+         } catch (final IOException e) {
             LOGGER.warn(e.getMessage(), e);
          }
 
          // -- attend la fin du traitement
          waitFinTraitement(poolThread);
 
-      } catch (FileNotFoundException e) {
+      } catch (final FileNotFoundException e) {
          throw new ImportDocsRuntimeException(e);
-      } catch (IOException e) {
+      } catch (final IOException e) {
          throw new ImportDocsRuntimeException(e);
-      } catch (Error ex) {
+      } catch (final Error ex) {
          // gestion des erreurs grave de la jvm
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {
@@ -499,7 +496,7 @@ public class TraitementServiceImpl implements TraitementService {
          }
          // et on envoie l'erreur à l'appelant
          throw ex;
-      } catch (RuntimeException ex) {
+      } catch (final RuntimeException ex) {
          // gestion des erreurs de types runtime
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThread != null && !poolThread.isShutdown()) {

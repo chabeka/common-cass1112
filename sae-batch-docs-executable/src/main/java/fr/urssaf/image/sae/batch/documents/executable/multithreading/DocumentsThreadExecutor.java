@@ -35,7 +35,7 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Construteur.
-    * 
+    *
     * @param parametres
     *           parametres
     */
@@ -43,20 +43,19 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
             TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
                   .getTailleQueue()), new DiscardPolicy());
-      
+
       this.setPasExecution(parametres.getTaillePasExecution());
-      
+
       this.setRejectedExecutionHandler(new RejectedExecutionHandler() {
-         @Override
-         public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+         public void rejectedExecution(final Runnable r, final ThreadPoolExecutor executor) {
             try {
-               //-- La pile de document est pleine on attend quelques ms 
+               //-- La pile de document est pleine on attend quelques ms
                // et on relance l'exécution du traitement
                Thread.sleep(parametres.getQueueSleepTime());
                synchronized (this) {
                   executor.execute(r);
                }
-            } catch (InterruptedException e) {
+            } catch (final InterruptedException e) {
                throw new RuntimeException(e);
             }
          }
@@ -68,13 +67,13 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
-        
+
       synchronized (this) {
-         //-- On incrémenter le compteur d’éléments traités
+         //-- On incrémente le compteur d’éléments traités
          nombreTraites++;
-         
+
          if (getNombreTraites() % getPasExecution() == 0) {
             LOGGER.info("{} éléments traités", getNombreTraites());
          }
@@ -85,31 +84,18 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
    public final void waitFinishProcess() {
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+      }
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
    }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
-   }
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -118,7 +104,7 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -129,7 +115,7 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -139,7 +125,7 @@ public class DocumentsThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

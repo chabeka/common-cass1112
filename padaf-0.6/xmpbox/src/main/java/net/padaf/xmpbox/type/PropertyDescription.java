@@ -29,15 +29,23 @@ public class PropertyDescription {
 	protected String propName;
 	protected String propDesc;
 
+
 	/**
-	 * Constructor of a propertyDescription in order to be use in automatic
-	 * SchemaDescriptionBulding
-	 * 
-	 * @param propName
-	 *            the local Name of the property to describe
-	 * @param propDesc
-	 *            the description of the property to describe
-	 */
+   * no-args constructor
+   */
+  public PropertyDescription() {
+    super();
+  }
+
+  /**
+   * Constructor of a propertyDescription in order to be use in automatic
+   * SchemaDescriptionBulding
+   * 
+   * @param propName
+   *          the local Name of the property to describe
+   * @param propDesc
+   *          the description of the property to describe
+   */
 	public PropertyDescription(String propName, String propDesc) {
 		this.propName = propName;
 		this.propDesc = propDesc;

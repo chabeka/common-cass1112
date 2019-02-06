@@ -8,7 +8,7 @@
    <columnFamilies>
       <columnFamily>
          <name>JobInstance</name>
-         <comparatorType>BytesType</comparatorType>
+         <comparatorType>AsciiType</comparatorType>
          <columnMetadata>
             <name>jobKey</name>
             <validationClass>BytesType</validationClass>

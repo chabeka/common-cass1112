@@ -5,7 +5,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 /**
- * <br>Classe qui réprésente un erreur lié à une métadonneé.<br>
+ * Classe qui réprésente un erreur lié à une métadonneé.
  * Elle contient les attributs :
  * <ul>
  * <li>longCode : Le code long de la métadonnée.</li>

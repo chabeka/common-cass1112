@@ -35,20 +35,4 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
 
-   <!--Instantiation du bean de connexion à la base DFCE -->
-<!--    <bean class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfigurationResource"
-      primary="true">
-      <constructor-arg>
-         <bean class="org.springframework.core.io.ClassPathResource">
-            <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-         </bean>
-      </constructor-arg>
-   </bean> -->
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-
 </beans>

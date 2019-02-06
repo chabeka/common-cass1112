@@ -18,7 +18,6 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>net.padaf</groupId>
 	<artifactId>xmpbox</artifactId>
 	<name>xmpbox</name>
 	<description>xmpbox is an API used to parse,validate and create objects based on XMP Contents.</description>
@@ -26,12 +25,12 @@
 	<parent>
 		<groupId>net.padaf</groupId>
 		<artifactId>padaf</artifactId>
-		<version>0.6.2-CRTL-2-SNAPSHOT</version>
+		<version>0.6.3.9-SNAPSHOT</version>
 		<relativePath>../</relativePath>
 	</parent>
 
 	<properties>
-		<compileSource>1.6</compileSource>
+		<compileSource>1.8</compileSource>
 		<javacPath>${user.javac6}</javacPath>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -40,7 +39,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.7</version>
+			<version>4.7</version><!--$NO-MVN-MAN-VER$--><!-- VERSION PLUS RECENTE DE JUNIT (Utilisation des annotations et autres) -->
 			<scope>test</scope>
 		</dependency>
 
@@ -58,22 +57,30 @@
 		</dependency>
 
 	</dependencies>
-   <build>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-               <execution>
-                  <id>attach-sources</id>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-      </plugins>
-   </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<!-- <quiet>true</quiet> -->
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 
 
 	<reporting>
@@ -110,7 +117,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>2.2</version>
 				<configuration>
 					<configLocation>atos-edoc-checkstyle.xml</configLocation>
 				</configuration>
@@ -120,13 +126,11 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>cobertura-maven-plugin</artifactId>
-				<version>2.3</version>
 			</plugin>
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.6</version>
 				<configuration>
 					<showSuccess>true</showSuccess>
 					<aggregate>true</aggregate>
@@ -142,15 +146,19 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>findbugs-maven-plugin</artifactId>
-				<version>2.0.1</version>
 				<configuration>
 					<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<!-- <quiet>true</quiet> -->
+					<additionalparam>-Xdoclint:none</additionalparam>
+				</configuration>
+			</plugin>
 		</plugins>
-
-
-
 	</reporting>
 
 

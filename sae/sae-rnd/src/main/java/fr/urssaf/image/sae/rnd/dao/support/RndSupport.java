@@ -1,8 +1,5 @@
 package fr.urssaf.image.sae.rnd.dao.support;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +8,13 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.rnd.dao.RndDao;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
 /**
  * Support de manipulation de la CF Rnd
- * 
- * 
+ *
+ *
  */
 @Component
 public class RndSupport {
@@ -29,32 +28,32 @@ public class RndSupport {
 
    /**
     * Constructeur
-    * 
+    *
     * @param rndDao
     *           DAO d'accès à la CF Rnd
     */
    @Autowired
-   public RndSupport(RndDao rndDao) {
+   public RndSupport(final RndDao rndDao) {
       this.rndDao = rndDao;
    }
 
    /**
     * Création d'un RND dans la CF Rnd
-    * 
+    *
     * @param typeDoc
     *           le type de document à ajouter
     * @param clock
     *           Horloge de la création
     */
-   public final void ajouterRnd(TypeDocument typeDoc, long clock) {
+   public final void ajouterRnd(final TypeDocument typeDoc, final long clock) {
 
-      String trcPrefix = "ajouterRnd";
+      final String trcPrefix = "ajouterRnd";
       LOGGER.debug(DEBUT_LOG, trcPrefix);
 
       LOGGER.debug("{} - Code du type de doc : {}", new String[] { trcPrefix,
-            typeDoc.getCode() });
+                                                                   typeDoc.getCode() });
 
-      ColumnFamilyUpdater<String, String> updater = rndDao.getCfTmpl()
+      final ColumnFamilyUpdater<String, String> updater = rndDao.getCfTmpl()
             .createUpdater(typeDoc.getCode());
 
       rndDao.ecritCloture(typeDoc.isCloture(), updater, clock);
@@ -62,7 +61,7 @@ public class RndSupport {
       // Le code activité peut être null
       if (typeDoc.getCodeActivite() != null) {
          rndDao.ecritCodeActivite(Integer.valueOf(typeDoc.getCodeActivite()),
-               updater, clock);
+                                  updater, clock);
       }
       // Si le code fonction est null, alors il s'agit d'un code temporaire et
       // on le met à 0
@@ -76,30 +75,30 @@ public class RndSupport {
       rndDao.ecritCodeFonction(Integer.valueOf(codeFonction), updater, clock);
 
       rndDao.ecritDureeConservation(Integer.valueOf(typeDoc
-            .getDureeConservation()), updater, clock);
+                                                    .getDureeConservation()), updater, clock);
       rndDao.ecritLibelle(typeDoc.getLibelle(), updater, clock);
       rndDao.ecritType(typeDoc.getType().toString(), updater, clock);
 
       rndDao.getCfTmpl().update(updater);
 
       LOGGER.info("{} - Ajout du code : {}", new String[] { trcPrefix,
-            typeDoc.getCode() });
+                                                            typeDoc.getCode() });
 
       LOGGER.debug(FIN_LOG, trcPrefix);
    }
 
    /**
     * Récupère le type de document correspondant au code passé en paramètre
-    * 
+    *
     * @param code
     *           le code RND dont on veut le type de document
     * @return le type de document recherché
     */
-   public final TypeDocument getRnd(String code) {
-      ColumnFamilyResult<String, String> result = rndDao.getCfTmpl()
+   public final TypeDocument getRnd(final String code) {
+      final ColumnFamilyResult<String, String> result = rndDao.getCfTmpl()
             .queryColumns(code);
 
-      TypeDocument typeDoc = getTypeDocFromResult(result);
+      final TypeDocument typeDoc = getTypeDocFromResult(result);
 
       return typeDoc;
    }
@@ -107,13 +106,13 @@ public class RndSupport {
    /**
     * Construction d'un objet {@link TypeDocument} à  partir du réultat de la
     * requête
-    * 
+    *
     * @param result
     *           {@link ColumnFamilyResult}
     * @return {@link TypeDocument}
     */
    private TypeDocument getTypeDocFromResult(
-         ColumnFamilyResult<String, String> result) {
+                                             final ColumnFamilyResult<String, String> result) {
       TypeDocument typeDoc = null;
       if (result != null && result.hasResults()) {
          typeDoc = new TypeDocument();
@@ -124,14 +123,14 @@ public class RndSupport {
          // Code activité et code fonction peuvent être nul (ex code temporaire)
          if (result.getInteger(RndDao.RND_CODE_ACTIVITE) != null) {
             typeDoc.setCodeActivite(result.getInteger(RndDao.RND_CODE_ACTIVITE)
-                  .toString());
+                                    .toString());
          }
          if (result.getInteger(RndDao.RND_CODE_FONCTION) != null) {
             typeDoc.setCodeFonction(result.getInteger(RndDao.RND_CODE_FONCTION)
-                  .toString());
+                                    .toString());
          }
          typeDoc.setDureeConservation(result
-               .getInteger(RndDao.RND_DUREE_CONSERVATION));
+                                      .getInteger(RndDao.RND_DUREE_CONSERVATION));
          typeDoc.setLibelle(result.getString(RndDao.RND_LIBELLE));
          typeDoc.setType(TypeCode.valueOf(result.getString(RndDao.RND_TYPE)));
       }

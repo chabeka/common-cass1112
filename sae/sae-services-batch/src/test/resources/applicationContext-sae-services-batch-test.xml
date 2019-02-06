@@ -10,9 +10,13 @@
         http://www.springframework.org/schema/security
         http://www.springframework.org/schema/security/spring-security-3.0.xsd">
 
+   <!-- Import des contextes principaux -->
+   <import resource="applicationContext-sae-storage-dfce.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
+
 
    <!-- Chargement des fichiers Properties de la partie test -->
-   <bean
+   <bean id="serviceBatchTestPlaceHolderConfig"
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
          <list>
@@ -23,40 +27,23 @@
       </property>
    </bean>
 
-   <!-- Configuration d'accès à Cassandra -->
+   <!-- Chargement des fichiers de configuration SAE -->
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/test-sae-config.properties" />
    </bean>
-
    <bean class="java.io.File" id="fileSaeConfig">
       <constructor-arg>
          <bean factory-bean="resourceSaeConfig" factory-method="getURI" />
       </constructor-arg>
    </bean>
-
    <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
       <constructor-arg>
          <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
       </constructor-arg>
    </bean>
 
-   <!-- Configuration d'accès à DFCE -->
-   <bean id="dfceConnection"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionByDFCEConfiguration">
-      <constructor-arg value="${sae.dfce.cheminFichierConfig}" />
-   </bean>
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-
-   <bean id="dfceConnectionTransfert" autowire-candidate="false"
-      class="fr.urssaf.image.commons.dfce.manager.DFCEConnectionFactory"
-      factory-method="createDFCEConnectionTransfertBySAEConf">
-      <constructor-arg value="saeConfigResource" />
-   </bean>
+   <!-- Création des beans d'accès à DFCE (utilise saeConfigResource) -->
+   <import resource="applicationContext-commons-dfce-connection.xml" />
 
 
    <!-- Configuration des ECDE -->
@@ -132,7 +119,16 @@
       de test) -->
    <bean id="mockFactory" class="fr.urssaf.image.sae.utils.MockFactoryBean" />
 
-
+   <!-- Configuration de l'interruption du traitement -->
+   <bean id="traitementMasseConfig"
+      class="fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig">
+      <qualifier value="interruption_traitement_masse" />
+      <property name="start" value="${sae.traitementmasse.interruption.heure}" />
+      <property name="delay" value="${sae.traitementmasse.interruption.delai}" />
+      <property name="tentatives"
+         value="${sae.traitementmasse.interruption.tentatives}" />
+   </bean>
+   
    <!-- Reprise du fichier applicationContext de la partie main -->
    <import resource="applicationContext-sae-services-capturemasse-main.xml" />
    <import resource="applicationContext-sae-services-suppressionmasse-main.xml" />

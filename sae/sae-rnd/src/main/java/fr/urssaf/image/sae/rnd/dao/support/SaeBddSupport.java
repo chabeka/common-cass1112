@@ -19,9 +19,9 @@ import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 
 /**
- * Classe de gesion des CF Rnd et CorrespondancesRnd et des paramètres
- * 
- * 
+ * Classe de gestion des CF Rnd et CorrespondancesRnd et des paramètres
+ *
+ *
  */
 @Component
 public class SaeBddSupport {
@@ -40,7 +40,7 @@ public class SaeBddSupport {
 
    /**
     * Récupère les informations due la version actuelle du RND dans le SAE
-    * 
+    *
     * @return Un objet {@link VersionRnd} contenant les informations sur la
     *         version RND
     * @throws SaeBddRuntimeException
@@ -52,15 +52,15 @@ public class SaeBddSupport {
          String nomVersion;
 
          nomVersion = parametersService.getVersionRndNumero();
-         Date dateMajVersion = parametersService.getVersionRndDateMaj();
-         VersionRnd versionRnd = new VersionRnd();
+         final Date dateMajVersion = parametersService.getVersionRndDateMaj();
+         final VersionRnd versionRnd = new VersionRnd();
          versionRnd.setDateMiseAJour(dateMajVersion);
          versionRnd.setVersionEnCours(nomVersion);
          return versionRnd;
 
-      } catch (ParameterNotFoundException e) {
+      } catch (final ParameterNotFoundException e) {
          throw new SaeBddRuntimeException(e);
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
 
@@ -68,42 +68,42 @@ public class SaeBddSupport {
 
    /**
     * Met à jour les informations sur la version actuelle du RND dans le SAE
-    * 
+    *
     * @param versionRnd
     *           Version à mettre à jour
     * @throws SaeBddRuntimeException
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final void updateVersionRnd(VersionRnd versionRnd)
+   public final void updateVersionRnd(final VersionRnd versionRnd)
          throws SaeBddRuntimeException {
       try {
          parametersService.setVersionRndDateMaj(versionRnd.getDateMiseAJour());
          parametersService.setVersionRndNumero(versionRnd.getVersionEnCours());
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
    }
 
    /**
     * Met à jour la CF Rnd dans la bdd Cassandra
-    * 
+    *
     * @param listeTypeDocs
     *           Liste des types de document à mettre à jour
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final void updateRnd(List<TypeDocument> listeTypeDocs)
+   public final void updateRnd(final List<TypeDocument> listeTypeDocs)
          throws SaeBddRuntimeException {
       try {
-         for (TypeDocument typeDocument : listeTypeDocs) {
-            TypeDocument typeDocumentRecup = rndSupport.getRnd(typeDocument
-                  .getCode());
+         for (final TypeDocument typeDocument : listeTypeDocs) {
+            final TypeDocument typeDocumentRecup = rndSupport.getRnd(typeDocument
+                                                                     .getCode());
             if (!typeDocument.equals(typeDocumentRecup)) {
                rndSupport.ajouterRnd(typeDocument, clockSupport.currentCLock());
             }
          }
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
    }
@@ -111,7 +111,7 @@ public class SaeBddSupport {
    /**
     * Met à jour la CF CorrespondancesRnd dans la base de données Cassandra et
     * passe les codes temporaires ayant une correspondance à l'état clôturé
-    * 
+    *
     * @param listeCorrespondances
     *           Correspondances entre codes temporaires et code
     * @param version
@@ -120,39 +120,39 @@ public class SaeBddSupport {
     *            Exception levée lors de la mise à jour de la BDD
     */
    public final void updateCorrespondances(
-         Map<String, String> listeCorrespondances, String version)
-         throws SaeBddRuntimeException {
+                                           final Map<String, String> listeCorrespondances, final String version)
+                                                 throws SaeBddRuntimeException {
 
       try {
 
          // Set<String> listeCodesTemporaires = listeCorrespondances.keySet();
          // Iterator<String> iterateur = listeCodesTemporaires.iterator();
 
-         Iterator<Entry<String, String>> iterator = listeCorrespondances
+         final Iterator<Entry<String, String>> iterator = listeCorrespondances
                .entrySet().iterator();
 
          while (iterator.hasNext()) {
-            Object codeTemporaire = iterator.next().getKey();
-            String codeDefinitif = listeCorrespondances.get(codeTemporaire);
+            final Object codeTemporaire = iterator.next().getKey();
+            final String codeDefinitif = listeCorrespondances.get(codeTemporaire);
 
             // Ajout de la ligne dans la table des correspondances
-            Correspondance correspondance = new Correspondance();
+            final Correspondance correspondance = new Correspondance();
             correspondance.setCodeDefinitif(codeDefinitif);
             correspondance.setCodeTemporaire((String) codeTemporaire);
             correspondance.setEtat(EtatCorrespondance.CREATED);
             correspondance.setVersionCourante(version);
             correspondancesRndSupport.ajouterCorrespondance(correspondance,
-                  clockSupport.currentCLock());
+                                                            clockSupport.currentCLock());
 
             // On passe le code type temporaire à l'état cloturé
-            TypeDocument typeDoc = rndSupport.getRnd((String) codeTemporaire);
+            final TypeDocument typeDoc = rndSupport.getRnd((String) codeTemporaire);
             if (typeDoc != null) {
                typeDoc.setCloture(true);
                rndSupport.ajouterRnd(typeDoc, clockSupport.currentCLock());
             }
 
          }
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
 
@@ -160,7 +160,7 @@ public class SaeBddSupport {
 
    /**
     * Récupère la liste de toutes les correspondances en cours dans le SAE
-    * 
+    *
     * @return une liste de {@link Correspondance}
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
@@ -169,27 +169,27 @@ public class SaeBddSupport {
          throws SaeBddRuntimeException {
       try {
          return correspondancesRndSupport.getAllCorrespondances();
-      } catch (Exception e) {
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
    }
 
    /**
     * Met la correspondance à l'état démarré et positionne la date de début
-    * 
+    *
     * @param correspondance
     *           La correspondance dont la mise à jour des docs a commencé
     * @throws SaeBddRuntimeException
     *            Exception levée lors de la mise à jour de la BDD
     */
-   public final void startMajCorrespondance(Correspondance correspondance)
+   public final void startMajCorrespondance(final Correspondance correspondance)
          throws SaeBddRuntimeException {
       try {
          correspondance.setEtat(EtatCorrespondance.STARTING);
          correspondance.setDateDebutMaj(new Date());
          correspondancesRndSupport.ajouterCorrespondance(correspondance,
-               clockSupport.currentCLock());
-      } catch (Exception e) {
+                                                         clockSupport.currentCLock());
+      } catch (final Exception e) {
          throw new SaeBddRuntimeException(e);
       }
    }

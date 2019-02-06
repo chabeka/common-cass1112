@@ -34,13 +34,13 @@
          <bean factory-bean="fileSaeConfig" factory-method="getAbsolutePath" />
       </constructor-arg>
    </bean>
-
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl">
-      <constructor-arg ref="dfceConnection" />
-   </bean>
+   
+   <!-- Création du bean de connexion à DFCE -->
+   <import resource="classpath*:/applicationContext-sae-mapping-mock-test.xml" />
+   <import resource="applicationContext-commons-dfce-connection.xml" />
 
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-commons.xml" />
    <import resource="applicationContext-sae-mapping.xml" />
 
 </beans>

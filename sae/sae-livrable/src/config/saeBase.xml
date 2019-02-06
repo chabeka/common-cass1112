@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <docuBase>
 	<base>
-		<baseId>@@DFCE_BASE_NAME@@</baseId>
+		<baseId>@GED.DFCE_BASE_NAME@</baseId>
 		<baseDescription>Systeme Archivage Electronique</baseDescription>
 		<categories>
 			<!-- Période -->

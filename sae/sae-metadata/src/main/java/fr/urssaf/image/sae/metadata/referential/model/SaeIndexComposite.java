@@ -6,54 +6,58 @@ import net.docubase.toolkit.model.reference.Category;
 import net.docubase.toolkit.model.reference.CompositeIndex;
 
 /**
- * Cette classe représente une métadonnée du référentiel des indexes composites. <BR />
+ * Cette classe représente un élément du référentiel des index composites. <BR />
  * Elle contient les attributs :
  * <ul>
- * <li><b>name</b> : La composition de l'index composite (code courts). 
- * ex: cpt:sco:SM_DOCUMENT_TYPE</li>
+ * <li><b>name</b> : Le nom de l'index composite, qui correspond à la concaténation des codes courts des métadonnées.
+ * ex: cpt&sco&SM_DOCUMENT_TYPE&</li>
  * <li><b>categories</b> : Les catégories qui composent l'index</li>
  * <li><b>isComputed</b> : Détermine si l'indexe composite est indexé</li>
  * </ul>
  */
 public class SaeIndexComposite {
-   
+
    /**
-    * Nom de l'indexe
+    * Nom de l'index
     */
    private String name;
-   
+
    /**
     * Catégories qui composent l'index
     */
    private List<Category> categories;
-   
+
    /**
-    * Flag permettant de savvoir si l'index compiste est indexé
+    * Flag permettant de savoir si l'index composite est indexé
     */
    private boolean isComputed;
-   
+
    /**
     * Construit le SaeIndexComposite à partir d'un {@link CompositeIndex} dfce
-    * @param indexComposite : index composite dfce
+    * 
+    * @param indexComposite
+    *           : index composite dfce
     */
-   public SaeIndexComposite(CompositeIndex indexComposite){
+   public SaeIndexComposite(final CompositeIndex indexComposite) {
       categories = indexComposite.getCategories();
-      name = getCompsiteIndexName(indexComposite);
+      name = getCompositeIndexName(indexComposite);
       isComputed = indexComposite.isComputed();
    }
-   
+
    /**
     * Récupère la liste des catégories dfce composant l'index
+    * 
     * @return : la liste des catégories de l'indexe
     */
    public final List<Category> getCategories() {
       return categories;
    }
-   
+
    /**
-    * @param categories : catégories
+    * @param categories
+    *           : catégories
     */
-   public final void setCategories(List<Category> categories) {
+   public final void setCategories(final List<Category> categories) {
       this.categories = categories;
    }
 
@@ -65,43 +69,40 @@ public class SaeIndexComposite {
    }
 
    /**
-    * @param name : Le nom
+    * @param name
+    *           : Le nom
     */
    public final void setName(final String name) {
       this.name = name;
    }
-   
+
    /**
-    * Check si l'index composit est indexé
+    * Check si l'index composite est indexé
+    * 
     * @return : Le flag isComputed
     */
    public final boolean isComputed() {
       return isComputed;
    }
-   
+
    /**
-    * Get flag isComputed
-    * @return isComputed
+    * @param isComputed
+    *           : flag isComputed
     */
-   public final boolean getIsComputed() {
-      return isComputed;
-   }
-   
-   /**
-    * @param isComputed : flag isComputed
-    */
-   public final void setIsComputed(boolean isComputed) {
+   public final void setIsComputed(final boolean isComputed) {
       this.isComputed = isComputed;
    }
-   
+
    /**
-    * Méthode récupération du nom 
-    * @param index : Un indexe composite dfce
+    * Méthode récupération du nom
+    * 
+    * @param index
+    *           : Un index composite dfce
     * @return
     */
-   private String getCompsiteIndexName(CompositeIndex index) {
-      StringBuffer buffer = new StringBuffer();
-      for (Category category : index.getCategories()) {
+   private String getCompositeIndexName(final CompositeIndex index) {
+      final StringBuilder buffer = new StringBuilder();
+      for (final Category category : index.getCategories()) {
          buffer.append(category.getName());
          buffer.append('&');
       }

@@ -12,7 +12,7 @@
    <logger name="me.prettyprint.cassandra" level="OFF" />
    <logger name="org.springframework.core.io" level="WARN" />
    <logger name="org.springframework.beans.factory" level="INFO" />
-   <!-- <logger name="com.netflix.curator" level="OFF" />  -->
+   <!-- <logger name="org.apache.curator" level="OFF" />  -->
 
     
    <root level="DEBUG">

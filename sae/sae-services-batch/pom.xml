@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>18.9.0.2-SNAPSHOT</version>
+      <version>19.2.7-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services-batch</artifactId>
-   <version>18.9.0.2-SNAPSHOT</version>
+   <version>19.2.7-SNAPSHOT</version>
 
    <name>sae-services-batch</name>
 
@@ -83,7 +83,6 @@
                <argumentFileName>builddef-sae-services-capturemasse.lst</argumentFileName>
             </configuration>
          </plugin>
-
       </plugins>
    </build>
 
@@ -91,92 +90,10 @@
    <dependencies>
    
       <!-- SAE -->
-      <!--
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-pile-travaux</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.xml.stream</groupId>
-               <artifactId>stax-api</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-mapping</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-ecde</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-format</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>stax</groupId>
-               <artifactId>stax</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>net.java.dev.stax-utils</groupId>
-               <artifactId>stax-utils</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-trace</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.xml.stream</groupId>
-               <artifactId>stax-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>stax</groupId>
-               <artifactId>stax</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.codehaus.woodstox</groupId>
-               <artifactId>stax2-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>net.java.dev.stax-utils</groupId>
-               <artifactId>stax-utils</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-rnd</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-storage-dfce</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-      </dependency>
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-services</artifactId>
-         <version>13.11.0.2-SNAPSHOT</version>
-         <exclusions>
-            <exclusion>
-               <groupId>net.java.dev.stax-utils</groupId>
-               <artifactId>stax-utils</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      -->
-      <dependency>
-         <groupId>fr.urssaf.image.sae</groupId>
-         <artifactId>sae-pile-travaux</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>javax.xml.stream</groupId>
@@ -187,7 +104,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
          <exclusions>
             <exclusion>
                <groupId>javax.xml.stream</groupId>
@@ -211,7 +128,11 @@
             </exclusion>
          </exclusions>
       </dependency>
-
+      <dependency>
+         <groupId>fr.urssaf.image.sae</groupId>
+         <artifactId>sae-storage-dfce</artifactId>
+         <version>19.2.7-SNAPSHOT</version>
+      </dependency>
 
       
       <!-- commons-cassandra-spring-batch -->

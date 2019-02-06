@@ -7,38 +7,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.storage.dfce.bo.DocumentsTypeList;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
+import fr.urssaf.image.sae.storage.dfce.bo.IndexCompositeComponent;
 
 /**
  * Déclenche le thread permettant de charger la liste des types de documents au démarrage de dfce
  */
 public class SaeServletContextListener implements
-      ServletContextListener {
+                                       ServletContextListener {
 
-    @Autowired
-    @Qualifier("dfceServicesManager")
-    private DFCEServicesManager dfceServicesManager;
-    
-    @Autowired
-    private DocumentsTypeList typeList;
+  @Autowired
+  @Qualifier("dfceServices")
+  private DFCEServices dfceServices;
 
-   @Override
-   public void contextDestroyed(ServletContextEvent arg0) {
-      System.out.println("ServletContextListener destroyed");
-   }
+  @Autowired
+  private DocumentsTypeList typeList;
 
-   @Override
-   public void contextInitialized(ServletContextEvent servletContextEvent) {
-      System.out.println("ServletContextListener... "
-            + " Chargement de la liste des types de documents supportés");
-      
-      WebApplicationContextUtils.getRequiredWebApplicationContext(servletContextEvent.getServletContext())
-         .getAutowireCapableBeanFactory().autowireBean(this);
-      
-      DocumentTypeLoaderRunnable docTypeRunnable = new DocumentTypeLoaderRunnable(dfceServicesManager, typeList);
-      Thread threadDocumentTypeLoader = new Thread(docTypeRunnable);
-      threadDocumentTypeLoader.start();
-   }
-  
+  @Autowired
+  private IndexCompositeComponent indexCompositeComponent;
+
+  @Override
+  public void contextDestroyed(final ServletContextEvent arg0) {
+    System.out.println("ServletContextListener destroyed");
+  }
+
+  @Override
+  public void contextInitialized(final ServletContextEvent servletContextEvent) {
+    System.out.println("ServletContextListener... "
+        + " Chargement de la liste des types de documents et index composites supportés ");
+
+    WebApplicationContextUtils.getRequiredWebApplicationContext(servletContextEvent.getServletContext())
+                              .getAutowireCapableBeanFactory()
+                              .autowireBean(this);
+
+    final CacheSaeLoaderRunnable docTypeRunnable = new CacheSaeLoaderRunnable(dfceServices, typeList, indexCompositeComponent);
+    final Thread threadDocumentTypeLoader = new Thread(docTypeRunnable);
+    threadDocumentTypeLoader.start();
+  }
+
 }

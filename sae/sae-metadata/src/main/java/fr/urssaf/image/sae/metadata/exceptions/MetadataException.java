@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.metadata.exceptions;
 
 /**
- * Exception à utiliser pour les erreurs lié aux métadonnées.<br>
+ * Exception à utiliser pour les erreurs lié aux métadonnées.
  * 
  */
 public class MetadataException extends ControlException {

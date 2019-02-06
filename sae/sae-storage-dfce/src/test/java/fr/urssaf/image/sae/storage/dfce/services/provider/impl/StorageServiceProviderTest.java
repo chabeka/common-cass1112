@@ -14,6 +14,7 @@ import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
+import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 /**
  * Classe permettant de tester la validation par aspect du paramètre du service
@@ -26,23 +27,22 @@ public class StorageServiceProviderTest {
 
    @Autowired
    private CommonsServices commonsServices;
+   @Autowired
+   private StorageDocumentService storageDocumentService;
 
    @Before
    public void init() throws ConnectionServiceEx, IOException, ParseException {
-      commonsServices.initServicesParameters();
       commonsServices.initStorageDocumens();
    }
 
    /**
     * Test de validation par aspect du paramètre du service d'insertion.
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test(expected = IllegalArgumentException.class)
    public final void storageServiceProvider() throws ConnectionServiceEx,
-         InsertionServiceEx, InsertionIdGedExistantEx {
-      commonsServices.getServiceProvider().openConnexion();
-      commonsServices.getServiceProvider().getStorageDocumentService()
-            .insertStorageDocument(null);
+   InsertionServiceEx, InsertionIdGedExistantEx {
+      storageDocumentService.insertStorageDocument(null);
    }
 
 }

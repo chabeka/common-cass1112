@@ -2,7 +2,9 @@ package fr.urssaf.image.sae.storage.dfce.mapping;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -13,23 +15,13 @@ import java.util.UUID;
 
 import javax.activation.DataHandler;
 
-import net.docubase.toolkit.model.ToolkitFactory;
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.model.base.BaseCategory;
-import net.docubase.toolkit.model.document.Criterion;
-import net.docubase.toolkit.model.document.Document;
-import net.docubase.toolkit.model.note.Note;
-import net.docubase.toolkit.model.reference.ContentRepository;
-import net.docubase.toolkit.model.reference.ContentRepository.State;
-import net.docubase.toolkit.model.reference.FileReference;
-import net.docubase.toolkit.service.ServiceProvider;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.commons.utils.InputStreamSource;
 import fr.urssaf.image.sae.storage.dfce.exception.MetadonneeInexistante;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
@@ -41,6 +33,15 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageReferenceFile;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import net.docubase.toolkit.model.ToolkitFactory;
+import net.docubase.toolkit.model.base.Base;
+import net.docubase.toolkit.model.base.BaseCategory;
+import net.docubase.toolkit.model.document.Criterion;
+import net.docubase.toolkit.model.document.Document;
+import net.docubase.toolkit.model.note.Note;
+import net.docubase.toolkit.model.reference.ContentRepository;
+import net.docubase.toolkit.model.reference.ContentRepository.State;
+import net.docubase.toolkit.model.reference.FileReference;
 
 /**
  * Fournit des méthodes statiques de conversion des elements DFCE ceux du SAE.
@@ -52,20 +53,20 @@ public final class BeanMapper {
     * Liste des métadonnées pour lesquelles ne réaliser aucun traitement
     */
    private static final List<String> metasWithoutProcess = Arrays.asList(
-         StorageTechnicalMetadatas.NOM_FICHIER.getShortCode(),
-         StorageTechnicalMetadatas.TYPE_HASH.getShortCode(),
-         StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode(),
-         StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode(),
-         StorageTechnicalMetadatas.NOTE.getShortCode());
+                                                                         StorageTechnicalMetadatas.NOM_FICHIER.getShortCode(),
+                                                                         StorageTechnicalMetadatas.TYPE_HASH.getShortCode(),
+                                                                         StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode(),
+                                                                         StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode(),
+                                                                         StorageTechnicalMetadatas.NOTE.getShortCode());
 
    /**
-    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br>
-    * 
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.
+    *
     * @param document
     *           : Le document DFCE.
     * @param desiredMetaDatas
     *           : Les métadonnées souhaitées.
-    * @param serviceDFCE
+    * @param dfceServices
     *           : Les services DFCE.
     * @param forConsultion
     *           : Paramètre pour récupérer le contenue des documents pour la
@@ -79,21 +80,21 @@ public final class BeanMapper {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument dfceDocumentToStorageDocument(
-         final Document document, final List<StorageMetadata> desiredMetaDatas,
-         final ServiceProvider serviceDFCE, boolean forConsultion)
-               throws StorageException, IOException {
+                                                               final Document document, final List<StorageMetadata> desiredMetaDatas,
+                                                               final DFCEServices dfceServices, final boolean forConsultion)
+                                                                     throws StorageException, IOException {
       return dfceDocumentToStorageDocument(document, desiredMetaDatas,
-            serviceDFCE, StringUtils.EMPTY, forConsultion, false);
+                                           dfceServices, StringUtils.EMPTY, forConsultion, false);
    }
 
    /**
-    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
-    * 
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.
+    *
     * @param document
     *           : Le document DFCE.
     * @param desiredMetaDatas
     *           : Les métadonnées souhaitées.
-    * @param serviceDFCE
+    * @param dfceServices
     *           : Les services DFCE.
     * @param nomPlateforme
     *           Nom d'instance de la plateforme
@@ -111,27 +112,27 @@ public final class BeanMapper {
     *            lors des I/O.
     */
    public static StorageDocument dfceDocumentToStorageDocument(
-         final Document document, final List<StorageMetadata> desiredMetaDatas,
-         final ServiceProvider serviceDFCE, String nomPlateforme,
-         boolean forConsultation, boolean isDocContentAdd)
-         throws StorageException, IOException {
+                                                               final Document document, final List<StorageMetadata> desiredMetaDatas,
+                                                               final DFCEServices dfceServices, final String nomPlateforme,
+                                                               final boolean forConsultation, final boolean isDocContentAdd)
+                                                                     throws StorageException, IOException {
       // on construit la liste des métadonnées à partir de la liste des
       // métadonnées souhaitées.
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaDatas, serviceDFCE, nomPlateforme,
-            forConsultation);
-      return buildStorageDocument(document, metaDatas, serviceDFCE,
-            isDocContentAdd, false);
+                                                                             document, desiredMetaDatas, dfceServices, nomPlateforme,
+                                                                             forConsultation);
+      return buildStorageDocument(document, metaDatas, dfceServices,
+                                  isDocContentAdd, false);
    }
 
    /**
-    * Permet de convertir un {@link Document} en {@link StorageDocument}.<br/>
-    * 
+    * Permet de convertir un {@link Document} en {@link StorageDocument}.
+    *
     * @param document
     *           : Le document DFCE.
     * @param desiredMetaDatas
     *           : Les métadonnées souhaitées.
-    * @param serviceDFCE
+    * @param dfceServices
     *           : Les services DFCE.
     * @param forConsultion
     *           : Paramètre pour récupérer le contenue des documents pour la
@@ -145,24 +146,24 @@ public final class BeanMapper {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument dfceDocumentFromRecycleBinToStorageDocument(
-         final Document document, final List<StorageMetadata> desiredMetaDatas,
-         final ServiceProvider serviceDFCE, boolean forConsultion,
-         boolean isDocContentAdd)
-               throws StorageException, IOException {
+                                                                             final Document document, final List<StorageMetadata> desiredMetaDatas,
+                                                                             final DFCEServices dfceServices, final boolean forConsultion,
+                                                                             final boolean isDocContentAdd)
+                                                                                   throws StorageException, IOException {
       // on construit la liste des métadonnées à partir de la liste des
       // métadonnées souhaitées.
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaDatas, serviceDFCE, StringUtils.EMPTY,
-            forConsultion);
-      return buildStorageDocument(document, metaDatas, serviceDFCE,
-            isDocContentAdd, true);
+                                                                             document, desiredMetaDatas, dfceServices, StringUtils.EMPTY,
+                                                                             forConsultion);
+      return buildStorageDocument(document, metaDatas, dfceServices,
+                                  isDocContentAdd, true);
    }
 
    /**
     * Permet de convertir les métadonnées DFCE vers les métadonnées
-    * StorageDocument.<br>
-    * 
-    * @param serviceDFCE
+    * StorageDocument.
+    *
+    * @param dfceServices
     *           : Les services DFCE.
     * @param document
     *           : Le document DFCE.
@@ -178,13 +179,13 @@ public final class BeanMapper {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public static StorageDocument dfceMetaDataToStorageDocument(
-         final Document document, final List<StorageMetadata> desiredMetaData,
-         final ServiceProvider serviceDFCE) throws StorageException,
-         IOException {
+                                                               final Document document, final List<StorageMetadata> desiredMetaData,
+                                                               final DFCEServices dfceServices) throws StorageException,
+   IOException {
       final List<StorageMetadata> metaDatas = storageMetaDatasFromCriterions(
-            document, desiredMetaData, serviceDFCE, StringUtils.EMPTY, false);
+                                                                             document, desiredMetaData, dfceServices, StringUtils.EMPTY, false);
       // Création du storage document et ajout des metadonnées
-      StorageDocument storageDocument = new StorageDocument(metaDatas);
+      final StorageDocument storageDocument = new StorageDocument(metaDatas);
       // Renseigne l'uuid du document
       if (document != null) {
          storageDocument.setUuid(document.getUuid());
@@ -196,8 +197,8 @@ public final class BeanMapper {
    /**
     * Construit la liste des {@link StorageMetadata} à partir de la liste des
     * {@link Criterion}.
-    * 
-    * @param serviceDFCE
+    *
+    * @param dfceServices
     *           : Les services DFCE.
     * @param document
     *           : Le document DFCE.
@@ -214,30 +215,30 @@ public final class BeanMapper {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private static List<StorageMetadata> storageMetaDatasFromCriterions(
-         final Document document, final List<StorageMetadata> desiredMetaData,
-         final ServiceProvider serviceDFCE, String nomPlateforme,
-         boolean forConsultation)
-         throws JsonProcessingException {
+                                                                       final Document document, final List<StorageMetadata> desiredMetaData,
+                                                                       final DFCEServices dfceServices, final String nomPlateforme,
+                                                                       final boolean forConsultation)
+                                                                             throws JsonProcessingException {
       final Set<StorageMetadata> metadatas = new HashSet<StorageMetadata>();
       if (document != null) {
          final List<Criterion> criterions = document.getAllCriterions();
          // dans le cas de l'insertion d'un document
          if (desiredMetaData == null) {
-            for (Criterion criterion : Utils.nullSafeIterable(criterions)) {
+            for (final Criterion criterion : Utils.nullSafeIterable(criterions)) {
                metadatas.add(new StorageMetadata(criterion.getCategoryName(),
-                     criterion.getWord()));
+                                                 criterion.getWord()));
             }
          } else {
             // Traitement pour filtrer sur la liste des métadonnées
             // souhaitées.
-            for (StorageMetadata metadata : Utils
+            for (final StorageMetadata metadata : Utils
                   .nullSafeIterable(desiredMetaData)) {
                boolean found = false;
-               for (Criterion criterion : Utils.nullSafeIterable(criterions)) {
+               for (final Criterion criterion : Utils.nullSafeIterable(criterions)) {
                   if (criterion.getCategoryName().equalsIgnoreCase(
-                        metadata.getShortCode())) {
+                                                                   metadata.getShortCode())) {
                      metadatas.add(new StorageMetadata(metadata.getShortCode(),
-                           criterion.getWord()));
+                                                       criterion.getWord()));
                      found = true;
                      break;
                   }
@@ -245,30 +246,29 @@ public final class BeanMapper {
 
                // Récupération éventuelle des notes du document
                if (StorageTechnicalMetadatas.NOTE.getShortCode().equals(
-                     metadata.getShortCode())) {
+                                                                        metadata.getShortCode())) {
                   if (document.hasNote()) {
-                     List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
-                     List<Note> listeNote = serviceDFCE.getNoteService()
-                           .getNotes(document.getUuid());
+                     final List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+                     final List<Note> listeNote = dfceServices.getNotes(document.getUuid());
 
-                     for (Note note : listeNote) {
+                     for (final Note note : listeNote) {
                         listeStorageDocNotes.add(BeanMapper
-                              .dfceNoteToStorageDocumentNote(note));
+                                                 .dfceNoteToStorageDocumentNote(note));
                      }
                      // Transformation de la liste des notes en JSON
-                     ObjectMapper mapper = new ObjectMapper();
-                     String listeNotesJSON = mapper
+                     final ObjectMapper mapper = new ObjectMapper();
+                     final String listeNotesJSON = mapper
                            .writeValueAsString(listeStorageDocNotes);
                      metadatas.add(new StorageMetadata(metadata.getShortCode(),
-                           listeNotesJSON));
+                                                       listeNotesJSON));
                   } else {
-                     List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
+                     final List<StorageDocumentNote> listeStorageDocNotes = new ArrayList<StorageDocumentNote>();
                      // Transformation de la liste des notes en JSON
-                     ObjectMapper mapper = new ObjectMapper();
-                     String listeNotesJSON = mapper
+                     final ObjectMapper mapper = new ObjectMapper();
+                     final String listeNotesJSON = mapper
                            .writeValueAsString(listeStorageDocNotes);
                      metadatas.add(new StorageMetadata(metadata.getShortCode(),
-                           listeNotesJSON));
+                                                       listeNotesJSON));
                   }
                   found = true;
                }
@@ -279,7 +279,7 @@ public final class BeanMapper {
                // retourne avec la valeur vide
                if (!found) {
                   metadatas.add(completedMetadatas(document, metadata,
-                        serviceDFCE, nomPlateforme, forConsultation));
+                                                   dfceServices, nomPlateforme, forConsultation));
                }
             }
 
@@ -299,10 +299,10 @@ public final class BeanMapper {
     *            passe pas bien.
     */
    public static String[] findFileNameAndExtension(
-         final StorageDocument storageDocument, final String shortCode)
-               throws ParseException {
+                                                   final StorageDocument storageDocument, final String shortCode)
+                                                         throws ParseException {
       String value = null;
-      for (StorageMetadata storageMetadata : Utils
+      for (final StorageMetadata storageMetadata : Utils
             .nullSafeIterable(storageDocument.getMetadatas())) {
          // ici on exclut toutes les métadonnées techniques
          if (shortCode.equals(storageMetadata.getShortCode().trim())
@@ -313,48 +313,46 @@ public final class BeanMapper {
       }
 
       return new String[] { FilenameUtils.getBaseName(value),
-            FilenameUtils.getExtension(value) };
+                            FilenameUtils.getExtension(value) };
    }
 
    /**
     * Construit une occurrence de storageDocument à partir d'un document DFCE.
-    * 
+    *
     * @param document
     *           : Le document DFCE.
     * @param listMetaData
     *           : La liste des métadonnées.
-    * @param serviceDFCE
+    * @param dfceServices
     *           : Les services DFCE.
     * @param isDocContentAdd
-    *           : Paramtére pour charger le contenue du document.
+    *           : Paramètre pour charger le contenue du document.
     * @param fromRecyclebin
     *           : True si le document provient de la corbeille, false sinon
-    * 
+    *
     * @throws IOException
     *            Exception levée lorsque qu'un dysfonctionnement se produit lors
     *            des I/O.
     */
    private static StorageDocument buildStorageDocument(final Document document,
-         final List<StorageMetadata> listMetaData,
-         final ServiceProvider serviceDFCE, boolean isDocContentAdd,
-         boolean fromRecyclebin)
-               throws IOException {
+                                                       final List<StorageMetadata> listMetaData,
+                                                       final DFCEServices dfceServices, final boolean isDocContentAdd,
+                                                       final boolean fromRecyclebin)
+                                                             throws IOException {
       // Instance de StorageDocument
       final StorageDocument storageDocument = new StorageDocument();
       if (document != null) {
          if (isDocContentAdd) {
             InputStream docContent = null;
             if (fromRecyclebin) {
-               docContent = serviceDFCE.getRecycleBinService().getDocumentFile(
-                     document);
+               docContent = dfceServices.getDocumentFileFromRecycleBin(document);
             } else {
-               docContent = serviceDFCE.getStoreService().getDocumentFile(
-                     document);
+               docContent = dfceServices.getDocumentFile(document);
             }
-            InputStreamSource source = new InputStreamSource(docContent);
+            final InputStreamSource source = new InputStreamSource(docContent);
             storageDocument.setContent(new DataHandler(source));
          }
-         String filename = document.getFilename() + "."
+         final String filename = document.getFilename() + "."
                + document.getExtension();
          storageDocument.setCreationDate(document.getCreationDate());
          storageDocument.setTitle(document.getTitle());
@@ -367,7 +365,7 @@ public final class BeanMapper {
 
    /**
     * Permet de convertir {@link StorageDocument} en {@link Document}.
-    * 
+    *
     * @param baseDFCE
     *           : La base dfce
     * @param storageDocument
@@ -382,18 +380,18 @@ public final class BeanMapper {
     */
    // CHECKSTYLE:OFF
    public static Document storageDocumentToDfceDocument(final Base baseDFCE,
-         final StorageDocument storageDocument, String[] file)
-               throws ParseException, MetadonneeInexistante {
+                                                        final StorageDocument storageDocument, final String[] file)
+                                                              throws ParseException, MetadonneeInexistante {
 
-      Document document = createDocument(storageDocument.getMetadatas(),
-            baseDFCE, file);
+      final Document document = createDocument(storageDocument.getMetadatas(),
+                                               baseDFCE, file);
 
       return document;
    }
 
    /**
     * Permet de convertir {@link VirtualStorageDocument} en {@link Document}.
-    * 
+    *
     * @param baseDFCE
     *           : La base dfce
     * @param storageDocument
@@ -405,72 +403,75 @@ public final class BeanMapper {
     *            Exception levée si la métadonnée n'exista pas dans DFCE
     */
    public static Document virtualStorageDocumentToDfceDocument(
-         final Base baseDFCE, final VirtualStorageDocument storageDocument)
-               throws ParseException, MetadonneeInexistante {
+                                                               final Base baseDFCE, final VirtualStorageDocument storageDocument)
+                                                                     throws ParseException, MetadonneeInexistante {
 
-      String[] file = { storageDocument.getReferenceFile().getName(),
-            storageDocument.getReferenceFile().getExtension() };
+      final String[] file = { storageDocument.getReferenceFile().getName(),
+                              storageDocument.getReferenceFile().getExtension() };
 
-      Document document = createDocument(storageDocument.getMetadatas(),
-            baseDFCE, file);
+      final Document document = createDocument(storageDocument.getMetadatas(),
+                                               baseDFCE, file);
 
       return document;
    }
 
-   private static Document createDocument(List<StorageMetadata> metadatas,
-         Base baseDFCE, String[] file) throws MetadonneeInexistante {
+   private static Document createDocument(final List<StorageMetadata> metadatas,
+                                          final Base baseDFCE, final String[] file) throws MetadonneeInexistante, ParseException {
       BaseCategory baseCategory = null;
       Date dateCreation = new Date();
       final Document document = ToolkitFactory.getInstance().createDocument(
-            baseDFCE, file[0], file[1]);
+                                                                            baseDFCE, file[0], file[1]);
 
-      for (StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
+      for (final StorageMetadata storageMetadata : Utils.nullSafeIterable(metadatas)) {
 
          // ici on exclut toutes les métadonnées techniques
          final StorageTechnicalMetadatas technical = Utils
                .technicalMetadataFinder(storageMetadata.getShortCode());
 
          if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.IDGED.getShortCode())) {
+                                             StorageTechnicalMetadatas.IDGED.getShortCode())) {
             // -- On définit l'uuid du document si fournit dans la liste des
             // métadonnées
             document.setUuid((UUID) storageMetadata.getValue());
 
          } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.TITRE.getShortCode())) {
+                                                    StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
             document.setTitle(String.valueOf(storageMetadata.getValue()));
          } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
+                                                    StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
 
             // Si la date de creation est définie on remplace la date du
             // jour par la dite date
             if (storageMetadata.getValue() != null) {
-               dateCreation = (Date) storageMetadata.getValue();
+            	dateCreation = (Date) storageMetadata.getValue();
+//            	DateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+//				dateCreation = (Date) simpleDateFormat.parse((String) storageMetadata.getValue());
+				
             }
             document.setCreationDate(dateCreation);
          } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.TYPE.getShortCode())) {
+                                                    StorageTechnicalMetadatas.TYPE.getShortCode())) {
 
             document.setType(String.valueOf(storageMetadata.getValue()));
          } else if (technical.getShortCode()
                .equals(
-                     StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
-                     .getShortCode())) {
+                       StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION
+                       .getShortCode())) {
             document.setLifeCycleReferenceDate((Date) storageMetadata
-                  .getValue());
+                                               .getValue());
 
          } else if (technical.getShortCode().equals(
-               StorageTechnicalMetadatas.HASH.getShortCode())) {
+                                                    StorageTechnicalMetadatas.HASH.getShortCode())) {
             // On ne fait rien
 
             // FIXME on force le passage en minuscule le HASH
             storageMetadata.setValue(StringUtils
-                  .lowerCase((String) storageMetadata.getValue()));
+                                     .lowerCase((String) storageMetadata.getValue()));
 
          } else if (!metasWithoutProcess.contains(technical.getShortCode())) {
             baseCategory = baseDFCE.getBaseCategory(storageMetadata
-                  .getShortCode().trim());
+                                                    .getShortCode().trim());
 
             if (baseCategory == null) {
                throw new MetadonneeInexistante("La métadonnée "
@@ -495,8 +496,8 @@ public final class BeanMapper {
    /**
     * Permet d'extraire la métadonnée technique à partir de la métadonnée
     * souhaitée.
-    * 
-    * @param serviceDFCE
+    *
+    * @param dfceServices
     *           : Les services DFCE.
     * @param document
     *           : le document retourné par DFCE.
@@ -509,99 +510,99 @@ public final class BeanMapper {
     */
    // CHECKSTYLE:OFF
    private static StorageMetadata completedMetadatas(final Document document,
-         final StorageMetadata metadata, final ServiceProvider serviceDFCE,
-         String nomPlateforme, boolean forConsultation) {
+                                                     final StorageMetadata metadata, final DFCEServices dfceServices,
+                                                     final String nomPlateforme, final boolean forConsultation) {
       StorageMetadata metadataFound = null;
 
       final StorageTechnicalMetadatas technical = Utils
             .technicalMetadataFinder(metadata.getShortCode());
 
       if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.IDGED.getShortCode())) {
+                                          StorageTechnicalMetadatas.IDGED.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getUuid());
+                                             document.getUuid());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DATE_CREATION.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getCreationDate());
+                                             document.getCreationDate());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DATE_MODIFICATION.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DATE_MODIFICATION.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getModificationDate());
+                                             document.getModificationDate());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getArchivageDate());
+                                             document.getArchivageDate());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getLifeCycleReferenceDate());
+                                             document.getLifeCycleReferenceDate());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DUREE_CONSERVATION.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DUREE_CONSERVATION.getShortCode())) {
          // Depuis DFCe 1.7.0, le cycle de vie peut comporter des etapes
          // Coté Ged Nationale, nous n'en aurons qu'une seule
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               serviceDFCE.getStorageAdministrationService()
-               .getLifeCycleRule(document.getType()).getSteps().get(0)
-               .getLength());
+                                             dfceServices
+                                             .getLifeCycleRule(document.getType()).getSteps().get(0)
+                                             .getLength());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.TITRE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.TITRE.getShortCode())) {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getTitle());
+                                             document.getTitle());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.TYPE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.TYPE.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getType());
+                                             document.getType());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.TYPE_HASH.getShortCode())) {
+                                                 StorageTechnicalMetadatas.TYPE_HASH.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getDigestAlgorithm());
+                                             document.getDigestAlgorithm());
 
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.HASH.getShortCode())) {
+                                                 StorageTechnicalMetadatas.HASH.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getDigest());
+                                             document.getDigest());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.VERSION_NUMBER.getShortCode())) {
+                                                 StorageTechnicalMetadatas.VERSION_NUMBER.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getVersion());
+                                             document.getVersion());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.START_PAGE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.START_PAGE.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getStartPage());
+                                             document.getStartPage());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.END_PAGE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.END_PAGE.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getEndPage());
+                                             document.getEndPage());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.TAILLE_FICHIER.getShortCode())) {
+                                                 StorageTechnicalMetadatas.TAILLE_FICHIER.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.getSize());
+                                             document.getSize());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.NOM_FICHIER.getShortCode())) {
+                                                 StorageTechnicalMetadatas.NOM_FICHIER.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(), document
-               .getFilename().concat(".").concat(document.getExtension()));
+                                             .getFilename().concat(".").concat(document.getExtension()));
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DOCUMENT_VIRTUEL.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               document.isVirtual());
+                                             document.isVirtual());
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.GEL.getShortCode())) {
+                                                 StorageTechnicalMetadatas.GEL.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               serviceDFCE.getStoreService().isFrozen(document));
+                                             dfceServices.isFrozen(document));
       } else if (technical.getShortCode().equals(
-            StorageTechnicalMetadatas.DOC_FORMAT_ORIGINE.getShortCode())) {
+                                                 StorageTechnicalMetadatas.DOC_FORMAT_ORIGINE.getShortCode())) {
          if (document.getAttachments().size() > 0) {
             metadataFound = new StorageMetadata(metadata.getShortCode(), true);
          } else {
@@ -611,9 +612,9 @@ public final class BeanMapper {
          // recherche ou consultation.
       } else if (forConsultation
             && technical.getShortCode().equals(
-            StorageTechnicalMetadatas.NOM_INSTANCE_PLATEFORME.getShortCode())) {
+                                               StorageTechnicalMetadatas.NOM_INSTANCE_PLATEFORME.getShortCode())) {
          metadataFound = new StorageMetadata(metadata.getShortCode(),
-               nomPlateforme);
+                                             nomPlateforme);
       } else {
 
          metadataFound = new StorageMetadata(metadata.getShortCode(), "");
@@ -623,16 +624,16 @@ public final class BeanMapper {
 
    /**
     * Transforme un objet {@link FileReference} en {@link StorageReferenceFile}
-    * 
+    *
     * @param fileReference
     *           le fichier de référence DFCE
     * @return le fichier de référence métier
     */
    public static StorageReferenceFile fileReferenceToStorageReferenceFile(
-         FileReference fileReference) {
+                                                                          final FileReference fileReference) {
 
-      StorageReferenceFile referenceFile = new StorageReferenceFile();
-      FileReference impl = fileReference;
+      final StorageReferenceFile referenceFile = new StorageReferenceFile();
+      final FileReference impl = fileReference;
 
       referenceFile.setDigest(impl.getDigest());
       referenceFile.setDigestAlgorithm(impl.getDigestAlgorithm());
@@ -641,7 +642,7 @@ public final class BeanMapper {
       referenceFile.setSize(impl.getSize());
       referenceFile.setUuid(impl.getUuid());
 
-      StorageContentRepository contentRepo = new StorageContentRepository();
+      final StorageContentRepository contentRepo = new StorageContentRepository();
       contentRepo.setName(impl.getContentRepository().getName());
       contentRepo
       .setColumnFamily(impl.getContentRepository().getColumnFamily());
@@ -654,15 +655,15 @@ public final class BeanMapper {
 
    /**
     * Transforme un objet {@link StorageReferenceFile} en {@link FileReference}
-    * 
+    *
     * @param referenceFile
     *           le fichier de référence métier
     * @return le fichier de référence DFCE
     */
    public static FileReference storageReferenceFileToFileReference(
-         StorageReferenceFile referenceFile) {
+                                                                   final StorageReferenceFile referenceFile) {
 
-      FileReference impl = new FileReference();
+      final FileReference impl = new FileReference();
       impl.setDigest(referenceFile.getDigest());
       impl.setDigestAlgorithm(referenceFile.getDigestAlgorithm());
       impl.setExtension(referenceFile.getExtension());
@@ -670,10 +671,10 @@ public final class BeanMapper {
       impl.setSize(referenceFile.getSize());
       impl.setUuid(referenceFile.getUuid());
 
-      ContentRepository contentRepo = new ContentRepository();
+      final ContentRepository contentRepo = new ContentRepository();
       contentRepo.setName(referenceFile.getContentRepository().getName());
       contentRepo.setColumnFamily(referenceFile.getContentRepository()
-            .getColumnFamily());
+                                  .getColumnFamily());
       if (referenceFile.getContentRepository().getState() == 0) {
          contentRepo.setState(State.PENDING);
       } else if (referenceFile.getContentRepository().getState() == 1) {
@@ -686,15 +687,15 @@ public final class BeanMapper {
 
    /**
     * Transforme un objet {@link Note} en {@link StorageDocumentNote}
-    * 
+    *
     * @param note
     *           La note DFCE à convertir
     * @return L'objet StorageDocumentNote correspondant à l'objet Note
     */
-   public static StorageDocumentNote dfceNoteToStorageDocumentNote(Note note) {
-      StorageDocumentNote storageDocNote = new StorageDocumentNote(
-            note.getUuid(), note.getDocUUID(), note.getContent(),
-            note.getCreationDate(), note.getAlias());
+   public static StorageDocumentNote dfceNoteToStorageDocumentNote(final Note note) {
+      final StorageDocumentNote storageDocNote = new StorageDocumentNote(
+                                                                         note.getUuid(), note.getDocUUID(), note.getContent(),
+                                                                         note.getCreationDate(), note.getAlias());
 
       return storageDocNote;
    }

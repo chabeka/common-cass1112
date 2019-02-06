@@ -27,16 +27,16 @@ import fr.urssaf.image.sae.trace.service.DispatcheurService;
 
 /**
  * Service de mise à jour du RND
- * 
- * 
  */
 @Service
 public class MajRndServiceImpl implements MajRndService {
 
    private static final String FIN_LOG = "{} - fin";
+
    private static final String DEBUT_LOG = "{} - début";
+
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(MajRndServiceImpl.class);
+                                                     .getLogger(MajRndServiceImpl.class);
 
    @Autowired
    private SaeBddSupport saeBddSupport;
@@ -57,7 +57,7 @@ public class MajRndServiceImpl implements MajRndService {
 
    @Override
    public final void lancer() throws MajRndException {
-      String trcPrefix = "lancer";
+      final String trcPrefix = "lancer";
       LOGGER.debug(DEBUT_LOG, trcPrefix);
 
       LOGGER.info("{} - Début de la synchronisation avec l'ADRN", trcPrefix);
@@ -67,36 +67,40 @@ public class MajRndServiceImpl implements MajRndService {
       VersionRnd versionRndSae;
       try {
          versionRndSae = saeBddSupport.getVersionRnd();
-      } catch (SaeBddRuntimeException e) {
+      }
+      catch (final SaeBddRuntimeException e) {
          LOGGER
                .error(
-                     "Une erreur s'est produite lors de la récupération de la version en cours dans le SAE",
-                     e);
+                      "Une erreur s'est produite lors de la récupération de la version en cours dans le SAE",
+                      e);
          throw new MajRndException(e);
       }
-      LOGGER.info("{} - Version du RND en cours dans le SAE : {}", trcPrefix,
-            versionRndSae.getVersionEnCours());
+      LOGGER.info("{} - Version du RND en cours dans le SAE : {}",
+                  trcPrefix,
+                  versionRndSae.getVersionEnCours());
 
       // Récupération de la version en cours dans l'ADRN
       // -----------------------------------------------
       String versionAdrn;
       try {
          versionAdrn = rndRecuperationService.getVersionCourante();
-      } catch (RndRecuperationException e) {
+      }
+      catch (final RndRecuperationException e) {
          LOGGER
                .error(
-                     "Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN",
-                     e);
+                      "Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN",
+                      e);
          throw new MajRndException(e);
       }
-      LOGGER.info("{} - Version du RND en cours dans l'ADRN : {}", trcPrefix,
-            versionAdrn);
+      LOGGER.info("{} - Version du RND en cours dans l'ADRN : {}",
+                  trcPrefix,
+                  versionAdrn);
 
       if (StringUtils.isBlank(versionAdrn)) {
          LOGGER
                .error("Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
          throw new MajRndException(
-               "Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
+                                   "Une erreur s'est produite lors de la récupération de la version en cours dans l'ADRN : Version ADRN nulle");
       }
 
       // Mise à jour du RND dans le SAE
@@ -112,11 +116,12 @@ public class MajRndServiceImpl implements MajRndService {
          List<TypeDocument> listeTypeDocs;
          try {
             listeTypeDocs = rndRecuperationService.getListeRnd(versionAdrn);
-         } catch (RndRecuperationException e) {
+         }
+         catch (final RndRecuperationException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la récupération du RND à partir de l'ADRN",
-                        e);
+                         "Une erreur s'est produite lors de la récupération du RND à partir de l'ADRN",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -125,11 +130,12 @@ public class MajRndServiceImpl implements MajRndService {
          LOGGER.info("{} - Mise à jour de la BDD du SAE", trcPrefix);
          try {
             saeBddSupport.updateRnd(listeTypeDocs);
-         } catch (SaeBddRuntimeException e) {
+         }
+         catch (final SaeBddRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ du RND dans la BDD du SAE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ du RND dans la BDD du SAE",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -138,41 +144,44 @@ public class MajRndServiceImpl implements MajRndService {
          LOGGER.info("{} - Mise à jour de la BDD DFCE", trcPrefix);
          try {
             dfceSupport.updateLifeCycleRule(listeTypeDocs);
-         } catch (DfceRuntimeException e) {
+         }
+         catch (final DfceRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ du RND dans la BDD DFCE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ du RND dans la BDD DFCE",
+                         e);
             throw new MajRndException(e);
          }
 
          // Récupération de la liste des correspondances
          // --------------------------------------------
          LOGGER.info("{} - Récupération de la liste des correspondances",
-               trcPrefix);
+                     trcPrefix);
          Map<String, String> listeCorrespondances;
          try {
             listeCorrespondances = rndRecuperationService
-                  .getListeCorrespondances(versionAdrn);
-         } catch (RndRecuperationException e) {
+                                                         .getListeCorrespondances(versionAdrn);
+         }
+         catch (final RndRecuperationException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de récupération de la liste des correspondances",
-                        e);
+                         "Une erreur s'est produite lors de récupération de la liste des correspondances",
+                         e);
             throw new MajRndException(e);
          }
 
          // Mise à jour des correspondances dans la BDD du SAE
          // --------------------------------------------------
          LOGGER.info("{} - Mise à jour des correspondances dans la BDD du SAE",
-               trcPrefix);
+                     trcPrefix);
          try {
             saeBddSupport.updateCorrespondances(listeCorrespondances, versionRndSae.getVersionEnCours());
-         } catch (SaeBddRuntimeException e) {
+         }
+         catch (final SaeBddRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ des correspondances dans la BDD du SAE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ des correspondances dans la BDD du SAE",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -186,11 +195,12 @@ public class MajRndServiceImpl implements MajRndService {
          versionRndSae.setDateMiseAJour(new Date());
          try {
             saeBddSupport.updateVersionRnd(versionRndSae);
-         } catch (SaeBddRuntimeException e) {
+         }
+         catch (final SaeBddRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ des informations sur la version en cours dans le SAE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ des informations sur la version en cours dans le SAE",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -207,25 +217,27 @@ public class MajRndServiceImpl implements MajRndService {
       // =============================
       // Récupération de la liste des codes temporaires
       LOGGER.info("{} - Récupération de la liste des codes temporaires",
-            trcPrefix);
+                  trcPrefix);
       List<TypeDocument> listeCodesTemporaires;
       try {
          listeCodesTemporaires = rndRecuperationService
-               .getListeCodesTemporaires();
-      } catch (RndRecuperationException e) {
+                                                       .getListeCodesTemporaires();
+      }
+      catch (final RndRecuperationException e) {
          LOGGER
                .error(
-                     "Une erreur s'est produite lors de la récupération de la liste des codes temporaires",
-                     e);
+                      "Une erreur s'est produite lors de la récupération de la liste des codes temporaires",
+                      e);
          throw new MajRndException(e);
       }
 
       if (listeCodesTemporaires == null) {
          LOGGER.info("{} - Nombre de codes temporaires trouvés : aucun",
-               trcPrefix);
+                     trcPrefix);
       } else {
          LOGGER.info("{} - Nombre de codes temporaires trouvés : {}",
-               trcPrefix, listeCodesTemporaires.size());
+                     trcPrefix,
+                     listeCodesTemporaires.size());
       }
 
       // On traite les codes temporaires s'il y en a au moins 1
@@ -239,11 +251,12 @@ public class MajRndServiceImpl implements MajRndService {
                      trcPrefix);
          try {
             saeBddSupport.updateRnd(listeCodesTemporaires);
-         } catch (SaeBddRuntimeException e) {
+         }
+         catch (final SaeBddRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD du SAE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD du SAE",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -255,11 +268,12 @@ public class MajRndServiceImpl implements MajRndService {
                      trcPrefix);
          try {
             dfceSupport.updateLifeCycleRule(listeCodesTemporaires);
-         } catch (DfceRuntimeException e) {
+         }
+         catch (final DfceRuntimeException e) {
             LOGGER
                   .error(
-                        "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD DFCE",
-                        e);
+                         "Une erreur s'est produite lors de la MAJ des types de documents temporaires dans la BDD DFCE",
+                         e);
             throw new MajRndException(e);
          }
 
@@ -273,10 +287,10 @@ public class MajRndServiceImpl implements MajRndService {
 
    }
 
-   private void ecrireTraces(String codeEvenement) {
+   private void ecrireTraces(final String codeEvenement) {
       try {
          // Instantiation de l'objet TraceToCreate
-         TraceToCreate traceToCreate = new TraceToCreate();
+         final TraceToCreate traceToCreate = new TraceToCreate();
 
          // Code de l'événement
          traceToCreate.setCodeEvt(codeEvenement);
@@ -286,17 +300,19 @@ public class MajRndServiceImpl implements MajRndService {
 
          // Info supplémentaire : Hostname et IP du serveur sur lequel tourne
          // ce code
-         traceToCreate.getInfos().put("saeServeurHostname",
-               HostnameUtil.getHostname());
+         traceToCreate.getInfos()
+                      .put("saeServeurHostname",
+                           HostnameUtil.getHostname());
          traceToCreate.getInfos().put("saeServeurIP", HostnameUtil.getIP());
 
          // Appel du dispatcheur
          dispatcheurService.ajouterTrace(traceToCreate);
-      } catch (Throwable ex) {
+      }
+      catch (final Throwable ex) {
          LOGGER
                .error(
-                     "Une erreur s'est produite lors de l'écriture de la trace d'erreur de maj du RND",
-                     ex);
+                      "Une erreur s'est produite lors de l'écriture de la trace d'erreur de maj du RND",
+                      ex);
       }
    }
 

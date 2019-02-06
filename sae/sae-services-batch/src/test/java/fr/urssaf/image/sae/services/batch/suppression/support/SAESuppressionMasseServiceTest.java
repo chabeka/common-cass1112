@@ -41,9 +41,9 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml", 
-"/applicationContext-sae-services-suppressionmasse-test-mock.xml" })
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@ContextConfiguration(locations = {"/applicationContext-sae-services-suppressionmasse-test.xml",
+                                   "/applicationContext-sae-services-suppressionmasse-test-mock.xml"})
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class SAESuppressionMasseServiceTest {
 
    @Autowired
@@ -60,33 +60,36 @@ public class SAESuppressionMasseServiceTest {
    @Before
    public void init() {
       // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "suppression_masse", "recherche_iterateur" };
+      final String[] roles = new String[] {"suppression_masse", "recherche_iterateur"};
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression_masse", saePrmds);
       saeDroits.put("recherche_iterateur", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(),
+                                                                                   viExtrait,
+                                                                                   roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       try {
          mockJobService.renseignerDocCountJob(EasyMock.anyObject(UUID.class), EasyMock.anyObject(Integer.class));
          EasyMock.expectLastCall().once();
          EasyMock.replay(mockJobService);
-      } catch (JobInexistantException e) {
+      }
+      catch (final JobInexistantException e) {
          e.printStackTrace();
       }
    }
@@ -100,28 +103,28 @@ public class SAESuppressionMasseServiceTest {
 
    @Test
    public void testRequeteObligatoire() {
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), null);
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), null);
       Assert.assertFalse("Le job de suppression aurait du terminé en failure", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement en erreur", exit.getExitMessage());
    }
 
    @Test
    public void testRequeteLuceneInvalide() {
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "Siret:123456 AND IdTraitementMasse:41882:050200023");
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "Siret:123456 AND IdTraitementMasse:41882:050200023");
       Assert.assertFalse("Le job de suppression aurait du terminé en failure", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement en erreur", exit.getExitMessage());
    }
 
    @Test
    public void testRequeteLuceneNonSearcheableMetadata() {
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NomFichier:123456");
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NomFichier:123456");
       Assert.assertFalse("Le job de suppression aurait du terminé en failure", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement en erreur", exit.getExitMessage());
    }
 
    @Test
    public void testRequeteLuceneUnknownMetadata() {
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "Metadata:123456");
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "Metadata:123456");
       Assert.assertFalse("Le job de suppression aurait du terminé en failure", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement en erreur", exit.getExitMessage());
    }
@@ -131,22 +134,25 @@ public class SAESuppressionMasseServiceTest {
    public void testSuppressionKO_updateDocKO() throws SearchingServiceEx, QueryParseServiceEx, UpdateServiceEx, RecycleBinServiceEx {
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
-      StorageDocument doc = new StorageDocument();
-      StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
+      final StorageDocument doc = new StorageDocument();
+      final StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
       doc.setUuid(UUID.randomUUID());
       doc.getMetadatas().add(metaGel);
       retour.getAllStorageDocuments().add(doc);
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .once();
 
-      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
-            (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
+      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+                                        (List<StorageMetadata>) EasyMock.anyObject(),
+                                        (List<StorageMetadata>) EasyMock.anyObject());
 
       EasyMock.expectLastCall().andThrow(new UpdateServiceEx(new Exception("Une erreur a été leveé lors de la modif du doc"))).once();
 
@@ -156,12 +162,12 @@ public class SAESuppressionMasseServiceTest {
 
       EasyMock.replay(mockService);
 
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NumeroRecours:445");
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NumeroRecours:445");
 
       Assert.assertFalse("Le job de suppression aurait du terminé en failure", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement en erreur", exit.getExitMessage());
 
-      EasyMock.reset(mockService); 
+      EasyMock.reset(mockService);
    }
 
    @Test
@@ -169,38 +175,38 @@ public class SAESuppressionMasseServiceTest {
    public void testSuppressionOK() throws SearchingServiceEx, QueryParseServiceEx, UpdateServiceEx, RecycleBinServiceEx {
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
-      StorageDocument doc = new StorageDocument();
-      StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
+      final StorageDocument doc = new StorageDocument();
+      final StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
       doc.setUuid(UUID.randomUUID());
       doc.getMetadatas().add(metaGel);
       retour.getAllStorageDocuments().add(doc);
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .times(2);
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
-            EasyMock.anyObject(UUID.class),
-            (List<StorageMetadata>) EasyMock.anyObject(),
-            (List<StorageMetadata>) EasyMock.anyObject());
-
+                                        EasyMock.anyObject(UUID.class),
+                                        (List<StorageMetadata>) EasyMock.anyObject(),
+                                        (List<StorageMetadata>) EasyMock.anyObject());
       EasyMock.expectLastCall().once();
 
       mockService.moveStorageDocumentToRecycleBin(EasyMock.anyObject(UUID.class));
-
       EasyMock.expectLastCall().once();
 
       EasyMock.replay(mockService);
 
-      ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NumeroRecours:445");
+      final ExitTraitement exit = service.suppressionMasse(UUID.randomUUID(), "NumeroRecours:445");
 
       Assert.assertTrue("Le job de suppression aurait du terminé en succès", exit.isSucces());
       Assert.assertEquals("Le message n'est pas celui attendu", "Traitement réalisé avec succès", exit.getExitMessage());
 
-      EasyMock.reset(mockService); 
+      EasyMock.reset(mockService);
    }
 }

@@ -9,10 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.base.Base;
-import net.docubase.toolkit.service.ServiceProvider;
-import net.docubase.toolkit.service.administration.BaseAdministrationService;
-
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
@@ -25,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -40,12 +37,13 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import net.docubase.toolkit.model.base.Base;
 
 /**
  * Classe de test du service
  * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl
  * InsertionService}
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-mock-test.xml" })
@@ -58,39 +56,38 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
    @Qualifier("insertionService")
    private InsertionService insertionService;
 
-   // Mocks
+   // Mock
    @Autowired
    private Base base;
+   // Mock
    @Autowired
-   private BaseAdministrationService baseAdminService;
-   @Autowired
-   private ServiceProvider serviceProvider;
+   private DFCEServices dfceServices;
 
    @Before
    public void before() {
 
       // Initialisation des droits
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      final String[] roles = new String[] { "archivage_unitaire" };
       saePrmds.add(saePrmd);
       saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
 
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
    }
@@ -103,8 +100,7 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
       cassandraServerBean.resetData();
 
       EasyMock.reset(base);
-      EasyMock.reset(baseAdminService);
-      EasyMock.reset(serviceProvider);
+      EasyMock.reset(dfceServices);
 
    }
 
@@ -114,48 +110,34 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
     * insertStorageDocument} <br>
     * Insérer deux fois le même document et vérifier que les UUIDs sont
     * différents.
-    * 
+    *
     * @throws ConnectionServiceEx
     *            Exception lévée lorsque la connexion n'aboutie pas.
     */
    @Test
    public void insertOneDocument() throws IOException, ParseException,
-         ConnectionServiceEx {
-
-      // Exception lors de la récupération de la version
-      // EasyMock.expect(base.getBaseCategory("nouvelleMeta")).andReturn(null);
-
-      EasyMock.expect(serviceProvider.getBaseAdministrationService())
-            .andReturn(baseAdminService).anyTimes();
-      EasyMock.replay(serviceProvider);
-
-      EasyMock.expect(
-            baseAdminService.getBase(EasyMock.anyObject(String.class)))
-            .andReturn(base).anyTimes();
-      EasyMock.replay(baseAdminService);
+   ConnectionServiceEx {
 
       EasyMock.expect(base.getBaseId()).andReturn("").anyTimes();
-      UUID uuid = UUID.fromString("680F6020-31BC-41CE-9816-08217448C143");
+      final UUID uuid = UUID.fromString("680F6020-31BC-41CE-9816-08217448C143");
       EasyMock.expect(base.getUuid()).andReturn(uuid).anyTimes();
       EasyMock.expect(base.getBaseCategory(EasyMock.anyObject(String.class)))
-            .andReturn(null).anyTimes();
+      .andReturn(null).anyTimes();
       EasyMock.replay(base);
 
       final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+                                                                            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
 
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
 
-      getDfceServicesManager().getConnection();
-
       try {
          insertionService.insertStorageDocument(storageDocument);
          Assert
-               .fail("Une exception de type InsertionServiceEx doit être levée");
-      } catch (Exception e) {
+         .fail("Une exception de type InsertionServiceEx doit être levée");
+      } catch (final Exception e) {
          Assert.assertEquals("Type d'exception incorrect",
-               InsertionServiceEx.class, e.getClass());
+                             InsertionServiceEx.class, e.getClass());
       }
    }
 

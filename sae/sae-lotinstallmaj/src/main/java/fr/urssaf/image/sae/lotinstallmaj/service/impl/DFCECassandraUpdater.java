@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
+import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -20,16 +25,13 @@ import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
-import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
-
 /**
  * Classe permettant la mise à jour du schéma du keyspace SAE dans cassandra
  * 
+ * @deprecated Le schema DFCe ayant migrer vers une version 2.1 de Cassandra, les CFs presentes dans cette classe ne sont plus existante.
+ *             Il n'est donc plus d'actualité d'utiliser cette classe d'update.
  */
+@Deprecated
 public class DFCECassandraUpdater {
 
    private static final String UTF8_TYPE = "UTF8Type";
@@ -37,7 +39,7 @@ public class DFCECassandraUpdater {
    /**
     * Nom du keyspace
     */
-   private static final String DFCE_KEYSPACE_NAME = "Docubase";
+  private static final String DFCE_KEYSPACE_NAME = "Docubase";
 
    private final Cluster cluster;
    private Keyspace keyspace;

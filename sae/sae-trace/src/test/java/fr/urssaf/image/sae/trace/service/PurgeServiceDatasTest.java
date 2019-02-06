@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -27,17 +27,14 @@ public class PurgeServiceDatasTest {
          service.purgerRegistre(null);
          Assert.fail("Une exception IllegalArgumentException est attendue");
 
-      } catch (IllegalArgumentException exception) {
+      } catch (final IllegalArgumentException exception) {
          Assert.assertEquals("le message d'erreur doit etre correct",
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+                             StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
+                             exception.getMessage());
       }
 
    }
-   
+
    @Test
    public void testPurgeJournalObligatoire() {
 
@@ -45,16 +42,13 @@ public class PurgeServiceDatasTest {
          service.purgerJournal(null);
          Assert.fail("Une exception IllegalArgumentException est attendue");
 
-      } catch (IllegalArgumentException exception) {
+      } catch (final IllegalArgumentException exception) {
          Assert.assertEquals("le message d'erreur doit etre correct",
-               StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
-               exception.getMessage());
-
-      } catch (Exception exception) {
-         Assert.fail("Une exception IllegalArgumentException est attendue");
+                             StringUtils.replace(MESSAGE_ERREUR, "{0}", "type de purge"),
+                             exception.getMessage());
       }
 
    }
-   
-   
+
+
 }

@@ -22,4 +22,10 @@
    <bean id="prmdControleTest"
       class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
 
+   <!--
+      Importation de la définition du keyspace cassandra et du client
+      zookeeper (zkClient)
+   -->
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   
 </beans>

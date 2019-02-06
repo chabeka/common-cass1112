@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>18.9.0.2-SNAPSHOT</version>
+      <version>19.2.7-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>18.9.0.2-SNAPSHOT</version>
+   <version>19.2.7-SNAPSHOT</version>
 
    <name>sae-services</name>
 
@@ -28,7 +28,6 @@
                <argumentFileName>builddef-sae-services.lst</argumentFileName>
             </configuration>
          </plugin>
-
       </plugins>
    </build>
 
@@ -38,52 +37,52 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-rnd</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>18.9.0.2-SNAPSHOT</version>
+         <version>19.2.7-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->

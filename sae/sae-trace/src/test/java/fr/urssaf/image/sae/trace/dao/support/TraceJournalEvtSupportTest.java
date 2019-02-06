@@ -80,7 +80,7 @@ public class TraceJournalEvtSupportTest {
       UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
-      long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
+      long nbTracesPurgees = support.delete(new Date(), new Date().getTime(), 500);
 
       TraceJournalEvt securite = support.find(uuid);
       Assert.assertNull("aucune trace ne doit etre touvée", securite);

@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.documents.executable.multithreading;
 
-import net.docubase.toolkit.model.document.Document;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +7,7 @@ import com.docubase.dfce.exception.FrozenDocumentException;
 
 import fr.urssaf.image.sae.documents.executable.service.DfceService;
 import fr.urssaf.image.sae.documents.executable.support.TracesDfceSupport;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Thread de purge d'un document dans la corbeille
@@ -35,11 +34,11 @@ public class PurgeCorbeilleRunnable implements Runnable {
     * Support pour l'écriture des traces
     */
    private TracesDfceSupport tracesSupport;
-   
+
    /**
     * Constructeur de la classe : Initialise le document et la liste des
     * métadonnées à ajouter
-    * 
+    *
     * @param dfceService
     *           services DFCE
     * @param doc
@@ -47,18 +46,18 @@ public class PurgeCorbeilleRunnable implements Runnable {
     * @param metas
     *           métadonnées
     */
-   public PurgeCorbeilleRunnable(DfceService dfceService, TracesDfceSupport tracesSupport, Document doc) {
+   public PurgeCorbeilleRunnable(final DfceService dfceService, final TracesDfceSupport tracesSupport, final Document doc) {
       super();
       this.setDocument(doc);
       this.setDfceService(dfceService);
       this.setTracesDfceSupport(tracesSupport);
    }
 
-   private void setDfceService(DfceService dfceService) {
+   private void setDfceService(final DfceService dfceService) {
       this.dfceService = dfceService;
    }
 
-   private void setTracesDfceSupport(TracesDfceSupport tracesSupport) {
+   private void setTracesDfceSupport(final TracesDfceSupport tracesSupport) {
       this.tracesSupport = tracesSupport;
    }
 
@@ -69,21 +68,21 @@ public class PurgeCorbeilleRunnable implements Runnable {
    public final void run() {
       // Suppression du document
       try {
-         dfceService.getServiceProvider().getRecycleBinService().deleteDocument(document.getUuid());
-      
+         dfceService.getDFCEServices().deleteDocumentFromRecycleBin(document.getUuid());
+
          // -- Trace l'événement "Suppression d'un document de DFCE"
          tracesSupport.traceSuppressionDocumentDeDFCE(document.getUuid());
-      } catch (FrozenDocumentException e) {
-         String error = e.getMessage();
+      } catch (final FrozenDocumentException e) {
+         final String error = e.getMessage();
          LOGGER.warn("Erreur lors de la suppression du document {}:", document
-               .getUuid()
-               + "(" + error + ")");
+                     .getUuid()
+                     + "(" + error + ")");
       }
    }
 
    /**
     * Permet de récupérer l'objet Document.
-    * 
+    *
     * @return Document
     */
    public final Document getDocument() {
@@ -92,7 +91,7 @@ public class PurgeCorbeilleRunnable implements Runnable {
 
    /**
     * Permet de modifier l'objet Document.
-    * 
+    *
     * @param document
     *           document DFCE
     */

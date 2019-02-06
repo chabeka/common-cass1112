@@ -3,7 +3,7 @@ package fr.urssaf.image.sae.metadata.exceptions;
 
 /**
  * Exception à utiliser pour les erreurs lié au contrôle des métadonnées à
- * archiver.<br>
+ * archiver.
  * 
  */
 public class ReferentialException extends ControlException {

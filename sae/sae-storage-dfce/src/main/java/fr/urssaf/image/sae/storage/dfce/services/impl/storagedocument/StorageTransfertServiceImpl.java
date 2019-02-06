@@ -9,8 +9,7 @@ import javax.activation.DataHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
-import fr.urssaf.image.sae.storage.dfce.model.AbstractStorageServices;
+import fr.urssaf.image.sae.storage.dfce.model.AbstractServices;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DocumentNoteServiceEx;
@@ -28,45 +27,35 @@ import fr.urssaf.image.sae.storage.services.storagedocument.TransfertService;
 /**
  * {@inheritDoc}
  */
-public class StorageTransfertServiceImpl extends AbstractStorageServices
+public class StorageTransfertServiceImpl extends AbstractServices
 implements StorageTransfertService {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageTransfertServiceImpl.class);
 
    /**
-    * On injecte DFCEServicesManager mannuellement(xml) paramétré avec la
-    * connexion DFCE de transfert pour éviter les conflits avec celle existante.
-    */
-   private DFCEServicesManager dfceServicesManager;
-
-   /**
     * Service de transfert
     */
-   private TransfertService transfertService;
+   private final TransfertService transfertService;
 
    /**
     * Constructeur
-    * 
-    * @param dfceSercivesMgr
-    *           Manager des services DFCE
+    *
     * @param transfertService
     *           service de transfert
     */
-   public StorageTransfertServiceImpl(DFCEServicesManager dfceSercivesMgr,
-         TransfertService transfertService) {
-
-      this.dfceServicesManager = dfceSercivesMgr;
+   public StorageTransfertServiceImpl(final TransfertService transfertService) {
+      this.dfceServices = null;     // le dfceServices pointe vers la GNT, mais n'est pas utilisé
       this.transfertService = transfertService;
    }
 
    /**
     * {@inheritDoc}
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Override
    public StorageDocument insertBinaryStorageDocument(
-         StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
+                                                      final StorageDocument storageDocument) throws InsertionServiceEx, InsertionIdGedExistantEx {
       return transfertService.insertBinaryStorageDocument(storageDocument);
    }
 
@@ -75,7 +64,7 @@ implements StorageTransfertService {
     */
    @Override
    public StorageDocument searchStorageDocumentByUUIDCriteria(
-         UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
+                                                              final UUIDCriteria uUIDCriteria) throws SearchingServiceEx {
       return transfertService.searchStorageDocumentByUUIDCriteria(uUIDCriteria);
    }
 
@@ -83,7 +72,7 @@ implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public void deleteStorageDocument(UUID uuid) throws DeletionServiceEx {
+   public void deleteStorageDocument(final UUID uuid) throws DeletionServiceEx {
       transfertService.deleteStorageDocument(uuid);
    }
 
@@ -91,10 +80,10 @@ implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login,
-         Date dateCreation, UUID noteUuid) throws DocumentNoteServiceEx {
+   public void addDocumentNote(final UUID docUuid, final String contenu, final String login,
+                               final Date dateCreation, final UUID noteUuid) throws DocumentNoteServiceEx {
       transfertService.addDocumentNote(docUuid, contenu, login, dateCreation,
-            noteUuid);
+                                       noteUuid);
 
    }
 
@@ -102,7 +91,7 @@ implements StorageTransfertService {
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid) {
+   public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid) {
       return transfertService.getDocumentNotes(docUuid);
 
    }
@@ -112,7 +101,7 @@ implements StorageTransfertService {
     */
    @Override
    public final void openConnexion() throws ConnectionServiceEx {
-      dfceServicesManager.getConnection();
+      dfceServices.connectTheFistTime();
    }
 
    /**
@@ -120,29 +109,21 @@ implements StorageTransfertService {
     */
    @Override
    public final void closeConnexion() {
-      dfceServicesManager.closeConnection();
+      dfceServices.closeConnexion();
    }
 
    @Override
-   public void addDocumentAttachment(UUID docUuid, String docName,
-         String extension, DataHandler contenu)
-               throws StorageDocAttachmentServiceEx {
+   public void addDocumentAttachment(final UUID docUuid, final String docName,
+                                     final String extension, final DataHandler contenu)
+                                           throws StorageDocAttachmentServiceEx {
       transfertService.addDocumentAttachment(docUuid, docName, extension,
-            contenu);
+                                             contenu);
    }
 
    @Override
-   public StorageDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public StorageDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws StorageDocAttachmentServiceEx {
       return transfertService.getDocumentAttachment(docUuid);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final DFCEServicesManager getDfceServicesManager() {
-      return dfceServicesManager;
    }
 
 }

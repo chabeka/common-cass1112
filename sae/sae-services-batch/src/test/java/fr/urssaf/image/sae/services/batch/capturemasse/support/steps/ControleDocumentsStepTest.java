@@ -25,12 +25,16 @@ import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.batch.test.JobLauncherTestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestSommaire;
 import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = { "/applicationContext-sae-services-batch-test.xml" })
@@ -45,9 +49,19 @@ public class ControleDocumentsStepTest {
    private EcdeTestSommaire ecdeTestSommaire;
 
    @Before
-   public void init() {
-      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
-   }
+  public void init() {
+    ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+    // ajout des informations d'authentification
+    VIContenuExtrait extrait = new VIContenuExtrait();
+    extrait.setCodeAppli("CS_DEV_TOUTES_ACTIONS");
+    extrait.getPagms().add("PAGM_TOUTES_ACTIONS");
+    extrait.setIdUtilisateur("NON_RENSEIGNE");
+    AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                           extrait.getIdUtilisateur(),
+                                                                           extrait,
+                                                                           new String[] {"PRMD_PERMIT_ALL"});
+    SecurityContextHolder.getContext().setAuthentication(token);
+  }
 
    @After
    public void end() {

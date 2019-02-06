@@ -1,5 +1,6 @@
 package fr.urssaf.image.commons.cassandra.spring.batch.dao;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -7,9 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-import me.prettyprint.hector.api.Keyspace;
-
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.test.TestingServer;
 import org.cassandraunit.AbstractCassandraUnit4TestCase;
 import org.cassandraunit.dataset.DataSet;
 import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
@@ -24,15 +24,14 @@ import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 
-import com.netflix.curator.framework.CuratorFramework;
-import com.netflix.curator.test.TestingServer;
-
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
+import junit.framework.Assert;
+import me.prettyprint.hector.api.Keyspace;
 
 public class CassandraStepExecutionDAOTest extends
       AbstractCassandraUnit4TestCase {
@@ -65,7 +64,12 @@ public class CassandraStepExecutionDAOTest extends
    @After
    public void clean() {
       zkClient.close();
+    try {
       zkServer.close();
+    }
+    catch (IOException e) {
+      e.printStackTrace();
+    }
    }
    
    private void initZookeeperServer() throws Exception {

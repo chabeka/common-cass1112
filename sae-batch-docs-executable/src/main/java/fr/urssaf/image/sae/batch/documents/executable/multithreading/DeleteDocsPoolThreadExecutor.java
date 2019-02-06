@@ -1,12 +1,12 @@
 package fr.urssaf.image.sae.batch.documents.executable.multithreading;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.sae.batch.documents.executable.model.DeleteDocsParametres;
 
@@ -33,8 +33,8 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
    private int pasExecution;
 
    /**
-    * Construteur.
-    * 
+    * Constructeur.
+    *
     * @param parametres
     *           parametres
     */
@@ -50,12 +50,12 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
-        
+
       //-- On incrémenter le compteur d’éléments traités
       nombreTraites++;
-      
+
       if (getNombreTraites() % getPasExecution() == 0) {
          LOGGER.info("{} éléments traités", getNombreTraites());
       }
@@ -65,32 +65,17 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
    public final void waitFinishDelete() {
-
-      synchronized (this) {
-         while (!this.isTerminated()) {
-            try {
-               this.wait();
-            } catch (InterruptedException e) {
-               throw new IllegalStateException(e);
-            }
-         }
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
       }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
    }
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -99,7 +84,7 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -110,7 +95,7 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -120,7 +105,7 @@ public class DeleteDocsPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

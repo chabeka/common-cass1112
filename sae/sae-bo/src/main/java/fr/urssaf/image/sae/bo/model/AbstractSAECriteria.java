@@ -5,8 +5,8 @@ import java.util.List;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 
 /**
- * <br>Classe abstraite contenant les éléments communs des critères de recherches
- * des documents métiers.<br>
+ * Classe abstraite contenant les éléments communs des critères de recherches
+ * des documents métiers.
  * Elle contient les attributs :
  * <ul>
  * <li>desiredSAEMetadatas : La liste des métadonnées métiers.</li>

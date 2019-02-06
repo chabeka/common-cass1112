@@ -78,7 +78,7 @@ public class StorageDocumentFromRecycleListener {
 
             executor.shutdown();
 
-            executor.waitFinishRestore();
+            executor.waitFinishInsertion();
             
             final RestoreMasseRuntimeException exception = executor
                   .getRestoreMasseException();

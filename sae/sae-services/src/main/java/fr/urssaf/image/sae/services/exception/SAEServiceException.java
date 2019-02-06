@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.services.exception;
 
 /**
  * Super classe des exceptions correspondant à des cas d'erreur <b>
- * prévus et contrôlés par l'appelé</b> et que la couche webServices doit catcher.<br>
+ * prévus et contrôlés par l'appelé</b> et que la couche webServices doit catcher.
  */
 public class SAEServiceException extends Exception {
    private String codeError;

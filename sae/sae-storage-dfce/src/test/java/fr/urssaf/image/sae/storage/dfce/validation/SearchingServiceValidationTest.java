@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.storage.dfce.validation;
 
 import java.util.ArrayList;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.storage.dfce.services.CommonsServices;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.QueryParseServiceEx;
 import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
@@ -28,11 +26,6 @@ public class SearchingServiceValidationTest {
    @Autowired
    private CommonsServices commonsServices;
 
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
-
    /**
     * {@link fr.urssaf.image.sae.storage.dfce.SearchingServiceValidation#searchStorageDocumentByUUIDCriteriaValidation(UUIDCriteria)}
     * <br>
@@ -41,7 +34,7 @@ public class SearchingServiceValidationTest {
    public void searchStorageDocumentByUUIDCriteriaValidation()
          throws SearchingServiceEx {
       commonsServices.getSearchingService()
-            .searchStorageDocumentByUUIDCriteria(null, false);
+      .searchStorageDocumentByUUIDCriteria(null, false);
    }
 
    /**
@@ -52,7 +45,7 @@ public class SearchingServiceValidationTest {
    public void searchStorageDocumentByLuceneCriteriaValidation()
          throws SearchingServiceEx, QueryParseServiceEx {
       commonsServices.getSearchingService()
-            .searchStorageDocumentByLuceneCriteria(null);
+      .searchStorageDocumentByLuceneCriteria(null);
    }
 
    /**
@@ -62,10 +55,10 @@ public class SearchingServiceValidationTest {
    @Test(expected = IllegalArgumentException.class)
    public void searchStorageDocumentByLuceneQueryValidation()
          throws SearchingServiceEx, QueryParseServiceEx {
-      LuceneCriteria luceneCriteria = new LuceneCriteria(null, 10,
-            new ArrayList<StorageMetadata>());
+      final LuceneCriteria luceneCriteria = new LuceneCriteria(null, 10,
+                                                               new ArrayList<StorageMetadata>());
       commonsServices.getSearchingService()
-            .searchStorageDocumentByLuceneCriteria(luceneCriteria);
+      .searchStorageDocumentByLuceneCriteria(luceneCriteria);
    }
 
    /**
@@ -75,9 +68,9 @@ public class SearchingServiceValidationTest {
    @Test(expected = IllegalArgumentException.class)
    public void searchStorageDocumentByLuceneLimitValidation()
          throws SearchingServiceEx, QueryParseServiceEx {
-      LuceneCriteria luceneCriteria = new LuceneCriteria(String.format("%s:%s",
-            "act", "1"), 0, new ArrayList<StorageMetadata>());
+      final LuceneCriteria luceneCriteria = new LuceneCriteria(String.format("%s:%s",
+                                                                             "act", "1"), 0, new ArrayList<StorageMetadata>());
       commonsServices.getSearchingService()
-            .searchStorageDocumentByLuceneCriteria(luceneCriteria);
+      .searchStorageDocumentByLuceneCriteria(luceneCriteria);
    }
 }

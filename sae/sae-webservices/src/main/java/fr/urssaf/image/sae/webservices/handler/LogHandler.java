@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Handler permettant d'intercepter le message SOAP<br>
  * de requête pour la consommation d'un Webservice.
- * 
+ *
  *
  */
 public class LogHandler extends AbstractHandler {
@@ -22,9 +22,10 @@ public class LogHandler extends AbstractHandler {
     */
    private static final Logger LOG = LoggerFactory.getLogger(LogHandler.class);
 
-   public InvocationResponse invoke(MessageContext msgContext) throws AxisFault {
+   @Override
+   public InvocationResponse invoke(final MessageContext msgContext) throws AxisFault {
       logServiceInformation("Begin", msgContext);
-      StringWriter sWriter = new StringWriter();
+      final StringWriter sWriter = new StringWriter();
       sWriter.append(Long.toString(System.currentTimeMillis()));
       msgContext.setProperty("soapRequestTimeBegin", sWriter);
 
@@ -32,18 +33,18 @@ public class LogHandler extends AbstractHandler {
    }
 
    @Override
-   public void flowComplete(MessageContext msgContext) {
+   public void flowComplete(final MessageContext msgContext) {
       super.flowComplete(msgContext);
-      StringWriter sWriter = (StringWriter) msgContext
+      final StringWriter sWriter = (StringWriter) msgContext
             .getProperty("soapRequestTimeBegin");
-      long timeBegin = Long.valueOf(sWriter.toString());
-      long timeEnd = System.currentTimeMillis();
-      long diff = (timeEnd - timeBegin) / 1000;
-      logServiceInformation("End [" + Long.toString(diff) + "s]", msgContext);
+      final long timeBegin = Long.valueOf(sWriter.toString());
+      final long timeEnd = System.currentTimeMillis();
+      final long diff = timeEnd - timeBegin;
+      logServiceInformation("End [" + Long.toString(diff) + "ms]", msgContext);
    }
 
    @SuppressWarnings("static-access")
-   private void logServiceInformation(String prefix, MessageContext msgContext) {
+   private void logServiceInformation(final String prefix, final MessageContext msgContext) {
       LOG.info(prefix + " - messageContextID::"
             + msgContext.getLogCorrelationID());
    }

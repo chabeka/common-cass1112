@@ -10,11 +10,11 @@
 		http://www.springframework.org/schema/aop
         http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-   <import resource="classpath*:/applicationContext-sae-documents-executable.xml" />
-
    <bean id="saeConfigResource" class="org.springframework.core.io.FileSystemResource">
       <constructor-arg
          value="src/test/resources/config/sae-config-test.properties" />
    </bean>
+   
+   <import resource="classpath:/applicationContext-sae-documents-executable.xml" />
 
 </beans>

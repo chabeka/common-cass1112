@@ -15,13 +15,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
-import fr.urssaf.image.sae.storage.dfce.manager.DFCEServicesManager;
 import fr.urssaf.image.sae.storage.dfce.mapping.DocumentForTestMapper;
 import fr.urssaf.image.sae.storage.dfce.services.xml.XmlDataService;
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
-import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
 import fr.urssaf.image.sae.storage.exception.InsertionServiceEx;
@@ -30,7 +29,6 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocuments;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.UUIDCriteria;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.InsertionService;
 import fr.urssaf.image.sae.storage.services.storagedocument.RecycleBinService;
@@ -40,7 +38,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.UpdateService;
 
 /**
  * Classe de base pour les tests unitaires.
- * 
+ *
  */
 @Component
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -51,16 +49,12 @@ public class CommonsServices {
    private List<StorageMetadata> storageMetadatas;
 
    @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider serviceProvider;
-
-   @Autowired
    @Qualifier("xmlDataService")
    private XmlDataService xmlDataService;
 
    @Autowired
-   @Qualifier("dfceServicesManager")
-   private DFCEServicesManager dfceServicesManager;
+   @Qualifier("dfceServices")
+   private DFCEServices dfceServices;
 
    @Autowired
    @Qualifier("insertionService")
@@ -113,11 +107,11 @@ public class CommonsServices {
    }
 
    /**
-    * 
+    *
     * @return Les services DFCE
     */
-   public DFCEServicesManager getDfceServicesManager() {
-      return dfceServicesManager;
+   public DFCEServices getDfceServices() {
+      return dfceServices;
    }
 
    /**
@@ -129,15 +123,15 @@ public class CommonsServices {
 
    /**
     * Initialisation des tests. <br>{@inheritDoc}
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
-   public StorageDocument getMockData(InsertionService insertionService)
+   public StorageDocument getMockData(final InsertionService insertionService)
          throws IOException,
          ParseException, InsertionServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
-      SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
-      StorageDocument storageDocument = DocumentForTestMapper
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+                                                                            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
       return insertionService.insertStorageDocument(storageDocument);
    }
@@ -145,28 +139,28 @@ public class CommonsServices {
    /**
     * Suppression du jeu de donnée.<br>{@inheritDoc}
     */
-   public void destroyMockTest(final UUID uuid, DeletionService deletionService)
+   public void destroyMockTest(final UUID uuid, final DeletionService deletionService)
          throws DeletionServiceEx {
-      List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
-      UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
-            desiredStorageMetadatas);
+      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
+                                                         desiredStorageMetadatas);
       deletionService.deleteStorageDocument(uuidCriteria.getUuid());
    }
-   
+
    /**
     * Initialisation des tests. <br>{@inheritDoc}
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    public StorageDocument getMockDataForRecycleBin(
-         InsertionService insertionService, RecycleBinService recycleBinService)
-         throws IOException,
-         ParseException, InsertionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
+                                                   final InsertionService insertionService, final RecycleBinService recycleBinService)
+                                                         throws IOException,
+                                                         ParseException, InsertionServiceEx, RecycleBinServiceEx, InsertionIdGedExistantEx {
       // Injection de jeu de donnée.
-      SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
-      StorageDocument storageDocument = DocumentForTestMapper
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+                                                                            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+      final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
-      StorageDocument doc = insertionService.insertStorageDocument(storageDocument);
+      final StorageDocument doc = insertionService.insertStorageDocument(storageDocument);
       recycleBinService.moveStorageDocumentToRecycleBin(doc.getUuid());
       return doc;
    }
@@ -175,10 +169,10 @@ public class CommonsServices {
     * Suppression du jeu de donnée.<br>{@inheritDoc}
     */
    public void destroyMockForRecycleBinTest(final UUID uuid,
-         RecycleBinService recycleBinService) throws RecycleBinServiceEx {
-      List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
-      UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
-            desiredStorageMetadatas);
+                                            final RecycleBinService recycleBinService) throws RecycleBinServiceEx {
+      final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<StorageMetadata>();
+      final UUIDCriteria uuidCriteria = new UUIDCriteria(uuid,
+                                                         desiredStorageMetadatas);
       recycleBinService.deleteStorageDocumentFromRecycleBin(uuidCriteria.getUuid());
    }
 
@@ -188,7 +182,7 @@ public class CommonsServices {
    public UpdateService getUpdateService() {
       return updateService;
    }
-   
+
    /**
     * @return the updateService
     */
@@ -197,25 +191,8 @@ public class CommonsServices {
    }
 
    /**
-    * Initialise les paramètres pour les services.
-    * 
-    * @throws ConnectionServiceEx
-    *            Exception lévée lorsque la connexion n'aboutie pas.
-    */
-   public void initServicesParameters() throws ConnectionServiceEx {
-      getDfceServicesManager().getConnection();
-   }
-
-   /**
-    * @return La façade de services
-    */
-   public StorageServiceProvider getServiceProvider() {
-      return serviceProvider;
-   }
-
-   /**
     * Initialisation du StorageDocument
-    * 
+    *
     * @throws IOException
     *            Exception IO
     * @throws ParseException
@@ -227,7 +204,7 @@ public class CommonsServices {
    }
 
    /**
-    * 
+    *
     * @return La liste des storageDocuments à partir des fichier de xml.
     * @throws IOException
     *            Exception levée lorsque le fichier xml n'existe pas.
@@ -236,29 +213,29 @@ public class CommonsServices {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    private StorageDocuments getStorageDocumentsFromXml() throws IOException,
-         ParseException {
-      List<StorageDocument> storageDoc = new ArrayList<StorageDocument>();
-      File files[] = new File[Constants.XML_PATH_DOC_WITHOUT_ERROR.length];
+   ParseException {
+      final List<StorageDocument> storageDoc = new ArrayList<StorageDocument>();
+      final File files[] = new File[Constants.XML_PATH_DOC_WITHOUT_ERROR.length];
       int numFile = 0;
-      for (String pathFile : Constants.XML_PATH_DOC_WITHOUT_ERROR) {
+      for (final String pathFile : Constants.XML_PATH_DOC_WITHOUT_ERROR) {
          files[numFile] = new File(pathFile);
          numFile++;
       }
       // Récupération des fichiers de tests désérialisé.
-      List<SaeDocument> saeDocuments = getXmlDataService()
+      final List<SaeDocument> saeDocuments = getXmlDataService()
             .saeDocumentsReader(files);
       // Mapping entre les fichiers de tests et les StorageDocument
-      for (SaeDocument saeDocument : Utils.nullSafeIterable(saeDocuments)) {
+      for (final SaeDocument saeDocument : Utils.nullSafeIterable(saeDocuments)) {
          storageDoc.add(DocumentForTestMapper
-               .saeDocumentXmlToStorageDocument(saeDocument));
+                        .saeDocumentXmlToStorageDocument(saeDocument));
       }
-      StorageDocuments storDocuments = new StorageDocuments(storageDoc);
+      final StorageDocuments storDocuments = new StorageDocuments(storageDoc);
 
       return storDocuments;
    }
 
    /**
-    * 
+    *
     * @return
     * @throws IOException
     *            Exception levée lorsque le fichier xml n'existe pas.
@@ -266,9 +243,9 @@ public class CommonsServices {
     *            Exception levée lorsque le parsing n'abouti pas.
     */
    private StorageDocument getStorageDocumentFromXml() throws IOException,
-         ParseException {
-      SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
-            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+   ParseException {
+      final SaeDocument saeDocument = getXmlDataService().saeDocumentReader(
+                                                                            new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       return DocumentForTestMapper.saeDocumentXmlToStorageDocument(saeDocument);
    }
 
@@ -306,7 +283,7 @@ public class CommonsServices {
     * @param storageMetadatas
     *           the storageMetadatas to set
     */
-   public void setStorageMetadatas(List<StorageMetadata> storageMetadatas) {
+   public void setStorageMetadatas(final List<StorageMetadata> storageMetadatas) {
       this.storageMetadatas = storageMetadatas;
    }
 
@@ -319,7 +296,7 @@ public class CommonsServices {
 
    /**
     * Copie du stream dans les flux indiqués
-    * 
+    *
     * @param inputStream
     *           inputstream
     * @param outputStream
@@ -327,12 +304,12 @@ public class CommonsServices {
     * @throws IOException
     *            Exception IO
     */
-   public void copyStream(InputStream inputStream,
-         OutputStream... outputStreams) throws IOException {
+   public void copyStream(final InputStream inputStream,
+                          final OutputStream... outputStreams) throws IOException {
       int val;
 
       while ((val = inputStream.read()) != -1) {
-         for (OutputStream outputStream : outputStreams) {
+         for (final OutputStream outputStream : outputStreams) {
             outputStream.write(val);
          }
       }

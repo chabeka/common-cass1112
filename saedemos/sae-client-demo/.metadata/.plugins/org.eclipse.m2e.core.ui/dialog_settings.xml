@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.m2e.core.pom.dependencies">
+	</section>
+	<section name="org.eclipse.m2e.core.pom.overview">
+		<list key="ciManagementUrl">
+		</list>
+		<list key="ciManagementSystem">
+		</list>
+		<list key="issueManagementSystem">
+		</list>
+		<list key="issueManagementUrl">
+		</list>
+	</section>
+	<section name="MavenProjectImportWizardPage">
+		<list key="rootDirectory">
+			<item value="D:\UTILISATEURS\AC75095028\workspaceNeon\merge-migrationCQL-hawaiv6\commons\commons-cassandra"/>
+			<item value="D:\UTILISATEURS\AC75095028\workspaceNeon\merge-migrationCQL-hawaiv6\commons"/>
+			<item value="D:\UTILISATEURS\AC75095028\workspaceNeon\merge-migrationCQL-hawaiv6\sae"/>
+			<item value="D:\UTILISATEURS\AC75095028\workspaceSpring\sae-poc"/>
+		</list>
+		<list key="projectNameTemplate">
+			<item value="[artifactId]"/>
+			<item value="[artifactId]-TRUNK"/>
+			<item value="[artifactId]-[version]"/>
+			<item value="[groupId].[artifactId]"/>
+			<item value="[groupId].[artifactId]-[version]"/>
+			<item value="[name]"/>
+		</list>
+	</section>
+</section>

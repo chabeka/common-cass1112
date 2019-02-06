@@ -181,7 +181,7 @@ public class CaptureSupportTest {
    }
 
    @Test
-   public void testAppliFichierNonTrouvéObligatoire() {
+   public void testAppliFichierNonTrouveObligatoire() {
 
       paramService.setJournalisationEvtMetaTitre("JournalisationTest");
       paramService.setJournalisationEvtMetaApplProd("Appli prod");

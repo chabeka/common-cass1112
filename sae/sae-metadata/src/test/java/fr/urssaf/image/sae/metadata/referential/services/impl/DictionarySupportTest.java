@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.metadata.referential.services.impl;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,14 +11,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.metadata.dfce.ServiceProviderSupportMetadata;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 
 /**
  * classe de test du service {@link DictionarySupportImpl}
- * 
+ *
  */
 // FIXME : réactiver les testes après la mise en place des fichiers application
 // contexte
@@ -36,32 +34,24 @@ public class DictionarySupportTest {
    @Autowired
    private JobClockSupport clock;
 
-   @Autowired
-   private ServiceProviderSupportMetadata provider;
-
-   @Before
-   public void before() {
-      provider.connect();
-   }
 
    @After
    public void after() throws Exception {
-      provider.disconnect();
       server.resetData();
    }
 
    /**
     * Test de création d'un dictionnaire
-    * 
+    *
     * @throws DictionaryNotFoundException
     */
    @Test
    public void createDictTest() throws DictionaryNotFoundException {
 
-      String id = "dictionnaireTest";
-      String value = "ValeurTest";
+      final String id = "dictionnaireTest";
+      final String value = "ValeurTest";
       dictSupport.addElement(id, value, clock.currentCLock());
-      Dictionary dict = dictSupport.find(id);
+      final Dictionary dict = dictSupport.find(id);
       Assert.assertNotNull(dict);
       Assert.assertTrue(id.equals(dict.getId()));
 
@@ -74,12 +64,12 @@ public class DictionarySupportTest {
    @Test
    public void createExistingDictTest() throws DictionaryNotFoundException {
 
-      String id = "dicExist";
-      String value = "NewMeta";
-      Dictionary dictExistant = dictSupport.find(id);
+      final String id = "dicExist";
+      final String value = "NewMeta";
+      final Dictionary dictExistant = dictSupport.find(id);
 
       dictSupport.addElement(id, value, clock.currentCLock());
-      Dictionary dict = dictSupport.find(id);
+      final Dictionary dict = dictSupport.find(id);
       Assert.assertNotNull(dict);
       Assert.assertTrue(!dictExistant.equals(dict));
 
@@ -91,12 +81,12 @@ public class DictionarySupportTest {
    @Test
    public void modifyExistingDictTest() throws DictionaryNotFoundException {
 
-      String id = "dicExist";
-      String value = "NewMeta";
-      Dictionary dictExistant = dictSupport.find(id);
+      final String id = "dicExist";
+      final String value = "NewMeta";
+      final Dictionary dictExistant = dictSupport.find(id);
 
       dictSupport.addElement(id, value, clock.currentCLock());
-      Dictionary dict = dictSupport.find(id);
+      final Dictionary dict = dictSupport.find(id);
       Assert.assertNotNull(dict);
       Assert.assertTrue(!dictExistant.equals(dict));
 
@@ -108,10 +98,10 @@ public class DictionarySupportTest {
    @Test
    public void findDictTest() {
 
-      String id = "dicNotExist";
+      final String id = "dicNotExist";
       try {
-         Dictionary dictExistant = dictSupport.find(id);
-      } catch (DictionaryNotFoundException ex) {
+         final Dictionary dictExistant = dictSupport.find(id);
+      } catch (final DictionaryNotFoundException ex) {
          Assert.assertTrue(ex.getMessage().equals(
                "Le dictionnaire dicNotExist n'a pas été trouvé"));
       }
@@ -120,7 +110,7 @@ public class DictionarySupportTest {
 
    /**
     * Test de supression d'un dictionnaire existant
-    * 
+    *
     * @throws DictionaryNotFoundException
     */
    @Ignore
@@ -130,12 +120,12 @@ public class DictionarySupportTest {
    @Test
    public void deleteColumnTest() throws DictionaryNotFoundException {
 
-      String id = "dicExist";
-      String value = "Meta";
-      Dictionary dictExistant = dictSupport.find(id);
+      final String id = "dicExist";
+      final String value = "Meta";
+      final Dictionary dictExistant = dictSupport.find(id);
       Assert.assertTrue(dictExistant.getEntries().size() > 0);
       dictSupport.deleteElement(id, value, clock.currentCLock());
-      Dictionary deletedDict = dictSupport.find(id);
+      final Dictionary deletedDict = dictSupport.find(id);
       Assert.assertTrue(deletedDict.getEntries().size() == 0);
    }
 
@@ -147,13 +137,13 @@ public class DictionarySupportTest {
    public void deleteColumnNotExistDictTest()
          throws DictionaryNotFoundException {
 
-      String id = "dicExist";
-      String value = "Meta2";
-      Dictionary dictExistant = dictSupport.find(id);
+      final String id = "dicExist";
+      final String value = "Meta2";
+      final Dictionary dictExistant = dictSupport.find(id);
       Assert.assertTrue(dictExistant.getEntries().size() == 1);
       dictSupport.deleteElement(id, value, clock.currentCLock());
-      Dictionary deletedDict = dictSupport.find(id);
+      final Dictionary deletedDict = dictSupport.find(id);
       Assert.assertTrue(dictExistant.getEntries().equals(
-            deletedDict.getEntries()));
+                                                         deletedDict.getEntries()));
    }
 }

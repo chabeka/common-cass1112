@@ -7,6 +7,10 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="classpath*:/applicationContext-sae-commons.xml" />
+   <import resource="classpath*:/applicationContext-commons-dfce-connection.xml" />  
+   
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/commons-config.properties" />
    </bean>
@@ -28,11 +32,6 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   <bean id="dfceConnectionService"
-      class="fr.urssaf.image.commons.dfce.service.impl.DFCEConnectionServiceImpl" >
-      <constructor-arg ref="dfceConnection" />
-   </bean>
-
    <import resource="applicationContext-sae-trace.xml" />
 
 </beans>

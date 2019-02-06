@@ -8,6 +8,7 @@ import java.rmi.RemoteException;
 import org.apache.axis2.AxisFault;
 import org.junit.Test;
 
+import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.StubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.PingSecureRequest;

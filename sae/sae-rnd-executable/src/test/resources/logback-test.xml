@@ -10,7 +10,7 @@
    <logger name="org.apache.cassandra" level="WARN" />
    <logger name="org.cassandraunit" level="WARN" />
    <logger name="me.prettyprint" level="WARN" />
-   <logger name="com.netflix.curator" level="WARN" />
+   <logger name="org.apache.curator" level="WARN" />
    <logger name="org.apache.zookeeper" level="WARN" />
    <logger name="uk.gov.nationalarchives" level="WARN" />
    

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +19,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
@@ -56,49 +53,36 @@ public class DispatcheurServiceHistEvenementsDatasTest {
    @Autowired
    private TraceDestinataireSupport destSupport;
 
-   @Autowired
-   private ServiceProviderSupport support;
-
-   @After
-   public void after() throws Exception {
-      support.disconnect();
-   }
-
-   @Before
-   public void init() {
-      support.connect();
-   }
-
    @Test
    public void testCreationHistoriqueEvtSucces() {
       Date endDate = new Date();
       Date startDate = new Date();
       createDestinataireExploitation();
 
-      TraceToCreate traceToCreate = new TraceToCreate();
+      final TraceToCreate traceToCreate = new TraceToCreate();
       traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
       traceToCreate.setAction(ACTION);
       traceToCreate.setContrat(CONTRAT_DE_SERVICE);
       traceToCreate.setInfos(INFOS);
 
       service.ajouterTrace(traceToCreate);
-      
+
       startDate = DateUtils.truncate(startDate, Calendar.DATE);
       endDate = DateUtils.addDays(endDate, 1);
       endDate = DateUtils.truncate(endDate, Calendar.DATE);
 
-      List<DfceTraceSyst> events = histService.lecture(startDate, endDate, 1,
-            false);
+      final List<DfceTraceSyst> events = histService.lecture(startDate, endDate, 1,
+                                                             false);
       Assert.assertNotNull("on doit avoir des événements", events);
       Assert.assertEquals("on doit avoir un nombre correct d'événements", 1,
-            events.size());
+                          events.size());
 
    }
 
    private void createDestinataireExploitation() {
-      TraceDestinataire trace = new TraceDestinataire();
+      final TraceDestinataire trace = new TraceDestinataire();
       trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
+      final Map<String, List<String>> map = new HashMap<String, List<String>>();
       map.put(TraceDestinataireDao.COL_HIST_EVT, null);
       trace.setDestinataires(map);
       destSupport.create(trace, new Date().getTime());

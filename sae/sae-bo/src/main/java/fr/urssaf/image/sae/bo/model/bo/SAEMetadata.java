@@ -6,9 +6,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import fr.urssaf.image.sae.bo.model.AbstractMetadata;
 
 /**
- * <br>Classe représentant un document c'est-à-dire un tableau de byte correspondant
+ * Classe représentant un document c'est-à-dire un tableau de byte correspondant
  * au contenu du document et la liste des métadonnées(liste de paire(code,
- * valeur)dont les valeurs sont typées).<br>
+ * valeur)dont les valeurs sont typées).
  * Elle contient les attributs :
  * <ul>
  * <li>shortCode : Le code court de la métadonnée.</li>

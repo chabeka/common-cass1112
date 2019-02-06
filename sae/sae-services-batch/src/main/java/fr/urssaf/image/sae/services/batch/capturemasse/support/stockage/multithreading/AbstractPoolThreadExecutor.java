@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading;
 
@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.util.Assert;
 
@@ -24,362 +23,293 @@ import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDo
 
 /**
  * classe mère des pools d'execution
- * 
+ *
  * @param <BOT>
- *           classe backoffice
+ *          classe backoffice
  * @param <CAPT>
- *           classe de capture
- * 
+ *          classe de capture
  */
 public abstract class AbstractPoolThreadExecutor<BOT, CAPT> extends
-      ThreadPoolExecutor {
+                                                ThreadPoolExecutor {
 
-   private static final long serialVersionUID = 1L;
-   private Boolean isInterrupted;
-   private final InterruptionTraitementMasseSupport support;
-   private final InterruptionTraitementConfig config;
+  private static final long serialVersionUID = 1L;
 
-   /**
-    * Constructeur
-    * 
-    * @param poolConfiguration
-    *           configuration du pool d'insertion des documents dans DFCE
-    * @param support
-    *           support pour l'arrêt du traitement de la capture en masse
-    * @param config
-    *           configuration pour l'arrêt du traitement de la capture en masse
-    */
-   public AbstractPoolThreadExecutor(
-         DefaultPoolThreadConfiguration poolConfiguration,
-         InterruptionTraitementMasseSupport support,
-         InterruptionTraitementConfig config) {
+  private final InterruptionTraitementMasseSupport support;
 
-      super(poolConfiguration.loadCorePoolSize(), poolConfiguration
-            .loadCorePoolSize(), 1, TimeUnit.MILLISECONDS,
-            new LinkedBlockingQueue<Runnable>(), new DiscardPolicy());
+  private final InterruptionTraitementConfig config;
 
-      Assert.notNull(support, "'support' is required");
+  /**
+   * Constructeur
+   *
+   * @param poolConfiguration
+   *          configuration du pool d'insertion des documents dans DFCE
+   * @param support
+   *          support pour l'arrêt du traitement de la capture en masse
+   * @param config
+   *          configuration pour l'arrêt du traitement de la capture en masse
+   */
+  public AbstractPoolThreadExecutor(
+                                    final DefaultPoolThreadConfiguration poolConfiguration,
+                                    final InterruptionTraitementMasseSupport support,
+                                    final InterruptionTraitementConfig config) {
 
-      this.config = config;
-      this.support = support;
-   }
+    super(poolConfiguration.loadCorePoolSize(),
+          poolConfiguration
+                           .loadCorePoolSize(),
+          1,
+          TimeUnit.MILLISECONDS,
+          new LinkedBlockingQueue<Runnable>(),
+          new DiscardPolicy());
 
-   /**
-    * Attend que l'ensemble des threads aient bien terminé leur travail
-    */
-   public final void waitFinishInsertion() {
+    Assert.notNull(support, "'support' is required");
 
-      synchronized (this) {
+    this.config = config;
+    this.support = support;
+  }
 
-         while (!this.isTerminated()) {
+  /**
+   * Attend que l'ensemble des threads aient bien terminé leur travail
+   */
+  public final void waitFinishInsertion() {
+    try {
+      awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+    }
+    catch (final InterruptedException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
-            try {
+  /**
+   * @param exception
+   *          Mise à jour de la première erreur
+   */
+  protected final void setInsertionException(
+                                             final AbstractInsertionMasseRuntimeException exception) {
 
-               this.wait();
+    synchronized (this) {
 
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
+      // deux cas :
+      // 1 - si aucune exception n'a juste à présent été levée alors on
+      // stocke cette exception
+      // 2 - sinon on stocke l'exception la plus récente dans l'ordre du
+      // lancement des insertions soit dans l'ordre où sont les documents
+      // dans le sommaire
+      if (getInsertionMasseException() == null) {
+        setInsertionMasseRuntimeException(exception);
+      } else if (getInsertionMasseException().getIndex() > exception
+                                                                    .getIndex()) {
+        setInsertionMasseRuntimeException(exception);
       }
-   }
+    }
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
-      }
+  /**
+   * @return the isInterrupted
+   */
+  public final Boolean isInterrupted() {
+    return support.isInterrupted();
+  }
 
-   }
+  /**
+   * @return le support d'interruption des traitements de masse
+   */
+  protected final InterruptionTraitementMasseSupport getSupport() {
+    return support;
+  }
 
-   /**
-    * @param exception
-    *           Mise à jour de la première erreur
-    */
-   protected final void setInsertionException(
-         final AbstractInsertionMasseRuntimeException exception) {
+  /**
+   * @return la config d'interruption de traitement
+   */
+  protected final InterruptionTraitementConfig getConfig() {
+    return config;
+  }
 
-      synchronized (this) {
+  /**
+   * @return l'exception
+   */
+  public abstract AbstractInsertionMasseRuntimeException getInsertionMasseException();
 
-         // deux cas :
-         // 1 - si aucune exception n'a juste à présent été levée alors on
-         // stocke cette exception
-         // 2 - sinon on stocke l'exception la plus récente dans l'ordre du
-         // lancement des insertions soit dans l'ordre où sont les documents
-         // dans le sommaire
-         if (getInsertionMasseException() == null) {
-            setInsertionMasseRuntimeException(exception);
-         } else if (getInsertionMasseException().getIndex() > exception
-               .getIndex()) {
-            setInsertionMasseRuntimeException(exception);
-         }
-      }
-   }
+  /**
+   * @param exception
+   *          l'exception
+   */
+  protected abstract void setInsertionMasseRuntimeException(
+                                                            AbstractInsertionMasseRuntimeException exception);
 
-   /**
-    * @return the isInterrupted
-    */
-   public final Boolean getIsInterrupted() {
-      return isInterrupted;
-   }
+  /**
+   * @param runnable
+   *          le traitement en cours
+   * @return le document concerné
+   */
+  protected abstract BOT getDocumentFromRunnable(Runnable runnable);
 
-   /**
-    * @param isInterrupted
-    *           indicateur de traitement interrompu
-    */
-   protected final void setIsInterrupted(Boolean isInterrupted) {
-      this.isInterrupted = isInterrupted;
-   }
+  /**
+   * @param runnable
+   *          le traitement en cours
+   * @return l'index du document concerné
+   */
+  protected abstract int getIndexFromRunnable(Runnable runnable);
 
-   /**
-    * @return le support d'interruption des traitements de masse
-    */
-   protected final InterruptionTraitementMasseSupport getSupport() {
-      return support;
-   }
+  /**
+   * Retourne l'erreur spécifique
+   *
+   * @param index
+   *          index du document en erreur
+   * @param document
+   *          le document en erreur
+   * @param exception
+   *          exception source
+   * @return l'erreur spécifique
+   */
+  protected abstract AbstractInsertionMasseRuntimeException createError(
+                                                                        int index, BOT document, InterruptionTraitementException exception);
 
-   /**
-    * @return la config d'interruption de traitement
-    */
-   protected final InterruptionTraitementConfig getConfig() {
-      return config;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  protected final void beforeExecute(final Thread thread, final Runnable runnable) {
 
-   /**
-    * @return l'exception
-    */
-   public abstract AbstractInsertionMasseRuntimeException getInsertionMasseException();
+    super.beforeExecute(thread, runnable);
 
-   /**
-    * @param exception
-    *           l'exception
-    */
-   protected abstract void setInsertionMasseRuntimeException(
-         AbstractInsertionMasseRuntimeException exception);
+    final BOT document = getDocumentFromRunnable(runnable);
+    final int indexDocument = getIndexFromRunnable(runnable);
 
-   /**
-    * @param runnable
-    *           le traitement en cours
-    * @return le document concerné
-    */
-   protected abstract BOT getDocumentFromRunnable(Runnable runnable);
+    try {
 
-   /**
-    * @param runnable
-    *           le traitement en cours
-    * @return l'index du document concerné
-    */
-   protected abstract int getIndexFromRunnable(Runnable runnable);
+      this.getSupport().verifyInterruptedProcess(getConfig());
 
-   /**
-    * Retourne l'erreur spécifique
-    * 
-    * @param index
-    *           index du document en erreur
-    * @param document
-    *           le document en erreur
-    * @param exception
-    *           exception source
-    * @return l'erreur spécifique
-    */
-   protected abstract AbstractInsertionMasseRuntimeException createError(
-         int index, BOT document, InterruptionTraitementException exception);
+    }
+    catch (final InterruptionTraitementException e) {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void beforeExecute(Thread thread, Runnable runnable) {
+      // en cas d'échec de la reconnexion
 
-      super.beforeExecute(thread, runnable);
+      // levée d'une exception pour le document chargé de la
+      // reconnexion
+      final AbstractInsertionMasseRuntimeException except = createError(
+                                                                        indexDocument,
+                                                                        document,
+                                                                        e);
 
-      BOT document = getDocumentFromRunnable(runnable);
-      int indexDocument = getIndexFromRunnable(runnable);
+      this.setInsertionException(except);
 
-      // on vérifie que le traitement ne doit pas s'interrompre
-      final DateTime currentDate = new DateTime();
+      // les autres Threads en attente sont interrompus définitivement
+      shutdownNow();
 
-      if (getConfig() != null
-            && getSupport().hasInterrupted(currentDate, getConfig())) {
+    }
+  }
 
-         synchronized (this) {
+  /**
+   * Après chaque insertion, plusieurs cas possibles : <br>
+   * <ol>
+   * <li>l'insertion a réussi : on ajoute le résultat à liste des documents
+   * persistés</li>
+   * <li>l'insertion a échouée :
+   * MODE TOUT OU RIEN : on shutdown le pool d'insertion</li>
+   * MODE PARTIEL : l'exception a été catchée en amont, et on continue sur les autres documents
+   * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à
+   * liste des documents persistés et on shutdown le pool d'insertion</li>
+   * </ol>
+   *
+   * @param runnable
+   *          le thread d'insertion d'un document
+   * @param throwable
+   *          l'exception éventuellement levée lors de l'insertion du document
+   */
+  @Override
+  protected void afterExecute(final Runnable runnable,
+                              final Throwable throwable) {
 
-            // un seul thread est chargé de la reconnexion
-            // les autre attendent
-            while (Boolean.TRUE.equals(getIsInterrupted())) {
+    final String trcPrefix = "afterExecute()";
 
-               try {
-                  this.wait();
-               } catch (InterruptedException e) {
-                  throw new IllegalStateException(e);
-               }
+    super.afterExecute(runnable, throwable);
 
-            }
+    final BOT document = getDocumentFromRunnable(runnable);
+    final int indexDocument = getIndexFromRunnable(runnable);
 
-            // isInterrupted == null signifie que c'est le premier passage
-            // c'est donc ce thread là qui sera chargé de la reconnexion
-            if (getIsInterrupted() == null) {
+    if (throwable == null) {
 
-               setIsInterrupted(Boolean.TRUE);
-            }
+      traitementAfterExecute(trcPrefix, document, indexDocument);
 
-         }
+    } else if (throwable != null
+        && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
+      addDocumentToIntegratedList(document, indexDocument);
 
-         if (Boolean.TRUE.equals(getIsInterrupted())) {
+      getLogger().debug(
+                        "{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
+                        new Object[] {trcPrefix, indexDocument + 1,
+                                      getPathName(document), getUuid(document)});
+    } else {
 
-            try {
+      setInsertionException((AbstractInsertionMasseRuntimeException) throwable);
+      // dès le premier échec les autres Threads en exécution ou pas sont
+      // interrompus définitivement
+      shutdownNow();
 
-               // appel de la méthode de reconnexion
-               getSupport().interruption(currentDate, getConfig());
+    }
 
-            } catch (InterruptionTraitementException e) {
+  }
 
-               // en cas d'échec de la reconnexion
+  /**
+   * Traitement lors de la fin d'execution du thread.
+   *
+   * @param trcPrefix
+   *          Trace préfixe
+   * @param document
+   *          Document
+   * @param indexDocument
+   *          Index du document
+   */
+  protected void traitementAfterExecute(final String trcPrefix, final BOT document,
+                                        final int indexDocument) {
+    if (StringUtils.isBlank(getPathName(document))) {
+      throw new CaptureMasseRuntimeException("le nom de fichier est vide.");
+    }
 
-               // levée d'une exception pour le document chargé de la
-               // reconnexion
-               AbstractInsertionMasseRuntimeException except = createError(
-                     indexDocument, document, e);
+    // On test si le document a été intégré ou non (en mode PARTIEL, si erreur
+    // lors du stockage, l'exception est catchée et on renvoie un UUID null)
+    if (getUuid(document) != null) {
+      addDocumentToIntegratedList(document, indexDocument);
 
-               this.setInsertionException(except);
+      getLogger().debug(
+                        "{} - Stockage du document #{} ({}) uuid:{}",
+                        new Object[] {trcPrefix, indexDocument + 1,
+                                      getPathName(document), getUuid(document)});
+    }
+  }
 
-               // les autres Threads en attente sont interrompus définitivement
-               this.shutdownNow();
+  /**
+   * Ajoute le document concerné dans la liste des documents intégrés
+   *
+   * @param document
+   *          le document concerné
+   * @param indexDocument
+   *          l'index du document
+   */
+  protected abstract void addDocumentToIntegratedList(BOT document,
+                                                      int indexDocument);
 
-            } finally {
+  /**
+   * @return le logger concerné
+   */
+  protected abstract Logger getLogger();
 
-               // de toutes les façons il faut libérer l'ensemble des Threads en
-               // attente
-               setIsInterrupted(Boolean.FALSE);
-               synchronized (this) {
-                  this.notifyAll();
-               }
-            }
+  /**
+   * @param document
+   *          le document concerné
+   * @return le nom ou le chemin du fichier
+   */
+  protected abstract String getPathName(BOT document);
 
-         }
+  /**
+   * @param document
+   *          le document concerné
+   * @return l'UUID ou le chemin du fichier
+   */
+  protected abstract UUID getUuid(BOT document);
 
-      }
-   }
-
-   /**
-    * 
-    * 
-    * Après chaque insertion, plusieurs cas possibles : <br>
-    * <ol>
-    * <li>l'insertion a réussi : on ajoute le résultat à liste des documents
-    * persistés</li>
-    * <li>l'insertion a échouée : 
-    * MODE TOUT OU RIEN : on shutdown le pool d'insertion</li>
-    * MODE PARTIEL : l'exception a été catchée en amont, et on continue sur les autres documents
-    * <li>l'insertion a réussi et était la dernière : on ajoute le résultat à
-    * liste des documents persistés et on shutdown le pool d'insertion</li>
-    * </ol>
-    * 
-    * @param runnable
-    *           le thread d'insertion d'un document
-    * @param throwable
-    *           l'exception éventuellement levée lors de l'insertion du document
-    * 
-    */
-   @Override
-   protected void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
-
-      String trcPrefix = "afterExecute()";
-
-      super.afterExecute(runnable, throwable);
-
-      final BOT document = getDocumentFromRunnable(runnable);
-      int indexDocument = getIndexFromRunnable(runnable);
-
-      if (throwable == null) {
-
-         traitementAfterExecute(trcPrefix, document, indexDocument);
-
-      } else if (throwable != null
-            && throwable.getCause() instanceof TraitementRepriseAlreadyDoneException) {
-         addDocumentToIntegratedList(document, indexDocument);
-
-         getLogger().debug(
-                     "{} - Stockage du document #{} ({}) uuid:{} pour la reprise du traitement de masse",
-               new Object[] { trcPrefix, (indexDocument + 1),
-                     getPathName(document), getUuid(document) });
-      } else {
-
-         setInsertionException((AbstractInsertionMasseRuntimeException) throwable);
-         // dès le premier échec les autres Threads en exécution ou pas sont
-         // interrompus définitivement
-         this.shutdownNow();
-
-      }
-
-   }
-
-   /**
-    * Traitement lors de la fin d'execution du thread.
-    * 
-    * @param trcPrefix
-    *           Trace préfixe
-    * @param document
-    *           Document
-    * @param indexDocument
-    *           Index du document
-    */
-   protected void traitementAfterExecute(String trcPrefix, BOT document,
-         int indexDocument) {
-      if (StringUtils.isBlank(getPathName(document))) {
-         throw new CaptureMasseRuntimeException("le nom de fichier est vide.");
-      }
-
-      // On test si le document a été intégré ou non (en mode PARTIEL, si erreur
-      // lors du stockage, l'exception est catchée et on renvoie un UUID null)
-      if (getUuid(document) != null) {
-         addDocumentToIntegratedList(document, indexDocument);
-
-         getLogger().debug(
-               "{} - Stockage du document #{} ({}) uuid:{}",
-               new Object[] { trcPrefix, (indexDocument + 1),
-                     getPathName(document), getUuid(document) });
-      }
-   }
-
-   /**
-    * Ajoute le document concerné dans la liste des documents intégrés
-    * 
-    * @param document
-    *           le document concerné
-    * @param indexDocument
-    *           l'index du document
-    */
-   protected abstract void addDocumentToIntegratedList(BOT document,
-         int indexDocument);
-
-   /**
-    * @return le logger concerné
-    */
-   protected abstract Logger getLogger();
-
-   /**
-    * @param document
-    *           le document concerné
-    * @return le nom ou le chemin du fichier
-    */
-   protected abstract String getPathName(BOT document);
-
-   /**
-    * @param document
-    *           le document concerné
-    * @return l'UUID ou le chemin du fichier
-    */
-   protected abstract UUID getUuid(BOT document);
-
-   /**
-    * @return la liste des documents intégrés
-    */
-   public abstract ConcurrentLinkedQueue<CAPT> getIntegratedDocuments();
+  /**
+   * @return la liste des documents intégrés
+   */
+  public abstract ConcurrentLinkedQueue<CAPT> getIntegratedDocuments();
 }

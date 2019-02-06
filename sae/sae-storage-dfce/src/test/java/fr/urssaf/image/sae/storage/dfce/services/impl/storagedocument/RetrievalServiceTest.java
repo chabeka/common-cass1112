@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,11 +41,6 @@ public class RetrievalServiceTest {
    @Autowired
    private CommonsServices commonsServices;
 
-   @Before
-   public void init() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
-   }
-
    @After
    public void end() throws Exception {
       serverBean.resetData();
@@ -57,36 +51,35 @@ public class RetrievalServiceTest {
 
    /**
     * Test de consultation par UUID
-    * 
+    *
     * <br>{@inheritDoc}
-    * 
+    *
     * @throws ConnectionServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void retrieveStorageDocumentByUUID() throws RetrievalServiceEx,
-         InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
-         ConnectionServiceEx, InsertionIdGedExistantEx {
-      commonsServices.getDfceServicesManager().getConnection();
+   InsertionServiceEx, IOException, ParseException, DeletionServiceEx,
+   ConnectionServiceEx, InsertionIdGedExistantEx {
       // Initialisation des jeux de données UUID
       final StorageDocument document = commonsServices
             .getMockData(commonsServices.getInsertionService());
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       Assert.assertNotNull("Récupération d'un StorageDocument par uuid :",
-            commonsServices.getRetrievalService()
-                  .retrieveStorageDocumentByUUID(uuidCriteria));
+                           commonsServices.getRetrievalService()
+                           .retrieveStorageDocumentByUUID(uuidCriteria));
       // Suppression du document insert
       commonsServices.destroyMockTest(document.getUuid(), commonsServices
-            .getDeletionService());
+                                      .getDeletionService());
    }
 
    /**
     * Test de récupération du contenue par UUID.
-    * 
-    * 
+    *
+    *
     * @throws ConnectionServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void retrieveStorageDocumentContentByUUID()
@@ -96,29 +89,29 @@ public class RetrievalServiceTest {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
-                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
+                               new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
       final StorageDocument document = commonsServices.getInsertionService()
             .insertStorageDocument(storageDocument);
 
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       final byte[] content = commonsServices.getRetrievalService()
             .retrieveStorageDocumentContentByUUID(uuidCriteria);
       Assert.assertNotNull(
-            "Le contenue du document récupérer doit être non null", content);
+                           "Le contenue du document récupérer doit être non null", content);
       commonsServices.destroyMockTest(document.getUuid(), commonsServices
-            .getDeletionService());
+                                      .getDeletionService());
    }
 
    /**
     * Test de récupération des Métadonnées par UUID.
-    * 
+    *
     * <br>{@inheritDoc}
-    * 
+    *
     * @throws ConnectionServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void retrieveStorageDocumentMetaDatasByUUID()
@@ -127,28 +120,28 @@ public class RetrievalServiceTest {
       // Injection de jeu de donnée.
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
-                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
+                               new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[1]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
       final StorageDocument document = commonsServices.getInsertionService()
             .insertStorageDocument(storageDocument);
       final UUIDCriteria uuidCriteria = new UUIDCriteria(document.getUuid(),
-            new ArrayList<StorageMetadata>());
+                                                         new ArrayList<StorageMetadata>());
       final List<StorageMetadata> storageMetadatas = commonsServices
             .getRetrievalService().retrieveStorageDocumentMetaDatasByUUID(
-                  uuidCriteria);
+                                                                          uuidCriteria);
 
       Assert.assertNotNull(
-            "La liste des Métadonnées récupérer doit être non null : ",
-            storageMetadatas);
+                           "La liste des Métadonnées récupérer doit être non null : ",
+                           storageMetadatas);
       // Vérification que les deux liste des métadonnées sont identique du
       // document initial et document récupérer
       Assert.assertTrue(
-            "Les deux listes des métaData doivent être identique : ",
-            CheckDataUtils.checkMetaDatas(storageDocument.getMetadatas(),
-                  storageMetadatas));
+                        "Les deux listes des métaData doivent être identique : ",
+                        CheckDataUtils.checkMetaDatas(storageDocument.getMetadatas(),
+                                                      storageMetadatas));
       // Suppression du document insert
       commonsServices.destroyMockTest(document.getUuid(), commonsServices
-            .getDeletionService());
+                                      .getDeletionService());
    }
 }

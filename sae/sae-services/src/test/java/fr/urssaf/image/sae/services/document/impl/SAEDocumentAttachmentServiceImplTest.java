@@ -77,7 +77,6 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -93,10 +92,6 @@ public class SAEDocumentAttachmentServiceImplTest {
    @Autowired
    @Qualifier("saeDocumentAttachmentService")
    private SAEDocumentAttachmentService docAttService;
-
-   @Autowired
-   @Qualifier("storageServiceProvider")
-   private StorageServiceProvider provider;
 
    private UUID uuid;
 
@@ -143,37 +138,37 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = null;
 
       // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire",
-            "ajout_doc_attache", "consultation" };
+      final String[] roles = new String[] { "archivage_unitaire",
+                                            "ajout_doc_attache", "consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
       saeDroits.put("ajout_doc_attache", saePrmds);
       saeDroits.put("consultation", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
 
-      server.resetData();
+      //server.resetData();
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
-      TypeDocument typeDocCree = new TypeDocument();
+      final TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("2.3.1.1.12");
       typeDocCree.setCodeActivite("3");
@@ -201,7 +196,7 @@ public class SAEDocumentAttachmentServiceImplTest {
          try {
             // supprime le repertoire ecde
             ecdeTestTools.cleanEcdeTestDocument(ecde);
-         } catch (IOException e) {
+         } catch (final IOException e) {
             // rien à faire
          }
       }
@@ -223,25 +218,25 @@ public class SAEDocumentAttachmentServiceImplTest {
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -251,7 +246,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -265,21 +260,21 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       docAttService.addDocumentAttachmentUrl(uuid, urlEcdeDocument);
 
-      UntypedDocumentAttachment storagedocAtt = docAttService
+      final UntypedDocumentAttachment storagedocAtt = docAttService
             .getDocumentAttachment(uuid);
 
       if (storagedocAtt != null) {
          assertEquals("UUID du document incorrect", uuid,
-               storagedocAtt.getDocUuid());
-         
-         List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
-         for (UntypedMetadata untypedMetadata : metadonnees) {
+                      storagedocAtt.getDocUuid());
+
+         final List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
+         for (final UntypedMetadata untypedMetadata : metadonnees) {
             if (untypedMetadata.getLongCode().equals("NomFichier")) {
                assertEquals("Le nom de fichier est invalide", "attestation_consultation.pdf",
-                     untypedMetadata.getValue());
+                            untypedMetadata.getValue());
             }
          }
-         
+
       } else {
          fail("Un document attaché devrait être trouvé");
       }
@@ -307,25 +302,25 @@ public class SAEDocumentAttachmentServiceImplTest {
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -335,7 +330,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -347,23 +342,23 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
 
-      DataSource fds = new FileDataSource(
+      final DataSource fds = new FileDataSource(
             "src/test/resources/doc/attestation_consultation.pdf");
-      DataHandler contenu = new DataHandler(fds);
+      final DataHandler contenu = new DataHandler(fds);
       docAttService.addDocumentAttachmentBinaire(uuid,
-            "attestation_consultation", "pdf", contenu);
+                                                 "attestation_consultation", "pdf", contenu);
 
-      UntypedDocumentAttachment storagedocAtt = docAttService
+      final UntypedDocumentAttachment storagedocAtt = docAttService
             .getDocumentAttachment(uuid);
 
       if (storagedocAtt != null) {
          assertEquals("UUID du document incorrect", uuid,
-               storagedocAtt.getDocUuid());
-         List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
-         for (UntypedMetadata untypedMetadata : metadonnees) {
+                      storagedocAtt.getDocUuid());
+         final List<UntypedMetadata> metadonnees = storagedocAtt.getUMetadatas();
+         for (final UntypedMetadata untypedMetadata : metadonnees) {
             if (untypedMetadata.getLongCode().equals("NomFichier")) {
                assertEquals("Le nom de fichier est invalide", "attestation_consultation.pdf",
-                     untypedMetadata.getValue());
+                            untypedMetadata.getValue());
             }
          }
 
@@ -381,26 +376,26 @@ public class SAEDocumentAttachmentServiceImplTest {
    /**
     * Test qu'une exception est bien levée si le document auquel on souhaite
     * rattacher un document n'existe pas
-    * 
+    *
     * @throws SAEDocumentAttachmentEx
     * @throws CaptureBadEcdeUrlEx
-    * @throws CaptureEcdeUrlFileNotFoundEx 
-    * @throws EmptyDocumentEx 
+    * @throws CaptureEcdeUrlFileNotFoundEx
+    * @throws EmptyDocumentEx
     */
    @Test
    public void ajoutDocAttacheTestDocUuidInexistant()
-         throws SAEDocumentAttachmentEx, 
+         throws SAEDocumentAttachmentEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
       try {
          ecde = ecdeTestTools
                .buildEcdeTestDocument("attestation_consultation.pdf");
-         URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+         final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
          docAttService.addDocumentAttachmentUrl(uuid, urlEcdeDocument);
          fail("Une exception devrait être renvoyée car le document n'existe pas");
-      } catch (ArchiveInexistanteEx e) {
-         String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
+      } catch (final ArchiveInexistanteEx e) {
+         final String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
                + uuid + "'";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
@@ -408,11 +403,11 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    /**
     * Test qu'une exception est bien levée si l'UUID est null
-    * 
+    *
     * @throws SAEDocumentAttachmentEx
     * @throws ArchiveInexistanteEx
     * @throws CaptureBadEcdeUrlEx
-    * @throws CaptureEcdeUrlFileNotFoundEx 
+    * @throws CaptureEcdeUrlFileNotFoundEx
     */
    @Test
    public void ajoutDocAttacheUrlDocUuidNullTest()
@@ -421,12 +416,12 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
       try {
          docAttService.addDocumentAttachmentUrl(null, urlEcdeDocument);
          fail("Une exception devrait être renvoyée car l'UUID du document est nul");
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
@@ -434,7 +429,7 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    /**
     * Test qu'une exception est bien levée si l'UUID est null
-    * 
+    *
     * @throws EmptyFileNameEx
     * @throws EmptyDocumentEx
     * @throws SAEDocumentAttachmentEx
@@ -447,10 +442,10 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       try {
          docAttService.addDocumentAttachmentBinaire(null, "docName",
-               "extension", null);
+                                                    "extension", null);
          fail("Une exception devrait être renvoyée car l'UUID du document est nul");
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
@@ -458,7 +453,7 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    /**
     * Test qu'une exception est bien levée si l'url est null
-    * 
+    *
     * @throws EmptyFileNameEx
     * @throws EmptyDocumentEx
     * @throws SAEDocumentAttachmentEx
@@ -486,38 +481,38 @@ public class SAEDocumentAttachmentServiceImplTest {
     */
    @Test
    public void ajoutDocAttacheTestUrlNull() throws SAEDocumentAttachmentEx,
-         EmptyDocumentEx, EmptyFileNameEx, ArchiveInexistanteEx, IOException,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException,
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+   EmptyDocumentEx, EmptyFileNameEx, ArchiveInexistanteEx, IOException,
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+   UnknownFormatException, UnexpectedDomainException,
+   InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -527,7 +522,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -541,8 +536,8 @@ public class SAEDocumentAttachmentServiceImplTest {
       try {
          docAttService.addDocumentAttachmentUrl(uuid, null);
          fail("Une exception devrait être renvoyée car l'url du document est nul");
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''URL du document attaché'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''URL du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
@@ -564,25 +559,25 @@ public class SAEDocumentAttachmentServiceImplTest {
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -592,7 +587,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -604,45 +599,45 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
 
-      DataSource fds = new FileDataSource(
+      final DataSource fds = new FileDataSource(
             "src/test/resources/doc/attestation_consultation.pdf");
-      DataHandler contenu = new DataHandler(fds);
+      final DataHandler contenu = new DataHandler(fds);
 
       try {
          docAttService.addDocumentAttachmentBinaire(uuid, null, "pdf", contenu);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''Nom du document attaché'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''Nom du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
       try {
          docAttService.addDocumentAttachmentBinaire(uuid, "", "pdf", contenu);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''Nom du document attaché'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''Nom du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
       try {
          docAttService.addDocumentAttachmentBinaire(uuid, "docName", null,
-               contenu);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''Extension du document attaché'' doit être renseigné ou être non null.";
+                                                    contenu);
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''Extension du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
       try {
          docAttService.addDocumentAttachmentBinaire(uuid, "docName", "",
-               contenu);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''Extension du document attaché'' doit être renseigné ou être non null.";
+                                                    contenu);
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''Extension du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
       try {
          docAttService.addDocumentAttachmentBinaire(uuid, "docName", "pdf",
-               null);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''Contenu du document attaché'' doit être renseigné ou être non null.";
+                                                    null);
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''Contenu du document attaché'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
@@ -655,60 +650,60 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    @Test(expected = AccessDeniedException.class)
    public void addDocumentAttacheUrl_accessDenied() throws IOException,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException, SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx, EmptyFileNameEx {
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException, SAEDocumentAttachmentEx,
+   ArchiveInexistanteEx, EmptyFileNameEx {
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -718,7 +713,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -737,60 +732,60 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    @Test(expected = AccessDeniedException.class)
    public void addDocumentAttacheBinaire_accessDenied() throws IOException,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException, SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx, EmptyFileNameEx {
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException, SAEDocumentAttachmentEx,
+   ArchiveInexistanteEx, EmptyFileNameEx {
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -800,7 +795,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -812,26 +807,26 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
 
-      DataSource fds = new FileDataSource(
+      final DataSource fds = new FileDataSource(
             "src/test/resources/doc/attestation_consultation.pdf");
-      DataHandler contenu = new DataHandler(fds);
+      final DataHandler contenu = new DataHandler(fds);
       docAttService.addDocumentAttachmentBinaire(uuid,
-            "attestation_consultation", "pdf", contenu);
+                                                 "attestation_consultation", "pdf", contenu);
 
       docAttService.addDocumentAttachmentBinaire(uuid,
-            "attestation_consultation", "pdf", contenu);
+                                                 "attestation_consultation", "pdf", contenu);
 
       Assert.fail("exception attendue");
    }
 
    @Test
    public void getDocumentAttachementUUIDnull() throws SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx {
+   ArchiveInexistanteEx {
 
       try {
          docAttService.getDocumentAttachment(null);
-      } catch (IllegalArgumentException e) {
-         String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
+      } catch (final IllegalArgumentException e) {
+         final String message = "L'argument ''UUID du document parent'' doit être renseigné ou être non null.";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
 
@@ -839,39 +834,39 @@ public class SAEDocumentAttachmentServiceImplTest {
 
    @Test(expected = AccessDeniedException.class)
    public void getDocumentAttachement_accessDenied() throws IOException,
-         SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException,
-         UnexpectedDomainException, InvalidPagmsCombinaisonException,
-         CaptureExistingUuuidException, SAEDocumentAttachmentEx,
-         ArchiveInexistanteEx, EmptyFileNameEx {
+   SAECaptureServiceEx, ReferentialRndException, UnknownCodeRndEx,
+   RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   EmptyDocumentEx, RequiredArchivableMetadataEx,
+   NotArchivableMetadataEx, UnknownHashCodeEx, CaptureBadEcdeUrlEx,
+   CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException, SAEDocumentAttachmentEx,
+   ArchiveInexistanteEx, EmptyFileNameEx {
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
       docAttService.getDocumentAttachment(uuid);
 
       Assert.fail("exception attendue");
@@ -881,12 +876,12 @@ public class SAEDocumentAttachmentServiceImplTest {
    public void getDocumentAttachementUUIDInexistant()
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
 
-      UUID uuid = UUID.randomUUID();
+      final UUID uuid = UUID.randomUUID();
       try {
          docAttService.getDocumentAttachment(uuid);
          Assert.fail("exception attendue");
-      } catch (ArchiveInexistanteEx e) {
-         String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
+      } catch (final ArchiveInexistanteEx e) {
+         final String message = "Il n'existe aucun document pour l'identifiant d'archivage '"
                + uuid + "'";
          assertEquals("Erreur message attendu", message, e.getMessage());
       }
@@ -909,25 +904,25 @@ public class SAEDocumentAttachmentServiceImplTest {
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
       LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
             + repertoireEcde.getAbsoluteFile());
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -937,7 +932,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       metadatas.add(new UntypedMetadata("NbPages", "2"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -949,7 +944,7 @@ public class SAEDocumentAttachmentServiceImplTest {
       uuid = captureService.capture(metadatas, urlEcdeDocument).getIdDoc();
       LOG.debug("document archivé dans DFCE:" + uuid);
 
-      UntypedDocumentAttachment doc = docAttService.getDocumentAttachment(uuid);
+      final UntypedDocumentAttachment doc = docAttService.getDocumentAttachment(uuid);
       assertEquals("Le document attaché doit être null", null, doc);
    }
 

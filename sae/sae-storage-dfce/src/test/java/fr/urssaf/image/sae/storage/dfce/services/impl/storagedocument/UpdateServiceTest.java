@@ -44,7 +44,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  * Classe de test du service
  * {@link fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.InsertionServiceImpl
  * InsertionService}
- * 
+ *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
@@ -61,35 +61,34 @@ public class UpdateServiceTest {
 
    @Before
    public void before() throws ConnectionServiceEx {
-      commonsServices.initServicesParameters();
 
       // Initialisation des droits
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
       viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      final String[] roles = new String[] { "archivage_unitaire" };
       saePrmds.add(saePrmd);
       saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
 
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       try {
          cassandraServerBean.resetData();
-      } catch (Exception exception) {
+      } catch (final Exception exception) {
          // rien à faire
       }
    }
@@ -108,61 +107,60 @@ public class UpdateServiceTest {
     * insertStorageDocument} <br>
     * Insérer deux fois le même document et vérifier que les UUIDs sont
     * différents.
-    * 
+    *
     * @throws ConnectionServiceEx
     * @throws UpdateServiceEx
     * @throws SearchingServiceEx
-    * @throws InsertionIdGedExistantEx 
+    * @throws InsertionIdGedExistantEx
     */
    @Test
    public void modifDocument() throws IOException, ParseException,
-         InsertionServiceEx, ConnectionServiceEx, UpdateServiceEx,
-         SearchingServiceEx, InsertionIdGedExistantEx {
-      commonsServices.getDfceServicesManager().getConnection();
+   InsertionServiceEx, ConnectionServiceEx, UpdateServiceEx,
+   SearchingServiceEx, InsertionIdGedExistantEx {
       final SaeDocument saeDocument = commonsServices.getXmlDataService()
             .saeDocumentReader(
-                  new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
+                               new File(Constants.XML_PATH_DOC_WITHOUT_ERROR[0]));
       final StorageDocument storageDocument = DocumentForTestMapper
             .saeDocumentXmlToStorageDocument(saeDocument);
       final StorageDocument firstDocument = commonsServices
             .getInsertionService().insertStorageDocument(storageDocument);
 
       Assert
-            .assertNotNull("l'uuid doit etre non null", firstDocument.getUuid());
+      .assertNotNull("l'uuid doit etre non null", firstDocument.getUuid());
 
-      List<StorageMetadata> delMetas = Arrays.asList(new StorageMetadata("itm",
-            null));
-      List<StorageMetadata> modifMetas = Arrays.asList(new StorageMetadata(
-            "apr", "SAE"));
+      final List<StorageMetadata> delMetas = Arrays.asList(new StorageMetadata("itm",
+                                                                               null));
+      final List<StorageMetadata> modifMetas = Arrays.asList(new StorageMetadata(
+                                                                                 "apr", "SAE"));
 
       commonsServices.getUpdateService().updateStorageDocument(null,
-            firstDocument.getUuid(), modifMetas, delMetas);
+                                                               firstDocument.getUuid(), modifMetas, delMetas);
 
-      StorageDocument storedDoc = commonsServices
+      final StorageDocument storedDoc = commonsServices
             .getSearchingService()
             .searchStorageDocumentByUUIDCriteria(
-                  new UUIDCriteria(firstDocument.getUuid(), Arrays.asList(
-                        new StorageMetadata("itm"), new StorageMetadata("apr"))), false);
-      List<StorageMetadata> metadatas = storedDoc.getMetadatas();
+                                                 new UUIDCriteria(firstDocument.getUuid(), Arrays.asList(
+                                                                                                         new StorageMetadata("itm"), new StorageMetadata("apr"))), false);
+      final List<StorageMetadata> metadatas = storedDoc.getMetadatas();
       Assert.assertEquals("il doit y avoir deux métadonnées", 2, metadatas
-            .size());
+                          .size());
       StorageMetadata metadata = metadatas.get(0);
       checkMetadata(metadata);
       metadata = metadatas.get(1);
       checkMetadata(metadata);
 
       traceAssertUtils.verifieTraceModifDfceDansJournalSae(firstDocument
-            .getUuid(), Arrays.asList("apr"), Arrays.asList("itm"));
+                                                           .getUuid(), Arrays.asList("apr"), Arrays.asList("itm"));
    }
 
-   private void checkMetadata(StorageMetadata metadata) {
+   private void checkMetadata(final StorageMetadata metadata) {
 
       if ("apr".equals(metadata.getShortCode())) {
          Assert.assertEquals("la valeur de la métadonnée doit etre SAE", "SAE",
-               metadata.getValue());
+                             metadata.getValue());
       } else if ("itm".equals(metadata.getShortCode())) {
          Assert.assertTrue("la valeur doit etre vide", StringUtils
-               .isEmpty((String) metadata.getValue()));
+                           .isEmpty((String) metadata.getValue()));
       } else {
          Assert.fail("métadonnée non attendue");
       }

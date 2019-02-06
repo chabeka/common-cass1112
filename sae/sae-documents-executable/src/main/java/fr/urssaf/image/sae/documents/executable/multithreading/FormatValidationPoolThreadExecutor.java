@@ -47,12 +47,12 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Construteur.
-    * 
+    *
     * @param parametres
     *           parametres
     */
    public FormatValidationPoolThreadExecutor(
-         final FormatValidationParametres parametres) {
+                                             final FormatValidationParametres parametres) {
       super(parametres.getTaillePool(), parametres.getTaillePool(), 1,
             TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>(parametres
                   .getTailleQueue()), new DiscardPolicy());
@@ -65,40 +65,40 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
     */
    @Override
    protected final void afterExecute(final Runnable runnable,
-         final Throwable throwable) {
+                                     final Throwable throwable) {
       super.afterExecute(runnable, throwable);
-      
+
       synchronized (this) {
          final FormatRunnable formatRunnable = (FormatRunnable) runnable;
          final String idDocument = formatRunnable.getDocument().getUuid()
                .toString();
          final String metaToLog = MetadataUtils.getMetadatasForLog(formatRunnable
-               .getDocument(), metadonnees);
-   
+                                                                   .getDocument(), metadonnees);
+
          if ((throwable == null) && (!formatRunnable.getResultat().isValid())) {
             nombreDocsErreur++;
             final String resultatDetail = formatResultatDetails(formatRunnable);
             LOGGER.warn("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-                  resultatDetail });
+                                                            resultatDetail });
          } else if (throwable != null) {
             nombreDocsErreur++;
-   
+
             LOGGER.error("{} ; {} ; {} ; {}", new Object[] { "VALID", idDocument, metaToLog,
-                  throwable.getMessage() });
+                                                             throwable.getMessage() });
          }
          nombreTraites++;
          if (getNombreTraites() % getPasExecution() == 0) {
             LOGGER.info("{} documents validés", getNombreTraites());
          }
-   
+
          // supprime le fichier temporaire
          if (formatRunnable.getFile() != null) {
-            File file = formatRunnable.getFile();
+            final File file = formatRunnable.getFile();
             LOGGER.debug("Suppression du fichier temporaire {}", file
-                  .getAbsolutePath());
+                         .getAbsolutePath());
             if (!file.delete()) {
                LOGGER.error("Impossible de supprimer le fichier temporaire {}",
-                     file.getAbsolutePath());
+                            file.getAbsolutePath());
             }
          }
       }
@@ -106,7 +106,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Methode permettant de formatter le détail du résultat.
-    * 
+    *
     * @param formatRunnable
     *           runnable
     * @return String
@@ -114,7 +114,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
    private String formatResultatDetails(final FormatRunnable formatRunnable) {
       final StringBuffer buffer = new StringBuffer();
       boolean first = true;
-      for (String detail : formatRunnable.getResultat().getDetails()) {
+      for (final String detail : formatRunnable.getResultat().getDetails()) {
          if (!first) {
             buffer.append(", ");
          }
@@ -128,37 +128,17 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
     * Attend que l'ensemble des threads aient bien terminé leur travail.
     */
    public final void waitFinishValidation() {
-
-      synchronized (this) {
-
-         while (!this.isTerminated()) {
-
-            try {
-
-               this.wait();
-
-            } catch (InterruptedException e) {
-
-               throw new IllegalStateException(e);
-            }
-         }
+      try {
+         this.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
       }
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   protected final void terminated() {
-      super.terminated();
-      synchronized (this) {
-         this.notifyAll();
+      catch (final InterruptedException e) {
+         throw new IllegalStateException(e);
       }
    }
 
    /**
     * Permet de récupérer le nombre de documents traités en erreur.
-    * 
+    *
     * @return int
     */
    public final int getNombreDocsErreur() {
@@ -167,7 +147,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités en erreur.
-    * 
+    *
     * @param nombreDocsErreur
     *           nombre de documents traités en erreur
     */
@@ -177,7 +157,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de récupérer le nombre de documents traités.
-    * 
+    *
     * @return int
     */
    public final int getNombreTraites() {
@@ -186,7 +166,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
 
    /**
     * Permet de modifier le nombre de documents traités.
-    * 
+    *
     * @param nombreTraites
     *           nombre de documents traités
     */
@@ -197,7 +177,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de récupérer le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @return int
     */
    public final int getPasExecution() {
@@ -207,7 +187,7 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
    /**
     * Permet de modifier le pas d'exécution (nombre de documents à traités pour
     * avoir une trace applicative).
-    * 
+    *
     * @param pasExecution
     *           pas d'exécution (nombre de documents à traités pour avoir une
     *           trace applicative)

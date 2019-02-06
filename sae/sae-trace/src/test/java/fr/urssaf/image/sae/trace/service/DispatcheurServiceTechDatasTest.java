@@ -69,7 +69,7 @@ public class DispatcheurServiceTechDatasTest {
    }
 
    @Test
-   public void testCreationTraceTechniqueErreurContexteNonRenseigné() {
+   public void testCreationTraceTechniqueErreurContexteNonRenseigne() {
       createDestinataireTechnique();
 
       TraceToCreate traceToCreate = new TraceToCreate();
@@ -95,7 +95,7 @@ public class DispatcheurServiceTechDatasTest {
    }
 
    @Test
-   public void testCreationTraceTechniqueSuccesContratNonRenseigné() {
+   public void testCreationTraceTechniqueSuccesContratNonRenseigne() {
       createDestinataireTechnique();
 
       TraceToCreate traceToCreate = new TraceToCreate();

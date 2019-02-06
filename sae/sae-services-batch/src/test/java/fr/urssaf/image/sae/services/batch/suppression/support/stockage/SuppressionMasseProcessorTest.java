@@ -40,9 +40,9 @@ import fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria.Paginate
 import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml", 
-      "/applicationContext-sae-services-suppressionmasse-test-mock.xml"})
-@DirtiesContext(classMode=ClassMode.AFTER_EACH_TEST_METHOD)
+@ContextConfiguration(locations = {"/applicationContext-sae-services-suppressionmasse-test.xml",
+                                   "/applicationContext-sae-services-suppressionmasse-test-mock.xml"})
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class SuppressionMasseProcessorTest {
 
    @Autowired
@@ -59,54 +59,51 @@ public class SuppressionMasseProcessorTest {
    public void init() {
       context = new ExecutionContext();
       context.put(Constantes.SUPPRESSION_EXCEPTION,
-            new ConcurrentLinkedQueue<Exception>());
+                  new ConcurrentLinkedQueue<Exception>());
    }
 
    /**
-    * Lancer un test avec une requete lucene invalide pour avoir une exception dans le reader
-    * @throws QueryParseServiceEx 
-    * @throws SearchingServiceEx 
+    * Lancer un test avec une requête lucene invalide pour avoir une exception dans le reader
     * 
+    * @throws QueryParseServiceEx
+    * @throws SearchingServiceEx
     */
    @Test
    public void testRequeteLuceneInvalide() throws SearchingServiceEx, QueryParseServiceEx {
 
-      String requete = "srt:[123456 TO ]";
+      final String requete = "srt:[123456 TO ]";
 
-      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
-      this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
+      context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
+      context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
 
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andThrow(new QueryParseServiceEx("La syntaxe de la requête est bizarroide")).once();
+      final JobExecution execution = launcher.launchStep(
+                                                         "miseALaCorbeilleStep",
+                                                         parameters,
+                                                         context);
 
-      EasyMock.replay(mockService);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      JobExecution execution = launcher.launchStep(
-            "miseALaCorbeilleStep", parameters, this.context);
-
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
-
-      StepExecution step = list.get(0);
-      /*Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED,
-            step.getExitStatus().getExitCode());*/
+      final StepExecution step = list.get(0);
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
-      .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
+      final ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
+                                                                                                   .getExecutionContext()
+                                                                                                   .get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
-            listeErreurs.isEmpty());
+                         listeErreurs.isEmpty());
 
-      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
-            .getInt(Constantes.NB_DOCS_SUPPRIMES);
-      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
-            nbDocsSupprimes);
+      final int nbDocsSupprimes = step.getJobExecution()
+                                      .getExecutionContext()
+                                      .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé",
+                          0,
+                          nbDocsSupprimes);
 
       EasyMock.reset(mockService);
    }
@@ -114,92 +111,101 @@ public class SuppressionMasseProcessorTest {
    /**
     * Lancer un test de supppression OK
     * 
-    * @throws QueryParseServiceEx 
-    * @throws SearchingServiceEx 
+    * @throws QueryParseServiceEx
+    * @throws SearchingServiceEx
     */
    @Test
-   //@DirtiesContext
+   // @DirtiesContext
    public void testSuppressionOK_aucunDoc() throws SearchingServiceEx, QueryParseServiceEx {
 
-      String requete = "srt:123456";
+      final String requete = "srt:123456";
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .times(2);
 
       EasyMock.replay(mockService);
 
-      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
-      this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
+      context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
+      context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
 
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "miseALaCorbeilleStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+                                                         "miseALaCorbeilleStep",
+                                                         parameters,
+                                                         context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
-      Assert.assertEquals("status COMPLETED attendu", ExitStatus.COMPLETED,
-            step.getExitStatus());
+      final StepExecution step = list.get(0);
+      Assert.assertEquals("status COMPLETED attendu",
+                          ExitStatus.COMPLETED,
+                          step.getExitStatus());
 
       @SuppressWarnings("unchecked")
-      ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
-      .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
+      final ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
+                                                                                                   .getExecutionContext()
+                                                                                                   .get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertTrue("Aucune exception n'aurait du être levée",
-            listeErreurs.isEmpty());
+                        listeErreurs.isEmpty());
 
-      Assert.assertEquals("Aucun doc n'aurait du être trouvé",  0, step.getReadCount());
+      Assert.assertEquals("Aucun doc n'aurait du être trouvé", 0, step.getReadCount());
 
-      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
-            .getInt(Constantes.NB_DOCS_SUPPRIMES);
-      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
-            nbDocsSupprimes);
+      final int nbDocsSupprimes = step.getJobExecution()
+                                      .getExecutionContext()
+                                      .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé",
+                          0,
+                          nbDocsSupprimes);
 
       EasyMock.reset(mockService);
    }
 
    /**
     * Lancer un test de supppression OK
-    * 
     */
    @Test
    @SuppressWarnings("unchecked")
    public void testSuppressionOK_avecDocs() throws SearchingServiceEx, QueryParseServiceEx, UpdateServiceEx, RecycleBinServiceEx {
 
-      String requete = "srt:123456";
-      int nbDocs = 10;
+      final String requete = "srt:123456";
+      final int nbDocs = 10;
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
       for (int index = 0; index < nbDocs; index++) {
-         StorageDocument doc = new StorageDocument();
-         StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
+         final StorageDocument doc = new StorageDocument();
+         final StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
          doc.setUuid(UUID.randomUUID());
          doc.getMetadatas().add(metaGel);
          retour.getAllStorageDocuments().add(doc);
       }
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .times(2);
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
-            EasyMock.anyObject(UUID.class),
-            (List<StorageMetadata>) EasyMock.anyObject(),
-            (List<StorageMetadata>) EasyMock.anyObject());
+                                        EasyMock.anyObject(UUID.class),
+                                        (List<StorageMetadata>) EasyMock.anyObject(),
+                                        (List<StorageMetadata>) EasyMock.anyObject());
 
       EasyMock.expectLastCall().times(10);
 
@@ -209,70 +215,78 @@ public class SuppressionMasseProcessorTest {
 
       EasyMock.replay(mockService);
 
-      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
-      this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
+      context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
+      context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
 
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "miseALaCorbeilleStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+                                                         "miseALaCorbeilleStep",
+                                                         parameters,
+                                                         context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
-      Assert.assertEquals("status COMPLETED attendu", ExitStatus.COMPLETED,
-            step.getExitStatus());
+      final StepExecution step = list.get(0);
+      Assert.assertEquals("status COMPLETED attendu",
+                          ExitStatus.COMPLETED,
+                          step.getExitStatus());
 
-      ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
-            .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
+      final ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
+                                                                                                   .getExecutionContext()
+                                                                                                   .get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertTrue("Aucune exception n'aurait du être levée",
-            listeErreurs.isEmpty());
+                        listeErreurs.isEmpty());
 
-      Assert.assertEquals("Plusieurs documents auraient du être trouvés",  nbDocs, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  nbDocs, step.getWriteCount());
+      Assert.assertEquals("Plusieurs documents auraient du être trouvés", nbDocs, step.getReadCount());
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille", nbDocs, step.getWriteCount());
 
-      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
-            .getInt(Constantes.NB_DOCS_SUPPRIMES);
-      Assert.assertEquals("Plusieurs documents auraient du être supprimés", nbDocs,
-            nbDocsSupprimes);
+      final int nbDocsSupprimes = step.getJobExecution()
+                                      .getExecutionContext()
+                                      .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Plusieurs documents auraient du être supprimés",
+                          nbDocs,
+                          nbDocsSupprimes);
 
       EasyMock.reset(mockService);
    }
 
    /**
-    * Lancer un test de supppression KO (erreur lors de la mise a jour du document)
-    * 
+    * Lancer un test de suppression KO (erreur lors de la mise a jour du document)
     */
    @Test
    @SuppressWarnings("unchecked")
    public void testSuppressionKO_updateDocKO() throws SearchingServiceEx, QueryParseServiceEx, UpdateServiceEx, RecycleBinServiceEx {
 
-      String requete = "srt:123456";
+      final String requete = "srt:123456";
 
-      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
-      this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
+      context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
+      context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
-      StorageDocument doc = new StorageDocument();
-      StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
+      final StorageDocument doc = new StorageDocument();
+      final StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
       doc.setUuid(UUID.randomUUID());
       doc.getMetadatas().add(metaGel);
       retour.getAllStorageDocuments().add(doc);
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .times(2);
 
-      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
-            (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
+      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+                                        (List<StorageMetadata>) EasyMock.anyObject(),
+                                        (List<StorageMetadata>) EasyMock.anyObject());
 
       EasyMock.expectLastCall().andThrow(new UpdateServiceEx(new Exception("Une erreur a été leveé lors de la modif du doc"))).once();
 
@@ -283,66 +297,74 @@ public class SuppressionMasseProcessorTest {
       EasyMock.replay(mockService);
 
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "miseALaCorbeilleStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+                                                         "miseALaCorbeilleStep",
+                                                         parameters,
+                                                         context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
-      Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED,
-            step.getExitStatus());
+      final StepExecution step = list.get(0);
+      Assert.assertEquals("status FAILED attendu",
+                          ExitStatus.FAILED,
+                          step.getExitStatus());
 
-      ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
-            .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
+      final ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
+                                                                                                   .getExecutionContext()
+                                                                                                   .get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
-            listeErreurs.isEmpty());
+                         listeErreurs.isEmpty());
 
-      Assert.assertEquals("Plusieurs documents auraient du être trouvés",  1, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount());
+      Assert.assertEquals("Plusieurs documents auraient du être trouvés", 1, step.getReadCount());
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille", 1, step.getWriteCount());
 
-      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
-            .getInt(Constantes.NB_DOCS_SUPPRIMES);
-      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
-            nbDocsSupprimes);
+      final int nbDocsSupprimes = step.getJobExecution()
+                                      .getExecutionContext()
+                                      .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé",
+                          0,
+                          nbDocsSupprimes);
 
-      EasyMock.reset(mockService); 
+      EasyMock.reset(mockService);
    }
 
    /**
     * Lancer un test de supppression KO (erreur lors de la mise a la corbeille)
-    * 
     */
    @Test
    @SuppressWarnings("unchecked")
    public void testSuppressionKO_moveToRecycleBin() throws SearchingServiceEx, QueryParseServiceEx, UpdateServiceEx, RecycleBinServiceEx {
 
-      String requete = "srt:123456";
+      final String requete = "srt:123456";
 
-      this.context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
-      this.context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
+      context.put(Constantes.REQ_FINALE_TRT_MASSE, requete);
+      context.put(Constantes.ID_TRAITEMENT_SUPPRESSION, UUID.randomUUID());
 
       // configure le mock
-      PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
+      final PaginatedStorageDocuments retour = new PaginatedStorageDocuments();
       retour.setAllStorageDocuments(new ArrayList<StorageDocument>());
       retour.setLastPage(Boolean.TRUE);
 
-      StorageDocument doc = new StorageDocument();
-      StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
+      final StorageDocument doc = new StorageDocument();
+      final StorageMetadata metaGel = new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode(), Boolean.FALSE);
       doc.setUuid(UUID.randomUUID());
       doc.getMetadatas().add(metaGel);
       retour.getAllStorageDocuments().add(doc);
 
       EasyMock.expect(
-            mockService.searchPaginatedStorageDocuments(EasyMock
-                  .anyObject(PaginatedLuceneCriteria.class))).andReturn(retour).once();
+                      mockService.searchPaginatedStorageDocuments(EasyMock
+                                                                          .anyObject(PaginatedLuceneCriteria.class)))
+              .andReturn(retour)
+              .times(2);
 
-      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class), 
-            (List<StorageMetadata>) EasyMock.anyObject(), (List<StorageMetadata>) EasyMock.anyObject());
+      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+                                        (List<StorageMetadata>) EasyMock.anyObject(),
+                                        (List<StorageMetadata>) EasyMock.anyObject());
 
       EasyMock.expectLastCall().times(2);
 
@@ -353,33 +375,39 @@ public class SuppressionMasseProcessorTest {
       EasyMock.replay(mockService);
 
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "miseALaCorbeilleStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+                                                         "miseALaCorbeilleStep",
+                                                         parameters,
+                                                         context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
-      Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED,
-            step.getExitStatus());
+      final StepExecution step = list.get(0);
+      Assert.assertEquals("status FAILED attendu",
+                          ExitStatus.FAILED,
+                          step.getExitStatus());
 
-      ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
-            .getExecutionContext().get(Constantes.SUPPRESSION_EXCEPTION);
+      final ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
+                                                                                                   .getExecutionContext()
+                                                                                                   .get(Constantes.SUPPRESSION_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
-            listeErreurs.isEmpty());
+                         listeErreurs.isEmpty());
 
-      Assert.assertEquals("Plusieurs documents auraient du être trouvés",  1, step.getReadCount());
-      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille",  1, step.getWriteCount());
+      Assert.assertEquals("Plusieurs documents auraient du être trouvés", 1, step.getReadCount());
+      Assert.assertEquals("Plusieurs documents auraient du être mise à la corbeille", 1, step.getWriteCount());
 
-      int nbDocsSupprimes = step.getJobExecution().getExecutionContext()
-            .getInt(Constantes.NB_DOCS_SUPPRIMES);
-      Assert.assertEquals("Aucun document n'aurait du être supprimé", 0,
-            nbDocsSupprimes);
+      final int nbDocsSupprimes = step.getJobExecution()
+                                      .getExecutionContext()
+                                      .getInt(Constantes.NB_DOCS_SUPPRIMES);
+      Assert.assertEquals("Aucun document n'aurait du être supprimé",
+                          0,
+                          nbDocsSupprimes);
 
-      EasyMock.reset(mockService); 
+      EasyMock.reset(mockService);
    }
 }

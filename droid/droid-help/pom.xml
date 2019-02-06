@@ -3,8 +3,8 @@
  
     <parent>
         <artifactId>droid-parent</artifactId>
-        <groupId>uk.gov.nationalarchives</groupId>
-        <version>6.4-SNAPSHOT</version>
+        <groupId>fr.urssaf.image.droid</groupId>
+        <version>7.1-SNAPSHOT</version>
   	    <relativePath>../droid-parent</relativePath>
     </parent>
  
@@ -27,12 +27,5 @@
             </executions>
          </plugin>
       </plugins>
-      </build>
-    
-    <!--scm>
-        <connection>scm:git:https://github.com/digital-preservation/droid.git</connection>
-        <developerConnection>scm:git:https://github.com/digital-preservation/droid.git</developerConnection>
-        <url>scm:git:https://github.com/digital-preservation/droid.git</url>
-    </scm-->
- 
+      </build> 
 </project>

@@ -1,8 +1,9 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,9 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.trace.dao.support.HistEvenementSupport;
-import fr.urssaf.image.sae.trace.dao.support.ServiceProviderSupport;
 import fr.urssaf.image.sae.trace.model.DfceTraceSyst;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
@@ -38,6 +36,9 @@ public class HistEvenementServiceDatasTest {
    private static final String VALUE = "valeur";
    private static final String KEY = "clé";
 
+   private static final String KEY_UUID = "UUID";
+
+   private static final String USERNAME = "_ADMIN";
    private static final String LOGIN = "LE LOGIN";
    private static final String CONTRAT = "contrat de service";
    private static final String CODE_EVT = "code événement";
@@ -52,60 +53,47 @@ public class HistEvenementServiceDatasTest {
    private HistEvenementService service;
 
    @Autowired
-   private ServiceProviderSupport serviceSupport;
-
-   @Autowired
    private HistEvenementSupport support;
-
-   @Before
-   public void before() {
-      serviceSupport.connect();
-   }
-
-   @After
-   public void after() throws Exception {
-      serviceSupport.disconnect();
-   }
 
    @Test
    public void testAucunRetourBorneInferieure() {
-      Date startDate = new Date();
-      
+      final Date startDate = new Date();
+
       createTrace(UUID.randomUUID(), "");
-      Date endDate = new Date();
+      final Date endDate = new Date();
 
       // on fixe les bornes inférieure à la première trace de la journée
-      Date dateStart = DateUtils.addDays(startDate, 1);
-      Date dateFin = DateUtils.addDays(endDate, 2);
+      final Date dateStart = DateUtils.addDays(startDate, 1);
+      final Date dateFin = DateUtils.addDays(endDate, 2);
 
-      List<DfceTraceSyst> result = service
+      final List<DfceTraceSyst> result = service
             .lecture(dateStart, dateFin, 10, true);
       Assert.assertNull("il ne doit y avoir aucun résultat", result);
    }
 
    @Test
    public void testRetourUnSeulElementLimite() {
-      Date dateDebut = new Date();
-      UUID uuid = UUID.randomUUID();
+      final Date dateDebut = new Date();
+      final UUID uuid = UUID.randomUUID();
       createTrace(uuid, "");
       Date dateFin = new Date();
 
-      dateDebut = DateUtils.truncate(dateDebut, Calendar.DATE);
       dateFin = DateUtils.addDays(dateFin, 1);
       dateFin = DateUtils.truncate(dateFin, Calendar.DATE);
-      
-      List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
+
+      final List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
 
       Assert.assertNotNull("il doit y avoir un résultat", result);
+
       boolean traceOK = false;
-      for (DfceTraceSyst dfceTraceSys : result) {
-         if (dfceTraceSys.getLogin() != null) {
-            if (dfceTraceSys.getLogin().equals(uuid.toString())) {
-               traceOK = true;
-            }
+      for (final DfceTraceSyst dfceTraceSys : result) {
+         final List<String> arrays = Arrays.asList(dfceTraceSys.getTypeEvt().split(";"));
+         final String stringToCompare = KEY_UUID + ":" + uuid;
+         if (arrays.contains(stringToCompare)) {
+            traceOK = true;
          }
       }
-      
+
       Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
    }
 
@@ -131,15 +119,14 @@ public class HistEvenementServiceDatasTest {
       createTrace(DATE_JOUR_SUIVANT, " [DATE_JOUR_SUIVANT]");
       createTrace(DATE_JOUR_PRECEDENT, " [DATE_JOUR_PRECEDENT]");
    }
-*/
-   private void createTrace(UUID uuid, String suffixe) {
-
-      TraceToCreate trace = new TraceToCreate();
+    */
+   private void createTrace(final UUID uuid, final String suffixe) {
+      INFOS.put(KEY_UUID, uuid);
+      final TraceToCreate trace = new TraceToCreate();
       trace.setAction(ACTION + suffixe);
       trace.setCodeEvt(CODE_EVT + suffixe);
       trace.setContrat(CONTRAT + suffixe);
       trace.setInfos(INFOS);
-      trace.setLogin(uuid.toString());
 
       support.create(trace);
    }

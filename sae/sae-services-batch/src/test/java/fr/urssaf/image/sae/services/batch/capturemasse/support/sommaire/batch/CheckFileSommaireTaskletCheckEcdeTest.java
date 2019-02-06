@@ -47,151 +47,164 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
-      "/applicationContext-sae-services-batch-test.xml",
-      "/applicationContext-sae-services-capturemasse-test-mock-CaptureSupportService.xml" })
+                               "/applicationContext-sae-services-batch-test.xml",
+                               "/applicationContext-sae-services-capturemasse-test-mock-CaptureSupportService.xml"})
 public class CheckFileSommaireTaskletCheckEcdeTest {
 
-   @Autowired
-   private SAECaptureMasseService service;
+  @Autowired
+  private SAECaptureMasseService service;
 
-   @Autowired
-   private EcdeTestTools ecdeTestTools;
+  @Autowired
+  private EcdeTestTools ecdeTestTools;
 
-   @Autowired
-   private SAEControleSupportService controleService;
+  @Autowired
+  private SAEControleSupportService controleService;
 
-   private EcdeTestSommaire ecdeTestSommaire;
+  private EcdeTestSommaire ecdeTestSommaire;
 
-   private Logger logger;
+  private Logger logger;
 
-   private SaeLogAppender logAppender;
+  private SaeLogAppender logAppender;
 
-   @Before
-   public void init() {
+  @Before
+  public void init() {
 
-      logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+    logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
-      logAppender = new SaeLogAppender(Level.ALL, "fr.urssaf.image.sae");
-      logger.addAppender(logAppender);
+    logAppender = new SaeLogAppender(Level.ALL, "fr.urssaf.image.sae");
+    logger.addAppender(logAppender);
 
-      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+    ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
 
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse" };
-      saePrmds.add(saePrmd);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] {"archivage_masse"};
+    saePrmds.add(saePrmd);
 
-      saeDroits.put("archivage_masse", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
-   }
+    saeDroits.put("archivage_masse", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(),
+                                                                                 viExtrait,
+                                                                                 roles);
+    AuthenticationContext.setAuthenticationToken(token);
+  }
 
-   @After
-   public void end() {
-      try {
-         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      } catch (IOException e) {
-         // rien à faire
+  @After
+  public void end() {
+    try {
+      ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+    }
+    catch (final IOException e) {
+      // rien à faire
+    }
+
+    logger.detachAppender(logAppender);
+
+    EasyMock.reset(controleService);
+  }
+
+  /**
+   * Lancer un test avec une URI dont le nom de domaine n'est pas connu
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testUriDomaineConnuFichierExistantEcritureImpossible()
+      throws Exception {
+
+    initDatas();
+
+    controleService.checkEcdeWrite(EasyMock.anyObject(File.class));
+    EasyMock.expectLastCall()
+            .andThrow(
+                      new CaptureMasseRuntimeException("Erreur technique"))
+            .anyTimes();
+    EasyMock.replay(controleService);
+
+    service.captureMasse(ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
+
+    EasyMock.verify(controleService);
+
+    final List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+
+    final boolean logErrorExists = LogUtils.logExists(loggingEvents,
+                                                      Level.ERROR,
+                                                      "Erreur technique");
+
+    Assert.assertTrue("le log erreur doit exister", logErrorExists);
+
+    final List<ILoggingEvent> errorLogs = LogUtils.getLogsByLevel(loggingEvents,
+                                                                  Level.ERROR);
+    boolean foundNullPointer = false;
+    int index = 0;
+
+    while (!foundNullPointer && index < errorLogs.size()) {
+      if (errorLogs.get(index).getMessage().contains("SOMMAIRE_FILE")
+          && errorLogs.get(index)
+                      .getMessage()
+                      .contains(
+                                "java.lang.ClassCastException")) {
+        foundNullPointer = true;
       }
+      index++;
+    }
 
-      logger.detachAppender(logAppender);
+    Assert.assertFalse("l'erreur NullPointer ne doit pas etre présente",
+                       foundNullPointer);
 
-      EasyMock.reset(controleService);
-   }
+    checkFiles();
 
-   /**
-    * Lancer un test avec une URI dont le nom de domaine n'est pas connu
-    * 
-    * @throws Exception
-    */
-   @Test
-   public void testUriDomaineConnuFichierExistantEcritureImpossible()
-         throws Exception {
+  }
 
-      initDatas();
+  private void initDatas() throws IOException {
+    final File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
+    final ClassPathResource resSommaire = new ClassPathResource(
+                                                                "testhautniveau/checkEcde/sommaire.xml");
+    FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
 
-      controleService.checkEcdeWrite(EasyMock.anyObject(File.class));
-      EasyMock.expectLastCall().andThrow(
-            new CaptureMasseRuntimeException("Erreur technique")).times(3);
-      EasyMock.replay(controleService);
+    final File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
+    final ClassPathResource resAttestation1 = new ClassPathResource(
+                                                                    "testhautniveau/checkEcde/documents/doc1.PDF");
+    final File fileAttestation1 = new File(repEcde, "doc1.PDF");
+    FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
 
-      service.captureMasse(ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
+  }
 
-      EasyMock.verify(controleService);
+  private void checkFiles() throws IOException {
 
-      List<ILoggingEvent> loggingEvents = logAppender.getLoggingEvents();
+    final File repTraitement = ecdeTestSommaire.getRepEcde();
+    final File debut = new File(repTraitement, "debut_traitement.flag");
+    final File fin = new File(repTraitement, "fin_traitement.flag");
+    final File resultats = new File(repTraitement, "resultats.xml");
 
-      boolean logErrorExists = LogUtils.logExists(loggingEvents, Level.ERROR,
-            "Erreur technique");
+    // FileUtils.copyFile(resultats, new File("c:/resultats.xml"));
 
-      Assert.assertTrue("le log erreur doit exister", logErrorExists);
+    Assert.assertTrue("le fichier debut_traitement.flag doit exister",
+                      debut
+                           .exists());
+    Assert.assertTrue("le fichier fin_traitement.flag doit exister",
+                      fin
+                         .exists());
+    Assert.assertTrue("le fichier resultats.xml doit exister",
+                      resultats
+                               .exists());
 
-      List<ILoggingEvent> errorLogs = LogUtils.getLogsByLevel(loggingEvents,
-            Level.ERROR);
-      boolean foundNullPointer = false;
-      int index = 0;
+    Assert.assertTrue("l'erreur doit être une SAE-CA-BUL001",
+                      FileUtils
+                               .readFileToString(resultats)
+                               .contains("SAE-CA-BUL001"));
 
-      while (!foundNullPointer && index < errorLogs.size()) {
-         if (errorLogs.get(index).getMessage().contains("SOMMAIRE_FILE")
-               && errorLogs.get(index).getMessage().contains(
-                     "java.lang.ClassCastException")) {
-            foundNullPointer = true;
-         }
-         index++;
-      }
-
-      Assert.assertFalse("l'erreur NullPointer ne doit pas etre présente",
-            foundNullPointer);
-
-      checkFiles();
-
-   }
-
-   private void initDatas() throws IOException {
-      File sommaire = new File(ecdeTestSommaire.getRepEcde(), "sommaire.xml");
-      ClassPathResource resSommaire = new ClassPathResource(
-            "testhautniveau/checkEcde/sommaire.xml");
-      FileUtils.copyURLToFile(resSommaire.getURL(), sommaire);
-
-      File repEcde = new File(ecdeTestSommaire.getRepEcde(), "documents");
-      ClassPathResource resAttestation1 = new ClassPathResource(
-            "testhautniveau/checkEcde/documents/doc1.PDF");
-      File fileAttestation1 = new File(repEcde, "doc1.PDF");
-      FileUtils.copyURLToFile(resAttestation1.getURL(), fileAttestation1);
-
-   }
-
-   private void checkFiles() throws IOException {
-
-      File repTraitement = ecdeTestSommaire.getRepEcde();
-      File debut = new File(repTraitement, "debut_traitement.flag");
-      File fin = new File(repTraitement, "fin_traitement.flag");
-      File resultats = new File(repTraitement, "resultats.xml");
-
-      //FileUtils.copyFile(resultats, new File("c:/resultats.xml"));
-
-      Assert.assertTrue("le fichier debut_traitement.flag doit exister", debut
-            .exists());
-      Assert.assertTrue("le fichier fin_traitement.flag doit exister", fin
-            .exists());
-      Assert.assertTrue("le fichier resultats.xml doit exister", resultats
-            .exists());
-
-      Assert.assertTrue("l'erreur doit être une SAE-CA-BUL001", FileUtils
-            .readFileToString(resultats).contains("SAE-CA-BUL001"));
-
-   }
+  }
 }
