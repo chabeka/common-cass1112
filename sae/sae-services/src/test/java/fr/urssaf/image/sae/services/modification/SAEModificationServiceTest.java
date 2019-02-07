@@ -12,9 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import net.docubase.toolkit.model.document.Criterion;
-import net.docubase.toolkit.model.document.Document;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -71,11 +68,12 @@ import fr.urssaf.image.sae.services.exception.suppression.SuppressionException;
 import fr.urssaf.image.sae.services.suppression.SAESuppressionService;
 import fr.urssaf.image.sae.storage.dfce.model.StorageTechnicalMetadatas;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
-import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import net.docubase.toolkit.model.document.Criterion;
+import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
@@ -86,9 +84,6 @@ public class SAEModificationServiceTest {
 
    @Autowired
    private SAESuppressionService saeSuppressionService;
-
-   @Autowired
-   private StorageServiceProvider provider;
 
    @Autowired
    private SAECaptureService insertService;
@@ -110,7 +105,7 @@ public class SAEModificationServiceTest {
    private JobClockSupport jobClockSupport;
 
    private UUID uuid = null;
-   
+
    private EcdeTestDocument ecde;
 
    @After
@@ -120,7 +115,7 @@ public class SAEModificationServiceTest {
          try {
             saeSuppressionService.suppression(uuid);
 
-         } catch (SuppressionException exception) {
+         } catch (final SuppressionException exception) {
             exception.printStackTrace();
          }
       }
@@ -128,7 +123,7 @@ public class SAEModificationServiceTest {
       AuthenticationContext.setAuthenticationToken(null);
 
       server.resetData();
-      
+
       if (ecde != null) {
          // supprime le repertoire ecde
          ecdeTestTools.cleanEcdeTestDocument(ecde);
@@ -141,35 +136,35 @@ public class SAEModificationServiceTest {
 
       server.resetData();
 
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "modification", "archivage_unitaire",
-            "suppression" };
+      final String[] roles = new String[] { "modification", "archivage_unitaire",
+      "suppression" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("modification", saePrmds);
       saeDroits.put("archivage_unitaire", saePrmds);
       saeDroits.put("suppression", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
-      TypeDocument typeDocCree = new TypeDocument();
+      final TypeDocument typeDocCree = new TypeDocument();
       typeDocCree.setCloture(false);
       typeDocCree.setCode("5.1.2.1.5");
       typeDocCree.setCodeActivite("1");
@@ -197,11 +192,11 @@ public class SAEModificationServiceTest {
          saeModificationService.modification(null, null);
          Assert.fail("une IllegalArgumentException est attendue");
 
-      } catch (IllegalArgumentException exception) {
+      } catch (final IllegalArgumentException exception) {
          Assert.assertTrue("le message doit etre correct", exception
-               .getMessage().contains("identifiant de l'archive"));
+                           .getMessage().contains("identifiant de l'archive"));
 
-      } catch (Exception exception) {
+      } catch (final Exception exception) {
          Assert.fail("une IllegalArgumentException est attendue");
       }
    }
@@ -210,14 +205,14 @@ public class SAEModificationServiceTest {
    public void testMetasObligatoire() {
       try {
          saeModificationService.modification(UUID.randomUUID(),
-               new ArrayList<UntypedMetadata>());
+                                             new ArrayList<UntypedMetadata>());
          Assert.fail("une IllegalArgumentException est attendue");
 
-      } catch (IllegalArgumentException exception) {
+      } catch (final IllegalArgumentException exception) {
          Assert.assertTrue("le message doit etre correct", exception
-               .getMessage().contains("les métadonnées"));
+                           .getMessage().contains("les métadonnées"));
 
-      } catch (Exception exception) {
+      } catch (final Exception exception) {
          Assert.fail("une IllegalArgumentException est attendue");
       }
    }
@@ -228,35 +223,35 @@ public class SAEModificationServiceTest {
    @Ignore
    @Test(expected = DuplicatedMetadataEx.class)
    public void testMetasDupliquee() throws ReferentialRndException,
-         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
-         ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
-      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
-            "Titre", "ceci est le titre"), new UntypedMetadata(
-            "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
-            "ceci est le titre 2"));
+   UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
+   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
+      final List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+                                                                                "Titre", "ceci est le titre"), new UntypedMetadata(
+                                                                                                                                   "NumeroCompteInterne", "123456"), new UntypedMetadata("Titre",
+                                                                                                                                         "ceci est le titre 2"));
 
       saeModificationService.modification(UUID.randomUUID(), metadatas);
    }
 
    @Test(expected = ArchiveInexistanteEx.class)
    public void testArchiveInexistante() throws ReferentialRndException,
-         UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
-         ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
-      List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
-            "Titre", "ceci est le titre"), new UntypedMetadata(
-            "NumeroCompteInterne", "123456"));
+   UnknownCodeRndEx, InvalidValueTypeAndFormatMetadataEx,
+   UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException,
+   ArchiveInexistanteEx, MetadataValueNotInDictionaryEx, ReferentialException, RetrievalServiceEx {
+      final List<UntypedMetadata> metadatas = Arrays.asList(new UntypedMetadata(
+                                                                                "Titre", "ceci est le titre"), new UntypedMetadata(
+                                                                                                                                   "NumeroCompteInterne", "123456"));
 
       saeModificationService.modification(UUID.randomUUID(), metadatas);
    }
 
    /**
-    * 
+    *
     * NB: A date du commit 16/09/2014, il y a un souci sur ce test, car :
     * <ul>
     * <li>
@@ -271,46 +266,46 @@ public class SAEModificationServiceTest {
     * </ul>
     * Donc pour que ce TU passe, il faut pour le moment s'assurer que la mise à
     * jour du code RND donne une date de fin de conservation dans le futur.
-    * @throws InvalidPagmsCombinaisonException 
-    * @throws UnexpectedDomainException 
-    * @throws CaptureExistingUuuidException 
-    * @throws RetrievalServiceEx 
-    * @throws ReferentialException 
-    * 
+    * @throws InvalidPagmsCombinaisonException
+    * @throws UnexpectedDomainException
+    * @throws CaptureExistingUuuidException
+ * @throws RetrievalServiceEx 
+ * @throws ReferentialException 
+    *
     */
    @Test
    public void modificationSucces() throws IOException, SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
-         ModificationException, ArchiveInexistanteEx,
-         ValidationExceptionInvalidFile, UnknownFormatException, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
-         CaptureExistingUuuidException, ReferentialException, RetrievalServiceEx {
+   ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+   InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+   DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+   RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+   UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+   MetadataValueNotInDictionaryEx, NotModifiableMetadataEx,
+   ModificationException, ArchiveInexistanteEx,
+   ValidationExceptionInvalidFile, UnknownFormatException,
+   UnexpectedDomainException, InvalidPagmsCombinaisonException,
+   CaptureExistingUuuidException, ReferentialException, RetrievalServiceEx {
 
       ecde = ecdeTestTools
             .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+      final File repertoireEcde = ecde.getRepEcdeDocuments();
+      final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
       // copie le fichier attestation_consultation.pdf
       // dans le repertoire de l'ecde
-      File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
+      final File fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+      final ClassPathResource resDoc = new ClassPathResource(
             "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
+      final FileOutputStream fos = new FileOutputStream(fileDoc);
       IOUtils.copy(resDoc.getInputStream(), fos);
       resDoc.getInputStream().close();
       fos.close();
 
-      File srcFile = new File(
+      final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
 
       // liste des métadonnées obligatoires
       metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
@@ -319,7 +314,7 @@ public class SAEModificationServiceTest {
       metadatas.add(new UntypedMetadata("FormatFichier", "fmt/354"));
       metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
       metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+      final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       metadatas.add(new UntypedMetadata("Hash", hash.toUpperCase()));
       metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
       metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
@@ -338,36 +333,36 @@ public class SAEModificationServiceTest {
       // StorageTechnicalMetadatas.TITRE.getLongCode(), "Titre modifié"),
       // new UntypedMetadata(StorageTechnicalMetadatas.TYPE.getLongCode(),
       // "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null));
-      List<UntypedMetadata> calledMetas = Arrays.asList(new UntypedMetadata(
-            StorageTechnicalMetadatas.TITRE.getLongCode(), "Titre modifié"),
-            new UntypedMetadata(StorageTechnicalMetadatas.TYPE.getLongCode(),
-                  "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null),
-            new UntypedMetadata("DateReception", ""));
+      final List<UntypedMetadata> calledMetas = Arrays.asList(new UntypedMetadata(
+                                                                                  StorageTechnicalMetadatas.TITRE.getLongCode(), "Titre modifié"),
+                                                              new UntypedMetadata(StorageTechnicalMetadatas.TYPE.getLongCode(),
+                                                                    "5.1.2.1.5"), new UntypedMetadata("CodeTraitementV2", null),
+                                                              new UntypedMetadata("DateReception", ""));
 
       saeModificationService.modification(uuid, calledMetas);
 
-      Document document = testProvider.searchDocument(uuid);
+      final Document document = testProvider.searchDocument(uuid);
 
       Assert.assertEquals("le titre doit etre correct", "Titre modifié",
-            document.getTitle());
+                          document.getTitle());
       Assert.assertEquals("le code RND doit être correct", "5.1.2.1.5",
-            document.getType());
-      String codeFonction = (String) document.getSingleCriterion("dom")
+                          document.getType());
+      final String codeFonction = (String) document.getSingleCriterion("dom")
             .getWord();
-      Criterion codeActiviteV2 = document.getSingleCriterion("ctr");
-      Criterion dateReception = document.getSingleCriterion("dre");
+      final Criterion codeActiviteV2 = document.getSingleCriterion("ctr");
+      final Criterion dateReception = document.getSingleCriterion("dre");
 
-      String codeActivite = (String) document.getSingleCriterion("act")
+      final String codeActivite = (String) document.getSingleCriterion("act")
             .getWord();
       Assert.assertEquals("le code fonction doit etre correct", "5",
-            codeFonction);
+                          codeFonction);
       Assert.assertEquals("le code activité doit etre correct", "1",
-            codeActivite);
+                          codeActivite);
       Assert.assertNull("le criterion CodeActiviteV2 doit etre null",
-            codeActiviteV2);
+                        codeActiviteV2);
       Assert.assertNull("le criterion DateReception doit etre null",
-            dateReception);
-      
+                        dateReception);
+
       // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
       fileDoc.delete();
    }

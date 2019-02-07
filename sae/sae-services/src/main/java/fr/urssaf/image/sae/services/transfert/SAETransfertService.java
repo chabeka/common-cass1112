@@ -134,20 +134,5 @@ public interface SAETransfertService {
 	 */
 	public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
 			throws ReferentialException, RetrievalServiceEx;
-   
-   /**
-    * Méthode permettant de générer la liste des métadonnées storage contenant
-    * les metadonnées de modification et la métadonnée GEL.
-    * 
-    * @param idArchive
-    *           Identifiant document
-    * @return la liste des metadonnées storage
-    * @throws ReferentialException
-    * @{@link ReferentialException}
-    * @throws RetrievalServiceEx
-    * @{@link RetrievalServiceEx}
-    */
-   public List<StorageMetadata> getListeStorageMetadatasWithGel(UUID idArchive)
-         throws ReferentialException, RetrievalServiceEx;
 
 }

@@ -192,32 +192,4 @@ public abstract class AbstractListener {
 		return false;
 	}
 
-
-   /**
-    * Contrôle si la liste de métadonnées passée en paramètre contient la
-    * métadonnée gel à true (Document gelé).
-    * 
-    * @param listeStorageMeta
-    *           liste de métadonnées
-    * @return true si le document est gelé
-    * @throws RetrievalServiceEx
-    * @{@link RetrievalServiceEx}
-    * @throws SearchingServiceEx
-    * @{@link SearchingServiceEx}
-    */
-   public boolean isFrozenDocument(List<StorageMetadata> listeStorageMeta)
-         throws RetrievalServiceEx {
-      if (listeStorageMeta != null && !listeStorageMeta.isEmpty()) {
-         for (StorageMetadata meta : listeStorageMeta) {
-            if (meta.getShortCode().equals(
-                  StorageTechnicalMetadatas.GEL.getShortCode())) {
-               if (meta.getValue() == Boolean.TRUE) {
-                  return true;
-               }
-            }
-         }
-      }
-      return false;
-   }
-   
 }
