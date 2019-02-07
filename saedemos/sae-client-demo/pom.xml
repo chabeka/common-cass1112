@@ -37,7 +37,7 @@
       <axis2.version>1.7.7</axis2.version>
       <xml-apis.version>1.4.01</xml-apis.version>
       <geronimo.version>1.0.2</geronimo.version>
-      <axiom-api.version>1.2.20</axiom-api.version>
+      <axiom-api.version>1.2.22</axiom-api.version>
       
    </properties>
 
