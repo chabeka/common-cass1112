@@ -230,4 +230,39 @@
 
    </build>
    
+   <profiles>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<!-- PLUGIN HAWAI/FEDEX -->
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<version>${hawai-maven-plugin.version}</version>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<applicationName>${project.name}</applicationName>
+							<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
+							<fedex>false</fedex>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>deploy</phase>
+								<goals>
+									<goal>livraison</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>
