@@ -170,11 +170,11 @@
          Librairie fournie par la MOE SAE pour générer le Vecteur d'Identification
          qui permet l'authentification des applications clientes auprès du SAE.
       -->
-<!--       <dependency>
+      <dependency>
          <groupId>fr.urssaf.image</groupId>
          <artifactId>sae-client-vi</artifactId>
          <version>${sae-client-vi.version}</version>
-      </dependency> -->
+      </dependency>
       
       
       <!-- JUnit -->
