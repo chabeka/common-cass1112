@@ -1,6 +1,8 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-   
-    <!-- Utilisation du fichier POM parent ALTAIR -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
 		<groupId>fr.pnr.altair</groupId>
 		<artifactId>parent</artifactId>
@@ -26,9 +28,10 @@
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
 		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
-   
-   <!-- Configuration SVN pour le plug-in maven-release -->
+
+	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-batch-docs-executable/
@@ -42,8 +45,8 @@
 	</scm>
 
 	<dependencies>
-   
-      <!-- commons-dfce -->
+
+		<!-- commons-dfce -->
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>
 			<artifactId>commons-dfce</artifactId>
@@ -59,8 +62,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-      
-      <!-- SAE -->
+
+		<!-- SAE -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-commons</artifactId>
@@ -78,8 +81,8 @@
 			<artifactId>sae-bo</artifactId>
 			<version>${sae.version}</version>
 		</dependency>
-      
-      <!-- AspectJ -->
+
+		<!-- AspectJ -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
@@ -90,16 +93,16 @@
 			<artifactId>aspectjweaver</artifactId>
 			<version>${aspectj.version}</version>
 		</dependency>
-      
-      <!-- EasyMock -->
+
+		<!-- EasyMock -->
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 			<version>${easymock.version}</version>
 			<scope>test</scope>
 		</dependency>
-      
-      <!-- Apache Commons -->
+
+		<!-- Apache Commons -->
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
@@ -110,8 +113,8 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>${apache.commons-beanutils.version}</version>
 		</dependency>
-      
-	  <!-- JUNIT -->
+
+		<!-- JUNIT -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -120,7 +123,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!-- SPRING pour les tests -->
+		<!-- SPRING pour les tests -->
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -147,9 +150,9 @@
 
 	<build>
 		<finalName>${project.name}</finalName>
-		
+
 		<plugins>
-		<!-- COMPILATION ASPECT -->
+			<!-- COMPILATION ASPECT -->
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.codehaus.mojo</groupId>
@@ -181,11 +184,8 @@
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
-			
-			<!--
-			On spécifie la version du JDK et l'encodage de caractères
-			des sources
-			-->
+
+			<!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -196,7 +196,7 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>
@@ -223,23 +223,17 @@
 										<exclude>META-INF/*.RSA</exclude>
 									</excludes>
 								</filter>
-                        <!--
-                        Toutes les classes de org.aspectj:aspectjrt sont reprises
-                        dans le jar org.aspectj:aspectjweaver
-                        Néanmoins, il faut inclure les 2 jar dans les dépendances.
-                        L'exclusion des classes se fait donc au niveau de Shade. 
-                        -->
+								<!-- Toutes les classes de org.aspectj:aspectjrt sont reprises dans 
+									le jar org.aspectj:aspectjweaver Néanmoins, il faut inclure les 2 jar dans 
+									les dépendances. L'exclusion des classes se fait donc au niveau de Shade. -->
 								<filter>
 									<artifact>org.aspectj:aspectjrt</artifact>
 									<excludes>
 										<exclude>org/aspectj/**</exclude>
 									</excludes>
 								</filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
+								<!-- Exclusion de 4 classes qui ont été copiées/collées de commons-collection 
+									vers commons-beanutils https://issues.apache.org/jira/browse/BEANUTILS-278 -->
 								<filter>
 									<artifact>commons-beanutils:commons-beanutils</artifact>
 									<excludes>
@@ -251,13 +245,16 @@
 								</filter>
 							</filters>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<mainClass>fr.urssaf.image.sae.batch.documents.executable.bootstrap.ExecutableMain</mainClass>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.handlers</resource>
 								</transformer>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
 							</transformers>
@@ -266,36 +263,48 @@
 				</executions>
 			</plugin>
 
-			<!-- PLUGIN HAWAI/FEDEX -->
 			<plugin>
-				<groupId>fr.acoss.industrialisation.maven</groupId>
-				<artifactId>hawai-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
-					<projectName>ged</projectName>
-					<hawaiVersion>hawai6</hawaiVersion>
-					<applicationName>${project.name}</applicationName>
-					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
-					<fedex>false</fedex>
+					<skipDeploy>true</skipDeploy>
 				</configuration>
-				<executions>
-					<execution>
-						<phase>deploy</phase>
-						<goals>
-							<goal>livraison</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
-
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-site-plugin</artifactId>
-               <configuration>
-               		<skipDeploy>true</skipDeploy>
-               </configuration>             
-            </plugin>
 		</plugins>
-
 	</build>
 
+	<profiles>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<!-- PLUGIN HAWAI/FEDEX -->
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<version>${hawai-maven-plugin.version}</version>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<applicationName>${project.name}</applicationName>
+							<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
+							<fedex>false</fedex>
+						</configuration>
+						<executions>
+							<execution>
+								<phase>deploy</phase>
+								<goals>
+									<goal>livraison</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

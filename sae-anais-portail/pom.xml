@@ -1,8 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
-   <!-- Utilisation du fichier POM parent ALTAIR -->
+	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
 		<groupId>fr.pnr.altair</groupId>
 		<artifactId>parent</artifactId>
@@ -43,14 +45,46 @@
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
 
+	<profiles>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<version>${hawai-maven-plugin.version}</version>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<fedex>false</fedex>
+							<applicationName>${project.name}</applicationName>
+							<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>livraison</goal>
+								</goals>
+								<phase>deploy</phase>
+							</execution>
+						</executions>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<finalName>${project.name}</finalName>
 		<plugins>
-         
-         <!-- 
-         On spécifie la version du JDK et l'encodage de caractères des sources
-         -->
+
+			<!-- On spécifie la version du JDK et l'encodage de caractères des sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -63,10 +97,8 @@
 			</plugin>
 
 
-         <!-- 
-         Dans le cas d'un packaging JAR, on demande que le JAR des sources
-         soit également généré
-         -->
+			<!-- Dans le cas d'un packaging JAR, on demande que le JAR des sources 
+				soit également généré -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -80,11 +112,9 @@
 					</execution>
 				</executions>
 			</plugin>
-            
-         
-         <!-- 
-         On spécifie l'encodage de caractères des ressources
-         -->
+
+
+			<!-- On spécifie l'encodage de caractères des ressources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -93,11 +123,9 @@
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
-         
-         
-         <!--
-         On demande la génération de la Javadoc         
-         -->
+
+
+			<!-- On demande la génération de la Javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
@@ -114,29 +142,25 @@
 					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
-         
-         
-         <!-- Tests unitaires -->
+
+
+			<!-- Tests unitaires -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>${maven.surefire.plugin.version}</version>
 			</plugin>
-         
-         
-         <!--
-         On spécifie la version du plugin Maven pour Sonar
-         -->
+
+
+			<!-- On spécifie la version du plugin Maven pour Sonar -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>sonar-maven-plugin</artifactId>
 				<version>${sonar.maven.plugin.version}</version>
 			</plugin>
-         
-         
-         <!--
-         Pour la gestion des release
-         -->
+
+
+			<!-- Pour la gestion des release -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -148,48 +172,27 @@
 			</plugin>
 
 			<plugin>
-				<groupId>fr.acoss.industrialisation.maven</groupId>
-				<artifactId>hawai-maven-plugin</artifactId>
-				<version>${hawai-maven-plugin.version}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
 				<configuration>
-					<projectName>ged</projectName>
-					<hawaiVersion>hawai6</hawaiVersion>
-					<fedex>false</fedex>
-					<applicationName>${project.name}</applicationName>
-					<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
+					<skipDeploy>true</skipDeploy>
 				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>livraison</goal>
-						</goals>
-						<phase>deploy</phase>
-					</execution>
-				</executions>
 			</plugin>
-
-            <plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-site-plugin</artifactId>
-               <configuration>
-               		<skipDeploy>true</skipDeploy>
-               </configuration>              
-            </plugin>
 		</plugins>
 
 	</build>
 
 	<dependencies>
 
-      <!-- JUnit -->
+		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-      
-      <!-- SLF4J et Logback -->
+
+		<!-- SLF4J et Logback -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -205,31 +208,31 @@
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
 		</dependency>
-      <!-- Ponts vers SLF4J -->
+		<!-- Ponts vers SLF4J -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${org.slf4j.version}</version>
 		</dependency>
-      
 
-      <!-- sae-anais-framework -->
+
+		<!-- sae-anais-framework -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-anais-framework</artifactId>
 			<version>${sae.anais.framework.version}</version>
 		</dependency>
-      
-      
-      <!-- commons-maquette -->
+
+
+		<!-- commons-maquette -->
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>
 			<artifactId>commons-maquette</artifactId>
 			<version>${commons.maquette.version}</version>
 		</dependency>
-      
-      
-      <!-- sae-vi -->
+
+
+		<!-- sae-vi -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-vi</artifactId>
@@ -241,9 +244,9 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-      
-      
-      <!-- JSR 303 -->
+
+
+		<!-- JSR 303 -->
 
 		<dependency>
 			<groupId>javax.validation</groupId>
@@ -258,8 +261,8 @@
 			<scope>runtime</scope>
 		</dependency>
 
-      
-      <!--  SPRING -->
+
+		<!-- SPRING -->
 
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -274,7 +277,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!--  JSTL -->
+		<!-- JSTL -->
 
 		<dependency>
 			<groupId>jstl</groupId>
@@ -283,7 +286,7 @@
 		</dependency>
 
 
-      <!-- Servlet API -->
+		<!-- Servlet API -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
@@ -292,8 +295,8 @@
 		</dependency>
 
 	</dependencies>
-   
-   <!-- Configuration SVN pour le plug-in maven-release -->
+
+	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-spring-upgrade/sae-anais-portail/
