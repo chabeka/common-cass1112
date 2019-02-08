@@ -121,7 +121,7 @@ public class JsonIntegrationTests {
             : wrapper;
       }
     });
-    final JsonWrapper jobExecution = poll.get(1000L, TimeUnit.MILLISECONDS);
+    final JsonWrapper jobExecution = poll.get(5000L, TimeUnit.MILLISECONDS);
     assertNotNull(jobExecution);
     // System.err.println(jobExecution);
 
