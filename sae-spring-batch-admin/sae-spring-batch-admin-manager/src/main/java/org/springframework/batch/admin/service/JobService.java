@@ -115,8 +115,8 @@ public interface JobService {
 	 * 
 	 * @param jobExecutionId the job execution id to stop
 	 * @return the {@link JobExecution} that was stopped
-	 * @throws NoSuchJobExecutionException
-	 * @throws JobExecutionNotRunningException
+	 * @throws NoSuchJobExecutionException {@link NoSuchJobExecutionException} 
+	 * @throws JobExecutionNotRunningException {@link JobExecutionNotRunningException} 
 	 */
 	JobExecution stop(Long jobExecutionId) throws NoSuchJobExecutionException, JobExecutionNotRunningException;
 
@@ -128,7 +128,7 @@ public interface JobService {
 	 * 
 	 * @param jobExecutionId the job execution id to abort
 	 * @return the {@link JobExecution} that was aborted
-	 * @throws NoSuchJobExecutionException
+	 * @throws NoSuchJobExecutionException {@link NoSuchJobExecutionException} 
 	 * @throws JobExecutionAlreadyRunningException if the job is running (it
 	 * should be stopped first)
 	 */
@@ -158,7 +158,7 @@ public interface JobService {
 	 * 
 	 * @param jobInstanceId the id of the instance
 	 * @return a {@link JobInstance job instance}
-	 * @throws NoSuchJobException @{@link NoSuchJobException}
+	 * @throws NoSuchJobInstanceException @{@link NoSuchJobInstanceException}
 	 */
 	JobInstance getJobInstance(long jobInstanceId) throws NoSuchJobInstanceException;
 
@@ -242,7 +242,7 @@ public interface JobService {
 	 * @param jobExecutionId the job execution id
 	 * @return the {@link JobExecution}
 	 * 
-	 * @throws NoSuchJobExecutionException
+	 * @throws NoSuchJobExecutionException {@link NoSuchJobExecutionException}
 	 */
 	JobExecution getJobExecution(Long jobExecutionId) throws NoSuchJobExecutionException;
 
@@ -318,6 +318,8 @@ public interface JobService {
 	 * 
 	 * @param jobName the name of the job
 	 * @throws NoSuchJobException if the job name cannot be located
+	 * 
+	 * @return the names of the steps in a job
 	 */
 	Collection<String> getStepNamesForJob(String jobName) throws NoSuchJobException;
 
