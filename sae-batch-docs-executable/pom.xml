@@ -31,13 +31,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-batch-docs-executable/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-batch-docs-executable/
       </connection>
 	</scm>
 

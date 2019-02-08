@@ -37,7 +37,7 @@
 		<sae.anais.framework.version>1.0.2</sae.anais.framework.version>
 		<commons.maquette.version>2.0.1</commons.maquette.version>
 
-		<sae.version>19.2.6</sae.version>
+		<sae.version>19.7.0-SNAPSHOT</sae.version>
 
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
@@ -325,13 +325,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
       </connection>
 	</scm>
 

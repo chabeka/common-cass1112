@@ -218,13 +218,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/merge-hawaiv6/sae-client-vi/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </connection>
    </scm>
 

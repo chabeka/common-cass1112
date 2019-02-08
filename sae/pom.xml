@@ -314,13 +314,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.02.0.1/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
       </connection>
 	</scm>
 
