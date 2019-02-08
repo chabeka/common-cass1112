@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +72,7 @@ public class RepeatTransactionalPollingIntegrationTests implements ApplicationCo
 		logger.debug("Handled: " + message);		
 	}
 
-	@Before
+	@After
 	public void clearLists() {
 		list.clear();
 		handled.clear();
