@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>sae-spring-batch-admin-sample</artifactId>
@@ -25,7 +26,7 @@
 
 	<dependencies>
 
-      <!-- Implémentation des DAO Spring batch avec cassandra -->
+		<!-- Implémentation des DAO Spring batch avec cassandra -->
 
 		<dependency>
 			<groupId>fr.urssaf.image.commons</groupId>
@@ -46,8 +47,8 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-      
-      <!-- SAE - Objet utilisé dans le contexte Spring batch -->
+
+		<!-- SAE - Objet utilisé dans le contexte Spring batch -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-services-batch</artifactId>
@@ -60,7 +61,7 @@
 			</exclusions>
 		</dependency>
 
-      <!--  Loggers -->
+		<!-- Loggers -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -77,7 +78,7 @@
 			<version>${logback.version}</version>
 		</dependency>
 
-      <!--  Cassandra et Hector -->
+		<!-- Cassandra et Hector -->
 		<dependency>
 			<groupId>me.prettyprint</groupId>
 			<artifactId>hector-core</artifactId>
@@ -133,7 +134,8 @@
 			</exclusions>
 		</dependency>
 
-      <!-- Jackson, sinon cassandra plante si les version du core et du mapper divergent -->
+		<!-- Jackson, sinon cassandra plante si les version du core et du mapper 
+			divergent -->
 		<dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-core-asl</artifactId>
@@ -159,7 +161,7 @@
 		<dependency>
 			<groupId>org.cassandraunit</groupId>
 			<artifactId>cassandra-unit</artifactId>
-			<version>1.0.3.1</version>
+			<version>1.1.2.1</version>
 			<scope>test</scope>
 			<exclusions>
 				<exclusion>
@@ -171,9 +173,7 @@
 
 		<dependency>
 			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
+			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -194,6 +194,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>commons-dbcp</groupId>
@@ -256,26 +260,40 @@
 					<contextPath>/sae-spring-batch-admin-sample</contextPath>
 				</configuration>
 			</plugin>
-         	<!-- PLUGIN HAWAI/FEDEX -->
-			<plugin>
-				<groupId>fr.acoss.industrialisation.maven</groupId>
-				<artifactId>hawai-maven-plugin</artifactId>
-				<version>${hawai-maven-plugin.version}</version>
-				<configuration>
-					<projectName>ged</projectName>
-					<hawaiVersion>hawai6</hawaiVersion>
-					<applicationName>sae-spring-batch-admin</applicationName>
-					<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
-					<fedex>false</fedex>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>livraison</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
+
+	<profiles>
+		<profile>
+			<id>hawai_livraison</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+
+			<build>
+				<plugins>
+					<!-- PLUGIN HAWAI/FEDEX -->
+					<plugin>
+						<groupId>fr.acoss.industrialisation.maven</groupId>
+						<artifactId>hawai-maven-plugin</artifactId>
+						<version>${hawai-maven-plugin.version}</version>
+						<configuration>
+							<projectName>ged</projectName>
+							<hawaiVersion>hawai6</hawaiVersion>
+							<applicationName>sae-spring-batch-admin</applicationName>
+							<applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
+							<fedex>false</fedex>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>livraison</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 </project>

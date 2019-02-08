@@ -25,7 +25,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.batch.admin.web.JobController;
 import org.springframework.batch.admin.web.resources.MenuManager;
