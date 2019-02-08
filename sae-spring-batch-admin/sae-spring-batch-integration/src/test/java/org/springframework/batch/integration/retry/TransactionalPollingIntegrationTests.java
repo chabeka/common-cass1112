@@ -89,7 +89,7 @@ public class TransactionalPollingIntegrationTests implements ApplicationContextA
 		list = TransactionAwareProxyFactory.createTransactionalList(Arrays.asList(StringUtils
 				.commaDelimitedListToStringArray("a,b,c,d,e,f,g,h,j,k")));
 		expected = Arrays.asList(StringUtils.commaDelimitedListToStringArray("a,b,c,d"));
-		waitForResults(bus, 4, 60);
+		waitForResults(bus, 4, 100);
 		assertEquals(expected, processed);
 	}
 
@@ -99,7 +99,7 @@ public class TransactionalPollingIntegrationTests implements ApplicationContextA
 		list = TransactionAwareProxyFactory.createTransactionalList(Arrays.asList(StringUtils
 				.commaDelimitedListToStringArray("a,b,fail,d,e,f,g,h,j,k")));
 		expected = Arrays.asList(StringUtils.commaDelimitedListToStringArray("a,b,fail,fail"));
-		waitForResults(bus, 4, 30);
+		waitForResults(bus, 4, 100);
 		assertEquals(expected, processed);
 		assertEquals(2, handled.size()); // a,b
 	}
