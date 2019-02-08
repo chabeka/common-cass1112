@@ -134,7 +134,7 @@ public class JobJsonViewTests extends AbstractManagerViewTests {
 		String content = response.getContentAsString();
 		// System.err.println(content);
 		JsonWrapper wrapper = new JsonWrapper(content);
-		assertEquals("STARTING", wrapper.get("job.jobInstances[123456789].lastJobExecutionStatus", String.class));
+		assertEquals("STARTING", wrapper.get("job.jobInstances['123456789'].lastJobExecutionStatus", String.class));
 	}
 
 	@Test
