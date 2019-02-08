@@ -99,7 +99,7 @@ public class ThrottledTaskExecutor implements TaskExecutor {
 	 * calling thread. In this case the throttle limit is irrelevant as there
 	 * will always be at most one task pending.
 	 * 
-	 * @param taskExecutor
+	 * @param taskExecutor Task executor
 	 */
 	public void setTaskExecutor(TaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;

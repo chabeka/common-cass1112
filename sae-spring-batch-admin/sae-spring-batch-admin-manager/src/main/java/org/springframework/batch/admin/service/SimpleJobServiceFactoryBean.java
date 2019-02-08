@@ -122,7 +122,7 @@ public class SimpleJobServiceFactoryBean implements FactoryBean<JobService>, Ini
 
 	/**
 	 * Sets the table prefix for all the batch meta-data tables.
-	 * @param tablePrefix
+	 * @param tablePrefix Table prefix
 	 */
 	public void setTablePrefix(String tablePrefix) {
 		this.tablePrefix = tablePrefix;

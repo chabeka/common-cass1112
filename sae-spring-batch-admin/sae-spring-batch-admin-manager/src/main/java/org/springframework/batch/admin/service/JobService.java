@@ -17,6 +17,7 @@ package org.springframework.batch.admin.service;
 
 import java.util.Collection;
 
+import org.apache.cassandra.cli.CliParser.listStatement_return;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -67,11 +68,11 @@ public interface JobService {
 	 * @param params the {@link JobParameters}
 	 * @return the resulting {@link JobExecution} if successful
 	 * 
-	 * @throws NoSuchJobException
-	 * @throws JobExecutionAlreadyRunningException
-	 * @throws JobRestartException
-	 * @throws JobInstanceAlreadyCompleteException
-	 * @throws JobParametersInvalidException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
+	 * @throws JobExecutionAlreadyRunningException @{@link JobExecutionAlreadyRunningException}
+	 * @throws JobRestartException @{@link JobRestartException}
+	 * @throws JobInstanceAlreadyCompleteException @{@link JobInstanceAlreadyCompleteException}
+	 * @throws JobParametersInvalidException @{@link JobParametersInvalidException}
 	 */
 	JobExecution launch(String jobName, JobParameters params) throws NoSuchJobException,
 			JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
@@ -84,7 +85,7 @@ public interface JobService {
 	 * @return the last parameters used to execute this job or empty if there
 	 * are none
 	 * 
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	JobParameters getLastJobParameters(String jobName) throws NoSuchJobException;
 
@@ -94,12 +95,12 @@ public interface JobService {
 	 * @param jobExecutionId the job execution to restart
 	 * @return the resulting {@link JobExecution} if successful
 	 * 
-	 * @throws NoSuchJobExecutionException
-	 * @throws JobExecutionAlreadyRunningException
-	 * @throws JobRestartException
-	 * @throws JobInstanceAlreadyCompleteException
-	 * @throws NoSuchJobException
-	 * @throws JobParametersInvalidException
+	 * @throws NoSuchJobExecutionException @{@link NoSuchJobExecutionException}
+	 * @throws JobExecutionAlreadyRunningException @{@link JobExecutionAlreadyRunningException}
+	 * @throws JobRestartException @{@link JobRestartException}
+	 * @throws JobInstanceAlreadyCompleteException @{@link JobInstanceAlreadyCompleteException}
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
+	 * @throws JobParametersInvalidException @{@link JobParametersInvalidException}
 	 */
 	JobExecution restart(Long jobExecutionId) throws NoSuchJobExecutionException, JobExecutionAlreadyRunningException,
 			JobRestartException, JobInstanceAlreadyCompleteException, NoSuchJobException, JobParametersInvalidException;
@@ -157,7 +158,7 @@ public interface JobService {
 	 * 
 	 * @param jobInstanceId the id of the instance
 	 * @return a {@link JobInstance job instance}
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	JobInstance getJobInstance(long jobInstanceId) throws NoSuchJobInstanceException;
 
@@ -169,7 +170,7 @@ public interface JobService {
 	 * @param start the index of the first to return
 	 * @param count the maximum number of instances to return
 	 * @return a collection of {@link JobInstance job instances}
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	Collection<JobInstance> listJobInstances(String jobName, int start, int count) throws NoSuchJobException;
 
@@ -179,7 +180,7 @@ public interface JobService {
 	 * 
 	 * @param jobName the name of the job
 	 * @return the number of job instances available
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	int countJobInstances(String jobName) throws NoSuchJobException;
 
@@ -191,7 +192,7 @@ public interface JobService {
 	 * @param start the start index of the first job execution
 	 * @param count the maximum number of executions to return
 	 * @return a collection of {@link JobExecution}
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	Collection<JobExecution> listJobExecutionsForJob(String jobName, int start, int count) throws NoSuchJobException;
 
@@ -200,7 +201,7 @@ public interface JobService {
 	 * 
 	 * @param jobName the job name
 	 * @return the number of executions
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	int countJobExecutionsForJob(String jobName) throws NoSuchJobException;
 
@@ -212,7 +213,7 @@ public interface JobService {
 	 * @param jobName the name of the job
 	 * @param jobInstanceId the id of the job instance
 	 * @return all the job executions
-	 * @throws NoSuchJobException
+	 * @throws NoSuchJobException @{@link NoSuchJobException}
 	 */
 	Collection<JobExecution> getJobExecutionsForJobInstance(String jobName, Long jobInstanceId)
 			throws NoSuchJobException;
@@ -252,7 +253,7 @@ public interface JobService {
 	 * @param jobExecutionId the parent job execution id
 	 * @return the step executions for the job execution
 	 * 
-	 * @throws NoSuchJobExecutionException
+	 * @throws NoSuchJobExecutionException @{@link NoSuchJobExecutionException}
 	 */
 	Collection<StepExecution> getStepExecutions(Long jobExecutionId) throws NoSuchJobExecutionException;
 
@@ -266,7 +267,7 @@ public interface JobService {
 	 * @param count the maximum number of executions to return
 	 * 
 	 * @return a collection of {@link StepExecution}
-	 * @throws NoSuchStepException
+	 * @throws NoSuchStepException @{@link NoSuchStepException}
 	 */
 	Collection<StepExecution> listStepExecutionsForStep(String jobName, String stepName, int start, int count)
 			throws NoSuchStepException;
@@ -278,7 +279,7 @@ public interface JobService {
 	 * @param stepName the step name (or a pattern with wildcards)
 	 * 
 	 * @return the number of executions
-	 * @throws NoSuchStepException
+	 * @throws NoSuchStepException @{@link NoSuchStepException}
 	 */
 	int countStepExecutionsForStep(String jobName, String stepName) throws NoSuchStepException;
 
@@ -290,8 +291,8 @@ public interface JobService {
 	 * @param stepExecutionId the step execution id
 	 * @return the {@link StepExecution}
 	 * 
-	 * @throws NoSuchStepExecutionException
-	 * @throws NoSuchJobExecutionException
+	 * @throws NoSuchStepExecutionException @{@link NoSuchStepExecutionException}
+	 * @throws NoSuchJobExecutionException @{@link NoSuchJobExecutionException}
 	 */
 	StepExecution getStepExecution(Long jobExecutionId, Long stepExecutionId) throws NoSuchStepExecutionException,
 			NoSuchJobExecutionException;

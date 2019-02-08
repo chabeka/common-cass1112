@@ -44,7 +44,7 @@ public class FileServiceResourceConverter extends PropertyEditorSupport implemen
 	}
 
 	/**
-	 * @param fileService
+	 * @param fileService the fileService to set
 	 */
 	public FileServiceResourceConverter(FileService fileService) {
 		FileServiceResourceConverter.fileService = fileService;
