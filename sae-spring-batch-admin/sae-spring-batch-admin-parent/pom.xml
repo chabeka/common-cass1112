@@ -202,12 +202,6 @@
 					<configuration combine.self="override">
 						<argLine>-Xms256m -Xmx512m</argLine>
 						<forkMode>pertest</forkMode>
-						<properties>
-							<property>
-								<name>listener</name>
-								<value>org.sonar.java.jacoco.JUnitListener</value>
-							</property>
-						</properties>
 						<testFailureIgnore>false</testFailureIgnore>
 					</configuration>
 					<dependencies>
