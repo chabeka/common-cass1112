@@ -39,7 +39,7 @@
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-		<wagon-webdav.version>3.2.0</wagon-webdav.version>		
+		<wagon-webdav.version>3.2.0</wagon-webdav.version>
 		<maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
@@ -49,7 +49,7 @@
 		<maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
 		<com.springsource.bundlor.maven.version>1.0.0.RELEASE</com.springsource.bundlor.maven.version>
 		<maven-jetty-plugin.version>6.1.26</maven-jetty-plugin.version>
-		
+
 	</properties>
 
 	<build>
@@ -96,9 +96,9 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
-		            <configuration>
-		               	<skipDeploy>true</skipDeploy>
-		            </configuration>
+					<configuration>
+						<skipDeploy>true</skipDeploy>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>com.springsource.bundlor</groupId>
@@ -155,17 +155,17 @@
 					<version>${maven-deploy-plugin.version}</version>
 				</plugin>
 				<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>${maven-source-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>bind-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>${maven-source-plugin.version}</version>
+					<executions>
+						<execution>
+							<id>bind-sources</id>
+							<goals>
+								<goal>jar</goal>
+							</goals>
+						</execution>
+					</executions>
 				</plugin>
 				<!-- On spécifie l'encodage de caractères des ressources -->
 				<plugin>
@@ -179,7 +179,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-war-plugin</artifactId>
-					<version>${maven-war-plugin.version}</version>					
+					<version>${maven-war-plugin.version}</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -187,7 +187,7 @@
 					<version>${maven-javadoc-plugin.version}</version>
 					<configuration>
 						<minmemory>128m</minmemory>
-						<maxmemory>512m</maxmemory>						
+						<maxmemory>512m</maxmemory>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -199,6 +199,24 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
 					<version>${maven-surefire-plugin.version}</version>
+					<configuration combine.self="override">
+						<argLine>-Xms256m -Xmx512m</argLine>
+						<forkMode>pertest</forkMode>
+						<properties>
+							<property>
+								<name>listener</name>
+								<value>org.sonar.java.jacoco.JUnitListener</value>
+							</property>
+						</properties>
+						<testFailureIgnore>false</testFailureIgnore>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.surefire</groupId>
+							<artifactId>surefire-junit47</artifactId>
+							<version>${maven-surefire-plugin.version}</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -210,11 +228,11 @@
 					<artifactId>maven-project-info-reports-plugin</artifactId>
 					<version>${maven-project-info-reports-plugin.version}</version>
 				</plugin>
-		        <plugin>
-		            <groupId>org.mortbay.jetty</groupId>
-		            <artifactId>maven-jetty-plugin</artifactId>
-		            <version>${maven-jetty-plugin.version}</version>
-		        </plugin>
+				<plugin>
+					<groupId>org.mortbay.jetty</groupId>
+					<artifactId>maven-jetty-plugin</artifactId>
+					<version>${maven-jetty-plugin.version}</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -593,7 +611,7 @@
 				<artifactId>spring-expression</artifactId>
 				<version>${spring.framework.version}</version>
 			</dependency>
- 			<dependency>
+			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
 				<version>${spring.framework.version}</version>
