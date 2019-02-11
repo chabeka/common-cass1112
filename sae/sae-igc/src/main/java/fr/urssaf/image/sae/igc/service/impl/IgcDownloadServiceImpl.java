@@ -240,7 +240,7 @@ public class IgcDownloadServiceImpl implements IgcDownloadService {
 
          // Appel du dispatcheur
          dispatcheurService.ajouterTrace(traceToCreate);
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOG
                .error(
                      "Une erreur s'est produite lors de l'écriture de la trace d'erreur de chargement des CRLs",

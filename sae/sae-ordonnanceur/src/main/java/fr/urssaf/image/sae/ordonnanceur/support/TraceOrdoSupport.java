@@ -84,7 +84,7 @@ public class TraceOrdoSupport {
          // Appel du dispatcheur
          dispatcheurService.ajouterTrace(traceToCreate);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
                .error(
                      "Une erreur est survenue lors de la traçabilité de l'indisponibilité d'une URL ECDE",

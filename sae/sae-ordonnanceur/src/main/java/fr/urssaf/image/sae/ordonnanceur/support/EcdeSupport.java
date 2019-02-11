@@ -123,7 +123,7 @@ public class EcdeSupport {
       boolean result;
       try {
          result = ecdeFile.exists();
-      } catch (Throwable t) {
+      } catch (Exception t) {
          LOGGER
                .warn(
                      "Une exception s'est produite lors de la vérification de l'existence du fichier "

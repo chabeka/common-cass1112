@@ -195,13 +195,7 @@ implements ItemWriter<StorageDocument> {
          throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                                       except);
 
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Throwable except) {
-
-         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
-                                      except);
-
-      }
+      } 
 
    }
 
@@ -436,18 +430,18 @@ implements ItemWriter<StorageDocument> {
 
    private String findMetadataValue(final String metaName,
                                     final List<StorageMetadata> metadatas) {
-      int index = 0;
+      int metaIndex = 0;
       String valeur = null;
       boolean trouve = false;
 
       do { // récupération de la valeur de la métadonnéé "FormatFichier"
-         final StorageMetadata metadata = metadatas.get(index);
+         final StorageMetadata metadata = metadatas.get(metaIndex);
          if (StringUtils.equalsIgnoreCase(metadata.getShortCode(), metaName)) {
             trouve = true;
             valeur = (String) metadata.getValue();
          }
-         index++;
-      } while (!trouve && index < metadatas.size());
+         metaIndex++;
+      } while (!trouve && metaIndex < metadatas.size());
 
       return valeur;
    }

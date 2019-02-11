@@ -123,7 +123,7 @@ public class ModificationDocumentWriter extends AbstractDocumentWriterListener
       StorageDocument document = null;
       try {
          document = insertStorageDocument((StorageDocument) storageDocument);
-      } catch (Throwable except) {
+      } catch (Exception except) {
          synchronized (this){
             final String message = "Erreur DFCE - identifiant archivage "
                   + storageDocument.getUuid() + " : " + except.getMessage();

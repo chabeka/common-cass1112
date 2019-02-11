@@ -308,7 +308,7 @@ public class MajRndServiceImpl implements MajRndService {
          // Appel du dispatcheur
          dispatcheurService.ajouterTrace(traceToCreate);
       }
-      catch (final Throwable ex) {
+      catch (final Exception ex) {
          LOGGER
                .error(
                       "Une erreur s'est produite lors de l'écriture de la trace d'erreur de maj du RND",

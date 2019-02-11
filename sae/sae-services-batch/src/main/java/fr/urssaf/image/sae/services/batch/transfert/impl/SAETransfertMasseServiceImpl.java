@@ -127,7 +127,7 @@ public class SAETransfertMasseServiceImpl implements SAETransfertMasseService{
          }
 
          /* erreurs Spring non gérées */
-      } catch (Throwable e) {
+      } catch (Exception e) {
 
          LOGGER.warn(
                "{} - erreur lors de la capture de masse. Exception levée",

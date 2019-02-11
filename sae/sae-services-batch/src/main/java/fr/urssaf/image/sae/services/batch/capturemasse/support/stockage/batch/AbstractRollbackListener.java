@@ -45,7 +45,7 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
          getServiceProvider().openConnexion();
 
          /* on catch les throwable de DFCE */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
 
          final String idTraitement = stepExecution.getJobParameters()
                .getString(Constantes.ID_TRAITEMENT);
@@ -107,7 +107,7 @@ public abstract class AbstractRollbackListener<BOT, CAPT> {
          getServiceProvider().closeConnexion();
 
          /* on catch car DFCE renvoie des throwables */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
 
          getLogger().warn("{} - Fermeture de la base impossible", trcPrefix, e);
          throw new CaptureMasseRuntimeException(e);

@@ -66,7 +66,7 @@ public class TracesWsSupport {
             traceEchec(codeEvt, nomOperation, soapRequest, exception, ipClient);
          }
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOG.error(
                "Une erreur est survenue lors de la traçabilité de l'échec d'une opération WS",
                ex);
@@ -208,7 +208,7 @@ public class TracesWsSupport {
                TracesConstantes.CODE_EVT_CHARGE_CERT_ACRACINE,
                "ChargementCertACRacine", fichiers);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOG.error(
                "Une erreur est survenue lors de la traçabilité du chargement des certificats d'AC racine",
                ex);
@@ -230,7 +230,7 @@ public class TracesWsSupport {
          traceChargementFichiers(TracesConstantes.CODE_EVT_CHARGE_CRL,
                "ChargementCRL", fichiers);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOG.error(
                "Une erreur est survenue lors de la traçabilité du chargement des CRL",
                ex);
@@ -252,7 +252,7 @@ public class TracesWsSupport {
          traceChargementFichiers(TracesConstantes.CODE_EVT_ECHEC_CHARGE_CRL,
                "ChargementCRL", fichiers);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOG.error(
                "Une erreur est survenue lors de la traçabilité du chargement des CRL",
                ex);

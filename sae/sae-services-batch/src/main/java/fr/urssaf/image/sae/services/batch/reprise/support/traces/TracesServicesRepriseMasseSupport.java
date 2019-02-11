@@ -110,7 +110,7 @@ public class TracesServicesRepriseMasseSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER.error(
                "Une erreur s'est produite lors de l'écriture de la trace d'erreur de reprise de masse",
                ex);

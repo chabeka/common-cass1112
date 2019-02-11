@@ -74,7 +74,7 @@ public final class JobsMain {
                TraitementService traitementService = context
                      .getBean(TraitementService.class);
                traitementService.purger();
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                LOG
                      .error(
                            "Une erreur a eu lieu dans l'execution du jar sae-job-executable",

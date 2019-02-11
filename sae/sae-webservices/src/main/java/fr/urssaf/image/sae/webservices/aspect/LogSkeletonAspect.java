@@ -157,7 +157,7 @@ public class LogSkeletonAspect {
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } catch (Throwable e) {
+      } catch (Exception e) {
          throw new ParameterNotFoundException(
                MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
@@ -188,7 +188,7 @@ public class LogSkeletonAspect {
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } catch (Throwable e) {
+      } catch (Exception e) {
          throw new ParameterNotFoundException(
                MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
@@ -220,7 +220,7 @@ public class LogSkeletonAspect {
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } catch (Throwable e) {
+      } catch (Exception e) {
          throw new ParameterNotFoundException(
                MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
@@ -253,7 +253,7 @@ public class LogSkeletonAspect {
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
-      } catch (Throwable e) {
+      } catch (Exception e) {
          throw new ParameterNotFoundException(
                MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }
@@ -304,7 +304,7 @@ public class LogSkeletonAspect {
          if (valueToLog != null && !valueToLog.isEmpty()) {
             buf.append(" - " + valueToLog);
          }
-      } catch (Throwable e) {
+      } catch (Exception e) {
          throw new ParameterNotFoundException(
                MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
       }

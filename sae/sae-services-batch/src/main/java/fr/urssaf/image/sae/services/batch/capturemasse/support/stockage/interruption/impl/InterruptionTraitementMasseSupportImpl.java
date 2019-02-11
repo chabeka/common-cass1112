@@ -193,21 +193,6 @@ public class InterruptionTraitementMasseSupportImpl implements
                                  total,
                                  dfceServices);
 
-        /* erreur DFCE catchée */
-      }
-      catch (final Throwable throwable) {
-
-        final int newTentatives = tentatives - 1;
-
-        LOG.debug(
-                  "{} - Echec de la tentative n°{}/{} de reconnexion à DFCE ",
-                  new Object[] {LOG_PREFIX, step, total});
-
-        connectionResult = pause(defaultDelay,
-                                 new ConnectionServiceEx("erreur de reconnexion", throwable),
-                                 newTentatives,
-                                 total,
-                                 dfceServices);
       }
 
     }

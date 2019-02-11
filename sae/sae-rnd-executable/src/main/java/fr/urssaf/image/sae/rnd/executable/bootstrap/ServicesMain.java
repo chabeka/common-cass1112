@@ -85,7 +85,7 @@ public final class ServicesMain {
          LOGGER.debug("{} - fin. Traitement réalisé en {} min", new Object[] {
                prefix, duree });
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
 
          LOGGER
                .error(

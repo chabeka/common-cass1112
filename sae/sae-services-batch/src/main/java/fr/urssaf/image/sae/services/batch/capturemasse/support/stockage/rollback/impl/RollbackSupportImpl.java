@@ -68,7 +68,7 @@ public class RollbackSupportImpl implements RollbackSupport {
 
       /* récupération des erreurs de DFCE */
     }
-    catch (final Throwable throwable) {
+    catch (final Exception throwable) {
 
       throw new DeletionServiceEx("SAE-ST-DEL001",
                                   throwable.getMessage(),

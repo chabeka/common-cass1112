@@ -201,7 +201,7 @@ public class AuthenticateHandler {
                   + e.toString(), e);
 
             throw new SaeCertificateAxisFault(e);
-         } catch (Throwable ex) {
+         } catch (Exception ex) {
             // Récupère toutes les autres erreurs, y compris les Runtime
             // Permet de catcher par exemple les indisponibilités de la base
             // Cassandra

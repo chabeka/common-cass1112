@@ -81,7 +81,7 @@ public class SAERestoreMasseServiceImpl implements SAERestoreMasseService {
          }
 
          /* erreurs Spring non gérées */
-      } catch (Throwable e) {
+      } catch (Exception e) {
 
          LOGGER.warn(
                "{} - erreur lors de la restore de masse. Exception levée",

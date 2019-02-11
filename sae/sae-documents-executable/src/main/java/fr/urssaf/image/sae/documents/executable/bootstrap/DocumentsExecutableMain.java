@@ -122,7 +122,7 @@ public class DocumentsExecutableMain {
          // -- Execution du service demandé
          executeService(service, properties, context);
 
-      } catch (Throwable throwable) {
+      } catch (Exception throwable) {
          // NOPMD Par Cédric le 10/02/2014 11:30 :
          // On veut récupérer tous les types
          // d'exceptions

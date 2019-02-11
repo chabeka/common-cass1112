@@ -81,7 +81,7 @@ public class SAESuppressionMasseServiceImpl implements SAESuppressionMasseServic
          }
 
          /* erreurs Spring non gérées */
-      } catch (Throwable e) {
+      } catch (Exception e) {
 
          LOGGER.warn(
                "{} - erreur lors de la suppression de masse. Exception levée",

@@ -122,16 +122,7 @@ public class StorageDocumentFromRecycleWriter implements
 
          throw new UpdateServiceEx(except);
 
-         // nous sommes obligés de récupérer les throwable pour les erreurs DFCE
-      } catch (Throwable except) {
-
-         // quand il y a une erreur de mise a jour du document, on tente de
-         // remettre le doc a la corbeille
-         moveToRecycleBean(storageDocument);
-
-         throw new UpdateServiceEx(new Exception(except));
-
-      }
+      } 
    }
    
    /**
@@ -198,11 +189,6 @@ public class StorageDocumentFromRecycleWriter implements
 
          throw new UpdateServiceEx(except);
 
-         // nous sommes obligés de récupérer les throwable pour les erreurs DFCE
-      } catch (Throwable except) {
-
-         throw new UpdateServiceEx(new Exception(except));
-
       }
    }
 
@@ -224,12 +210,7 @@ public class StorageDocumentFromRecycleWriter implements
 
          throw new UpdateServiceEx(except);
 
-         // nous sommes obligés de récupérer les throwable pour les erreurs DFCE
-      } catch (Throwable except) {
-
-         throw new UpdateServiceEx(new Exception(except));
-
-      }
+      } 
    }
 
 }

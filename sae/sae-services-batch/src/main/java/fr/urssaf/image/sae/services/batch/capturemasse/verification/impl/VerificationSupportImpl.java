@@ -351,7 +351,7 @@ public class VerificationSupportImpl implements VerificationSupport {
          LOGGER.debug("{} - fin", CHECK);
 
          /* erreurs de vérification du fichier sommaire */
-      } catch (Throwable e) {
+      } catch (Exception e) {
          LOGGER.warn(
                "une erreur est survenue lors de la vérification de fin de traitement",
                CHECK, e);

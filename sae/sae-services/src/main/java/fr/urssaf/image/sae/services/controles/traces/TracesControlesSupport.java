@@ -88,7 +88,7 @@ public class TracesControlesSupport {
          traceErreurIdent(contexte, formatFichierDeclare, formatFichierReconnu,
                "", idTraitement);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
                .error(
                      "Une erreur est survenue lors de la traçabilité de l'erreur d'identification d'un format de fichier",
@@ -118,7 +118,7 @@ public class TracesControlesSupport {
          traceErreurIdent(contexte, formatFichierDeclare, formatFichierReconnu,
                idDoc, idTraitement);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
                .error(
                      "Une erreur est survenue lors de la traçabilité de l'erreur d'identification d'un format de fichier",
@@ -197,7 +197,7 @@ public class TracesControlesSupport {
 
          traceErreurValid(contexte, formatFichier, details, "", idTraitement);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
                .error(
                      "Une erreur est survenue lors de la traçabilité de l'erreur de validation d'un format de fichier",
@@ -225,7 +225,7 @@ public class TracesControlesSupport {
 
          traceErreurValid(contexte, formatFichier, details, idDoc, idTraitement);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
                .error(
                      "Une erreur est survenue lors de la traçabilité de l'erreur de validation d'un format de fichier",

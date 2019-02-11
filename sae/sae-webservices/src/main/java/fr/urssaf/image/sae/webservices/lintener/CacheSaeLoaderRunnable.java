@@ -43,7 +43,7 @@ public class CacheSaeLoaderRunnable implements Runnable {
                // C'est bon, DFCE est dispo, on peut continuer
                break;
             }
-            catch (final Throwable ex) {
+            catch (final Exception ex) {
                // DFCE n'est pas dispo... on attend un peu avant de retenter...
                LOGGER.warn("DocumentTypeLoaderRunnable : En attente de la disponibilité de DFCE...");
                try {

@@ -200,7 +200,7 @@ public class SAERepriseMasseServiceImpl implements SAERepriseMasseService {
          }
 
          /* erreurs Spring non gérées */
-      } catch (Throwable e) {
+      } catch (Exception e) {
          LOGGER.warn(
                "{} - erreur lors de la reprise de masse. Exception levée",
                TRC_REPRISE, e);

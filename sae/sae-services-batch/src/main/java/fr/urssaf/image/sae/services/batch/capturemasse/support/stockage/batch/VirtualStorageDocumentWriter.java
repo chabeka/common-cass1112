@@ -118,13 +118,7 @@ public class VirtualStorageDocumentWriter extends
          throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
                except);
 
-         /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (Throwable except) {
-
-         throw new InsertionServiceEx("SAE-ST-INS001", except.getMessage(),
-               except);
-
-      }
+      } 
 
    }
 

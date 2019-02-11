@@ -40,7 +40,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          getServiceProvider().openConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
          getLogger().warn("{} - erreur de connexion à DFCE", trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
@@ -69,7 +69,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          getServiceProvider().closeConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
          getLogger().warn(
                           "{} - erreur lors de la fermeture de la base de données",
                           trcPrefix, e);

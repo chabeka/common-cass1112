@@ -101,11 +101,6 @@ public class StorageDocumentToRecycleWriter implements
          updateDocument(uuidJob, storageDocument, null, modifiedMetadatas);
          throw new UpdateServiceEx(except);
 
-         // nous sommes obligés de récupérer les throwable pour les erreurs DFCE 
-      } catch (Throwable except) {
-         // quand il y a une erreur de mise a la corbeille, on tente de supprimer les metas ajoutees
-         updateDocument(uuidJob, storageDocument, null, modifiedMetadatas);
-         throw new UpdateServiceEx(new Exception(except));
       }
    }
 
@@ -128,11 +123,6 @@ public class StorageDocumentToRecycleWriter implements
       } catch (Exception except) {
 
          throw new UpdateServiceEx(except);
-
-         // nous sommes obligés de récupérer les throwable pour les erreurs DFCE 
-      } catch (Throwable except) {
-
-         throw new UpdateServiceEx(new Exception(except));
 
       }
    }

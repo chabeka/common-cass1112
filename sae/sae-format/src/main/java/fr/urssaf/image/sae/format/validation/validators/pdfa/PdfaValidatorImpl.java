@@ -55,7 +55,7 @@ public class PdfaValidatorImpl implements Validator {
          LOGGER.debug("{} - Appel à PdfBox", prefixeTrc);
          erreursValidation = formatValidationService.validate(file);
 
-      } catch (Throwable throwable) {
+      } catch (Exception throwable) {
          throw new ValidatorUnhandledException(throwable);
       }
 
@@ -96,7 +96,7 @@ public class PdfaValidatorImpl implements Validator {
          LOGGER.debug("{} - Appel à PdfBox", prefixeTrc);
          erreursValidation = formatValidationService.validate(stream);
 
-      } catch (Throwable throwable) {
+      } catch (Exception throwable) {
          throw new ValidatorUnhandledException(throwable);
       }
 

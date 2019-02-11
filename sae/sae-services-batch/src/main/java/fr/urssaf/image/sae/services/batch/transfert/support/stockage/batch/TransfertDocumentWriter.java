@@ -119,7 +119,7 @@ implements ItemWriter<StorageDocument> {
          throws TransfertException {
       try {
          transfertService.transfertDocMasse(document);
-      } catch (final Throwable except) {
+      } catch (final Exception except) {
          throw new TransfertException(
                                       "Erreur transfert - identifiant archivage " + document.getUuid()
                                       + " : " + except.getMessage(), except);
@@ -151,7 +151,7 @@ implements ItemWriter<StorageDocument> {
          }
 
          suppressionService.moveToRecycleBeanStorageDocument(uuidJob, document);
-      } catch (final Throwable except) {
+      } catch (final Exception except) {
          throw new SuppressionException(
                                         "Erreur Suppression - identifiant archivage "
                                               + document.getUuid() + " : " + except.getMessage(), except);
@@ -234,7 +234,7 @@ implements ItemWriter<StorageDocument> {
       try {
          storageTransfertService.openConnexion();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",
                           trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
@@ -258,7 +258,7 @@ implements ItemWriter<StorageDocument> {
       try {
          storageTransfertService.closeConnexion();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Throwable e) {
+      } catch (final Exception e) {
          getLogger().warn("{} - erreur lors de la fermeture des services de transfert",
                           trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
