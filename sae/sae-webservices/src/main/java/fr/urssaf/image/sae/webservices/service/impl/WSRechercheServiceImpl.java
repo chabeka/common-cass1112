@@ -254,7 +254,11 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       try {
 
          // Identification de l'indexComposite ou simple à utiliser pour la recherche
-         final List<String> indexOrderPreferenceList = getBestIndex(listeFixedMeta, untypedRangeMeta);
+         final List<String> bestIndex = getBestIndex(listeFixedMeta, untypedRangeMeta);
+         if (LOG.isDebugEnabled()) {
+            final String indexAsString = String.join("-", bestIndex);
+            LOG.debug("{} - Index à utiliser : {}", prefixeTrc, indexAsString);
+         }
 
          // Lancement de la recherche paginée
          final PaginatedUntypedDocuments paginatedUDoc = documentService.searchPaginated(listeFixedMeta,
@@ -264,7 +268,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
                                                                                          nbDocsParPage,
                                                                                          idDoc,
                                                                                          listeMetaSouhaitees,
-                                                                                         indexOrderPreferenceList);
+                                                                                         bestIndex);
 
          final List<UntypedDocument> listeUDoc = paginatedUDoc.getDocuments();
          final boolean lastPage = paginatedUDoc.getLastPage();
