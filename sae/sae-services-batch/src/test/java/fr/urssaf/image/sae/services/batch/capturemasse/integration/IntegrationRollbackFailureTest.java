@@ -343,6 +343,7 @@ public class IntegrationRollbackFailureTest {
 
    }
 
+   @Ignore
    @Test
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,
