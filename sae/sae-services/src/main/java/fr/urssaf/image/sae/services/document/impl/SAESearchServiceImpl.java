@@ -959,8 +959,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     *           : le nombre max de résultat à retourner.
     * @param listeDesiredMetadata
     *           : Liste des métadonnées souhaitées.
-    * @param bestIndex
-    *           L'index à utiliser (liste des codes courts des métadonnées composant l'index)
+    * @param indexOrderPreferenceList
+    *           Les index à utiliser, par ordre de préférence (au format DFCE)
     * @return Une liste de type {@link StorageDocument}
     * @throws SAESearchServiceEx
     *            : Une exception de type {@link SAESearchServiceEx}
@@ -975,7 +975,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                                                                      final String requeteLucene, final int nbDocumentsParPage,
                                                                      final List<AbstractFilter> abstractFilter, final UUID lastIdDoc,
                                                                      final List<SAEMetadata> listeDesiredMetadata, final String codeCourtVaryingMeta,
-                                                                     final List<String> bestIndex)
+                                                                     final List<String> indexOrderPreferenceList)
          throws SAESearchServiceEx, QueryParseServiceEx {
 
       PaginatedStorageDocuments paginatedStorageDocuments = null;
@@ -988,11 +988,12 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                                                                                                                   lastIdDoc,
                                                                                                                   codeCourtVaryingMeta);
 
-         if (bestIndex == null || bestIndex.isEmpty()) {
+         if (indexOrderPreferenceList == null || indexOrderPreferenceList.isEmpty()) {
             paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocuments(
                                                                                                     paginatedLuceneCriteria);
          } else {
-            paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocumentsWithBestIndex(paginatedLuceneCriteria, bestIndex);
+            paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocumentsWithBestIndex(paginatedLuceneCriteria,
+                                                                                                                 indexOrderPreferenceList);
          }
 
       }

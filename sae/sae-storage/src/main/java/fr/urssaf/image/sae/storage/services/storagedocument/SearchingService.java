@@ -121,13 +121,12 @@ public interface SearchingService {
     * 
     * @param paginatedLuceneCriteria
     *           Les critères de recherche
-    * @param bestIndex
-    *           L'index le plus pertinent pour la recherche (liste des codes court des méta composant l'index)
-    * @return
+    * @param indexOrderPreferenceList
+    *           Les index à utiliser, par ordre de préférence (au format DFCE)
     * @throws SearchingServiceEx
     * @throws QueryParseServiceEx
     */
    PaginatedStorageDocuments searchPaginatedStorageDocumentsWithBestIndex(PaginatedLuceneCriteria paginatedLuceneCriteria,
-                                                                          List<String> bestIndex)
+                                                                          List<String> indexOrderPreferenceList)
          throws SearchingServiceEx, QueryParseServiceEx;
 }

@@ -182,7 +182,7 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
          }
 
          // On cherche l'index le plus pertinent à utiliser pour la requête
-         List<String> bestIndex = null;
+         String bestIndex = null;
          if (!StringUtils.containsIgnoreCase(requeteLucene, " OR ")) {
             // Comme in n'y a pas de OR dans la requête, on peut trouver l'index le plus pertinent à utiliser
 
@@ -209,10 +209,11 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
          PaginatedStorageDocuments paginatedStorageDocuments;
          if (bestIndex != null && !bestIndex.isEmpty()) {
             LOGGER.debug("index sélectionné : {}", bestIndex);
-
+            final ArrayList<String> indexOrderPreferenceList = new ArrayList<>();
+            indexOrderPreferenceList.add(bestIndex);
             paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
                                                               .searchPaginatedStorageDocumentsWithBestIndex(paginatedLuceneCriteria,
-                                                                                                            bestIndex);
+                                                                                                            indexOrderPreferenceList);
          } else {
             paginatedStorageDocuments = storageServiceProvider.getStorageDocumentService()
                                                               .searchPaginatedStorageDocuments(paginatedLuceneCriteria);

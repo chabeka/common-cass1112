@@ -36,160 +36,160 @@ import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
 @SuppressWarnings({"PMD.MethodNamingConventions", "PMD.PreserveStackTrace",
                    "PMD.AvoidPrintStackTrace"})
 public class RechercheIterateurFailureTest {
-  @Autowired
-  private SaeServiceSkeleton skeleton;
+   @Autowired
+   private SaeServiceSkeleton skeleton;
 
-  @Autowired
-  private SAEDocumentService documentService;
+   @Autowired
+   private SAEDocumentService documentService;
 
-  @Autowired
-  private IndexCompositeService indexCompositeService;
+   @Autowired
+   private IndexCompositeService indexCompositeService;
 
-  private static final String VIDE = "";
+   private static final String VIDE = "";
 
-  private static final String TITRE = "Titre";
+   private static final String TITRE = "Titre";
 
-  private static final String SAE = "sae";
+   private static final String SAE = "sae";
 
-  @After
-  public void after() {
-    EasyMock.reset(documentService, indexCompositeService);
-  }
+   @After
+   public void after() {
+      EasyMock.reset(documentService, indexCompositeService);
+   }
 
-  private RechercheParIterateur createSearchIterateurType(final String filePath) {
-    try {
-      final XMLStreamReader reader = XMLStreamUtils
-                                                   .createXMLStreamReader(filePath);
-      return RechercheParIterateur.Factory.parse(reader);
+   private RechercheParIterateur createSearchIterateurType(final String filePath) {
+      try {
+         final XMLStreamReader reader = XMLStreamUtils
+                                                      .createXMLStreamReader(filePath);
+         return RechercheParIterateur.Factory.parse(reader);
 
-    }
-    catch (final Exception e) {
-      throw new NestableRuntimeException(e);
-    }
+      }
+      catch (final Exception e) {
+         throw new NestableRuntimeException(e);
+      }
 
-  }
+   }
 
-  private static final String AXIS_FAULT = "AxisFault non attendue";
+   private static final String AXIS_FAULT = "AxisFault non attendue";
 
-  private static void assertAxisFault(final AxisFault axisFault, final String expectedMsg,
-                                      final String expectedType, final String expectedPrefix) {
+   private static void assertAxisFault(final AxisFault axisFault, final String expectedMsg,
+                                       final String expectedType, final String expectedPrefix) {
 
-    Assert.assertEquals(AXIS_FAULT, expectedMsg, axisFault.getMessage());
-    Assert.assertEquals(AXIS_FAULT,
-                        expectedType,
-                        axisFault.getFaultCode()
-                                 .getLocalPart());
-    Assert.assertEquals(AXIS_FAULT,
-                        expectedPrefix,
-                        axisFault.getFaultCode()
-                                 .getPrefix());
-  }
+      Assert.assertEquals(AXIS_FAULT, expectedMsg, axisFault.getMessage());
+      Assert.assertEquals(AXIS_FAULT,
+                          expectedType,
+                          axisFault.getFaultCode()
+                                   .getLocalPart());
+      Assert.assertEquals(AXIS_FAULT,
+                          expectedPrefix,
+                          axisFault.getFaultCode()
+                                   .getPrefix());
+   }
 
-  /**
-   * Test qui echoue car la liste des metadonnées est non recherchable
-   * 
-   * @throws SAESearchServiceEx
-   * @throws SyntaxLuceneEx
-   * @throws UnknownLuceneMetadataEx
-   * @throws UnknownDesiredMetadataEx
-   * @throws MetaDataUnauthorizedToConsultEx
-   * @throws MetaDataUnauthorizedToSearchEx
-   * @throws SaeAccessDeniedAxisFault
-   * @throws UnknownFiltresMetadataEx
-   * @throws DoublonFiltresMetadataEx
-   * @throws IndexCompositeException
-   */
-  @Test
-  public void searchFailureSAESearchServiceEx() throws SAESearchServiceEx,
-      MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-      UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-      SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
+   /**
+    * Test qui echoue car la liste des metadonnées est non recherchable
+    * 
+    * @throws SAESearchServiceEx
+    * @throws SyntaxLuceneEx
+    * @throws UnknownLuceneMetadataEx
+    * @throws UnknownDesiredMetadataEx
+    * @throws MetaDataUnauthorizedToConsultEx
+    * @throws MetaDataUnauthorizedToSearchEx
+    * @throws SaeAccessDeniedAxisFault
+    * @throws UnknownFiltresMetadataEx
+    * @throws DoublonFiltresMetadataEx
+    * @throws IndexCompositeException
+    */
+   @Test
+   public void searchFailureSAESearchServiceEx() throws SAESearchServiceEx,
+         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
+         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx, IndexCompositeException {
 
-    final List<String> listMetaDesired = new ArrayList<>();
-    listMetaDesired.add("TailleFichier");
+      final List<String> listMetaDesired = new ArrayList<>();
+      listMetaDesired.add("TailleFichier");
 
-    try {
-      // valeur attendu est MetaDataUnauthorizedToSearchEx via andThrow
-      EasyMock
-              .expect(
-                      documentService.searchPaginated(
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyInt(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject()))
-              .andThrow(
-                        new MetaDataUnauthorizedToSearchEx(
-                                                           "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
-                                                               + listMetaDesired + "."));
+      try {
+         // valeur attendu est MetaDataUnauthorizedToSearchEx via andThrow
+         EasyMock
+                 .expect(
+                         documentService.searchPaginated(
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyInt(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject()))
+                 .andThrow(
+                           new MetaDataUnauthorizedToSearchEx(
+                                                              "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
+                                                                    + listMetaDesired + "."));
 
-      EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+         EasyMock.expect(indexCompositeService.untypedMetadatasToShortCodeMetadatas(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
 
-      EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(new ArrayList<>()).anyTimes();
+         EasyMock.expect(indexCompositeService.getBestIndexForQuery(EasyMock.anyObject())).andReturn(null).anyTimes();
 
-      EasyMock.replay(documentService, indexCompositeService);
+         EasyMock.replay(documentService, indexCompositeService);
 
-      final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_failure_01.xml");
+         final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_failure_01.xml");
 
-      skeleton.rechercheParIterateurSecure(request)
-              .getRechercheParIterateurResponse();
+         skeleton.rechercheParIterateurSecure(request)
+                 .getRechercheParIterateurResponse();
 
-      Assert
-            .fail("le test doit échouer à cause de la levée d'une exception de type "
-                + SAESearchServiceEx.class);
+         Assert
+               .fail("le test doit échouer à cause de la levée d'une exception de type "
+                     + SAESearchServiceEx.class);
 
-    }
-    catch (final AxisFault fault) {
-      assertAxisFault(
-                      fault,
-                      "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
-                          + listMetaDesired + ".",
-                      "RechercheMetadonneesInterdite",
-                      SAE);
-    }
-  }
+      }
+      catch (final AxisFault fault) {
+         assertAxisFault(
+                         fault,
+                         "La ou les m\u00E9tadonn\u00E9es suivantes, utilis\u00E9es dans la requ\u00EAte de recherche, ne sont pas autoris\u00E9s comme crit\u00E8res de recherche : "
+                               + listMetaDesired + ".",
+                         "RechercheMetadonneesInterdite",
+                         SAE);
+      }
+   }
 
-  @Test
-  public void search_Failure_RuntimeException() throws SAESearchServiceEx,
-      MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
-      UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
-      SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
+   @Test
+   public void search_Failure_RuntimeException() throws SAESearchServiceEx,
+         MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
+         UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx,
+         SaeAccessDeniedAxisFault, UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
 
-    try {
+      try {
 
-      EasyMock.expect(
-                      documentService.searchPaginated(EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyInt(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject(),
-                                                      EasyMock.anyObject()))
-              .andThrow(new RuntimeException("une runtime exception est levée"));
+         EasyMock.expect(
+                         documentService.searchPaginated(EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyInt(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject(),
+                                                         EasyMock.anyObject()))
+                 .andThrow(new RuntimeException("une runtime exception est levée"));
 
-      EasyMock.replay(documentService);
+         EasyMock.replay(documentService);
 
-      final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_failure_01.xml");
+         final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_failure_01.xml");
 
-      skeleton.rechercheParIterateurSecure(request)
-              .getRechercheParIterateurResponse();
+         skeleton.rechercheParIterateurSecure(request)
+                 .getRechercheParIterateurResponse();
 
-      Assert
-            .fail("le test doit échouer à cause de la levée d'une exception de type "
-                + SAESearchServiceEx.class);
+         Assert
+               .fail("le test doit échouer à cause de la levée d'une exception de type "
+                     + SAESearchServiceEx.class);
 
-    }
-    catch (final AxisFault fault) {
-      assertAxisFault(
-                      fault,
-                      "Une erreur interne à l'application est survenue lors de la recherche.",
-                      "ErreurInterneRecherche",
-                      SAE);
-    }
-  }
+      }
+      catch (final AxisFault fault) {
+         assertAxisFault(
+                         fault,
+                         "Une erreur interne à l'application est survenue lors de la recherche.",
+                         "ErreurInterneRecherche",
+                         SAE);
+      }
+   }
 
 }

@@ -90,9 +90,9 @@ public interface IndexCompositeService {
     *           La liste des code courts des métadonnées valorisées dans la recherche. Il convient de trouver un
     *           index entièrement composé avec ces métadonnées
     * @return
-    *         Liste des codes courts des métadonnées composant l'index trouvé
+    *         L'index, (avec des codes courts de métadonnées)
     */
-   List<String> getBestIndexForQuery(Collection<String> shortCodeRequiredMetadatas) throws IndexCompositeException;
+   String getBestIndexForQuery(Collection<String> shortCodeRequiredMetadatas) throws IndexCompositeException;
 
    /**
     * Service de conversion d’une liste d'objets de type UntypedMetadata
