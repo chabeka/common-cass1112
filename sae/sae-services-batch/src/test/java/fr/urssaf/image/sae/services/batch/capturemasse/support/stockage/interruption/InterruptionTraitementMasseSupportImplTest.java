@@ -89,7 +89,7 @@ public class InterruptionTraitementMasseSupportImplTest {
 
     dfceServices.reconnect();
 
-    EasyMock.expectLastCall().andThrow(new Error("erreur connexion")).once();
+    EasyMock.expectLastCall().andThrow(new Exception("erreur connexion")).once();
 
     EasyMock.replay(dfceServices);
 

@@ -351,7 +351,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       // règlage storageDocumentService
       storageDocumentService.deleteStorageDocument(EasyMock
             .anyObject(UUID.class));
-      EasyMock.expectLastCall().andThrow(new Error(ERREUR_ROLLBACK)).once();
+      EasyMock.expectLastCall().andThrow(new Exception(ERREUR_ROLLBACK)).once();
 
       UUID idTraitement = UUID.randomUUID();
       StorageDocument storageDocument = new StorageDocument();
@@ -367,7 +367,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
       .expect(
             storageDocumentService.insertStorageDocument(EasyMock
                   .anyObject(StorageDocument.class)))
-                  .andThrow(new Error(MESSAGE_ERREUR)).once();
+                  .andThrow(new Exception(MESSAGE_ERREUR)).once();
 
       JobExecution jobExecution = new JobExecution(1L);
       StepExecution execution = new StepExecution("controleSommaireStep",

@@ -27,6 +27,7 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -218,7 +219,8 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
             "Caused by: java.lang.RuntimeException: erreur ouverture base");
 
    }
-
+   
+   @Ignore
    @Test
    @DirtiesContext
    public void testLancementThrowable() throws ConnectionServiceEx,

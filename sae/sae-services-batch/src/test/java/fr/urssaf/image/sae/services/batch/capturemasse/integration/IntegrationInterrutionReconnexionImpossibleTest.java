@@ -259,7 +259,7 @@ public class IntegrationInterrutionReconnexionImpossibleTest {
     config.setDelay(70);
 
     dfceServices.reconnect();
-    EasyMock.expectLastCall().andThrow(new Error(ERREUR_CONNEXION));
+    EasyMock.expectLastCall().andThrow(new Exception(ERREUR_CONNEXION));
 
     // règlage provider
     provider.openConnexion();
