@@ -247,10 +247,10 @@ public class SearchingServiceImpl extends AbstractServices implements
     */
    @Override
    public PaginatedStorageDocuments searchPaginatedStorageDocumentsWithBestIndex(final PaginatedLuceneCriteria paginatedLuceneCriteria,
-                                                                                 final List<String> bestIndex)
+                                                                                 final List<String> indexOrderPreferenceList)
          throws SearchingServiceEx, QueryParseServiceEx {
 
-      return searchByIterator(paginatedLuceneCriteria, bestIndex, false, true);
+      return searchByIterator(paginatedLuceneCriteria, indexOrderPreferenceList, false, true);
    }
 
    /**
@@ -270,6 +270,8 @@ public class SearchingServiceImpl extends AbstractServices implements
     *
     * @param paginatedLuceneCriteria
     *           requete lucene que l'on veut paginer
+    * @param indexOrderPreferenceList
+    *           Les index à utiliser, par ordre de préférence (au format DFCE)
     * @param searchInRecycleBean
     *           boolean indiquant si l'on recherche dans le stockage par defaut
     *           ou la corbeille

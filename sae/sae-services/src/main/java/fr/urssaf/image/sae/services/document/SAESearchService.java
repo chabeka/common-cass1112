@@ -87,7 +87,8 @@ public interface SAESearchService {
     */
    @PreAuthorize("hasRole('recherche')")
    List<UntypedDocument> search(String requete, List<String> listMetaDesired,
-         int maxResult) throws MetaDataUnauthorizedToSearchEx,
+                                int maxResult)
+         throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx;
 
@@ -112,6 +113,8 @@ public interface SAESearchService {
     * @param listeDesiredMetadata
     *           Liste des métadonnées souhaitées en retour de recherche
     *           du résultat final
+    * @param indexOrderPreferenceList
+    *           Liste des index à utiliser, au format DFCE, par ordre de préférence
     * @return La liste des documents trouvés
     * @throws MetaDataUnauthorizedToSearchEx
     *            Erreur si une méta n'est pas autorisée à la recherche
@@ -133,12 +136,12 @@ public interface SAESearchService {
     */
    @PreAuthorize("hasRole('recherche_iterateur')")
    PaginatedUntypedDocuments searchPaginated(
-         List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata,
-         List<AbstractMetadata> listeFiltreEgal,
-         List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata,
-         List<String> indexOrderPreferenceList)
+                                             List<UntypedMetadata> fixedMetadatas,
+                                             UntypedRangeMetadata varyingMetadata,
+                                             List<AbstractMetadata> listeFiltreEgal,
+                                             List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
+                                             UUID lastIdDoc, List<String> listeDesiredMetadata,
+                                             List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,

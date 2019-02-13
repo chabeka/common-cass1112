@@ -254,8 +254,14 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       try {
 
          // Identification de l'indexComposite ou simple à utiliser pour la recherche
-         final List<String> indexOrderPreferenceList = getBestIndex(listeFixedMeta, untypedRangeMeta);
-
+         final String bestIndex = getBestIndex(listeFixedMeta, untypedRangeMeta);
+         if (LOG.isDebugEnabled()) {
+            LOG.debug("{} - Index à utiliser : {}", prefixeTrc, bestIndex);
+         }
+         final ArrayList<String> indexOrderPreferenceList = new ArrayList<>();
+         if (bestIndex != null) {
+            indexOrderPreferenceList.add(bestIndex);
+         }
          // Lancement de la recherche paginée
          final PaginatedUntypedDocuments paginatedUDoc = documentService.searchPaginated(listeFixedMeta,
                                                                                          untypedRangeMeta,
@@ -544,7 +550,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
     * @throws IndexCompositeException
     * @{@link IndexCompositeException}
     */
-   private List<String> getBestIndex(final List<UntypedMetadata> listeFixedMeta, final UntypedRangeMetadata untypedRangeMeta)
+   private String getBestIndex(final List<UntypedMetadata> listeFixedMeta, final UntypedRangeMetadata untypedRangeMeta)
          throws IndexCompositeException {
 
       // On souhaite trouver un index dont l'ensemble des métadonnées qui le composent sont valorisées à partir

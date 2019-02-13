@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.metadata.referential.services.impl;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -26,242 +25,236 @@ import net.docubase.toolkit.model.reference.CompositeIndex;
 @Service
 public class IndexCompositeServiceImpl implements IndexCompositeService {
 
-  /**
-   * Service permettant d'exécuter la recherche paginée
-   */
-  @Autowired
-  @Qualifier("storageServiceProvider")
-  private StorageServiceProvider storageServiceProvider;
+   /**
+    * Service permettant d'exécuter la recherche paginée
+    */
+   @Autowired
+   @Qualifier("storageServiceProvider")
+   private StorageServiceProvider storageServiceProvider;
 
-  @Autowired
-  private MetadataReferenceDAO referenceDAO;
+   @Autowired
+   private MetadataReferenceDAO referenceDAO;
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public List<SaeIndexComposite> getAllComputedIndexComposite() {
-    // -- Récupération la liste des index composites
-    final List<SaeIndexComposite> listIndexComposites = new ArrayList<>();
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public List<SaeIndexComposite> getAllComputedIndexComposite() {
+      // -- Récupération la liste des index composites
+      final List<SaeIndexComposite> listIndexComposites = new ArrayList<>();
 
-    final Set<CompositeIndex> compositeIndexes = storageServiceProvider.getStorageDocumentService().getAllIndexComposite();
-    final Iterator<CompositeIndex> iter = compositeIndexes.iterator();
-    while (iter.hasNext()) {
-      final CompositeIndex index = iter.next();
-      final SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
-      // On ne récupère que les indexComposite indexés
-      if (index.isComputed()) {
-        listIndexComposites.add(saeIndexComposite);
-      }
-    }
-
-    return listIndexComposites;
-
-  }
-
-  @Override
-  public boolean checkIndexCompositeValid(final SaeIndexComposite indexComposite, final Collection<String> listShortCodeMetadatas) {
-    boolean isIndexValid = true;
-
-    final String[] listCriteresIndex = indexComposite.getName().split("&");
-
-    // 1- L'indexComposite ne peut pas contenir plus de critères que la
-    // requête
-    if (listCriteresIndex.length > listShortCodeMetadatas.size()) {
-      isIndexValid = false;
-    }
-    // 2- Les codes de l'indexComposite doivent être compris dans les
-    // critères
-    else {
-
-      for (final String critere : listCriteresIndex) {
-        if (!listShortCodeMetadatas.contains(critere)) {
-          isIndexValid = false;
-          break;
-        }
+      final Set<CompositeIndex> compositeIndexes = storageServiceProvider.getStorageDocumentService().getAllIndexComposite();
+      final Iterator<CompositeIndex> iter = compositeIndexes.iterator();
+      while (iter.hasNext()) {
+         final CompositeIndex index = iter.next();
+         final SaeIndexComposite saeIndexComposite = new SaeIndexComposite(index);
+         // On ne récupère que les indexComposite indexés
+         if (index.isComputed()) {
+            listIndexComposites.add(saeIndexComposite);
+         }
       }
 
-    }
-    return isIndexValid;
-  }
+      return listIndexComposites;
 
-  @Override
-  public boolean isIndexCompositeValid(final SaeIndexComposite indexComposite, final List<SAEMetadata> listSaeMetadatas) {
+   }
 
-    return checkIndexCompositeValid(indexComposite, getListShortCodeMetadata(listSaeMetadatas));
+   @Override
+   public boolean checkIndexCompositeValid(final SaeIndexComposite indexComposite, final Collection<String> listShortCodeMetadatas) {
+      boolean isIndexValid = true;
 
-  }
+      final String[] listCriteresIndex = indexComposite.getName().split("&");
 
-  @Override
-  public List<SAEMetadata> untypedMetadatasToCodeSaeMetadatas(final List<UntypedMetadata> metadatas)
-      throws IndexCompositeException {
-
-    final List<SAEMetadata> saeMetadatas = new ArrayList<>();
-    for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
-      try {
-        final MetadataReference reference = referenceDAO
-                                                        .getByLongCode(metadata.getLongCode());
-
-        saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
-                                         reference.getShortCode(),
-                                         null));
+      // 1- L'indexComposite ne peut pas contenir plus de critères que la
+      // requête
+      if (listCriteresIndex.length > listShortCodeMetadatas.size()) {
+         isIndexValid = false;
       }
-      catch (final ReferentialException refExcpt) {
-        throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
-      }
-    }
+      // 2- Les codes de l'indexComposite doivent être compris dans les
+      // critères
+      else {
 
-    return saeMetadatas;
-
-  }
-
-  @Override
-  public List<String> untypedMetadatasToShortCodeMetadatas(final List<UntypedMetadata> metadatas)
-      throws IndexCompositeException {
-
-    final List<String> result = new ArrayList<>();
-    for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
-      try {
-        final MetadataReference reference = referenceDAO.getByLongCode(metadata.getLongCode());
-        if (reference != null) {
-          result.add(reference.getShortCode());
-        }
+         for (final String critere : listCriteresIndex) {
+            if (!listShortCodeMetadatas.contains(critere)) {
+               isIndexValid = false;
+               break;
+            }
+         }
 
       }
-      catch (final ReferentialException refExcpt) {
-        throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
+      return isIndexValid;
+   }
+
+   @Override
+   public boolean isIndexCompositeValid(final SaeIndexComposite indexComposite, final List<SAEMetadata> listSaeMetadatas) {
+
+      return checkIndexCompositeValid(indexComposite, getListShortCodeMetadata(listSaeMetadatas));
+
+   }
+
+   @Override
+   public List<SAEMetadata> untypedMetadatasToCodeSaeMetadatas(final List<UntypedMetadata> metadatas)
+         throws IndexCompositeException {
+
+      final List<SAEMetadata> saeMetadatas = new ArrayList<>();
+      for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         try {
+            final MetadataReference reference = referenceDAO
+                                                            .getByLongCode(metadata.getLongCode());
+
+            saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
+                                             reference.getShortCode(),
+                                             null));
+         }
+         catch (final ReferentialException refExcpt) {
+            throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
+         }
       }
-    }
 
-    return result;
-  }
+      return saeMetadatas;
 
-  @Override
-  public List<String> longCodeMetadatasToShortCodeMetadatas(final Collection<String> metadatas)
-      throws IndexCompositeException {
+   }
 
-    final List<String> result = new ArrayList<>();
-    for (final String longCode : Utils.nullSafeIterable(metadatas)) {
-      try {
-        final MetadataReference reference = referenceDAO.getByLongCode(longCode);
+   @Override
+   public List<String> untypedMetadatasToShortCodeMetadatas(final List<UntypedMetadata> metadatas)
+         throws IndexCompositeException {
 
-        result.add(reference.getShortCode());
+      final List<String> result = new ArrayList<>();
+      for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+         try {
+            final MetadataReference reference = referenceDAO.getByLongCode(metadata.getLongCode());
+            if (reference != null) {
+               result.add(reference.getShortCode());
+            }
+
+         }
+         catch (final ReferentialException refExcpt) {
+            throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
+         }
       }
-      catch (final ReferentialException refExcpt) {
-        throw new IndexCompositeException("Erreur de récupération de la métadonnée " + longCode, refExcpt);
+
+      return result;
+   }
+
+   @Override
+   public List<String> longCodeMetadatasToShortCodeMetadatas(final Collection<String> metadatas)
+         throws IndexCompositeException {
+
+      final List<String> result = new ArrayList<>();
+      for (final String longCode : Utils.nullSafeIterable(metadatas)) {
+         try {
+            final MetadataReference reference = referenceDAO.getByLongCode(longCode);
+
+            result.add(reference.getShortCode());
+         }
+         catch (final ReferentialException refExcpt) {
+            throw new IndexCompositeException("Erreur de récupération de la métadonnée " + longCode, refExcpt);
+         }
       }
-    }
 
-    return result;
-  }
+      return result;
+   }
 
-  @Override
-  public SaeIndexComposite getBestIndexComposite(final List<SaeIndexComposite> indexCandidats) {
-    if (indexCandidats.isEmpty()) {
+   @Override
+   public SaeIndexComposite getBestIndexComposite(final List<SaeIndexComposite> indexCandidats) {
+      if (indexCandidats.isEmpty()) {
+         return null;
+      }
+      // Rechercher l'index avec le plus de critères
+      SaeIndexComposite bestIndex = indexCandidats.get(0);
+      int bestIndexElementsCount = bestIndex.getCategories().size();
+      for (final SaeIndexComposite currentIndex : indexCandidats) {
+         final int currentIndexElementsCount = currentIndex.getCategories().size();
+         if (currentIndexElementsCount > bestIndexElementsCount) {
+            bestIndex = currentIndex;
+            bestIndexElementsCount = currentIndexElementsCount;
+         }
+      }
+      return bestIndex;
+   }
+
+   @Override
+   public String getBestIndexForQuery(final Collection<String> shortCodeRequiredMetadatas)
+         throws IndexCompositeException {
+      if (shortCodeRequiredMetadatas == null) {
+         return null;
+      }
+      // Récupération de la liste complète des index composites
+      final List<SaeIndexComposite> candidats = getAllComputedIndexComposite();
+
+      // On en garde que ceux qui conviennent
+      final List<SaeIndexComposite> allowedCompositeIndex = new ArrayList<>();
+      for (final SaeIndexComposite index : candidats) {
+         if (checkIndexCompositeValid(index, shortCodeRequiredMetadatas)) {
+            allowedCompositeIndex.add(index);
+         }
+      }
+      if (!allowedCompositeIndex.isEmpty()) {
+         // On prend le plus pertinent
+         final SaeIndexComposite indexCompositeCandidat = getBestIndexComposite(allowedCompositeIndex);
+         return indexCompositeCandidat.getName();
+      } else {
+         // On n'a pas trouvé d'index composite qui convient. On cherche donc un index simple
+         for (final String metadata : shortCodeRequiredMetadatas) {
+            if (isIndexedMetadataByShortCode(metadata)) {
+               return metadata;
+            }
+         }
+
+      }
+      // On n'a rien trouvé !
       return null;
-    }
-    // Rechercher l'index avec le plus de critères
-    SaeIndexComposite bestIndex = indexCandidats.get(0);
-    int bestIndexElementsCount = bestIndex.getCategories().size();
-    for (final SaeIndexComposite currentIndex : indexCandidats) {
-      final int currentIndexElementsCount = currentIndex.getCategories().size();
-      if (currentIndexElementsCount > bestIndexElementsCount) {
-        bestIndex = currentIndex;
-        bestIndexElementsCount = currentIndexElementsCount;
-      }
-    }
-    return bestIndex;
-  }
+   }
 
-  @Override
-  public List<String> getBestIndexForQuery(final Collection<String> shortCodeRequiredMetadatas)
-      throws IndexCompositeException {
-    if (shortCodeRequiredMetadatas == null) {
-      // On renvoie null et non pas une liste vide, car une liste vide voudrait dire qu'on a trouvé un index
-      // composé de zéro métadonnées, ce qui n'est pas le cas.
-      return null;
-    }
-    // Récupération de la liste complète des index composites
-    final List<SaeIndexComposite> candidats = getAllComputedIndexComposite();
+   @Override
+   public boolean isIndexedMetadata(final UntypedMetadata metadata) throws IndexCompositeException {
 
-    // On en garde que ceux qui conviennent
-    final List<SaeIndexComposite> allowedCompositeIndex = new ArrayList<>();
-    for (final SaeIndexComposite index : candidats) {
-      if (checkIndexCompositeValid(index, shortCodeRequiredMetadatas)) {
-        allowedCompositeIndex.add(index);
+      boolean isMetadataIndexed = false;
+
+      try {
+         final MetadataReference reference = referenceDAO
+                                                         .getByLongCode(metadata.getLongCode());
+         isMetadataIndexed = reference.getIsIndexed();
+
       }
-    }
-    if (!allowedCompositeIndex.isEmpty()) {
-      // On prend le plus pertinent
-      final SaeIndexComposite indexCompositeCandidat = getBestIndexComposite(allowedCompositeIndex);
-      return Arrays.asList(indexCompositeCandidat.getName().split("&"));
-    } else {
-      // On n'a pas trouvé d'index composite qui convient. On cherche donc un index simple
-      for (final String metadata : shortCodeRequiredMetadatas) {
-        if (isIndexedMetadataByShortCode(metadata)) {
-          final ArrayList<String> result = new ArrayList<>();
-          result.add(metadata);
-          return result;
-        }
+      catch (final ReferentialException refExcpt) {
+         throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
       }
 
-    }
-    // On n'a rien trouvé !
-    // On renvoie null et non pas une liste vide, car une liste vide voudrait dire qu'on a trouvé un index
-    // composé de zéro métadonnées, ce qui n'est pas le cas.
-    return null;
-  }
+      return isMetadataIndexed;
+   }
 
-  @Override
-  public boolean isIndexedMetadata(final UntypedMetadata metadata) throws IndexCompositeException {
+   @Override
+   public boolean isIndexedMetadataByShortCode(final String shortCodeMetadata) throws IndexCompositeException {
 
-    boolean isMetadataIndexed = false;
+      boolean isMetadataIndexed = false;
 
-    try {
-      final MetadataReference reference = referenceDAO
-                                                      .getByLongCode(metadata.getLongCode());
-      isMetadataIndexed = reference.getIsIndexed();
+      try {
+         final MetadataReference reference = referenceDAO
+                                                         .getByShortCode(shortCodeMetadata);
+         isMetadataIndexed = reference.getIsIndexed();
 
-    }
-    catch (final ReferentialException refExcpt) {
-      throw new IndexCompositeException("Erreur de récupération de la métadonnée " + metadata.getLongCode(), refExcpt);
-    }
+      }
+      catch (final ReferentialException refExcpt) {
+         throw new IndexCompositeException("Erreur de récupération de la métadonnée " + shortCodeMetadata, refExcpt);
+      }
 
-    return isMetadataIndexed;
-  }
+      return isMetadataIndexed;
+   }
 
-  @Override
-  public boolean isIndexedMetadataByShortCode(final String shortCodeMetadata) throws IndexCompositeException {
+   /**
+    * Retourne une liste de codes courts des métadonnées passées en paramètre
+    * 
+    * @param listMetadata
+    * @return
+    */
+   private List<String> getListShortCodeMetadata(final List<SAEMetadata> listMetadata) {
 
-    boolean isMetadataIndexed = false;
+      final List<String> listShortCodeMetadata = new ArrayList<>();
+      for (final SAEMetadata saeMetadata : listMetadata) {
+         listShortCodeMetadata.add(saeMetadata.getShortCode());
+      }
+      return listShortCodeMetadata;
 
-    try {
-      final MetadataReference reference = referenceDAO
-                                                      .getByShortCode(shortCodeMetadata);
-      isMetadataIndexed = reference.getIsIndexed();
-
-    }
-    catch (final ReferentialException refExcpt) {
-      throw new IndexCompositeException("Erreur de récupération de la métadonnée " + shortCodeMetadata, refExcpt);
-    }
-
-    return isMetadataIndexed;
-  }
-
-  /**
-   * Retourne une liste de codes courts des métadonnées passées en paramètre
-   * 
-   * @param listMetadata
-   * @return
-   */
-  private List<String> getListShortCodeMetadata(final List<SAEMetadata> listMetadata) {
-
-    final List<String> listShortCodeMetadata = new ArrayList<>();
-    for (final SAEMetadata saeMetadata : listMetadata) {
-      listShortCodeMetadata.add(saeMetadata.getShortCode());
-    }
-    return listShortCodeMetadata;
-
-  }
+   }
 
 }
