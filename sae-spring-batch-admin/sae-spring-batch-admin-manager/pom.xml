@@ -8,7 +8,7 @@
 visualization of Batch meta data, and also launching and stopping jobs inside the webapp container.]]></description>
    <parent>
       <artifactId>sae-spring-batch-admin-parent</artifactId>
-      <groupId>org.springframework.batch</groupId>
+      <groupId>fr.urssaf.image.sae</groupId>
       <version>1.2.3.BUILD-SNAPSHOT</version>
       <relativePath>../sae-spring-batch-admin-parent</relativePath>
    </parent>
@@ -119,7 +119,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
          <optional>true</optional>
       </dependency>
       <dependency>
-         <groupId>org.springframework.batch</groupId>
+         <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-spring-batch-integration</artifactId>
          <version>${project.parent.version}</version>
       </dependency>
@@ -205,7 +205,7 @@ visualization of Batch meta data, and also launching and stopping jobs inside th
          <artifactId>freemarker</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.springframework.batch</groupId>
+         <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-spring-batch-admin-resources</artifactId>
          <version>${project.parent.version}</version>
       </dependency>

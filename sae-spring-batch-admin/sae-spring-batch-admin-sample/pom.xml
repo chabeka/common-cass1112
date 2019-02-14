@@ -6,7 +6,7 @@
    <description>A sample web application (WAR project) for Spring Batch Admin console.</description>
    <parent>
       <artifactId>sae-spring-batch-admin-parent</artifactId>
-      <groupId>org.springframework.batch</groupId>
+      <groupId>fr.urssaf.image.sae</groupId>
       <version>1.2.3.BUILD-SNAPSHOT</version>
       <relativePath>../sae-spring-batch-admin-parent</relativePath>
    </parent>
@@ -236,12 +236,12 @@
          <artifactId>spring-batch-infrastructure</artifactId>
       </dependency>
       <dependency>
-         <groupId>org.springframework.batch</groupId>
+         <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-spring-batch-admin-manager</artifactId>
          <version>${project.parent.version}</version>
       </dependency>
       <dependency>
-         <groupId>org.springframework.batch</groupId>
+         <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-spring-batch-admin-resources</artifactId>
          <version>${project.parent.version}</version>
       </dependency>

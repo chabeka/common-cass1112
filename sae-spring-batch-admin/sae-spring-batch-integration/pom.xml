@@ -5,7 +5,7 @@
 	<name>SAE Spring Batch Admin Integration</name>
 	<url>http://static.springframework.org/spring-batch/${project.artifactId}</url>
 	<parent>
-		<groupId>org.springframework.batch</groupId>
+		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae-spring-batch-admin-parent</artifactId>
 		<version>1.2.3.BUILD-SNAPSHOT</version>
 		<relativePath>../sae-spring-batch-admin-parent</relativePath>
