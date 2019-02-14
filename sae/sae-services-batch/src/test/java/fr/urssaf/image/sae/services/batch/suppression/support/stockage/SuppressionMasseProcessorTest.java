@@ -360,11 +360,13 @@ public class SuppressionMasseProcessorTest {
                       mockService.searchPaginatedStorageDocuments(EasyMock
                                                                           .anyObject(PaginatedLuceneCriteria.class)))
               .andReturn(retour)
-              .times(2);
+              .times(1);
 
       mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+    		  							EasyMock.anyObject(UUID.class),
                                         (List<StorageMetadata>) EasyMock.anyObject(),
                                         (List<StorageMetadata>) EasyMock.anyObject());
+      
 
       EasyMock.expectLastCall().times(2);
 
