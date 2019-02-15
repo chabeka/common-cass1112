@@ -18,6 +18,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.dfce.exception.DFCEConnectionServiceException;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.exception.InterruptionTraitementException;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.model.InterruptionTraitementConfig;
@@ -89,7 +90,7 @@ public class InterruptionTraitementMasseSupportImplTest {
 
     dfceServices.reconnect();
 
-    EasyMock.expectLastCall().andThrow(new Exception("erreur connexion")).once();
+    EasyMock.expectLastCall().andThrow(new DFCEConnectionServiceException("erreur connexion")).once();
 
     EasyMock.replay(dfceServices);
 

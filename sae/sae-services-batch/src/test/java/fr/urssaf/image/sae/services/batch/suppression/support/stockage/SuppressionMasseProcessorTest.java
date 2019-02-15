@@ -284,7 +284,7 @@ public class SuppressionMasseProcessorTest {
               .andReturn(retour)
               .times(2);
 
-      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),
+      mockService.updateStorageDocument(EasyMock.anyObject(UUID.class),EasyMock.anyObject(UUID.class),
                                         (List<StorageMetadata>) EasyMock.anyObject(),
                                         (List<StorageMetadata>) EasyMock.anyObject());
 
