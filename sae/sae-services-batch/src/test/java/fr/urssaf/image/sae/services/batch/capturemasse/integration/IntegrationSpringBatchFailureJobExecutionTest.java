@@ -29,6 +29,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobInstance;
 import org.springframework.batch.core.repository.dao.JobExecutionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -78,6 +80,7 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeJobExecutionDao;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
+import fr.urssaf.image.sae.utils.SaveException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -191,7 +194,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
 
       server.resetData();
    }
-   @Ignore
+   
    @Test
    @DirtiesContext
    public void testLancementErreurBefore() throws ConnectionServiceEx,
@@ -217,7 +220,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       checkLogsBefore();
 
    }
-   @Ignore
+  
    @Test
    @DirtiesContext
    public void testLancementErreurAfter() throws ConnectionServiceEx,
@@ -229,7 +232,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
       initErreurAfter();
       initComposantsGeneral();
       initDatas();
-
+              
       ExitTraitement exitStatus = service.captureMasse(
             ecdeTestSommaire.getUrlEcde(), UUID.randomUUID());
 

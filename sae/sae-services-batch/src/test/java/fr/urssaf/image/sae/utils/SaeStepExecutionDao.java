@@ -28,7 +28,7 @@ public class SaeStepExecutionDao extends MapStepExecutionDao {
    public final void saveStepExecution(StepExecution stepExecution) {
 
       if (stepExecution.getStepName().equals(stepToFail)) {
-         throw new Error(ERREUR_SAUVEGARDE);
+         throw new RuntimeException(ERREUR_SAUVEGARDE);
       } else {
          super.saveStepExecution(stepExecution);
       }

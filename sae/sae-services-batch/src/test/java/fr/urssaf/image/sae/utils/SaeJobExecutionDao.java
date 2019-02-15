@@ -34,7 +34,7 @@ public class SaeJobExecutionDao extends MapJobExecutionDao {
    public final void saveJobExecution(JobExecution jobExecution) {
 
       if (stepToFail != null && StepAvailable.BEFORE.equals(stepToFail)) {
-         throw new Error("erreur de jobExecutionDao");
+         throw new RuntimeException("erreur de jobExecutionDao");
       } else {
          super.saveJobExecution(jobExecution);
       }
@@ -47,7 +47,7 @@ public class SaeJobExecutionDao extends MapJobExecutionDao {
    public final void updateJobExecution(JobExecution jobExecution) {
       if (stepToFail != null && StepAvailable.AFTER.equals(stepToFail)
             && index == 1) {
-         throw new Error("erreur de jobExecutionDao");
+         throw new RuntimeException("erreur de jobExecutionDao");
       } else {
          index++;
          super.updateJobExecution(jobExecution);
