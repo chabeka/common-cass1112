@@ -80,7 +80,6 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageDocumentServi
 import fr.urssaf.image.sae.utils.LogUtils;
 import fr.urssaf.image.sae.utils.SaeJobExecutionDao;
 import fr.urssaf.image.sae.utils.SaeLogAppender;
-import fr.urssaf.image.sae.utils.SaveException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
