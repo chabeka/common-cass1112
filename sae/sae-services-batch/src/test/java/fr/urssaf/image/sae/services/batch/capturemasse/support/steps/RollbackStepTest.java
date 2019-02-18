@@ -3,7 +3,10 @@
  */
 package fr.urssaf.image.sae.services.batch.capturemasse.support.steps;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,11 +29,18 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.sae.droit.dao.model.Prmd;
+import fr.urssaf.image.sae.droit.model.SaeDroits;
+import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.services.batch.capturemasse.model.TraitementMasseIntegratedDocument;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.multithreading.InsertionCapturePoolThreadExecutor;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 import fr.urssaf.image.sae.storage.exception.DeletionServiceEx;
 import fr.urssaf.image.sae.storage.services.storagedocument.DeletionService;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
+import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
+import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
+import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = {
@@ -69,9 +79,38 @@ public class RollbackStepTest {
 
    }
 
+   private void setSecurityContext() {
+	      // initialisation du contexte de sécurité
+	      final VIContenuExtrait viExtrait = new VIContenuExtrait();
+	      viExtrait.setCodeAppli("TESTS_UNITAIRES");
+	      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+	      viExtrait.setPagms(Arrays.asList("TU_PAGM1", "TU_PAGM2"));
+
+	      final SaeDroits saeDroits = new SaeDroits();
+	      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+	      final SaePrmd saePrmd = new SaePrmd();
+	      saePrmd.setValues(new HashMap<String, String>());
+	      final Prmd prmd = new Prmd();
+	      prmd.setBean("permitAll");
+	      prmd.setCode("default");
+	      saePrmd.setPrmd(prmd);
+	      final String[] roles = new String[] { "archivage_masse", "recherche" };
+	      saePrmds.add(saePrmd);
+
+	      saeDroits.put("archivage_masse", saePrmds);
+	      saeDroits.put("recherche", saePrmds);
+	      
+	      viExtrait.setSaeDroits(saeDroits);
+	      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+	                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
+	      AuthenticationContext.setAuthenticationToken(token);
+   }
+   
    @Test
    public void rollback_success() throws DeletionServiceEx {
 
+	  setSecurityContext();
+	  
       // Liste des documents intégrés
       TraitementMasseIntegratedDocument doc1 = new TraitementMasseIntegratedDocument();
       doc1.setDocumentFile(null);
@@ -97,6 +136,7 @@ public class RollbackStepTest {
 
       ExecutionContext executionContext = new ExecutionContext();
       executionContext.put(Constantes.NB_INTEG_DOCS, 3);
+      executionContext.put(Constantes.DOC_COUNT, 3);
 
       JobExecution execution = launcher.launchStep(STEP_NAME, jobParameters,
             executionContext);
