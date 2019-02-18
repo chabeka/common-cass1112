@@ -287,7 +287,9 @@ Serializable, DisposableBean {
     * @return int
     */
    public final int getNombreRestores() {
-      return nombreRestores;
+	   synchronized (this) {
+		  return nombreRestores;
+	   }
    }
 
    /**
@@ -297,6 +299,8 @@ Serializable, DisposableBean {
     *           nombre de documents restorés
     */
    public final void setNombreRestores(final int nombreRestores) {
-      this.nombreRestores = nombreRestores;
+	   synchronized (this) {
+		  this.nombreRestores = nombreRestores;
+	   }
    }
 }

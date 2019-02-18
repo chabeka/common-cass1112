@@ -287,7 +287,9 @@ Serializable, DisposableBean {
     * @return int
     */
    public final int getNombreSupprimes() {
-      return nombreSupprimes;
+	   synchronized (this) {
+		   return nombreSupprimes;
+	}   
    }
 
    /**
@@ -297,6 +299,8 @@ Serializable, DisposableBean {
     *           nombre de documents supprimés
     */
    public final void setNombreSupprimes(final int nombreSupprimes) {
-      this.nombreSupprimes = nombreSupprimes;
+	   synchronized (this) {
+		   this.nombreSupprimes = nombreSupprimes;
+	}  
    }
 }
