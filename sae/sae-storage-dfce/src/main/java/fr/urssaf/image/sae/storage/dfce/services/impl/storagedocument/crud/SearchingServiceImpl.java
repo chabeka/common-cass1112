@@ -489,12 +489,18 @@ public class SearchingServiceImpl extends AbstractServices implements
             if (storageMetadata.getValue() instanceof Date) {
                if (codeCourtVaryingMeta.equals("SM_ARCHIVAGE_DATE")) {
                   // Convert Local Time to UTC (Works Fine)
-                  DATE_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-                  valeurMetaLastPage = DATE_TIME_FORMAT.format(storageMetadata
-                                                                              .getValue());
+            	  synchronized (DATE_TIME_FORMAT) {
+            		   DATE_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
+                       valeurMetaLastPage = DATE_TIME_FORMAT.format(storageMetadata
+                                                                                   .getValue());
+            	  }
+                  
                } else {
-                  valeurMetaLastPage = DATE_FORMAT.format(storageMetadata
-                                                                         .getValue());
+            	   synchronized (DATE_FORMAT) {
+            		   valeurMetaLastPage = DATE_FORMAT.format(storageMetadata
+                               .getValue());
+            	   }
+                 
                }
             } else {
                valeurMetaLastPage = storageMetadata.getValue().toString();
