@@ -123,7 +123,7 @@ public final class ValidationUtils {
       final String paramName = "addMeta.requete.lucene";
       final String reqLucene = properties.getProperty(paramName);
 
-      if (isStringParam(paramName, reqLucene, new onVerifiedCallback() {
+      if (isStringParam(paramName, reqLucene, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             parametres.setRequeteLucene(reqLucene);
@@ -204,7 +204,7 @@ public final class ValidationUtils {
          final FormatValidationParametres parametres) {
       String paramName = "format.nombre.max.documents";
       final String nombreMaxDocs = properties.getProperty(paramName);
-      if (isNumericParam(paramName, nombreMaxDocs, new onVerifiedCallback() {
+      if (isNumericParam(paramName, nombreMaxDocs, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             int nbMaxDoc = Integer.valueOf(nombreMaxDocs);
@@ -231,7 +231,7 @@ public final class ValidationUtils {
       final String paramName = "format.taille.pas.execution";
       final String paramValue = properties.getProperty(paramName);
 
-      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+      if (isNumericParam(paramName, paramValue, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
@@ -294,7 +294,7 @@ public final class ValidationUtils {
          final AbstractParametres parametres, final String paramName) {
       final String paramValue = properties.getProperty(paramName);
 
-      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+      if (isNumericParam(paramName, paramValue, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
@@ -358,7 +358,7 @@ public final class ValidationUtils {
          final AbstractParametres parametres, final String paramName) {
       final String paramValue = properties.getProperty(paramName);
 
-      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+      if (isNumericParam(paramName, paramValue, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
@@ -387,7 +387,7 @@ public final class ValidationUtils {
          final String paramName) {
       final String paramValue = properties.getProperty(paramName);
 
-      if (isNumericParam(paramName, paramValue, new onVerifiedCallback() {
+      if (isNumericParam(paramName, paramValue, new OnVerifiedCallback() {
          @Override
          public void onVerified() {
             int value = Integer.valueOf(paramValue);
@@ -402,7 +402,7 @@ public final class ValidationUtils {
    /**
     * Interface inline permettant la methode de verification.
     */
-   private interface onVerifiedCallback {
+   private interface OnVerifiedCallback {
       /**
        * Methode de verification.
        */
@@ -418,7 +418,7 @@ public final class ValidationUtils {
     * @return
     */
    private static boolean isNumericParam(String paramName, String paramValue,
-         onVerifiedCallback callback) {
+         OnVerifiedCallback callback) {
       if (NumberUtils.isDigits(paramValue)) {
          LOGGER.info("Paramètre '{}' : {}", paramName, paramValue);
          callback.onVerified();
@@ -439,7 +439,7 @@ public final class ValidationUtils {
     * @return
     */
    private static boolean isStringParam(String paramName, String paramValue,
-         onVerifiedCallback callback) {
+         OnVerifiedCallback callback) {
       if (StringUtils.isNotBlank(paramValue)) {
          LOGGER.info("Paramètre '{}' : {}", paramName, paramValue);
          callback.onVerified();

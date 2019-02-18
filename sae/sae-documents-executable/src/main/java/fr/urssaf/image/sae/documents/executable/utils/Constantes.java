@@ -31,7 +31,7 @@ public final class Constantes {
    public static final String METADONNEES_FORMAT_FICHIER = "ffi";
    public static final String METADONNEES_NOM_FICHIER = "nfi";
 
-   public static final long CONVERT_MILLISECONDS_TO_MINUTES = 60 * 1000;
+   public static final long CONVERT_MILLISECONDS_TO_MINUTES = 60 * 1000L;
 
    public static final SimpleDateFormat FORMATTER_DATE = new SimpleDateFormat(
          "yyyy-mm-dd", Locale.FRENCH);
