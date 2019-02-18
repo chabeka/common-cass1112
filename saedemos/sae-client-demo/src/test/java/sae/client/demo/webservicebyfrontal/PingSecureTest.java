@@ -9,42 +9,39 @@ import org.apache.axis2.AxisFault;
 import org.junit.Test;
 
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.PingSecureRequest;
 
-
 public class PingSecureTest {
 
-   
    /**
     * Exemple de consommation de l'opération PingSecure du service web SaeService<br>
     * <br>
     * Cas normal (réussite)
     * 
-    * @throws RemoteException 
+    * @throws RemoteException
     */
    @Test
    public void pingSecure_success() throws RemoteException {
-      
+
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
-      
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
+
       // Appel de l'opération PingSecure
-      String reponsePingSecure = saeService.pingSecure(new PingSecureRequest()).getPingString();
+      final String reponsePingSecure = saeService.pingSecure(new PingSecureRequest()).getPingString();
 
       // sysout
       System.out.println(reponsePingSecure);
-      
+
       // Assertion JUnit
       assertEquals(
-            "La réponse de l'opération Ping est incorrecte",
-            "Les services du SAE sécurisés par authentification sont en ligne",
-            reponsePingSecure);
-      
+                   "La réponse de l'opération Ping est incorrecte",
+                   "Les services du SAE sécurisés par authentification sont en ligne",
+                   reponsePingSecure);
+
    }
-   
-   
+
    /**
     * Exemple de consommation de l'opération PingSecure du service web SaeService<br>
     * <br>
@@ -52,47 +49,48 @@ public class PingSecureTest {
     * <br>
     * Le SAE renvoie la SoapFault suivante :<br>
     * <ul>
-    *    <li>Code : wsse:SecurityTokenUnavailable</li>
-    *    <li>Message : La référence au jeton de sécurité est introuvable</li>
+    * <li>Code : wsse:SecurityTokenUnavailable</li>
+    * <li>Message : La référence au jeton de sécurité est introuvable</li>
     * </ul>
     * 
-    * @throws RemoteException 
+    * @throws RemoteException
     */
    @Test
    public void pingSecure_failure() {
-      
+
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
-      
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubSansAuthentification();
+
       // Appel de l'opération PingSecure
       try {
-         
+
          // Appel de l'opération PingSecure
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
          saeService.pingSecure(new PingSecureRequest()).getPingString();
-         
+
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
-         
-      } catch (AxisFault fault) {
-         
+
+      }
+      catch (final AxisFault fault) {
+
          // sysout
          TestUtils.sysoutAxisFault(fault);
-         
+
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
-               fault,
-               "urn:frontal:faultcodes",
-               "ns1",
-               "InvalidPAGM",
-               "Le PAGM est invalide");
-         
-      } catch (RemoteException exception) {
-         
+                                   fault,
+                                   "urn:frontal:faultcodes",
+                                   "InvalidPAGM",
+                                   "Le PAGM est invalide");
+
+      }
+      catch (final RemoteException exception) {
+
          fail("Une RemoteException a été levée, alors qu'on attendait une AxisFault\r\n" + exception);
-         
+
       }
 
    }
-   
+
 }

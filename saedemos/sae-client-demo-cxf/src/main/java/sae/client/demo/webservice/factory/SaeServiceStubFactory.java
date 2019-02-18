@@ -7,15 +7,13 @@ import java.util.Properties;
 
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.apache.cxf.phase.Phase;
-
 import fr.urssaf.image.sae.client.vi.util.ResourceUtils;
 import sae.client.demo.webservice.modele.SaeService;
 
 /**
  * Factory de création du Stub pour appeler le service web SaeService
  */
-public final class StubFactory {
+public final class SaeServiceStubFactory {
 
    /**
     * Nom du fichier properties contenant l'URL du service web SAE
@@ -29,20 +27,9 @@ public final class StubFactory {
    private static final String CLE_URL_SERVICE = "server.url";
 
    /**
-    * Identifiant du Contrat de Service à utiliser dans le Vecteur
-    * d'Identification
-    */
-   // private static final String VI_ID_CONTRAT_SERVICE = "CS_DEV_TOUTES_ACTIONS";
-
-   /**
     * Login de l'utilisateur qui lance l'action.
     */
-   public static final String VI_LOGIN = "CER69XXXXX";
-
-   /**
-    * PAGM à utiliser dans le Vecteur d'Identification
-    */
-   // private static final List<String> VI_PAGMS = Arrays.asList("PAGM_TOUTES_ACTIONS");
+   public static final String VI_LOGIN = "AC750XXXXX";
 
    /**
     * Identifiant du Contrat de Service à utiliser dans le Vecteur
@@ -55,14 +42,14 @@ public final class StubFactory {
     */
    private static final String PAGM = "pagm";
 
-   private StubFactory() {
+   private SaeServiceStubFactory() {
       // Constructeur privé
    }
 
    public static Properties getProperties() throws IOException {
       final Properties properties = new Properties();
 
-      properties.load(ResourceUtils.loadResource(new StubFactory(),
+      properties.load(ResourceUtils.loadResource(new SaeServiceStubFactory(),
                                                  NOM_FICHIER_PROP));
       return properties;
 
@@ -94,11 +81,11 @@ public final class StubFactory {
 
       final SaeService saeService = new SaeService();
 
-      // Ajout d'un Handler pour insérer le VI dans l'entete
-      saeService.setHandlerResolver(new HeaderHandlerResolver());
-
       // Ajout du port avec l'url du web service au service
       saeService.addPort(SaeService.SaeServicePort, SOAPBinding.SOAP12HTTP_MTOM_BINDING, litUrlSaeService());
+
+      // Ajout d'un Handler pour insérer le VI dans l'entete
+      saeService.setHandlerResolver(new AddViHeaderHandlerResolver());
 
       return saeService;
 
@@ -114,29 +101,10 @@ public final class StubFactory {
 
       final SaeService saeService = new SaeService();
 
-      // Ajout d'un Handler pour insérer le VI dans l'entete
-      // saeService.setHandlerResolver(new HeaderHandlerResolver());
-
       // Ajout du port avec l'url du web service au service
       saeService.addPort(SaeService.SaeServicePort, SOAPBinding.SOAP12HTTP_MTOM_BINDING, litUrlSaeService());
 
       return saeService;
-
-   }
-
-   private static Phase findPhaseByName(final List<Phase> phases,
-                                        final String nomPhaseRecherchee) {
-
-      Phase result = null;
-
-      for (final Phase phase : phases) {
-         if (phase.getName().equals(nomPhaseRecherchee)) {
-            result = phase;
-            break;
-         }
-      }
-
-      return result;
 
    }
 

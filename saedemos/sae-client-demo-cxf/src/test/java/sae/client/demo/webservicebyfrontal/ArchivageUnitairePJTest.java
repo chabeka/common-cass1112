@@ -17,7 +17,7 @@ import org.junit.Test;
 import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.util.ResourceUtils;
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.ArchivageUnitairePJRequestType;
 import sae.client.demo.webservice.modele.ArchivageUnitairePJResponseType;
 import sae.client.demo.webservice.modele.DataFileType;
@@ -78,7 +78,7 @@ public class ArchivageUnitairePJTest {
       paramsEntree.setEcdeUrl(prop.getProperty("URLECDE_FICHIER_DOC1_PDF"));
 
       // Ajout entete de securité
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       // Appel de l'opération archivageUnitairePJ
       final SaeServicePortType port = saeService.getSaeServicePort();
       ArchivageUnitairePJResponseType response;
@@ -205,7 +205,7 @@ public class ArchivageUnitairePJTest {
       paramsEntree.setDataFile(getDataFileType());
 
       // Construction du Stub
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       final SaeServicePortType port = saeService.getSaeServicePort();
 
       // Activation de l'optimisation MTOM si demandée
@@ -251,7 +251,7 @@ public class ArchivageUnitairePJTest {
 
       try {
          // Ajout entete de securité
-         final SaeService saeService = StubFactory.createStubAvecAuthentification();
+         final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
          // Appel de l'opération archivageUnitairePJ
          final SaeServicePortType port = saeService.getSaeServicePort();
          port.archivageUnitairePJ(paramsEntree);
@@ -262,7 +262,7 @@ public class ArchivageUnitairePJTest {
          // TODO Auto-generated catch block
 
          // sysout
-         TestUtils.sysoutAxisFault(fault);
+         TestUtils.sysoutSoapFault(fault);
 
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(

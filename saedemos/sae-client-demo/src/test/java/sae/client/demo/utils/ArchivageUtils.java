@@ -11,7 +11,7 @@ import org.apache.axis2.Constants;
 
 import sae.client.demo.util.ResourceUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJ;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJResponse;
@@ -46,7 +46,7 @@ public final class ArchivageUtils {
       // ...
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Activation de l'optimisation MTOM si demandée
 

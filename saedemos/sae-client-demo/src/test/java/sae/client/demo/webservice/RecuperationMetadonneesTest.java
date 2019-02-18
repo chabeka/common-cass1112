@@ -10,7 +10,7 @@ import org.apache.axis2.AxisFault;
 import org.junit.Test;
 
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeDispoType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RecuperationMetadonnees;
@@ -30,23 +30,28 @@ public class RecuperationMetadonneesTest {
    public void recuperationMetadonnees_success() throws RemoteException {
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Appel de l'opération RecuperationMetadonnees
-      RecuperationMetadonneesResponseType response = saeService
-            .recuperationMetadonnees(new RecuperationMetadonnees())
-            .getRecuperationMetadonneesResponse();
+      final RecuperationMetadonneesResponseType response = saeService
+                                                                     .recuperationMetadonnees(new RecuperationMetadonnees())
+                                                                     .getRecuperationMetadonneesResponse();
 
       assertNotNull("La réponse ne doit pas être nulle", response);
 
-      assertNotNull("La liste des métadonnées ne doit pas être nulle", response
-            .getMetadonnees());
+      assertNotNull("La liste des métadonnées ne doit pas être nulle",
+                    response
+                            .getMetadonnees());
 
-      assertNotNull("La liste des métadonnées ne doit pas être nulle", response
-            .getMetadonnees().getMetadonnee());
+      assertNotNull("La liste des métadonnées ne doit pas être nulle",
+                    response
+                            .getMetadonnees()
+                            .getMetadonnee());
 
-      assertTrue("Le contenu de la réponse ne doit pas être nulle", response
-            .getMetadonnees().getMetadonnee().length > 0);
+      assertTrue("Le contenu de la réponse ne doit pas être nulle",
+                 response
+                         .getMetadonnees()
+                         .getMetadonnee().length > 0);
 
       // Affichage de la liste des métadonnées
       afficheListeMetadonnees(response);
@@ -71,7 +76,7 @@ public class RecuperationMetadonneesTest {
    public void recuperationMetadonnees_failure() {
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubSansAuthentification();
 
       // Appel de l'opération RecuperationMetadonnees
       try {
@@ -84,20 +89,22 @@ public class RecuperationMetadonneesTest {
          // Si on a passé l'appel, le test est en échec
          fail("La SoapFault attendue n'a pas été renvoyée");
 
-      } catch (AxisFault fault) {
+      }
+      catch (final AxisFault fault) {
 
          // sysout
          TestUtils.sysoutAxisFault(fault);
 
          // Vérification de la SoapFault
          TestUtils
-               .assertSoapFault(
-                     fault,
-                     "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
-                     "wsse", "SecurityTokenUnavailable",
-                     "La référence au jeton de sécurité est introuvable");
+                  .assertSoapFault(
+                                   fault,
+                                   "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd",
+                                   "SecurityTokenUnavailable",
+                                   "La référence au jeton de sécurité est introuvable");
 
-      } catch (RemoteException exception) {
+      }
+      catch (final RemoteException exception) {
 
          fail("Une RemoteException a été levée, alors qu'on attendait une AxisFault\r\n"
                + exception);
@@ -107,10 +114,10 @@ public class RecuperationMetadonneesTest {
    }
 
    private void afficheListeMetadonnees(
-         RecuperationMetadonneesResponseType response) {
+                                        final RecuperationMetadonneesResponseType response) {
 
-      for (MetadonneeDispoType metadonnee : response.getMetadonnees()
-            .getMetadonnee()) {
+      for (final MetadonneeDispoType metadonnee : response.getMetadonnees()
+                                                          .getMetadonnee()) {
 
          System.out.println(metadonnee.getCodeLong());
          System.out.println("Libellé: " + metadonnee.getLibelle());

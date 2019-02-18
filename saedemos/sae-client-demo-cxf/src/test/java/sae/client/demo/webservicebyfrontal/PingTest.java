@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.PingRequest;
 import sae.client.demo.webservice.modele.PingResponse;
 import sae.client.demo.webservice.modele.SaeService;
@@ -23,7 +23,7 @@ public class PingTest {
    public void ping() throws IOException {
 
       // construction du Stub
-      final SaeService saeService = StubFactory.createStubSansAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubSansAuthentification();
 
       // Appel de l'opération Ping
 

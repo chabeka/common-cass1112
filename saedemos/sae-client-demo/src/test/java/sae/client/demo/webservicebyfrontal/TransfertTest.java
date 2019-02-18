@@ -16,7 +16,7 @@ import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.ArchivageUnitairePJTest;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.Transfert;
 
@@ -58,7 +58,7 @@ public class TransfertTest {
       final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération transfert,
       // avec les objets modèle générés par Axis2.
@@ -90,7 +90,7 @@ public class TransfertTest {
       final String idArchive = "00000000-0000-0000-0000-000000000000";
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération transfert,
       // avec les objets modèle générés par Axis2.
@@ -115,7 +115,6 @@ public class TransfertTest {
          TestUtils.assertSoapFault(
                                    fault,
                                    "urn:frontal:faultcodes",
-                                   "ns1",
                                    "ArchiveNonTrouvee",
                                    "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.");
 

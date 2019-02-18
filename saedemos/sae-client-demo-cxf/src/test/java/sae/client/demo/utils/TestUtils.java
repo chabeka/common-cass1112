@@ -18,12 +18,12 @@ public final class TestUtils {
    }
 
    /**
-    * Fait un sysout d'informations sur l'AxisFault passée en paramètre
+    * Fait un sysout d'informations sur la SOAP Fault passée en paramètre
     *
     * @param fault
     *           l'AxisFault dont on veut afficher les infos
     */
-   public static void sysoutAxisFault(final SOAPFaultException fault) {
+   public static void sysoutSoapFault(final SOAPFaultException fault) {
 
       System.out.println("Une SOAPFaultException a été levée");
 
@@ -65,7 +65,7 @@ public final class TestUtils {
     * @param codeNamespaceAttendu
     *           le namespace du code que l'on est censé obtenir
     * @param codePrefixeAttendu
-    *           le préxixe du code que l'on est censé obtenir
+    *           le préfixe du code que l'on est censé obtenir
     * @param codePartieLocaleAttendu
     *           la partie locale du code que l'on est censé obtenir
     * @param messageAttendu

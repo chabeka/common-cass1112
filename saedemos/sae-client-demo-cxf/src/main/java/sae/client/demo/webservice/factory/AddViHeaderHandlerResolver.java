@@ -11,20 +11,20 @@ import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
 import javax.xml.ws.handler.PortInfo;
 
-import fr.urssaf.image.sae.client.vi.VIHandler;
+import fr.urssaf.image.sae.client.vi.JaxWsVIHandler;
+import fr.urssaf.image.sae.client.vi.exception.ViSignatureException;
 import fr.urssaf.image.sae.client.vi.signature.KeyStoreInterface;
 import sae.client.demo.webservice.security.MyKeyStore;
 
 /**
- *
- *
+ * Permet de définir une chaîne de "handler" composée d'un seul handler qui est le "VI Handler" qui
+ * permet d'ajouter le VI dans les entêtes SOAP.
  */
-public class HeaderHandlerResolver implements HandlerResolver {
+public class AddViHeaderHandlerResolver implements HandlerResolver {
 
    @Override
-   @SuppressWarnings("unchecked")
    public List<Handler> getHandlerChain(final PortInfo portInfo) {
-      final List<Handler> handlerChain = new ArrayList<Handler>();
+      final List<Handler> handlerChain = new ArrayList<>();
       // Récupération de l'objet exposant le PKCS#12
       // Dans un cas "normal", on récupère l'instance créée au démarrage
       // de l'application.
@@ -32,18 +32,17 @@ public class HeaderHandlerResolver implements HandlerResolver {
 
       // Instancie l'objet de génération du VI
 
-      VIHandler handler;
+      JaxWsVIHandler handler;
       try {
-         handler = new VIHandler(keystore,
-                                 StubFactory.listPagmSaeService(),
-                                 StubFactory.getProperties().getProperty(StubFactory.CONTRAT_SERVICE),
-                                 StubFactory.VI_LOGIN);
+         handler = new JaxWsVIHandler(keystore,
+                                 SaeServiceStubFactory.listPagmSaeService(),
+                                 SaeServiceStubFactory.getProperties().getProperty(SaeServiceStubFactory.CONTRAT_SERVICE),
+                                 SaeServiceStubFactory.VI_LOGIN);
          handlerChain.add(handler);
 
       }
       catch (final IOException e) {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         throw new ViSignatureException(e);
       }
 
       return handlerChain;

@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.EtatTraitementsMasse;
 import sae.client.demo.webservice.modele.SaeServiceStub.EtatTraitementsMasseResponse;
@@ -27,7 +27,7 @@ public class EtatTraitementsMasseTest {
    public void etatTraitementsMasse_success() throws RemoteException {
 
       // Construction du Stub (sans authentification)
-      SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubSansAuthentification();
 
       // Construction du paramètre d'entrée de l'opération etatTraitementsMasse,
       // avec les objets modèle générés par Axis2.

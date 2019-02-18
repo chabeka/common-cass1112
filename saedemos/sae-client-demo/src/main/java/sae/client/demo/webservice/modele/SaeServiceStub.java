@@ -2,7 +2,7 @@
  * SaeServiceStub.java
  *
  * This file was auto-generated from WSDL
- * by the Apache Axis2 version: 1.7.7  Built on : Nov 20, 2017 (11:41:20 GMT)
+ * by the Apache Axis2 version: 1.7.9  Built on : Nov 16, 2018 (12:05:37 GMT)
  */
 package sae.client.demo.webservice.modele;
 

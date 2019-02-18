@@ -16,7 +16,7 @@ import org.junit.Test;
 
 import sae.client.demo.util.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.ConsultationAffichableRequestType;
 import sae.client.demo.webservice.modele.ConsultationAffichableResponseType;
 import sae.client.demo.webservice.modele.ListeMetadonneeCodeType;
@@ -42,7 +42,7 @@ public class ConsultationAffichableTest {
       final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
       // Construction du Stub
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       final SaeServicePortType port = saeService.getSaeServicePort();
 
       // Construction du paramètre d'entrée de l'opération consultationAffichable,
@@ -130,7 +130,7 @@ public class ConsultationAffichableTest {
       // Appel de l'opération consultationAffichable
       try {
          // Construction du Stub
-         final SaeService saeService = StubFactory.createStubAvecAuthentification();
+         final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
          final SaeServicePortType port = saeService.getSaeServicePort();
          // Appel de l'opération consultationAffichable
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
@@ -145,7 +145,7 @@ public class ConsultationAffichableTest {
          final SOAPFaultException fault = e;
 
          // sysout
-         TestUtils.sysoutAxisFault(fault);
+         TestUtils.sysoutSoapFault(fault);
 
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(
@@ -199,7 +199,7 @@ public class ConsultationAffichableTest {
       paramsEntree.setMetadonnees(codeTypes);
 
       // Construction du Stub
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       final SaeServicePortType port = saeService.getSaeServicePort();
       // Appel de l'opération consultationAffichable
       // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault

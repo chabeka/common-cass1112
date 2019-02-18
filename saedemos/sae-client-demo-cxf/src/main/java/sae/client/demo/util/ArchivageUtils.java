@@ -9,7 +9,7 @@ import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
 
 import sae.client.demo.exception.DemoRuntimeException;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.ArchivageUnitairePJRequestType;
 import sae.client.demo.webservice.modele.ArchivageUnitairePJResponseType;
 import sae.client.demo.webservice.modele.DataFileType;
@@ -34,7 +34,7 @@ public final class ArchivageUtils {
       // Construction du Stub
       SaeService saeService;
 
-      saeService = StubFactory.createStubAvecAuthentification();
+      saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       final SaeServicePortType port = saeService.getSaeServicePort();
 
       // Appel de l'opération archivageUnitairePJ

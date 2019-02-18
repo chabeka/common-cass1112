@@ -1,8 +1,6 @@
 package sae.client.demo.webservice.security;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.util.ResourceBundle;
 
@@ -13,14 +11,15 @@ import fr.urssaf.image.sae.client.vi.util.ResourceUtils;
 /**
  * Classe permettant de fournir au composant sae-client-vi les éléments de
  * certificats électroniques pour la signature du VI
- * 
  * L'idée est d'instancier un singleton de cette classe au démarrage de
  * l'application.
  */
 public final class MyKeyStore implements KeyStoreInterface {
 
    private final KeyStore keystore;
+
    private final String alias;
+
    private final String password;
 
    /**
@@ -36,18 +35,19 @@ public final class MyKeyStore implements KeyStoreInterface {
       // sae-client-demo-security.properties,
       // qui se trouve dans src/main/resources/
 
-      ResourceBundle securityData = ResourceBundle
-            .getBundle("sae-client-demo-security");
+      final ResourceBundle securityData = ResourceBundle
+                                                        .getBundle("sae-client-demo-security");
       password = securityData.getString("password");
 
       try {
          keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
-         InputStream inputStream = ResourceUtils.loadResource(this,
-               "ApplicationTestSAE.p12");
+         final InputStream inputStream = ResourceUtils.loadResource(this,
+                                                                    "ApplicationTestSAE.p12");
          try {
             keystore.load(inputStream, password.toCharArray());
 
-         } finally {
+         }
+         finally {
             if (inputStream != null) {
                inputStream.close();
             }
@@ -55,10 +55,8 @@ public final class MyKeyStore implements KeyStoreInterface {
 
          alias = keystore.aliases().nextElement();
 
-      } catch (GeneralSecurityException e) {
-         throw new ViSignatureException(e);
-
-      } catch (IOException e) {
+      }
+      catch (final Exception e) {
          throw new ViSignatureException(e);
       }
 

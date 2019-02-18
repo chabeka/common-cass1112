@@ -7,7 +7,7 @@ import java.util.List;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.MetadonneeType;
 import sae.client.demo.webservice.modele.SaeServiceStub.RechercheParIterateur;
@@ -86,7 +86,7 @@ public class RechercheParIterateurTestV2 {
       List<String> codesMetasSouhaites = null;
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération recherche,
       // avec les objets modèle générés par Axis2.

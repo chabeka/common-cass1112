@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseResponse;
 import sae.client.demo.webservice.modele.SaeServiceStub.SuppressionMasseV2;
@@ -23,7 +23,7 @@ public class SuppressionMasseTest {
    public void suppressioneMasse_success() throws RemoteException {
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération suppressionMasse,
       // avec les objets modèle générés par Axis2.

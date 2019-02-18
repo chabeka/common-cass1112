@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.Deblocage;
 import sae.client.demo.webservice.modele.SaeServiceStub.DeblocageResponse;
@@ -38,7 +38,7 @@ public class DeblocageServiceTest {
       String uuidJob = "af7a6dd0-54f0-11e7-9375-f8b156992ed7";
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération deblocage,
       // avec les objets modèle générés par Axis2.
@@ -85,7 +85,7 @@ public class DeblocageServiceTest {
       String uuidJob = "aefe8ce0-5bdc-11e7-89df-f8b156992ed7";
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération deblocage,
       // avec les objets modèle générés par Axis2.

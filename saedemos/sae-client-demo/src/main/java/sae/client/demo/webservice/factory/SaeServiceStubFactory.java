@@ -11,7 +11,6 @@ import org.apache.axis2.context.ConfigurationContextFactory;
 import org.apache.axis2.engine.AxisConfiguration;
 import org.apache.axis2.engine.Phase;
 
-import fr.urssaf.image.sae.client.vi.VIHandler;
 import fr.urssaf.image.sae.client.vi.signature.KeyStoreInterface;
 import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.util.ResourceUtils;
@@ -21,7 +20,7 @@ import sae.client.demo.webservice.security.MyKeyStore;
 /**
  * Factory de création du Stub pour appeler le service web SaeService
  */
-public final class StubFactory {
+public final class SaeServiceStubFactory {
 
    /**
     * Nom du fichier properties contenant l'URL du service web SAE
@@ -35,20 +34,9 @@ public final class StubFactory {
    private static final String CLE_URL_SERVICE = "server.url";
 
    /**
-    * Identifiant du Contrat de Service à utiliser dans le Vecteur
-    * d'Identification
-    */
-   // private static final String VI_ID_CONTRAT_SERVICE = "CS_DEV_TOUTES_ACTIONS";
-
-   /**
     * Login de l'utilisateur qui lance l'action.
     */
    private static final String VI_LOGIN = "CER69XXXXX";
-
-   /**
-    * PAGM à utiliser dans le Vecteur d'Identification
-    */
-   // private static final List<String> VI_PAGMS = Arrays.asList("PAGM_TOUTES_ACTIONS");
 
    /**
     * Identifiant du Contrat de Service à utiliser dans le Vecteur
@@ -61,14 +49,14 @@ public final class StubFactory {
     */
    private static final String PAGM = "pagm";
 
-   private StubFactory() {
+   private SaeServiceStubFactory() {
       // Constructeur privé
    }
 
    private static Properties getProperties() {
       final Properties properties = new Properties();
       try {
-         properties.load(ResourceUtils.loadResource(new StubFactory(),
+         properties.load(ResourceUtils.loadResource(new SaeServiceStubFactory(),
                                                     NOM_FICHIER_PROP));
          return properties;
       }
@@ -127,16 +115,15 @@ public final class StubFactory {
       final KeyStoreInterface keystore = new MyKeyStore();
 
       // Instancie l'objet de génération du VI
-      final VIHandler handler = new VIHandler(keystore,
-                                              listPagmSaeService(),
-                                              getProperties().getProperty(CONTRAT_SERVICE),
-                                              VI_LOGIN);
-
+      final Axis2VIHandler axis2VIHandler = new Axis2VIHandler(keystore,
+                                                               listPagmSaeService(),
+                                                               getProperties().getProperty(CONTRAT_SERVICE),
+                                                               VI_LOGIN);
       // Ajout d'un Handler lors de la phase "MessageOut" pour insérer le VI
       final AxisConfiguration axisConfig = configContext.getAxisConfiguration();
       final List<Phase> outFlowPhases = axisConfig.getOutFlowPhases();
       final Phase messageOut = findPhaseByName(outFlowPhases, "MessageOut");
-      messageOut.addHandler(handler);
+      messageOut.addHandler(axis2VIHandler);
 
       // Renvoie l'objet Stub
       return service;

@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.AjoutNote;
 
@@ -36,7 +36,7 @@ public class AjoutNoteTest {
                                                        .contruitParamsEntreeAjoutNote(idArchive, contenuNote);
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Appel du service web de modification
       saeService.ajoutNote(paramsEntree);

@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import sae.client.demo.util.ArchivageUtils;
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.CopieRequestType;
 import sae.client.demo.webservice.modele.CopieResponseType;
 import sae.client.demo.webservice.modele.ListeMetadonneeType;
@@ -40,7 +40,7 @@ public class CopieTest {
       final String idArchive = ArchivageUtils.archivageUnitairePJ();
 
       // construction du Stub
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération copie,
       // avec les objets modèle générés par Axis2.
@@ -72,7 +72,7 @@ public class CopieTest {
          final String idArchive = "991d7027-6b1b-43a3-b0a3-b22cdf117192";
 
          // construction du Stub
-         final SaeService saeService = StubFactory.createStubAvecAuthentification();
+         final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
          // Construction du paramètre d'entrée de l'opération copie,
          // avec les objets modèle générés par Axis2.
@@ -93,7 +93,7 @@ public class CopieTest {
       catch (final SOAPFaultException fault) {
 
          // sysout
-         TestUtils.sysoutAxisFault(fault);
+         TestUtils.sysoutSoapFault(fault);
 
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(

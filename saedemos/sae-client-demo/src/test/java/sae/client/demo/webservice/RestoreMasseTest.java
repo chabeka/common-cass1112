@@ -5,7 +5,7 @@ import java.rmi.RemoteException;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.RestoreMasse;
 import sae.client.demo.webservice.modele.SaeServiceStub.RestoreMasseResponse;
@@ -25,7 +25,7 @@ public class RestoreMasseTest {
       
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       
       // Construction du paramètre d'entrée de l'opération restoreMasse, 
       //  avec les objets modèle générés par Axis2.

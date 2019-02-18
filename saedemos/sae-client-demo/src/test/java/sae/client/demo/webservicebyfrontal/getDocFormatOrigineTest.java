@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import sae.client.demo.utils.ArchivageUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigine;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigineResponse;
@@ -29,7 +29,7 @@ public class getDocFormatOrigineTest {
 
       final String idArchie = ArchivageUtils.archivageUnitairePJ();
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       final UUID uuidDocParent = UUID
                                      .fromString("75FD52D4-BD7B-4528-B14B-BCD2D1CF9A27");

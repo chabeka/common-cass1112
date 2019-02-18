@@ -14,7 +14,7 @@ import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.util.ResourceUtils;
 import sae.client.demo.webservice.ArchivageUnitairePJTest;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaire;
 import sae.client.demo.webservice.modele.SaeServiceStub.StockageUnitaireResponse;
@@ -102,7 +102,7 @@ public class StockageUnitaireTest {
       // ...
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération stockageUnitaire,
       // avec les objets modèle générés par Axis2.
@@ -188,7 +188,7 @@ public class StockageUnitaireTest {
       // ...
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Activation de l'optimisation MTOM si demandée
       if (avecMtom) {

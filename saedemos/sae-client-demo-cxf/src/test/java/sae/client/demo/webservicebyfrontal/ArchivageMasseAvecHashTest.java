@@ -13,7 +13,7 @@ import org.junit.Test;
 import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.util.ResourceUtils;
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.ArchivageMasseAvecHashRequestType;
 import sae.client.demo.webservice.modele.ArchivageMasseAvecHashResponseType;
 import sae.client.demo.webservice.modele.SaeService;
@@ -75,7 +75,7 @@ public class ArchivageMasseAvecHashTest {
       String hash = "428fea120ddb49eee2a9e2d4fde1b9d26dbd2195";
       
       // Construction du Stub
-      SaeService saeService = StubFactory.createStubAvecAuthentification();
+      SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
       SaeServicePortType port = saeService.getSaeServicePort();
       
       // Construction du paramètre d'entrée de l'opération archivageMasseAvecHash, 
@@ -135,7 +135,7 @@ public class ArchivageMasseAvecHashTest {
       try {
          
       // Construction du Stub
-         SaeService saeService = StubFactory.createStubAvecAuthentification();
+         SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
          SaeServicePortType port = saeService.getSaeServicePort();
          // Appel de l'opération archivageMasseAvecHash
          port.archivageMasseAvecHash(paramsEntree);
@@ -148,7 +148,7 @@ public class ArchivageMasseAvecHashTest {
          final SOAPFaultException fault = (SOAPFaultException) e;
       
          // sysout
-         TestUtils.sysoutAxisFault(fault);
+         TestUtils.sysoutSoapFault(fault);
          
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(

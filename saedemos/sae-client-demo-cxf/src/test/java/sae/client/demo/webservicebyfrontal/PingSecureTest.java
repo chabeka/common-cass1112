@@ -11,7 +11,7 @@ import javax.xml.ws.soap.SOAPFaultException;
 import org.junit.Test;
 
 import sae.client.demo.utils.TestUtils;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.PingSecureRequest;
 import sae.client.demo.webservice.modele.PingSecureResponse;
 import sae.client.demo.webservice.modele.SaeService;
@@ -30,7 +30,7 @@ public class PingSecureTest {
    public void pingSecure_success() throws IOException {
 
       // construction du Stub
-      final SaeService saeService = StubFactory.createStubAvecAuthentification();
+      final SaeService saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Appel de l'opération PingSecure
       final SaeServicePortType port = saeService.getSaeServicePort();
@@ -67,7 +67,7 @@ public class PingSecureTest {
       try {
 
          // Construction du Stub
-         final SaeService saeService = StubFactory.createStubSansAuthentification();
+         final SaeService saeService = SaeServiceStubFactory.createStubSansAuthentification();
          // Appel de l'opération PingSecure
          // On ne récupère pas la réponse de l'opération, puisqu'on est censé obtenir une SoapFault
          final SaeServicePortType port = saeService.getSaeServicePort();
@@ -80,7 +80,7 @@ public class PingSecureTest {
       catch (final SOAPFaultException fault) {
 
          // sysout
-         TestUtils.sysoutAxisFault(fault);
+         TestUtils.sysoutSoapFault(fault);
 
          // Vérification de la SoapFault
          TestUtils.assertSoapFault(

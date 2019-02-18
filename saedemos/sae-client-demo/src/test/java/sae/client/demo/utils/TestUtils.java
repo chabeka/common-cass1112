@@ -57,8 +57,6 @@ public final class TestUtils {
     *           l'AxisFault à vérifier
     * @param codeNamespaceAttendu
     *           le namespace du code que l'on est censé obtenir
-    * @param codePrefixeAttendu
-    *           le préxixe du code que l'on est censé obtenir
     * @param codePartieLocaleAttendu
     *           la partie locale du code que l'on est censé obtenir
     * @param messageAttendu
@@ -67,7 +65,6 @@ public final class TestUtils {
    public static void assertSoapFault(
                                       final AxisFault fault,
                                       final String codeNamespaceAttendu,
-                                      final String codePrefixeAttendu,
                                       final String codePartieLocaleAttendu,
                                       final String messageAttendu) {
 
@@ -83,11 +80,6 @@ public final class TestUtils {
                       "Le namespace du code de la SoapFault est incorrect",
                       codeNamespaceAttendu,
                       fault.getFaultSubCodes().get(0).getNamespaceURI());
-         // Le préfixe
-         assertEquals(
-                      "Le préfixe du code de la SoapFault est incorrect",
-                      codePrefixeAttendu,
-                      fault.getFaultSubCodes().get(0).getPrefix());
          // La partie locale
          assertEquals(
                       "La partie locale du code de la SoapFault est incorrecte",
@@ -99,11 +91,6 @@ public final class TestUtils {
                       "Le namespace du code de la SoapFault est incorrect",
                       codeNamespaceAttendu,
                       fault.getFaultCode().getNamespaceURI());
-         // Le préfixe
-         assertEquals(
-                      "Le préfixe du code de la SoapFault est incorrect",
-                      codePrefixeAttendu,
-                      fault.getFaultCode().getPrefix());
          // La partie locale
          assertEquals(
                       "La partie locale du code de la SoapFault est incorrecte",

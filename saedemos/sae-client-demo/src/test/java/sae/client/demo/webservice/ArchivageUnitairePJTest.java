@@ -17,7 +17,7 @@ import sae.client.demo.exception.DemoRuntimeException;
 import sae.client.demo.util.ResourceUtils;
 import sae.client.demo.utils.TestUtils;
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJ;
 import sae.client.demo.webservice.modele.SaeServiceStub.ArchivageUnitairePJResponse;
@@ -70,7 +70,7 @@ public class ArchivageUnitairePJTest {
       // final String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/Traitement001_CaptureUnitaire/documents/doc1.pdf";
       // final String urlEcdeFichier = "ecde://cnp69devecde.cer69.recouv/UFT-TF/20171103/documents/documents/doc1.PDF";
       // Métadonnées associées au document à archiver
-      final HashMap<String, String> metadonnees = new HashMap<String, String>();
+      final HashMap<String, String> metadonnees = new HashMap<>();
       // Métadonnées obligatoires
       metadonnees.put("ApplicationProductrice", "ADELAIDE");
       metadonnees.put("CodeOrganismeGestionnaire", "CER69");
@@ -87,7 +87,7 @@ public class ArchivageUnitairePJTest {
       // ...
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération archivageUnitairePJ,
       // avec les objets modèle générés par Axis2.
@@ -141,7 +141,7 @@ public class ArchivageUnitairePJTest {
       final InputStream contenu = ResourceUtils.loadResource(this, "archivageUnitairePJ/pj1.pdf");
 
       // Métadonnées associées au document à archiver
-      final HashMap<String, String> metadonnees = new HashMap<String, String>();
+      final HashMap<String, String> metadonnees = new HashMap<>();
       // Métadonnées obligatoires
       metadonnees.put("ApplicationProductrice", "ADELAIDE");
       metadonnees.put("CodeOrganismeGestionnaire", "CER69");
@@ -158,18 +158,23 @@ public class ArchivageUnitairePJTest {
       // ...
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Activation de l'optimisation MTOM si demandée
       if (avecMtom) {
-         saeService._getServiceClient().getOptions().setProperty(
-                                                                 Constants.Configuration.ENABLE_MTOM, Constants.VALUE_TRUE);
+         saeService._getServiceClient()
+                   .getOptions()
+                   .setProperty(
+                                Constants.Configuration.ENABLE_MTOM,
+                                Constants.VALUE_TRUE);
       }
 
       // Construction du paramètre d'entrée de l'opération archivageUnitairePJ,
       // avec les objets modèle générés par Axis2.
       final ArchivageUnitairePJ paramsEntree = Axis2ObjectFactory.contruitParamsEntreeArchivageUnitairePJavecContenu(
-                                                                                                                     nomFichier, contenu, metadonnees);
+                                                                                                                     nomFichier,
+                                                                                                                     contenu,
+                                                                                                                     metadonnees);
 
       // Appel de l'opération archivageUnitairePJ
       final ArchivageUnitairePJResponse reponse = saeService.archivageUnitairePJ(paramsEntree);
@@ -199,7 +204,7 @@ public class ArchivageUnitairePJTest {
       // final String urlEcdeFichier = "ecde://cnp69intgnsecde.gidn.recouv/CS_DEV_TOUTES_ACTIONS/20120120/TraitementInexistant/documents/doc1.pdf";
 
       // Métadonnées associées au document à archiver
-      final HashMap<String, String> metadonnees = new HashMap<String, String>();
+      final HashMap<String, String> metadonnees = new HashMap<>();
       // Métadonnées obligatoires
       metadonnees.put("ApplicationProductrice", "ADELAIDE");
       metadonnees.put("CodeOrganismeGestionnaire", "CER69");
@@ -213,7 +218,7 @@ public class ArchivageUnitairePJTest {
       metadonnees.put("TypeHash", "SHA-1");
 
       // Construction du Stub
-      final SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      final SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       // Construction du paramètre d'entrée de l'opération archivageUnitairePJ,
       // avec les objets modèle générés par Axis2.
@@ -241,7 +246,6 @@ public class ArchivageUnitairePJTest {
          TestUtils.assertSoapFault(
                                    fault,
                                    "urn:sae:faultcodes",
-                                   "sae",
                                    "CaptureUrlEcdeFichierIntrouvable",
                                    "Le fichier pointé par l'URL ECDE est introuvable (" + prop.getProperty("URLECDE_FICHIER_ARCH_UNI_PJ_SUCCES") + ")");
 

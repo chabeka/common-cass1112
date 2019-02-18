@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 import org.junit.Test;
 
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.PingRequest;
 
@@ -22,7 +22,7 @@ public class PingTest {
    public void ping() throws RemoteException {
       
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubSansAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubSansAuthentification();
       
       // Appel de l'opération Ping
       String reponsePing = saeService.ping(new PingRequest()).getPingString();

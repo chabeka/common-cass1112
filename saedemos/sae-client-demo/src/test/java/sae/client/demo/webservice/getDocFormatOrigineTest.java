@@ -6,7 +6,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import sae.client.demo.webservice.factory.Axis2ObjectFactory;
-import sae.client.demo.webservice.factory.StubFactory;
+import sae.client.demo.webservice.factory.SaeServiceStubFactory;
 import sae.client.demo.webservice.modele.SaeServiceStub;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigine;
 import sae.client.demo.webservice.modele.SaeServiceStub.GetDocFormatOrigineResponse;
@@ -27,7 +27,7 @@ public class getDocFormatOrigineTest {
    public void getDocFormatOrigine_success() throws RemoteException {
 
       // Construction du Stub
-      SaeServiceStub saeService = StubFactory.createStubAvecAuthentification();
+      SaeServiceStub saeService = SaeServiceStubFactory.createStubAvecAuthentification();
 
       UUID uuidDocParent = UUID
             .fromString("EA06783F-59A0-4B81-8524-1C945759565C");
