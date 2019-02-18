@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.batch;
 
 import java.text.MessageFormat;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -202,8 +203,11 @@ public class RollbackVirtualTasklet extends AbstractRollbackTasklet implements
       // ConcurrentLinkedQueue<UUID>();
       ConcurrentLinkedQueue<CaptureMasseVirtualDocument> listeIntegratedDoc = new ConcurrentLinkedQueue<CaptureMasseVirtualDocument>();
 
-      int nbreDocsTotal = (Integer) chunkContext.getStepContext()
-            .getJobExecutionContext().get(Constantes.DOC_COUNT);
+      
+      //
+      Map<String, Object> jobExecutionContext = chunkContext.getStepContext()
+            .getJobExecutionContext();
+      int nbreDocsTotal = (Integer) jobExecutionContext.get(Constantes.DOC_COUNT);
 
       int rollbackCount = chunkContext.getStepContext().getStepExecution()
             .getExecutionContext().getInt(Constantes.COUNT_ROLLBACK);

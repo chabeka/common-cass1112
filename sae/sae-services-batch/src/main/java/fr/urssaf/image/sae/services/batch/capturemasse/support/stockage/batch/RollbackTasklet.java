@@ -160,13 +160,16 @@ public class RollbackTasklet extends AbstractRollbackTasklet implements Tasklet 
 
       RepeatStatus repeatStatus;
 
+      
       // ConcurrentLinkedQueue<UUID> listUUID = new
       // ConcurrentLinkedQueue<UUID>();
       ConcurrentLinkedQueue<TraitementMasseIntegratedDocument> listeIntegratedDoc = new ConcurrentLinkedQueue<TraitementMasseIntegratedDocument>();
 
+      
+      //
       Map<String, Object> jobExecutionContext = chunkContext.getStepContext()
             .getJobExecutionContext();
-	int nbreDocsTotal = (Integer) jobExecutionContext.get(Constantes.DOC_COUNT);
+      int nbreDocsTotal = (Integer) jobExecutionContext.get(Constantes.DOC_COUNT);
 
       int rollbackCount = chunkContext.getStepContext().getStepExecution()
             .getExecutionContext().getInt(Constantes.COUNT_ROLLBACK);
