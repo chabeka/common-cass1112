@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.KeyStore.PrivateKeyEntry;
+import java.security.KeyStoreException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -48,16 +48,13 @@ import fr.urssaf.image.sae.client.vi.exception.XmlSignatureException;
 /**
  * Signature de XML en utilisant l'API standard livrée avec Java : <b>Java XML
  * Digital Signature API</b><br>
- * <br>
  * 
- * @see http://java.sun.com/developer/technicalArticles/xml/dig_signature_api/
- * 
+ * @see "http://java.sun.com/developer/technicalArticles/xml/dig_signature_api/"
  */
-@SuppressWarnings("PMD.ExcessiveImports")
 public final class XmlSignature {
 
    /**
-    * Constructeur
+    * C'est une classe statique
     */
    private XmlSignature() {
 
@@ -66,7 +63,7 @@ public final class XmlSignature {
    /**
     * Signature de XML avec les options suivantes :<br>
     * <br>
-    * <table border=1 bordercolor=black cellspacing=0>
+    * <table summary="" border=1 cellspacing=0>
     * <tr>
     * <td><b>Option</b></td>
     * <td><b>Valeur</b></td>
@@ -102,8 +99,8 @@ public final class XmlSignature {
     * @throws XmlSignatureException
     *            une erreur lors du processus de signature
     */
-   public static String signeXml(InputStream xmlAsigner, KeyStore keyStore,
-         String aliasClePrivee, String passwordClePrivee)
+   public static String signeXml(final InputStream xmlAsigner, final KeyStore keyStore,
+                                 final String aliasClePrivee, final String passwordClePrivee)
          throws XmlSignatureException {
 
       // NB : Le code est tiré de l'article suivant :
@@ -113,35 +110,36 @@ public final class XmlSignature {
       // generate the enveloped signature.
       XMLSignatureFactory signatureFactory = null;
       String result = "";
-      XmlSignatureFactoryProvider factory = XmlSignatureFactory.getFactory();
+      final XmlSignatureFactoryProvider factory = XmlSignatureFactory.getFactory();
       signatureFactory = factory.getXmlFactory();
-      // XMLSignatureFactory signatureFactory =
-      // xmlFactoryLoader.getXmlFactory();
 
       // Create a Reference to the enveloped document (in this case,
       // you are signing the whole document, so a URI of "" signifies
       // that, and also specify the SHA1 digest algorithm and
       // the ENVELOPED Transform.
-      Reference ref = signeXmlCreateReference(signatureFactory);
+      final Reference ref = signeXmlCreateReference(signatureFactory);
 
       // Create the SignedInfo.
-      SignedInfo signedInfo = signeXmlCreateSignedInfo(signatureFactory, ref);
+      final SignedInfo signedInfo = signeXmlCreateSignedInfo(signatureFactory, ref);
 
       // Récupération de la clé privée
-      PrivateKeyEntry privateKeyEntry = signeXmlGetPrivateKey(keyStore,
-            aliasClePrivee, passwordClePrivee);
+      final PrivateKeyEntry privateKeyEntry = signeXmlGetPrivateKey(keyStore,
+                                                                    aliasClePrivee,
+                                                                    passwordClePrivee);
 
       // Create the KeyInfo containing the X509Data.
       KeyInfo keyInfo;
       try {
-         keyInfo = signeXmlCreateKeyInfo(signatureFactory, keyStore,
-               aliasClePrivee);
-      } catch (KeyStoreException e) {
+         keyInfo = signeXmlCreateKeyInfo(signatureFactory,
+                                         keyStore,
+                                         aliasClePrivee);
+      }
+      catch (final KeyStoreException e) {
          throw new XmlSignatureException(e);
       }
 
       // Instantiate the document to be signed.
-      Document doc = signeXmlInstantiateDoc(xmlAsigner);
+      final Document doc = signeXmlInstantiateDoc(xmlAsigner);
 
       // Signe
       signeXmlsigne(signatureFactory, signedInfo, privateKeyEntry, keyInfo, doc);
@@ -153,7 +151,7 @@ public final class XmlSignature {
 
    }
 
-   private static Reference signeXmlCreateReference(XMLSignatureFactory fac)
+   private static Reference signeXmlCreateReference(final XMLSignatureFactory fac)
          throws XmlSignatureException {
 
       // Create a Reference to the enveloped document (in this case,
@@ -162,11 +160,16 @@ public final class XmlSignature {
       // the ENVELOPED Transform.
       Reference ref;
       try {
-         ref = fac.newReference("", fac
-               .newDigestMethod(DigestMethod.SHA1, null), Collections
-               .singletonList(fac.newTransform(Transform.ENVELOPED,
-                     (TransformParameterSpec) null)), null, null);
-      } catch (GeneralSecurityException ex) {
+         ref = fac.newReference("",
+                                fac
+                                   .newDigestMethod(DigestMethod.SHA1, null),
+                                Collections
+                                           .singletonList(fac.newTransform(Transform.ENVELOPED,
+                                                                           (TransformParameterSpec) null)),
+                                null,
+                                null);
+      }
+      catch (final GeneralSecurityException ex) {
          throw new XmlSignatureException(ex);
       }
 
@@ -174,17 +177,22 @@ public final class XmlSignature {
 
    }
 
-   private static SignedInfo signeXmlCreateSignedInfo(XMLSignatureFactory fac,
-         Reference ref) throws XmlSignatureException {
+   private static SignedInfo signeXmlCreateSignedInfo(final XMLSignatureFactory fac,
+                                                      final Reference ref)
+         throws XmlSignatureException {
 
       // Create the SignedInfo.
       SignedInfo signedInfo;
       try {
          signedInfo = fac.newSignedInfo(fac
-               .newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
-                     (C14NMethodParameterSpec) null), fac.newSignatureMethod(
-               SignatureMethod.RSA_SHA1, null), Collections.singletonList(ref));
-      } catch (GeneralSecurityException ex) {
+                                           .newCanonicalizationMethod(CanonicalizationMethod.EXCLUSIVE,
+                                                                      (C14NMethodParameterSpec) null),
+                                        fac.newSignatureMethod(
+                                                               SignatureMethod.RSA_SHA1,
+                                                               null),
+                                        Collections.singletonList(ref));
+      }
+      catch (final GeneralSecurityException ex) {
          throw new XmlSignatureException(ex);
       }
 
@@ -192,93 +200,102 @@ public final class XmlSignature {
 
    }
 
-   private static PrivateKeyEntry signeXmlGetPrivateKey(KeyStore keyStore,
-         String aliasClePrivee, String passwordClePrivee)
+   private static PrivateKeyEntry signeXmlGetPrivateKey(final KeyStore keyStore,
+                                                        final String aliasClePrivee, final String passwordClePrivee)
          throws XmlSignatureException {
 
       try {
 
-         PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore
-               .getEntry(aliasClePrivee, new KeyStore.PasswordProtection(
-                     passwordClePrivee.toCharArray()));
+         final PrivateKeyEntry privateKeyEntry = (KeyStore.PrivateKeyEntry) keyStore
+                                                                                    .getEntry(aliasClePrivee,
+                                                                                              new KeyStore.PasswordProtection(
+                                                                                                                              passwordClePrivee.toCharArray()));
          return privateKeyEntry;
 
-      } catch (GeneralSecurityException ex) {
+      }
+      catch (final GeneralSecurityException ex) {
          throw new XmlSignatureException(ex);
       }
 
    }
 
-   private static KeyInfo signeXmlCreateKeyInfo(XMLSignatureFactory fac,
-         KeyStore keyStore, String aliasClePrivee) throws KeyStoreException {
+   private static KeyInfo signeXmlCreateKeyInfo(final XMLSignatureFactory fac,
+                                                final KeyStore keyStore, final String aliasClePrivee)
+         throws KeyStoreException {
 
       // Récupération de la chaîne de certification
-      Certificate[] chaineCertif = keyStore.getCertificateChain(aliasClePrivee);
+      final Certificate[] chaineCertif = keyStore.getCertificateChain(aliasClePrivee);
 
       // Create the KeyInfo containing the X509Data.
-      KeyInfoFactory keyInfoFac = fac.getKeyInfoFactory();
-      List<X509Certificate> x509Content = new ArrayList<X509Certificate>();
-      for (Certificate certif : chaineCertif) {
+      final KeyInfoFactory keyInfoFac = fac.getKeyInfoFactory();
+      final List<X509Certificate> x509Content = new ArrayList<>();
+      for (final Certificate certif : chaineCertif) {
          x509Content.add((X509Certificate) certif);
       }
-      X509Data x509data = keyInfoFac.newX509Data(x509Content);
+      final X509Data x509data = keyInfoFac.newX509Data(x509Content);
 
       return keyInfoFac.newKeyInfo(Collections.singletonList(x509data));
 
    }
 
-   private static Document signeXmlInstantiateDoc(InputStream xmlAsigner)
+   private static Document signeXmlInstantiateDoc(final InputStream xmlAsigner)
          throws XmlSignatureException {
 
       // Instantiate the document to be signed.
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
       Document doc;
       try {
          doc = dbf.newDocumentBuilder().parse(xmlAsigner);
-      } catch (SAXException ex) {
+      }
+      catch (final SAXException ex) {
          throw new XmlSignatureException(ex);
-      } catch (IOException ex) {
+      }
+      catch (final IOException ex) {
          throw new XmlSignatureException(ex);
-      } catch (ParserConfigurationException ex) {
+      }
+      catch (final ParserConfigurationException ex) {
          throw new XmlSignatureException(ex);
       }
       return doc;
 
    }
 
-   private static void signeXmlsigne(XMLSignatureFactory fac,
-         SignedInfo signedInfo, PrivateKeyEntry privateKeyEntry,
-         KeyInfo keyInfo, Document doc) throws XmlSignatureException {
+   private static void signeXmlsigne(final XMLSignatureFactory fac,
+                                     final SignedInfo signedInfo, final PrivateKeyEntry privateKeyEntry,
+                                     final KeyInfo keyInfo, final Document doc)
+         throws XmlSignatureException {
 
       // Create a DOMSignContext and specify the RSA PrivateKey and
       // location of the resulting XMLSignature's parent element.
-      DOMSignContext dsc = new DOMSignContext(privateKeyEntry.getPrivateKey(),
-            doc.getDocumentElement());
+      final DOMSignContext dsc = new DOMSignContext(privateKeyEntry.getPrivateKey(),
+                                                    doc.getDocumentElement());
 
       // Create the XMLSignature, but don't sign it yet.
-      XMLSignature signature = fac.newXMLSignature(signedInfo, keyInfo);
+      final XMLSignature signature = fac.newXMLSignature(signedInfo, keyInfo);
 
       // Marshal, generate, and sign the enveloped signature.
       try {
          signature.sign(dsc);
-      } catch (MarshalException ex) {
+      }
+      catch (final MarshalException ex) {
          throw new XmlSignatureException(ex);
-      } catch (XMLSignatureException ex) {
+      }
+      catch (final XMLSignatureException ex) {
          throw new XmlSignatureException(ex);
       }
 
    }
 
-   private static String signeXmlOutputResult(Document doc)
+   private static String signeXmlOutputResult(final Document doc)
          throws XmlSignatureException {
 
       try {
 
          // Output the resulting document.
-         StringWriter stringWriter = new StringWriter();
-         TransformerFactory transFactory = TransformerFactory.newInstance();
-         Transformer trans = transFactory.newTransformer();
+         final StringWriter stringWriter = new StringWriter();
+         final TransformerFactory transFactory = TransformerFactory.newInstance();
+         final Transformer trans = transFactory.newTransformer();
          trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
 
          trans.transform(new DOMSource(doc), new StreamResult(stringWriter));
@@ -286,7 +303,8 @@ public final class XmlSignature {
          // Renvoie du résultat
          return stringWriter.toString();
 
-      } catch (TransformerException ex) {
+      }
+      catch (final TransformerException ex) {
          throw new XmlSignatureException(ex);
       }
 
@@ -306,43 +324,45 @@ public final class XmlSignature {
     * @throws XmlSignatureException
     *            si un problème survient lors de la vérification de la signature
     */
-   public static Boolean verifieSignatureXmlCrypto(InputStream xmlsigneAverifier)
+   public static Boolean verifieSignatureXmlCrypto(final InputStream xmlsigneAverifier)
          throws XmlSignatureException {
 
       try {
 
          // Instantiate the document
-         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
          dbf.setNamespaceAware(true);
-         Document doc = dbf.newDocumentBuilder().parse(xmlsigneAverifier);
+         final Document doc = dbf.newDocumentBuilder().parse(xmlsigneAverifier);
 
          // Create a DOM XMLSignatureFactory that will be used to
          // generate the enveloped signature.
-         XMLSignatureFactory fac = XmlSignatureFactory.getFactory()
-               .getXmlFactory();
+         final XMLSignatureFactory fac = XmlSignatureFactory.getFactory()
+                                                            .getXmlFactory();
 
          // Find Signature element.
-         NodeList nodeList = doc.getElementsByTagNameNS(XMLSignature.XMLNS,
-               "Signature");
+         final NodeList nodeList = doc.getElementsByTagNameNS(XMLSignature.XMLNS,
+                                                              "Signature");
          if (nodeList.getLength() == 0) {
             throw new Exception("Cannot find Signature element");
          }
 
          // Create a DOMValidateContext and specify a KeySelector
          // and document context.
-         DOMValidateContext valContext = new DOMValidateContext(
-               new X509KeySelector(), nodeList.item(0));
+         final DOMValidateContext valContext = new DOMValidateContext(
+                                                                      new X509KeySelector(),
+                                                                      nodeList.item(0));
 
          // Unmarshal the XMLSignature.
-         XMLSignature signature = fac.unmarshalXMLSignature(valContext);
+         final XMLSignature signature = fac.unmarshalXMLSignature(valContext);
 
          // Validate the XMLSignature.
-         boolean coreValidity = signature.validate(valContext);
+         final boolean coreValidity = signature.validate(valContext);
 
          // Renvoie du résultat
          return coreValidity;
 
-      } catch (Exception ex) {
+      }
+      catch (final Exception ex) {
          throw new XmlSignatureException(ex);
       }
 
