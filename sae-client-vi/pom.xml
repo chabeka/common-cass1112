@@ -10,7 +10,7 @@
 	
 	<groupId>fr.urssaf.image</groupId>
 	<artifactId>sae-client-vi</artifactId>
-	<version>1.0.6</version>
+	<version>1.0.7-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>sae-client-vi</name>
@@ -198,13 +198,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-client-vi-1.0.6
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </url>
       <developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-client-vi-1.0.6
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </developerConnection>
       <connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-client-vi-1.0.6
+         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae-client-vi/
       </connection>
    </scm>
 
