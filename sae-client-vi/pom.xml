@@ -10,7 +10,7 @@
 	
 	<groupId>fr.urssaf.image</groupId>
 	<artifactId>sae-client-vi</artifactId>
-	<version>1.0.6-SNAPSHOT</version>
+	<version>1.0.6</version>
 	<packaging>jar</packaging>
 
 	<name>sae-client-vi</name>
