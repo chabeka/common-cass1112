@@ -165,12 +165,14 @@ public class RollbackStepTest {
    public void rollback_success_integrated_documents_empty()
          throws DeletionServiceEx {
 
+	   setSecurityContext();
       // ConcurrentLinkedQueue<UUID> listIntegDocs = new
       // ConcurrentLinkedQueue<UUID>();
 
       ExecutionContext executionContext = new ExecutionContext();
       // executionContext.put(Constantes.INTEG_DOCS, listIntegDocs);
       executionContext.put(Constantes.NB_INTEG_DOCS, 3);
+      executionContext.put(Constantes.DOC_COUNT, 3);
 
       JobExecution execution = launcher.launchStep(STEP_NAME, jobParameters,
             executionContext);
@@ -199,6 +201,7 @@ public class RollbackStepTest {
    @Test
    public void rollback_failure() throws DeletionServiceEx {
 
+	   
       /*
        * ConcurrentLinkedQueue<UUID> listIntegDocs = new
        * ConcurrentLinkedQueue<UUID>();

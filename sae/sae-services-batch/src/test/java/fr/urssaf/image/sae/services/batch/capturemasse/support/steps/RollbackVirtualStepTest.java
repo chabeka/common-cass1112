@@ -109,6 +109,8 @@ public class RollbackVirtualStepTest {
   @Test
   public void rollback_success() throws DeletionServiceEx {
 
+	setSecurityContext();
+	  
     final UUID refUuid = UUID.randomUUID();
 
     // Liste des documents intégrés
@@ -136,6 +138,7 @@ public class RollbackVirtualStepTest {
 
     final ExecutionContext executionContext = new ExecutionContext();
     executionContext.put(Constantes.NB_INTEG_DOCS, 3);
+    executionContext.put(Constantes.DOC_COUNT, 3);
 
     final JobExecution execution = launcher.launchStep(STEP_NAME,
                                                        jobParameters,
