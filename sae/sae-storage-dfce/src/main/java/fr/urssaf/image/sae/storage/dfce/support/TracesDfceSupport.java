@@ -108,7 +108,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
@@ -179,7 +179,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document attaché dans DFCE",
@@ -251,7 +251,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de mise à la corbeille de document dans DFCE",
@@ -322,7 +322,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de restore de document dans DFCE",
@@ -396,7 +396,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de dépôt de document dans DFCE",
@@ -501,7 +501,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de suppression d'un document de DFCE",
@@ -554,7 +554,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de transfert d'un document vers la GNS",
@@ -611,7 +611,7 @@ public class TracesDfceSupport {
          // Traces
          LOGGER.debug("{} - Fin", prefix);
 
-      } catch (Throwable ex) {
+      } catch (Exception ex) {
          LOGGER
          .error(
                "Une erreur s'est produite lors de l'écriture de la trace de copie d'un document",
