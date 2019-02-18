@@ -32,105 +32,118 @@ import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
 @Service
 public class WSDeblocageServiceImpl implements WSDeblocageService {
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(WSTransfertMasseServiceImpl.class);
+  private static final Logger LOG = LoggerFactory
+                                                 .getLogger(WSTransfertMasseServiceImpl.class);
 
-   @Autowired
-   private OperationPileTravauxService operationPileTravaux;
+  @Autowired
+  private OperationPileTravauxService operationPileTravaux;
 
-   /**
-    * Service permettant de réaliser des objets sur les jobs
-    */
-   @Autowired
-   private JobQueueService jobQueueService;
+  /**
+   * Service permettant de réaliser des objets sur les jobs
+   */
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   /**
-    * Service permettant de réaliser les opérations de lecture sur les jobs
-    */
-   @Autowired
-   private JobLectureService jobLectureService;
+  /**
+   * Service permettant de réaliser les opérations de lecture sur les jobs
+   */
+  @Autowired
+  private JobLectureService jobLectureService;
 
-   /**
-    * 
-    * {@inheritDoc}
-    * 
-    * @throws JobInexistantException
-    */
-   @Override
-   public final DeblocageResponse deblocage(Deblocage request, String callerIP)
-         throws DeblocageAxisFault, JobInexistantException {
-      String prefixeTrc = "deblocage()";
-      LOG.debug("{} - Début", prefixeTrc);
+  /**
+   * {@inheritDoc}
+   * 
+   * @throws JobInexistantException
+   */
+  @Override
+  public DeblocageResponse deblocage(final Deblocage request, final String callerIP)
+      throws DeblocageAxisFault, JobInexistantException {
+    final String prefixeTrc = "deblocage()";
+    LOG.debug("{} - Début", prefixeTrc);
 
-      // Récuperer les paramètres du job à débloquer
-      UuidType uuid = request.getDeblocage().getUuid();
-      UUID uuidJob = UUID.fromString(uuid.getUuidType());
-      String etatJob = StringUtils.EMPTY;
-      LOG.debug("{} - UUID du job: {}", prefixeTrc, uuid);
+    // Récuperer les paramètres du job à débloquer
+    final UuidType uuid = request.getDeblocage().getUuid();
+    final UUID uuidJob = UUID.fromString(uuid.getUuidType());
+    String etatJob = StringUtils.EMPTY;
+    LOG.debug("{} - UUID du job: {}", prefixeTrc, uuid);
 
-      try {
-         // Recuperer le job
-         JobRequest jobRequest = jobLectureService
-               .getJobRequestNotNull(uuidJob);
+    try {
+      // Recuperer le job
+      final JobRequest jobRequest = jobLectureService
+                                                     .getJobRequestNotNull(uuidJob);
 
-         // Si code traitement existant dans les params du job
-         String codeTraitement = StringUtils.EMPTY;
-         if (jobRequest.getJobParameters() != null
-               && !jobRequest.getJobParameters().isEmpty()) {
-            codeTraitement = jobRequest.getJobParameters().get(
-                  Constantes.CODE_TRAITEMENT);
-         }
-
-         if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
-            // Si déblocage modification de masse
-            if (StringUtils.isNotBlank(codeTraitement)) {
-               jobQueueService.deleteJobAndSemaphoreFromJobsQueues(uuidJob,
-                     codeTraitement);
-               // recupérer la date effective de fin du traitement
-               Date endingDate = jobRequest.getEndingDate();               
-               // Passer le job à l'état ABORT
-               jobQueueService.changerEtatJobRequest(uuidJob,
-                     JobState.ABORT.name(), endingDate, null);
-            } else {
-               LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse",
-                     new Object[] { prefixeTrc, uuid });
-               throw new DeblocageAxisFault(
-                     "ErreurInterneDeblocage",
-                     "Le job ne correspond pas à un traitement de modification de masse");
-            }
-         } else if (JobState.RESERVED.name().equals(
-               jobRequest.getState().toString())
-               || JobState.STARTING.name().equals(
-                     jobRequest.getState().toString())) {
-            jobQueueService.deleteJobFromJobsQueues(uuidJob);
-            // Passer le job à l'état FAILURE
-            Date dateFailure = new Date();
-            jobQueueService.changerEtatJobRequest(uuidJob,
-                  JobState.FAILURE.name(), dateFailure, null);
-         } else {
-            LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état",
-                  new Object[] { prefixeTrc, uuid });
-            throw new DeblocageAxisFault("ErreurInterneDeblocage",
-                  "Le job ne peut pas être débloqué à cause de son état");
-         }
-         // Récupérer l'état du job apèrs déblocage
-         JobRequest job = jobLectureService.getJobRequest(uuidJob);
-         etatJob = job.getState().toString();
-      } catch (JobInexistantException e) {
-         LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus",
-               new Object[] { prefixeTrc, uuid });
-         throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
-               e);
-      } catch (AccessDeniedException e) {
-         throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
-               e);
-      } catch (Exception e) {
-         throw new DeblocageAxisFault("ErreurInterneDeblocage", e.getMessage(),
-               e);
+      // Si code traitement existant dans les params du job
+      String codeTraitement = StringUtils.EMPTY;
+      if (jobRequest.getJobParameters() != null
+          && !jobRequest.getJobParameters().isEmpty()) {
+        codeTraitement = jobRequest.getJobParameters()
+                                   .get(
+                                        Constantes.CODE_TRAITEMENT);
       }
 
-      return ObjectStorageResponseFactory.createDeblocageResponse(
-            uuid.getUuidType(), etatJob);
-   }
+      if (JobState.FAILURE.name().equals(jobRequest.getState().toString())) {
+        // Si déblocage modification de masse
+        if (StringUtils.isNotBlank(codeTraitement)) {
+          jobQueueService.deleteJobAndSemaphoreFromJobsQueues(uuidJob,
+                                                              codeTraitement);
+          // recupérer la date effective de fin du traitement
+          final Date endingDate = jobRequest.getEndingDate();
+          // Passer le job à l'état ABORT
+          jobQueueService.changerEtatJobRequest(uuidJob,
+                                                JobState.ABORT.name(),
+                                                endingDate,
+                                                null);
+        } else {
+          LOG.warn("{} - échec de déblocage du job {} - ce job ne correspond pas à un traitement de modification de masse",
+                   new Object[] {prefixeTrc, uuid});
+          throw new DeblocageAxisFault(
+                                       "ErreurInterneDeblocage",
+                                       "Le job ne correspond pas à un traitement de modification de masse");
+        }
+      } else if (JobState.RESERVED.name()
+                                  .equals(
+                                          jobRequest.getState().toString())
+          || JobState.STARTING.name()
+                              .equals(
+                                      jobRequest.getState().toString())) {
+        jobQueueService.deleteJobFromJobsQueues(uuidJob);
+        // Passer le job à l'état FAILURE
+        final Date dateFailure = new Date();
+        jobQueueService.changerEtatJobRequest(uuidJob,
+                                              JobState.FAILURE.name(),
+                                              dateFailure,
+                                              null);
+      } else {
+        LOG.warn("{} - échec de déblocage du job {} - ce job ne peut pas être débloqué à cause de son état",
+                 new Object[] {prefixeTrc, uuid});
+        throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                     "Le job ne peut pas être débloqué à cause de son état");
+      }
+      // Récupérer l'état du job apèrs déblocage
+      final JobRequest job = jobLectureService.getJobRequest(uuidJob);
+      etatJob = job.getState().toString();
+    }
+    catch (final JobInexistantException e) {
+      LOG.warn("{} - échec de déblocage du job {} - ce job n'existe plus",
+               new Object[] {prefixeTrc, uuid});
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   e.getMessage(),
+                                   e);
+    }
+    catch (final AccessDeniedException e) {
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   e.getMessage(),
+                                   e);
+    }
+    catch (final Exception e) {
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   e.getMessage(),
+                                   e);
+    }
+
+    return ObjectStorageResponseFactory.createDeblocageResponse(
+                                                                uuid.getUuidType(),
+                                                                etatJob);
+  }
 
 }

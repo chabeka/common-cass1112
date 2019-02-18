@@ -176,7 +176,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     private static final Logger LOG = LoggerFactory.getLogger(SaeServiceSkeleton.class);
     private static final String STOCKAGE_INDISPO = "StockageIndisponible";
     private static final String MES_STOCKAGE = "ws.dfce.stockage";
-    private final SaeService service;
+    private SaeService service;
     @Autowired
     private WSConsultationService consultation;
     @Autowired
@@ -237,7 +237,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * {@inheritDoc}
      */
     @Override
-    public final PingResponse ping(PingRequest pingRequest) {
+    public PingResponse ping(PingRequest pingRequest) {
         PingResponse response = new PingResponse();
 
         response.setPingString(service.ping());
@@ -249,7 +249,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * {@inheritDoc}
      */
     @Override
-    public final PingSecureResponse pingSecure(PingSecureRequest pingRequest) {
+    public PingSecureResponse pingSecure(PingSecureRequest pingRequest) {
         PingSecureResponse response = new PingSecureResponse();
 
         response.setPingString(service.pingSecure());
@@ -264,7 +264,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final ArchivageUnitaireResponse archivageUnitaireSecure(
+    public ArchivageUnitaireResponse archivageUnitaireSecure(
         ArchivageUnitaire request)
         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
         try {
@@ -305,7 +305,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws CaptureAxisFault
      */
     @Override
-    public final ArchivageUnitairePJResponse archivageUnitairePJSecure(
+    public ArchivageUnitairePJResponse archivageUnitairePJSecure(
         ArchivageUnitairePJ request) throws AxisFault {
         try {
             // Traces debug - entrée méthode
@@ -346,7 +346,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final ArchivageMasseResponse archivageMasseSecure(
+    public ArchivageMasseResponse archivageMasseSecure(
         ArchivageMasse request, String callerIP)
         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
         try {
@@ -386,7 +386,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final RechercheResponse rechercheSecure(Recherche request)
+    public RechercheResponse rechercheSecure(Recherche request)
         throws RechercheAxis2Fault, SaeAccessDeniedAxisFault {
         try {
             // Traces debug - entrée méthode
@@ -426,7 +426,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final ConsultationResponse consultationSecure(Consultation request)
+    public ConsultationResponse consultationSecure(Consultation request)
         throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
         // Traces debug - entrée méthode
         String prefixeTrc = "Opération consultationSecure()";
@@ -467,7 +467,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final ConsultationMTOMResponse consultationMTOMSecure(
+    public ConsultationMTOMResponse consultationMTOMSecure(
         ConsultationMTOM request)
         throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
         try {
@@ -503,7 +503,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final CopieResponse copieSecure(Copie request)
+    public CopieResponse copieSecure(Copie request)
         throws CopieAxisFault, SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
             SAEConsultationServiceException, SAECaptureServiceEx,
             ReferentialRndException, UnknownCodeRndEx, ReferentialException,
@@ -549,7 +549,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final DocumentExistantResponse documentExistant(
+    public DocumentExistantResponse documentExistant(
         DocumentExistant request)
         throws DocumentExistantAxisFault, SearchingServiceEx,
             ConnectionServiceEx {
@@ -620,7 +620,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
+    public ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
         ArchivageMasseAvecHash request, String callerIP)
         throws CaptureAxisFault, SaeAccessDeniedAxisFault {
         try {
@@ -654,7 +654,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final ModificationResponse modificationSecure(Modification request)
+    public ModificationResponse modificationSecure(Modification request)
         throws AxisFault {
         try {
             String trcPrefix = "modificationSecure";
@@ -685,7 +685,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final SuppressionResponse suppressionSecure(Suppression request)
+    public SuppressionResponse suppressionSecure(Suppression request)
         throws AxisFault {
         try {
             String trcPrefix = "suppressionSecure";
@@ -716,7 +716,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+    public RecuperationMetadonneesResponse recuperationMetadonneesSecure(
         RecuperationMetadonnees request) throws AxisFault {
         try {
             String trcPrefix = "recuperationMetadonneesSecure";
@@ -771,7 +771,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
     }
 
     @Override
-    public final ConsultationAffichableResponse consultationAffichableSecure(
+    public ConsultationAffichableResponse consultationAffichableSecure(
         ConsultationAffichable request) throws AxisFault {
         try {
             // Traces debug - entrée méthode
@@ -1159,7 +1159,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws SaeAccessDeniedAxisFault
      */
     @Override
-    public final TransfertMasseResponse transfertMasseSecure(
+    public TransfertMasseResponse transfertMasseSecure(
         TransfertMasse request, String callerIP)
         throws TransfertAxisFault, SaeAccessDeniedAxisFault {
         try {
@@ -1193,7 +1193,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
      * @throws DeblocageAxisFault
      */
     @Override
-    public final DeblocageResponse deblocageSecure(Deblocage request,
+    public DeblocageResponse deblocageSecure(Deblocage request,
         String callerIP)
         throws DeblocageAxisFault, SaeAccessDeniedAxisFault,
             JobInexistantException {
