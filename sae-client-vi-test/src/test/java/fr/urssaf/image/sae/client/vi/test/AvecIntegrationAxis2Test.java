@@ -26,17 +26,17 @@ public class AvecIntegrationAxis2Test {
    @Test
    public void testPingSecure() throws RemoteException {
 
-      SaeServiceStub service = StubFactory.getStub();
+      final SaeServiceStub service = StubFactory.getStub();
 
-      PingSecureRequest request = new PingSecureRequest();
+      final PingSecureRequest request = new PingSecureRequest();
 
-      PingSecureResponse response = service.pingSecure(request);
+      final PingSecureResponse response = service.pingSecure(request);
 
-      String pingString = response.getPingString();
+      final String pingString = response.getPingString();
 
       Assert.assertEquals(
-            "Les services du SAE sécurisés par authentification sont en ligne",
-            pingString);
+                          "Les services du SAE sécurisés par authentification sont en ligne",
+                          pingString);
 
    }
 
@@ -48,30 +48,31 @@ public class AvecIntegrationAxis2Test {
    @Test
    public void testConsultation() throws RemoteException {
       try {
-         SaeServiceStub service = StubFactory.getStub();
+         final SaeServiceStub service = StubFactory.getStub();
 
-         Consultation consultation = new Consultation();
-         ConsultationRequestType type = new ConsultationRequestType();
-         UuidType uuidType = new UuidType();
+         final Consultation consultation = new Consultation();
+         final ConsultationRequestType type = new ConsultationRequestType();
+         final UuidType uuidType = new UuidType();
          uuidType.setUuidType("00000000-0000-0000-0000-000000000000");
          type.setIdArchive(uuidType);
 
-         ListeMetadonneeCodeType listeType = new ListeMetadonneeCodeType();
-         MetadonneeCodeType meta = new MetadonneeCodeType();
+         final ListeMetadonneeCodeType listeType = new ListeMetadonneeCodeType();
+         final MetadonneeCodeType meta = new MetadonneeCodeType();
          meta.setMetadonneeCodeType("Siret");
-         MetadonneeCodeType[] tabCode = new MetadonneeCodeType[] { meta };
+         final MetadonneeCodeType[] tabCode = new MetadonneeCodeType[] {meta};
          listeType.setMetadonneeCode(tabCode);
          type.setMetadonnees(listeType);
          consultation.setConsultation(type);
 
          service.consultation(consultation);
 
-      } catch (AxisFault ex) {
+      }
+      catch (final AxisFault ex) {
 
          Assert
                .assertEquals(
-                     "Il n'existe aucun document pour l'identifiant d'archivage '00000000-0000-0000-0000-000000000000'",
-                     ex.getMessage());
+                             "L'archive 00000000-0000-0000-0000-000000000000 n'a été trouvée dans aucune des instances de la GED.",
+                             ex.getMessage());
 
       }
    }
