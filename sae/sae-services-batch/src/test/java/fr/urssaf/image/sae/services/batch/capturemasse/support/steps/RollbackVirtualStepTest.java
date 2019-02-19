@@ -30,6 +30,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -58,21 +59,21 @@ public class RollbackVirtualStepTest {
   @Autowired
   @Qualifier("deletionService")
   private DeletionService deletionService;
-
+  
   @Autowired
   private InsertionPoolThreadVirtualExecutor executor;
 
   @After
-  public void after() {
+  public void after() throws Exception {
 
     EasyMock.reset(deletionService);
+    
   }
 
   private JobParameters jobParameters;
 
   @Before
-  public void before() {
-
+  public void before() throws Exception {
       Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
       parameters.put("id", new JobParameter(ObjectUtils.toString(UUID
             .randomUUID())));
@@ -212,7 +213,7 @@ public class RollbackVirtualStepTest {
                         rollbackStep.getWriteCount());
 
   }
-  @Ignore
+  
   @Test
   public void rollback_failure() throws DeletionServiceEx {
 
@@ -276,6 +277,10 @@ public class RollbackVirtualStepTest {
                         rollbackStep.getWriteCount());
 
     EasyMock.verify(deletionService);
+    
+    executor.getIntegratedDocuments().remove(doc1);
+    executor.getIntegratedDocuments().remove(doc2);
+    executor.getIntegratedDocuments().remove(doc3);
   }
 
 }

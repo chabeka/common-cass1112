@@ -12,6 +12,7 @@ import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ObjectUtils;
+import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
@@ -30,6 +31,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -54,7 +56,7 @@ public class RollbackStepTest {
 
    @Autowired
    private JobLauncherTestUtils launcher;
-
+   
    @Autowired
    @Qualifier("deletionService")
    private DeletionService deletionService;
@@ -63,7 +65,7 @@ public class RollbackStepTest {
    private InsertionCapturePoolThreadExecutor executor;
 
    @After
-   public void after() {
+   public void after() throws Exception {
 
       EasyMock.reset(deletionService);
    }
@@ -198,7 +200,7 @@ public class RollbackStepTest {
             rollbackStep.getWriteCount());
 
    }
-   @Ignore
+   
    @Test
    public void rollback_failure() throws DeletionServiceEx {
 
@@ -263,6 +265,10 @@ public class RollbackStepTest {
             rollbackStep.getWriteCount());
 
       EasyMock.verify(deletionService);
+      
+      executor.getIntegratedDocuments().remove(doc1);
+      executor.getIntegratedDocuments().remove(doc2);
+      executor.getIntegratedDocuments().remove(doc3);
    }
 
 }
