@@ -160,8 +160,10 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
     *
     * @return int
     */
-   public synchronized final int getNombreTraites() {
+   public final int getNombreTraites() {
+	   synchronized (this) {
 		   return nombreTraites;
+	   }  
    }
 
    /**
@@ -170,8 +172,10 @@ public class FormatValidationPoolThreadExecutor extends ThreadPoolExecutor {
     * @param nombreTraites
     *           nombre de documents traités
     */
-   public synchronized final void setNombreTraites(final int nombreTraites) {
-      this.nombreTraites = nombreTraites;
+   public  final void setNombreTraites(final int nombreTraites) {
+	   synchronized(this){
+		   this.nombreTraites = nombreTraites; 
+	   }
    }
 
    /**
