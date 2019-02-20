@@ -177,16 +177,7 @@ public class TraitementServiceImpl implements TraitementService {
       } catch (SearchQueryParseException ex) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
                ex.getMessage());
-      } catch (Error ex) {
-         // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin
-         if (executor != null && !executor.isShutdown()) {
-            waitFinTraitementValidation(parametres, nbDocTraites, executor,
-                  nbDocErreurIdent);
-         }
-         // et on envoie l'erreur à l'appelant
-         throw ex;
-      } catch (RuntimeException ex) {
+      } catch (Exception ex) {
          // gestion des runtime exception
          // on essaie d'arrêter le pool et d'attendre la fin
          if (executor != null && !executor.isShutdown()) {
@@ -499,16 +490,7 @@ public class TraitementServiceImpl implements TraitementService {
       } catch (SearchQueryParseException ex) {
          LOGGER.error("La syntaxe de la requête n'est pas valide : {}",
                ex.getMessage());
-      } catch (Error ex) {
-         // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin
-         if (poolThead != null && !poolThead.isShutdown()) {
-            // attend la fin du traitement
-            waitFinTraitementAddMetadatas(poolThead);
-         }
-         // et on envoie l'erreur à l'appelant
-         throw ex;
-      } catch (RuntimeException ex) {
+      }  catch (Exception ex) {
          // gestion des erreurs de types runtime
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
@@ -619,16 +601,7 @@ public class TraitementServiceImpl implements TraitementService {
          LOGGER.error(
                "Une erreur s'est produite lors de la fermeture du fichier : {}",
                ex.getMessage());
-      } catch (Error ex) {
-         // gestion des erreurs grave de la jvm
-         // on essaie d'arrêter le pool et d'attendre la fin
-         if (poolThead != null && !poolThead.isShutdown()) {
-            // attend la fin du traitement
-            waitFinTraitementAddMetadatas(poolThead);
-         }
-         // et on envoie l'erreur à l'appelant
-         throw ex;
-      } catch (RuntimeException ex) {
+      }  catch (Exception ex) {
          // gestion des erreurs de types runtime
          // on essaie d'arrêter le pool et d'attendre la fin
          if (poolThead != null && !poolThead.isShutdown()) {
@@ -728,16 +701,7 @@ public class TraitementServiceImpl implements TraitementService {
                      "{} - La syntaxe de la requête n'est pas valide : {}",
                      trcPrefix, ex.getMessage());
 
-            } catch (Error ex) {
-               // gestion des erreurs grave de la jvm
-               // on essaie d'arrêter le pool et d'attendre la fin
-               if (poolThread != null && !poolThread.isShutdown()) {
-                  // attend la fin du traitement
-                  waitFinTraitementPurgeCorbeille(poolThread);
-               }
-               // et on envoie l'erreur à l'appelant
-               throw ex;
-            } catch (RuntimeException ex) {
+            } catch (Exception ex) {
                // gestion des erreurs de types runtime
                // on essaie d'arrêter le pool et d'attendre la fin
                if (poolThread != null && !poolThread.isShutdown()) {

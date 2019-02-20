@@ -122,7 +122,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
             exitTraitement.setSucces(false);
          }
          /* erreurs Spring non gérées */
-      } catch (Throwable e) {
+      } catch (Exception e) {
 
          LOGGER.warn(
                "{} - erreur lors de la capture de masse. Exception levée",
