@@ -188,29 +188,6 @@ public class IntegrationInsertionErreurAucuneInsertionTest {
       server.resetData();
    }
 
-   @Ignore
-   @Test
-   @DirtiesContext
-   public void testLancementThrowable() throws ConnectionServiceEx,
-   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-   SAXException, InsertionIdGedExistantEx {
-      initComposantsThrowable();
-      initDatas();
-
-      final ExitTraitement exitStatus = service.captureMasse(ecdeTestSommaire
-                                                             .getUrlEcde(), UUID.randomUUID());
-
-      EasyMock.verify(provider, storageDocumentService);
-
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-                         .isSucces());
-
-      checkFiles();
-
-      checkLogs();
-
-   }
-
    @Test
    @DirtiesContext
    public void testLancementRuntime() throws ConnectionServiceEx,

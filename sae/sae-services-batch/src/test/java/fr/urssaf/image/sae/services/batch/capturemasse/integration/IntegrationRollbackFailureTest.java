@@ -187,32 +187,6 @@ public class IntegrationRollbackFailureTest {
       server.resetData();
    }
 
-   @Ignore
-   @Test
-   @DirtiesContext
-   public void testLancementThrowableConnexionRollback()
-         throws DeletionServiceEx, ConnectionServiceEx, InsertionServiceEx,
-         IOException, JAXBException, SAXException, InsertionIdGedExistantEx {
-
-      initComposantsThrowableConnection();
-      initComposantsGeneralRollbackListener();
-
-      initDatas();
-
-      UUID uuid = UUID.randomUUID();
-
-      ExitTraitement exitStatus = service.captureMasse(
-            ecdeTestSommaire.getUrlEcde(), uuid);
-
-      EasyMock.verify(provider, storageDocumentService);
-
-      Assert.assertFalse("le traitement doit etre en erreur",
-            exitStatus.isSucces());
-
-      checkFiles();
-
-      checkLogs(uuid.toString());
-   }
 
    @Test
    @DirtiesContext

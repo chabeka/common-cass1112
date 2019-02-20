@@ -219,34 +219,6 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
             "Caused by: java.lang.RuntimeException: erreur ouverture base");
 
    }
-   
-   @Ignore
-   @Test
-   @DirtiesContext
-   public void testLancementThrowable() throws ConnectionServiceEx,
-   DeletionServiceEx, InsertionServiceEx, IOException, JAXBException,
-   SAXException {
-      initComposantsThrowable();
-      initDatas();
-
-      UUID idTdm = UUID.randomUUID();
-      URI urlSommaire = ecdeTestSommaire.getUrlEcde();
-
-      ExitTraitement exitStatus = service.captureMasse(urlSommaire, idTdm);
-
-      EasyMock.verify(provider, storageDocumentService);
-
-      Assert.assertFalse("le traitement doit etre en erreur", exitStatus
-            .isSucces());
-
-      checkFiles();
-
-      checkLogs();
-
-      checkTracabilite(idTdm, urlSommaire,
-            "Caused by: java.lang.Error: erreur ouverture base");
-
-   }
 
    private void initComposantsThrowable() throws ConnectionServiceEx,
    DeletionServiceEx, InsertionServiceEx {
