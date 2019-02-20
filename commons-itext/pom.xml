@@ -25,7 +25,7 @@
 
       <!-- numéro de version de dépendance de itext -->
       <!-- cette version est une version en AGPL v3 -->
-		<itext.version>5.5.9</itext.version>
+		<itext.version>5.5.13</itext.version>
             
       <!-- Autres versions -->
 		<junit.version>4.8.2</junit.version>

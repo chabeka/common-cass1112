@@ -38,29 +38,34 @@ import fr.urssaf.image.commons.itext.utils.FormatConversionUtils;
 public class FormatConversionServiceImpl implements FormatConversionService {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(FormatConversionServiceImpl.class);
+                                                     .getLogger(FormatConversionServiceImpl.class);
 
    /**
     * {@inheritDoc}
     */
+   @Override
    public final byte[] conversionTiffToPdf(final File fichier,
-         final Integer numeroPage, final Integer nombrePages)
+                                           final Integer numeroPage, final Integer nombrePages)
          throws FormatConversionException, FormatConversionParametrageException {
       InputStream stream;
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       try {
          LOGGER.debug("Conversion d'un Tiff en Pdf a partir d'un fichier {}",
-               new String[] { fichier.getPath() });
+                      new String[] {fichier.getPath()});
          stream = new FileInputStream(fichier);
          convertir(numeroPage, nombrePages, stream, outputStream);
          stream.close();
-      } catch (FileNotFoundException e) {
+      }
+      catch (final FileNotFoundException e) {
          throw new FormatConversionException(e);
-      } catch (IOException e) {
+      }
+      catch (final IOException e) {
          throw new FormatConversionException(e);
-      } catch (DocumentException e) {
+      }
+      catch (final DocumentException e) {
          throw new FormatConversionException(e);
-      } catch (RuntimeException e) { 
+      }
+      catch (final RuntimeException e) {
          throw new FormatConversionRuntimeException(e);
       }
 
@@ -70,8 +75,10 @@ public class FormatConversionServiceImpl implements FormatConversionService {
    /**
     * {@inheritDoc}
     */
-   public final byte[] conversionTiffToPdf(byte[] fichier, Integer numeroPage,
-         Integer nombrePages) throws FormatConversionException,
+   @Override
+   public final byte[] conversionTiffToPdf(final byte[] fichier, final Integer numeroPage,
+                                           final Integer nombrePages)
+         throws FormatConversionException,
          FormatConversionParametrageException {
       InputStream stream;
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -81,38 +88,46 @@ public class FormatConversionServiceImpl implements FormatConversionService {
          stream = new ByteArrayInputStream(fichier);
          convertir(numeroPage, nombrePages, stream, outputStream);
          stream.close();
-      } catch (IOException e) {
+      }
+      catch (final IOException e) {
          throw new FormatConversionException(e);
-      } catch (DocumentException e) {
+      }
+      catch (final DocumentException e) {
          throw new FormatConversionException(e);
-      } catch (RuntimeException e) { 
+      }
+      catch (final RuntimeException e) {
          throw new FormatConversionRuntimeException(e);
       }
 
       return outputStream.toByteArray();
    }
-   
+
    /**
     * {@inheritDoc}
     */
+   @Override
    public final byte[] splitPdf(final File fichier,
-         final Integer numeroPage, final Integer nombrePages)
+                                final Integer numeroPage, final Integer nombrePages)
          throws FormatConversionException, FormatConversionParametrageException {
       InputStream stream;
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
       try {
          LOGGER.debug("Split d'un Pdf a partir d'un fichier {}",
-               new String[] { fichier.getPath() });
+                      new String[] {fichier.getPath()});
          stream = new FileInputStream(fichier);
          split(numeroPage, nombrePages, stream, outputStream);
          stream.close();
-      } catch (FileNotFoundException e) {
+      }
+      catch (final FileNotFoundException e) {
          throw new FormatConversionException(e);
-      } catch (IOException e) {
+      }
+      catch (final IOException e) {
          throw new FormatConversionException(e);
-      } catch (DocumentException e) {
+      }
+      catch (final DocumentException e) {
          throw new FormatConversionException(e);
-      } catch (RuntimeException e) { 
+      }
+      catch (final RuntimeException e) {
          throw new FormatConversionRuntimeException(e);
       }
 
@@ -122,8 +137,10 @@ public class FormatConversionServiceImpl implements FormatConversionService {
    /**
     * {@inheritDoc}
     */
-   public final byte[] splitPdf(byte[] fichier, Integer numeroPage,
-         Integer nombrePages) throws FormatConversionException,
+   @Override
+   public final byte[] splitPdf(final byte[] fichier, final Integer numeroPage,
+                                final Integer nombrePages)
+         throws FormatConversionException,
          FormatConversionParametrageException {
       InputStream stream;
       final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -133,11 +150,14 @@ public class FormatConversionServiceImpl implements FormatConversionService {
          stream = new ByteArrayInputStream(fichier);
          split(numeroPage, nombrePages, stream, outputStream);
          stream.close();
-      } catch (IOException e) {
+      }
+      catch (final IOException e) {
          throw new FormatConversionException(e);
-      } catch (DocumentException e) {
+      }
+      catch (final DocumentException e) {
          throw new FormatConversionException(e);
-      } catch (RuntimeException e) { 
+      }
+      catch (final RuntimeException e) {
          throw new FormatConversionRuntimeException(e);
       }
 
@@ -145,10 +165,10 @@ public class FormatConversionServiceImpl implements FormatConversionService {
    }
 
    /**
-    * Methode de convertion
+    * Méthode de conversion
     * 
     * @param numeroPage
-    *           numero de page demande
+    *           numéro de page demande
     * @param nombrePages
     *           nombre de page demandes
     * @param stream
@@ -163,41 +183,41 @@ public class FormatConversionServiceImpl implements FormatConversionService {
     *            exception de conversion itext
     */
    private void convertir(final Integer numeroPage, final Integer nombrePages,
-         final InputStream stream, final ByteArrayOutputStream outputStream)
+                          final InputStream stream, final ByteArrayOutputStream outputStream)
          throws IOException, FormatConversionParametrageException,
          DocumentException {
       RandomAccessFileOrArray randomAccessFile;
       randomAccessFile = new RandomAccessFileOrArray(stream);
 
       LOGGER.debug("Numero de page demande : {}, Nombre de page demande : {}",
-            new Integer[] { numeroPage, nombrePages });
+                   new Integer[] {numeroPage, nombrePages});
 
-      // recupere le nombre de pages total
+      // récupère le nombre de pages total
       final int nbPagesTotal = TiffImage.getNumberOfPages(randomAccessFile);
       LOGGER.debug("Nombre total de pages du Tiff : {}", nbPagesTotal);
 
-      // calcule les parametres de conversion
+      // calcule les paramètres de conversion
       final FormatConversionParametres parametres = FormatConversionUtils
-            .getParametresConversion(numeroPage, nombrePages, nbPagesTotal);
+                                                                         .getParametresConversion(numeroPage, nombrePages, nbPagesTotal);
 
       LOGGER.debug("Numero de page de debut : {}, Numero de page de fin : {}",
-            new Integer[] { parametres.getNumeroPageDebut(),
-                  parametres.getNumeroPageFin() });
+                   new Integer[] {parametres.getNumeroPageDebut(),
+                                  parametres.getNumeroPageFin()});
 
-      Document document = new Document();
+      final Document document = new Document();
       PdfWriter.getInstance(document, outputStream);
       document.open();
 
       // effectue la conversion
       Image image;
-      for (int index = parametres.getNumeroPageDebut(); index <= parametres
-            .getNumeroPageFin(); index++) {
-         // recupere l'image de la page en cours
-         image = TiffImage.getTiffImage(randomAccessFile, index);
-         // reinitialise la position de l'image
+      for (int index = parametres.getNumeroPageDebut(); index <= parametres.getNumeroPageFin(); index++) {
+         // récupère l'image de la page en cours
+         final boolean recoverFromImageErreur = true;
+         image = TiffImage.getTiffImage(randomAccessFile, recoverFromImageErreur, index);
+         // réinitialise la position de l'image
          image.setAbsolutePosition(0, 0);
-         // specifie la taille de la page
-         Rectangle pageSize = new Rectangle(image.getWidth(), image.getHeight());
+         // spécifie la taille de la page
+         final Rectangle pageSize = new Rectangle(image.getWidth(), image.getHeight());
          document.setPageSize(pageSize);
          // ajout de l'image au document
          document.newPage();
@@ -205,7 +225,7 @@ public class FormatConversionServiceImpl implements FormatConversionService {
       }
       document.close();
    }
-   
+
    /**
     * Methode de split d'un Pdf
     * 
@@ -225,37 +245,37 @@ public class FormatConversionServiceImpl implements FormatConversionService {
     *            exception de conversion itext
     */
    private void split(final Integer numeroPage, final Integer nombrePages,
-         final InputStream stream, final ByteArrayOutputStream outputStream)
+                      final InputStream stream, final ByteArrayOutputStream outputStream)
          throws IOException, FormatConversionParametrageException,
          DocumentException {
-      
+
       LOGGER.debug("Numero de page demande : {}, Nombre de page demande : {}",
-            new Integer[] { numeroPage, nombrePages });
-      
+                   new Integer[] {numeroPage, nombrePages});
+
       if (numeroPage != null || nombrePages != null) {
-         PdfReader reader = new PdfReader(stream);
-         
+         final PdfReader reader = new PdfReader(stream);
+
          // recupere le nombre de pages total
          final int nbPagesTotal = reader.getNumberOfPages();
          LOGGER.debug("Nombre total de pages du Pdf : {}", nbPagesTotal);
-   
+
          // calcule les parametres de conversion
          final FormatConversionParametres parametres = FormatConversionUtils
-               .getParametresConversion(numeroPage, nombrePages, nbPagesTotal);
-   
+                                                                            .getParametresConversion(numeroPage, nombrePages, nbPagesTotal);
+
          LOGGER.debug("Numero de page de debut : {}, Numero de page de fin : {}",
-               new Integer[] { parametres.getNumeroPageDebut(),
-                     parametres.getNumeroPageFin() });
-   
-         Document document = new Document();
-         PdfCopy writer = new PdfCopy(document, outputStream);
+                      new Integer[] {parametres.getNumeroPageDebut(),
+                                     parametres.getNumeroPageFin()});
+
+         final Document document = new Document();
+         final PdfCopy writer = new PdfCopy(document, outputStream);
          document.open();
-   
+
          // effectue le split
          for (int index = parametres.getNumeroPageDebut(); index <= parametres
-               .getNumeroPageFin(); index++) {
+                                                                              .getNumeroPageFin(); index++) {
             // recupere la page en cours
-            PdfImportedPage page = writer.getImportedPage(reader, index);
+            final PdfImportedPage page = writer.getImportedPage(reader, index);
             // ajout de l'image au document
             writer.addPage(page);
          }
