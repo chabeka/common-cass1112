@@ -28,14 +28,9 @@
       
       <!-- Version des framework -->
       <junit.version>4.8.2</junit.version>
-      <org.slf4j.version>1.7.5</org.slf4j.version>
-      <logback.version>1.0.13</logback.version>
+      <org.slf4j.version>1.7.25</org.slf4j.version>
+      <logback.version>1.2.3</logback.version>
       <apache.commons-lang.version>2.6</apache.commons-lang.version>
-      <apache.commons-io.version>2.0.1</apache.commons-io.version>
-      <axis2.version>1.7.7</axis2.version>
-      <xml-apis.version>1.4.01</xml-apis.version>
-      <geronimo.version>1.0.2</geronimo.version>
-      <axiom-api.version>1.2.20</axiom-api.version>
       <cxf.version>2.6.1</cxf.version>
 
    </properties>
@@ -222,109 +217,6 @@
          <version>${cxf.version}</version>
       </dependency>
 
-
-      <dependency>
-         <groupId>com.sun.xml.ws</groupId>
-         <artifactId>jaxws-rt</artifactId>
-         <version>2.1.3</version>
-         <exclusions>
-            <exclusion>
-               <groupId>javax.xml.ws</groupId>
-               <artifactId>jaxws-api</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.xml.bind</groupId>
-               <artifactId>jaxb-impl</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.xml.messaging.saaj</groupId>
-               <artifactId>saaj-impl</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.xml.stream.buffer</groupId>
-               <artifactId>streambuffer</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.xml.stream</groupId>
-               <artifactId>sjsxp</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.jvnet.staxex</groupId>
-               <artifactId>stax-ex</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>com.sun.org.apache.xml.internal</groupId>
-               <artifactId>resolver</artifactId>
-            </exclusion>
-            <exclusion>
-               <groupId>org.jvnet</groupId>
-               <artifactId>mimepull</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-		
-      <!--  AXIOM  -->
-      <dependency>
-         <groupId>org.apache.ws.commons.axiom</groupId>
-         <artifactId>axiom-api</artifactId>
-         <version>${axiom-api.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-logging</groupId>
-               <artifactId>commons-logging</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.ws.commons.axiom</groupId>
-         <artifactId>axiom-impl</artifactId>
-         <version>${axiom-api.version}</version>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-logging</groupId>
-               <artifactId>commons-logging</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.ws.commons.axiom</groupId>
-         <artifactId>axiom-compat</artifactId>
-         <version>${axiom-api.version}</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.apache.ws.commons.axiom</groupId>
-         <artifactId>axiom-tests</artifactId>
-         <version>1.2.9</version>
-         <scope>test</scope>
-         <exclusions>
-            <exclusion>
-               <groupId>commons-logging</groupId>
-               <artifactId>commons-logging</artifactId>
-            </exclusion>
-         </exclusions>
-      </dependency>
-      
-      <!-- Dépendences utilisées dans le code client généré par Axis2 -->
-      <dependency>
-         <groupId>xml-apis</groupId>
-         <artifactId>xml-apis</artifactId>
-         <version>${xml-apis.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>org.apache.geronimo.specs</groupId>
-         <artifactId>geronimo-activation_1.1_spec</artifactId>
-         <version>${geronimo.version}</version>
-      </dependency>   
-      
-      <!-- COMMONS APACHE -->
-      <dependency>
-         <groupId>commons-io</groupId>
-         <artifactId>commons-io</artifactId>
-         <version>${apache.commons-io.version}</version>
-      </dependency>
    </dependencies>
 
 </project>
