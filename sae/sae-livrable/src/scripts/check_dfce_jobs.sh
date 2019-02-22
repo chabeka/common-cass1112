@@ -125,4 +125,14 @@ if ! grep -q "fin du traitement de la purge de la corbeille" "$LOG_DIR/sae-docum
     ERRNO+=1
 fi
 
+#
+# ============ Analyses des logs sae-jobs-executable.jar ============ 
+#
+
+if ! grep -q "Nombre de travaux supprimés" "$LOG_DIR/sae_jobs_executable-PURGE_PILE_TRAVAUX.log"; then
+    error "Erreur dans la purge de la pile des travaux"
+    ERRNO+=1
+fi
+
+
 exit $ERRNO
