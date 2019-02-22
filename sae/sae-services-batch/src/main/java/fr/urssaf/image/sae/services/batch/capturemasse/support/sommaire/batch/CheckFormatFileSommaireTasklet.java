@@ -193,13 +193,16 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
                TRC_EXEC);
       }
 
+    if (batchModeSommaire != null && !batchModeSommaire.isEmpty()
+        && BatchModeType.TOUT_OU_RIEN.name().equals(batchModeSommaire)) {
       LOGGER.debug("{} - Début de validation unicité IdGed des documents",
-            TRC_EXEC);
+                   TRC_EXEC);
 
       validationSupport.validerUniciteIdGed(sommaireFile);
 
       LOGGER.debug("{} - Fin de validation unicité IdGed des documents",
-            TRC_EXEC);
+                   TRC_EXEC);
+    }
    }
    
    private void logFailedValidationSommaire(Exception e){

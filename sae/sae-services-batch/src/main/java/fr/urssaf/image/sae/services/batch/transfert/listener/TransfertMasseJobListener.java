@@ -51,6 +51,10 @@ public class TransfertMasseJobListener {
 
       ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();
       context.put(Constantes.INDEX_DOCUMENT_DONE, listIndexDocumentDone);
+   
+      final ConcurrentLinkedQueue<String> listTagDoublonsCheckList = new ConcurrentLinkedQueue<>();
+      listTagDoublonsCheckList.add("UUID");
+      context.put(Constantes.TAG_DOUBLON_CHECK_LIST, listTagDoublonsCheckList);
    }
 
    /**

@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -24,181 +26,310 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSom
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireFormatValidationException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-services-batch-test.xml"})
 public class SommaireFormatValidationSupportTest {
 
-   @Autowired
-   private SommaireFormatValidationSupport support;
+  @Autowired
+  private SommaireFormatValidationSupport support;
 
-   @Autowired
-   private EcdeTestTools ecdeTestTools;
+  @Autowired
+  private EcdeTestTools ecdeTestTools;
 
-   private EcdeTestSommaire ecdeTestSommaire;
+  private EcdeTestSommaire ecdeTestSommaire;
 
-   @Before
-   public void init() {
-      ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
-   }
+  @Before
+  public void init() {
+    ecdeTestSommaire = ecdeTestTools.buildEcdeTestSommaire();
+  }
 
-   @After
-   public void end() {
-      try {
-         ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
-      } catch (IOException e) {
-         // rien à faire
-      }
-   }
+  @After
+  public void end() {
+    try {
+      ecdeTestTools.cleanEcdeTestSommaire(ecdeTestSommaire);
+    }
+    catch (final IOException e) {
+      // rien à faire
+    }
+  }
 
-   @Test(expected = IllegalArgumentException.class)
-   public void testEcdeObligatoire()
-         throws CaptureMasseSommaireFormatValidationException {
+  @Test(expected = IllegalArgumentException.class)
+  public void testEcdeObligatoire()
+      throws CaptureMasseSommaireFormatValidationException {
 
-      support.validationSommaire(null);
-      Assert.fail("sortie aspect attendue");
+    support.validationSommaire(null);
+    Assert.fail("sortie aspect attendue");
 
-   }
+  }
 
-   @Test
-   public void testSommaireErrone() throws IOException,
-   CaptureMasseSommaireFormatValidationException {
+  @Test
+  public void testSommaireErrone() throws IOException,
+      CaptureMasseSommaireFormatValidationException {
 
-      File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-      File sommaire = new File(ecdeDirectory, "sommaire.xml");
+    final File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+    final File sommaire = new File(ecdeDirectory, "sommaire.xml");
 
-      ClassPathResource resSommaire = new ClassPathResource(
-            "sommaire/sommaire_format_failure.xml");
-      FileOutputStream fos = new FileOutputStream(sommaire);
+    final ClassPathResource resSommaire = new ClassPathResource(
+                                                                "sommaire/sommaire_format_failure.xml");
+    final FileOutputStream fos = new FileOutputStream(sommaire);
+    IOUtils.copy(resSommaire.getInputStream(), fos);
+
+    try {
+
+      support.validationSommaire(sommaire);
+
+      Assert.fail("la validation doit lever une exception de type CaptureMasseSommaireFormatValidationException");
+
+    }
+    catch (final CaptureMasseSommaireFormatValidationException e) {
+
+      Assert.assertEquals("le message de l'exception est inattendu",
+                          "Aucun document du sommaire ne sera traité dans le SAE.",
+                          e.getMessage());
+    }
+
+  }
+
+  @Test
+  public void testSommaireValide() {
+
+    try {
+
+      final File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+      final File sommaire = new File(ecdeDirectory, "sommaire.xml");
+
+      final ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
+      final FileOutputStream fos = new FileOutputStream(sommaire);
       IOUtils.copy(resSommaire.getInputStream(), fos);
 
-      try {
+      support.validationSommaire(sommaire);
+    }
+    catch (final IOException e) {
+      Assert.fail("le fichier sommaire.xml doit être valide");
+    }
+    catch (final CaptureMasseSommaireFormatValidationException e) {
+      Assert.fail("le fichier sommaire.xml doit être valide");
+    }
 
-         support.validationSommaire(sommaire);
+  }
 
-         Assert.fail("la validation doit lever une exception de type CaptureMasseSommaireFormatValidationException");
+  @Test
+  public void testSommaireValideTransfert() {
 
-      } catch (CaptureMasseSommaireFormatValidationException e) {
+    try {
 
-         Assert.assertEquals("le message de l'exception est inattendu",
-               "Aucun document du sommaire ne sera traité dans le SAE.",
-               e.getMessage());
-      }
+      final File ecdeDirectory = ecdeTestSommaire.getRepEcde();
+      final File sommaire = new File(ecdeDirectory, "sommaire.xml");
 
-   }
+      final ClassPathResource resSommaire = new ClassPathResource(
+                                                                  "sommaire_transf.xml");
+      final FileOutputStream fos = new FileOutputStream(sommaire);
+      IOUtils.copy(resSommaire.getInputStream(), fos);
 
-   @Test
-   public void testSommaireValide() {
+      support.validationSommaire(sommaire);
+    }
+    catch (final IOException e) {
+      Assert.fail("le fichier sommaire.xml doit être valide");
+    }
+    catch (final CaptureMasseSommaireFormatValidationException e) {
+      Assert.fail("le fichier sommaire.xml doit être valide");
+    }
 
-      try {
+  }
 
-         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+  @Test(expected = IllegalArgumentException.class)
+  public void testFichierSommaireBatchFichierNull()
+      throws CaptureMasseSommaireFormatValidationException,
+      CaptureMasseSommaireFileNotFoundException {
 
-         ClassPathResource resSommaire = new ClassPathResource("sommaire.xml");
-         FileOutputStream fos = new FileOutputStream(sommaire);
-         IOUtils.copy(resSommaire.getInputStream(), fos);
+    support.validerModeBatch(null, "RR");
 
-         support.validationSommaire(sommaire);
-      } catch (IOException e) {
-         Assert.fail("le fichier sommaire.xml doit être valide");
-      } catch (CaptureMasseSommaireFormatValidationException e) {
-         Assert.fail("le fichier sommaire.xml doit être valide");
-      }
+    Assert.fail("exception attendue");
+  }
 
-   }
+  @Test(expected = CaptureMasseSommaireFileNotFoundException.class)
+  public void testFichierSommaireBatchModeBatchVide()
+      throws CaptureMasseSommaireFormatValidationException,
+      CaptureMasseSommaireFileNotFoundException {
 
-   @Test
-   public void testSommaireValideTransfert() {
+    support.validerModeBatch(new File(""), "");
 
-      try {
+    Assert.fail("exception attendue");
+  }
 
-         File ecdeDirectory = ecdeTestSommaire.getRepEcde();
-         File sommaire = new File(ecdeDirectory, "sommaire.xml");
+  @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+  public void testBatchModeNonAttendu()
+      throws CaptureMasseSommaireFormatValidationException,
+      CaptureMasseSommaireFileNotFoundException {
 
-         ClassPathResource resSommaire = new ClassPathResource(
-               "sommaire_transf.xml");
-         FileOutputStream fos = new FileOutputStream(sommaire);
-         IOUtils.copy(resSommaire.getInputStream(), fos);
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_success.xml");
 
-         support.validationSommaire(sommaire);
-      } catch (IOException e) {
-         Assert.fail("le fichier sommaire.xml doit être valide");
-      } catch (CaptureMasseSommaireFormatValidationException e) {
-         Assert.fail("le fichier sommaire.xml doit être valide");
-      }
+    support.validerModeBatch(sommaire, "RR");
 
-   }
+    Assert.fail("exception attendue");
 
-   @Test(expected = IllegalArgumentException.class)
-   public void testFichierSommaireBatchFichierNull()
-         throws CaptureMasseSommaireFormatValidationException,
-         CaptureMasseSommaireFileNotFoundException {
+  }
 
-      support.validerModeBatch(null, "RR");
+  @Test
+  public void testBatchModeValide() {
 
-      Assert.fail("exception attendue");
-   }
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_success.xml");
 
-   @Test(expected = CaptureMasseSommaireFileNotFoundException.class)
-   public void testFichierSommaireBatchModeBatchVide()
-         throws CaptureMasseSommaireFormatValidationException,
-         CaptureMasseSommaireFileNotFoundException {
+    try {
+      support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
+    }
+    catch (final CaptureMasseSommaireFormatValidationException e) {
+      Assert.fail("on attend un retour valide");
+    }
+    catch (final CaptureMasseSommaireFileNotFoundException e) {
+      Assert.fail("on attend un retour valide");
+    }
 
-      support.validerModeBatch(new File(""), "");
+  }
 
-      Assert.fail("exception attendue");
-   }
+  @Test(expected = CaptureMasseSommaireFormatValidationException.class)
+  public void testUniciteIdGedFailure() throws CaptureMasseSommaireFormatValidationException {
 
-   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
-   public void testBatchModeNonAttendu()
-         throws CaptureMasseSommaireFormatValidationException,
-         CaptureMasseSommaireFileNotFoundException {
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_idged_failure.xml");
 
-      File sommaire = new File(
-            "src/test/resources/sommaire/sommaire_success.xml");
+    support.validerUniciteIdGed(sommaire);
+  }
 
-      support.validerModeBatch(sommaire, "RR");
+  @Test
+  public void testUniciteIdGedSuccess() {
 
-      Assert.fail("exception attendue");
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_idged_succes.xml");
 
-   }
-
-   @Test
-   public void testBatchModeValide() {
-
-      File sommaire = new File(
-            "src/test/resources/sommaire/sommaire_success.xml");
-
-      try {
-         support.validerModeBatch(sommaire, "TOUT_OU_RIEN");
-      } catch (CaptureMasseSommaireFormatValidationException e) {
-         Assert.fail("on attend un retour valide");
-      } catch (CaptureMasseSommaireFileNotFoundException e) {
-         Assert.fail("on attend un retour valide");
-      }
-
-   }
-
-   @Test(expected = CaptureMasseSommaireFormatValidationException.class)
-   public void testUniciteUuidFailure() throws CaptureMasseSommaireFormatValidationException {
-
-      File sommaire = new File(
-            "src/test/resources/sommaire/sommaire_uuid_failure.xml");
-
+    try {
       support.validerUniciteIdGed(sommaire);
-   }
+    }
+    catch (final CaptureMasseSommaireFormatValidationException e) {
+      Assert.fail("on attend un retour valide");
+    }
 
-   @Test
-   public void testUniciteUuidSuccess() {
+  }
 
-      File sommaire = new File(
-            "src/test/resources/sommaire/sommaire_uuid_succes.xml");
+  @Test
+  public void testUniciteMetaFailure() {
 
-      try {
-         support.validerUniciteIdGed(sommaire);
-      } catch (CaptureMasseSommaireFormatValidationException e) {
-         Assert.fail("on attend un retour valide");
-      }
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_idged_failure.xml");
 
-   }
+    final List<Integer> indexListAttendu = Arrays.asList(0, 2);
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteMeta(sommaire, "IdGed");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
+
+  @Test
+  public void testUniciteMetaSuccess() {
+
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_idged_succes.xml");
+
+    final List<Integer> indexListAttendu = Arrays.asList();
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteMeta(sommaire, "IdGed");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
+
+  @Test
+  public void testUniciteTagFailure() {
+
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_uuid_failure.xml");
+
+    final List<Integer> indexListAttendu = Arrays.asList(0, 2);
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteTag(sommaire, "UUID");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
+
+  @Test
+  public void testUniciteTagSuccess() {
+
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_uuid_succes.xml");
+
+    final List<Integer> indexListAttendu = Arrays.asList();
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteTag(sommaire, "UUID");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
+
+  @Test
+  public void testUniciteTagFailure2() {
+
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_uuid_failure2.xml");
+
+    final List<Integer> indexListAttendu = Arrays.asList(0, 2);
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteTag(sommaire, "UUID");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
+
+  @Test
+  public void testUniciteTagSuccess2() {
+
+    final File sommaire = new File(
+                                   "src/test/resources/sommaire/sommaire_uuid_succes2.xml");
+
+    final List<Integer> indexListAttendu = Arrays.asList();
+
+    List<Integer> indexList = null;
+    try {
+      indexList = support.validerUniciteTag(sommaire, "UUID");
+    }
+    catch (final IOException e) {
+      Assert.fail("Pas d'exception attendu");
+    }
+
+    Assert.assertNotNull(indexList);
+    Assert.assertArrayEquals(indexList.toArray(), indexListAttendu.toArray());
+  }
 
 }

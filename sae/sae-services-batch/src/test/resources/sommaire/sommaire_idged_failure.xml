@@ -16,7 +16,8 @@
       <!-- Document n°1 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:UUID>6367e052-eabc-11e5-9ce9-5e5517507c66</somres:UUID>
+            <somres:cheminEtNomDuFichier>attestation1.pdf
+            </somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -62,7 +63,7 @@
             </somres:metadonnee>
             <somres:metadonnee>
                <somres:code>IdGed</somres:code>
-               <somres:valeur>6367e052-eabc-11e5-9ce9-5e5517507c66</somres:valeur>
+               <somres:valeur>6367d8f0-eabc-11e5-9ce9-5e5517507c66</somres:valeur>
             </somres:metadonnee>
          </somres:metadonnees>
          <somres:numeroPageDebut>1</somres:numeroPageDebut>
@@ -71,7 +72,8 @@
       <!-- Document n°2 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:UUID>6367e728-eabc-11e5-9ce9-5e5517507c66</somres:UUID>
+            <somres:cheminEtNomDuFichier>attestation2.pdf
+            </somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -117,7 +119,7 @@
             </somres:metadonnee>
             <somres:metadonnee>
                <somres:code>IdGed</somres:code>
-               <somres:valeur>6367e728-eabc-11e5-9ce9-5e5517507c66</somres:valeur>
+               <somres:valeur>cafb2e0c-ef73-11e5-9ce9-5e5517507c66</somres:valeur>
             </somres:metadonnee>
          </somres:metadonnees>
          <somres:numeroPageDebut>1</somres:numeroPageDebut>
@@ -126,7 +128,8 @@
       <!-- Document n°3 -->
       <somres:document>
          <somres:objetNumerique>
-            <somres:UUID>cafb2e0c-ef73-11e5-9ce9-5e5517507c66</somres:UUID>
+            <somres:cheminEtNomDuFichier>attestation3.pdf
+            </somres:cheminEtNomDuFichier>
          </somres:objetNumerique>
          <somres:metadonnees>
             <somres:metadonnee>
@@ -152,7 +155,7 @@
             </somres:metadonnee>
             <somres:metadonnee>
                <somres:code>IdGed</somres:code>
-               <somres:valeur>cafb2e0c-ef73-11e5-9ce9-5e5517507c66</somres:valeur>
+               <somres:valeur>6367d8f0-eabc-11e5-9ce9-5e5517507c66</somres:valeur>
             </somres:metadonnee>
             <somres:metadonnee>
                <somres:code>FormatFichier</somres:code>

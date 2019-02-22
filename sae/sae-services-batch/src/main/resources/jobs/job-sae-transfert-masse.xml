@@ -64,9 +64,23 @@
 
          <next on="FAILED" to="finBloquant" />
          <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
-         <next on="DOCS" to="controleModeBatch" />
+         <next on="DOCS" to="controleDoublonsSommaireStep" />
          <next on="VDOCS" to="finBloquant" />
 
+      </step>
+      
+      <step id="controleDoublonsSommaireStep">
+         <tasklet ref="checkDoublonSommaireTasklet">
+            <listeners>
+               <listener ref="checkEcdePermissionBeforeStepListener" />
+               <listener ref="checkStateAfterStepListener" />
+               <listener ref="checkEcdePermissionAfterStepListener" />
+            </listeners>
+         </tasklet>
+
+         <next on="FAILED" to="finBloquant" />
+         <next on="FAILED_FIN_BLOQUANT" to="finBloquant" />
+         <next on="*" to="controleModeBatch" />
       </step>
 
       <!-- controle du mode de traitement pour redirection -->

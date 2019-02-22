@@ -17,57 +17,60 @@ import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 /**
  * Listener du job capture de masse
- * 
  */
 @Component
 public class CaptureMasseJobListener {
 
-   @Autowired
-   private TracesServicesSupport tracesSupport;
+  @Autowired
+  private TracesServicesSupport tracesSupport;
 
-   /**
-    * Initialisation des variables nécessaires au bon déroulement du job
-    * 
-    * @param jobExecution
-    *           le jobExecution
-    */
-   @BeforeJob
-   public final void init(JobExecution jobExecution) {
+  /**
+   * Initialisation des variables nécessaires au bon déroulement du job
+   * 
+   * @param jobExecution
+   *          le jobExecution
+   */
+  @BeforeJob
+  public final void init(final JobExecution jobExecution) {
 
-      ExecutionContext context = jobExecution.getExecutionContext();
+    final ExecutionContext context = jobExecution.getExecutionContext();
 
-      ConcurrentLinkedQueue<Integer> listIndex = new ConcurrentLinkedQueue<Integer>();
-      context.put(Constantes.INDEX_EXCEPTION, listIndex);
-      
-      ConcurrentLinkedQueue<Integer> listRefIndex = new ConcurrentLinkedQueue<Integer>();
-      context.put(Constantes.INDEX_REF_EXCEPTION, listRefIndex);
+    final ConcurrentLinkedQueue<Integer> listIndex = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.INDEX_EXCEPTION, listIndex);
 
-      ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<String>();
-      context.put(Constantes.CODE_EXCEPTION, listCodes);
+    final ConcurrentLinkedQueue<Integer> listRefIndex = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.INDEX_REF_EXCEPTION, listRefIndex);
 
-      ConcurrentLinkedQueue<String> listMessageExceptions = new ConcurrentLinkedQueue<String>();
-      context.put(Constantes.DOC_EXCEPTION, listMessageExceptions);
+    final ConcurrentLinkedQueue<String> listCodes = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.CODE_EXCEPTION, listCodes);
 
-      ConcurrentLinkedQueue<String> listRollbackExceptions = new ConcurrentLinkedQueue<String>();
-      context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
+    final ConcurrentLinkedQueue<String> listMessageExceptions = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.DOC_EXCEPTION, listMessageExceptions);
 
-      ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<Integer>();
-      context.put(Constantes.INDEX_DOCUMENT_DONE, listIndexDocumentDone);
+    final ConcurrentLinkedQueue<String> listRollbackExceptions = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.ROLLBACK_EXCEPTION, listRollbackExceptions);
 
-   }
+    final ConcurrentLinkedQueue<Integer> listIndexDocumentDone = new ConcurrentLinkedQueue<>();
+    context.put(Constantes.INDEX_DOCUMENT_DONE, listIndexDocumentDone);
 
-   /**
-    * Méthode appelée après l'exécution du job, que ce soit en réussite ou en
-    * échec
-    * 
-    * @param jobExecution
-    *           le jobExecution
-    */
-   @AfterJob
-   public final void afterJob(JobExecution jobExecution) {
-      // Ecriture d'une trace d'échec de capture de masse, le cas échéant
-      tracesSupport.traceEchecCaptureMasse(jobExecution);
+    final ConcurrentLinkedQueue<String> listMetaDoublonsCheckList = new ConcurrentLinkedQueue<>();
+    listMetaDoublonsCheckList.add("IdGed");
+    context.put(Constantes.META_DOUBLON_CHECK_LIST, listMetaDoublonsCheckList);
 
-   }
+  }
+
+  /**
+   * Méthode appelée après l'exécution du job, que ce soit en réussite ou en
+   * échec
+   * 
+   * @param jobExecution
+   *          le jobExecution
+   */
+  @AfterJob
+  public final void afterJob(final JobExecution jobExecution) {
+    // Ecriture d'une trace d'échec de capture de masse, le cas échéant
+    tracesSupport.traceEchecCaptureMasse(jobExecution);
+
+  }
 
 }

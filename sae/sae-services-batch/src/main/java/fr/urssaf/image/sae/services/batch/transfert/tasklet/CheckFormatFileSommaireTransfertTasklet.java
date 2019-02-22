@@ -48,14 +48,6 @@ public class CheckFormatFileSommaireTransfertTasklet extends CheckFormatFileSomm
       validationSupport.validationDocumentBaliseRequisSommaire(sommaireFile, "typeAction");    
       LOGGER.debug("{} - Fin de validation spécifique de la présence du type action dans document",
             TRC_EXEC);
-      
-      LOGGER.debug("{} - Début de validation unicité uuid des documents",
-            TRC_EXEC);
-      
-      validationSupport.validerUniciteUuid(sommaireFile);
-      
-      LOGGER.debug("{} - Fin de validation unicité uuid des documents",
-            TRC_EXEC);
    }
   
 

@@ -36,14 +36,6 @@ public class CheckFormatFileSommaireModificationTasklet extends CheckFormatFileS
       validationSupport.validationDocumentBaliseRequisSommaire(sommaireFile, "UUID");    
       LOGGER.debug("{} - Fin de validation spécifique de la présence de l'uuid du fichier",
             TRC_EXEC);
-      
-      LOGGER.debug("{} - Début de validation unicité uuid des documents",
-            TRC_EXEC);
-      
-      validationSupport.validerUniciteUuid(sommaireFile);
-      
-      LOGGER.debug("{} - Fin de validation unicité uuid des documents",
-            TRC_EXEC);
    }
   
 }
