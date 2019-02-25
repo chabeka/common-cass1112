@@ -22,91 +22,94 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-restoremasse-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-services-restoremasse-test.xml",
+                                   "/applicationContext-sae-services-restoremasse-test-mock.xml"})
 public class RestoreParamValidationSupportTest {
 
-   @Autowired
-   private RestoreParamValidationSupport support;
-   
-   @Test(expected = IllegalArgumentException.class)
-   public void testVerificationDroitRestoreIdSuppressionObligatoire()
-         throws RestoreMasseParamValidationException {
+  @Autowired
+  private RestoreParamValidationSupport support;
 
-      support.verificationDroitRestore(null);
-      Assert.fail("sortie aspect attendue");
-   }
-   
-   private void setAuthentification(Prmd prmd) {
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+  @Test(expected = IllegalArgumentException.class)
+  public void testVerificationDroitRestoreIdSuppressionObligatoire()
+      throws RestoreMasseParamValidationException {
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "restore_masse" };
-      saePrmds.add(saePrmd);
+    support.verificationDroitRestore(null);
+    Assert.fail("sortie aspect attendue");
+  }
 
-      saeDroits.put("restore_masse", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
-   }
-   
-   @Test(expected = RestoreMasseParamValidationException.class)
-   public void testVerificationDroitRestoreUnknownMeta()
-         throws RestoreMasseParamValidationException {
-      
-      Prmd prmd = new Prmd();
-      // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee inconnue
-      prmd.setLucene("Metadata:1234");
-      setAuthentification(prmd);
+  private void setAuthentification(final Prmd prmd) {
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      support.verificationDroitRestore(UUID.randomUUID());
-      Assert.fail("sortie d'exception 'unknown metadata'");
-   }
-   
-   @Test(expected = RestoreMasseParamValidationException.class)
-   public void testVerificationDroitRestoreNonSearcheableMeta()
-         throws RestoreMasseParamValidationException {
-      
-      Prmd prmd = new Prmd();
-      // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee non rechercheable
-      prmd.setLucene("NomFichier:1234");
-      setAuthentification(prmd);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] {"restore_masse"};
+    saePrmds.add(saePrmd);
 
-      support.verificationDroitRestore(UUID.randomUUID());
-      Assert.fail("sortie d'exception 'metadata unauthorized to search'");
-   }
-   
-   @Test
-   public void testVerificationDroitRestoreValide()
-         throws RestoreMasseParamValidationException {
-      
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      setAuthentification(prmd);
+    saeDroits.put("restore_masse", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(),
+                                                                                 viExtrait,
+                                                                                 roles);
+    AuthenticationContext.setAuthenticationToken(token);
+  }
 
-      String requeteCourt = support.verificationDroitRestore(UUID.randomUUID());
-      
-      Assert.assertNotNull("La requete lucene avec libellé court doit être remplie", requeteCourt);
-   }
-   
-   @Test
-   public void testVerificationDroitRestoreValideAndPrmdRestreint()
-         throws RestoreMasseParamValidationException {
-      
-      Prmd prmd = new Prmd();
-      prmd.setLucene("ApplicationTraitement:TOTO AND DomaineCotisant:true");
-      setAuthentification(prmd);
+  @Test(expected = RestoreMasseParamValidationException.class)
+  public void testVerificationDroitRestoreUnknownMeta()
+      throws RestoreMasseParamValidationException {
 
-      String requeteCourt = support.verificationDroitRestore(UUID.randomUUID());
-      
-      Assert.assertNotNull("La requete lucene avec libellé court doit être remplie", requeteCourt);
-   }
+    final Prmd prmd = new Prmd();
+    // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee inconnue
+    prmd.setLucene("Metadata:1234");
+    setAuthentification(prmd);
+
+    support.verificationDroitRestore(UUID.randomUUID());
+    Assert.fail("sortie d'exception 'unknown metadata'");
+  }
+
+  @Test(expected = RestoreMasseParamValidationException.class)
+  public void testVerificationDroitRestoreNonSearcheableMeta()
+      throws RestoreMasseParamValidationException {
+
+    final Prmd prmd = new Prmd();
+    // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee non rechercheable
+    prmd.setLucene("NomFichier:1234");
+    setAuthentification(prmd);
+
+    support.verificationDroitRestore(UUID.randomUUID());
+    Assert.fail("sortie d'exception 'metadata unauthorized to search'");
+  }
+
+  @Test
+  public void testVerificationDroitRestoreValide()
+      throws RestoreMasseParamValidationException {
+
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    setAuthentification(prmd);
+
+    final String requeteCourt = support.verificationDroitRestore(UUID.randomUUID());
+
+    Assert.assertNotNull("La requete lucene avec libellé court doit être remplie", requeteCourt);
+  }
+
+  @Test
+  public void testVerificationDroitRestoreValideAndPrmdRestreint()
+      throws RestoreMasseParamValidationException {
+
+    final Prmd prmd = new Prmd();
+    prmd.setLucene("ApplicationTraitement:TOTO AND DomaineCotisant:true");
+    setAuthentification(prmd);
+
+    final String requeteCourt = support.verificationDroitRestore(UUID.randomUUID());
+
+    Assert.assertNotNull("La requete lucene avec libellé court doit être remplie", requeteCourt);
+  }
 }

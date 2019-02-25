@@ -34,7 +34,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml",
+                                    "/applicationContext-sae-services-suppressionmasse-test-mock.xml" })
 public class CheckDroitRequeteLuceneTaskletTest {
 
    @Autowired

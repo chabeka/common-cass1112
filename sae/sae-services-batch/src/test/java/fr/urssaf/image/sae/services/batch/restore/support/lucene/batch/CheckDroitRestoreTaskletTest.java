@@ -34,7 +34,8 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-restoremasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-restoremasse-test.xml",
+                                    "/applicationContext-sae-services-restoremasse-test-mock.xml" })
 public class CheckDroitRestoreTaskletTest {
 
    @Autowired
@@ -50,23 +51,23 @@ public class CheckDroitRestoreTaskletTest {
             new ConcurrentLinkedQueue<Exception>());
    }
    
-   private void setAuthentification(Prmd prmd) {
+   private void setAuthentification(final Prmd prmd) {
       // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
+      final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
+      final SaeDroits saeDroits = new SaeDroits();
+      final List<SaePrmd> saePrmds = new ArrayList<>();
+      final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "restore_masse" };
+      final String[] roles = new String[] { "restore_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("restore_masse", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
+      final AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
       AuthenticationContext.setAuthenticationToken(token);
    }
@@ -78,26 +79,26 @@ public class CheckDroitRestoreTaskletTest {
    @Test
    public void testIdSuppressionMasseCorrecte() {
 
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setBean("permitAll");
       prmd.setCode("default");
       setAuthentification(prmd);
       
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       
       mapParameter.put(Constantes.ID_TRAITEMENT_A_RESTORER, new JobParameter(UUID.randomUUID().toString()));
       
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
       
-      JobExecution execution = launcher.launchStep(
-            "controleDroitRestoreStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+            "controleDroitRestoreStep", parameters, context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
+      final StepExecution step = list.get(0);
       Assert.assertEquals("status COMPLETED attendu", ExitStatus.COMPLETED,
             step.getExitStatus());
       
@@ -105,6 +106,7 @@ public class CheckDroitRestoreTaskletTest {
             step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
+      final
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
             .getExecutionContext().get(Constantes.RESTORE_EXCEPTION);
       Assert.assertTrue("Aucune exception n'aurait du être levée",
@@ -118,25 +120,25 @@ public class CheckDroitRestoreTaskletTest {
    @Test
    public void testIdSuppressionMassePrmdRestreint() {
 
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       prmd.setLucene("ApplicationTraitement:TOTO AND DomaineCotisant:true");
       setAuthentification(prmd);
       
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       
       mapParameter.put(Constantes.ID_TRAITEMENT_A_RESTORER, new JobParameter(UUID.randomUUID().toString()));
       
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "controleDroitRestoreStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+            "controleDroitRestoreStep", parameters, context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
+      final StepExecution step = list.get(0);
       Assert.assertEquals("status COMPLETED attendu", ExitStatus.COMPLETED,
             step.getExitStatus());
       
@@ -144,6 +146,7 @@ public class CheckDroitRestoreTaskletTest {
             step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
+      final
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
             .getExecutionContext().get(Constantes.RESTORE_EXCEPTION);
       Assert.assertTrue("Aucune exception n'aurait du être levée",
@@ -157,26 +160,26 @@ public class CheckDroitRestoreTaskletTest {
    @Test
    public void testIdSuppressionMasseUnknownMetadata() {
 
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee inconnue
       prmd.setLucene("Metadata:1234");
       setAuthentification(prmd);
       
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       
       mapParameter.put(Constantes.ID_TRAITEMENT_A_RESTORER, new JobParameter(UUID.randomUUID().toString()));
       
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "controleDroitRestoreStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+            "controleDroitRestoreStep", parameters, context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
+      final StepExecution step = list.get(0);
       Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED,
             step.getExitStatus());
       
@@ -184,12 +187,13 @@ public class CheckDroitRestoreTaskletTest {
             step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
+      final
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
             .getExecutionContext().get(Constantes.RESTORE_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
             listeErreurs.isEmpty());
       
-      int nbDocsRestores = step.getJobExecution().getExecutionContext()
+      final int nbDocsRestores = step.getJobExecution().getExecutionContext()
             .getInt(Constantes.NB_DOCS_RESTORES);
       Assert.assertEquals("Aucun document n'aurait du être restoré", 0,
             nbDocsRestores);
@@ -202,26 +206,26 @@ public class CheckDroitRestoreTaskletTest {
    @Test
    public void testIdSuppressionMasseNonSearcheableMetadata() {
 
-      Prmd prmd = new Prmd();
+      final Prmd prmd = new Prmd();
       // test moche : pour provoquer cette erreur, on met un prmd restreint sur une metadonnee non rechercheable
       prmd.setLucene("NomFichier:1234");
       setAuthentification(prmd);
       
       // permet juste de rendre unique le job au niveau spring-batch
-      Map<String, JobParameter> mapParameter = new HashMap<String, JobParameter>();
+      final Map<String, JobParameter> mapParameter = new HashMap<>();
       
       mapParameter.put(Constantes.ID_TRAITEMENT_A_RESTORER, new JobParameter(UUID.randomUUID().toString()));
       
       mapParameter.put("id", new JobParameter(UUID.randomUUID().toString()));
-      JobParameters parameters = new JobParameters(mapParameter);
+      final JobParameters parameters = new JobParameters(mapParameter);
 
-      JobExecution execution = launcher.launchStep(
-            "controleDroitRestoreStep", parameters, this.context);
+      final JobExecution execution = launcher.launchStep(
+            "controleDroitRestoreStep", parameters, context);
 
-      Collection<StepExecution> steps = execution.getStepExecutions();
-      List<StepExecution> list = new ArrayList<StepExecution>(steps);
+      final Collection<StepExecution> steps = execution.getStepExecutions();
+      final List<StepExecution> list = new ArrayList<>(steps);
 
-      StepExecution step = list.get(0);
+      final StepExecution step = list.get(0);
       Assert.assertEquals("status FAILED attendu", ExitStatus.FAILED,
             step.getExitStatus());
       
@@ -229,12 +233,13 @@ public class CheckDroitRestoreTaskletTest {
             step.getJobExecution().getExecutionContext().get(Constantes.REQ_FINALE_TRT_MASSE));
       
       @SuppressWarnings("unchecked")
+      final
       ConcurrentLinkedQueue<Exception> listeErreurs = (ConcurrentLinkedQueue<Exception>) step.getJobExecution()
             .getExecutionContext().get(Constantes.RESTORE_EXCEPTION);
       Assert.assertFalse("Une exception aurait du être levée",
             listeErreurs.isEmpty());
       
-      int nbDocsRestores = step.getJobExecution().getExecutionContext()
+      final int nbDocsRestores = step.getJobExecution().getExecutionContext()
             .getInt(Constantes.NB_DOCS_RESTORES);
       Assert.assertEquals("Aucun document n'aurait du être restoré", 0,
             nbDocsRestores);

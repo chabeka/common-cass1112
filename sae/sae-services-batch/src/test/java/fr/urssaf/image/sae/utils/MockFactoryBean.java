@@ -18,6 +18,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.modele.commun_sommaire_et_resultat.DocumentType;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
+import fr.urssaf.image.sae.services.batch.capturemasse.support.sommaire.SommaireFormatValidationSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.interruption.InterruptionTraitementMasseSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.stockage.rollback.RollbackSupport;
 import fr.urssaf.image.sae.services.document.SAEDocumentService;
@@ -156,10 +157,17 @@ public class MockFactoryBean {
   }
 
   /**
-   * @return un mock de type {@link DFCEServices}
+   * @return un mock de type {@link IndexCompositeService}
    */
   public final IndexCompositeService createIndexCompositeService() {
     return EasyMock.createMock(IndexCompositeService.class);
+  }
+
+  /**
+   * @return un mock de type {@link DFCEServices}
+   */
+  public final SommaireFormatValidationSupport createSommaireFormatValidationSupport() {
+    return EasyMock.createMock(SommaireFormatValidationSupport.class);
   }
 
 }

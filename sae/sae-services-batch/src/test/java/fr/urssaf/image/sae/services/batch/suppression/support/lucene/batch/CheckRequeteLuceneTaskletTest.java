@@ -26,7 +26,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.urssaf.image.sae.services.batch.common.Constantes;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml" })
+@ContextConfiguration(locations = { "/applicationContext-sae-services-suppressionmasse-test.xml",
+                                    "/applicationContext-sae-services-suppressionmasse-test-mock.xml" })
 public class CheckRequeteLuceneTaskletTest {
 
    @Autowired

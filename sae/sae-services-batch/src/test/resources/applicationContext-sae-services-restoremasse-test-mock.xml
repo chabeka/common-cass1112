@@ -16,5 +16,10 @@
       factory-method="createJobQueueService" primary="true">
       <qualifier value="jobQueueService" />
    </bean>
+   
+   <bean id="sommaireFormatValidationSupport" factory-bean="mockFactory"
+      factory-method="createSommaireFormatValidationSupport" primary="true">
+      <qualifier value="sommaireFormatValidationSupport" />
+   </bean>
 
 </beans>
