@@ -187,7 +187,7 @@ public class CheckFormatFileSommaireTasklet extends AbstractCaptureMasseTasklet 
                "{} - Début de validation spécifique de la présence de l'IdGed",
                TRC_EXEC);
          validationSupport.validationDocumentValeurBaliseRequisSommaire(
-               sommaireFile, "code", "IdGed");
+               sommaireFile, "code", "IdGed", true);
          LOGGER.debug(
                "{} - Fin de validation spécifique de la présence de l'IdGed",
                TRC_EXEC);

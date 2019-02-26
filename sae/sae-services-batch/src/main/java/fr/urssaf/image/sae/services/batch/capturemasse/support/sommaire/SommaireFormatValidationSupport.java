@@ -92,11 +92,13 @@ public interface SommaireFormatValidationSupport {
    *          Balise obligatoire
    * @param valeurRequired
    *          Valeur obligatoire
+   * @param verifyValue
+   *          True si on souhaite vérifier que la valeur de la balise est bien existante.
    * @throws CaptureMasseSommaireFormatValidationException
    *           Le fichier sommaire.xml est invalide
    */
   void validationDocumentValeurBaliseRequisSommaire(File sommaireFile,
-                                                    String baliseRequired, String valeurRequired)
+                                                    String baliseRequired, String valeurRequired, boolean verifyValue)
       throws CaptureMasseSommaireFormatValidationException;
 
   /**

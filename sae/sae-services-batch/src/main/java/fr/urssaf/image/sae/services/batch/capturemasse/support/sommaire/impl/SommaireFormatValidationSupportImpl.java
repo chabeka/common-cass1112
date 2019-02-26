@@ -334,7 +334,7 @@ public class SommaireFormatValidationSupportImpl implements
               if (event.isCharacters()) {
                 valeurBalise = event.asCharacters().getData();
 
-                if (valeurBalise.isEmpty()) {
+                if (StringUtils.isEmpty(valeurBalise) || StringUtils.isBlank(valeurBalise)) {
                   throw new CaptureMasseSommaireFormatValidationException(
                                                                           "La balise " + baliseRequired + " 'est vide",
                                                                           new Exception("La balise " + baliseRequired
@@ -382,7 +382,7 @@ public class SommaireFormatValidationSupportImpl implements
 
   @Override
   public void validationDocumentValeurBaliseRequisSommaire(final File sommaireFile,
-                                                           final String baliseRequired, final String valeurRequired)
+                                                           final String baliseRequired, final String valeurRequired, final boolean verifyValue)
       throws CaptureMasseSommaireFormatValidationException {
     boolean baliseValuefind = false;
     FileInputStream sommaireStream = null;
@@ -423,6 +423,29 @@ public class SommaireFormatValidationSupportImpl implements
                 if (valeurBalise.equals(valeurRequired)) {
                   // Si on trouve la balise et la valeur requise, on
                   // passe au document suivant.
+                  if (verifyValue) {
+                    while (reader.hasNext()) {
+                      event = reader.nextEvent();
+                      if (event.isStartElement()
+                          && "valeur".equals(event.asStartElement()
+                                                  .getName()
+                                                  .getLocalPart())) {
+                        event = reader.nextEvent();
+                        final String value = event.asCharacters().getData();
+
+                        if (StringUtils.isEmpty(value) || StringUtils.isBlank(value.trim())) {
+                          // Le valeur est vide ou contient uniquement des espaces
+                          throw new CaptureMasseSommaireFormatValidationException(
+                                                                                  "La balise " + valeurBalise
+                                                                                      + " ne contient pas de valeur.",
+                                                                                  new Exception(
+                                                                                                valeurBalise + " ne contient pas de valeur."));
+
+                        }
+                      }
+                    }
+                  }
+
                   baliseValuefind = true;
                   break;
                 }
