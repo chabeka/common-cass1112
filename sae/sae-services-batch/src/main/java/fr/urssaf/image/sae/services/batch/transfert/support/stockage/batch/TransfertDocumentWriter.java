@@ -119,10 +119,10 @@ implements ItemWriter<StorageDocument> {
          throws TransfertException {
       try {
          transfertService.transfertDocMasse(document);
+      } catch (TransfertException e) {
+        throw e;
       } catch (final Exception except) {
-         throw new TransfertException(
-                                      "Erreur transfert - identifiant archivage " + document.getUuid()
-                                      + " : " + except.getMessage(), except);
+         throw new TransfertException(except.getMessage(), except);
       }
       return document;
    }
