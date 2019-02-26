@@ -289,7 +289,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -329,7 +329,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -410,7 +410,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -451,7 +451,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -492,7 +492,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, ex));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -538,7 +538,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             CopieAxisFault spf = new CopieAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -573,7 +573,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             DocumentExistantAxisFault spf = new DocumentExistantAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -589,28 +589,6 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
 
     private void logRuntimeException(RuntimeException exception) {
         LOG.warn("Une exception RuntimeException a été levée", exception);
-    }
-
-    /**
-     * Methode qui set le code de la reponse HTTP à 412<br>
-     * si DFCE is down.
-     *
-     *
-     */
-    private void setCodeHttp412() {
-        HttpServletResponse response = (HttpServletResponse) MessageContext.getCurrentMessageContext()
-                                                                           .getProperty(HTTPConstants.MC_HTTP_SERVLETRESPONSE);
-
-        if (response != null) {
-            response.setStatus(HttpServletResponse.SC_PRECONDITION_FAILED);
-
-            try {
-                // on force le status a 412
-                response.flushBuffer();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     /**
@@ -674,7 +652,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             ModificationAxisFault spf = new ModificationAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -705,7 +683,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             SuppressionAxisFault spf = new SuppressionAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -760,7 +738,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             TransfertAxisFault spf = new TransfertAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException e) {
             logRuntimeException(e);
@@ -795,7 +773,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -827,7 +805,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -862,7 +840,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             if(ex.getCause()!= null && 
@@ -909,7 +887,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             AjoutNoteAxisFault spf = new AjoutNoteAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -944,7 +922,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -979,7 +957,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             GetDocFormatOrigineAxisFault spf = new GetDocFormatOrigineAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         } catch (RuntimeException ex) {
             logRuntimeException(ex);
@@ -1114,7 +1092,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
             ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
                     wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
             logSoapFault(spf);
-            setCodeHttp412();
+
             throw spf;
         }
     }
