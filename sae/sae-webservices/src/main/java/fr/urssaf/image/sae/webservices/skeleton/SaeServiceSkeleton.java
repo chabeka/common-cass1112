@@ -9,6 +9,17 @@
  */
 package fr.urssaf.image.sae.webservices.skeleton;
 
+import java.rmi.RemoteException;
+
+import org.apache.axis2.AxisFault;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
 import fr.cirtil.www.saeservice.AjoutNote;
 import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
@@ -67,10 +78,8 @@ import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertMasse;
 import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
-
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
-import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -137,28 +146,6 @@ import fr.urssaf.image.sae.webservices.service.WSTransfertMasseService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
 
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.transport.http.HTTPConstants;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.access.AccessDeniedException;
-
-import org.springframework.stereotype.Component;
-
-import org.springframework.util.Assert;
-
-import java.io.IOException;
-
-import java.rmi.RemoteException;
-
-import javax.servlet.http.HttpServletResponse;
-
-
 /**
  * Skeleton du web service coté serveur<br>
  * <br>
@@ -169,1067 +156,1207 @@ import javax.servlet.http.HttpServletResponse;
  * <br>
  * La classe doit ensuite être mise à jour manuellement selon l'évolution du
  * WSDL.
- *
  */
 @Component
 public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
-    private static final Logger LOG = LoggerFactory.getLogger(SaeServiceSkeleton.class);
-    private static final String STOCKAGE_INDISPO = "StockageIndisponible";
-    private static final String MES_STOCKAGE = "ws.dfce.stockage";
-    private final SaeService service;
-    @Autowired
-    private WSConsultationService consultation;
-    @Autowired
-    private WSRechercheService search;
-    @Autowired
-    private WSCaptureService capture;
-    @Autowired
-    private WSCaptureMasseService captureMasse;
-    @Autowired
-    private WSSuppressionMasseService suppressionMasse;
-    @Autowired
-    private WSRestoreMasseService restoreMasse;
-    @Autowired
-    private WSModificationService modificationService;
-    @Autowired
-    private WSSuppressionService suppressionService;
-    @Autowired
-    private WSTransfertService transfertService;
-    @Autowired
-    private WSMetadataService metadataService;
-    @Autowired
-    private WSNoteService noteService;
-    @Autowired
-    private WSDocumentAttacheService documentAttacheService;
-    @Autowired
-    private WSEtatJobMasseService etatJobMasseService;
-//    @Autowired
-//    private DfceInfoService dfceInfoService;
-    @Autowired
-    private WsMessageRessourcesUtils wsMessageRessourcesUtils;
-    @Autowired
-    private WSCopieService copieService;
-    @Autowired
-    WSDocumentExistantService documentExistantService;
-    @Autowired
-    private WSTransfertMasseService transfertMasse;
-    @Autowired
-    private WSDeblocageService deblocageService;
-    @Autowired
-    private WSRepriseService repriseService;
-    @Autowired
-    private WSModificationMasseService modificationMasse;
+  private static final Logger LOG = LoggerFactory.getLogger(SaeServiceSkeleton.class);
 
-    /**
-     * Instanciation du service {@link SaeService}
-     *
-     * @param service
-     *           implémentation des services web
-     */
-    @Autowired
-    public SaeServiceSkeleton(SaeService service) {
-        Assert.notNull(service, "service is required");
+  private static final String STOCKAGE_INDISPO = "StockageIndisponible";
 
-        this.service = service;
+  private static final String MES_STOCKAGE = "ws.dfce.stockage";
+
+  private final SaeService service;
+
+  @Autowired
+  private WSConsultationService consultation;
+
+  @Autowired
+  private WSRechercheService search;
+
+  @Autowired
+  private WSCaptureService capture;
+
+  @Autowired
+  private WSCaptureMasseService captureMasse;
+
+  @Autowired
+  private WSSuppressionMasseService suppressionMasse;
+
+  @Autowired
+  private WSRestoreMasseService restoreMasse;
+
+  @Autowired
+  private WSModificationService modificationService;
+
+  @Autowired
+  private WSSuppressionService suppressionService;
+
+  @Autowired
+  private WSTransfertService transfertService;
+
+  @Autowired
+  private WSMetadataService metadataService;
+
+  @Autowired
+  private WSNoteService noteService;
+
+  @Autowired
+  private WSDocumentAttacheService documentAttacheService;
+
+  @Autowired
+  private WSEtatJobMasseService etatJobMasseService;
+
+  // @Autowired
+  // private DfceInfoService dfceInfoService;
+  @Autowired
+  private WsMessageRessourcesUtils wsMessageRessourcesUtils;
+
+  @Autowired
+  private WSCopieService copieService;
+
+  @Autowired
+  WSDocumentExistantService documentExistantService;
+
+  @Autowired
+  private WSTransfertMasseService transfertMasse;
+
+  @Autowired
+  private WSDeblocageService deblocageService;
+
+  @Autowired
+  private WSRepriseService repriseService;
+
+  @Autowired
+  private WSModificationMasseService modificationMasse;
+
+  /**
+   * Durée maximum d'une requete soap
+   */
+  private final int dureeMaxRequete;
+
+  /**
+   * Instanciation du service {@link SaeService}
+   *
+   * @param service
+   *          implémentation des services web
+   */
+  @Autowired
+  public SaeServiceSkeleton(final SaeService service, @Value("${sae.duree.max.requete.soap}") final int dureeMaxRequete) {
+    Assert.notNull(service, "service is required");
+
+    this.service = service;
+    this.dureeMaxRequete = dureeMaxRequete;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final PingResponse ping(final PingRequest pingRequest) {
+    final PingResponse response = new PingResponse();
+
+    response.setPingString(service.ping());
+
+    return response;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final PingSecureResponse pingSecure(final PingSecureRequest pingRequest) {
+    final PingSecureResponse response = new PingSecureResponse();
+
+    response.setPingString(service.pingSecure());
+
+    return response;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws CaptureAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final ArchivageUnitaireResponse archivageUnitaireSecure(
+                                                                 final ArchivageUnitaire request)
+      throws CaptureAxisFault, SaeAccessDeniedAxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération archivageUnitaireSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final ArchivageUnitaireResponse response = capture.archivageUnitaire(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final CaptureAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+                                                        wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CaptureAxisFault("ErreurInterneCapture",
+                                 "Une erreur interne à l'application est survenue lors de la capture.",
+                                 ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws CaptureAxisFault
+   */
+  @Override
+  public final ArchivageUnitairePJResponse archivageUnitairePJSecure(
+                                                                     final ArchivageUnitairePJ request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération archivageUnitairePJSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final ArchivageUnitairePJResponse response = capture.archivageUnitairePJ(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final CaptureAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+                                                        wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CaptureAxisFault("ErreurInterneCapture",
+                                 "Une erreur interne à l'application est survenue lors de la capture.",
+                                 ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws CaptureAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final ArchivageMasseResponse archivageMasseSecure(
+                                                           final ArchivageMasse request, final String callerIP)
+      throws CaptureAxisFault, SaeAccessDeniedAxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération archivageMasseSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final ArchivageMasseResponse response = captureMasse.archivageEnMasse(request,
+                                                                            callerIP);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final CaptureAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CaptureAxisFault("ErreurInterneCapture",
+                                 "Une erreur interne à l'application est survenue lors de la capture.",
+                                 ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws RechercheAxis2Fault
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final RechercheResponse rechercheSecure(final Recherche request)
+      throws RechercheAxis2Fault, SaeAccessDeniedAxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération rechercheSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final RechercheResponse response = search.search(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final RechercheAxis2Fault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                                                              wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new RechercheAxis2Fault("ErreurInterneRecherche",
+                                    "Une erreur interne à l'application est survenue lors de la recherche.",
+                                    ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final ConsultationResponse consultationSecure(final Consultation request)
+      throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
+    // Traces debug - entrée méthode
+    final String prefixeTrc = "Opération consultationSecure()";
+
+    try {
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final ConsultationResponse response = consultation.consultation(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final ConsultationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
+                                                                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ConsultationAxisFault("ErreurInterneConsultation",
+                                      "Une erreur interne à l'application est survenue lors de la consultation.",
+                                      ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final ConsultationMTOMResponse consultationMTOMSecure(
+                                                               final ConsultationMTOM request)
+      throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération consultationMTOMSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final ConsultationMTOMResponse responseMTOM = consultation.consultationMTOM(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return responseMTOM;
+    }
+    catch (final ConsultationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
+                                                                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, ex));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ConsultationAxisFault("ErreurInterneConsultation",
+                                      "Une erreur interne à l'application est survenue lors de la consultation.",
+                                      ex);
+    }
+  }
+
+  @Override
+  public final CopieResponse copieSecure(final Copie request)
+      throws CopieAxisFault, SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
+      SAEConsultationServiceException, SAECaptureServiceEx,
+      ReferentialRndException, UnknownCodeRndEx, ReferentialException,
+      SAECopieServiceException, UnknownDesiredMetadataEx,
+      MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx,
+      InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+      DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+      RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+      UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
+      UnknownFormatException, ValidationExceptionInvalidFile,
+      UnexpectedDomainException, InvalidPagmsCombinaisonException,
+      CaptureExistingUuuidException {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération copieSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final CopieResponse response = copieService.copie(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final CopieAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final CopieAxisFault spf = new CopieAxisFault(STOCKAGE_INDISPO,
+                                                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CopieAxisFault("ErreurInterneCopie",
+                               "Une erreur interne à l'application est survenue lors de la copie.",
+                               ex);
+    }
+  }
+
+  @Override
+  public final DocumentExistantResponse documentExistant(
+                                                         final DocumentExistant request)
+      throws DocumentExistantAxisFault, SearchingServiceEx,
+      ConnectionServiceEx {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération copieSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final DocumentExistantResponse response = documentExistantService.documentExistant(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final DocumentExistantAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final ConnectionServiceEx ex) {
+      final DocumentExistantAxisFault spf = new DocumentExistantAxisFault(STOCKAGE_INDISPO,
+                                                                          wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new DocumentExistantAxisFault("ErreurInterneCopie",
+                                          "Une erreur interne à l'application est survenue lors de la vérification d'un document.",
+                                          ex);
+    }
+  }
+
+  private void logSoapFault(final AxisFault fault) {
+    LOG.warn("Une exception AxisFault a été levée", fault);
+  }
+
+  private void logRuntimeException(final RuntimeException exception) {
+    LOG.warn("Une exception RuntimeException a été levée", exception);
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws CaptureAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
+                                                                           final ArchivageMasseAvecHash request, final String callerIP)
+      throws CaptureAxisFault, SaeAccessDeniedAxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final ArchivageMasseAvecHashResponse response = captureMasse.archivageEnMasseAvecHash(request,
+                                                                                            callerIP);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final CaptureAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CaptureAxisFault("ErreurInterneCapture",
+                                 "Une erreur interne à l'application est survenue lors de la capture.",
+                                 ex);
+    }
+  }
+
+  @Override
+  public final ModificationResponse modificationSecure(final Modification request)
+      throws AxisFault {
+    try {
+      final String trcPrefix = "modificationSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      final ModificationResponse response = modificationService.modification(request);
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
+    }
+    catch (final ModificationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException ex) {
+      throw new SaeAccessDeniedAxisFault(ex);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final ModificationAxisFault spf = new ModificationAxisFault(STOCKAGE_INDISPO,
+                                                                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ModificationAxisFault("ErreurInterneModification",
+                                      "Une erreur interne à l'application est survenue lors de la modification",
+                                      ex);
+    }
+  }
+
+  @Override
+  public final SuppressionResponse suppressionSecure(final Suppression request)
+      throws AxisFault {
+    try {
+      final String trcPrefix = "suppressionSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      final SuppressionResponse response = suppressionService.suppression(request);
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
+    }
+    catch (final SuppressionAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException ex) {
+      throw new SaeAccessDeniedAxisFault(ex);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final SuppressionAxisFault spf = new SuppressionAxisFault(STOCKAGE_INDISPO,
+                                                                wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new SuppressionAxisFault("ErreurInterneSuppression",
+                                     "Une erreur interne à l'application est survenue lors de la suppression",
+                                     ex);
+    }
+  }
+
+  @Override
+  public final RecuperationMetadonneesResponse recuperationMetadonneesSecure(
+                                                                             final RecuperationMetadonnees request)
+      throws AxisFault {
+    try {
+      final String trcPrefix = "recuperationMetadonneesSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      final RecuperationMetadonneesResponse response = metadataService.recupererMetadonnees();
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
+    }
+    catch (final ErreurInterneAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException ex) {
+      throw new SaeAccessDeniedAxisFault(ex);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ErreurInterneAxisFault(ex);
+    }
+  }
+
+  @Override
+  public TransfertResponse transfertSecure(final Transfert request)
+      throws AxisFault {
+    try {
+      final String trcPrefix = "transfertSecure";
+      LOG.debug("{} - début", trcPrefix);
+
+      // -- Transfert du document
+      final TransfertResponse response = transfertService.transfert(request);
+
+      LOG.debug("{} - fin", trcPrefix);
+
+      return response;
+    }
+    catch (final TransfertAxisFault e) {
+      logSoapFault(e);
+      throw e;
+    }
+    catch (final AccessDeniedException ex) {
+      throw new SaeAccessDeniedAxisFault(ex);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final TransfertAxisFault spf = new TransfertAxisFault(STOCKAGE_INDISPO,
+                                                            wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException e) {
+      logRuntimeException(e);
+
+      final String erreur = "Une erreur interne à l'application est survenue lors du transfert";
+      throw new TransfertAxisFault("ErreurInterneTransfert", erreur, e);
+    }
+  }
+
+  @Override
+  public final ConsultationAffichableResponse consultationAffichableSecure(
+                                                                           final ConsultationAffichable request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération consultationAffichableSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final ConsultationAffichableResponse response = consultation.consultationAffichable(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final ConsultationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
+                                                                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ConsultationAxisFault("ErreurInterneConsultation",
+                                      "Une erreur interne à l'application est survenue lors de la consultation.",
+                                      ex);
+    }
+  }
+
+  @Override
+  public RechercheNbResResponse rechercheNbResSecure(final RechercheNbRes request)
+      throws AxisFault {
+    try {
+      // -- Traces debug - entrée méthode
+      final String prefixeTrc = "Opération rechercheNbResSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      final RechercheNbResResponse response = search.searchWithNbRes(request);
+      // -- Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      return response;
+    }
+    catch (final RechercheAxis2Fault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                                                              wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new RechercheAxis2Fault("ErreurInterneRecherche",
+                                    "Une erreur interne à l'application est survenue lors de la recherche.",
+                                    ex);
+    }
+  }
+
+  @Override
+  public RechercheParIterateurResponse rechercheParIterateurSecure(
+                                                                   final RechercheParIterateur request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération rechercheParIterateurSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final RechercheParIterateurResponse response = search.rechercheParIterateur(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
+    }
+    catch (final RechercheAxis2Fault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final ConnectionServiceEx ex) {
+      final RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
+                                                              wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
+
+      throw spf;
+    }
+    catch (final RuntimeException ex) {
+      if (ex.getCause() != null &&
+          ex.getCause().toString().contains(ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.exception"))) {
+        logRuntimeException(ex);
+        throw new RechercheAxis2Fault(
+                                      "ErreurInterneRecherche",
+                                      ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.error"),
+                                      ex);
+      } else {
+        logRuntimeException(ex);
+        throw new RechercheAxis2Fault(
+                                      "ErreurInterneRecherche",
+                                      "Une erreur interne à l'application est survenue lors de la recherche.",
+                                      ex);
+      }
+
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final PingResponse ping(PingRequest pingRequest) {
-        PingResponse response = new PingResponse();
+  }
 
-        response.setPingString(service.ping());
+  @Override
+  public AjoutNoteResponse ajoutNoteSecure(final AjoutNote request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération ajoutNoteSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-        return response;
+      // Fin des traces debug - entrée méthode
+      final AjoutNoteResponse response = noteService.ajoutNote(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final PingSecureResponse pingSecure(PingSecureRequest pingRequest) {
-        PingSecureResponse response = new PingSecureResponse();
-
-        response.setPingString(service.pingSecure());
-
-        return response;
+    catch (final AjoutNoteAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws CaptureAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final ArchivageUnitaireResponse archivageUnitaireSecure(
-        ArchivageUnitaire request)
-        throws CaptureAxisFault, SaeAccessDeniedAxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération archivageUnitaireSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            ArchivageUnitaireResponse response = capture.archivageUnitaire(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CaptureAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CaptureAxisFault("ErreurInterneCapture",
-                "Une erreur interne à l'application est survenue lors de la capture.",
-                ex);
-        }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
     }
+    catch (final ConnectionServiceEx ex) {
+      final AjoutNoteAxisFault spf = new AjoutNoteAxisFault(STOCKAGE_INDISPO,
+                                                            wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws CaptureAxisFault
-     */
-    @Override
-    public final ArchivageUnitairePJResponse archivageUnitairePJSecure(
-        ArchivageUnitairePJ request) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération archivageUnitairePJSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            ArchivageUnitairePJResponse response = capture.archivageUnitairePJ(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CaptureAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CaptureAxisFault("ErreurInterneCapture",
-                "Une erreur interne à l'application est survenue lors de la capture.",
-                ex);
-        }
+      throw spf;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws CaptureAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final ArchivageMasseResponse archivageMasseSecure(
-        ArchivageMasse request, String callerIP)
-        throws CaptureAxisFault, SaeAccessDeniedAxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération archivageMasseSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            ArchivageMasseResponse response = captureMasse.archivageEnMasse(request,
-                    callerIP);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CaptureAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CaptureAxisFault("ErreurInterneCapture",
-                "Une erreur interne à l'application est survenue lors de la capture.",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new AjoutNoteAxisFault("ErreurInterneAjoutNote",
+                                   "Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
+                                   ex);
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws RechercheAxis2Fault
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final RechercheResponse rechercheSecure(Recherche request)
-        throws RechercheAxis2Fault, SaeAccessDeniedAxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération rechercheSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
+  @Override
+  public StockageUnitaireResponse stockageUnitaireSecure(
+                                                         final StockageUnitaire request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération stockageUnitaireSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            // Fin des traces debug - entrée méthode
-            RechercheResponse response = search.search(request);
+      // Fin des traces debug - entrée méthode
+      final StockageUnitaireResponse response = capture.stockageUnitaire(request);
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
 
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (RechercheAxis2Fault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new RechercheAxis2Fault("ErreurInterneRecherche",
-                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
-        }
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final ConsultationResponse consultationSecure(Consultation request)
-        throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
-        // Traces debug - entrée méthode
-        String prefixeTrc = "Opération consultationSecure()";
-
-        try {
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            ConsultationResponse response = consultation.consultation(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (ConsultationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ConsultationAxisFault("ErreurInterneConsultation",
-                "Une erreur interne à l'application est survenue lors de la consultation.",
-                ex);
-        }
+    catch (final CaptureAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final ConsultationMTOMResponse consultationMTOMSecure(
-        ConsultationMTOM request)
-        throws ConsultationAxisFault, SaeAccessDeniedAxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération consultationMTOMSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            ConsultationMTOMResponse responseMTOM = consultation.consultationMTOM(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return responseMTOM;
-        } catch (ConsultationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, ex));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ConsultationAxisFault("ErreurInterneConsultation",
-                "Une erreur interne à l'application est survenue lors de la consultation.",
-                ex);
-        }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
     }
+    catch (final ConnectionServiceEx ex) {
+      final CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
+                                                        wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
 
-    @Override
-    public final CopieResponse copieSecure(Copie request)
-        throws CopieAxisFault, SaeAccessDeniedAxisFault, ArchiveInexistanteEx,
-            SAEConsultationServiceException, SAECaptureServiceEx,
-            ReferentialRndException, UnknownCodeRndEx, ReferentialException,
-            SAECopieServiceException, UnknownDesiredMetadataEx,
-            MetaDataUnauthorizedToConsultEx, RequiredStorageMetadataEx,
-            InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-            DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-            RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-            UnknownHashCodeEx, EmptyFileNameEx, MetadataValueNotInDictionaryEx,
-            UnknownFormatException, ValidationExceptionInvalidFile,
-            UnexpectedDomainException, InvalidPagmsCombinaisonException,
-            CaptureExistingUuuidException {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération copieSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            CopieResponse response = copieService.copie(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CopieAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            CopieAxisFault spf = new CopieAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CopieAxisFault("ErreurInterneCopie",
-                "Une erreur interne à l'application est survenue lors de la copie.",
-                ex);
-        }
+      throw spf;
     }
-
-    @Override
-    public final DocumentExistantResponse documentExistant(
-        DocumentExistant request)
-        throws DocumentExistantAxisFault, SearchingServiceEx,
-            ConnectionServiceEx {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération copieSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            DocumentExistantResponse response = documentExistantService.documentExistant(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (DocumentExistantAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (ConnectionServiceEx ex) {
-            DocumentExistantAxisFault spf = new DocumentExistantAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new DocumentExistantAxisFault("ErreurInterneCopie",
-                "Une erreur interne à l'application est survenue lors de la vérification d'un document.",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new CaptureAxisFault("ErreurInterneCapture",
+                                 "Une erreur interne à l'application est survenue lors de la capture.",
+                                 ex);
     }
+  }
 
-    private void logSoapFault(AxisFault fault) {
-        LOG.warn("Une exception AxisFault a été levée", fault);
+  @Override
+  public GetDocFormatOrigineResponse getDocFormatOrigineSecure(
+                                                               final GetDocFormatOrigine request)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération getDocFormatOrigineSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      // Fin des traces debug - entrée méthode
+      final GetDocFormatOrigineResponse response = documentAttacheService.getDocFormatOrigine(request);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    private void logRuntimeException(RuntimeException exception) {
-        LOG.warn("Une exception RuntimeException a été levée", exception);
+    catch (final GetDocFormatOrigineAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws CaptureAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final ArchivageMasseAvecHashResponse archivageMasseAvecHashSecure(
-        ArchivageMasseAvecHash request, String callerIP)
-        throws CaptureAxisFault, SaeAccessDeniedAxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            ArchivageMasseAvecHashResponse response = captureMasse.archivageEnMasseAvecHash(request,
-                    callerIP);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CaptureAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CaptureAxisFault("ErreurInterneCapture",
-                "Une erreur interne à l'application est survenue lors de la capture.",
-                ex);
-        }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
     }
+    catch (final ConnectionServiceEx ex) {
+      final GetDocFormatOrigineAxisFault spf = new GetDocFormatOrigineAxisFault(STOCKAGE_INDISPO,
+                                                                                wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
 
-    @Override
-    public final ModificationResponse modificationSecure(Modification request)
-        throws AxisFault {
-        try {
-            String trcPrefix = "modificationSecure";
-            LOG.debug("{} - début", trcPrefix);
-
-            ModificationResponse response = modificationService.modification(request);
-
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-        } catch (ModificationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException ex) {
-            throw new SaeAccessDeniedAxisFault(ex);
-        } catch (ConnectionServiceEx ex) {
-            ModificationAxisFault spf = new ModificationAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ModificationAxisFault("ErreurInterneModification",
-                "Une erreur interne à l'application est survenue lors de la modification",
-                ex);
-        }
+      throw spf;
     }
-
-    @Override
-    public final SuppressionResponse suppressionSecure(Suppression request)
-        throws AxisFault {
-        try {
-            String trcPrefix = "suppressionSecure";
-            LOG.debug("{} - début", trcPrefix);
-
-            SuppressionResponse response = suppressionService.suppression(request);
-
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-        } catch (SuppressionAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException ex) {
-            throw new SaeAccessDeniedAxisFault(ex);
-        } catch (ConnectionServiceEx ex) {
-            SuppressionAxisFault spf = new SuppressionAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new SuppressionAxisFault("ErreurInterneSuppression",
-                "Une erreur interne à l'application est survenue lors de la suppression",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new GetDocFormatOrigineAxisFault("ErreurInterneGetDocFormatOrigine",
+                                             "Une erreur interne à l'application est survenue lors de la récupération du document au format d'origine.",
+                                             ex);
     }
+  }
 
-    @Override
-    public final RecuperationMetadonneesResponse recuperationMetadonneesSecure(
-        RecuperationMetadonnees request) throws AxisFault {
-        try {
-            String trcPrefix = "recuperationMetadonneesSecure";
-            LOG.debug("{} - début", trcPrefix);
+  @Override
+  public RestoreMasseResponse restoreMasseSecure(final RestoreMasse request,
+                                                 final String callerIP)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération restoreMasseSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            RecuperationMetadonneesResponse response = metadataService.recupererMetadonnees();
+      // Fin des traces debug - entrée méthode
 
-            LOG.debug("{} - fin", trcPrefix);
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final RestoreMasseResponse response = restoreMasse.restoreEnMasse(request,
+                                                                        callerIP);
 
-            return response;
-        } catch (ErreurInterneAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException ex) {
-            throw new SaeAccessDeniedAxisFault(ex);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ErreurInterneAxisFault(ex);
-        }
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    @Override
-    public TransfertResponse transfertSecure(Transfert request)
-        throws AxisFault {
-        try {
-            String trcPrefix = "transfertSecure";
-            LOG.debug("{} - début", trcPrefix);
-
-            // -- Transfert du document
-            TransfertResponse response = transfertService.transfert(request);
-
-            LOG.debug("{} - fin", trcPrefix);
-
-            return response;
-        } catch (TransfertAxisFault e) {
-            logSoapFault(e);
-            throw e;
-        } catch (AccessDeniedException ex) {
-            throw new SaeAccessDeniedAxisFault(ex);
-        } catch (ConnectionServiceEx ex) {
-            TransfertAxisFault spf = new TransfertAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException e) {
-            logRuntimeException(e);
-
-            String erreur = "Une erreur interne à l'application est survenue lors du transfert";
-            throw new TransfertAxisFault("ErreurInterneTransfert", erreur, e);
-        }
+    catch (final RestoreAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    @Override
-    public final ConsultationAffichableResponse consultationAffichableSecure(
-        ConsultationAffichable request) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération consultationAffichableSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            ConsultationAffichableResponse response = consultation.consultationAffichable(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (ConsultationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ConsultationAxisFault("ErreurInterneConsultation",
-                "Une erreur interne à l'application est survenue lors de la consultation.",
-                ex);
-        }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
     }
-
-    @Override
-    public RechercheNbResResponse rechercheNbResSecure(RechercheNbRes request)
-        throws AxisFault {
-        try {
-            // -- Traces debug - entrée méthode
-            String prefixeTrc = "Opération rechercheNbResSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            RechercheNbResResponse response = search.searchWithNbRes(request);
-            // -- Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            return response;
-        } catch (RechercheAxis2Fault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new RechercheAxis2Fault("ErreurInterneRecherche",
-                "Une erreur interne à l'application est survenue lors de la recherche.",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new RestoreAxisFault("ErreurInterneRestore",
+                                 "Une erreur interne à l'application est survenue lors de la restore.",
+                                 ex);
     }
+  }
 
-    @Override
-    public RechercheParIterateurResponse rechercheParIterateurSecure(
-        RechercheParIterateur request) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération rechercheParIterateurSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
+  @Override
+  public SuppressionMasseResponse suppressionMasseSecure(
+                                                         final SuppressionMasse request, final String callerIP)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération suppressionMasseSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            // Fin des traces debug - entrée méthode
-            RechercheParIterateurResponse response = search.rechercheParIterateur(request);
+      // Fin des traces debug - entrée méthode
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final SuppressionMasseResponse response = suppressionMasse.suppressionEnMasse(request,
+                                                                                    callerIP);
 
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (RechercheAxis2Fault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            RechercheAxis2Fault spf = new RechercheAxis2Fault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
 
-            throw spf;
-        } catch (RuntimeException ex) {
-            if(ex.getCause()!= null && 
-                    ex.getCause().toString().contains(ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.exception"))){
-                 logRuntimeException(ex);
-                 throw new RechercheAxis2Fault(
-                       "ErreurInterneRecherche",
-                       ResourceMessagesUtils.loadMessage("search.syntax.lucene.range.error"),
-                       ex);
-              }else {
-                 logRuntimeException(ex);
-                 throw new RechercheAxis2Fault(
-                       "ErreurInterneRecherche",
-                       "Une erreur interne à l'application est survenue lors de la recherche.",
-                       ex);
-              }
-              
-           }          
-        
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    @Override
-    public AjoutNoteResponse ajoutNoteSecure(AjoutNote request)
-        throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération ajoutNoteSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            AjoutNoteResponse response = noteService.ajoutNote(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (AjoutNoteAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            AjoutNoteAxisFault spf = new AjoutNoteAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new AjoutNoteAxisFault("ErreurInterneAjoutNote",
-                "Une erreur interne à l'application est survenue lors de l'ajout d'une note.",
-                ex);
-        }
+    catch (final SuppressionAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    @Override
-    public StockageUnitaireResponse stockageUnitaireSecure(
-        StockageUnitaire request) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération stockageUnitaireSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            StockageUnitaireResponse response = capture.stockageUnitaire(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (CaptureAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            CaptureAxisFault spf = new CaptureAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new CaptureAxisFault("ErreurInterneCapture",
-                "Une erreur interne à l'application est survenue lors de la capture.",
-                ex);
-        }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
     }
-
-    @Override
-    public GetDocFormatOrigineResponse getDocFormatOrigineSecure(
-        GetDocFormatOrigine request) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération getDocFormatOrigineSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-            GetDocFormatOrigineResponse response = documentAttacheService.getDocFormatOrigine(request);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (GetDocFormatOrigineAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (ConnectionServiceEx ex) {
-            GetDocFormatOrigineAxisFault spf = new GetDocFormatOrigineAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new GetDocFormatOrigineAxisFault("ErreurInterneGetDocFormatOrigine",
-                "Une erreur interne à l'application est survenue lors de la récupération du document au format d'origine.",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new SuppressionAxisFault("ErreurInterneSuppression",
+                                     "Une erreur interne à l'application est survenue lors de la suppression.",
+                                     ex);
     }
+  }
 
-    @Override
-    public RestoreMasseResponse restoreMasseSecure(RestoreMasse request,
-        String callerIP) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération restoreMasseSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
+  @Override
+  public EtatTraitementsMasseResponse etatTraitementsMasse(
+                                                           final EtatTraitementsMasse request, final String callerIP)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération etatTraitementsMasse()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            // Fin des traces debug - entrée méthode
+      // Fin des traces debug - entrée méthode
 
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            RestoreMasseResponse response = restoreMasse.restoreEnMasse(request,
-                    callerIP);
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final EtatTraitementsMasseResponse response = etatJobMasseService.etatJobMasse(request,
+                                                                                     callerIP);
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
 
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (RestoreAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new RestoreAxisFault("ErreurInterneRestore",
-                "Une erreur interne à l'application est survenue lors de la restore.",
-                ex);
-        }
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    @Override
-    public SuppressionMasseResponse suppressionMasseSecure(
-        SuppressionMasse request, String callerIP) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération suppressionMasseSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            SuppressionMasseResponse response = suppressionMasse.suppressionEnMasse(request,
-                    callerIP);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (SuppressionAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new SuppressionAxisFault("ErreurInterneSuppression",
-                "Une erreur interne à l'application est survenue lors de la suppression.",
-                ex);
-        }
+    catch (final EtatTraitementsMasseAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
-
-    @Override
-    public EtatTraitementsMasseResponse etatTraitementsMasse(
-        EtatTraitementsMasse request, String callerIP)
-        throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération etatTraitementsMasse()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            EtatTraitementsMasseResponse response = etatJobMasseService.etatJobMasse(request,
-                    callerIP);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (EtatTraitementsMasseAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new EtatTraitementsMasseAxisFault("ErreurInterneEtatTraitementsMasse",
-                "Une erreur interne à l'application est survenue lors de la récupération des états des traitements de masse.",
-                ex);
-        }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new EtatTraitementsMasseAxisFault("ErreurInterneEtatTraitementsMasse",
+                                              "Une erreur interne à l'application est survenue lors de la récupération des états des traitements de masse.",
+                                              ex);
     }
+  }
 
-    @Override
-    public ConsultationGNTGNSResponse consultationGNTGNSSecure(
-        ConsultationGNTGNS request)
-        throws SearchingServiceEx, ConnectionServiceEx,
-            SAEConsultationServiceException, UnknownDesiredMetadataEx,
-            MetaDataUnauthorizedToConsultEx,
-            SAEConsultationAffichableParametrageException, RemoteException {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération copieSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
+  @Override
+  public ConsultationGNTGNSResponse consultationGNTGNSSecure(
+                                                             final ConsultationGNTGNS request)
+      throws SearchingServiceEx, ConnectionServiceEx,
+      SAEConsultationServiceException, UnknownDesiredMetadataEx,
+      MetaDataUnauthorizedToConsultEx,
+      SAEConsultationAffichableParametrageException, RemoteException {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération copieSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            // Fin des traces debug - entrée méthode
-            ConsultationGNTGNSResponse response = consultation.consultationGNTGNS(request);
+      // Fin des traces debug - entrée méthode
+      final ConsultationGNTGNSResponse response = consultation.consultationGNTGNS(request);
 
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
 
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (ConsultationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (ConnectionServiceEx ex) {
-            ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
-                    wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
-            logSoapFault(spf);
-
-            throw spf;
-        }
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    @Override
-    public ModificationMasseResponse modificationMasseSecure(
-        ModificationMasse request, String callerIP) throws AxisFault {
-        try {
-            // Traces debug - entrée méthode
-            String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            // Fin des traces debug - entrée méthode
-
-            // l'opération web service n'interagit pas avec DFCE
-            // il n'est pas nécessaire de vérifier si DFCE est Up
-            ModificationMasseResponse response = modificationMasse.modificationMasse(request,
-                    callerIP);
-
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            // Fin des traces debug - sortie méthode
-            return response;
-        } catch (ModificationAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new ModificationAxisFault("ErreurInterneModification",
-                "Une erreur interne à l'application est survenue lors de la modification de masse.",
-                ex);
-        }
+    catch (final ConsultationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
+    catch (final ConnectionServiceEx ex) {
+      final ConsultationAxisFault spf = new ConsultationAxisFault(STOCKAGE_INDISPO,
+                                                                  wsMessageRessourcesUtils.recupererMessage(MES_STOCKAGE, null));
+      logSoapFault(spf);
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws TransfertAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     */
-    @Override
-    public final TransfertMasseResponse transfertMasseSecure(
-        TransfertMasse request, String callerIP)
-        throws TransfertAxisFault, SaeAccessDeniedAxisFault {
-        try {
-            String prefixeTrc = "Opération transfertMasseSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            TransfertMasseResponse response = transfertMasse.transfertEnMasse(request,
-                    callerIP);
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            return response;
-        } catch (TransfertAxisFault ex) {
-            logSoapFault(ex);
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new TransfertAxisFault("ErreurInterneTransfert",
-                "Une erreur interne à l'application est survenue lors de transfert en masse.",
-                ex);
-        }
+      throw spf;
     }
+  }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @throws DeblocageAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     * @throws DeblocageAxisFault
-     */
-    @Override
-    public final DeblocageResponse deblocageSecure(Deblocage request,
-        String callerIP)
-        throws DeblocageAxisFault, SaeAccessDeniedAxisFault,
-            JobInexistantException {
-        try {
-            String prefixeTrc = "Opération deblocageSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
+  @Override
+  public ModificationMasseResponse modificationMasseSecure(
+                                                           final ModificationMasse request, final String callerIP)
+      throws AxisFault {
+    try {
+      // Traces debug - entrée méthode
+      final String prefixeTrc = "Opération archivageMasseAvecHashSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
 
-            DeblocageResponse response = deblocageService.deblocage(request,
-                    callerIP);
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
+      // Fin des traces debug - entrée méthode
 
-            return response;
-        } catch (JobInexistantException ex) {
-            ex.printStackTrace();
-            LOG.warn("échec de déblocage: Job inexistant");
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new DeblocageAxisFault("ErreurInterneDeblocage",
-                "Une erreur interne à l'application est survenue lors de déblocage de job.",
-                ex);
-        }
+      // l'opération web service n'interagit pas avec DFCE
+      // il n'est pas nécessaire de vérifier si DFCE est Up
+      final ModificationMasseResponse response = modificationMasse.modificationMasse(request,
+                                                                                     callerIP);
+
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      // Fin des traces debug - sortie méthode
+      return response;
     }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @throws RepriseAxisFault
-     * @throws SaeAccessDeniedAxisFault
-     * @throws DeblocageAxisFault
-     */
-    @Override
-    public RepriseResponse repriseSecure(Reprise request, String callerIP)
-        throws AxisFault, JobInexistantException {
-        // TODO 
-        try {
-            String prefixeTrc = "Opération repriseSecure()";
-            LOG.debug("{} - Début", prefixeTrc);
-
-            RepriseResponse response = repriseService.reprise(request, callerIP);
-            // Traces debug - sortie méthode
-            LOG.debug("{} - Sortie", prefixeTrc);
-
-            return response;
-        } catch (JobInexistantException ex) {
-            ex.printStackTrace();
-            LOG.warn("échec de reprise du job: Job inexistant");
-            throw ex;
-        } catch (AccessDeniedException exception) {
-            throw new SaeAccessDeniedAxisFault(exception);
-        } catch (RuntimeException ex) {
-            logRuntimeException(ex);
-            throw new RepriseAxisFault("ErreurInterneReprise",
-                "Une erreur interne à l'application est survenue lors de la reprise du job.",
-                ex);
-        }
+    catch (final ModificationAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
     }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new ModificationAxisFault("ErreurInterneModification",
+                                      "Une erreur interne à l'application est survenue lors de la modification de masse.",
+                                      ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws TransfertAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   */
+  @Override
+  public final TransfertMasseResponse transfertMasseSecure(
+                                                           final TransfertMasse request, final String callerIP)
+      throws TransfertAxisFault, SaeAccessDeniedAxisFault {
+    try {
+      final String prefixeTrc = "Opération transfertMasseSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      final TransfertMasseResponse response = transfertMasse.transfertEnMasse(request,
+                                                                              callerIP);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      return response;
+    }
+    catch (final TransfertAxisFault ex) {
+      logSoapFault(ex);
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new TransfertAxisFault("ErreurInterneTransfert",
+                                   "Une erreur interne à l'application est survenue lors de transfert en masse.",
+                                   ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws DeblocageAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   * @throws DeblocageAxisFault
+   */
+  @Override
+  public final DeblocageResponse deblocageSecure(final Deblocage request,
+                                                 final String callerIP)
+      throws DeblocageAxisFault, SaeAccessDeniedAxisFault,
+      JobInexistantException {
+    try {
+      final String prefixeTrc = "Opération deblocageSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      final DeblocageResponse response = deblocageService.deblocage(request,
+                                                                    callerIP);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      return response;
+    }
+    catch (final JobInexistantException ex) {
+      ex.printStackTrace();
+      LOG.warn("échec de déblocage: Job inexistant");
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new DeblocageAxisFault("ErreurInterneDeblocage",
+                                   "Une erreur interne à l'application est survenue lors de déblocage de job.",
+                                   ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @throws RepriseAxisFault
+   * @throws SaeAccessDeniedAxisFault
+   * @throws DeblocageAxisFault
+   */
+  @Override
+  public RepriseResponse repriseSecure(final Reprise request, final String callerIP)
+      throws AxisFault, JobInexistantException {
+    // TODO
+    try {
+      final String prefixeTrc = "Opération repriseSecure()";
+      LOG.debug("{} - Début", prefixeTrc);
+
+      final RepriseResponse response = repriseService.reprise(request, callerIP);
+      // Traces debug - sortie méthode
+      LOG.debug("{} - Sortie", prefixeTrc);
+
+      return response;
+    }
+    catch (final JobInexistantException ex) {
+      ex.printStackTrace();
+      LOG.warn("échec de reprise du job: Job inexistant");
+      throw ex;
+    }
+    catch (final AccessDeniedException exception) {
+      throw new SaeAccessDeniedAxisFault(exception);
+    }
+    catch (final RuntimeException ex) {
+      logRuntimeException(ex);
+      throw new RepriseAxisFault("ErreurInterneReprise",
+                                 "Une erreur interne à l'application est survenue lors de la reprise du job.",
+                                 ex);
+    }
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int getDureeMaxRequete() {
+    return dureeMaxRequete;
+  }
+
 }

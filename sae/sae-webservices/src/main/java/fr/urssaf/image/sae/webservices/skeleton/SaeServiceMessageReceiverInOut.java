@@ -25,6 +25,8 @@ public class SaeServiceMessageReceiverInOut extends org.apache.axis2.receivers.A
             Object obj = getTheImplementationObject(msgContext);
 
             SaeServiceSkeletonInterface skel = (SaeServiceSkeletonInterface) obj;
+            
+            msgContext.setProperty("soapRequestMaxTime", skel.getDureeMaxRequete());
 
             // Out Envelop
             org.apache.axiom.soap.SOAPEnvelope envelope = null;

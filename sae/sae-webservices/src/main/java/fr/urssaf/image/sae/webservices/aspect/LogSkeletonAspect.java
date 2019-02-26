@@ -2,6 +2,7 @@ package fr.urssaf.image.sae.webservices.aspect;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -127,6 +128,8 @@ public class LogSkeletonAspect {
                // Do nothing
             }
          }
+         
+         break;
       }
 
    }
@@ -154,6 +157,16 @@ public class LogSkeletonAspect {
                throw new ParameterNotFoundException(
                      MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
             }
+         } 
+         else if (objRet instanceof EcdeUrlSommaireType) {
+           EcdeUrlSommaireType url = (EcdeUrlSommaireType) objRet;
+           if (url.getEcdeUrlSommaireType() != null) {
+             LOG.info(getLogInformation(target, url.toString()));
+          } else {
+             throw new ParameterNotFoundException(
+                   MESSAGE_LOG_ERROR_PARAMETRE_NON_EXISTANT);
+          }
+           
          } else {
             throw new ParameterNotFoundException(MESSAGE_LOG_ERROR_FOUND);
          }
@@ -296,6 +309,9 @@ public class LogSkeletonAspect {
          if (token != null && token.getIssuer() != null) {
             buf.append(" - CS::" + token.getIssuer());
          }
+         if (token != null && token.getPagms() != null && !token.getPagms().isEmpty()) {
+           buf.append(" - PAGM::" + String.join(",", token.getPagms()));
+        }
          Object qName = SearchObjectClassUtil.searchObjectByClass(target,
                QName.class.toString());
          if (qName != null) {

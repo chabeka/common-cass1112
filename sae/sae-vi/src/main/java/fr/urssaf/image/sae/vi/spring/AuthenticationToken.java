@@ -58,6 +58,15 @@ public class AuthenticationToken extends AnonymousAuthenticationToken {
    public String getIssuer() {
       return getViContenuExtrait().getCodeAppli();
    }
+   
+   /**
+    * Methode permettant de retourner la liste des PAGMs.
+    * 
+    * @return Les PAGMs
+    */
+   public List<String> getPagms() {
+      return getViContenuExtrait().getPagms();
+   }
 
    private VIContenuExtrait getViContenuExtrait() {
       return (VIContenuExtrait) getPrincipal();
