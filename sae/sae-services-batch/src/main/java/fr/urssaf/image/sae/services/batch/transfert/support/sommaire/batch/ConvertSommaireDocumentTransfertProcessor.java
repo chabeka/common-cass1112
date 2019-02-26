@@ -71,8 +71,14 @@ public class ConvertSommaireDocumentTransfertProcessor implements
 
          if(StringUtils.isNotBlank(itemTransfert.getValue()
                .getObjetNumerique().getUUID())){
-            untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
-                  .getObjetNumerique().getUUID().trim()));
+           try {
+             untypedDoc.setUuid(UUID.fromString(itemTransfert.getValue()
+                                                .getObjetNumerique().getUUID().trim())); 
+          }
+          catch (NumberFormatException e) {
+           throw new Exception("Erreur de parsing de l'UUID du document car la syntax ne respecte pas la nomenclature standard : " + itemTransfert.getValue()
+           .getObjetNumerique().getUUID().trim(), e);
+          }
          }
 
          if (itemTransfert.getValue().getMetadonnees() != null) {

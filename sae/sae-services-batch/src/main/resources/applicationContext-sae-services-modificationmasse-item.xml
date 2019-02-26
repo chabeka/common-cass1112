@@ -20,15 +20,6 @@
    </bean>
 
    <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
-      id="compositeControlModificationProcessor">
-      <property name="delegates">
-         <list>
-            <ref bean="convertMetaDocumentModificationProcessor" />
-         </list>
-      </property>
-   </bean>
-
-   <bean class="org.springframework.batch.item.support.CompositeItemProcessor"
       id="compositeProcessorModification">
       <property name="delegates">
          <list>
