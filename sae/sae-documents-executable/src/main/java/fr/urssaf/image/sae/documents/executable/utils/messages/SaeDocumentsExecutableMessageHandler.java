@@ -7,8 +7,7 @@ import org.springframework.context.MessageSource;
 import fr.urssaf.image.sae.documents.executable.context.SaeDocumentsExecutableApplicationContext;
 
 /**
- * Permet de lire le fichier properites : sae_format_messages.properties.
- * 
+ * Permet de lire le fichier properties : sae_format_messages.properties.
  * Pour la gestion de messages simples et messages d'exception.
  */
 public final class SaeDocumentsExecutableMessageHandler {
@@ -18,9 +17,9 @@ public final class SaeDocumentsExecutableMessageHandler {
    static {
       // Récupération du contexte pour les fichiers properties
       MESSAGE_SOURCES = SaeDocumentsExecutableApplicationContext
-            .getApplicationContext()
-            .getBean("messageSource_sae_documents_executable",
-                  MessageSource.class);
+                                                                .getApplicationContext()
+                                                                .getBean("messageSource_sae_documents_executable",
+                                                                         MessageSource.class);
    }
 
    /**
@@ -37,7 +36,7 @@ public final class SaeDocumentsExecutableMessageHandler {
    }
 
    /**
-    * Récupére un message.
+    * Récupère un message.
     * 
     * @param messageKey
     *           : La clé du message
@@ -47,9 +46,10 @@ public final class SaeDocumentsExecutableMessageHandler {
     */
    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public static String getMessage(final String messageKey,
-         final String valueKey) {
-      return MESSAGE_SOURCES.getMessage(messageKey, new Object[] { valueKey },
-            Locale.getDefault());
+                                   final String valueKey) {
+      return MESSAGE_SOURCES.getMessage(messageKey,
+                                        new Object[] {valueKey},
+                                        Locale.FRANCE);
    }
 
    /**
@@ -65,9 +65,11 @@ public final class SaeDocumentsExecutableMessageHandler {
     */
    @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public static String getMessage(final String messageKey,
-         final String firstValueKey, final Object secondValueKey) {
-      return MESSAGE_SOURCES.getMessage(messageKey, new Object[] {
-            firstValueKey, secondValueKey }, Locale.getDefault());
+                                   final String firstValueKey, final Object secondValueKey) {
+      return MESSAGE_SOURCES.getMessage(messageKey,
+                                        new Object[] {
+                                                      firstValueKey, secondValueKey},
+                                        Locale.FRANCE);
    }
 
    /** Cette classe n'est pas faite pour être instanciée. */
