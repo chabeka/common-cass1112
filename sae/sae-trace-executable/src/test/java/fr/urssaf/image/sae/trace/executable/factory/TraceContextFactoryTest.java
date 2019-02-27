@@ -59,7 +59,8 @@ public class TraceContextFactoryTest {
                   "sae.droits.cache=1000",
                   "sae.droits.initCacheOnStartup=false",
                   "sae.nom.instance.plateforme=GNT_001",
-                  "sae.purge.nombre.delete.bloc=1500");
+                  "sae.purge.nombre.delete.bloc=1500",
+                  "sae.duree.max.requete.soap=10");
 
       FileUtils.writeLines(saeResourceFile, lines);
 
