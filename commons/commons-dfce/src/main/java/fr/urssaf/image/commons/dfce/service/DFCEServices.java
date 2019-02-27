@@ -49,9 +49,8 @@ import net.docubase.toolkit.model.search.SearchResult;
  * Une instance de DFCEServices est thread-safe : elle peut être partagée par plusieurs threads. La reconnexion
  * est gérée de manière à ne pas perturber les autres threads.
  * Dans l'application SAE : sur les plateformes GNT, on gère deux instance de cette classe :
- *   - une instance vers le serveur DFCE GNT local
- *   - une instance vers un serveur DFCE de la plateforme GNS associée, pour le transfert
- *
+ * - une instance vers le serveur DFCE GNT local
+ * - une instance vers un serveur DFCE de la plateforme GNS associée, pour le transfert
  */
 public interface DFCEServices {
    /**
@@ -64,17 +63,17 @@ public interface DFCEServices {
     * pas appeler directement cette méthode, sauf pour des tests.
     */
    void reconnect() throws DFCEConnectionServiceException;
-   
+
    /**
     * Permet de fermer la connexion vers DFCE. Ne pas utiliser si la connexion est partagée par plusieurs threads !
     */
    void closeConnexion();
-   
+
    /**
     * Renvoie les paramètres de connexions vers DFCE
     */
    DFCEConnection getCnxParams();
-   
+
    /**
     * Renvoie la base DFCE courante (spécifiée dans les paramètres de connexion)
     */
@@ -383,4 +382,14 @@ public interface DFCEServices {
     * @see net.docubase.toolkit.service.ged.ArchiveService#isSystemLogsArchiveRunning()
     */
    boolean isSystemLogsArchiveRunning();
+
+   /**
+    * @see net.docubase.toolkit.service.ged.StoreService#freezeDocument(Document)
+    */
+   void freezeDocument(Document paramDocument);
+
+   /**
+    * @see net.docubase.toolkit.service.ged.StoreService#unfreezeDocument(Document)
+    */
+   void unfreezeDocument(Document paramDocument);
 }

@@ -380,6 +380,24 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Override
    @AutoReconnectDfceServiceAnnotation
+   public void freezeDocument(final Document paramDocument) {
+      dfceService.getStoreService().freezeDocument(paramDocument);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
+   public void unfreezeDocument(final Document paramDocument) {
+      dfceService.getStoreService().unfreezeDocument(paramDocument);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
    public void deleteDocument(final UUID paramUUID) throws FrozenDocumentException {
       dfceService.getStoreService().deleteDocument(paramUUID);
    }
