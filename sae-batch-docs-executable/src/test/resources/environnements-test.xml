@@ -1,7 +1,7 @@
 <configurations>
    <configuration>
       <nom>INTEGRATION_INTERNE_GNT</nom>
-      <dfceAddress>http://hwi69devgntappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31devgntv6boappli1:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-DEV</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
