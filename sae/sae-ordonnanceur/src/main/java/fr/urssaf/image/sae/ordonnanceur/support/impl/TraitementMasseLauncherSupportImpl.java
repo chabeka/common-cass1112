@@ -89,12 +89,6 @@ public class TraitementMasseLauncherSupportImpl implements
       String command = StringUtils.replace(this.executable, "_UUID_TO_REPLACE",
             idTraitement);
 
-      // remplacement de _XMX_TO_REPLACE_
-      command = StringUtils.replace(command, "_XMX_TO_REPLACE_", xmx_value);
-
-      // remplacement de _XMS_TO_REPLACE_
-      command = StringUtils.replace(command, "_XMS_TO_REPLACE_", xms_value);
-
       // les trois arguments sont dans l'ordre
       // 1 - le nom de l'opération : traitementMasse
       // 2 - identifiant du traitement de masse
