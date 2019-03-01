@@ -69,7 +69,7 @@ public class TraitementMasseLauncherSupportImplTest {
 
       StrBuilder expectedCommand = new StrBuilder();
 
-      expectedCommand.append("java -jar -Xms500m -Xmx500m");
+      expectedCommand.append("java -jar @GED.CM_JAVA_OPTS@");
       expectedCommand.append(" -DLOGS_UUID=");
       expectedCommand.append(idJob);
       expectedCommand.append(" -Dlogback.configurationFile=");
