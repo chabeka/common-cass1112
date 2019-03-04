@@ -107,13 +107,14 @@ public abstract class AbstractStockageListener<BOT, CAPT> extends
    */
   @AfterChunk
   public final void afterChunk() {
-
-    final AbstractInsertionMasseRuntimeException exception = getExecutor()
-                                                                          .getInsertionMasseException();
-
-    if (exception != null) {
-      throw exception;
-    }
+    // 1907 : Suppression de la remontée de l'exception car transformée en IllegalArgumentException par la classe d'invocation de SpringBatch (SimpleMethodInvoker).
+    // Il est préférable de gérer l'exeption plus proprement dans la méthode after step du Listener principal.
+    // final AbstractInsertionMasseRuntimeException exception = getExecutor()
+    // .getInsertionMasseException();
+    //
+    // if (exception != null) {
+    // throw exception;
+    // }
   }
 
   /**

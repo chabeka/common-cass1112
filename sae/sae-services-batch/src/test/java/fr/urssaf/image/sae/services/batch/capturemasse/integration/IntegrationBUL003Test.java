@@ -355,7 +355,7 @@ public class IntegrationBUL003Test {
                   Arrays
                         .asList(
                                                                             "erreur insertion",
-                              "fr.urssaf.image.sae.storage.exception.DeletionServiceEx: erreur insertion document"));
+                              "fr.urssaf.image.sae.storage.exception.DeletionServiceEx: erreur insertion document"), true);
 
    }
 

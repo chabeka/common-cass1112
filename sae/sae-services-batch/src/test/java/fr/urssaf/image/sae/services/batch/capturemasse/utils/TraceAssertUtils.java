@@ -61,13 +61,35 @@ public final class TraceAssertUtils {
   public void verifieTraceCaptureMasseDansRegTechnique(final UUID idTdm,
                                                        final URI urlSommaire, final List<String> contenuStack) {
 
+    verifieTraceCaptureMasseDansRegTechnique(idTdm, urlSommaire, contenuStack, false);
+
+  }
+
+  /**
+   * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
+   * technique pour la capture de masse
+   * 
+   * @param idTdm
+   *          l'identifiant de la capture de masse, que l'on doit trouver dans
+   *          les infos
+   * @param urlSommaire
+   *          l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
+   * @param contenuStack
+   *          des éléments qui doivent apparaître dans la stacktrace
+   * @param True
+   *          si rollback attendu, false sinon
+   */
+  public void verifieTraceCaptureMasseDansRegTechnique(final UUID idTdm,
+                                                       final URI urlSommaire, final List<String> contenuStack, final boolean rollback) {
+
     verifieTraceTraitementMasseDansRegTechnique(idTdm,
                                                 urlSommaire,
                                                 contenuStack,
                                                 "captureMasse",
                                                 Constantes.TRACE_CODE_EVT_ECHEC_CM,
                                                 null,
-                                                null);
+                                                null,
+                                                rollback);
 
   }
 
@@ -96,7 +118,8 @@ public final class TraceAssertUtils {
                                                 "modificationMasse",
                                                 Constantes.TRACE_CODE_EVT_ECHEC_MM,
                                                 hash,
-                                                typeHash);
+                                                typeHash,
+                                                false);
   }
 
   /**
@@ -124,7 +147,8 @@ public final class TraceAssertUtils {
                                                 "transfertMasse",
                                                 Constantes.TRACE_CODE_EVT_ECHEC_TM,
                                                 hash,
-                                                typeHash);
+                                                typeHash,
+                                                false);
   }
 
   /**
@@ -146,10 +170,12 @@ public final class TraceAssertUtils {
    *          le hash du sommaire.xml
    * @param typeHash
    *          le type du hash
+   * @param True
+   *          si rollback attendu, false sinon
    */
   public void verifieTraceTraitementMasseDansRegTechnique(final UUID idTdm,
                                                           final URI urlSommaire, final List<String> contenuStack, final String typeTraitementMasse,
-                                                          final String traceCodeEvtEchecCm, final String hash, final String typeHash) {
+                                                          final String traceCodeEvtEchecCm, final String hash, final String typeHash, final boolean rollback) {
     // Vérification sur le nombre de trace trouvées via l'index
     final List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
 
@@ -230,10 +256,18 @@ public final class TraceAssertUtils {
       }
     }
 
-    final int nbDocErreur = contenuStack.size();
+    int nbDocErreur = contenuStack.size();
 
-    Assert.assertTrue("La stack trace doit contenir " + nbDocErreur + " document(s) en erreur.",
-                      trace.getStacktrace().contains("Exception(s) sur les documents : " + nbDocErreur));
+    if (rollback) {
+      nbDocErreur = contenuStack.size() / 2;
+      Assert.assertTrue("La stack trace doit contenir " + nbDocErreur + " document(s) en erreur.",
+                        trace.getStacktrace().contains("Exception(s) sur les documents : " + nbDocErreur));
+      Assert.assertTrue("La stack trace doit contenir " + nbDocErreur + " rollback(s) en erreur.",
+                        trace.getStacktrace().contains("Exception(s) du rollback : " + nbDocErreur));
+    } else {
+      Assert.assertTrue("La stack trace doit contenir " + nbDocErreur + " document(s) en erreur.",
+                        trace.getStacktrace().contains("Exception(s) sur les documents : " + nbDocErreur));
+    }
 
     // Les infos supplémentaires
     // jobParams.capture.masse.idtraitement=b7d58210-34b3-4cc5-936d-e4c9a0902089
