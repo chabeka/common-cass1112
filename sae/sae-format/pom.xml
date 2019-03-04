@@ -129,6 +129,14 @@
                <groupId>bouncycastle</groupId>
                <artifactId>bcprov-jdk14</artifactId>
             </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-rt-bindings-http</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-rt-bindings-soap</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
@@ -214,7 +222,7 @@
       <dependency>
          <groupId>net.java.dev.stax-utils</groupId>
          <artifactId>stax-utils</artifactId>
-         <version>20060502</version>
+         <version>${stax-utils.version}</version>
          <exclusions>
             <exclusion>
                <groupId>com.bea.xml</groupId>

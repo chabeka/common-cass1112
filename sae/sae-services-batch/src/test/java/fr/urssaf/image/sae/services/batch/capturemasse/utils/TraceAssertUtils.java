@@ -33,219 +33,347 @@ import fr.urssaf.image.sae.trace.service.RegTechniqueService;
  */
 public final class TraceAssertUtils {
 
-   private static final int REG_TECH_NB_INFOS = 7;
+  private static final int REG_TECH_NB_INFOS = 7;
 
-   private static final int DELTA_ANNEE = 100;
+  private static final int DELTA_ANNEE = 100;
 
-   @Autowired
-   private RegTechniqueService regTechniqueService;
+  @Autowired
+  private RegTechniqueService regTechniqueService;
 
-   @Autowired
-   private RegExploitationService regExploitationService;
+  @Autowired
+  private RegExploitationService regExploitationService;
 
-   @Autowired
-   private RegSecuriteService regSecuriteService;
+  @Autowired
+  private RegSecuriteService regSecuriteService;
 
-   /**
-    * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
-    * technique
-    * 
-    * @param idTdm
-    *           l'identifiant de la capture de masse, que l'on doit trouver dans
-    *           les infos
-    * @param urlSommaire
-    *           l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
-    * @param contenuStack
-    *           des éléments qui doivent apparaître dans la stacktrace
-    * 
-    */
-   public void verifieTraceCaptureMasseDansRegTechnique(UUID idTdm,
-         URI urlSommaire, List<String> contenuStack) {
+  /**
+   * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
+   * technique pour la capture de masse
+   * 
+   * @param idTdm
+   *          l'identifiant de la capture de masse, que l'on doit trouver dans
+   *          les infos
+   * @param urlSommaire
+   *          l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
+   * @param contenuStack
+   *          des éléments qui doivent apparaître dans la stacktrace
+   */
+  public void verifieTraceCaptureMasseDansRegTechnique(final UUID idTdm,
+                                                       final URI urlSommaire, final List<String> contenuStack) {
 
-      // Vérification sur le nombre de trace trouvées via l'index
-      List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
+    verifieTraceTraitementMasseDansRegTechnique(idTdm,
+                                                urlSommaire,
+                                                contenuStack,
+                                                "captureMasse",
+                                                Constantes.TRACE_CODE_EVT_ECHEC_CM,
+                                                null,
+                                                null);
 
-      // Vérifications sur l'index
+  }
 
-      TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
+  /**
+   * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
+   * techniquepour la modification de masse
+   * 
+   * @param idTdm
+   *          l'identifiant de la capture de masse, que l'on doit trouver dans
+   *          les infos
+   * @param urlSommaire
+   *          l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
+   * @param contenuStack
+   *          des éléments qui doivent apparaître dans la stacktrace
+   * @param hash
+   *          le hash du sommaire.xml
+   * @param typeHash
+   *          le type du hash
+   */
+  public void verifieTraceModificationMasseDansRegTechnique(final UUID idTdm,
+                                                            final URI urlSommaire, final List<String> contenuStack, final String hash, final String typeHash) {
 
-      // Le code événement
-      Assert.assertEquals("Le code éventement est incorrect",
-            Constantes.TRACE_CODE_EVT_ECHEC_CM, traceTechIndex.getCodeEvt());
+    verifieTraceTraitementMasseDansRegTechnique(idTdm,
+                                                urlSommaire,
+                                                contenuStack,
+                                                "modificationMasse",
+                                                Constantes.TRACE_CODE_EVT_ECHEC_MM,
+                                                hash,
+                                                typeHash);
+  }
 
-      // Le contexte
-      Assert.assertEquals("Le code éventement est incorrect", "captureMasse",
-            traceTechIndex.getContexte());
+  /**
+   * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
+   * technique pour le transfert de masse
+   * 
+   * @param idTdm
+   *          l'identifiant de la capture de masse, que l'on doit trouver dans
+   *          les infos
+   * @param urlSommaire
+   *          l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
+   * @param contenuStack
+   *          des éléments qui doivent apparaître dans la stacktrace
+   * @param hash
+   *          le hash du sommaire.xml
+   * @param typeHash
+   *          le type du hash
+   */
+  public void verifieTraceTransfertMasseDansRegTechnique(final UUID idTdm,
+                                                         final URI urlSommaire, final List<String> contenuStack, final String hash, final String typeHash) {
 
-      // Le CS
-      Assert.assertEquals("Le contrat de service est incorrect",
-            "TESTS_UNITAIRES", traceTechIndex.getContrat());
+    verifieTraceTraitementMasseDansRegTechnique(idTdm,
+                                                urlSommaire,
+                                                contenuStack,
+                                                "transfertMasse",
+                                                Constantes.TRACE_CODE_EVT_ECHEC_TM,
+                                                hash,
+                                                typeHash);
+  }
 
-      // Les PAGM
-      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-            "TU_PAGM2"), traceTechIndex.getPagms());
+  /**
+   * Vérifie qu'il y a une et une seule trace dans le registre de surveillance
+   * technique
+   * 
+   * @param idTdm
+   *          l'identifiant de la capture de masse, que l'on doit trouver dans
+   *          les infos
+   * @param urlSommaire
+   *          l'URL ECDE du sommaire.xml, que l'on doit trouver dans les infos
+   * @param contenuStack
+   *          des éléments qui doivent apparaître dans la stacktrace
+   * @param traceCodeEvtEchecCm
+   *          Le code événement de la trace
+   * @param typeTraitementMasse
+   *          Le type de traitement de masse
+   * @param hash
+   *          le hash du sommaire.xml
+   * @param typeHash
+   *          le type du hash
+   */
+  public void verifieTraceTraitementMasseDansRegTechnique(final UUID idTdm,
+                                                          final URI urlSommaire, final List<String> contenuStack, final String typeTraitementMasse,
+                                                          final String traceCodeEvtEchecCm, final String hash, final String typeHash) {
+    // Vérification sur le nombre de trace trouvées via l'index
+    final List<TraceRegTechniqueIndex> tracesTechIndex = verifieNombreTracesDansTraceRegTechnique(1);
 
-      // Le login
-      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST",
-            traceTechIndex.getLogin());
+    // Vérifications sur l'index
 
-      // Vérifications sur la trace en elle-même
+    final TraceRegTechniqueIndex traceTechIndex = tracesTechIndex.get(0);
 
-      TraceRegTechnique trace = regTechniqueService.lecture(traceTechIndex
-            .getIdentifiant());
+    // Le code événement
+    Assert.assertEquals("Le code éventement est incorrect",
+                        traceCodeEvtEchecCm,
+                        traceTechIndex.getCodeEvt());
 
-      // Le code événement
-      Assert.assertEquals("Le code éventement est incorrect",
-            Constantes.TRACE_CODE_EVT_ECHEC_CM, trace.getCodeEvt());
+    // Le contexte
+    Assert.assertEquals("Le code éventement est incorrect",
+                        typeTraitementMasse,
+                        traceTechIndex.getContexte());
 
-      // Le contexte
-      Assert.assertEquals("Le code éventement est incorrect", "captureMasse",
-            trace.getContexte());
+    // Le CS
+    Assert.assertEquals("Le contrat de service est incorrect",
+                        "TESTS_UNITAIRES",
+                        traceTechIndex.getContrat());
 
-      // Le CS
-      Assert.assertEquals("Le contrat de service est incorrect",
-            "TESTS_UNITAIRES", trace.getContratService());
+    // Les PAGM
+    Assert.assertEquals("Les PAGM sont incorrects",
+                        Arrays.asList("TU_PAGM1",
+                                      "TU_PAGM2"),
+                        traceTechIndex.getPagms());
 
-      // Les PAGM
-      Assert.assertEquals("Les PAGM sont incorrects", Arrays.asList("TU_PAGM1",
-            "TU_PAGM2"), trace.getPagms());
+    // Le login
+    Assert.assertEquals("Le login est incorrect",
+                        "UTILISATEUR TEST",
+                        traceTechIndex.getLogin());
 
-      // Le login
-      Assert.assertEquals("Le login est incorrect", "UTILISATEUR TEST", trace
-            .getLogin());
+    // Vérifications sur la trace en elle-même
 
-      // La stacktrace
-      Assert.assertTrue("La stacktrace ne devrait pas être vide", StringUtils
-            .isNotEmpty(trace.getStacktrace()));
-      for (String partieStack : contenuStack) {
-         if (!StringUtils.contains(trace.getStacktrace(), partieStack)) {
-            Assert
-                  .fail(String
-                        .format(
-                              "La stacktrace ne contient pas l'attendu \r\nAttendu : %s\r\n Obtenu : %s\r\n",
-                              partieStack, trace.getStacktrace()));
-         }
+    final TraceRegTechnique trace = regTechniqueService.lecture(traceTechIndex
+                                                                              .getIdentifiant());
+
+    // Le code événement
+    Assert.assertEquals("Le code éventement est incorrect",
+                        traceCodeEvtEchecCm,
+                        trace.getCodeEvt());
+
+    // Le contexte
+    Assert.assertEquals("Le code éventement est incorrect",
+                        typeTraitementMasse,
+                        trace.getContexte());
+
+    // Le CS
+    Assert.assertEquals("Le contrat de service est incorrect",
+                        "TESTS_UNITAIRES",
+                        trace.getContratService());
+
+    // Les PAGM
+    Assert.assertEquals("Les PAGM sont incorrects",
+                        Arrays.asList("TU_PAGM1",
+                                      "TU_PAGM2"),
+                        trace.getPagms());
+
+    // Le login
+    Assert.assertEquals("Le login est incorrect",
+                        "UTILISATEUR TEST",
+                        trace
+                             .getLogin());
+
+    // La stacktrace
+    Assert.assertTrue("La stacktrace ne devrait pas être vide",
+                      StringUtils
+                                 .isNotEmpty(trace.getStacktrace()));
+    for (final String partieStack : contenuStack) {
+      if (!StringUtils.contains(trace.getStacktrace(), partieStack)) {
+        Assert
+              .fail(String
+                          .format(
+                                  "La stacktrace ne contient pas l'attendu \r\nAttendu : %s\r\n Obtenu : %s\r\n",
+                                  partieStack,
+                                  trace.getStacktrace()));
       }
+    }
 
-      // Les infos supplémentaires
-      // jobParams.capture.masse.idtraitement=b7d58210-34b3-4cc5-936d-e4c9a0902089
-      // jobParams.capture.masse.sommaire=ecde://ecde.testunit.recouv/1/20110101/4875110237439144125/sommaire.xml
-      // jobParams.hash=null
-      // jobParams.typeHash=null
-      // batchStatus=COMPLETED
-      // saeServeurHostname=CER69-TEC16803
-      // saeServeurIP=10.3.104.81
-      Assert.assertNotNull("Les informations ne devraient pas être vide", trace
-            .getInfos());
-      Assert.assertTrue("Les informations ne devraient pas être vide", MapUtils
-            .isNotEmpty(trace.getInfos()));
-      Assert.assertEquals("Le nombre d'informations est incorrect",
-            REG_TECH_NB_INFOS, trace.getInfos().size());
-      verifieInfo(trace.getInfos(), "jobParams.capture.masse.idtraitement",
-            idTdm.toString());
-      verifieInfo(trace.getInfos(), "jobParams.capture.masse.sommaire",
-            urlSommaire.toString());
-      verifieInfo(trace.getInfos(), "jobParams.hash", null);
-      verifieInfo(trace.getInfos(), "jobParams.typeHash", null);
-      verifieInfo(trace.getInfos(), "batchStatus", "FAILED");
-      verifieInfo(trace.getInfos(), "saeServeurHostname", HostnameUtil
-            .getHostname());
-      verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
+    final int nbDocErreur = contenuStack.size();
 
-   }
+    Assert.assertTrue("La stack trace doit contenir " + nbDocErreur + " document(s) en erreur.",
+                      trace.getStacktrace().contains("Exception(s) sur les documents : " + nbDocErreur));
 
-   private List<TraceRegTechniqueIndex> verifieNombreTracesDansTraceRegTechnique(
-         int expected) {
+    // Les infos supplémentaires
+    // jobParams.capture.masse.idtraitement=b7d58210-34b3-4cc5-936d-e4c9a0902089
+    // jobParams.capture.masse.sommaire=ecde://ecde.testunit.recouv/1/20110101/4875110237439144125/sommaire.xml
+    // jobParams.hash=null
+    // jobParams.typeHash=null
+    // batchStatus=COMPLETED
+    // saeServeurHostname=CER69-TEC16803
+    // saeServeurIP=10.3.104.81
+    Assert.assertNotNull("Les informations ne devraient pas être vide",
+                         trace
+                              .getInfos());
+    Assert.assertTrue("Les informations ne devraient pas être vide",
+                      MapUtils
+                              .isNotEmpty(trace.getInfos()));
+    Assert.assertEquals("Le nombre d'informations est incorrect",
+                        REG_TECH_NB_INFOS,
+                        trace.getInfos().size());
+    verifieInfo(trace.getInfos(),
+                "jobParams.capture.masse.idtraitement",
+                idTdm.toString());
+    verifieInfo(trace.getInfos(),
+                "jobParams.capture.masse.sommaire",
+                urlSommaire.toString());
+    verifieInfo(trace.getInfos(), "jobParams.hash", hash);
+    verifieInfo(trace.getInfos(), "jobParams.typeHash", typeHash);
+    verifieInfo(trace.getInfos(), "batchStatus", "FAILED");
+    verifieInfo(trace.getInfos(),
+                "saeServeurHostname",
+                HostnameUtil
+                            .getHostname());
+    verifieInfo(trace.getInfos(), "saeServeurIP", HostnameUtil.getIP());
 
-      List<TraceRegTechniqueIndex> tracesIndex = regTechniqueService.lecture(
-            DateUtils.addDays(new Date(), -1),
-            DateUtils.addDays(new Date(), 1), DELTA_ANNEE, true);
+  }
 
-      if (expected <= 0) {
-         assertTrue(
-               "La liste des traces du registre de surveillance technique devrait être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-      } else {
-         assertFalse(
-               "La liste des traces du registre de surveillance technique ne devrait pas être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-         assertEquals(
-               "Le nombre de traces dans le registre de surveillance technique est incorrect",
-               expected, tracesIndex.size());
-      }
+  private List<TraceRegTechniqueIndex> verifieNombreTracesDansTraceRegTechnique(
+                                                                                final int expected) {
 
-      return tracesIndex;
+    final List<TraceRegTechniqueIndex> tracesIndex = regTechniqueService.lecture(
+                                                                                 DateUtils.addDays(new Date(), -1),
+                                                                                 DateUtils.addDays(new Date(), 1),
+                                                                                 DELTA_ANNEE,
+                                                                                 true);
 
-   }
+    if (expected <= 0) {
+      assertTrue(
+                 "La liste des traces du registre de surveillance technique devrait être vide",
+                 CollectionUtils.isEmpty(tracesIndex));
+    } else {
+      assertFalse(
+                  "La liste des traces du registre de surveillance technique ne devrait pas être vide",
+                  CollectionUtils.isEmpty(tracesIndex));
+      assertEquals(
+                   "Le nombre de traces dans le registre de surveillance technique est incorrect",
+                   expected,
+                   tracesIndex.size());
+    }
 
-   private List<TraceRegExploitationIndex> verifieNombreTracesDansTraceRegExploitation(
-         int expected) {
+    return tracesIndex;
 
-      List<TraceRegExploitationIndex> tracesIndex = regExploitationService
-            .lecture(DateUtils.addDays(new Date(), -1), DateUtils.addDays(
-                  new Date(), 1), 100, true);
+  }
 
-      if (expected <= 0) {
-         assertTrue(
-               "La liste des traces du registre d'exploitation technique devrait être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-      } else {
-         assertFalse(
-               "La liste des traces du registre d'exploitation technique ne devrait pas être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-         assertEquals(
-               "Le nombre de traces dans le registre d'exploitation est incorrect",
-               expected, tracesIndex.size());
-      }
+  private List<TraceRegExploitationIndex> verifieNombreTracesDansTraceRegExploitation(
+                                                                                      final int expected) {
 
-      return tracesIndex;
+    final List<TraceRegExploitationIndex> tracesIndex = regExploitationService
+                                                                              .lecture(DateUtils.addDays(new Date(), -1),
+                                                                                       DateUtils.addDays(
+                                                                                                         new Date(),
+                                                                                                         1),
+                                                                                       100,
+                                                                                       true);
 
-   }
+    if (expected <= 0) {
+      assertTrue(
+                 "La liste des traces du registre d'exploitation technique devrait être vide",
+                 CollectionUtils.isEmpty(tracesIndex));
+    } else {
+      assertFalse(
+                  "La liste des traces du registre d'exploitation technique ne devrait pas être vide",
+                  CollectionUtils.isEmpty(tracesIndex));
+      assertEquals(
+                   "Le nombre de traces dans le registre d'exploitation est incorrect",
+                   expected,
+                   tracesIndex.size());
+    }
 
-   private List<TraceRegSecuriteIndex> verifieNombreTracesDansTraceRegSecurite(
-         int expected) {
+    return tracesIndex;
 
-      List<TraceRegSecuriteIndex> tracesIndex = regSecuriteService.lecture(
-            DateUtils.addDays(new Date(), -1),
-            DateUtils.addDays(new Date(), 1), 100, true);
+  }
 
-      if (expected <= 0) {
-         assertTrue(
-               "La liste des traces du registre de sécurité devrait être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-      } else {
-         assertFalse(
-               "La liste des traces du registre de sécurité ne devrait pas être vide",
-               CollectionUtils.isEmpty(tracesIndex));
-         assertEquals(
-               "Le nombre de traces dans le registre de sécurité est incorrect",
-               expected, tracesIndex.size());
-      }
+  private List<TraceRegSecuriteIndex> verifieNombreTracesDansTraceRegSecurite(
+                                                                              final int expected) {
 
-      return tracesIndex;
+    final List<TraceRegSecuriteIndex> tracesIndex = regSecuriteService.lecture(
+                                                                               DateUtils.addDays(new Date(), -1),
+                                                                               DateUtils.addDays(new Date(), 1),
+                                                                               100,
+                                                                               true);
 
-   }
+    if (expected <= 0) {
+      assertTrue(
+                 "La liste des traces du registre de sécurité devrait être vide",
+                 CollectionUtils.isEmpty(tracesIndex));
+    } else {
+      assertFalse(
+                  "La liste des traces du registre de sécurité ne devrait pas être vide",
+                  CollectionUtils.isEmpty(tracesIndex));
+      assertEquals(
+                   "Le nombre de traces dans le registre de sécurité est incorrect",
+                   expected,
+                   tracesIndex.size());
+    }
 
-   private void verifieInfo(Map<String, Object> infos, String nomInfo,
-         Object valeurAttendue) {
+    return tracesIndex;
 
-      Assert.assertTrue("L'information " + nomInfo + " est absente", infos
-            .containsKey(nomInfo));
+  }
 
-      Assert.assertEquals("L'information " + nomInfo + " est incorrect",
-            valeurAttendue, infos.get(nomInfo));
+  private void verifieInfo(final Map<String, Object> infos, final String nomInfo,
+                           final Object valeurAttendue) {
 
-   }
+    Assert.assertTrue("L'information " + nomInfo + " est absente",
+                      infos
+                           .containsKey(nomInfo));
 
-   /**
-    * Vérifie qu'aucune trace ne soit présente dans aucun des 3 registres
-    */
-   public void verifieAucuneTraceDansRegistres() {
+    Assert.assertEquals("L'information " + nomInfo + " est incorrect",
+                        valeurAttendue,
+                        infos.get(nomInfo));
 
-      verifieNombreTracesDansTraceRegTechnique(0);
-      verifieNombreTracesDansTraceRegExploitation(0);
-      verifieNombreTracesDansTraceRegSecurite(0);
+  }
 
-   }
+  /**
+   * Vérifie qu'aucune trace ne soit présente dans aucun des 3 registres
+   */
+  public void verifieAucuneTraceDansRegistres() {
+
+    verifieNombreTracesDansTraceRegTechnique(0);
+    verifieNombreTracesDansTraceRegExploitation(0);
+    verifieNombreTracesDansTraceRegSecurite(0);
+
+  }
 
 }

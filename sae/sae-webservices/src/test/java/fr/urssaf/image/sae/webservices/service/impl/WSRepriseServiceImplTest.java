@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
-import org.apache.cxf.common.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -431,9 +431,19 @@ public class SommaireFormatValidationSupportImpl implements
                                                   .getName()
                                                   .getLocalPart())) {
                         event = reader.nextEvent();
-                        final String value = event.asCharacters().getData();
+                        if (event.isCharacters()) {
+                          final String value = event.asCharacters().getData();
 
-                        if (StringUtils.isEmpty(value) || StringUtils.isBlank(value.trim())) {
+                          if (StringUtils.isEmpty(value) || StringUtils.isBlank(value.trim())) {
+                            // Le valeur est vide ou contient uniquement des espaces
+                            throw new CaptureMasseSommaireFormatValidationException(
+                                                                                    "La balise " + valeurBalise
+                                                                                        + " ne contient pas de valeur.",
+                                                                                    new Exception(
+                                                                                                  valeurBalise + " ne contient pas de valeur."));
+
+                          }
+                        } else {
                           // Le valeur est vide ou contient uniquement des espaces
                           throw new CaptureMasseSommaireFormatValidationException(
                                                                                   "La balise " + valeurBalise

@@ -270,8 +270,37 @@
       ==========================================
       -->
 		<bcprov-jdk16.version>140</bcprov-jdk16.version>
-	</properties>
 
+
+      <!--
+      ==========================================
+      FasterXML woodstox
+      
+      https://github.com/FasterXML/woodstox
+      ==========================================
+      -->
+		<woodstox.version>5.2.0</woodstox.version>
+		
+	  <!--
+      ==========================================
+      stax-utils
+      
+      https://javalibs.com/artifact/net.java.dev.stax-utils/stax-utils
+      ==========================================
+      -->
+		<stax-utils.version>20070216</stax-utils.version>
+		
+	
+	  <!--
+      ==========================================
+      XMLUnit
+      
+      https://www.xmlunit.org/
+      ==========================================
+      -->
+		<xmlunit.version>2.6.2</xmlunit.version>
+
+	</properties>
 
 	<!-- Les modules -->
 	<modules>

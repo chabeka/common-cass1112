@@ -159,7 +159,7 @@
 		<dependency>
 			<groupId>net.java.dev.stax-utils</groupId>
 			<artifactId>stax-utils</artifactId>
-			<version>20060502</version>
+			<version>${stax-utils.version}</version>
 			<exclusions>
 				<exclusion>
 					<groupId>com.bea.xml</groupId>
@@ -169,9 +169,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.codehaus.woodstox</groupId>
-			<artifactId>woodstox-core-asl</artifactId>
-			<version>4.1.2</version>
+			<groupId>com.fasterxml.woodstox</groupId>
+			<artifactId>woodstox-core</artifactId>
+			<version>${woodstox.version}</version>
 		</dependency>
       
       <!--
