@@ -241,9 +241,14 @@
 	</scm>
 	<distributionManagement>
 		<repository>
-			<id>nexus_altair</id>
+			<id>releases</id>
 			<name>Altair Nexus Repository</name>
 			<url>http://nexus.altair.recouv/nexus/content/groups/allrepos/</url>
 		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Altair Nexus Repository</name>
+			<url>http://nexus.altair.recouv/nexus/content/groups/allrepos/</url>
+		</snapshotRepository>
 	</distributionManagement>
 </project>
