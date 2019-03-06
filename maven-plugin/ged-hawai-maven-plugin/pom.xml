@@ -249,6 +249,7 @@
 			<id>snapshots</id>
 			<name>Altair Nexus Repository</name>
 			<url>http://nexus.altair.recouv/nexus/content/groups/allrepos/</url>
+			<uniqueVersion>false</uniqueVersion>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
