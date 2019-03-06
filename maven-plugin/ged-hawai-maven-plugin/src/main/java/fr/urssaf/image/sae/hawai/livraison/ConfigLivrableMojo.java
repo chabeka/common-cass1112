@@ -205,10 +205,10 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                                                                    workspaceUnzipDir,
                                                                                    project.getVersion());
 
-    changeProjectProperties("sae.version", propertiesVersionMap.get("sae.version"));
-    changeProjectProperties("dfce-webapp.version", propertiesVersionMap.get("dfce-webapp.version"));
-    changeProjectProperties("sae-anais-portail.version", propertiesVersionMap.get("sae-anais-portail.version"));
-    changeProjectProperties("sae-ihm-web-exploit.version", propertiesVersionMap.get("sae-ihm-web-exploit.version"));
+    changeProjectProperties("target.sae.version", propertiesVersionMap.get("sae.version"));
+    changeProjectProperties("target.dfce-webapp.version", propertiesVersionMap.get("dfce-webapp.version"));
+    changeProjectProperties("target.sae-anais-portail.version", propertiesVersionMap.get("sae-anais-portail.version"));
+    changeProjectProperties("target.sae-ihm-web-exploit.version", propertiesVersionMap.get("sae-ihm-web-exploit.version"));
   }
 
   /**
