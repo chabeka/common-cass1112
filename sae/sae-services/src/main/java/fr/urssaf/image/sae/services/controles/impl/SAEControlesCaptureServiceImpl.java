@@ -25,6 +25,7 @@ import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLException;
 import fr.urssaf.image.sae.ecde.exception.EcdeBadURLFormatException;
@@ -66,7 +67,7 @@ public class SAEControlesCaptureServiceImpl implements
    private static final Logger LOGGER = LoggerFactory
          .getLogger(SAEControlesCaptureServiceImpl.class);
 
-   private static final List<String> ALGO_HASH = Arrays.asList("SHA-1");
+   //private static final List<String> ALGO_HASH = Arrays.asList("SHA-1", "SHA-256");
 
    @Autowired
    private EcdeServices ecdeServices;
@@ -631,18 +632,19 @@ public class SAEControlesCaptureServiceImpl implements
          throws UnknownHashCodeEx {
       String prefixeTrc = "checkHashCode()";
 
-      LOGGER.debug("{} - Début de la vérification : Le type de hash est SHA-1",
+      LOGGER.debug("{} - Début de la vérification du type de hash utilisé",
             prefixeTrc);
 
-      if (!ALGO_HASH.contains(algoHashCode)) {
+      int indexAlgo = Constantes.ALGO_HASH.indexOf(algoHashCode);
+      if (!Constantes.ALGO_HASH.contains(algoHashCode)) {
          LOGGER
                .debug(
-                     "{} - L'algorithme du document à archiver est différent de SHA-1",
+                     "{} - L'algorithme du document à archiver est inconnu",
                      prefixeTrc);
          throw new UnknownHashCodeEx(ResourceMessagesUtils.loadMessage(
                CAPTURE_HASH_ERREUR, fileName));
       }
-      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est SHA-1", prefixeTrc);
+      LOGGER.debug(LOG_FIN_VERIF + "Le type de hash est " + Constantes.ALGO_HASH.get(indexAlgo), prefixeTrc);
    }
 
    /**

@@ -6,6 +6,7 @@ package fr.urssaf.image.sae.services.batch.capturemasse.controles.impl;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -14,12 +15,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.services.batch.capturemasse.controles.SAEControleSupportService;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRuntimeException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.services.util.WriteUtils;
+import fr.urssaf.image.sae.storage.dfce.utils.HashUtils;
 
 /**
  * Implémentation du support {@link SAEControleSupportService}
@@ -68,7 +71,8 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
    public final void checkHash(File sommaire, String hash, String typeHash)
          throws CaptureMasseSommaireTypeHashException,
          CaptureMasseSommaireHashException {
-      if (StringUtils.equalsIgnoreCase("SHA-1", typeHash)) {
+      if (Constantes.ALGO_HASH.contains(typeHash)) {
+    	  int indexAlgo = Constantes.ALGO_HASH.indexOf(typeHash);
          // récupération du contenu pour le calcul du HASH
          FileInputStream content;
          try {
@@ -77,11 +81,13 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
             throw new CaptureMasseRuntimeException(e);
          }
          // calcul du Hash
-         String hashCode = StringUtils.EMPTY;
+         //String hashCode = StringUtils.EMPTY;
+         String hashCalculated = StringUtils.EMPTY;
          try {
-            hashCode = DigestUtils.shaHex(content);
-         } catch (IOException e) {
-            throw new CaptureMasseSommaireHashException(hash, hashCode,
+            //hashCode = DigestUtils.shaHex(content);
+            hashCalculated = HashUtils.hashHex(content, Constantes.ALGO_HASH.get(indexAlgo));
+         } catch (NoSuchAlgorithmException | IOException e) {
+            throw new CaptureMasseSommaireHashException(hash, hashCalculated,
                   typeHash);
          } finally {
             try {
@@ -92,8 +98,8 @@ public class SAEControleSupportServiceImpl implements SAEControleSupportService 
          }
 
          // comparaison avec la valeur attendu
-         if (!StringUtils.equalsIgnoreCase(hashCode, hash.trim())) {
-            throw new CaptureMasseSommaireHashException(hash, hashCode,
+         if (!StringUtils.equalsIgnoreCase(hashCalculated, hash.trim())) {
+            throw new CaptureMasseSommaireHashException(hash, hashCalculated,
                   typeHash);
          }
       } else {

@@ -1,5 +1,8 @@
 package fr.urssaf.image.sae.commons.utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Classe contenant les constantes utilisées dans les différents projets
  * 
@@ -60,6 +63,10 @@ public final class Constantes {
     */
    public static final String TYPE_HASH = "typeHash";
 
+   /**
+    * Algo hash
+    */
+   public static final List<String> ALGO_HASH = Arrays.asList("SHA-1", "SHA-256");
    /**
     * Identifiant du paramètre heureTraitement
     */
