@@ -206,7 +206,7 @@
       http://ws.apache.org/axis/
       ==========================================
       -->
-		<axis2.version>1.7.7</axis2.version>
+		<axis2.version>1.7.9</axis2.version>
 
       <!--
       ==========================================
