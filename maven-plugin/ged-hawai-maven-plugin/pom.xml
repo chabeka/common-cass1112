@@ -21,9 +21,38 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven.javadoc.skip>true</maven.javadoc.skip>
 		<maven.site.skip>true</maven.site.skip>
-		<maven.version>3.6.0</maven.version>
+		
+		<!-- Maven plugin version -->
+		<maven.version>3.3.9</maven.version>
+		<maven-plugin-annotations.version>3.3</maven-plugin-annotations.version>
 		<maven-deploy-plugin.version>2.8.1</maven-deploy-plugin.version>
 		<maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+		<maven-plugin-testing-harness.version>3.3.0</maven-plugin-testing-harness.version>
+		<maven-artifact-transfer.version>0.11.0</maven-artifact-transfer.version>
+		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-plugin-plugin.version>3.6.0</maven-plugin-plugin.version>
+		<plexus-component-metadata.version>2.0.0</plexus-component-metadata.version>
+				
+		<!-- Other plugin version -->
+		<mojo-executor-maven-plugin.version>2.3.0</mojo-executor-maven-plugin.version>		
+		<commons-lang3.version>3.8.1</commons-lang3.version>
+		<commons-compress.version>1.18</commons-compress.version>
+		<juniversalchardet.version>1.0.3</juniversalchardet.version>
+		<svnkit-cli.version>1.8.8</svnkit-cli.version>
+		<commons-configuration.version>1.10</commons-configuration.version>
+		<commons-io.version>2.6</commons-io.version>
+		<commons-codec.version>1.12</commons-codec.version>
+		<jsch.version>0.1.55</jsch.version>
+		<joda-time.version>2.10.1</joda-time.version>
+		<json.version>20180813</json.version>
+		<fluent-hc.version>4.5.7</fluent-hc.version>
+		<plexus-container-default.version>2.0.0</plexus-container-default.version>
+		<aether-connector-asynchttpclient.version>1.13.1</aether-connector-asynchttpclient.version>
+		<plexus-component-annotations.version>2.0.0</plexus-component-annotations.version>
+		<slf4j-api.version>1.7.26</slf4j-api.version>
+		<aether-api.version>1.1.0</aether-api.version>	
 	</properties>
 
 	<dependencies>
@@ -37,14 +66,14 @@
 		<dependency>
 			<groupId>org.apache.maven.plugin-tools</groupId>
 			<artifactId>maven-plugin-annotations</artifactId>
-			<version>${maven.version}</version>
+			<version>${maven-plugin-annotations.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-resources-plugin</artifactId>
-			<version>3.1.0</version>
+			<version>${maven-resources-plugin.version}</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.apache.maven/maven-artifact -->
@@ -61,62 +90,62 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.8.1</version>
+			<version>${commons-lang3.version}</version>
 		</dependency><!-- tar gz -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-compress</artifactId>
-			<version>1.18</version>
+			<version>${commons-compress.version}</version>
 		</dependency><!-- Pour tout ce qui est encoding -->
 		<dependency>
 			<groupId>com.googlecode.juniversalchardet</groupId>
 			<artifactId>juniversalchardet</artifactId>
-			<version>1.0.3</version>
+			<version>${juniversalchardet.version}</version>
 		</dependency><!-- SVN -->
 		<dependency>
 			<groupId>org.tmatesoft.svnkit</groupId>
 			<artifactId>svnkit-cli</artifactId>
-			<version>1.8.8</version>
+			<version>${svnkit-cli.version}</version>
 		</dependency><!-- properties read/write -->
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>1.10</version>
+			<version>${commons-configuration.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-			<version>2.6</version>
+			<version>${commons-io.version}</version>
 		</dependency><!-- pour sirec -->
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.12</version>
+			<version>${commons-codec.version}</version>
 		</dependency><!-- SSH -->
 		<dependency>
 			<groupId>com.jcraft</groupId>
 			<artifactId>jsch</artifactId>
-			<version>0.1.55</version>
+			<version>${jsch.version}</version>
 		</dependency><!-- manipulation temps -->
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>
-			<version>2.10.1</version>
+			<version>${joda-time.version}</version>
 		</dependency><!-- manipulation json -->
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<version>20180813</version>
+			<version>${json.version}</version>
 		</dependency><!-- curl sur jenkins -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>fluent-hc</artifactId>
-			<version>4.5.7</version>
+			<version>${fluent-hc.version}</version>
 		</dependency><!-- https://mvnrepository.com/artifact/org.codehaus.plexus/plexus-container-default -->
 		<dependency>
 			<groupId>org.codehaus.plexus</groupId>
 			<artifactId>plexus-container-default</artifactId>
-			<version>2.0.0</version>
+			<version>${plexus-container-default.version}</version>
 		</dependency><!-- https://mvnrepository.com/artifact/org.apache.maven/maven-compat -->
 		<dependency>
 			<groupId>org.apache.maven</groupId>
@@ -126,7 +155,7 @@
 		<dependency>
 			<groupId>org.apache.maven.plugin-testing</groupId>
 			<artifactId>maven-plugin-testing-harness</artifactId>
-			<version>3.3.0</version>
+			<version>${maven-plugin-testing-harness.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -137,7 +166,34 @@
 		<dependency>
 			<groupId>org.sonatype.aether</groupId>
 			<artifactId>aether-connector-asynchttpclient</artifactId>
-			<version>1.13.1</version>
+			<version>${aether-connector-asynchttpclient.version}</version>
+		</dependency>
+		<dependency>
+	      <groupId>org.codehaus.plexus</groupId>
+	      <artifactId>plexus-component-annotations</artifactId>
+	      <version>${plexus-component-annotations.version}</version>
+	    </dependency>
+	    <!-- https://mvnrepository.com/artifact/org.twdata.maven/mojo-executor-maven-plugin -->
+		<dependency>
+		    <groupId>org.twdata.maven</groupId>
+		    <artifactId>mojo-executor-maven-plugin</artifactId>
+		    <version>${mojo-executor-maven-plugin.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.maven.shared</groupId>
+		    <artifactId>maven-artifact-transfer</artifactId>
+		    <version>${maven-artifact-transfer.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-api</artifactId>
+		    <version>${slf4j-api.version}</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.eclipse.aether/aether-api -->
+		<dependency>
+		    <groupId>org.eclipse.aether</groupId>
+		    <artifactId>aether-api</artifactId>
+		    <version>${aether-api.version}</version>
 		</dependency>
 	</dependencies>
 	<build>
@@ -150,12 +206,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.1</version>
+				<version>${maven-surefire-plugin.version}</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
+				<version>${maven-compiler-plugin.version}</version>
 				<configuration>
 					<source>${maven.compiler.source}</source>
 					<target>${maven.compiler.target}</target>
@@ -164,7 +220,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>
-				<version>3.6.0</version>
+				<version>${maven-plugin-plugin.version}</version>
 				<configuration><!-- see http://jira.codehaus.org/browse/MNG-5346 -->
 					<skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
 				</configuration>
@@ -202,6 +258,18 @@
 					<useReleaseProfile>false</useReleaseProfile>
 				</configuration>
 			</plugin>
+			<plugin>
+		        <groupId>org.codehaus.plexus</groupId>
+		        <artifactId>plexus-component-metadata</artifactId>
+		        <version>${plexus-component-metadata.version}</version>
+		        <executions>
+		          <execution>
+		            <goals>
+		              <goal>generate-metadata</goal>
+		            </goals>
+		          </execution>
+		        </executions>
+	      	</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins><!-- This plugin's configuration is used to store Eclipse m2e 
@@ -226,6 +294,19 @@
 									<action>
 										<ignore />
 									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+											<groupId>org.codehaus.plexus</groupId>
+											<artifactId>plexus-component-metadata</artifactId>
+											<versionRange>[2.0.0,)</versionRange>
+											<goals>
+												<goal>generate-metadata</goal>
+											</goals>
+										</pluginExecutionFilter>
+										<action>
+											<ignore />
+										</action>
 								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>

@@ -1,21 +1,41 @@
 package fr.urssaf.image.sae.hawai.livraison;
 
+import static org.twdata.maven.mojoexecutor.MojoExecutor.artifactId;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.configuration;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.element;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.executionEnvironment;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.goal;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.groupId;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.name;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.plugin;
+import static org.twdata.maven.mojoexecutor.MojoExecutor.version;
+
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.maven.artifact.Artifact;
 import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Profile;
 import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.BuildPluginManager;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugins.annotations.Component;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
+import org.codehaus.plexus.util.cli.CommandLineUtils;
+import org.twdata.maven.mojoexecutor.MojoExecutor;
 
-import fr.urssaf.image.sae.hawai.service.VersionPropertiesService;
+import fr.urssaf.image.sae.hawai.service.JenkinsService;
+import fr.urssaf.image.sae.hawai.utils.CommonsUtils;
 import fr.urssaf.image.sae.hawai.utils.ConsoleService;
 import fr.urssaf.image.sae.hawai.utils.Constants;
 import fr.urssaf.image.sae.hawai.utils.SVN;
@@ -38,22 +58,22 @@ public class ConfigLivrableMojo extends AbstractMojo {
   @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
+  @Component
+  private BuildPluginManager pluginManager;
+
   @Parameter(defaultValue = "${project.basedir}", readonly = true)
   private File basedir;
 
   @Parameter(defaultValue = "${project.build.directory}/", readonly = true)
   private String targetDir;
 
-  @Parameter(defaultValue = "${project.build.finalName}")
-  private String applicationName;
+  @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-dir", readonly = true)
+  private File workspaceProjectDir;
 
-  @Parameter(defaultValue = Constants.WORKSPACE_DIR, property = "workspaceDir", alias = "${workspaceDir}", readonly = true)
-  private File workspaceDir;
-
-  @Parameter(defaultValue = Constants.WORKSPACE_DIR + "/checkout", readonly = true)
+  @Parameter(defaultValue = Constants.WORKSPACE_CHECKOUT, readonly = true)
   private File workspaceCheckoutDir;
 
-  @Parameter(defaultValue = Constants.WORKSPACE_DIR + "/unzip", readonly = true)
+  @Parameter(defaultValue = "${project.build.directory}/unzip", readonly = true)
   private File workspaceUnzipDir;
 
   @Parameter(defaultValue = "ged", required = true)
@@ -73,33 +93,18 @@ public class ConfigLivrableMojo extends AbstractMojo {
   @Parameter(defaultValue = "${skip}", required = false)
   private boolean skip;
 
-  @Parameter(defaultValue = "${sae.version}")
-  private String saeVersion;
-
-  @Parameter(defaultValue = "${dfce-webapp.version}")
-  private String dfceWebAppVersion;
-
-  @Parameter(defaultValue = "${sae-anais-portail.version}")
-  private String saeAnaisPortailVersion;
-
-  @Parameter(defaultValue = "${sae-ihm-web-exploit.version}")
-  private String saeIhmWebExploitVersion;
-
-  @Parameter(defaultValue = "${sae-ihm-web-exploit-livrable.version}", required = true)
-  private String saeIhmWebExploitLivrableVersion;
-
-  /**
-   * identifiant ANAIS de l'utilisateur ayant lancé le build, récupéré sur
-   * jenkins
-   */
-  private String anaisUserId;
-
   /**
    * Système de log pour que les traces affichées sur la console soient
    * potables. <br/>
    * TODO : surement un meilleur moyen de faire ça (logback ?)
    */
   private final ConsoleService console = new ConsoleService(getLog());
+
+  /**
+   * identifiant ANAIS de l'utilisateur ayant lancé le build, récupéré sur
+   * jenkins
+   */
+  private String anaisUserId;
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
@@ -111,35 +116,158 @@ public class ConfigLivrableMojo extends AbstractMojo {
 
     cleanDirectories();
 
-    if (isSkip()) {
+    verifyActivesProfils();
+
+    if (isSkip() || isProfilLivraison()) {
       // livraison skippée
       console.display("skip : préparation livraison desactivée pour ce projet");
     } else {
-      // livraison applicative
-      // String buildUrl = "";
-      // try {
-      // buildUrl = CommandLineUtils.getSystemEnvVars().getProperty(Constants.BUILD_URL_PROP);
-      // if (StringUtils.isBlank(buildUrl)) {
-      // throw new MojoExecutionException(
-      // "Impossible de récupérer l'url du build en cours : lancez vous bien la livraison depuis jenkins/hudson ?");
-      // }
-      // }
-      // catch (final IOException e) {
-      // throw new MojoExecutionException(
-      // "Impossible de récupérer l'url du build en cours : " + e.getMessage(),
-      // e);
-      // }
-      // final JenkinsService jenkinsService = new JenkinsService();
-      // anaisUserId = jenkinsService.getJenkinsBuildUsername(buildUrl);
-      // console.display("projet de packaging " + project.getPackaging()
-      // + " : livraison de type applicative (user :" + anaisUserId + ")");
-
       console.displayCategorie("checkout");
       // récupération du repo hawai - hannn le vieux mdp en dur
       // dans le code
-      SVN.checkout(workspaceCheckoutDir, buildSvnUrl(), "intconpnr", "123456", console);
+      SVN.checkout(workspaceCheckoutDir, CommonsUtils.buildSvnUrl(hawaiVersion, branchName, projectName), "intconpnr", "123456", console);
 
-      updateVersions();
+      console.displayCategorie("Unpack dependency");
+      unpackArtifact();
+
+      console.displayCategorie("Assembly - Copie target file");
+
+      MojoExecutor.executeMojo(
+                               plugin(
+                                      groupId("org.apache.maven.plugins"),
+                                      artifactId("maven-assembly-plugin"),
+                                      version("3.1.1")),
+
+                               goal("single"),
+                               configuration(
+                                             element(name("descriptors"), element(name("descriptor"), "src/assembly/copy_assembly.xml"))),
+                               executionEnvironment(
+                                                    project,
+                                                    session,
+                                                    pluginManager));
+
+      console.displayCategorie("Copie directory for commit");
+      copyFiles();
+
+      console.displayCategorie("Anais userID check");
+      if (session.getRequest().getActiveProfiles() != null && ArrayUtils.contains(session.getRequest().getActiveProfiles().toArray(), "jenkins")) {
+        // Recherche de l'identifiant anais du user
+        String buildUrl = "";
+        try {
+          buildUrl = CommandLineUtils.getSystemEnvVars().getProperty(Constants.BUILD_URL_PROP);
+          if (StringUtils.isBlank(buildUrl)) {
+            throw new MojoExecutionException(
+                                             "Impossible de récupérer l'url du build en cours : lancez vous bien la livraison depuis jenkins/hudson ?");
+          }
+        }
+        catch (final IOException e) {
+          throw new MojoExecutionException(
+                                           "Impossible de récupérer l'url du build en cours : " + e.getMessage(),
+                                           e);
+        }
+
+        final JenkinsService jenkinsService = new JenkinsService();
+        anaisUserId = jenkinsService.getJenkinsBuildUsername(buildUrl);
+      } else {
+        anaisUserId = "userLocal";
+      }
+
+      console.displayCategorie("Anais userID : " + anaisUserId);
+
+      commit();
+
+    }
+
+  }
+
+  /**
+   * @throws MojoExecutionException
+   */
+  private void verifyActivesProfils() throws MojoExecutionException {
+    console.displayCategorie("Verify actives profiles");
+    final List<String> profilsOutilsValide = Arrays.asList("eclipse", "jenkins");
+    final List<String> profilsLivraisonValide = Arrays.asList("livraion", "livraisonFull");
+    final List<String> projectActivesProfilsString = new ArrayList<>();
+    boolean isProfilOutilValide = false;
+    boolean isProfilLivraisonValide = false;
+
+    for (final String profil : session.getRequest().getActiveProfiles()) {
+      projectActivesProfilsString.add(profil);
+    }
+
+    for (final String profil : projectActivesProfilsString) {
+      if (profilsOutilsValide.stream().anyMatch(e -> e.equals(profil))) {
+        isProfilOutilValide = true;
+      }
+      if (profilsLivraisonValide.stream().anyMatch(e -> e.equals(profil))) {
+        isProfilLivraisonValide = true;
+      }
+    }
+
+    if (isProfilLivraisonValide && isProfilOutilValide) {
+      console.displayCategorie("Profiles validés : " + projectActivesProfilsString);
+    } else {
+      throw new MojoExecutionException(
+                                       "Impossible d'executer le traitement avec les profils suivants : " + projectActivesProfilsString);
+    }
+
+  }
+
+  /**
+   * @return
+   */
+  private boolean isProfilLivraison() {
+    for (final Profile profil : project.getActiveProfiles()) {
+      if ("livraison".equals(profil.getId())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * @throws MojoExecutionException
+   */
+  private void unpackArtifact() throws MojoExecutionException {
+    for (final Artifact dependency : project.getDependencyArtifacts()) {
+
+      if (dependency != null) {
+        String versionDependency = session.getUserProperties().getProperty(dependency.getArtifactId() + ".version");
+        if (StringUtils.isBlank(versionDependency)) {
+          versionDependency = dependency.getVersion();
+        }
+
+        try {
+          MojoExecutor.executeMojo(
+                                   plugin(
+                                          groupId("org.apache.maven.plugins"),
+                                          artifactId("maven-dependency-plugin"),
+                                          version("3.1.0")),
+
+                                   goal("unpack"),
+                                   configuration(
+                                                 element(name("artifactItems"),
+                                                         element(name("artifactItem"),
+                                                                 element("groupId", dependency.getGroupId()),
+                                                                 element("artifactId", dependency.getArtifactId()),
+                                                                 element("version", versionDependency),
+                                                                 element("classifier", dependency.getClassifier()),
+                                                                 element("type", dependency.getType()),
+                                                                 element("overWrite", "false"),
+                                                                 element("outputDirectory", "${project.build.directory}/" + dependency.getArtifactId()),
+                                                                 element("includes", "**/*.*"),
+                                                                 element("excludes", "")))),
+                                   executionEnvironment(
+                                                        project,
+                                                        session,
+                                                        pluginManager));
+        }
+        catch (final MojoExecutionException e) {
+          throw new MojoExecutionException("Une erreur est survenue lors de l'extraction de l'archive " + dependency.getGroupId() + ":"
+              + dependency.getArtifactId() + ":" + versionDependency + " : " + e.getMessage(),
+                                           e);
+        }
+      }
     }
 
   }
@@ -148,7 +276,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
    * on clean l'espace de travail au cas où
    */
   private void cleanDirectories() throws MojoFailureException {
-    cleanOrCreateDir(workspaceDir);
+    cleanOrCreateDir(workspaceProjectDir);
     cleanOrCreateDir(workspaceCheckoutDir);
     cleanOrCreateDir(workspaceUnzipDir);
   }
@@ -166,24 +294,6 @@ public class ConfigLivrableMojo extends AbstractMojo {
     }
   }
 
-  /**
-   * on devine l'url du repo svn hawai du projet
-   */
-  private String buildSvnUrl() {
-
-    String svnHwi = "apps-v6";
-    if ("hawai5".equalsIgnoreCase(hawaiVersion)) {
-      svnHwi = "apps";
-    } else if ("hawai6".equalsIgnoreCase(hawaiVersion)) {
-      svnHwi = "apps-v6";
-    }
-
-    final String branchOrTrunk = StringUtils.isBlank(branchName) ? "trunk" : "branches/" + branchName;
-
-    return "http://" + Constants.HAWAI_SVN_URL + "/" + svnHwi + "/hwi_" + projectName + "/" + branchOrTrunk
-        + "/bin";
-  }
-
   public boolean isSkip() {
     // cette méthode permet à l'utilisateur de passer une valeur à la
     // propriété par la ligne de commande (avec -D)
@@ -196,31 +306,69 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
-   * On récupére les versions des composants dans le fichier versions.properties
+   * Ancien mode de fonctionnement : on copie les fichiers dans /bin qu'on
+   * commitera par la suite
    */
-  private void updateVersions() throws MojoExecutionException {
-    console.displayCategorie("mise a jour version à partir du fichier version.properties");
-    final VersionPropertiesService service = new VersionPropertiesService(projectName, console);
-    final Map<String, String> propertiesVersionMap = service.updateProjectVersions(workspaceCheckoutDir,
-                                                                                   workspaceUnzipDir,
-                                                                                   project.getVersion());
+  private void copyFiles() throws MojoExecutionException {
+    console.displayCategorie("copie des fichiers vers " + workspaceCheckoutDir);
+    try {
+      MojoExecutor.executeMojo(
+                               plugin(
+                                      groupId("org.apache.maven.plugins"),
+                                      artifactId("maven-resources-plugin"),
+                                      version("3.1.0")),
 
-    changeProjectProperties("target.sae.version", propertiesVersionMap.get("sae.version"));
-    changeProjectProperties("target.dfce-webapp.version", propertiesVersionMap.get("dfce-webapp.version"));
-    changeProjectProperties("target.sae-anais-portail.version", propertiesVersionMap.get("sae-anais-portail.version"));
-    changeProjectProperties("target.sae-ihm-web-exploit.version", propertiesVersionMap.get("sae-ihm-web-exploit.version"));
+                               goal("copy-resources"),
+                               configuration(element("outputDirectory", Constants.WORKSPACE_CHECKOUT),
+                                             element("overwrite", "true"),
+                                             element("resources",
+                                                     element("resource",
+                                                             element("directory", "target/${project.build.finalName}-dir"),
+                                                             element("filtering", "false"))),
+                                             element("encoding", "UTF-8")),
+                               executionEnvironment(
+                                                    project,
+                                                    session,
+                                                    pluginManager));
+
+    }
+    catch (final MojoExecutionException e) {
+      throw new MojoExecutionException("Une erreur est survenue lors du dossier " + workspaceUnzipDir + " vers " + workspaceCheckoutDir + e.getMessage(),
+                                       e);
+    }
   }
 
   /**
-   * Methode permettant de modifier une propriété projet
-   * 
-   * @param key
-   *          Clef
-   * @param value
-   *          Valeur
+   * commit de totues les modifs du répertoire /bin
    */
-  private void changeProjectProperties(final String key, final String value) {
-    project.getProperties().setProperty(key, value);
+  private void commit() throws MojoExecutionException {
+    console.displayCategorie("commit");
+    final String commitMessage = "Auto-commit livraion MOE GEDNAT lancé par " + anaisUserId;
+
+    console.display("commit vers " + buildSvnUrl());
+    console.display("repertoire commité : " + workspaceCheckoutDir.getAbsolutePath());
+    console.display("message du commit : " + commitMessage);
+    SVN.commit(workspaceCheckoutDir, buildSvnUrl(), commitMessage, "intconpnr", "123456", console);
+  }
+
+  /**
+   * on devine l'url du repo svn hawai du projet
+   */
+  private String buildSvnUrl() {
+
+    String svnHwi = "hawai-v4";
+    if ("hawai51".equalsIgnoreCase(hawaiVersion)) {
+      svnHwi = "apps-v51";
+    } else if ("hawai5".equalsIgnoreCase(hawaiVersion)) {
+      svnHwi = "apps";
+    } else if ("hawai6".equalsIgnoreCase(hawaiVersion)) {
+      svnHwi = "apps-v6";
+    }
+
+    final String branchOrTrunk = StringUtils.isBlank(branchName) ? "trunk" : "branches/" + branchName;
+
+    return "http://" + Constants.HAWAI_SVN_URL + "/" + svnHwi + "/hwi_" + projectName + "/" + branchOrTrunk
+        + "/bin";
   }
 
 }

@@ -23,27 +23,39 @@ public class VersionPropertiesService {
     this.console = console;
   }
 
-  public Map<String, String> updateProjectVersions(final File workspaceCheckoutDir, final File workspaceUnzipDir, final String version)
+  public Map<String, String> updateProjectVersions(final File workspaceCheckoutDir)
       throws MojoExecutionException {
     final Map<String, String> propertiesVersionMap = new HashMap<>();
-    console.display("mise a jour du fichier version.properties...");
+    if (console != null) {
+      console.display("mise a jour du fichier version.properties...");
+    }
     final String versionFile = workspaceCheckoutDir.getAbsolutePath() + File.separator + "version.properties";
     try {
       final Configuration conf = new PropertiesConfiguration(versionFile);
       final String currentProjectVersion = conf.getString("version.projet_" + projectName);
-      console.display("version.projet_ged=" + currentProjectVersion);
+      if (console != null) {
+        console.display("version.projet_ged=" + currentProjectVersion);
+      }
       final String saeVersion = conf.getString("version." + projectName);
       propertiesVersionMap.put("sae.version", saeVersion);
-      console.display("version.ged=" + saeVersion);
+      if (console != null) {
+        console.display("version.ged=" + saeVersion);
+      }
       final String dfceVersion = conf.getString("version.dfce-webapp");
       propertiesVersionMap.put("dfce-webapp.version", dfceVersion);
-      console.display("version.dfce-webapp=" + dfceVersion);
+      if (console != null) {
+        console.display("version.dfce-webapp=" + dfceVersion);
+      }
       final String anaisVersion = conf.getString("version.sae-anais-portail");
       propertiesVersionMap.put("sae-anais-portail.version", anaisVersion);
-      console.display("version.sae-anais-portail=" + anaisVersion);
+      if (console != null) {
+        console.display("version.sae-anais-portail=" + anaisVersion);
+      }
       final String ihmWebExploitVersion = conf.getString("version.sae-ihm-web-exploit");
       propertiesVersionMap.put("sae-ihm-web-exploit.version", ihmWebExploitVersion);
-      console.display("version.sae-ihm-web-exploit=" + ihmWebExploitVersion);
+      if (console != null) {
+        console.display("version.sae-ihm-web-exploit=" + ihmWebExploitVersion);
+      }
 
     }
     catch (final ConfigurationException e) {
