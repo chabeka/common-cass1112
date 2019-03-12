@@ -331,6 +331,26 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                                     session,
                                                     pluginManager));
 
+      MojoExecutor.executeMojo(
+                               plugin(
+                                      groupId("org.apache.maven.plugins"),
+                                      artifactId("maven-resources-plugin"),
+                                      version("3.1.0")),
+
+                               goal("copy-resources"),
+                               configuration(element("outputDirectory", "${project.build.directory}"),
+                                             element("overwrite", "true"),
+                                             element("resources",
+                                                     element("resource",
+                                                             element("directory", "${project.basedir}"),
+                                                             element("filtering", "false"),
+                                                             element("includes", element("include", "pom.xml")))),
+                                             element("encoding", "UTF-8")),
+                               executionEnvironment(
+                                                    project,
+                                                    session,
+                                                    pluginManager));
+
     }
     catch (final MojoExecutionException e) {
       throw new MojoExecutionException("Une erreur est survenue lors du dossier " + workspaceUnzipDir + " vers " + workspaceCheckoutDir + e.getMessage(),
