@@ -108,7 +108,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
 
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
-    console.displayCategorie("initialisation");
+    console.displayCategorie("-- initialisation --");
 
     // on valide les parametres renseignés par l'utilisateur
     final ParameterValidator v = new ParameterValidator();
@@ -122,15 +122,15 @@ public class ConfigLivrableMojo extends AbstractMojo {
       // livraison skippée
       console.display("skip : préparation livraison desactivée pour ce projet");
     } else {
-      console.displayCategorie("checkout");
+      console.displayCategorie("-- checkout --");
       // récupération du repo hawai - hannn le vieux mdp en dur
       // dans le code
       SVN.checkout(workspaceCheckoutDir, CommonsUtils.buildSvnUrl(hawaiVersion, branchName, projectName), "intconpnr", "123456", console);
 
-      console.displayCategorie("Unpack dependency");
+      console.displayCategorie("-- Unpack dependency --");
       unpackArtifact();
 
-      console.displayCategorie("Assembly - Copie target file");
+      console.displayCategorie("-- Assembly : Copie target file --");
 
       MojoExecutor.executeMojo(
                                plugin(
@@ -146,10 +146,10 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                                     session,
                                                     pluginManager));
 
-      console.displayCategorie("Copie directory for commit");
+      console.displayCategorie("-- Copie directory for commit --");
       copyFiles();
 
-      console.displayCategorie("Anais userID check");
+      console.displayCategorie("-- Anais userID check --");
       if (session.getRequest().getActiveProfiles() != null && ArrayUtils.contains(session.getRequest().getActiveProfiles().toArray(), "jenkins")) {
         // Recherche de l'identifiant anais du user
         String buildUrl = "";
@@ -310,8 +310,8 @@ public class ConfigLivrableMojo extends AbstractMojo {
    * commitera par la suite
    */
   private void copyFiles() throws MojoExecutionException {
-    console.displayCategorie("copie des fichiers vers " + workspaceCheckoutDir);
     try {
+      console.displayCategorie("copie des fichiers vers " + workspaceCheckoutDir);
       MojoExecutor.executeMojo(
                                plugin(
                                       groupId("org.apache.maven.plugins"),
@@ -331,6 +331,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                                     session,
                                                     pluginManager));
 
+      console.displayCategorie("Copie pom.xml");
       MojoExecutor.executeMojo(
                                plugin(
                                       groupId("org.apache.maven.plugins"),
@@ -342,7 +343,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                              element("overwrite", "true"),
                                              element("resources",
                                                      element("resource",
-                                                             element("directory", "${project.basedir}"),
+                                                             element("directory", project.getBasedir().getAbsolutePath()),
                                                              element("filtering", "false"),
                                                              element("includes", element("include", "pom.xml")))),
                                              element("encoding", "UTF-8")),
@@ -362,7 +363,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
    * commit de totues les modifs du répertoire /bin
    */
   private void commit() throws MojoExecutionException {
-    console.displayCategorie("commit");
+    console.displayCategorie("-- commit --");
     final String commitMessage = "Auto-commit livraion MOE GEDNAT lancé par " + anaisUserId;
 
     console.display("commit vers " + buildSvnUrl());
