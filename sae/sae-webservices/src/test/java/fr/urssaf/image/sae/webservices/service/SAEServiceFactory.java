@@ -125,6 +125,16 @@ public class SAEServiceFactory {
 
     return service;
   }
+  
+  /**
+   * @return instance de MetadataService
+   */
+  public final WSMetadataService createWSMetadataService() {
+
+    final WSMetadataService service = EasyMock.createMock(WSMetadataService.class);
+
+    return service;
+  }
 
   /**
    * @return instance de TracesControlesSupport

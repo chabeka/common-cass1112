@@ -195,8 +195,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
   private WSTransfertService transfertService;
 
   @Autowired
-  private WSMetadataService metadataService;
-
+  private WSMetadataService wsMetadataService;
   @Autowired
   private WSNoteService noteService;
 
@@ -758,7 +757,7 @@ public class SaeServiceSkeleton implements SaeServiceSkeletonInterface {
       final String trcPrefix = "recuperationMetadonneesSecure";
       LOG.debug("{} - début", trcPrefix);
 
-      final RecuperationMetadonneesResponse response = metadataService.recupererMetadonnees();
+      final RecuperationMetadonneesResponse response = wsMetadataService.recupererMetadonnees();
 
       LOG.debug("{} - fin", trcPrefix);
 
