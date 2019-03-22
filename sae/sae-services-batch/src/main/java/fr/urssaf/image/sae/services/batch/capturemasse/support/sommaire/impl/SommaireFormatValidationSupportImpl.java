@@ -235,22 +235,30 @@ public class SommaireFormatValidationSupportImpl implements
                                                 .getName()
                                                 .getLocalPart())) {
                       event = reader.nextEvent();
-                      uuid = event.asCharacters().getData();
+                      if (event.isCharacters()) {
+                        uuid = event.asCharacters().getData();
 
-                      if (listUuid.contains(uuid)) {
-                        // UUID déjà présent, on renvoie une
-                        // exception
-                        throw new CaptureMasseSommaireFormatValidationException(
-                                                                                "IdGed " + uuid
-                                                                                    + " présent plusieurs fois",
-                                                                                new Exception(
-                                                                                              "IdGed présent plusieurs fois : "
-                                                                                                  + uuid));
+                        if (listUuid.contains(uuid)) {
+                          // UUID déjà présent, on renvoie une
+                          // exception
+                          throw new CaptureMasseSommaireFormatValidationException(
+                                                                                  "IdGed " + uuid
+                                                                                      + " présent plusieurs fois",
+                                                                                  new Exception(
+                                                                                                "IdGed présent plusieurs fois : "
+                                                                                                    + uuid));
 
+                        } else {
+                          // UUID inconnu, on l'ajoute à la liste
+                          listUuid.add(uuid);
+                          break;
+                        }
                       } else {
-                        // UUID inconnu, on l'ajoute à la liste
-                        listUuid.add(uuid);
-                        break;
+                        // Une valeur est obligatoire pour la métadonnée IdGed
+                        throw new CaptureMasseSommaireFormatValidationException(
+                                                                                "Valeur manquante pour la métadonnée IdGed",
+                                                                                new Exception(
+                                                                                              "Valeur manquante pour la métadonnée IdGed"));
                       }
                     }
                   }
