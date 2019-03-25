@@ -43,60 +43,97 @@ import fr.urssaf.image.sae.hawai.validate.Allowed;
 import fr.urssaf.image.sae.hawai.validate.ParameterValidator;
 
 /**
- * @author mcarpentier
+ * Plugin de préparation à la création du RPM de la GED National.
+ * 
+ * @author nvangout
  */
 @Mojo(name = "configuration_livraison", defaultPhase = LifecyclePhase.INITIALIZE)
 public class ConfigLivrableMojo extends AbstractMojo {
 
-  /**
+  /*
    * paramètres propres à maven
    */
 
+  /**
+   * Session maven
+   */
   @Parameter(defaultValue = "${session}", readonly = true)
   private MavenSession session;
 
+  /**
+   * Projet maven
+   */
   @Parameter(defaultValue = "${project}", readonly = true)
   private MavenProject project;
 
+  /**
+   * Manager de plugin
+   */
   @Component
   private BuildPluginManager pluginManager;
 
+  /**
+   * Base directory
+   */
   @Parameter(defaultValue = "${project.basedir}", readonly = true)
   private File basedir;
 
+  /**
+   * Target directory
+   */
   @Parameter(defaultValue = "${project.build.directory}/", readonly = true)
   private String targetDir;
 
+  /**
+   * Workspace du projet
+   */
   @Parameter(defaultValue = "${project.build.directory}/${project.build.finalName}-dir", readonly = true)
   private File workspaceProjectDir;
 
+  /**
+   * Dossier checkout du projet
+   */
   @Parameter(defaultValue = Constants.WORKSPACE_CHECKOUT, readonly = true)
   private File workspaceCheckoutDir;
 
+  /**
+   * Dossier d'extraction des archives du projet
+   */
   @Parameter(defaultValue = "${project.build.directory}/unzip", readonly = true)
   private File workspaceUnzipDir;
 
+  /**
+   * Nom projet
+   */
   @Parameter(defaultValue = "ged", required = true)
   private String projectName;
 
-  /**
+  /*
    * paramètres renseignés par l'utilisateur
    */
 
+  /**
+   * Version d'Hawai
+   */
   @Parameter(defaultValue = "hawai6")
   @Allowed(values = {"hawai4", "hawai5", "hawai51", "hawai6"})
   private String hawaiVersion;
 
+  /**
+   * Nom de la branche
+   */
   @Parameter(defaultValue = "${branchName}", required = false)
   private String branchName;
 
+  /**
+   * Skip des traitements
+   */
   @Parameter(defaultValue = "${skip}", required = false)
   private boolean skip;
 
   /**
    * Système de log pour que les traces affichées sur la console soient
-   * potables. <br/>
-   * TODO : surement un meilleur moyen de faire ça (logback ?)
+   * potables.
    */
   private final ConsoleService console = new ConsoleService(getLog());
 
@@ -106,6 +143,9 @@ public class ConfigLivrableMojo extends AbstractMojo {
    */
   private String anaisUserId;
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public void execute() throws MojoExecutionException, MojoFailureException {
     console.displayCategorie("-- initialisation --");
@@ -119,19 +159,26 @@ public class ConfigLivrableMojo extends AbstractMojo {
     verifyActivesProfils();
 
     if (isSkip() || isProfilLivraison()) {
-      // livraison skippée
-      console.display("skip : préparation livraison desactivée pour ce projet");
+      // La livraison skippée ou profil est "livraison"
+      // Profil livraison permet de refaire un RPM sans pour autant faire toute la préparation à la livraison. La livraison est donc plus rapide.
+      console.display("skip : préparation livraison desactivée pour le projet " + projectName);
     } else {
-      console.displayCategorie("-- checkout --");
-      // récupération du repo hawai - hannn le vieux mdp en dur
-      // dans le code
+      // On vérifie que l'on a bien le profile livraisonFull car pour lancer le build et la création de RPM, l'un des profile "livraison" ou "livraisonFull" est obligatoire.
+      if (!isProfilLivraisonFull()) {
+        console.display("La création du RPM est abandonnée. L'un des profile suivants est obligatoire : 'livraison' ou 'livraisonFull'");
+        return;
+      }
+
+      // On ckeckout le projet SVN hwi_projectName afin de modifier les fichiers de configuration qui aurait pu changer durant la version.
+      console.displayCategorie("-- Checkout --");
       SVN.checkout(workspaceCheckoutDir, CommonsUtils.buildSvnUrl(hawaiVersion, branchName, projectName), "intconpnr", "123456", console);
 
+      // On extrait les fichiers des dépendances pour pouvoir les assemblés par la suite.
       console.displayCategorie("-- Unpack dependency --");
       unpackArtifact();
 
+      // On assemble les fichiers de manière à simplifier la copy dans le dossier de checkout
       console.displayCategorie("-- Assembly : Copie target file --");
-
       MojoExecutor.executeMojo(
                                plugin(
                                       groupId("org.apache.maven.plugins"),
@@ -146,9 +193,11 @@ public class ConfigLivrableMojo extends AbstractMojo {
                                                     session,
                                                     pluginManager));
 
+      // On copie les fichiers assemblés dans le dossier de checkout.
       console.displayCategorie("-- Copie directory for commit --");
       copyFiles();
 
+      // On récupére le userId Anais de l'utilisateur ayant lancé le build Jenkins.
       console.displayCategorie("-- Anais userID check --");
       if (session.getRequest().getActiveProfiles() != null && ArrayUtils.contains(session.getRequest().getActiveProfiles().toArray(), "jenkins")) {
         // Recherche de l'identifiant anais du user
@@ -169,11 +218,13 @@ public class ConfigLivrableMojo extends AbstractMojo {
         final JenkinsService jenkinsService = new JenkinsService();
         anaisUserId = jenkinsService.getJenkinsBuildUsername(buildUrl);
       } else {
+        // Si lancement depuis poste de developpement, le userId vaut 'userLocal'
         anaisUserId = "userLocal";
       }
 
       console.displayCategorie("Anais userID : " + anaisUserId);
 
+      // On commit les fichiers du projet hwi_projectName/bin
       commit();
 
     }
@@ -181,7 +232,10 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
+   * Vérification des profils actifs
+   * 
    * @throws MojoExecutionException
+   * @{@link MojoExecutionException}
    */
   private void verifyActivesProfils() throws MojoExecutionException {
     console.displayCategorie("Verify actives profiles");
@@ -214,7 +268,9 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
-   * @return
+   * Vérifie si on a bien le profil "livraison"
+   * 
+   * @return true si on a le profile "livraison", false sinon
    */
   private boolean isProfilLivraison() {
     for (final Profile profil : project.getActiveProfiles()) {
@@ -226,7 +282,24 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
+   * Vérifie si on a bien le profil "livraisonFull"
+   * 
+   * @return true si on a le profile "livraisonFull", false sinon
+   */
+  private boolean isProfilLivraisonFull() {
+    for (final Profile profil : project.getActiveProfiles()) {
+      if ("livraisonFull".equals(profil.getId())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Extraction des dependances maven (Fichiers ZIP)
+   * 
    * @throws MojoExecutionException
+   * @{@link MojoExecutionException}
    */
   private void unpackArtifact() throws MojoExecutionException {
     for (final Artifact dependency : project.getDependencyArtifacts()) {
@@ -273,7 +346,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
-   * on clean l'espace de travail au cas où
+   * Clean de l'espace de travail
    */
   private void cleanDirectories() throws MojoFailureException {
     cleanOrCreateDir(workspaceProjectDir);
@@ -281,6 +354,14 @@ public class ConfigLivrableMojo extends AbstractMojo {
     cleanOrCreateDir(workspaceUnzipDir);
   }
 
+  /**
+   * Suppression ou création d'un dossier passé en paramètre
+   * 
+   * @param dir
+   *          Dossier à traiter
+   * @throws MojoFailureException
+   * @{@link MojoFailureException}
+   */
   private void cleanOrCreateDir(final File dir) throws MojoFailureException {
     try {
       if (dir.exists()) {
@@ -294,6 +375,11 @@ public class ConfigLivrableMojo extends AbstractMojo {
     }
   }
 
+  /**
+   * Vérifie si l'on skip les traitements.
+   * 
+   * @return true si l'on skip les traitements, false sinon.
+   */
   public boolean isSkip() {
     // cette méthode permet à l'utilisateur de passer une valeur à la
     // propriété par la ligne de commande (avec -D)
@@ -360,10 +446,10 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
-   * commit de totues les modifs du répertoire /bin
+   * Commit de toutes les modifications du répertoire checkout
    */
   private void commit() throws MojoExecutionException {
-    console.displayCategorie("-- commit --");
+    console.displayCategorie("-- Commit --");
     final String commitMessage = "Auto-commit livraion MOE GEDNAT lancé par " + anaisUserId;
 
     console.display("commit vers " + buildSvnUrl());
@@ -373,7 +459,7 @@ public class ConfigLivrableMojo extends AbstractMojo {
   }
 
   /**
-   * on devine l'url du repo svn hawai du projet
+   * Définition de l'url du repo svn hawai du projet
    */
   private String buildSvnUrl() {
 

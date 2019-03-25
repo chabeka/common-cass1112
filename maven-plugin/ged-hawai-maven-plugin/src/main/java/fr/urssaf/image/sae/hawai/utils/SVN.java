@@ -15,7 +15,6 @@ import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.wc.ISVNStatusHandler;
 import org.tmatesoft.svn.core.wc.SVNClientManager;
-import org.tmatesoft.svn.core.wc.SVNCommitClient;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 import org.tmatesoft.svn.core.wc.SVNStatus;
 import org.tmatesoft.svn.core.wc.SVNStatusType;
@@ -28,6 +27,9 @@ import org.tmatesoft.svn.core.wc.SVNUpdateClient;
  */
 public class SVN {
 
+  /**
+   * Formatter
+   */
   private static PeriodFormatter DURATION_FORMATTER = new PeriodFormatterBuilder().appendMinutes()
                                                                                   .appendSuffix("m")
                                                                                   .appendSeconds()
@@ -39,8 +41,27 @@ public class SVN {
    */
   private final static Pattern urlPattern = Pattern.compile("http://(.*)?:(.*)?@.*");
 
+  /**
+   * Catégorie
+   */
   private final static String CATEGORIE = "svn";
 
+  /**
+   * Méthode de gestion du checkout SVN
+   * 
+   * @param dstPath
+   *          Chemin de destination
+   * @param url
+   *          Url SVN
+   * @param user
+   *          Utilisateur
+   * @param password
+   *          Mote de passe utilisateur
+   * @param console
+   *          Console de log
+   * @throws MojoExecutionException
+   * @{@link MojoExecutionException}
+   */
   public static void checkout(final File dstPath, final String url, final String user, final String password, final ConsoleService console)
       throws MojoExecutionException {
     try {
@@ -67,6 +88,24 @@ public class SVN {
     }
   }
 
+  /**
+   * Méthode de gestion du commit SVN
+   * 
+   * @param dstPath
+   *          Chemin de destination
+   * @param url
+   *          Url SVN
+   * @param user
+   *          Utilisateur
+   * @param password
+   *          Mote de passe utilisateur
+   * @param console
+   *          Console de log
+   * @param message
+   *          message accompagnant le commit
+   * @throws MojoExecutionException
+   * @{@link MojoExecutionException}
+   */
   public static void commit(final File dstPath, final String url, final String message, final String user, final String password,
                             final ConsoleService console)
       throws MojoExecutionException {
@@ -76,10 +115,8 @@ public class SVN {
       // get and check auth
       final SVNClientManager cm = getClientWithAuth(url, user, password);
       console.display("sending content ...", CATEGORIE);
-      final SVNCommitClient sc = cm.getCommitClient();
       final DateTime start = new DateTime();
 
-      // http://stackoverflow.com/questions/12297516/svnkit-get-modifications-to-commit
       cm.getStatusClient()
         .doStatus(dstPath,
                   SVNRevision.HEAD,
@@ -91,8 +128,21 @@ public class SVN {
                   new ISVNStatusHandler() {
                     @Override
                     public void handleStatus(final SVNStatus status) throws SVNException {
+                      // Vérification des status des fichiers ou dossier à traiter
                       if (SVNStatusType.STATUS_MISSING.equals(status.getNodeStatus())) {
+                        // Status manquant => fichier à supprimer de SVN
                         cm.getWCClient().doDelete(status.getFile(), true, false, false);
+                      }
+                      if (SVNStatusType.STATUS_UNVERSIONED.equals(status.getNodeStatus())) {
+                        // Status non versionné => Fichier à ajouter à SVN
+                        if (status.getFile() != null && status.getFile().isDirectory()) {
+                          // Paramétrage pour nouveau dossier
+                          cm.getWCClient().doAdd(status.getFile(), true, true, false, SVNDepth.INFINITY, false, true);
+                        } else {
+                          // Paramétrage pour nouveau fichier
+                          cm.getWCClient().doAdd(status.getFile(), true, false, false, SVNDepth.FILES, false, true);
+                        }
+
                       }
                     }
                   },
@@ -117,7 +167,9 @@ public class SVN {
   }
 
   /**
-   * @return
+   * Renvoi le client avec l'authetification
+   * 
+   * @return Client avec l'authetification
    */
   private static SVNClientManager getClientWithAuth(final String url, final String user, final String password) {
 
