@@ -1213,7 +1213,7 @@ public class SAECassandraUpdater {
 	   }
 	   
 	   
-   // Création de la métadonnée DateLimite
+   // CrÃ©ation de la mÃ©tadonnÃ©e DateLimite
    public void updateToVersion31() {
 
 	      long version = saeDao.getDatabaseVersion();
