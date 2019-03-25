@@ -522,3 +522,15 @@ Met la base Cassandra du SAE en version 30 :
 - Passage de la m√©tadonn√©e NumeroLot sur 40 caract√®res au lieu de 30
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_180901
+
+// ------------------------------------------
+// 19) Lot 190700SAE
+// ------------------------------------------
+
+19-1) Lot 190700SAE
+Met la base Cassandra du SAE en version 31 :
+
+- Ajout de la mÈtadonnÈe DateLimite
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_190700
+

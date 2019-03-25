@@ -57,6 +57,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_28 = 28;
    private static final int VERSION_29 = 29;
    private static final int VERSION_30 = 30;
+   private static final int VERSION_31 = 31;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1210,6 +1211,27 @@ public class SAECassandraUpdater {
 	      // On positionne la version à 30
 	      saeDao.setDatabaseVersion(VERSION_30);
 	   }
+	   
+	   
+   // Cr�ation de la m�tadonn�e DateLimite
+   public void updateToVersion31() {
+
+	      long version = saeDao.getDatabaseVersion();
+	      if (version >= VERSION_31) {
+	         LOG.info("La base de données est déja en version " + version);
+	         return;
+	      }
+
+	      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_31);
+
+	      // -- On se connecte au keyspace
+	      saeDao.connectToKeySpace();
+
+	      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+	      
+	      // On positionne la version à 31
+	      saeDao.setDatabaseVersion(VERSION_31);
+	   }	   
    
    /**
     * Methode permettant de modifier la version de la base de données.
