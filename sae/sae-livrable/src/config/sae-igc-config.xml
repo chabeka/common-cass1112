@@ -75,4 +75,24 @@
         
    </IgcConfig>
    
+   <IgcConfig>
+      
+      <id>PKINATV2</id>
+      
+      <certifACRacine>@SAE_HOME@/certificats/PKINATV2/ACRacine/ACOSS_Reseau_des_URSSAF_V2.crt</certifACRacine>
+      
+      <repertoireCRL>@SAE_HOME@/certificats/PKINATV2/CRL/</repertoireCRL>
+      
+      <URLTelechargementCRL>
+         <url>@GED.PKINATV2_CRL@</url>
+      </URLTelechargementCRL>
+
+      <activerTelechargementCRL>true</activerTelechargementCRL>
+
+      <issuers>
+         <issuer>@GED.PKINATV2_ISSUER@</issuer>
+      </issuers>
+        
+   </IgcConfig>
+   
 </IgcConfigs>
