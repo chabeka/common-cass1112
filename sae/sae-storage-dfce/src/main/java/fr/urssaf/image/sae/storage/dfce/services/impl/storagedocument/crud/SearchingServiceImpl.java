@@ -99,12 +99,7 @@ public class SearchingServiceImpl extends AbstractServices implements
    @Value("${sae.nom.instance.plateforme}")
    private String nomPlateforme;
 
-   public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(
-                                                                                "yyyyMMddHHmmssSSS");
-
-   public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-                                                                           "yyyyMMdd");
-
+   
    /**
     * {@inheritDoc}
     */
@@ -489,18 +484,15 @@ public class SearchingServiceImpl extends AbstractServices implements
             if (storageMetadata.getValue() instanceof Date) {
                if (codeCourtVaryingMeta.equals("SM_ARCHIVAGE_DATE")) {
                   // Convert Local Time to UTC (Works Fine)
-            	  synchronized (DATE_TIME_FORMAT) {
-            		   DATE_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-                       valeurMetaLastPage = DATE_TIME_FORMAT.format(storageMetadata
+            	  SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+            	  simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                       valeurMetaLastPage = simpleDateFormat.format(storageMetadata
                                                                                    .getValue());
-            	  }
                   
                } else {
-            	   synchronized (DATE_FORMAT) {
-            		   valeurMetaLastPage = DATE_FORMAT.format(storageMetadata
-                               .getValue());
-            	   }
-                 
+            	   SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
+            		   valeurMetaLastPage = simpleDateFormat.format(storageMetadata
+                               .getValue()); 
                }
             } else {
                valeurMetaLastPage = storageMetadata.getValue().toString();
