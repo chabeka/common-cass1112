@@ -140,7 +140,13 @@
          </includes>
          <outputDirectory />
       </fileSet>
-            
+      <fileSet>
+         <directory>${project.build.directory}/sae-livrable</directory>
+         <includes>
+            <include>ACOSS_Reseau_des_URSSAF_V2.crt</include>
+         </includes>
+         <outputDirectory />
+      </fileSet>
       <fileSet>
          <directory>${project.build.directory}/sae-livrable</directory>
          <includes>
