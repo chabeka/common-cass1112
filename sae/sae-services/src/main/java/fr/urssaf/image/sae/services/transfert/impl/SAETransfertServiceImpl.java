@@ -436,9 +436,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	  if (!ZookeeperUtils.isLock(mutex)){
 	     // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
 	     // devrait jamais arriver.
-	     String message = "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
+	     String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert de masse"
 	           + uuid + ". Problème de connexion zookeeper ?";
-	     throw new TransfertException(message);
+	     LOG.warn(message);
 	  }
       LOG.debug("{} - Fin de transfert du document {}",
                 new Object[] {trcPrefix, document.getUuid().toString()});
@@ -1067,9 +1067,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 	    	if (!ZookeeperUtils.isLock(mutex)){
 	            // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
 	            // devrait jamais arriver.
-	            String message = "Erreur lors de la tentative d'acquisition du lock pour le jobRequest "
+	            String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert "
 	                  + idArchive + ". Problème de connexion zookeeper ?";
-	            throw new TransfertException(message);
+	            LOG.warn(message);
 	     	}
 		} finally {
 			mutex.release();
