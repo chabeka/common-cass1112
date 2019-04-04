@@ -86,6 +86,14 @@
          </includes>
          <outputDirectory>scripts</outputDirectory>
       </fileSet>
+
+      <fileSet>
+         <directory>src/scripts/</directory>
+         <includes>
+            <include>ShellGedExploitAdmin.sh</include>
+         </includes>
+         <outputDirectory></outputDirectory>
+      </fileSet>
    </fileSets>
 
    <files>
