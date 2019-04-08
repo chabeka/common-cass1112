@@ -79,6 +79,10 @@ public class Main {
                            "cassandra-local-dc",
                            true,
                            "Datacenter local cassandra");
+         options.addOption("s",
+                           "simulation-mode",
+                           false,
+                           "Active le mode simulation : ne met pas à jour la table index_reference");
 
          // parse the command line arguments
          CommandLine line;
@@ -110,6 +114,7 @@ public class Main {
          // Lecture des paramètres
          final int maxExecutionTime = Integer.parseInt(line.getOptionValue("max-execution-time"));
          final String cassandraLocalDC = line.getOptionValue("cassandra-local-dc");
+         final boolean simulationMode = line.hasOption("simulation-mode");
 
          if ((line.hasOption("sae-conf-file"))) {
             final String cheminConfSae = line.getOptionValue("sae-conf-file");
@@ -124,7 +129,8 @@ public class Main {
                                                                      cassandraPassword,
                                                                      cassandraLocalDC,
                                                                      dfceBaseName,
-                                                                     maxExecutionTime);
+                                                                     maxExecutionTime,
+                                                                     simulationMode);
          updater.start();
       }
       catch (final Exception e) {

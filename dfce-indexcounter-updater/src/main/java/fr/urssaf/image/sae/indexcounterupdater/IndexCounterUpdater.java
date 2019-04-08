@@ -1,11 +1,7 @@
 package fr.urssaf.image.sae.indexcounterupdater;
 
 import java.math.BigInteger;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -18,15 +14,12 @@ import org.slf4j.LoggerFactory;
 
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.DefaultConsistencyLevel;
-import com.datastax.oss.driver.api.core.DefaultProtocolVersion;
-import com.datastax.oss.driver.api.core.config.DefaultDriverOption;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
 import com.datastax.oss.driver.api.core.cql.SimpleStatement;
-import com.datastax.oss.driver.internal.core.config.typesafe.DefaultDriverConfigLoader;
-import com.datastax.oss.driver.internal.core.config.typesafe.DefaultDriverConfigLoaderBuilder;
 
 import fr.urssaf.image.sae.indexcounterupdater.dao.BaseDAO;
+import fr.urssaf.image.sae.indexcounterupdater.dao.CassandraSessionFactory;
 import fr.urssaf.image.sae.indexcounterupdater.dao.IndexReferenceDAO;
 import fr.urssaf.image.sae.indexcounterupdater.dao.RangeIndexEntity;
 
@@ -49,6 +42,8 @@ public class IndexCounterUpdater {
 
    private final int maxExecutionTime;
 
+   private final boolean simulationMode;
+
    private long startTime;
 
    private CqlSession session;
@@ -68,7 +63,7 @@ public class IndexCounterUpdater {
    private final Map<String, Integer> distinctUseCountMap = new HashMap<>();
 
    public IndexCounterUpdater(final String cassandraServers, final String cassandraUsername, final String cassandraPassword, final String cassandraLocalDC,
-                              final String dfceBaseName, final int maxExecutionTime) {
+                              final String dfceBaseName, final int maxExecutionTime, final boolean simulationMode) {
 
       this.cassandraServers = cassandraServers;
       this.cassandraUsername = cassandraUsername;
@@ -76,23 +71,29 @@ public class IndexCounterUpdater {
       this.cassandraLocalDC = cassandraLocalDC;
       this.dfceBaseName = dfceBaseName;
       this.maxExecutionTime = maxExecutionTime;
+      this.simulationMode = simulationMode;
    }
 
-   public void start() throws Exception {
+   public void start() {
       startTime = System.currentTimeMillis();
 
-      // Connexion à cassandra
-      connectToCassandra();
       try {
+         // Connexion à cassandra
+         init();
          // Exécution
-         findBaseUUID();
          executeJob();
-
       }
       finally {
          // Fini. On se déconnecte
-         session.close();
+         if (session != null) {
+            session.close();
+         }
       }
+   }
+
+   public void init() {
+      session = CassandraSessionFactory.getSession(cassandraServers, cassandraUsername, cassandraPassword, cassandraLocalDC);
+      findBaseUUID();
    }
 
    /**
@@ -138,7 +139,7 @@ public class IndexCounterUpdater {
     * @param rangeId
     *           id du range de l'index
     */
-   private void processRange(final String index, final int rangeId) {
+   public void processRange(final String index, final int rangeId) {
 
       final RangeIndexEntity rangeIndexEntity = IndexReferenceDAO.getRangeIndexEntity(session, dfceBaseUUID, index, rangeId);
       final String state = rangeIndexEntity.getSTATE();
@@ -152,11 +153,22 @@ public class IndexCounterUpdater {
       final SimpleStatement statement = SimpleStatement.builder("select metadata_value from dfce." + indexTable +
             " where index_code = '' and metadata_name =? and base_uuid=? and range_index_id=?")
                                                        .setConsistencyLevel(DefaultConsistencyLevel.ONE)
+                                                       .setTimeout(Duration.ofSeconds(20))
+                                                       .setTracing()
                                                        .addNamedValue("metadata_name", index)
                                                        .addNamedValue("base_uuid", dfceBaseUUID)
                                                        .addNamedValue("range_index_id", BigInteger.valueOf(rangeId))
                                                        .build();
-      final ResultSet rs = session.execute(statement);
+
+      ResultSet rs;
+      try {
+         rs = session.execute(statement);
+      }
+      catch (final Exception e) {
+         LOGGER.error("Erreur lors de l'exécution de la requête : {}", statement);
+         throw e;
+      }
+
       int totalCounter = 0;
       int distinctCounter = 0;
       String currentValue = "";
@@ -167,10 +179,11 @@ public class IndexCounterUpdater {
             currentValue = value;
          }
          totalCounter++;
-         if (totalCounter % 50000 == 0) {
+         if (totalCounter % 200000 == 0) {
             LOGGER.info("Progression : totalCounter={} distinctCounter={}", totalCounter, distinctCounter);
          }
       }
+
       LOGGER.info("Fin du parcours du range : totalCounter={} distinctCounter={}", totalCounter, distinctCounter);
       updateRange(index, rangeId, totalCounter, distinctCounter);
    }
@@ -206,23 +219,29 @@ public class IndexCounterUpdater {
       // On calcul les nouveaux compteurs
       final int totalDelta = totalCounter - currentCount;
       final int newTotalUseCount = currentTotalUseCount + totalDelta;
-      final int newDistinctUseCount = Math.max(1, (int) (newTotalUseCount * distinctRatio));
+      int newDistinctUseCount = (int) (newTotalUseCount * distinctRatio);
+      if (newTotalUseCount > 0) {
+         // Le nombre d'éléments distinct est au minium 1 s'il existe au moins un élément
+         newDistinctUseCount = Math.max(1, newDistinctUseCount);
+      }
 
       // On met à jour de façon "atomique" en utilisant une lightweight transaction
       LOGGER.info("Mise à jour du compteur du range : {} -> {}", currentCount, totalCounter);
       LOGGER.info("Mise à jour de total_use_count sur l'index : {} -> {}", currentTotalUseCount, newTotalUseCount);
       LOGGER.info("Mise à jour du distinct_use_count sur l'index : {} -> {}", currentDistinctUseCount, newDistinctUseCount);
 
-      IndexReferenceDAO.updateIndexCounters(session,
-                                            dfceBaseUUID,
-                                            index,
-                                            rangeId,
-                                            rangeAsJson,
-                                            currentTotalUseCount,
-                                            currentDistinctUseCount,
-                                            totalCounter,
-                                            newTotalUseCount,
-                                            newDistinctUseCount);
+      if (!simulationMode) {
+         IndexReferenceDAO.updateIndexCounters(session,
+                                               dfceBaseUUID,
+                                               index,
+                                               rangeId,
+                                               rangeAsJson,
+                                               currentTotalUseCount,
+                                               currentDistinctUseCount,
+                                               totalCounter,
+                                               newTotalUseCount,
+                                               newDistinctUseCount);
+      }
    }
 
    private void addInMap(final Map<String, Integer> map, final String key, final int numberToAdd) {
@@ -269,39 +288,4 @@ public class IndexCounterUpdater {
       LOGGER.info("UUID base DFCE : {}", dfceBaseUUID);
    }
 
-   private void connectToCassandra() throws UnknownHostException {
-
-      final DefaultDriverConfigLoaderBuilder configBuilder = DefaultDriverConfigLoader.builder()
-                                                                                      .withDuration(DefaultDriverOption.REQUEST_TIMEOUT,
-                                                                                                    Duration.ofMillis(10000))
-                                                                                      .withString(DefaultDriverOption.AUTH_PROVIDER_CLASS,
-                                                                                                  "PlainTextAuthProvider")
-                                                                                      .withString(DefaultDriverOption.AUTH_PROVIDER_USER_NAME,
-                                                                                                  cassandraUsername)
-                                                                                      .withString(DefaultDriverOption.AUTH_PROVIDER_PASSWORD,
-                                                                                                  cassandraPassword)
-                                                                                      .withString(DefaultDriverOption.REQUEST_CONSISTENCY,
-                                                                                                  DefaultConsistencyLevel.QUORUM.name())
-                                                                                      .withString(DefaultDriverOption.PROTOCOL_VERSION,
-                                                                                                  DefaultProtocolVersion.V3.name())
-                                                                                      .withProfile(
-                                                                                                   "profile1",
-                                                                                                   DefaultDriverConfigLoaderBuilder.profileBuilder()
-                                                                                                                                   .build());
-
-      final String[] servers = StringUtils.split(cassandraServers, ",");
-      final ArrayList<InetSocketAddress> contactPoints = new ArrayList<>();
-      for (String server : servers) {
-         server = server.replace(":9160", "").replace(":9042", "").trim();
-         final InetAddress[] addressList = InetAddress.getAllByName(server);
-         for (final InetAddress address : addressList) {
-            contactPoints.add(new InetSocketAddress(address, 9042));
-         }
-      }
-      session = CqlSession.builder()
-                          .withConfigLoader(configBuilder.build())
-                          .addContactPoints(contactPoints)
-                          .withLocalDatacenter(cassandraLocalDC)
-                          .build();
-   }
 }

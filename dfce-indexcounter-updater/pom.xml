@@ -23,6 +23,8 @@
       <jettison.version>1.4.0</jettison.version>
       <java-driver.version>4.0.0</java-driver.version>
       <jackson-version>2.9.8</jackson-version>
+      <junit.version>4.12</junit.version>
+      
    </properties>
    
    <build>
@@ -134,6 +136,14 @@
          <groupId>com.fasterxml.jackson.core</groupId>
          <artifactId>jackson-databind</artifactId>
          <version>${jackson-version}</version>
+      </dependency>
+           
+      <!-- JUNIT -->
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>${junit.version}</version>
+         <scope>test</scope>
       </dependency>
    </dependencies>
 </project>

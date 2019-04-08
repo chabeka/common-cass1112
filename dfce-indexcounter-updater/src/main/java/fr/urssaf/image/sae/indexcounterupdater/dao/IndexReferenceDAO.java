@@ -84,6 +84,20 @@ public class IndexReferenceDAO {
       return row;
    }
 
+   public static List<Row> getRows(final CqlSession session, final UUID baseId) {
+      final Select query = selectFrom("dfce", "index_reference").columns("index_name", "base_id", "distinct_use_count", "index_ranges", "total_use_count");
+
+      final ResultSet rows = session.execute(query.build());
+      final ArrayList<Row> result = new ArrayList<>();
+      for (final Row row : rows) {
+         final UUID readBaseId = row.getUuid("base_id");
+         if (baseId.equals(readBaseId)) {
+            result.add(row);
+         }
+      }
+      return result;
+   }
+
    public static String getRangeIndexAsJsonFromRow(final Row row, final int rangeId) {
       final Map<Integer, String> ranges = row.getMap("index_ranges", Integer.class, String.class);
       final String rangeAsJson = ranges.get(rangeId);
@@ -95,8 +109,7 @@ public class IndexReferenceDAO {
       return getRangeIndexEntityFromJson(rangeAsJson);
    }
 
-   public static RangeIndexEntity getRangeIndexEntityFromJson(String rangeAsJson) {
-      rangeAsJson = rangeAsJson.replace("test", "");
+   public static RangeIndexEntity getRangeIndexEntityFromJson(final String rangeAsJson) {
       if (rangeAsJson == null) {
          return null;
       }
@@ -176,6 +189,39 @@ public class IndexReferenceDAO {
       final List<String> warnings = result.getExecutionInfo().getWarnings();
       if (!warnings.isEmpty()) {
          LOGGER.warn("Warning lors de la tentative de mise à jour de l'index {}|{} : {}", index, rangeId, warnings);
+      }
+   }
+
+   /**
+    * Met à jour la propriété total_use_count d'un index
+    * On utilise des "lightweight transactions". On passe donc non seulement les nouveaux compteurs, mais aussi les anciens
+    * 
+    * @param session
+    *           session cassandra
+    * @param baseId
+    *           identifiant de la base DFCE
+    * @param index
+    *           nom de l'index
+    * @param currentTotalUseCount
+    *           valeur courante de "total_use_count"
+    * @param newTotalUseCount
+    */
+   public static void updateTotalUseCount(final CqlSession session, final UUID baseId, final String index,
+                                          final int currentTotalUseCount, final int newTotalUseCount) {
+
+      // On lance un update
+      final Update query = update("dfce", "index_reference")
+                                                            .set(Assignment.setColumn("total_use_count", literal(newTotalUseCount)))
+                                                            .whereColumn("index_name")
+                                                            .isEqualTo(literal(index))
+                                                            .whereColumn("base_id")
+                                                            .isEqualTo(literal(baseId))
+                                                            .ifColumn("total_use_count")
+                                                            .isEqualTo(literal(currentTotalUseCount));
+      final ResultSet result = session.execute(query.build());
+      final List<String> warnings = result.getExecutionInfo().getWarnings();
+      if (!warnings.isEmpty()) {
+         LOGGER.warn("Warning lors de la tentative de mise à jour de total_use_count pour l'index {} : {}", index, warnings);
       }
    }
 }
