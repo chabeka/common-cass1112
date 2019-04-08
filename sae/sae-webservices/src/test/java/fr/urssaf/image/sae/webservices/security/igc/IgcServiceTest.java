@@ -249,7 +249,12 @@ public class IgcServiceTest {
          }
          
          Assert.assertTrue("Une trace de type WS_LOAD_CRLS|KO doit être trouvée", traceTrouve);
-
+         // Lorsque le chargement des crl va planter, le fichier aui à fait planter le chargement
+         // devrait être supprimer
+         // on verifie que le fichier a bien été supprimer du repertoire
+         // Evolution #232951
+         Assert.assertFalse("Le fichier ne devrait plus exister dand le repertoire", destinationCrl.exists());
+         
       } catch (LoadCertifsAndCrlException e) {
          LOG.debug(e.getCause().getMessage());
          assertTrue(

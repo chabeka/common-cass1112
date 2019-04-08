@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509CRL;
@@ -26,6 +27,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+
+import com.docubase.dfce.exception.ExceededSearchLimitException;
 
 import fr.urssaf.image.sae.igc.modele.IgcConfig;
 import fr.urssaf.image.sae.igc.modele.IgcConfigs;
@@ -315,11 +318,20 @@ public class IgcService {
                crls.add(SecurityUtils.loadCRL(input));
                fichiersCrl.add(crl.getFile().getAbsolutePath());
             } catch (GeneralSecurityException e) {
+               input.close();
                LOG.error("erreur de chargement du fichier CRL : "
                      + crl.getURI(), e);
                fichiersErreurCrl.add(crl.getFile().getAbsolutePath());
-
-            } finally {
+               // Evolution #232951
+               // supprimer le fichier défaillant
+               try {
+	               File fileToDelete = crl.getFile();
+	               Files.deleteIfExists(fileToDelete.toPath());
+               } catch(Exception ex) {
+            	   LOG.error("erreur de suppression du fichier CRL : "
+                           + crl.getFilename(), e);
+               }
+            } finally { 
 
                input.close();
             }
