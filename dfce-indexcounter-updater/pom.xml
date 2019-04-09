@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>dfce-indexcounter-updater</artifactId>
-  <version>0.0.2-SNAPSHOT</version>
+  <version>0.0.1-SNAPSHOT</version>
   <description>Script de mise à jour des compteurs d'index dfce</description>
   
   <properties>
@@ -88,6 +88,7 @@
             <version>2.5.3</version>
             <configuration>
                <preparationGoals>clean install</preparationGoals>
+               <goals>clean install</goals>
                <useReleaseProfile>false</useReleaseProfile>
                <tagBase>http://svn.altair.recouv/svn/gns/java/tags</tagBase>
             </configuration>
