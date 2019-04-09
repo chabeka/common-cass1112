@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>dfce-indexcounter-updater</artifactId>
-  <version>0.0.1</version>
+  <version>0.0.2-SNAPSHOT</version>
   <description>Script de mise à jour des compteurs d'index dfce</description>
   
   <properties>
@@ -30,7 +30,7 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
    <scm>
       <developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/dfce-indexcounter-updater-0.0.1
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/dfce-indexcounter-updater
       </developerConnection>
    </scm>
    
