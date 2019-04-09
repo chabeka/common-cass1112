@@ -27,6 +27,13 @@
       
    </properties>
    
+   <!-- Configuration SVN pour le plug-in maven-release -->
+   <scm>
+      <developerConnection>
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/dfce-indexcounter-updater
+      </developerConnection>
+   </scm>
+   
    <build>
 
       <plugins>
@@ -63,7 +70,28 @@
                </execution>
             </executions>
          </plugin>
-
+         
+         <!-- Pour que maven ne joue pas les tests unitaires -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>3.0.0-M3</version>
+            <configuration>
+               <skipTests>true</skipTests>
+            </configuration>
+         </plugin>
+         
+         <!-- Pour faire des release -->
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-release-plugin</artifactId>
+            <version>2.5.3</version>
+            <configuration>
+               <preparationGoals>clean install</preparationGoals>
+               <useReleaseProfile>false</useReleaseProfile>
+               <tagBase>http://svn.altair.recouv/svn/gns/java/tags</tagBase>
+            </configuration>
+         </plugin>
       </plugins>
 
    </build>

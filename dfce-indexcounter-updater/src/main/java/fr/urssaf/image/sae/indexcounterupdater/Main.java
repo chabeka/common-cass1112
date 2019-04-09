@@ -55,7 +55,7 @@ public class Main {
                            "max-execution-time",
                            true,
                            "Durée maximale d'exécution du job, en secondes");
-         options.addOption("s",
+         options.addOption("f",
                            "sae-conf-file",
                            true,
                            "Localisation du fichier de configuration du SAE. Permet de récupérer un certains nombre d'informations : serveurs, login et password cassandra, ainsi que le nom de la base DFCE");

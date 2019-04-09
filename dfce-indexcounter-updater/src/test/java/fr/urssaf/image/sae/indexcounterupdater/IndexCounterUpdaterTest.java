@@ -49,7 +49,7 @@ public class IndexCounterUpdaterTest {
       final String cassandraPassword = "regina4932";
       final String cassandraLocalDC = "LYON_SP";
       final String dfceBaseName = "";
-      final int maxExecutionTime = 60;
+      final int maxExecutionTime = 600;
       final boolean simulationMode = true;
       final IndexCounterUpdater updater = new IndexCounterUpdater(cassandraServers,
                                                                   cassandraUsername,
