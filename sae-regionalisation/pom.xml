@@ -146,18 +146,18 @@
          </plugin>
 
          <!-- COMPILATION ASPECT -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>aspectj-maven-plugin</artifactId>
-				<version>${aspectj-maven-plugin.version}</version>
-				<configuration>
-					<encoding>UTF8</encoding>
-					<source>1.8</source>
-					<target>1.8</target>
-					<complianceLevel>1.8</complianceLevel>
-					<Xlint>ignore</Xlint>
-				</configuration>
-			</plugin>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>aspectj-maven-plugin</artifactId>
+            <version>${aspectj-maven-plugin.version}</version>
+            <configuration>
+               <encoding>UTF8</encoding>
+               <source>1.8</source>
+               <target>1.8</target>
+               <complianceLevel>1.8</complianceLevel>
+               <Xlint>ignore</Xlint>
+            </configuration>
+         </plugin>
 
          <!--
          Pour la gestion des release
@@ -176,36 +176,6 @@
 
       </plugins>
       
-      <pluginManagement>
-         <plugins>
-            <!-- Configuration du lifecycle maven -->
-            <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <lifecycleMappingMetadata>
-                        <pluginExecutions>
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.codehaus.mojo</groupId>
-                                    <artifactId>aspectj-maven-plugin</artifactId>
-                                    <versionRange>[1.0,)</versionRange>
-                                    <goals>
-                                        <goal>test-compile</goal>
-                                        <goal>compile</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action>
-                                    <execute />
-                                </action>
-                            </pluginExecution>
-                        </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                </configuration>
-            </plugin>
-         </plugins>
-      </pluginManagement>
 
 
    </build>
