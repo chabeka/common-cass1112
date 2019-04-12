@@ -12,15 +12,23 @@ public class SearchObjectClassUtil {
    *
    * @param objAnalyse
    *          Object à analyser
+   * @param reentrantLevel
+   *          niveau sur rappel de méthode
    * @param arrayKlazzSearch
    *          Classes recherchées
    * @return Objet trouvé
    */
-  public static Object searchObjectByClass(final Object objAnalyse,
+  public static Object searchObjectByClass(final Object objAnalyse, int reentrantLevel,
                                            final String... arrayKlazzSearch) {
+    if (reentrantLevel == 0) {
+      reentrantLevel = 1;
+    } else {
+      reentrantLevel++;
+    }
     final List<String> listeKlazzSearch = Arrays.asList(arrayKlazzSearch);
     Object objFind = null;
     if (objAnalyse == null || arrayKlazzSearch == null) {
+      reentrantLevel--;
       return null;
     } else {
       // On récupere la class de l'objet à analyser
@@ -51,12 +59,14 @@ public class SearchObjectClassUtil {
               final Class klazzFind = f.getClass();
               // On vérifie que la classe trouvée correspond aux classes recherchées
               if (listeKlazzSearch.contains(klazzFind.toString())) {
+                reentrantLevel--;
                 return f;
               } else {
                 // Si on n'a pas trouvé la classe recherché, on parcours le champ. On fait attention pour le cas des classes static et des singleton
                 // car le champ peut être la classe elle même et on risque de boucler à l'infini.
-                if (!klazz.equals(klazzFind) && klazzFind.getDeclaredFields() != null && klazzFind.getDeclaredFields().length > 0) {
-                  objFind = searchObjectByClass(f, arrayKlazzSearch);
+                // On limite à 8 niveau pour éviter les StackOverflowError.
+                if (reentrantLevel < 8 && !klazz.equals(klazzFind) && klazzFind.getDeclaredFields() != null && klazzFind.getDeclaredFields().length > 0) {
+                  objFind = searchObjectByClass(f, reentrantLevel, arrayKlazzSearch);
                 }
               }
 
@@ -76,7 +86,23 @@ public class SearchObjectClassUtil {
       }
     }
 
+    reentrantLevel--;
     return objFind;
+  }
+
+  /**
+   * Méthode utilitaire permettant de retrouver une classe dans un object à
+   * analyser. Cette utilitaire ne gère pas les type primitifs.
+   *
+   * @param objAnalyse
+   *          Object à analyser
+   * @param arrayKlazzSearch
+   *          Classes recherchées
+   * @return Objet trouvé
+   */
+  public static Object searchObjectByClass(final Object objAnalyse,
+                                           final String... arrayKlazzSearch) {
+    return searchObjectByClass(objAnalyse, 0, arrayKlazzSearch);
   }
 
 }
