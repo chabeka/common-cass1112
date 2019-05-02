@@ -92,4 +92,21 @@ public class DfceServiceImpl implements DfceService {
       return dfceServices;
    }
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Iterator<Document> executerRequeteCorbeille(final String requeteLucene)
+      throws SearchQueryParseException {
+   LOGGER.debug("Exécution de la requête lucène : {}", requeteLucene);
+
+   final Base base = dfceServices.getBase();
+
+   final SearchQuery searchQuery = ToolkitFactory.getInstance()
+         .createMonobaseQuery(requeteLucene, base);
+
+   return dfceServices.createDocumentIteratorFromRecycleBin(searchQuery);
+
+}
+
 }

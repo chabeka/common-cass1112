@@ -13,41 +13,52 @@ import net.docubase.toolkit.model.document.Document;
  */
 public interface DfceService {
 
-   /**
-    * Réalise l'ouverture de la connexion à DFCE.
-    */
-   void ouvrirConnexion();
+  /**
+   * Réalise l'ouverture de la connexion à DFCE.
+   */
+  void ouvrirConnexion();
 
-   /**
-    * Réalise la fermeture de la connexion à DFCE.
-    */
-   void fermerConnexion();
+  /**
+   * Réalise la fermeture de la connexion à DFCE.
+   */
+  void fermerConnexion();
 
-   /**
-    * Retourne des documents concernés par la requête.
-    *
-    * @param requeteLucene
-    *           La requête à exécuter
-    * @return Liste des documents correspondants à la recherche
-    * @throws SearchQueryParseException
-    */
-   Iterator<Document> executerRequete(String requeteLucene)
-         throws SearchQueryParseException;
+  /**
+   * Retourne des documents concernés par la requête.
+   *
+   * @param requeteLucene
+   *          La requête à exécuter
+   * @return Liste des documents correspondants à la recherche
+   * @throws SearchQueryParseException
+   */
+  Iterator<Document> executerRequete(String requeteLucene)
+      throws SearchQueryParseException;
 
-   /**
-    * Retourne l'object connection DFCE
-    *
-    * @return {@link DFCEServices}
-    */
-   DFCEServices getDfceServices();
+  /**
+   * Retourne l'object connection DFCE
+   *
+   * @return {@link DFCEServices}
+   */
+  DFCEServices getDfceServices();
 
-   /**
-    * Retourne le contenu du document.
-    *
-    * @param document
-    *           Le document
-    * @return Le contenu du document
-    */
-   InputStream recupererContenu(Document document);
+  /**
+   * Retourne le contenu du document.
+   *
+   * @param document
+   *          Le document
+   * @return Le contenu du document
+   */
+  InputStream recupererContenu(Document document);
+
+  /**
+   * Retourne des documents de la corbeille concernés par la requête.
+   *
+   * @param requeteLucene
+   *          La requête à exécuter
+   * @return Liste des documents correspondants à la recherche
+   * @throws SearchQueryParseException
+   */
+  Iterator<Document> executerRequeteCorbeille(String requeteLucene)
+      throws SearchQueryParseException;
 
 }

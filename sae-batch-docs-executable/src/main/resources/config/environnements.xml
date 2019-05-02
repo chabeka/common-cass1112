@@ -2,7 +2,7 @@
 
    <configuration>
       <nom>DEVELOPPPEMENT_GNS</nom>
-      <dfceAddress>http://hwi31dev2gntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31dev2gnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>SAE-DEV</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -12,7 +12,7 @@
    
    <configuration>
       <nom>DEVELOPPPEMENT_GNT</nom>
-      <dfceAddress>http://hwi31dev2gnsv6boappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31dev2gntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
       <dfceBaseName>GNT-DEV2</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
