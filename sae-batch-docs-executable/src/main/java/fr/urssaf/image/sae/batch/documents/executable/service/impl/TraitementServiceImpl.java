@@ -12,12 +12,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,13 @@ public class TraitementServiceImpl implements TraitementService {
    */
   private static final Logger LOGGER = LoggerFactory
                                                     .getLogger(TraitementServiceImpl.class);
+
+  /**
+   * Formater
+   */
+  private final SimpleDateFormat dateJourneeFormat = new SimpleDateFormat(
+                                                                          "yyyyMMdd",
+                                                                          Locale.FRENCH);
 
   /**
    * Service permettant de réaliser des opérations sur DFCE.
@@ -569,11 +578,20 @@ public class TraitementServiceImpl implements TraitementService {
     getDfceService().ouvrirConnexion();
 
     DocumentsThreadExecutor poolThread = null;
-    final String requeteLucene = parametres.getRequeteLucene();
+    String requeteLucene = parametres.getRequeteLucene();
 
     if (requeteLucene == null || requeteLucene.isEmpty()) {
       throw new ParametreRuntimeException("Le requete lucene ne peut être vide ou non renseignée");
     }
+
+    // On remonte l'historique sur 1 mois maximum.
+    // Attention : en doublons avec le script de purge de la corbeille !
+    final Date minDate = DateUtils.addDays(new Date(), -30);
+    final Date maxDate = DateUtils.addDays(new Date(), 1);
+
+    requeteLucene = requeteLucene + " AND (dmc:[" +
+        dateJourneeFormat.format(minDate)
+        + " TO " + dateJourneeFormat.format(maxDate) + "])";
 
     try {
       final Iterator<Document> it = getDfceService()
