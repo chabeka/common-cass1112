@@ -63,6 +63,10 @@ public class ExecutableMain {
 
   public static final String INTEGRATION_CLIENTE_GNT = "INTEGRATION_CLIENTE_GNT";
 
+  public static final String INTEGRATION_INTERNE_2_GNT = "INTEGRATION_INTERNE_2_GNT";
+
+  public static final String INTEGRATION_CLIENTE_PAJE_GNS = "INTEGRATION_CLIENTE_PAJE_GNS";
+
   public static final String INTEGRATION_NATIONALE_C1_GNS = "INTEGRATION_NATIONALE_C1_GNS";
 
   public static final String INTEGRATION_NATIONALE_C1_GNT = "INTEGRATION_NATIONALE_C1_GNT";
@@ -107,7 +111,8 @@ public class ExecutableMain {
                                                        INTEGRATION_NATIONALE_C2_GNT,
                                                        VALIDATION_NATIONALE_L1_GNS, VALIDATION_NATIONALE_L1_GNT, VALIDATION_NATIONALE_L4_GNS,
                                                        VALIDATION_NATIONALE_L4_GNT,
-                                                       FORMATION_GNS, FORMATION_GNT, INTEGRATION_INTERNE_GNT, INTEGRATION_INTERNE_GNS
+                                                       FORMATION_GNS, FORMATION_GNT, INTEGRATION_INTERNE_GNT, INTEGRATION_INTERNE_GNS, INTEGRATION_INTERNE_GNT,
+                                                       INTEGRATION_INTERNE_2_GNT, INTEGRATION_CLIENTE_PAJE_GNS
   };
 
   /**
