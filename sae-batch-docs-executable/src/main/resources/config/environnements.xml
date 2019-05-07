@@ -73,7 +73,7 @@
    <configuration>
       <nom>INTEGRATION_CLIENTE_PAJE_GNS</nom>
       <dfceAddress>http://hwi31intgnspajeboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
-      <dfceBaseName>PAJE-GNS-INT</dfceBaseName>
+      <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
       <dfceTimeout>30000</dfceTimeout>
