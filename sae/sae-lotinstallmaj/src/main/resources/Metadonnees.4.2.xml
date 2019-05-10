@@ -3963,7 +3963,7 @@
 	</ns1:metaReference>
 	<ns1:metaReference>
 		<ns1:longCode>DateLimite</ns1:longCode>
-		<ns1:shortCode>dlm</ns1:shortCode>
+		<ns1:shortCode>dim</ns1:shortCode>
 		<ns1:type>Date</ns1:type>
 		<ns1:requiredForArchival>non</ns1:requiredForArchival>
 		<ns1:requiredForStorage>non</ns1:requiredForStorage>
