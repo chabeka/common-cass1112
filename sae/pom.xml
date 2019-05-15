@@ -533,9 +533,9 @@
 				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
-				<jacoco.maven.plugin>0.8.3</jacoco.maven.plugin>
+				<jacoco.maven.plugin>0.8.4</jacoco.maven.plugin>
 				<sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
-				<sonar-jacoco-agent.version>3.2</sonar-jacoco-agent.version>
+				<sonar-jacoco-agent.version>0.8.4</sonar-jacoco-agent.version>
 				<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
 				<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
 				<sonar.jacoco.reportPaths>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPaths>
