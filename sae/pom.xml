@@ -642,11 +642,11 @@
 							</dependencies>
 							<configuration combine.self="override">
 								<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
-								<!-- <forkMode>pertest</forkMode> -->
-								<forkCount>64</forkCount>
+								<forkMode>pertest</forkMode>
+								<!-- 								<forkCount>64</forkCount>
 								<threadCount>64</threadCount>
 								<reuseForks>true</reuseForks>
-								<useUnlimitedThreads>true</useUnlimitedThreads>
+								<useUnlimitedThreads>true</useUnlimitedThreads> -->
 								<!-- Specific to generate mapping between tests and covered code -->
 								<properties>
 									<property>
