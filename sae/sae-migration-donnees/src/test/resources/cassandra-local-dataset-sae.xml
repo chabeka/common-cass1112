@@ -151,6 +151,14 @@
          <name>JobHistory</name>
          <comparatorType>TimeUUIDType</comparatorType>
       </columnFamily>
+      
+      
+      <columnFamily>
+         <name>Metadata</name>
+         <keyType>UTF8Type</keyType>
+         <comparatorType>UTF8Type</comparatorType>
+         <defaultColumnValueType>UTF8Type</defaultColumnValueType>
+      </columnFamily>
    </columnFamilies>
    
 </keyspace>

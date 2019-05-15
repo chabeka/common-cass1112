@@ -71,7 +71,7 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
    /**
     * Utilisation de cql uniquement
-    * Migration de CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
+    * Migration de la CF thrift vers la CF cql en utilsant un mapping manuel. L'extration des données est faite
     * à partir du type {@link GenericTraceType} qui permet de wrapper les colonnes
     */
    public int migrationFromThriftToCql() {
@@ -81,10 +81,6 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
       final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceJournalEvt", keyspace_tu);
 
       UUID lastKey = null;
-      if (listT.hasNext()) {
-         final Row row = (Row) listT.next();
-         lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-      }
 
       String login = null;
       Date timestamp = null;
@@ -103,7 +99,9 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
          final Row row = (Row) listT.next();
          final UUID key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-
+         if(lastKey == null) {
+        	 lastKey = key;
+         }
          // compare avec la derniere clé qui a été extraite
          // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
          // alors on enrgistre celui qui vient d'être traité
@@ -129,10 +127,8 @@ public class MigrationTraceJournalEvt extends MigrationTrace {
 
             if (listToSave.size() == 10000) {
                nb = nb + listToSave.size();
-
                supportcql.saveAllTraces(listToSave);
                listToSave = new ArrayList<>();
-               // System.out.println(" Temp i : " + nb);
             }
 
          }

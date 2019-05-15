@@ -102,11 +102,6 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
 
       Long lastKey = null;
 
-      if (it.hasNext()) {
-         final Row row = (Row) it.next();
-         lastKey = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
-      }
-
       // initialisation des colonnes
       String exitMessage = null;
       String exitCode = null;
@@ -117,6 +112,9 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
          // Extraction de la clé
          final Row row = (Row) it.next();
          final Long key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
+         if(lastKey == null) {
+        	 lastKey = key;
+         }
          if (jobStep == null) {
             // le vrai nom sera fixé après
             jobStep = new StepExecution("aaa", null);
@@ -133,7 +131,8 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
             jobdaocql.save(stepcql);
 
             lastKey = key;
-            jobStep = new StepExecution(stepName, null);
+            // réinitialisation
+            jobStep = new StepExecution("aaa", null);
          }
          // extraction des colonnes
          final String columnName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
@@ -196,9 +195,6 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
             jobStep.setExecutionContext(executionContext);
          }
 
-         if (LOG.isDebugEnabled()) {
-            LOG.debug("MigrationJobStep - migrationFromThriftToCql - FIN");
-         }
       }
 
       // traiter le dernier cas
@@ -209,6 +205,9 @@ public class MigrationJobStep extends MigrationJob implements IMigration {
       stepcql.setName(stepName);
       jobdaocql.save(stepcql);
 
+      if (LOG.isDebugEnabled()) {
+         LOG.debug("MigrationJobStep - migrationFromThriftToCql - FIN");
+      }
    }
 
    /**

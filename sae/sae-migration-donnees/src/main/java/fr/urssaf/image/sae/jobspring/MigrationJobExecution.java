@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.jobspring;
 
+import java.nio.ByteBuffer;
 import java.util.Date;
 import java.util.Iterator;
 
@@ -23,6 +24,9 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContex
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobExecution;
+import fr.urssaf.image.sae.trace.dao.IJobExecutionCqlForMigDao;
+import fr.urssaf.image.sae.trace.model.JobExecutionCqlForMig;
+import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
@@ -65,66 +69,95 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
 
    @Autowired
    IJobExecutionDaoCql jobdaocql;
+   
+   @Autowired
+   IJobExecutionCqlForMigDao jobdaocqlForMig;
 
    /**
-    * {@inheritDoc}
+    * Migration thrift vers cql
     */
    @Override
    public void migrationFromThriftToCql() {
 
       LOGGER.debug(" migrationFromThriftToCql start");
 
-      // requete pour l'extraction des donnée dans les tables thrift
-      final ColumnFamilyTemplate<Long, String> jobExecutionTemplate = new ThriftColumnFamilyTemplate<Long, String>(
-                                                                                                                   ccfthrift.getKeyspace(),
-                                                                                                                   JOBEXECUTION_CFNAME,
-                                                                                                                   LongSerializer.get(),
-                                                                                                                   StringSerializer.get());
-
       // itérateur nous permettant de parcourir toutes les lignes de la CF
       final Iterator<GenericJobExecution> it = genericJobExdao.findAllByCFName(JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
       Long lastKey = null;
-
+      JobExecutionCqlForMig jobExecutionCql = new JobExecutionCqlForMig();
+      
       while (it.hasNext()) {
          final Row row = (Row) it.next();
 
          // extraction de la clé
          final Long key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
-         System.out.println(key);
-         if (key != null && !key.equals(lastKey)) {
-            // recuperer les colonnes du JobExecution à partir de la clé
-            final ColumnFamilyResult<Long, String> result = jobExecutionTemplate.queryColumns(key);
-
-            // mapping de colonne extraite en un objet JobExecutionCql et sauvegarde
-            final JobExecutionCql jobcql = getJobExecutionCqlFromResult(result);
-            jobdaocql.save(jobcql);
-            lastKey = key;
+         final String colName = StringSerializer.get().fromByteBuffer(row.getBytes("column1"));
+         if(lastKey == null) {
+        	 lastKey = key;
          }
-      }
+         // Creation des colonne        
+         final Long executionId = key;
+         jobExecutionCql.setJobExecutionId(executionId);
+         
+         if(JE_JOB_INSTANCE_ID_COLUMN.equals(colName)) {
+        	 Long jobInstanceId = LongSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setJobInstanceId(jobInstanceId);
+         }
+         
+         if(JE_JOBNAME_COLUMN.equals(colName)) {
+        	 String jobName = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setJobName(jobName);
+         }
+         
+         if(JE_CREATION_TIME_COLUMN.equals(colName)) {
+        	 Date createTime = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setCreationTime(createTime);
+         }
+         
+         if(JE_EXECUTION_CONTEXT_COLUMN.equals(colName)) {
+        	 ByteBuffer executionContext = row.getBytes("value");
+        	 jobExecutionCql.setExecutionContext(executionContext);
+         }
+         
+         if(JE_VERSION_COLUMN.equals(colName)) {
+        	 int version = IntegerSerializer.get().fromByteBuffer(row.getBytes("value"));
+             jobExecutionCql.setVersion(version);
+         }
+         
+         if(JE_START_TIME_COLUMN.equals(colName)) {
+        	 Date startDate = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setStartTime(startDate);
+         }
+         
+         if(JE_END_TIME_COLUMN.equals(colName)) {
+        	 Date endDate = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setEndTime(endDate);
+         }
+         
+         if(JE_LAST_UPDATED_COLUMN.equals(colName)) {
+        	 Date lastDate = NullableDateSerializer.get().fromByteBuffer(row.getBytes("value"));
+        	 jobExecutionCql.setLastUpdated(lastDate);
+         }
+         
+         if(JE_STATUS_COLUMN.equals(colName)) {
+        	 String status = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+             jobExecutionCql.setStatus(BatchStatus.valueOf(status));
+         }
+         
+         if(JE_EXIT_CODE_COLUMN.equals(colName)) {
+        	 String exitCode = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+             jobExecutionCql.setExitCode(exitCode);
+         }
 
-      LOGGER.debug(" migrationFromThriftToCql end");
-   }
-
-   public void migrationFromThriftToCql(final CassandraJobExecutionDaoThrift jobExecutionDao) {
-
-      LOGGER.debug(" migrationFromThriftToCql start");
-
-      // itérateur nous permettant de parcourir toutes les lignes de la CF
-      final Iterator<GenericJobExecution> it = genericJobExdao.findAllByCFName(JOBEXECUTION_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
-      Long lastKey = null;
-
-      while (it.hasNext()) {
-         final Row row = (Row) it.next();
-
-         // extraction de la clé
-         final Long key = LongSerializer.get().fromByteBuffer(row.getBytes("key"));
-         System.out.println(key);
-
+         if(JE_EXIT_MESSAGE_COLUMN.equals(colName)) {
+        	 String exitMessage = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+             jobExecutionCql.setExitMessage(exitMessage);
+         }
+         
          if (key != null && !key.equals(lastKey)) {
-            final JobExecution jobEx = jobExecutionDao.getJobExecution(key);
-            final JobExecutionCql jobExCql = JobTranslateUtils.JobExecutionToJobExecutionCql(jobEx);
-            jobdaocql.save(jobExCql);
+        	 jobdaocqlForMig.save(jobExecutionCql);
             lastKey = key;
+            jobExecutionCql = new JobExecutionCqlForMig();
          }
       }
 
@@ -132,7 +165,7 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
    }
 
    /**
-    * {@inheritDoc}
+    * Migration cql vers Thrift
     */
    @Override
    public void migrationFromCqlTothrift() {
@@ -148,53 +181,6 @@ public class MigrationJobExecution extends MigrationJob implements IMigration {
    // ############################################################
    // ################# Methode utilitaire ######################
    // ############################################################
-   /**
-    * Crée un objet JobExecution à partir de données lues de cassandra.
-    *
-    * @param result
-    *           Données de cassandra
-    * @param jobInstance
-    *           Si non nul : jobInstance lié au jobExecution à renvoyé
-    *           Si nul, on instanciera un jobInstance "minimal"
-    * @return le jobExecution
-    */
-   private JobExecutionCql getJobExecutionCqlFromResult(final ColumnFamilyResult<Long, String> result) {
-      if (result == null || !result.hasResults()) {
-         return null;
-      }
-
-      final Serializer<ExecutionContext> oSlz = ExecutionContextSerializer.get();
-      final Serializer<Date> dSlz = NullableDateSerializer.get();
-
-      final Long executionId = result.getKey();
-      final JobExecution jobExecution = new JobExecution(executionId);
-
-      final Long jobInstanceId = result.getLong(JE_JOB_INSTANCE_ID_COLUMN);
-      final String jobName = result.getString(JE_JOBNAME_COLUMN);
-      final Date createTime = dSlz.fromBytes(result.getByteArray(JE_CREATION_TIME_COLUMN));
-      jobExecution.setCreateTime(createTime);
-      if (executionId == 463) {
-         System.out.println("");
-      }
-      final ExecutionContext executionContext = oSlz.fromBytes(result.getByteArray(JE_EXECUTION_CONTEXT_COLUMN));
-      jobExecution.setExecutionContext(executionContext);
-      final int version = result.getInteger(JE_VERSION_COLUMN);
-      jobExecution.setVersion(version);
-      final Date startDate = dSlz.fromBytes(result.getByteArray(JE_START_TIME_COLUMN));
-      jobExecution.setStartTime(startDate);
-      final Date endDate = dSlz.fromBytes(result.getByteArray(JE_END_TIME_COLUMN));
-      jobExecution.setEndTime(endDate);
-      final Date lastDate = dSlz.fromBytes(result.getByteArray(JE_LAST_UPDATED_COLUMN));
-      jobExecution.setLastUpdated(lastDate);
-      final String status = result.getString(JE_STATUS_COLUMN);
-      jobExecution.setStatus(BatchStatus.valueOf(status));
-      final String exitCode = result.getString(JE_EXIT_CODE_COLUMN);
-      final String exitMessage = result.getString(JE_EXIT_MESSAGE_COLUMN);
-      jobExecution.setExitStatus(new ExitStatus(exitCode, exitMessage));
-      jobExecution.setJobInstance(new JobInstance(jobInstanceId, null, jobName));
-      final JobExecutionCql jobcql = JobTranslateUtils.JobExecutionToJobExecutionCql(jobExecution);
-      return jobcql;
-   }
 
    /**
     * Enregistre un jobExecution dans cassandra Le jobExecution doit avoir un id

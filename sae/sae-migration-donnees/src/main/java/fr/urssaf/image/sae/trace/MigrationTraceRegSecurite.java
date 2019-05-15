@@ -67,10 +67,6 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
       final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegSecurite", keyspace_tu);
 
       UUID lastKey = null;
-      if (listT.hasNext()) {
-         final Row row = (Row) listT.next();
-         lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-      }
       Date timestamp = null;
       String codeEvt = null;
       String contrat = null;
@@ -81,14 +77,15 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
       int i = 0;
       TraceRegSecuriteCql traceregexpl;
 
-      List<TraceRegSecuriteCql> listToSave = new ArrayList<>();
       while (listT.hasNext()) {
 
          // Extraction de la clé
 
          final Row row = (Row) listT.next();
          final UUID key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-
+         if(lastKey == null) {
+        	 lastKey = key;
+         }
          // compare avec la derniere clé qui a été extraite
          // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
          // alors on enrgistre celui qui vient d'être traité
@@ -101,7 +98,8 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
             traceregexpl.setLogin(login);
             traceregexpl.setPagms(pagms);
             traceregexpl.setContexte(context);
-            listToSave.add(traceregexpl);
+            supportcql.save(traceregexpl);
+            
             lastKey = key;
             // réinitialisation
             timestamp = null;
@@ -111,21 +109,13 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
             pagms = null;
             infos = new HashMap<>();
             context = null;
-
-            if (listToSave.size() == 10000) {
-               i = i + listToSave.size();
-
-               // supportcql.saveAllTraces(listToSave);
-               listToSave = new ArrayList<>();
-               System.out.println(" Temp i : " + i);
-            }
-
          }
 
          // extraction du nom de la colonne
          final String columnName = row.getString("column1");
 
          // extraction de la value en fonction du nom de la colonne
+         
          if (TraceFieldsName.COL_TIMESTAMP.getName().equals(columnName)) {
 
             timestamp = DateSerializer.get().fromByteBuffer(row.getBytes("value"));
@@ -152,24 +142,10 @@ public class MigrationTraceRegSecurite extends MigrationTrace {
 
             context = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
          }
-
+         i++;
       }
-      if (listToSave.size() > 0) {
-         // Ajouter le dernier cas traité
-         traceregexpl = new TraceRegSecuriteCql(lastKey, timestamp);
-         traceregexpl.setCodeEvt(codeEvt);
-         traceregexpl.setContratService(contrat);
-         traceregexpl.setInfos(infos);
-         traceregexpl.setLogin(login);
-         traceregexpl.setPagms(pagms);
-         traceregexpl.setContexte(context);
-         listToSave.add(traceregexpl);
 
-         i = i + listToSave.size();
-         // supportcql.saveAllTraces(listToSave);
-         listToSave = new ArrayList<>();
-      }
-      // System.out.println(" Total : " + i);
+      System.out.println(" Total : " + i);
       return i;
    }
 

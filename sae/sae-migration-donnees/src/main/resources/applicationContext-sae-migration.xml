@@ -34,12 +34,22 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
-   
+   <bean id="ecdeConfigFile" class="java.io.File">
+      <constructor-arg value="${sae.ecde.cheminFichierConfig}" />
+   </bean>
+   <bean id="ecdeSources" factory-bean="ecdeSourceManager"
+      factory-method="load">
+      <constructor-arg ref="ecdeConfigFile" />
+   </bean>
 
+   
+   <bean id="ecdeSourceManager" class="fr.urssaf.image.sae.ecde.EcdeSourceManagerImpl" />
    
    <import resource="applicationContext-sae-trace.xml" />
    <import resource="applicationContext-sae-pile-travaux.xml" />
    <import resource="applicationContext-commons-cassandra-spring-batch.xml" />
+   <import resource="applicationContext-sae-services-batch.xml" />
+   
    
    
 </beans>

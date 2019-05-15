@@ -160,7 +160,6 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
                                                                                          .get());
       final ColumnFamilyResult<Long, String> result = jobInstanceTemplate
                                                                          .queryColumns(jobIds);
-      // Par contre, les lignes renvoyées ne sont pas triées. Il faut donc les trier
 
       final Map<Long, JobInstance> map = new HashMap<Long, JobInstance>(jobIds.size());
       final HectorIterator<Long, String> resultIterator = new HectorIterator<Long, String>(result);
@@ -191,9 +190,6 @@ public class MigrationJobInstance extends MigrationJob implements IMigration {
 
       final JobInstance instance = new JobInstance(instanceId, jobParameters, jobName);
 
-      // On fait comme dans l'implémentation jdbc : on ne lit pas la version
-      // stockée, car
-      // "should always be at version=0 because they never get updated"
       instance.incrementVersion();
 
       return instance;

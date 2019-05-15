@@ -280,7 +280,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-batch</artifactId>
-         <version>19.2.5</version>
+         <version>19.3.1-SNAPSHOT</version>
       </dependency>
 
    </dependencies>

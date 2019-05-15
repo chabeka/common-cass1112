@@ -65,10 +65,7 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
       final Iterator<GenericTraceType> listT = genericdao.findAllByCFName("TraceRegTechnique", keyspace_tu);
 
       UUID lastKey = null;
-      if (listT.hasNext()) {
-         final Row row = (Row) listT.next();
-         lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-      }
+      
       Date timestamp = null;
       String codeEvt = null;
       String contrat = null;
@@ -87,7 +84,9 @@ public class MigrationTraceRegTechnique extends MigrationTrace {
 
          final Row row = (Row) listT.next();
          final UUID key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
-
+         if(lastKey == null) {
+        	 lastKey = key;
+         }
          // compare avec la derniere clé qui a été extraite
          // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
          // alors on enrgistre celui qui vient d'être traité

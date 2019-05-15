@@ -146,11 +146,12 @@ public class MigrationJobExecutionTest {
 
    @Test
    public void migrationFromThriftToCql() throws Exception {
-
+	  populateTableCql();
       // JOBEXECUTION
 
       // migration de la table JobExecution
-      migJobExe.migrationFromThriftToCql();
+	   migJobInst.migrationFromThriftToCql();
+      //migJobExe.migrationFromThriftToCql();
 
    }
 
@@ -203,7 +204,7 @@ public class MigrationJobExecutionTest {
       Assert.assertEquals(101, nb_key3);
    }
 
-   // CLASSE UTILITAIRE
+   // Methode UTILITAIRE
 
    public void populateTableCql() {
 
