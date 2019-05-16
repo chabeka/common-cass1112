@@ -1,22 +1,23 @@
 package fr.urssaf.javaDriverTest;
 
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
+
 import java.io.PrintStream;
+import java.time.Duration;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PlainTextAuthProvider;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.SimpleStatement;
-import com.datastax.driver.core.querybuilder.BuiltStatement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
 
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
+import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
 /**
@@ -24,9 +25,7 @@ import fr.urssaf.javaDriverTest.helper.Dumper;
  */
 public class DumpTest {
 
-   Cluster cluster;
-
-   Session session;
+   CqlSession session;
 
    PrintStream sysout;
 
@@ -67,13 +66,8 @@ public class DumpTest {
       // servers = "cnp69gincleagntcas1.cer69.recouv,cnp69gincleagntcas2.cer69.recouv";
       // servers = "hwi69progednatgnspaj1bocas1,hwi69progednatgnspaj1bocas2";
 
-      cluster = Cluster.builder()
-                       .withClusterName("myCluster")
-                       .addContactPoints(StringUtils.split(servers, ","))
-                       .withoutJMXReporting()
-                       .withAuthProvider(new PlainTextAuthProvider("root", "regina4932"))
-                       .build();
-      session = cluster.connect();
+      final String cassandraLocalDC = "DC6";
+      session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
@@ -83,7 +77,7 @@ public class DumpTest {
 
    @After
    public void close() throws Exception {
-      cluster.close();
+      session.close();
    }
 
    @Test
@@ -161,11 +155,13 @@ public class DumpTest {
    @Test
    public void testDump_doc_info_specific() throws Exception {
       final UUID uuid = UUID.fromString("453c8685-57b4-454b-854f-23b58943d68b");
-      final BuiltStatement query = QueryBuilder.select()
-                                               .from("dfce", "doc_info")
-                                               .where(QueryBuilder.eq("document_uuid", uuid))
-                                               .and(QueryBuilder.eq("document_version", "0.0.0"));
-      final ResultSet rs = session.execute(query);
+      final Select query = QueryBuilder.selectFrom("dfce", "doc_info")
+                                       .all()
+                                       .whereColumn("document_uuid")
+                                       .isEqualTo(literal(uuid))
+                                       .whereColumn("document_version")
+                                       .isEqualTo(literal("0.0.0"));
+      final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
    }
 
@@ -189,9 +185,9 @@ public class DumpTest {
 
    @Test
    public void testDump_documents() throws Exception {
-      final ResultSet rs = session.execute(
-                                           new SimpleStatement("select * from dfce.documents limit 2")
-                                                                                                      .setReadTimeoutMillis(30000));
+      final SimpleStatement query = SimpleStatement.newInstance("select * from dfce.documents limit 3");
+      query.setTimeout(Duration.ofMillis(30000));
+      final ResultSet rs = session.execute(query);
       dumper.dumpRows(rs);
    }
 
@@ -253,11 +249,13 @@ public class DumpTest {
       // final String index = "SM_ARCHIVAGE_DATE";
       // final String index = "SM_CREATION_DATE";
       // final String index = "den";
-      final BuiltStatement query = QueryBuilder.select()
-                                               .from("dfce", "index_reference")
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId));
-      final ResultSet rs = session.execute(query);
+      final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
+                                       .all()
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId));
+      final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
    }
 
@@ -425,15 +423,19 @@ public class DumpTest {
       // final String index = "SM_CREATION_DATE";
       final String index = "SM_MODIFICATION_DATE";
       final int rangeId = 0;
-      final BuiltStatement query = QueryBuilder.select("metadata_value", "document_uuid")
-                                               .from("dfce", "term_info_range_datetime")
-                                               .where(QueryBuilder.eq("index_code", ""))
-                                               .and(QueryBuilder.eq("base_uuid", baseId))
-                                               .and(QueryBuilder.eq("metadata_name", index))
-                                               // .and(QueryBuilder.gt("metadata_value", "20150520110809498"))
-                                               .and(QueryBuilder.eq("range_index_id", rangeId))
-                                               .limit(50);
-      final ResultSet rs = session.execute(query);
+      final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_datetime")
+                                       .columns("metadata_value", "document_uuid")
+                                       .whereColumn("index_code")
+                                       .isEqualTo(literal(""))
+                                       .whereColumn("base_uuid")
+                                       .isEqualTo(literal(baseId))
+                                       .whereColumn("metadata_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("range_index_id")
+                                       .isEqualTo(literal(rangeId))
+                                       // .and(QueryBuilder.gt("metadata_value", "20150520110809498"))
+                                       .limit(50);
+      final ResultSet rs = session.execute(query.build());
       dumper.dumpRows(rs);
    }
 

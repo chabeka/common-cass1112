@@ -1,5 +1,7 @@
 package fr.urssaf.javaDriverTest.split;
 
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,10 +18,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.BuiltStatement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
 
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
 import fr.urssaf.javaDriverTest.dao.RangeIndexEntity;
@@ -40,7 +42,7 @@ public class NewSplitsScheduler {
     * @return
     * @throws Exception
     */
-   public static String scheduleNewSplits(final Session session, final String index) throws Exception {
+   public static String scheduleNewSplits(final CqlSession session, final String index) throws Exception {
       final UUID baseId = BaseDAO.getBaseUUID(session);
       final LocalDateTime currentTime = LocalDateTime.now();
       final List<RangeIndexEntity> entities = getRangeIndexEntities(session, baseId, index);
@@ -204,15 +206,17 @@ public class NewSplitsScheduler {
       return totalWidth * 1000000 / totalElementsCount;
    }
 
-   private static List<RangeIndexEntity> getRangeIndexEntities(final Session session, final UUID baseId, final String index) throws Exception {
-      final BuiltStatement query = QueryBuilder.select()
-                                               .from("dfce", "index_reference")
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId));
-      final Row row = session.execute(query).one();
+   private static List<RangeIndexEntity> getRangeIndexEntities(final CqlSession session, final UUID baseId, final String index) throws Exception {
+      final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
+                                       .columns("index_ranges")
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId));
+      final Row row = session.execute(query.build()).one();
       final ObjectMapper jsonMapper = new ObjectMapper();
       final Map<Integer, String> ranges = row.getMap("index_ranges", Integer.class, String.class);
-      final List<RangeIndexEntity> result = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> result = new ArrayList<>();
       for (final String rangeAsJson : ranges.values()) {
          final RangeIndexEntity rangeEntity = jsonMapper.readValue(rangeAsJson, RangeIndexEntity.class);
          result.add(rangeEntity);

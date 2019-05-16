@@ -3,11 +3,12 @@ package fr.urssaf.javaDriverTest.helper;
 import java.io.PrintStream;
 import java.nio.ByteBuffer;
 
-import com.datastax.driver.core.ColumnDefinitions;
-import com.datastax.driver.core.ColumnDefinitions.Definition;
-import com.datastax.driver.core.DataType;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
+import com.datastax.oss.driver.api.core.CqlIdentifier;
+import com.datastax.oss.driver.api.core.cql.ColumnDefinition;
+import com.datastax.oss.driver.api.core.cql.ColumnDefinitions;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.type.DataType;
 
 public class Dumper {
    PrintStream sysout;
@@ -28,16 +29,16 @@ public class Dumper {
 
    public void dumpRow(final Row row) {
       final ColumnDefinitions colDefinitions = row.getColumnDefinitions();
-      for (final Definition colDefinition : colDefinitions) {
-         final String colName = colDefinition.getName();
+      for (final ColumnDefinition colDefinition : colDefinitions) {
+         final CqlIdentifier colName = colDefinition.getName();
          final DataType colType = colDefinition.getType();
          final String valueAsString = getColAsString(row, colDefinition);
          sysout.println(colName + "(" + colType + ") " + " = " + valueAsString);
       }
    }
 
-   public static String getColAsString(final Row row, final Definition colDefinition) {
-      final String colName = colDefinition.getName();
+   public static String getColAsString(final Row row, final ColumnDefinition colDefinition) {
+      final CqlIdentifier colName = colDefinition.getName();
       final Object valueAsObject = row.getObject(colName);
       if (valueAsObject instanceof ByteBuffer) {
          final ByteBuffer valueAsByteBuffer = (ByteBuffer) valueAsObject;

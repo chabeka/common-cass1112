@@ -3,29 +3,29 @@
  */
 package fr.urssaf.javaDriverTest;
 
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
+
 import java.io.PrintStream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PlainTextAuthProvider;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.BuiltStatement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.update.Assignment;
+import com.datastax.oss.driver.api.querybuilder.update.Update;
 
+import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
 /**
  * TODO (ac75007394) Description du type
  */
 public class UserUpdater {
-   Cluster cluster;
 
-   Session session;
+   CqlSession session;
 
    PrintStream sysout;
 
@@ -45,7 +45,7 @@ public class UserUpdater {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
       // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cer69imageint9.cer69.recouv";
@@ -61,15 +61,10 @@ public class UserUpdater {
       // servers = "cnp69dev2gntcas1.gidn.recouv";
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
       // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
-      servers = "hwi69progednatgnspaj1bocas1,hwi69progednatgnspaj1bocas2";
+      // servers = "hwi69progednatgnspaj1bocas1,hwi69progednatgnspaj1bocas2";
 
-      cluster = Cluster.builder()
-                       .withClusterName("myCluster")
-                       .addContactPoints(StringUtils.split(servers, ","))
-                       .withoutJMXReporting()
-                       .withAuthProvider(new PlainTextAuthProvider("root", "regina4932"))
-                       .build();
-      session = cluster.connect();
+      final String cassandraLocalDC = "DC6";
+      session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
@@ -79,17 +74,18 @@ public class UserUpdater {
 
    @After
    public void close() throws Exception {
-      cluster.close();
+      session.close();
    }
 
    @Test
    // @Ignore
    public void updatePendingConfirmation() throws Exception {
-      final BuiltStatement query = QueryBuilder.update("dfce", "user")
-                                               .with(QueryBuilder.set("pending_confirmation", false))
-                                               .where(QueryBuilder.eq("login", "_ADMIN"))
-                                               .ifExists();
-      final ResultSet result = session.execute(query);
+      final Update query = QueryBuilder.update("dfce", "user")
+                                       .set(Assignment.setColumn("pending_confirmation", literal(false)))
+                                       .whereColumn("login")
+                                       .isEqualTo(literal("_ADMIN"))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
       System.out.println("wasApplied=" + result.wasApplied());
    }
 

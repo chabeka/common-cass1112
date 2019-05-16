@@ -10,13 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PlainTextAuthProvider;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
 
+import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.dao.RangeIndexEntity;
 import fr.urssaf.javaDriverTest.split.NewSplitsScheduler;
 
@@ -24,15 +22,14 @@ import fr.urssaf.javaDriverTest.split.NewSplitsScheduler;
  * Test de NewSplitsSchedulerTest
  */
 public class NewSplitsSchedulerTest {
-   Cluster cluster;
 
-   Session session;
+   CqlSession session;
 
    private void connectToCassandra() throws Exception {
       String servers;
       // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
-      servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
+      // servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cnp69pregntcas1, cnp69pregntcas2";
       // servers = "cnp69givngntcas1, cnp69givngntcas2";
@@ -41,7 +38,7 @@ public class NewSplitsSchedulerTest {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
       // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cer69imageint9.cer69.recouv";
@@ -58,18 +55,13 @@ public class NewSplitsSchedulerTest {
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
       // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
 
-      cluster = Cluster.builder()
-                       .withClusterName("myCluster")
-                       .addContactPoints(StringUtils.split(servers, ","))
-                       .withoutJMXReporting()
-                       .withAuthProvider(new PlainTextAuthProvider("root", "regina4932"))
-                       .build();
-      session = cluster.connect();
+      final String cassandraLocalDC = "DC6";
+      session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
    }
 
    private void closeCassandra() throws Exception {
-      cluster.close();
+      session.close();
    }
 
    @Test
@@ -82,7 +74,7 @@ public class NewSplitsSchedulerTest {
 
    @Test
    public void schedule2Test() throws Exception {
-      final List<RangeIndexEntity> entities = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> entities = new ArrayList<>();
       entities.add(new RangeIndexEntity(0, "min_lower_bound", "max_upper_bound", 500, "NOMINAL"));
       final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
       final LocalDateTime dateTime = LocalDateTime.parse("2018-01-01 11:11:11", formatter);
@@ -95,7 +87,7 @@ public class NewSplitsSchedulerTest {
 
    @Test
    public void schedule3Test() throws Exception {
-      final List<RangeIndexEntity> entities = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> entities = new ArrayList<>();
       entities.add(new RangeIndexEntity(0, "min_lower_bound", "max_upper_bound", 500, "SPLITTING"));
       final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
       final LocalDateTime dateTime = LocalDateTime.parse("2018-01-01 11:11:11", formatter);
@@ -108,7 +100,7 @@ public class NewSplitsSchedulerTest {
 
    @Test
    public void schedule4Test() throws Exception {
-      final List<RangeIndexEntity> entities = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> entities = new ArrayList<>();
       entities.add(new RangeIndexEntity(0, "min_lower_bound", "20180101000000000", 500, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180101000000000", "20180111000000000", 500, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180111000000000", "max_upper_bound", 500, "NOMINAL"));
@@ -123,7 +115,7 @@ public class NewSplitsSchedulerTest {
 
    @Test
    public void schedule5Test() throws Exception {
-      final List<RangeIndexEntity> entities = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> entities = new ArrayList<>();
       entities.add(new RangeIndexEntity(0, "min_lower_bound", "20180101000000000", 1000000, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180101000000000", "20180111000000000", 1000000, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180111000000000", "max_upper_bound", 1000000, "NOMINAL"));
@@ -138,7 +130,7 @@ public class NewSplitsSchedulerTest {
 
    @Test
    public void schedule6Test() throws Exception {
-      final List<RangeIndexEntity> entities = new ArrayList<RangeIndexEntity>();
+      final List<RangeIndexEntity> entities = new ArrayList<>();
       entities.add(new RangeIndexEntity(0, "min_lower_bound", "20180101000000000", 1000000, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180101000000000", "20180111000000000", 1000000, "NOMINAL"));
       entities.add(new RangeIndexEntity(1, "20180111000000000", "20180121000000000", 1200000, "NOMINAL"));

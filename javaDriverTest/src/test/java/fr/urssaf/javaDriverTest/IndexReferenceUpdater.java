@@ -3,13 +3,14 @@
  */
 package fr.urssaf.javaDriverTest;
 
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -17,15 +18,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.datastax.driver.core.Cluster;
-import com.datastax.driver.core.PlainTextAuthProvider;
-import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Row;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.querybuilder.BuiltStatement;
-import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.ResultSet;
+import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.select.Select;
+import com.datastax.oss.driver.api.querybuilder.update.Assignment;
+import com.datastax.oss.driver.api.querybuilder.update.Update;
 
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
+import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
 import fr.urssaf.javaDriverTest.dao.RangeIndexEntity;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
@@ -33,9 +35,8 @@ import fr.urssaf.javaDriverTest.helper.Dumper;
  * TODO (ac75007394) Description du type
  */
 public class IndexReferenceUpdater {
-   Cluster cluster;
 
-   Session session;
+   CqlSession session;
 
    PrintStream sysout;
 
@@ -46,7 +47,7 @@ public class IndexReferenceUpdater {
       String servers;
       // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
-      servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
+      // servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cnp69pregntcas1, cnp69pregntcas2";
       // servers = "cnp69givngntcas1, cnp69givngntcas2";
@@ -55,7 +56,7 @@ public class IndexReferenceUpdater {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
       // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cer69imageint9.cer69.recouv";
@@ -72,13 +73,8 @@ public class IndexReferenceUpdater {
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
       // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
 
-      cluster = Cluster.builder()
-                       .withClusterName("myCluster")
-                       .addContactPoints(StringUtils.split(servers, ","))
-                       .withoutJMXReporting()
-                       .withAuthProvider(new PlainTextAuthProvider("root", "regina4932"))
-                       .build();
-      session = cluster.connect();
+      final String cassandraLocalDC = "DC6";
+      session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
@@ -88,7 +84,7 @@ public class IndexReferenceUpdater {
 
    @After
    public void close() throws Exception {
-      cluster.close();
+      session.close();
    }
 
    @Test
@@ -100,15 +96,18 @@ public class IndexReferenceUpdater {
       // final String index = "den";
       // final int rangeId = 6;
       final int rangeId = 0;
-      final BuiltStatement query = QueryBuilder.select("metadata_value")
-                                               // .from("dfce", "term_info_range_datetime")
-                                               .from("dfce", "term_info_range_string")
-                                               .where(QueryBuilder.eq("index_code", ""))
-                                               .and(QueryBuilder.eq("base_uuid", baseId))
-                                               .and(QueryBuilder.eq("metadata_name", index))
-                                               .and(QueryBuilder.eq("range_index_id", rangeId));
+      final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_string")
+                                       .columns("metadata_value")
+                                       .whereColumn("index_code")
+                                       .isEqualTo(literal(""))
+                                       .whereColumn("base_uuid")
+                                       .isEqualTo(literal(baseId))
+                                       .whereColumn("metadata_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("range_index_id")
+                                       .isEqualTo(literal(rangeId));
 
-      final ResultSet rs = session.execute(query);
+      final ResultSet rs = session.execute(query.build());
       int totalCounter = 0;
       int distinctCounter = 0;
       String currentValue = "";
@@ -140,16 +139,22 @@ public class IndexReferenceUpdater {
       int totalCounter = 0;
       int distinctCounter = 0;
       for (final int rangeId : rangeIds) {
-         final BuiltStatement query = QueryBuilder.select("metadata_value")
-                                                  .from("dfce", "term_info_range_string")
-                                                  .where(QueryBuilder.eq("index_code", ""))
-                                                  .and(QueryBuilder.eq("base_uuid", baseId))
-                                                  .and(QueryBuilder.eq("metadata_name", index))
-                                                  .and(QueryBuilder.eq("range_index_id", rangeId))
-                                                  .and(QueryBuilder.gt("metadata_value", minValue))
-                                                  .and(QueryBuilder.lt("metadata_value", maxValue));
+         final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_string")
+                                          .columns("metadata_value")
+                                          .whereColumn("index_code")
+                                          .isEqualTo(literal(""))
+                                          .whereColumn("base_uuid")
+                                          .isEqualTo(literal(baseId))
+                                          .whereColumn("metadata_name")
+                                          .isEqualTo(literal(index))
+                                          .whereColumn("range_index_id")
+                                          .isEqualTo(literal(rangeId))
+                                          .whereColumn("metadata_value")
+                                          .isGreaterThan(literal(minValue))
+                                          .whereColumn("metadata_value")
+                                          .isLessThan(literal(maxValue));
 
-         final ResultSet rs = session.execute(query);
+         final ResultSet rs = session.execute(query.build());
          String currentValue = "";
          for (final Row row : rs) {
             final String value = row.getString(0);
@@ -179,15 +184,18 @@ public class IndexReferenceUpdater {
 
       for (int rangeId = rangeIdStart; rangeId <= rangeIdEnd; rangeId++) {
 
-         final BuiltStatement query = QueryBuilder.select("metadata_value")
-                                                  .from("dfce", "term_info_range_datetime")
-                                                  // .from("dfce", "term_info_range_string")
-                                                  .where(QueryBuilder.eq("index_code", ""))
-                                                  .and(QueryBuilder.eq("base_uuid", baseId))
-                                                  .and(QueryBuilder.eq("metadata_name", index))
-                                                  .and(QueryBuilder.eq("range_index_id", rangeId));
+         final Select query = QueryBuilder.selectFrom("dfce", "term_info_range_datetime")
+                                          .columns("metadata_value")
+                                          .whereColumn("index_code")
+                                          .isEqualTo(literal(""))
+                                          .whereColumn("base_uuid")
+                                          .isEqualTo(literal(baseId))
+                                          .whereColumn("metadata_name")
+                                          .isEqualTo(literal(index))
+                                          .whereColumn("range_index_id")
+                                          .isEqualTo(literal(rangeId));
 
-         final ResultSet rs = session.execute(query);
+         final ResultSet rs = session.execute(query.build());
          int totalCounter = 0;
          int distinctCounter = 0;
          String currentValue = "";
@@ -212,11 +220,13 @@ public class IndexReferenceUpdater {
    }
 
    private RangeIndexEntity getRangeIndexEntity(final UUID baseId, final String index, final int rangeId) throws Exception {
-      final BuiltStatement query = QueryBuilder.select()
-                                               .from("dfce", "index_reference")
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId));
-      final Row row = session.execute(query).one();
+      final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
+                                       .all()
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId));
+      final Row row = session.execute(query.build()).one();
       final Map<Integer, String> ranges = row.getMap("index_ranges", Integer.class, String.class);
       final String rangeAsJson = ranges.get(rangeId);
       if (rangeAsJson == null) {
@@ -236,11 +246,13 @@ public class IndexReferenceUpdater {
     * @throws Exception
     */
    private int sumCountsInRanges(final UUID baseId, final String index) throws Exception {
-      final BuiltStatement query = QueryBuilder.select()
-                                               .from("dfce", "index_reference")
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId));
-      final Row row = session.execute(query).one();
+      final Select query = QueryBuilder.selectFrom("dfce", "index_reference")
+                                       .all()
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId));
+      final Row row = session.execute(query.build()).one();
       final Map<Integer, String> ranges = row.getMap("index_ranges", Integer.class, String.class);
       final ObjectMapper jsonMapper = new ObjectMapper();
       int sum = 0;
@@ -294,12 +306,14 @@ public class IndexReferenceUpdater {
       final String json = jsonMapper.writeValueAsString(rangeEntity);
       System.out.println("json=" + json);
 
-      final BuiltStatement query = QueryBuilder.update("dfce", "index_reference")
-                                               .with(QueryBuilder.put("index_ranges", rangeId, json))
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId))
-                                               .ifExists();
-      final ResultSet result = session.execute(query);
+      final Update query = QueryBuilder.update("dfce", "index_reference")
+                                       .set(Assignment.setMapValue("index_ranges", literal(rangeId), literal(json)))
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
       System.out.println("wasApplied=" + result.wasApplied());
    }
 
@@ -311,12 +325,14 @@ public class IndexReferenceUpdater {
       final String index = "SM_MODIFICATION_DATE";
       final int distinctUseCount = 178937250;
 
-      final BuiltStatement query = QueryBuilder.update("dfce", "index_reference")
-                                               .with(QueryBuilder.set("distinct_use_count", distinctUseCount))
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId))
-                                               .ifExists();
-      final ResultSet result = session.execute(query);
+      final Update query = QueryBuilder.update("dfce", "index_reference")
+                                       .set(Assignment.setColumn("distinct_use_count", literal(distinctUseCount)))
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
       System.out.println("wasApplied=" + result.wasApplied());
    }
 
@@ -328,12 +344,14 @@ public class IndexReferenceUpdater {
       final String index = "SM_MODIFICATION_DATE";
       final int totalUseCount = 178937250;
 
-      final BuiltStatement query = QueryBuilder.update("dfce", "index_reference")
-                                               .with(QueryBuilder.set("total_use_count", totalUseCount))
-                                               .where(QueryBuilder.eq("index_name", index))
-                                               .and(QueryBuilder.eq("base_id", baseId))
-                                               .ifExists();
-      final ResultSet result = session.execute(query);
+      final Update query = QueryBuilder.update("dfce", "index_reference")
+                                       .set(Assignment.setColumn("total_use_count", literal(totalUseCount)))
+                                       .whereColumn("index_name")
+                                       .isEqualTo(literal(index))
+                                       .whereColumn("base_id")
+                                       .isEqualTo(literal(baseId))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
       System.out.println("wasApplied=" + result.wasApplied());
    }
 

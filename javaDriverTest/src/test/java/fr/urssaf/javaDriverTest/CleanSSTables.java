@@ -152,7 +152,7 @@ public class CleanSSTables {
       final String path = "D:\\temp\\SSTables";
       final Descriptor descriptor = new Descriptor("ka", new File(path), "dfce", "term_info_range_datetime", 1239, Type.FINAL);
 
-      final Set<Component> components = new HashSet<Component>();
+      final Set<Component> components = new HashSet<>();
       components.add(new Component(Component.Type.DATA));
       components.add(new Component(Component.Type.COMPRESSION_INFO));
       components.add(new Component(Component.Type.FILTER));
