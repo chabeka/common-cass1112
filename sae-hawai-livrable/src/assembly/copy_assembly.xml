@@ -22,6 +22,15 @@
          <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
          <lineEnding>unix</lineEnding>
       </fileSet>
+      
+      <fileSet>
+         <directory>${project.build.directory}/sae-ihm-web-exploit-livrable/config-sae-ihm-web-exploit</directory>
+         <includes>
+            <include>sae-ihm-web-exploit-config-environnement-frontaux.xml</include>
+         </includes>
+         <outputDirectory>sae-ihm-web-exploit/config-sae-ihm-web-exploit</outputDirectory>
+         <lineEnding>unix</lineEnding>
+      </fileSet>
 
       <fileSet>
          <directory>${project.build.directory}/sae-ihm-web-exploit-livrable/config-sae-ihm-web-exploit</directory>
