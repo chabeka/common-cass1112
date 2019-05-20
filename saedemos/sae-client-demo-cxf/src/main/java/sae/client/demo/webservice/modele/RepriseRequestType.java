@@ -8,23 +8,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tres d'entr�es de l'op�ration
+ * Paramètres d'entrées de l'opération
  *             'reprise'
  * 
- * <p>Java class for repriseRequestType complex type.
+ * <p>Classe Java pour repriseRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="repriseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="repriseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="uuid" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class RepriseRequestType {
     protected String uuid;
 
     /**
-     * Gets the value of the uuid property.
+     * Obtient la valeur de la propriété uuid.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class RepriseRequestType {
     }
 
     /**
-     * Sets the value of the uuid property.
+     * Définit la valeur de la propriété uuid.
      * 
      * @param value
      *     allowed object is

@@ -8,22 +8,22 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for rechercheNbResResponseType complex type.
+ * <p>Classe Java pour rechercheNbResResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rechercheNbResResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheNbResType"/>
- *         &lt;element name="nbResultats" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="resultatTronque" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheNbResResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheNbResType"/&gt;
+ *         &lt;element name="nbResultats" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="resultatTronque" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -44,7 +44,7 @@ public class RechercheNbResResponseType {
     protected boolean resultatTronque;
 
     /**
-     * Gets the value of the resultats property.
+     * Obtient la valeur de la propriété resultats.
      * 
      * @return
      *     possible object is
@@ -56,7 +56,7 @@ public class RechercheNbResResponseType {
     }
 
     /**
-     * Sets the value of the resultats property.
+     * Définit la valeur de la propriété resultats.
      * 
      * @param value
      *     allowed object is
@@ -68,7 +68,7 @@ public class RechercheNbResResponseType {
     }
 
     /**
-     * Gets the value of the nbResultats property.
+     * Obtient la valeur de la propriété nbResultats.
      * 
      */
     public int getNbResultats() {
@@ -76,7 +76,7 @@ public class RechercheNbResResponseType {
     }
 
     /**
-     * Sets the value of the nbResultats property.
+     * Définit la valeur de la propriété nbResultats.
      * 
      */
     public void setNbResultats(int value) {
@@ -84,7 +84,7 @@ public class RechercheNbResResponseType {
     }
 
     /**
-     * Gets the value of the resultatTronque property.
+     * Obtient la valeur de la propriété resultatTronque.
      * 
      */
     public boolean isResultatTronque() {
@@ -92,7 +92,7 @@ public class RechercheNbResResponseType {
     }
 
     /**
-     * Sets the value of the resultatTronque property.
+     * Définit la valeur de la propriété resultatTronque.
      * 
      */
     public void setResultatTronque(boolean value) {

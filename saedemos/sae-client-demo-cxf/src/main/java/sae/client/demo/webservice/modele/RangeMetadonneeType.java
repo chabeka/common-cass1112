@@ -8,25 +8,25 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Un range de m�tadonn�e d�finie par un code,
+ * Un range de métadonnée définie par un code,
  *             une valeur minimum et une valeur maximum
  * 
- * <p>Java class for rangeMetadonneeType complex type.
+ * <p>Classe Java pour rangeMetadonneeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rangeMetadonneeType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="code" type="{http://www.cirtil.fr/saeService}metadonneeCodeType"/>
- *         &lt;element name="valeurMin" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/>
- *         &lt;element name="valeurMax" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rangeMetadonneeType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="code" type="{http://www.cirtil.fr/saeService}metadonneeCodeType"/&gt;
+ *         &lt;element name="valeurMin" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/&gt;
+ *         &lt;element name="valeurMax" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -49,7 +49,7 @@ public class RangeMetadonneeType {
     protected String valeurMax;
 
     /**
-     * Gets the value of the code property.
+     * Obtient la valeur de la propriété code.
      * 
      * @return
      *     possible object is
@@ -61,7 +61,7 @@ public class RangeMetadonneeType {
     }
 
     /**
-     * Sets the value of the code property.
+     * Définit la valeur de la propriété code.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +73,7 @@ public class RangeMetadonneeType {
     }
 
     /**
-     * Gets the value of the valeurMin property.
+     * Obtient la valeur de la propriété valeurMin.
      * 
      * @return
      *     possible object is
@@ -85,7 +85,7 @@ public class RangeMetadonneeType {
     }
 
     /**
-     * Sets the value of the valeurMin property.
+     * Définit la valeur de la propriété valeurMin.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +97,7 @@ public class RangeMetadonneeType {
     }
 
     /**
-     * Gets the value of the valeurMax property.
+     * Obtient la valeur de la propriété valeurMax.
      * 
      * @return
      *     possible object is
@@ -109,7 +109,7 @@ public class RangeMetadonneeType {
     }
 
     /**
-     * Sets the value of the valeurMax property.
+     * Définit la valeur de la propriété valeurMax.
      * 
      * @param value
      *     allowed object is

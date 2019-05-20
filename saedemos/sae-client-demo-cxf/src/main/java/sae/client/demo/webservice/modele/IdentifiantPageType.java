@@ -8,25 +8,25 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Un identifiant de la page renvoy� par la
- *             recherche par iterateur. Il est compos� d�une valeur, et
- *             d�un uuid de document
+ * Un identifiant de la page renvoyé par la
+ *             recherche par iterateur. Il est composé d’une valeur, et
+ *             d’un uuid de document
  * 
- * <p>Java class for identifiantPageType complex type.
+ * <p>Classe Java pour identifiantPageType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="identifiantPageType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="valeur" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/>
- *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="identifiantPageType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="valeur" type="{http://www.cirtil.fr/saeService}metadonneeValeurType"/&gt;
+ *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -46,7 +46,7 @@ public class IdentifiantPageType {
     protected String idArchive;
 
     /**
-     * Gets the value of the valeur property.
+     * Obtient la valeur de la propriété valeur.
      * 
      * @return
      *     possible object is
@@ -58,7 +58,7 @@ public class IdentifiantPageType {
     }
 
     /**
-     * Sets the value of the valeur property.
+     * Définit la valeur de la propriété valeur.
      * 
      * @param value
      *     allowed object is
@@ -70,7 +70,7 @@ public class IdentifiantPageType {
     }
 
     /**
-     * Gets the value of the idArchive property.
+     * Obtient la valeur de la propriété idArchive.
      * 
      * @return
      *     possible object is
@@ -82,7 +82,7 @@ public class IdentifiantPageType {
     }
 
     /**
-     * Sets the value of the idArchive property.
+     * Définit la valeur de la propriété idArchive.
      * 
      * @param value
      *     allowed object is

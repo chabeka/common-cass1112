@@ -7,23 +7,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Retour de l'op�ration
+ * Retour de l'opération
  *             de copie.
  * 
- * <p>Java class for documentExistantResponseType complex type.
+ * <p>Classe Java pour documentExistantResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="documentExistantResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="isDocExist" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="documentExistantResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="isDocExist" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -39,7 +39,7 @@ public class DocumentExistantResponseType {
     protected boolean isDocExist;
 
     /**
-     * Gets the value of the isDocExist property.
+     * Obtient la valeur de la propriété isDocExist.
      * 
      */
     public boolean isIsDocExist() {
@@ -47,7 +47,7 @@ public class DocumentExistantResponseType {
     }
 
     /**
-     * Sets the value of the isDocExist property.
+     * Définit la valeur de la propriété isDocExist.
      * 
      */
     public void setIsDocExist(boolean value) {

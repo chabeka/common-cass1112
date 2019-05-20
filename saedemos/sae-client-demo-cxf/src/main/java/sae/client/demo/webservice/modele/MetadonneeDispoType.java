@@ -8,37 +8,37 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une m�tadonn�e d�finie par un ensemble
+ * Une métadonnée définie par un ensemble
  *             de
- *             propri�t� (code long, libell�, description, format,
- *             formatage, sp�cifiable � l'archivage, obligatoire �
- *             l'archivage, taille max, crit�re de recherche, indexation,
+ *             propriété (code long, libellé, description, format,
+ *             formatage, spécifiable à l'archivage, obligatoire à
+ *             l'archivage, taille max, critère de recherche, indexation,
  *             modifiable)
  * 
- * <p>Java class for metadonneeDispoType complex type.
+ * <p>Classe Java pour metadonneeDispoType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="metadonneeDispoType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="codeLong" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="libelle" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="format" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="formatage" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="specifiableArchivage" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="obligatoireArchivage" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="tailleMax" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="critereRecherche" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="indexation" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *         &lt;element name="modifiable" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="metadonneeDispoType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="codeLong" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="libelle" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="description" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="format" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="formatage" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="specifiableArchivage" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="obligatoireArchivage" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="tailleMax" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="critereRecherche" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="indexation" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *         &lt;element name="modifiable" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -79,7 +79,7 @@ public class MetadonneeDispoType {
     protected boolean modifiable;
 
     /**
-     * Gets the value of the codeLong property.
+     * Obtient la valeur de la propriété codeLong.
      * 
      * @return
      *     possible object is
@@ -91,7 +91,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the codeLong property.
+     * Définit la valeur de la propriété codeLong.
      * 
      * @param value
      *     allowed object is
@@ -103,7 +103,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the libelle property.
+     * Obtient la valeur de la propriété libelle.
      * 
      * @return
      *     possible object is
@@ -115,7 +115,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the libelle property.
+     * Définit la valeur de la propriété libelle.
      * 
      * @param value
      *     allowed object is
@@ -127,7 +127,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the description property.
+     * Obtient la valeur de la propriété description.
      * 
      * @return
      *     possible object is
@@ -139,7 +139,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the description property.
+     * Définit la valeur de la propriété description.
      * 
      * @param value
      *     allowed object is
@@ -151,7 +151,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the format property.
+     * Obtient la valeur de la propriété format.
      * 
      * @return
      *     possible object is
@@ -163,7 +163,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the format property.
+     * Définit la valeur de la propriété format.
      * 
      * @param value
      *     allowed object is
@@ -175,7 +175,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the formatage property.
+     * Obtient la valeur de la propriété formatage.
      * 
      * @return
      *     possible object is
@@ -187,7 +187,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the formatage property.
+     * Définit la valeur de la propriété formatage.
      * 
      * @param value
      *     allowed object is
@@ -199,7 +199,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the specifiableArchivage property.
+     * Obtient la valeur de la propriété specifiableArchivage.
      * 
      */
     public boolean isSpecifiableArchivage() {
@@ -207,7 +207,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the specifiableArchivage property.
+     * Définit la valeur de la propriété specifiableArchivage.
      * 
      */
     public void setSpecifiableArchivage(boolean value) {
@@ -215,7 +215,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the obligatoireArchivage property.
+     * Obtient la valeur de la propriété obligatoireArchivage.
      * 
      */
     public boolean isObligatoireArchivage() {
@@ -223,7 +223,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the obligatoireArchivage property.
+     * Définit la valeur de la propriété obligatoireArchivage.
      * 
      */
     public void setObligatoireArchivage(boolean value) {
@@ -231,7 +231,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the tailleMax property.
+     * Obtient la valeur de la propriété tailleMax.
      * 
      */
     public int getTailleMax() {
@@ -239,7 +239,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the tailleMax property.
+     * Définit la valeur de la propriété tailleMax.
      * 
      */
     public void setTailleMax(int value) {
@@ -247,7 +247,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the critereRecherche property.
+     * Obtient la valeur de la propriété critereRecherche.
      * 
      */
     public boolean isCritereRecherche() {
@@ -255,7 +255,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the critereRecherche property.
+     * Définit la valeur de la propriété critereRecherche.
      * 
      */
     public void setCritereRecherche(boolean value) {
@@ -263,7 +263,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the indexation property.
+     * Obtient la valeur de la propriété indexation.
      * 
      */
     public boolean isIndexation() {
@@ -271,7 +271,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the indexation property.
+     * Définit la valeur de la propriété indexation.
      * 
      */
     public void setIndexation(boolean value) {
@@ -279,7 +279,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Gets the value of the modifiable property.
+     * Obtient la valeur de la propriété modifiable.
      * 
      */
     public boolean isModifiable() {
@@ -287,7 +287,7 @@ public class MetadonneeDispoType {
     }
 
     /**
-     * Sets the value of the modifiable property.
+     * Définit la valeur de la propriété modifiable.
      * 
      */
     public void setModifiable(boolean value) {

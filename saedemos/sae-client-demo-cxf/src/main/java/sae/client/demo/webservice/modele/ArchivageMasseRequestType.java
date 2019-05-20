@@ -4,27 +4,28 @@ package sae.client.demo.webservice.modele;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d'entr�e de l'op�ration
+ * Paramètre d'entrée de l'opération
  *             'archivageMasse'
  * 
- * <p>Java class for archivageMasseRequestType complex type.
+ * <p>Classe Java pour archivageMasseRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="archivageMasseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="urlSommaire" type="{http://www.cirtil.fr/saeService}ecdeUrlSommaireType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="archivageMasseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="urlSommaire" type="{http://www.cirtil.fr/saeService}ecdeUrlSommaireType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -38,10 +39,11 @@ import javax.xml.bind.annotation.XmlType;
 public class ArchivageMasseRequestType {
 
     @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String urlSommaire;
 
     /**
-     * Gets the value of the urlSommaire property.
+     * Obtient la valeur de la propriété urlSommaire.
      * 
      * @return
      *     possible object is
@@ -53,7 +55,7 @@ public class ArchivageMasseRequestType {
     }
 
     /**
-     * Sets the value of the urlSommaire property.
+     * Définit la valeur de la propriété urlSommaire.
      * 
      * @param value
      *     allowed object is

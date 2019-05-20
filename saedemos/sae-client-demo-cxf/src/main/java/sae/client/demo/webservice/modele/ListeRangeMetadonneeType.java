@@ -9,22 +9,22 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Une liste de range de mÈtadonnÈes
+ * Une liste de range de m√©tadonn√©es
  * 
- * <p>Java class for listeRangeMetadonneeType complex type.
+ * <p>Classe Java pour listeRangeMetadonneeType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de sch√©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="listeRangeMetadonneeType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="rangeMetadonnee" type="{http://www.cirtil.fr/saeService}rangeMetadonneeType" maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="listeRangeMetadonneeType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="rangeMetadonnee" type="{http://www.cirtil.fr/saeService}rangeMetadonneeType" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

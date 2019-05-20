@@ -4,30 +4,31 @@ package sae.client.demo.webservice.modele;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tres d'entr�es de l'op�ration
+ * Paramètres d'entrées de l'opération
  *             'modificationMasse'
  * 
- * <p>Java class for modificationMasseRequestType complex type.
+ * <p>Classe Java pour modificationMasseRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="modificationMasseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="codeTraitement" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="urlSommaire" type="{http://www.cirtil.fr/saeService}ecdeUrlSommaireType"/>
- *         &lt;element name="hash" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="typeHash" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="modificationMasseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="codeTraitement" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="urlSommaire" type="{http://www.cirtil.fr/saeService}ecdeUrlSommaireType"/&gt;
+ *         &lt;element name="hash" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="typeHash" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -46,6 +47,7 @@ public class ModificationMasseRequestType {
     @XmlElement(required = true)
     protected String codeTraitement;
     @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String urlSommaire;
     @XmlElement(required = true)
     protected String hash;
@@ -53,7 +55,7 @@ public class ModificationMasseRequestType {
     protected String typeHash;
 
     /**
-     * Gets the value of the codeTraitement property.
+     * Obtient la valeur de la propriété codeTraitement.
      * 
      * @return
      *     possible object is
@@ -65,7 +67,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Sets the value of the codeTraitement property.
+     * Définit la valeur de la propriété codeTraitement.
      * 
      * @param value
      *     allowed object is
@@ -77,7 +79,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Gets the value of the urlSommaire property.
+     * Obtient la valeur de la propriété urlSommaire.
      * 
      * @return
      *     possible object is
@@ -89,7 +91,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Sets the value of the urlSommaire property.
+     * Définit la valeur de la propriété urlSommaire.
      * 
      * @param value
      *     allowed object is
@@ -101,7 +103,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Gets the value of the hash property.
+     * Obtient la valeur de la propriété hash.
      * 
      * @return
      *     possible object is
@@ -113,7 +115,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Sets the value of the hash property.
+     * Définit la valeur de la propriété hash.
      * 
      * @param value
      *     allowed object is
@@ -125,7 +127,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Gets the value of the typeHash property.
+     * Obtient la valeur de la propriété typeHash.
      * 
      * @return
      *     possible object is
@@ -137,7 +139,7 @@ public class ModificationMasseRequestType {
     }
 
     /**
-     * Sets the value of the typeHash property.
+     * Définit la valeur de la propriété typeHash.
      * 
      * @param value
      *     allowed object is

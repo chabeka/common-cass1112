@@ -8,24 +8,24 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d'entr�e de l'op�ration 'archivage
+ * Paramètre d'entrée de l'opération 'archivage
  *             unitaire'
  * 
- * <p>Java class for modificationRequestType complex type.
+ * <p>Classe Java pour modificationRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="modificationRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="modificationRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -45,7 +45,7 @@ public class ModificationRequestType {
     protected ListeMetadonneeType metadonnees;
 
     /**
-     * Gets the value of the uuid property.
+     * Obtient la valeur de la propriété uuid.
      * 
      * @return
      *     possible object is
@@ -57,7 +57,7 @@ public class ModificationRequestType {
     }
 
     /**
-     * Sets the value of the uuid property.
+     * Définit la valeur de la propriété uuid.
      * 
      * @param value
      *     allowed object is
@@ -69,7 +69,7 @@ public class ModificationRequestType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -81,7 +81,7 @@ public class ModificationRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

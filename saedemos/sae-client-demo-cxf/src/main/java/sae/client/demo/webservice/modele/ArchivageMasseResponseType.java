@@ -7,22 +7,22 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Valeur de retour de l'opÈration
- *             'archivageMasse'. Le type est vide, il sert simplement ‡
+ * Valeur de retour de l'op√©ration
+ *             'archivageMasse'. Le type est vide, il sert simplement √†
  *             respecter la convention Document/Literal Wrapped pour le
- *             service web dans lequel il sera utilisÈ
+ *             service web dans lequel il sera utilis√©
  * 
- * <p>Java class for archivageMasseResponseType complex type.
+ * <p>Classe Java pour archivageMasseResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de sch√©ma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="archivageMasseResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="archivageMasseResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

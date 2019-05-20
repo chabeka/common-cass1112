@@ -8,24 +8,24 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Requ�te principale de la recherche par
+ * Requête principale de la recherche par
  *             iterateur.
  * 
- * <p>Java class for requetePrincipaleType complex type.
+ * <p>Classe Java pour requetePrincipaleType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="requetePrincipaleType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="fixedMetadatas" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *         &lt;element name="varyingMetadata" type="{http://www.cirtil.fr/saeService}rangeMetadonneeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="requetePrincipaleType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="fixedMetadatas" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *         &lt;element name="varyingMetadata" type="{http://www.cirtil.fr/saeService}rangeMetadonneeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -45,7 +45,7 @@ public class RequetePrincipaleType {
     protected RangeMetadonneeType varyingMetadata;
 
     /**
-     * Gets the value of the fixedMetadatas property.
+     * Obtient la valeur de la propriété fixedMetadatas.
      * 
      * @return
      *     possible object is
@@ -57,7 +57,7 @@ public class RequetePrincipaleType {
     }
 
     /**
-     * Sets the value of the fixedMetadatas property.
+     * Définit la valeur de la propriété fixedMetadatas.
      * 
      * @param value
      *     allowed object is
@@ -69,7 +69,7 @@ public class RequetePrincipaleType {
     }
 
     /**
-     * Gets the value of the varyingMetadata property.
+     * Obtient la valeur de la propriété varyingMetadata.
      * 
      * @return
      *     possible object is
@@ -81,7 +81,7 @@ public class RequetePrincipaleType {
     }
 
     /**
-     * Sets the value of the varyingMetadata property.
+     * Définit la valeur de la propriété varyingMetadata.
      * 
      * @param value
      *     allowed object is

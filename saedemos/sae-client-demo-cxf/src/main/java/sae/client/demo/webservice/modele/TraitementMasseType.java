@@ -10,28 +10,28 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * Un traitement de masse
  * 
- * <p>Java class for traitementMasseType complex type.
+ * <p>Classe Java pour traitementMasseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="traitementMasseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="idJob" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateCreation" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="etat" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="nombreDocuments" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateReservation" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateDebut" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="dateFin" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="traitementMasseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="idJob" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="dateCreation" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="etat" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="nombreDocuments" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="dateReservation" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="dateDebut" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="dateFin" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -72,7 +72,7 @@ public class TraitementMasseType {
     protected String message;
 
     /**
-     * Gets the value of the idJob property.
+     * Obtient la valeur de la propriété idJob.
      * 
      * @return
      *     possible object is
@@ -84,7 +84,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the idJob property.
+     * Définit la valeur de la propriété idJob.
      * 
      * @param value
      *     allowed object is
@@ -96,7 +96,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the type property.
+     * Obtient la valeur de la propriété type.
      * 
      * @return
      *     possible object is
@@ -108,7 +108,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the type property.
+     * Définit la valeur de la propriété type.
      * 
      * @param value
      *     allowed object is
@@ -120,7 +120,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the dateCreation property.
+     * Obtient la valeur de la propriété dateCreation.
      * 
      * @return
      *     possible object is
@@ -132,7 +132,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the dateCreation property.
+     * Définit la valeur de la propriété dateCreation.
      * 
      * @param value
      *     allowed object is
@@ -144,7 +144,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the etat property.
+     * Obtient la valeur de la propriété etat.
      * 
      * @return
      *     possible object is
@@ -156,7 +156,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the etat property.
+     * Définit la valeur de la propriété etat.
      * 
      * @param value
      *     allowed object is
@@ -168,7 +168,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the nombreDocuments property.
+     * Obtient la valeur de la propriété nombreDocuments.
      * 
      * @return
      *     possible object is
@@ -180,7 +180,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the nombreDocuments property.
+     * Définit la valeur de la propriété nombreDocuments.
      * 
      * @param value
      *     allowed object is
@@ -192,7 +192,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the dateReservation property.
+     * Obtient la valeur de la propriété dateReservation.
      * 
      * @return
      *     possible object is
@@ -204,7 +204,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the dateReservation property.
+     * Définit la valeur de la propriété dateReservation.
      * 
      * @param value
      *     allowed object is
@@ -216,7 +216,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the dateDebut property.
+     * Obtient la valeur de la propriété dateDebut.
      * 
      * @return
      *     possible object is
@@ -228,7 +228,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the dateDebut property.
+     * Définit la valeur de la propriété dateDebut.
      * 
      * @param value
      *     allowed object is
@@ -240,7 +240,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the dateFin property.
+     * Obtient la valeur de la propriété dateFin.
      * 
      * @return
      *     possible object is
@@ -252,7 +252,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the dateFin property.
+     * Définit la valeur de la propriété dateFin.
      * 
      * @param value
      *     allowed object is
@@ -264,7 +264,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Gets the value of the message property.
+     * Obtient la valeur de la propriété message.
      * 
      * @return
      *     possible object is
@@ -276,7 +276,7 @@ public class TraitementMasseType {
     }
 
     /**
-     * Sets the value of the message property.
+     * Définit la valeur de la propriété message.
      * 
      * @param value
      *     allowed object is
