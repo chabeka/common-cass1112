@@ -43,11 +43,11 @@
       <property name="hosts" value="${cassandra.hosts.cql}" />
       <property name="dataSet" value="${cassandra.dataset.cql}"/>
    </bean>
-   <!-- <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
+   <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
    		<constructor-arg ref="cassandraCQLClientFactory" />
    		<constructor-arg name="value" value="${sae.api.gestion.profil.cache}" />
     	<constructor-arg name="initCacheOnStartup" value="${sae.api.gestion.profil.initCacheOnStartup}" />
-   </bean> -->
+   </bean>
    
    <!-- configuration du clock -->
    <bean id="jobClockConfiguration"
