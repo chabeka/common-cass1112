@@ -1,9 +1,19 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.Assert;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Cluster.Builder;
@@ -22,8 +32,6 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
   private Cluster testCluster = null;
 
   private Session testSession = null;
-
-  public static final String KEYSPACE_TU = "keyspace_cql";
 
   /**
    * Réinitialise les données de la base cassandra locale
@@ -46,13 +54,9 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
 
     // On inject les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
-      for (final String dataSet : newDataSets) {
-        final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
-        cqlDataLoader.load(new ClassPathCQLDataSet(dataSet, true, true, CassandraServerBeanCql.KEYSPACE_TU));
-      }
+      final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
+      cqlDataLoader.load(mergeDataSets(newDataSets));
     }
-    // final Session session = testCluster.connect(CassandraServerBeanCql.KEYSPACE_TU);
-    // testSession = session;
   }
 
   /**
@@ -117,6 +121,54 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     } else {
       return hosts;
     }
+  }
+
+  /**
+   * Methode permettant de merger les data sets
+   * 
+   * @param dataSets
+   *          fichier CQL
+   * @return Le dataSet permettant contenant le load CQL
+   */
+  private ClassPathCQLDataSet mergeDataSets(final String... dataSets) {
+    // Vérification des paramètres d'entrée
+    Assert.notEmpty(dataSets, "La liste des Dataset est vide");
+    final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
+    Path tmpFileDataSet;
+    try {
+      tmpFileDataSet = Paths.get(ClassLoader.getSystemResource(fileDataSet).toURI());
+
+      if (tmpFileDataSet != null && tmpFileDataSet.toFile() != null) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFileDataSet.toFile(), false))) {
+          for (final String dataSet : dataSets) {
+            final Path path = Paths.get(ClassLoader.getSystemResource(dataSet).toURI());
+            if (path != null && path.getFileName().toString().endsWith(".cql")) {
+              try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+                String text = null;
+                while ((text = br.readLine()) != null) {
+                  bw.write(text);
+                  bw.newLine();
+                }
+              } finally {
+              }
+            }
+          }
+        } catch (final IOException | URISyntaxException exp) {
+          LOG.error("Erreur de merge des datasets : " + exp);
+          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+        }
+      } else {
+        LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
+        return new ClassPathCQLDataSet(dataSets[0], true, false, AbstractCassandraServer.KEYSPACE_TU);
+      }
+
+    } catch (final URISyntaxException e) {
+      LOG.error("Erreur de merge des datasets : " + e);
+      LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+    }
+
+    // Renvoie l'objet Dataset fusionné
+    return new ClassPathCQLDataSet(fileDataSet, true, false, AbstractCassandraServer.KEYSPACE_TU);
   }
 
   /**

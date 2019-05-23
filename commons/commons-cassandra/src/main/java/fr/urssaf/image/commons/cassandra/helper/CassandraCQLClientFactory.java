@@ -35,13 +35,13 @@ public final class CassandraCQLClientFactory implements DisposableBean {
 
   private final static String CASSANDRA_START_LOCAL = "cassandra.startlocal";
 
-  private final static String CASSANDRA_HOSTS = "cassandra.hosts.cql";
+  private final static String CASSANDRA_HOSTS = "cassandra.hosts";
 
   private final static String CASSANDRA_USERNAME = "cassandra.username";
 
   private final static String CASSANDRA_PASSWORD = "cassandra.password";
 
-  private final static String CASSANDRA_KEYSPACE = "cassandra.keyspace.cql";
+  private final static String CASSANDRA_KEYSPACE = "cassandra.keyspace";
 
   private final static String CASSANDRA_DATASET = "cassandra.dataset.cql";
 
@@ -68,7 +68,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * Constructeur utilisé pour le transfert.
    *
    * @param saeConfigResource
-   *            prend en parametres le fichier de configuration du sae.
+   *          prend en parametres le fichier de configuration du sae.
    * @throws InterruptedException
    */
   public CassandraCQLClientFactory(final AbstractResource saeConfigResource) throws InterruptedException {
@@ -106,8 +106,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
         // Remplacement par une chaîne vide
         hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
         hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-      }
-      else {
+      } else {
         hostsModifiedFinal = tmpHosts;
       }
       String hosts = "";
@@ -162,18 +161,18 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * un serveur cassandra. Utile pour simplifier l'instanciation via spring
    *
    * @param cassandraServer
-   *            Correspond au(x) serveur(s) qu'on tente de joindre
+   *          Correspond au(x) serveur(s) qu'on tente de joindre
    * @param keyspaceName
-   *            Nom du keyspace
+   *          Nom du keyspace
    * @param userName
-   *            Nom d'utilisateur, pour l'authentification
+   *          Nom d'utilisateur, pour l'authentification
    * @param password
-   *            Mot de passe, pour l'authentification
+   *          Mot de passe, pour l'authentification
    * @throws InterruptedException
-   *             Ou nous a demandé de nous arrêter alors on s'arrête
+   *           Ou nous a demandé de nous arrêter alors on s'arrête
    */
-  public CassandraCQLClientFactory(final CassandraServerBeanCql cassandraServer, final String keyspaceName,
-                                   final String userName, final String password) throws InterruptedException {
+  public CassandraCQLClientFactory(final CassandraServerBeanCql cassandraServer, final String keyspaceName, final String userName, final String password)
+      throws InterruptedException {
 
     // Construire la liste des hosts qui sera sans le port ou on
     // l'ajoute 9160
@@ -185,8 +184,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
       // Remplacement par une chaîne vide
       hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
       hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-    }
-    else {
+    } else {
       hostsModifiedFinal = tmpHosts;
     }
     String hosts = "";
@@ -218,22 +216,25 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * @param password
    * @throws InterruptedException
    */
-  private void initCassandra(final CassandraServerBeanCql cassandraServer, final String keyspaceName,
-                             final String userName, final String password) throws InterruptedException {
+  private void initCassandra(final CassandraServerBeanCql cassandraServer, final String keyspaceName, final String userName, final String password)
+      throws InterruptedException {
     final QueryOptions qo = new QueryOptions().setConsistencyLevel(ConsistencyLevel.QUORUM);
     final PoolingOptions poolingOptions = new PoolingOptions();
 
     if (cassandraServer.getStartLocal()) {
-      poolingOptions.setConnectionsPerHost(HostDistance.LOCAL, 1, 1).setConnectionsPerHost(HostDistance.REMOTE, 1,
-                                                                                           1);
+      poolingOptions.setConnectionsPerHost(HostDistance.LOCAL, 1, 1).setConnectionsPerHost(HostDistance.REMOTE, 1, 1);
       session = cassandraServer.getTestSession();
       cluster = cassandraServer.getTestSession().getCluster();
       this.keyspaceName = CassandraServerBeanCql.KEYSPACE_TU;
 
     } else {
       final List<InetSocketAddress> adresses = getInetSocketAddressList(cassandraServer);
-      cluster = Cluster.builder().addContactPointsWithPorts(adresses).withCredentials(userName, password)
-          .withPoolingOptions(poolingOptions).withQueryOptions(qo).build();
+      cluster = Cluster.builder()
+                       .addContactPointsWithPorts(adresses)
+                       .withCredentials(userName, password)
+                       .withPoolingOptions(poolingOptions)
+                       .withQueryOptions(qo)
+                       .build();
       session = cluster.connect('\"' + keyspaceName + '\"');
       this.keyspaceName = '\"' + keyspaceName + '\"';
     }
@@ -246,7 +247,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * configuration de Cassandra (sae-config-cassandra.properties).
    *
    * @param cassandraServer
-   *            Paramètres de connection à Cassandra
+   *          Paramètres de connection à Cassandra
    */
   private List<InetSocketAddress> getInetSocketAddressList(final CassandraServerBeanCql cassandraServer) {
     final List<InetSocketAddress> adresses = new ArrayList<>();
@@ -276,9 +277,9 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * d'une IP comprenant ou pas un port.
    *
    * @param host
-   *            hostname ou d'une IP comprenant ou pas un port
+   *          hostname ou d'une IP comprenant ou pas un port
    * @param cassandraServer
-   *            Paramètres de connection à Cassandra
+   *          Paramètres de connection à Cassandra
    */
   private InetSocketAddress getInetSocketAddress(final String host, final CassandraServerBeanCql cassandraServer) {
     InetSocketAddress addr = null;
@@ -288,14 +289,11 @@ public final class CassandraCQLClientFactory implements DisposableBean {
         try {
           addr = new InetSocketAddress(inetAddressParam[0], Integer.parseInt(inetAddressParam[1]));
         } catch (final Exception e) {
-          LOG.error(
-                    "Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : "
-                        + cassandraServer.getHosts());
+          LOG.error("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : " + cassandraServer.getHosts());
         }
       } else {
-        LOG.error(
-                  "Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
-                      + cassandraServer.getHosts());
+        LOG.error("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
+            + cassandraServer.getHosts());
       }
     } else {
       addr = new InetSocketAddress(host, CASSANDRA_DEFAULT_PORT);
@@ -356,7 +354,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
 
   /**
    * @param keyspace
-   *            the keyspace to set
+   *          the keyspace to set
    */
   public void setKeyspace(final String keyspace) {
     if (getStartLocal()) {

@@ -24,7 +24,7 @@
    <!-- la session cassandra à utiliser pour les connections CQL -->
    <bean id="cassandraCQLClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory" >
       <constructor-arg ref="cassandraServerCql" />
-      <constructor-arg value="${cassandra.keyspace.cql}" />
+      <constructor-arg value="${cassandra.keyspace}" />
       <constructor-arg value="${cassandra.username}" />
       <constructor-arg value="${cassandra.password}" />
    </bean>
@@ -40,7 +40,7 @@
    </bean>
       <bean id="cassandraServerCql" class="fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql">
       <property name="startLocal" value="${cassandra.startlocal}"/>
-      <property name="hosts" value="${cassandra.hosts.cql}" />
+      <property name="hosts" value="${cassandra.hosts}" />
       <property name="dataSet" value="${cassandra.dataset.cql}"/>
    </bean>
    <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
