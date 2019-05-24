@@ -59,7 +59,7 @@ public class SAECassandraDAOTest {
       saeDao.connectToKeySpace();
       assertNotNull(saeDao.getKeyspace());
 
-      assertEquals("Le nom du Keyspace Cassandra est incorrect","KEYSPACE_TU", saeDao.getKeyspace().getKeyspaceName());
+      assertEquals("Le nom du Keyspace Cassandra est incorrect","keyspace_tu", saeDao.getKeyspace().getKeyspaceName());
    }
 
    @Test

@@ -14,7 +14,7 @@ import fr.urssaf.image.sae.trace.dao.IGenericTraceTypeDao;
  */
 public class MigrationTrace {
 
-   public String keyspace_tu = "KEYSPACE_TU";
+   public String keyspace_tu = "keyspace_tu";
 
    protected static final Date DATE = new Date();
 
