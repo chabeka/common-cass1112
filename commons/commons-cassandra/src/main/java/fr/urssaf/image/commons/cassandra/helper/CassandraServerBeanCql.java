@@ -5,14 +5,16 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.cassandraunit.CQLDataLoader;
 import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.UrlResource;
 import org.springframework.util.Assert;
 
 import com.datastax.driver.core.Cluster;
@@ -141,12 +143,15 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
     Path tmpFileDataSet;
     try {
-      tmpFileDataSet = Paths.get(ClassLoader.getSystemResource(fileDataSet).toURI());
+      final URI uri = getClass().getClassLoader().getResource(fileDataSet).toURI();
+
+      tmpFileDataSet = FileSystems.getDefault().getPath(new UrlResource(uri).getFile().getAbsolutePath());
 
       if (tmpFileDataSet != null && tmpFileDataSet.toFile() != null) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFileDataSet.toFile(), false))) {
           for (final String dataSet : dataSets) {
-            final Path path = Paths.get(ClassLoader.getSystemResource(dataSet).toURI());
+            final URI uriDts = getClass().getClassLoader().getResource(dataSet).toURI();
+            final Path path = FileSystems.getDefault().getPath(new UrlResource(uriDts).getFile().getAbsolutePath());
             if (path != null && path.getFileName().toString().endsWith(".cql")) {
               try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
                 String text = null;
@@ -167,7 +172,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
         return new ClassPathCQLDataSet(dataSets[0], createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
       }
 
-    } catch (final URISyntaxException e) {
+    } catch (final URISyntaxException | IOException e) {
       LOG.error("Erreur de merge des datasets : " + e);
       LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
     }
