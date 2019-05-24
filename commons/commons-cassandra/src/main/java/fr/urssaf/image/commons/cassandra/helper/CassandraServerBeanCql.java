@@ -153,7 +153,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
       }
 
       if (tmpFileDataSet != null && tmpFileDataSet.toFile() != null) {
-        try (BufferedWriter bw = Files.newBufferedWriter(tmpFileDataSet, StandardOpenOption.CREATE_NEW, StandardOpenOption.APPEND)) {
+        try (BufferedWriter bw = Files.newBufferedWriter(tmpFileDataSet, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
           for (final String dataSet : dataSets) {
             final URI uriDts = getClass().getClassLoader().getResource(dataSet).toURI();
             final Path path = FileSystems.getDefault().getPath(new UrlResource(uriDts).getFile().getAbsolutePath());
@@ -170,7 +170,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
           }
         } catch (final IOException | URISyntaxException exp) {
           LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSetTmp);
+          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+          tmpFileDataSet = Paths.get(fileDataSet);
         }
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
@@ -183,8 +184,6 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
                                   false,
                                   AbstractCassandraServer.KEYSPACE_TU);
       }
-
-      // FileSystems.newFileSystem(tmpFileDataSet, this.getClass().getClassLoader());
 
     } catch (final IOException | URISyntaxException e) {
       LOG.error("Erreur de merge des datasets : " + e);
