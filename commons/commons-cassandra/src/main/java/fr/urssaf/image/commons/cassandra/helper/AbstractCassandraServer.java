@@ -34,7 +34,7 @@ public abstract class AbstractCassandraServer implements InitializingBean, Dispo
 
   protected String hosts = null;
 
-  public static final String KEYSPACE_TU = "KEYSPACE_TU";
+  public static final String KEYSPACE_TU = "keyspace_tu";
 
   /**
    * Indique quel jeu de données cassandraUnit doit être utilisé lors de

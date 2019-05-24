@@ -9,6 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import com.datastax.driver.core.ResultSet;
+import com.datastax.driver.core.Session;
+
 import fr.urssaf.image.commons.cassandra.model.MemoryDataSet;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.hector.api.Cluster;
@@ -46,11 +49,10 @@ public class CassandraServerBean extends AbstractCassandraServer {
     waitForServer();
 
     // Fusionne les DataSets
-
     final DataSet dataSet = mergeDataSets(newDataSets);
     // Charge les données
     final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
-    dataLoader.load(dataSet);
+    dataLoader.load(dataSet, true);
 
   }
 
@@ -122,7 +124,6 @@ public class CassandraServerBean extends AbstractCassandraServer {
   }
 
   private DataSet mergeDataSets(final String... dataSets) {
-
     // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
 
@@ -152,6 +153,20 @@ public class CassandraServerBean extends AbstractCassandraServer {
     // Renvoie l'objet Dataset fusionné
     return dataSetResult;
 
+  }
+
+  /**
+   * Vérifie s'il faut créer le keyspace ou pas.
+   * 
+   * @param session
+   *          Session de test
+   * @return true s'il faut crer le keyspace, false sinon.
+   */
+  private boolean isCreateKeyspace(final Session session) {
+    final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + AbstractCassandraServer.KEYSPACE_TU + "'";
+    final ResultSet keyspaceQueryResult = session.execute(selectQuery);
+
+    return !(keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext());
   }
 
   /**

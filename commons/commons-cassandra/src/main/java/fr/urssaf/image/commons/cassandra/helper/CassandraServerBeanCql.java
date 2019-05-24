@@ -17,6 +17,7 @@ import org.springframework.util.Assert;
 
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Cluster.Builder;
+import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Session;
 
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
@@ -55,7 +56,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     // On inject les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
       final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
-      cqlDataLoader.load(mergeDataSets(newDataSets));
+      cqlDataLoader.load(mergeDataSets(testSession, newDataSets));
     }
   }
 
@@ -126,11 +127,15 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
   /**
    * Methode permettant de merger les data sets
    * 
+   * @param testSession2
    * @param dataSets
    *          fichier CQL
    * @return Le dataSet permettant contenant le load CQL
    */
-  private ClassPathCQLDataSet mergeDataSets(final String... dataSets) {
+  private ClassPathCQLDataSet mergeDataSets(final Session session, final String... dataSets) {
+    // On vérifie que le keyspace existe pour le créer si besoin
+    final boolean createKeyspace = isCreateKeyspace(session);
+
     // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
     final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
@@ -159,7 +164,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
         }
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
-        return new ClassPathCQLDataSet(dataSets[0], true, false, AbstractCassandraServer.KEYSPACE_TU);
+        return new ClassPathCQLDataSet(dataSets[0], createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
       }
 
     } catch (final URISyntaxException e) {
@@ -168,7 +173,33 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     }
 
     // Renvoie l'objet Dataset fusionné
-    return new ClassPathCQLDataSet(fileDataSet, true, false, AbstractCassandraServer.KEYSPACE_TU);
+    return new ClassPathCQLDataSet(fileDataSet, createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
+  }
+
+  /**
+   * Vérifie s'il faut créer le keyspace ou pas.
+   * 
+   * @param session
+   *          Session de test
+   * @return true s'il faut crer le keyspace, false sinon.
+   */
+  private boolean isCreateKeyspace(final Session session) {
+    boolean createKeyspace = false;
+
+    // Vérification de l'existence du keyspace
+    final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + AbstractCassandraServer.KEYSPACE_TU + "'";
+    final ResultSet keyspaceQueryResult = session.execute(selectQuery);
+
+    createKeyspace = !(keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext());
+
+    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par défaut dans le librairie cassandra-unit.
+    if (!createKeyspace) {
+      final String useQuery = "USE " + AbstractCassandraServer.KEYSPACE_TU;
+      LOG.debug("executing : " + useQuery);
+      session.execute(useQuery);
+    }
+
+    return createKeyspace;
   }
 
   /**
