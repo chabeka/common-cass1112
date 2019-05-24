@@ -3,15 +3,17 @@ package fr.urssaf.image.commons.cassandra.helper;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 
 import org.cassandraunit.CQLDataLoader;
-import org.cassandraunit.dataset.cql.ClassPathCQLDataSet;
+import org.cassandraunit.dataset.cql.FileCQLDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
@@ -134,21 +136,24 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
    *          fichier CQL
    * @return Le dataSet permettant contenant le load CQL
    */
-  private ClassPathCQLDataSet mergeDataSets(final Session session, final String... dataSets) {
+  private FileCQLDataSet mergeDataSets(final Session session, final String... dataSets) {
     // On vérifie que le keyspace existe pour le créer si besoin
     final boolean createKeyspace = isCreateKeyspace(session);
 
     // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
     final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
-    Path tmpFileDataSet;
-    try {
-      final URI uri = getClass().getClassLoader().getResource(fileDataSet).toURI();
+    final String fileDataSetTmp = "target/tmp/migration-cqltable-common.cql";
+    Path tmpFileDataSet = Paths.get(fileDataSetTmp);
 
-      tmpFileDataSet = FileSystems.getDefault().getPath(new UrlResource(uri).getFile().getAbsolutePath());
+    try {
+
+      if (!Files.exists(tmpFileDataSet.getParent())) {
+        Files.createDirectories(tmpFileDataSet.getParent());
+      }
 
       if (tmpFileDataSet != null && tmpFileDataSet.toFile() != null) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(tmpFileDataSet.toFile(), false))) {
+        try (BufferedWriter bw = Files.newBufferedWriter(tmpFileDataSet, StandardOpenOption.CREATE_NEW, StandardOpenOption.APPEND)) {
           for (final String dataSet : dataSets) {
             final URI uriDts = getClass().getClassLoader().getResource(dataSet).toURI();
             final Path path = FileSystems.getDefault().getPath(new UrlResource(uriDts).getFile().getAbsolutePath());
@@ -165,20 +170,30 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
           }
         } catch (final IOException | URISyntaxException exp) {
           LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSetTmp);
         }
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
-        return new ClassPathCQLDataSet(dataSets[0], createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
+
+        return new FileCQLDataSet(FileSystems.getDefault()
+                                             .getPath(new UrlResource(getClass().getClassLoader().getResource(dataSets[0]).toURI()).getFile().getAbsolutePath())
+                                             .toFile()
+                                             .getAbsolutePath(),
+                                  createKeyspace,
+                                  false,
+                                  AbstractCassandraServer.KEYSPACE_TU);
       }
 
-    } catch (final URISyntaxException | IOException e) {
+      // FileSystems.newFileSystem(tmpFileDataSet, this.getClass().getClassLoader());
+
+    } catch (final IOException | URISyntaxException e) {
       LOG.error("Erreur de merge des datasets : " + e);
       LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+      tmpFileDataSet = Paths.get(fileDataSet);
     }
 
     // Renvoie l'objet Dataset fusionné
-    return new ClassPathCQLDataSet(fileDataSet, createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
+    return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
   }
 
   /**
