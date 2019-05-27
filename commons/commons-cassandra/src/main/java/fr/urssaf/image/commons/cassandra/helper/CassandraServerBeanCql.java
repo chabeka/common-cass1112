@@ -2,9 +2,9 @@ package fr.urssaf.image.commons.cassandra.helper;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URI;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -155,10 +155,9 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
       if (tmpFileDataSet != null && tmpFileDataSet.toFile() != null) {
         try (BufferedWriter bw = Files.newBufferedWriter(tmpFileDataSet, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE)) {
           for (final String dataSet : dataSets) {
-            final URI uriDts = getClass().getClassLoader().getResource(dataSet).toURI();
-            final Path path = FileSystems.getDefault().getPath(new UrlResource(uriDts).getFile().getAbsolutePath());
-            if (path != null && path.getFileName().toString().endsWith(".cql")) {
-              try (BufferedReader br = new BufferedReader(new FileReader(path.toFile()))) {
+            final InputStream dataSetStream = getClass().getClassLoader().getResourceAsStream(dataSet);
+            if (dataSetStream != null) {
+              try (BufferedReader br = new BufferedReader(new InputStreamReader(dataSetStream, "UTF-8"))) {
                 String text = null;
                 while ((text = br.readLine()) != null) {
                   bw.write(text);
@@ -168,7 +167,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
               }
             }
           }
-        } catch (final IOException | URISyntaxException exp) {
+        } catch (final IOException exp) {
           LOG.error("Erreur de merge des datasets : " + exp);
           LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
           tmpFileDataSet = Paths.get(fileDataSet);
