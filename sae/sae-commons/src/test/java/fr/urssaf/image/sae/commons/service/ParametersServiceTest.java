@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Test;
@@ -15,351 +13,341 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-commons-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-commons-test.xml"})
 public class ParametersServiceTest {
 
-   @Autowired
-   private ParametersService parametersService;
+  @Autowired
+  private ParametersService parametersService;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   private Date date = new Date();
+  @Autowired
+  private CassandraServerBeanCql serverCQL;
 
-   @After
-   public void end() throws Exception {
-      server.resetData();
-   }
+  private final Date date = new Date();
 
-   @Test
-   public void testJournalisationEvtDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -2);
-      parametersService.setJournalisationEvtDate(storedDate);
+  @After
+  public void end() throws Exception {
+    server.resetData();
+    serverCQL.resetData();
+  }
 
-      Date dateRecup = parametersService.getJournalisationEvtDate();
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+  @Test
+  public void testJournalisationEvtDate() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -2);
+    parametersService.setJournalisationEvtDate(storedDate);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+    final Date dateRecup = parametersService.getJournalisationEvtDate();
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-   }
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
-   @Test
-   public void testPurgeEvtDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -3);
-      parametersService.setPurgeEvtDate(storedDate);
+  }
 
-      Date dateRecup = parametersService.getPurgeEvtDate();
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+  @Test
+  public void testPurgeEvtDate() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -3);
+    parametersService.setPurgeEvtDate(storedDate);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+    final Date dateRecup = parametersService.getPurgeEvtDate();
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-   }
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
-   @Test
-   public void testPurgeExploitDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -4);
-      parametersService.setPurgeExploitDate(storedDate);
+  }
 
-      Date dateRecup = parametersService.getPurgeExploitDate();
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+  @Test
+  public void testPurgeExploitDate() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -4);
+    parametersService.setPurgeExploitDate(storedDate);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+    final Date dateRecup = parametersService.getPurgeExploitDate();
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-   }
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
-   @Test
-   public void testPurgeSecuDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -5);
-      parametersService.setPurgeSecuDate(storedDate);
+  }
 
-      Date dateRecup = parametersService.getPurgeSecuDate();
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+  @Test
+  public void testPurgeSecuDate() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -5);
+    parametersService.setPurgeSecuDate(storedDate);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+    final Date dateRecup = parametersService.getPurgeSecuDate();
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-   }
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
-   @Test
-   public void testPurgeTechDate() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -6);
-      parametersService.setPurgeTechDate(storedDate);
+  }
 
-      Date dateRecup = parametersService.getPurgeTechDate();
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+  @Test
+  public void testPurgeTechDate() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -6);
+    parametersService.setPurgeTechDate(storedDate);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+    final Date dateRecup = parametersService.getPurgeTechDate();
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
 
-   }
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
 
-   @Test
-   public void testPurgeEvtDuree() throws ParameterNotFoundException {
-      Integer storedDuree = 1;
-      parametersService.setPurgeEvtDuree(storedDuree);
+  }
 
-      Integer duree = parametersService.getPurgeEvtDuree();
+  @Test
+  public void testPurgeEvtDuree() throws ParameterNotFoundException {
+    final Integer storedDuree = 1;
+    parametersService.setPurgeEvtDuree(storedDuree);
 
-      Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
+    final Integer duree = parametersService.getPurgeEvtDuree();
 
-   }
+    Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
 
-   @Test
-   public void testPurgeExploitDuree() throws ParameterNotFoundException {
-      Integer storedDuree = 2;
-      parametersService.setPurgeExploitDuree(storedDuree);
+  }
 
-      Integer duree = parametersService.getPurgeExploitDuree();
+  @Test
+  public void testPurgeExploitDuree() throws ParameterNotFoundException {
+    final Integer storedDuree = 2;
+    parametersService.setPurgeExploitDuree(storedDuree);
 
-      Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
+    final Integer duree = parametersService.getPurgeExploitDuree();
 
-   }
+    Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
 
-   @Test
-   public void testPurgeSecuDuree() throws ParameterNotFoundException {
-      Integer storedDuree = 3;
-      parametersService.setPurgeSecuDuree(storedDuree);
+  }
 
-      Integer duree = parametersService.getPurgeSecuDuree();
+  @Test
+  public void testPurgeSecuDuree() throws ParameterNotFoundException {
+    final Integer storedDuree = 3;
+    parametersService.setPurgeSecuDuree(storedDuree);
 
-      Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
+    final Integer duree = parametersService.getPurgeSecuDuree();
 
-   }
+    Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
 
-   @Test
-   public void testPurgeTechDuree() throws ParameterNotFoundException {
-      Integer storedDuree = 4;
-      parametersService.setPurgeTechDuree(storedDuree);
+  }
 
-      Integer duree = parametersService.getPurgeTechDuree();
+  @Test
+  public void testPurgeTechDuree() throws ParameterNotFoundException {
+    final Integer storedDuree = 4;
+    parametersService.setPurgeTechDuree(storedDuree);
 
-      Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
+    final Integer duree = parametersService.getPurgeTechDuree();
 
-   }
+    Assert.assertEquals("la durée doit etre correcte", storedDuree, duree);
 
-   @Test
-   public void testJournalisationEvtRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = false;
-      parametersService.setJournalisationEvtIsRunning(storedRunning);
+  }
 
-      Boolean running = parametersService.isJournalisationEvtIsRunning();
+  @Test
+  public void testJournalisationEvtRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = false;
+    parametersService.setJournalisationEvtIsRunning(storedRunning);
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+    final Boolean running = parametersService.isJournalisationEvtIsRunning();
 
-   }
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-   @Test
-   public void testPurgeEvtRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = true;
-      parametersService.setPurgeEvtIsRunning(storedRunning);
+  }
 
-      Boolean running = parametersService.isPurgeEvtIsRunning();
+  @Test
+  public void testPurgeEvtRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = true;
+    parametersService.setPurgeEvtIsRunning(storedRunning);
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+    final Boolean running = parametersService.isPurgeEvtIsRunning();
 
-   }
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-   @Test
-   public void testPurgeExploitRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = false;
-      parametersService.setPurgeExploitIsRunning(storedRunning);
+  }
 
-      Boolean running = parametersService.isPurgeExploitIsRunning();
+  @Test
+  public void testPurgeExploitRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = false;
+    parametersService.setPurgeExploitIsRunning(storedRunning);
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+    final Boolean running = parametersService.isPurgeExploitIsRunning();
 
-   }
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-   @Test
-   public void testPurgeSecuRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = true;
-      parametersService.setPurgeSecuIsRunning(storedRunning);
+  }
 
-      Boolean running = parametersService.isPurgeSecuIsRunning();
+  @Test
+  public void testPurgeSecuRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = true;
+    parametersService.setPurgeSecuIsRunning(storedRunning);
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+    final Boolean running = parametersService.isPurgeSecuIsRunning();
 
-   }
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-   @Test
-   public void testPurgeTechRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = false;
-      parametersService.setPurgeTechIsRunning(storedRunning);
+  }
 
-      Boolean running = parametersService.isPurgeTechIsRunning();
+  @Test
+  public void testPurgeTechRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = false;
+    parametersService.setPurgeTechIsRunning(storedRunning);
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+    final Boolean running = parametersService.isPurgeTechIsRunning();
 
-   }
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-   @Test
-   public void testHash() throws ParameterNotFoundException {
-      String storedHash = "12345678901234567890";
+  }
 
-      parametersService.setJournalisationEvtHashJournPrec(storedHash);
+  @Test
+  public void testHash() throws ParameterNotFoundException {
+    final String storedHash = "12345678901234567890";
 
-      String hash = parametersService.getJournalisationEvtHashJournPrec();
+    parametersService.setJournalisationEvtHashJournPrec(storedHash);
 
-      Assert.assertEquals("le hash doit etre correct", storedHash, hash);
-   }
+    final String hash = parametersService.getJournalisationEvtHashJournPrec();
 
-   @Test
-   public void testId() throws ParameterNotFoundException {
-      String storedId = UUID.randomUUID().toString();
+    Assert.assertEquals("le hash doit etre correct", storedHash, hash);
+  }
 
-      parametersService.setJournalisationEvtIdJournPrec(storedId);
+  @Test
+  public void testId() throws ParameterNotFoundException {
+    final String storedId = UUID.randomUUID().toString();
 
-      String id = parametersService.getJournalisationEvtIdJournPrec();
+    parametersService.setJournalisationEvtIdJournPrec(storedId);
 
-      Assert.assertEquals("le hash doit etre correct", storedId, id);
-   }
+    final String id = parametersService.getJournalisationEvtIdJournPrec();
 
-   @Test
-   public void testMetaApplProd() throws ParameterNotFoundException {
-      String storedMeta = "applProd";
+    Assert.assertEquals("le hash doit etre correct", storedId, id);
+  }
 
-      parametersService.setJournalisationEvtMetaApplProd(storedMeta);
+  @Test
+  public void testMetaApplProd() throws ParameterNotFoundException {
+    final String storedMeta = "applProd";
 
-      String meta = parametersService.getJournalisationEvtMetaApplProd();
+    parametersService.setJournalisationEvtMetaApplProd(storedMeta);
 
-      Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
-   }
+    final String meta = parametersService.getJournalisationEvtMetaApplProd();
 
-   @Test
-   public void testMetaApplTrait() throws ParameterNotFoundException {
-      String storedMeta = "applTrait";
+    Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
+  }
 
-      parametersService.setJournalisationEvtMetaApplTrait(storedMeta);
+  @Test
+  public void testMetaApplTrait() throws ParameterNotFoundException {
+    final String storedMeta = "applTrait";
 
-      String meta = parametersService.getJournalisationEvtMetaApplTrait();
+    parametersService.setJournalisationEvtMetaApplTrait(storedMeta);
 
-      Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
-   }
+    final String meta = parametersService.getJournalisationEvtMetaApplTrait();
 
-   @Test
-   public void testMetaCodeOrga() throws ParameterNotFoundException {
-      String storedMeta = "codeOrga";
+    Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
+  }
 
-      parametersService.setJournalisationEvtMetaCodeOrga(storedMeta);
+  @Test
+  public void testMetaCodeOrga() throws ParameterNotFoundException {
+    final String storedMeta = "codeOrga";
 
-      String meta = parametersService.getJournalisationEvtMetaCodeOrga();
+    parametersService.setJournalisationEvtMetaCodeOrga(storedMeta);
 
-      Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
-   }
+    final String meta = parametersService.getJournalisationEvtMetaCodeOrga();
 
-   @Test
-   public void testMetaCodeRnd() throws ParameterNotFoundException {
-      String storedMeta = "codeRnd";
+    Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
+  }
 
-      parametersService.setJournalisationEvtMetaCodeRnd(storedMeta);
+  @Test
+  public void testMetaCodeRnd() throws ParameterNotFoundException {
+    final String storedMeta = "codeRnd";
 
-      String meta = parametersService.getJournalisationEvtMetaCodeRnd();
+    parametersService.setJournalisationEvtMetaCodeRnd(storedMeta);
 
-      Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
-   }
+    final String meta = parametersService.getJournalisationEvtMetaCodeRnd();
 
-   @Test
-   public void testMetaTitre() throws ParameterNotFoundException {
-      String storedMeta = "titre sauvegardé";
+    Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
+  }
 
-      parametersService.setJournalisationEvtMetaTitre(storedMeta);
+  @Test
+  public void testMetaTitre() throws ParameterNotFoundException {
+    final String storedMeta = "titre sauvegardé";
 
-      String meta = parametersService.getJournalisationEvtMetaTitre();
+    parametersService.setJournalisationEvtMetaTitre(storedMeta);
 
-      Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
-   }
+    final String meta = parametersService.getJournalisationEvtMetaTitre();
 
-   @Test
-   public void testVersionRndDateMaj() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addHours(date, 1);
-      parametersService.setVersionRndDateMaj(storedDate);
+    Assert.assertEquals("le hash doit etre correct", storedMeta, meta);
+  }
 
-      Date dateRecup = parametersService.getVersionRndDateMaj();
+  @Test
+  public void testVersionRndDateMaj() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addHours(date, 1);
+    parametersService.setVersionRndDateMaj(storedDate);
 
-      Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+    final Date dateRecup = parametersService.getVersionRndDateMaj();
 
-   }
+    Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
 
-   @Test
-   public void testVersionRndNumero() throws ParameterNotFoundException {
-      String numVersion = "11.4";
-      parametersService.setVersionRndNumero(numVersion);
+  }
 
-      String numVersionRecup = parametersService.getVersionRndNumero();
+  @Test
+  public void testVersionRndNumero() throws ParameterNotFoundException {
+    final String numVersion = "11.4";
+    parametersService.setVersionRndNumero(numVersion);
 
-      Assert.assertEquals("la numéro de version RND doit être correct",
-            numVersion, numVersionRecup);
+    final String numVersionRecup = parametersService.getVersionRndNumero();
 
-   }
-   
-   @Test
-   public void testPurgeCorbeilleDuree() throws ParameterNotFoundException {
-      Integer duree = 3;
-      parametersService.setPurgeCorbeilleDuree(duree);
+    Assert.assertEquals("la numéro de version RND doit être correct", numVersion, numVersionRecup);
 
-      Integer dureeRetour = parametersService.getPurgeCorbeilleDuree();
+  }
 
-      Assert.assertEquals("la durée doit etre correcte", duree, dureeRetour);
+  @Test
+  public void testPurgeCorbeilleDuree() throws ParameterNotFoundException {
+    final Integer duree = 3;
+    parametersService.setPurgeCorbeilleDuree(duree);
 
-   }
+    final Integer dureeRetour = parametersService.getPurgeCorbeilleDuree();
 
-   
-   @Test
-   public void testPurgeCorbeilleRunning() throws ParameterNotFoundException {
-      Boolean storedRunning = true;
-      parametersService.setPurgeCorbeilleIsRunning(storedRunning);
+    Assert.assertEquals("la durée doit etre correcte", duree, dureeRetour);
 
-      Boolean running = parametersService.isPurgeCorbeilleIsRunning();
+  }
 
-      Assert.assertEquals("l'indicateur doit etre correct", storedRunning,
-            running);
+  @Test
+  public void testPurgeCorbeilleRunning() throws ParameterNotFoundException {
+    final Boolean storedRunning = true;
+    parametersService.setPurgeCorbeilleIsRunning(storedRunning);
 
-   }
-   
-   @Test
-   public void testPurgeCorbeilleDateDebut() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -3);
-      parametersService.setPurgeCorbeilleDateDebutPurge(storedDate);
+    final Boolean running = parametersService.isPurgeCorbeilleIsRunning();
 
-      Date dateRecup = parametersService.getPurgeCorbeilleDateDebutPurge();
-            
-      Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+    Assert.assertEquals("l'indicateur doit etre correct", storedRunning, running);
 
-      Assert
-            .assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+  }
 
-   }
-   
-   @Test
-   public void testPurgeCorbeilleDateLancement() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -6);
-      parametersService.setPurgeCorbeilleDateLancement(storedDate);
-      Date dateRecup = parametersService.getPurgeCorbeilleDateLancement();
-      
-      Assert
-            .assertEquals("la date doit etre correcte", storedDate, dateRecup);
+  @Test
+  public void testPurgeCorbeilleDateDebut() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -3);
+    parametersService.setPurgeCorbeilleDateDebutPurge(storedDate);
 
-   }
-   
-   @Test
-   public void testPurgeCorbeilleDateSucces() throws ParameterNotFoundException {
-      Date storedDate = DateUtils.addDays(date, -6);
-      parametersService.setPurgeCorbeilleDateSucces(storedDate);
-      Date dateRecup = parametersService.getPurgeCorbeilleDateSucces();
-      
-      Assert
-            .assertEquals("la date doit etre correcte", storedDate, dateRecup);
+    final Date dateRecup = parametersService.getPurgeCorbeilleDateDebutPurge();
 
-   }
+    final Date dateAttendue = DateUtils.truncate(storedDate, Calendar.DATE);
+
+    Assert.assertEquals("la date doit etre correcte", dateAttendue, dateRecup);
+
+  }
+
+  @Test
+  public void testPurgeCorbeilleDateLancement() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -6);
+    parametersService.setPurgeCorbeilleDateLancement(storedDate);
+    final Date dateRecup = parametersService.getPurgeCorbeilleDateLancement();
+
+    Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+
+  }
+
+  @Test
+  public void testPurgeCorbeilleDateSucces() throws ParameterNotFoundException {
+    final Date storedDate = DateUtils.addDays(date, -6);
+    parametersService.setPurgeCorbeilleDateSucces(storedDate);
+    final Date dateRecup = parametersService.getPurgeCorbeilleDateSucces();
+
+    Assert.assertEquals("la date doit etre correcte", storedDate, dateRecup);
+
+  }
 }

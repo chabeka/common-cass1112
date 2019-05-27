@@ -83,7 +83,7 @@ public class JournalEvtCqlServiceDatasTest {
 
    @After
    public void after() throws Exception {
-      servercql.resetData();
+      servercql.resetData(true);
    }
 
    @Test

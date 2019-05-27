@@ -19,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,6 +39,9 @@ public class ContratServiceDatasSupportTest {
 
    @Autowired
    private CassandraServerBean cassandraServer;
+   
+   @Autowired
+   private CassandraServerBeanCql cassandraServerCQL;
 
    @Autowired
    private ContratServiceSupport support;
@@ -45,6 +49,7 @@ public class ContratServiceDatasSupportTest {
    @After
    public void end() throws Exception {
       cassandraServer.resetData();
+      cassandraServerCQL.resetData();
    }
 
    @Test

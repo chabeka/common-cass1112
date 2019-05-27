@@ -25,8 +25,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
-import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
-import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
 
@@ -55,17 +53,12 @@ public class TraceJournalEvtCqlSupportTest {
 
   private static final Map<String, String> INFOS;
 
-  private static final int MAX_LIST_SIZE = 100;
-
   private static final String DATE_FORMAT = "yyyyMMdd";
 
   static {
-    INFOS = new HashMap<String, String>();
+    INFOS = new HashMap<>();
     INFOS.put(KEY, VALUE);
   }
-
-  @Autowired
-  private TraceJournalEvtSupport support;
 
   @Autowired
   private TraceJournalEvtCqlSupport cqlsupport;
@@ -78,7 +71,7 @@ public class TraceJournalEvtCqlSupportTest {
 
   @After
   public void after() throws Exception {
-    server.resetData();
+    server.resetData(true);
   }
 
   @Test
@@ -106,9 +99,7 @@ public class TraceJournalEvtCqlSupportTest {
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
 
-    Assert.assertEquals("Le nombre de traces purgées est incorrect",
-                        1L,
-                        nbTracesPurgees);
+    Assert.assertEquals("Le nombre de traces purgées est incorrect", 1L, nbTracesPurgees);
 
   }
 
@@ -155,8 +146,7 @@ public class TraceJournalEvtCqlSupportTest {
 
     try {
       datej = dateFormat.parse(journee);
-    }
-    catch (final ParseException e) {
+    } catch (final ParseException e) {
       e.printStackTrace();
     }
     return datej;
@@ -164,18 +154,12 @@ public class TraceJournalEvtCqlSupportTest {
 
   private void checkBean(final TraceJournalEvtCql securite, final UUID uuid) {
     Assert.assertNotNull("l'objet doit etre trouvé", securite);
-    Assert.assertEquals("le contexte doit etre correcte", CONTEXT, securite
-                                                                           .getContexte());
-    Assert.assertEquals("le code evenement doit etre correcte",
-                        CODE_EVT,
-                        securite.getCodeEvt());
-    Assert.assertEquals("le contrat doit etre correcte", CONTRAT, securite
-                                                                          .getContratService());
+    Assert.assertEquals("le contexte doit etre correcte", CONTEXT, securite.getContexte());
+    Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT, securite.getCodeEvt());
+    Assert.assertEquals("le contrat doit etre correcte", CONTRAT, securite.getContratService());
     checkPagms(securite.getPagms());
-    Assert.assertEquals("l'identifiant doit etre correcte", uuid, securite
-                                                                          .getIdentifiant());
-    Assert.assertEquals("le login doit etre correcte", LOGIN, securite
-                                                                      .getLogin());
+    Assert.assertEquals("l'identifiant doit etre correcte", uuid, securite.getIdentifiant());
+    Assert.assertEquals("le login doit etre correcte", LOGIN, securite.getLogin());
     Assert.assertEquals("la date doit etre correcte", DATE, securite.getTimestamp());
 
     Assert.assertEquals("les infos supplémentaire doivent contenir un élément", 1, securite.getInfos().size());
@@ -186,33 +170,10 @@ public class TraceJournalEvtCqlSupportTest {
 
   }
 
-  private void checkBeanIndex(final TraceJournalEvtIndexCql index, final UUID uuid) {
-
-    Assert.assertNotNull("l'objet doit etre trouvé", index);
-
-    Assert.assertEquals("le contexte doit etre correcte", CONTEXT, index.getContexte());
-
-    Assert.assertEquals("le code evenement doit etre correcte", CODE_EVT, index.getCodeEvt());
-
-    Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index.getContratService());
-
-    checkPagms(index.getPagms());
-    Assert.assertEquals("l'identifiant doit etre correcte", DateRegUtils.getJournee(DATE), DateRegUtils.getJournee(index.getTimestamp()));
-
-    Assert.assertEquals("le login doit etre correcte", LOGIN, index.getLogin());
-
-    Assert.assertEquals("la date doit etre correcte", DATE, index.getTimestamp());
-
-  }
-
   private void checkPagms(final List<String> pagms) {
     Assert.assertNotNull("La liste des PAGM ne doit pas être nulle", pagms);
-    Assert.assertEquals("La liste des PAGM doit contenir 2 éléments",
-                        2,
-                        pagms.size());
-    Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM1\"",
-                      pagms.contains("PAGM1"));
-    Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM2\"",
-                      pagms.contains("PAGM2"));
+    Assert.assertEquals("La liste des PAGM doit contenir 2 éléments", 2, pagms.size());
+    Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM1\"", pagms.contains("PAGM1"));
+    Assert.assertTrue("La liste des PAGM doit contenir le PAGM \"PAGM2\"", pagms.contains("PAGM2"));
   }
 }
