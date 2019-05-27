@@ -39,17 +39,30 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
   private Session testSession = null;
 
   /**
-   * Réinitialise les données de la base cassandra locale
-   *
-   * @param newDataSets
-   *          Jeu(x) de données à utiliser
-   * @throws Exception
-   *           Une erreur est survenue
+   * {@inheritDoc}
    */
   @Override
   public void resetData(final String... newDataSets) throws Exception {
+    resetData(false, newDataSets);
+  }
+
+  /**
+   * Réinitialise les données de la base cassandra locale, avec le jeu de
+   * données utilisé initialement lors de la création du serveur
+   *
+   * @param dropAndCreateKeyspace
+   *          Si true, suppression et creation d'un nouveau keyspace sinon false.
+   * @param newDataSets
+   * @throws Exception
+   *           Une erreur est survenue
+   */
+  public void resetData(final boolean dropAndCreateKeyspace, String... newDataSets) throws Exception {
     if (!startLocal) {
       return;
+    }
+
+    if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
+      newDataSets = dataSets;
     }
     // demarage du serveur
     cassandraUnitInitilization();
@@ -60,7 +73,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     // On inject les jeux de données
     if (newDataSets != null && newDataSets.length > 0) {
       final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
-      cqlDataLoader.load(mergeDataSets(testSession, newDataSets));
+      cqlDataLoader.load(mergeDataSets(testSession, dropAndCreateKeyspace, newDataSets));
     }
   }
 
@@ -132,15 +145,16 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
    * Methode permettant de merger les data sets
    * 
    * @param testSession2
+   * @param dropAndCreateKeyspace
    * @param dataSets
    *          fichier CQL
    * @return Le dataSet permettant contenant le load CQL
    */
-  private FileCQLDataSet mergeDataSets(final Session session, final String... dataSets) {
+  private FileCQLDataSet mergeDataSets(final Session session, final boolean dropAndCreateKeyspace, final String... dataSets) {
     LOG.debug("Merge des datasets en cours");
     final String logFinMerge = "Fin du merge des datasets";
     // On vérifie que le keyspace existe pour le créer si besoin
-    final boolean createKeyspace = isCreateKeyspace(session);
+    final boolean createKeyspace = !(isExistKeyspace(session) && !dropAndCreateKeyspace);
 
     // Vérification des paramètres d'entrée
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
@@ -184,7 +198,7 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
                                              .toFile()
                                              .getAbsolutePath(),
                                   createKeyspace,
-                                  false,
+                                  dropAndCreateKeyspace,
                                   AbstractCassandraServer.KEYSPACE_TU);
       }
 
@@ -197,33 +211,33 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     }
 
     // Renvoie l'objet Dataset fusionné
-    return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, false, AbstractCassandraServer.KEYSPACE_TU);
+    return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, AbstractCassandraServer.KEYSPACE_TU);
   }
 
   /**
-   * Vérifie s'il faut créer le keyspace ou pas.
+   * Vérifie si le keyspace existe ou pas.
    * 
    * @param session
    *          Session de test
-   * @return true s'il faut crer le keyspace, false sinon.
+   * @return true si le keyspace existe, false sinon.
    */
-  private boolean isCreateKeyspace(final Session session) {
-    boolean createKeyspace = false;
+  private boolean isExistKeyspace(final Session session) {
+    boolean existKeyspace = false;
 
     // Vérification de l'existence du keyspace
     final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + AbstractCassandraServer.KEYSPACE_TU + "'";
     final ResultSet keyspaceQueryResult = session.execute(selectQuery);
 
-    createKeyspace = !(keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext());
+    existKeyspace = keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext();
 
     // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par défaut dans le librairie cassandra-unit.
-    if (!createKeyspace) {
+    if (existKeyspace) {
       final String useQuery = "USE " + AbstractCassandraServer.KEYSPACE_TU;
       LOG.debug("executing : " + useQuery);
       session.execute(useQuery);
     }
 
-    return createKeyspace;
+    return existKeyspace;
   }
 
   /**
@@ -256,4 +270,5 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
     return LOG;
   }
   //
+
 }

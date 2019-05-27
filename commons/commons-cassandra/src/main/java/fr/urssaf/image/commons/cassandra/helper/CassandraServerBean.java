@@ -28,15 +28,10 @@ public class CassandraServerBean extends AbstractCassandraServer {
   private Cluster testCluster = null;
 
   /**
-   * Réinitialise les données de la base cassandra locale
-   *
-   * @param newDataSets
-   *          Jeu(x) de données à utiliser
-   * @throws Exception
-   *           Une erreur est survenue
+   * {@inheritDoc}
    */
   @Override
-  public final void resetData(final String... newDataSets) throws Exception {
+  public void resetData(final String... newDataSets) throws Exception {
 
     if (!startLocal) {
       return;

@@ -75,7 +75,7 @@ public abstract class AbstractCassandraServer implements InitializingBean, Dispo
   @Override
   public void afterPropertiesSet() throws Exception {
     getLogger().debug("CassandraServerBean : startLocal={} - dataSet={}", startLocal, dataSets);
-    resetData(dataSets);
+    resetData();
   }
 
   /**
@@ -176,5 +176,15 @@ public abstract class AbstractCassandraServer implements InitializingBean, Dispo
 
   public abstract String getHosts();
 
+  /**
+   * Réinitialise les données de la base cassandra locale
+   *
+   * @param dropAndCreateKeyspace
+   *          Si true, suppression et creation d'un nouveau keyspace sinon false.
+   * @param newDataSets
+   *          Jeu(x) de données à utiliser
+   * @throws Exception
+   *           Une erreur est survenue
+   */
   public abstract void resetData(final String... newDataSets) throws Exception;
 }
