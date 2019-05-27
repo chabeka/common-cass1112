@@ -137,6 +137,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
    * @return Le dataSet permettant contenant le load CQL
    */
   private FileCQLDataSet mergeDataSets(final Session session, final String... dataSets) {
+    LOG.debug("Merge des datasets en cours");
+    final String logFinMerge = "Fin du merge des datasets";
     // On vérifie que le keyspace existe pour le créer si besoin
     final boolean createKeyspace = isCreateKeyspace(session);
 
@@ -175,6 +177,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
       } else {
         LOG.warn("Le fichier de merge des datasets n'existe pas. Ajout de la premiere dataSet uniquement.");
 
+        LOG.debug(logFinMerge);
+
         return new FileCQLDataSet(FileSystems.getDefault()
                                              .getPath(new UrlResource(getClass().getClassLoader().getResource(dataSets[0]).toURI()).getFile().getAbsolutePath())
                                              .toFile()
@@ -188,6 +192,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
       LOG.error("Erreur de merge des datasets : " + e);
       LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
       tmpFileDataSet = Paths.get(fileDataSet);
+    } finally {
+      LOG.debug(logFinMerge);
     }
 
     // Renvoie l'objet Dataset fusionné
