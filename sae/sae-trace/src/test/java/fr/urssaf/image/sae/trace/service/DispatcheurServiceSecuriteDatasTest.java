@@ -190,6 +190,7 @@ public class DispatcheurServiceSecuriteDatasTest {
         destSupport.create(trace, new Date().getTime());
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         destSupport.create(trace, new Date().getTime());
+        destCqlSupport.create(trace, new Date().getTime());
       }
    }
 }

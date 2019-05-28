@@ -210,6 +210,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       traceDest = destSupport.find(codeEvt);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       traceDest = destSupport.find(codeEvt);
+      traceDest = destCqlSupport.find(codeEvt);
     }
 
     for (final String type : traceDest.getDestinataires().keySet()) {

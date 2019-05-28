@@ -3,6 +3,7 @@
  */
 package fr.urssaf.image.sae.trace.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -29,6 +31,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -52,12 +55,17 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
    }
 
    private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_AUCUNE_INFO";
+   
+   private final String cfNameDestinataire = "tracedestinatairecql";
 
    @Autowired
    private DispatcheurService service;
 
    @Autowired
    private TraceDestinataireSupport destSupport;
+   
+   @Autowired
+   private TraceDestinataireCqlSupport destCqlSupport;
 
    @Autowired
    private CassandraServerBean server;
@@ -176,12 +184,19 @@ public class DispatcheurServiceRegistresDatasAucuneInfosTest {
       TraceDestinataire trace = new TraceDestinataire();
       trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
       Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put(TraceDestinataireDao.COL_REG_EXPLOIT, null);
-      map.put(TraceDestinataireDao.COL_REG_SECURITE, null);
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, null);
-      map.put(TraceDestinataireDao.COL_JOURN_EVT, null);
+      map.put(TraceDestinataireDao.COL_REG_EXPLOIT, new ArrayList<String>());
+      map.put(TraceDestinataireDao.COL_REG_SECURITE, new ArrayList<String>());
+      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, new ArrayList<String>());
+      map.put(TraceDestinataireDao.COL_JOURN_EVT, new ArrayList<String>());
       trace.setDestinataires(map);
 
-      destSupport.create(trace, new Date().getTime());
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+        destCqlSupport.create(trace, new Date().getTime());
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+        destSupport.create(trace, new Date().getTime());
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+        destSupport.create(trace, new Date().getTime());
+      }
    }
 }
