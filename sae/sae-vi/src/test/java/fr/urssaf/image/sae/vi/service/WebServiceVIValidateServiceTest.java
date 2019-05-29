@@ -102,8 +102,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
       } catch (VIInvalideException exception) {
@@ -130,8 +129,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -159,8 +157,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -191,8 +188,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -221,8 +217,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -250,8 +245,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -280,8 +274,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, TuGenererVi.ISSUER,
-               system_date);
+         service.validate(data, TuGenererVi.SERVICE_VISE, system_date);
 
          fail(FAIL_MESSAGE);
 
@@ -307,8 +300,7 @@ public class WebServiceVIValidateServiceTest {
 
       try {
 
-         service.validate(data, TuGenererVi.SERVICE_VISE, "SaeIntegration",
-               new Date());
+         service.validate(data, TuGenererVi.SERVICE_VISE, new Date());
 
          fail(FAIL_MESSAGE);
 
