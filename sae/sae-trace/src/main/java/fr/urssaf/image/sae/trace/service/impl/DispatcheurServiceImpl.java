@@ -68,8 +68,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   private static final String DEBUT_LOG = "{} - début";
 
-  private static final Logger LOGGER = LoggerFactory
-      .getLogger(DispatcheurServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(DispatcheurServiceImpl.class);
 
   private static final String MESSAGE_ERREUR_REGISTRE = "l'argument ${0} est obligatoire dans le ${1} ${2}";
 
@@ -85,21 +84,18 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   private static final String JOURNAL = "journal";
 
-  private static final List<String> DEST_AUTORISES = Arrays.asList(
-                                                                   TraceDestinataireDao.COL_HIST_ARCHIVE,
+  private static final List<String> DEST_AUTORISES = Arrays.asList(TraceDestinataireDao.COL_HIST_ARCHIVE,
                                                                    TraceDestinataireDao.COL_HIST_EVT,
                                                                    TraceDestinataireDao.COL_REG_EXPLOIT,
                                                                    TraceDestinataireDao.COL_REG_SECURITE,
                                                                    TraceDestinataireDao.COL_REG_TECHNIQUE,
                                                                    TraceDestinataireDao.COL_JOURN_EVT);
 
-  private static final List<String> REG_AUTORISES = Arrays.asList(
-                                                                  TraceDestinataireDao.COL_REG_EXPLOIT,
+  private static final List<String> REG_AUTORISES = Arrays.asList(TraceDestinataireDao.COL_REG_EXPLOIT,
                                                                   TraceDestinataireDao.COL_REG_SECURITE,
                                                                   TraceDestinataireDao.COL_REG_TECHNIQUE);
 
-  private static final List<String> JOURN_AUTORISES = Arrays
-      .asList(TraceDestinataireDao.COL_JOURN_EVT);
+  private static final List<String> JOURN_AUTORISES = Arrays.asList(TraceDestinataireDao.COL_JOURN_EVT);
 
   private final JobClockSupport clockSupport;
 
@@ -141,35 +137,29 @@ public class DispatcheurServiceImpl implements DispatcheurService {
    * Constructeur
    *
    * @param clockSupport
-   *           Support pour le calcul de l'horloge sur Cassandra
+   *          Support pour le calcul de l'horloge sur Cassandra
    * @param destSupport
-   *           Support de la classe DAO TraceDestinataireDao
+   *          Support de la classe DAO TraceDestinataireDao
    * @param secuSupport
-   *           Support de la classe DAO TraceJournalEvtDao
+   *          Support de la classe DAO TraceJournalEvtDao
    * @param techSupport
-   *           Support de la classe DAO TraceRegTechniqueDao
+   *          Support de la classe DAO TraceRegTechniqueDao
    * @param exploitSupport
-   *           Support de la classe DAO TraceRegExploitationDao
+   *          Support de la classe DAO TraceRegExploitationDao
    * @param evtSupport
-   *           Support de la classe DAO TraceJournalEvtDao
+   *          Support de la classe DAO TraceJournalEvtDao
    * @param providerSupport
-   *           Support pour la gestion de la connexion à DFCE
+   *          Support pour la gestion de la connexion à DFCE
    * @param timeUUIDSupport
-   *           Utilitaires pour créer des TimeUUID
+   *          Utilitaires pour créer des TimeUUID
    */
   @Autowired
-  public DispatcheurServiceImpl(final JobClockSupport clockSupport,
-                                final TraceDestinataireSupport destSupport,
-                                final TraceDestinataireCqlSupport destCqlSupport,
-                                final TraceRegSecuriteSupport secuSupport,
-                                final TraceRegSecuriteCqlSupport secuCqlSupport,
-                                final TraceRegTechniqueSupport techSupport,
-                                final TraceRegTechniqueCqlSupport techCqlSupport,
-                                final TraceRegExploitationSupport exploitSupport,
-                                final TraceRegExploitationCqlSupport exploitCqlSupport,
-                                final TraceJournalEvtSupport evtSupport,
-                                final TraceJournalEvtCqlSupport evtCqlSupport,
-                                final TimeUUIDEtTimestampSupport timeUUIDSupport,
+  public DispatcheurServiceImpl(final JobClockSupport clockSupport, final TraceDestinataireSupport destSupport,
+                                final TraceDestinataireCqlSupport destCqlSupport, final TraceRegSecuriteSupport secuSupport,
+                                final TraceRegSecuriteCqlSupport secuCqlSupport, final TraceRegTechniqueSupport techSupport,
+                                final TraceRegTechniqueCqlSupport techCqlSupport, final TraceRegExploitationSupport exploitSupport,
+                                final TraceRegExploitationCqlSupport exploitCqlSupport, final TraceJournalEvtSupport evtSupport,
+                                final TraceJournalEvtCqlSupport evtCqlSupport, final TimeUUIDEtTimestampSupport timeUUIDSupport,
                                 final DFCEServices dfceServices) {
 
     this.clockSupport = clockSupport;
@@ -210,14 +200,10 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       traceDest = destSupport.find(codeEvt);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       traceDest = destSupport.find(codeEvt);
-      traceDest = destCqlSupport.find(codeEvt);
     }
 
     for (final String type : traceDest.getDestinataires().keySet()) {
-      createTrace(codeEvt,
-                  type,
-                  traceDest.getDestinataires().get(type),
-                  trace);
+      createTrace(codeEvt, type, traceDest.getDestinataires().get(type), trace);
 
     }
 
@@ -225,13 +211,10 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   }
 
-  private void createTrace(final String codeEvt, final String type, final List<String> list,
-                           final TraceToCreate trace) {
+  private void createTrace(final String codeEvt, final String type, final List<String> list, final TraceToCreate trace) {
 
     if (!DEST_AUTORISES.contains(type)) {
-      LOGGER.warn(
-                  "Le destinataire {0} ne doit pas exister pour l'événement {1}",
-                  new Object[] { type, codeEvt });
+      LOGGER.warn("Le destinataire {0} ne doit pas exister pour l'événement {1}", new Object[] {type, codeEvt});
 
     } else if (REG_AUTORISES.contains(type) || JOURN_AUTORISES.contains(type)) {
       checkCategoriesValues(trace, type);
@@ -270,8 +253,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       checkStringValue("contexte", trace.getContexte(), suffixe, JOURNAL);
 
     } else {
-      throw new IllegalArgumentException(
-          "pas de vérification prévue pour cette trace");
+      throw new IllegalArgumentException("pas de vérification prévue pour cette trace");
     }
 
     String typeTrace = REGISTRE;
@@ -288,16 +270,14 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
   }
 
-  private void checkStringValue(final String name, final String value, final String suffixe,
-                                final String categorie) {
+  private void checkStringValue(final String name, final String value, final String suffixe, final String categorie) {
 
     if (StringUtils.isBlank(value)) {
       final Map<String, String> map = new HashMap<>();
       map.put(ARG_0, name);
       map.put(ARG_1, categorie);
       map.put(ARG_2, suffixe);
-      throw new IllegalArgumentException(StrSubstitutor.replace(
-                                                                MESSAGE_ERREUR_REGISTRE, map));
+      throw new IllegalArgumentException(StrSubstitutor.replace(MESSAGE_ERREUR_REGISTRE, map));
     }
 
   }
@@ -313,10 +293,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     if (TraceDestinataireDao.COL_REG_EXPLOIT.equals(type)) {
       LOGGER.debug("{} - ajout d'une trace d'exploitation", prefix);
-      final TraceRegExploitation traceExploit = new TraceRegExploitation(trace,
-                                                                         list,
-                                                                         idTrace,
-                                                                         timestampTrace);
+      final TraceRegExploitation traceExploit = new TraceRegExploitation(trace, list, idTrace, timestampTrace);
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRefExploit);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
@@ -333,10 +310,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       }
     } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
       LOGGER.debug("{} - ajout d'une trace de sécurité", prefix);
-      final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace,
-                                                                  list,
-                                                                  idTrace,
-                                                                  timestampTrace);
+      final TraceRegSecurite traceSecurite = new TraceRegSecurite(trace, list, idTrace, timestampTrace);
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegSecu);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
@@ -354,10 +328,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     } else if (TraceDestinataireDao.COL_REG_TECHNIQUE.equals(type)) {
       LOGGER.debug("{} - ajout d'une trace technique", prefix);
-      final TraceRegTechnique traceTechnique = new TraceRegTechnique(trace,
-                                                                     list,
-                                                                     idTrace,
-                                                                     timestampTrace);
+      final TraceRegTechnique traceTechnique = new TraceRegTechnique(trace, list, idTrace, timestampTrace);
 
       final String modeApi = ModeGestionAPI.getModeApiCf(cfNameRegTech);
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
@@ -375,10 +346,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
 
     } else if (TraceDestinataireDao.COL_JOURN_EVT.equals(type)) {
       LOGGER.debug("{} - ajout d'une trace journal des événements", prefix);
-      final TraceJournalEvt traceTechnique = new TraceJournalEvt(trace,
-                                                                 list,
-                                                                 idTrace,
-                                                                 timestampTrace);
+      final TraceJournalEvt traceTechnique = new TraceJournalEvt(trace, list, idTrace, timestampTrace);
 
       final String KEY_ID_DOC = "idDoc";
       final long currentCLock = clockSupport.currentCLock();
@@ -426,8 +394,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       }
 
     } else {
-      throw new IllegalArgumentException(StringUtils.replace(
-                                                             "pas de type existant {0} à convertir", "{0}", type));
+      throw new IllegalArgumentException(StringUtils.replace("pas de type existant {0} à convertir", "{0}", type));
     }
 
     LOGGER.debug(FIN_LOG, prefix);

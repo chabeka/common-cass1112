@@ -109,13 +109,17 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
 
   private Cluster getTestCluster() {
     if (testCluster == null) {
-      final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
-      hostConfigurator.setMaxActive(1);
+      try {
+        final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
+        hostConfigurator.setMaxActive(1);
 
-      final Builder testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142);
-      testCluster = Cluster.buildFrom(testBuilder);
-      final Session session = testCluster.connect();
-      testSession = session;
+        final Builder testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142);
+        testCluster = Cluster.buildFrom(testBuilder);
+        final Session session = testCluster.connect();
+        testSession = session;
+      } catch (final UnsatisfiedLinkError e) {
+        // FIXME: Exception sur connexion dû au fait qu'il manque une librairie C - A corriger plus tard
+      }
     }
     testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
     testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);

@@ -57,7 +57,7 @@
       commons-dfce
       ==========================================
       -->
-		<commons.dfce>1.9.12</commons.dfce>
+		<commons.dfce>1.9.16-SNAPSHOT</commons.dfce>
 
       <!--
       ==========================================
@@ -101,7 +101,7 @@
       http://www.slf4j.org/
       ==========================================
       -->
-		<org.slf4j.version>1.6.1</org.slf4j.version>
+		<org.slf4j.version>1.7.7</org.slf4j.version>
 
 
       <!--
@@ -112,10 +112,10 @@
       -->
 
       <!-- JCL (Jakarta Commons Logging) vers SLF4J -->
-		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
+		<jcl-over-slf4j.version>1.7.7</jcl-over-slf4j.version>
 
       <!-- Log4J vers SLF4J -->
-		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
+		<log4j-over-slf4j.version>1.7.7</log4j-over-slf4j.version>
 
       <!--
       ==========================================
@@ -398,9 +398,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<configuration>
-					<argLine>-Xmx2048m -XX:MaxPermSize=2048m -XX:+UseSerialGC -XX:-UseConcMarkSweepGC</argLine>
-				</configuration>
 			</plugin>
 
          <!-- Déploiement réalisé uniquement à la fin du build de tous les modules, et pas module par module. -->
@@ -541,7 +538,7 @@
 					<configuration combine.self="override">
 						<!-- <forkCount>3</forkCount>
 						<reuseForks>false</reuseForks> -->
-						<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
+						<argLine>-Xms256m -Xmx512m</argLine>
 					    <forkMode>pertest</forkMode>
 					</configuration>
 					<dependencies>

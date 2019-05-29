@@ -252,6 +252,10 @@
                <groupId>com.fasterxml.jackson.core</groupId>
                <artifactId>jackson-annotations</artifactId>
             </exclusion>
+            <exclusion>
+            	<groupId>com.google.guava</groupId>
+            	<artifactId>guava</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       <dependency>
@@ -264,6 +268,12 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
          <version>${project.version}</version>
+         <exclusions>
+         	<exclusion>
+         		<groupId>com.google.guava</groupId>
+         		<artifactId>guava</artifactId>
+         	</exclusion>
+         </exclusions>
       </dependency>
 
       <!-- SAE IGC -->
@@ -296,6 +306,10 @@
             <exclusion>
                <groupId>com.fasterxml.jackson.core</groupId>
                <artifactId>jackson-annotations</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>com.google.guava</groupId>
+            	<artifactId>guava</artifactId>
             </exclusion>
          </exclusions>
       </dependency>
@@ -559,6 +573,12 @@
          <version>${org.jdom.version}</version>
       </dependency>
 
+	  <!-- Guava : version 19 minimum pour cassandra-all -->
+	  <dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>${guava.version}</version>
+	  </dependency>
 
    </dependencies>
 </project>
