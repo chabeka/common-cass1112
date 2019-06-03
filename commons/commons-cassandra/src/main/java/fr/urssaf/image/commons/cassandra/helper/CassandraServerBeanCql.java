@@ -117,8 +117,8 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
         testCluster = Cluster.buildFrom(testBuilder);
         final Session session = testCluster.connect();
         testSession = session;
-      } catch (final UnsatisfiedLinkError e) {
-        // FIXME: Exception sur connexion dû au fait qu'il manque une librairie C - A corriger plus tard
+      } catch (final Throwable e) {
+        LOG.error("Erreur technique : " + e.getMessage());
       }
     }
     testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
