@@ -43,10 +43,14 @@ public class CassandraServerBean extends AbstractCassandraServer {
    * @throws Exception
    *           Une erreur est survenue
    */
-  public void resetData(final boolean dropAndCreateKeyspace, final String... newDataSets) throws Exception {
+  public void resetData(final boolean dropAndCreateKeyspace, String... newDataSets) throws Exception {
 
     if (!startLocal) {
       return;
+    }
+
+    if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
+      newDataSets = dataSets;
     }
 
     // demarage du serveur
