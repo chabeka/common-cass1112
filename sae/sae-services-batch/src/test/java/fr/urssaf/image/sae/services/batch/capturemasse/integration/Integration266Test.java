@@ -164,7 +164,7 @@ public class Integration266Test {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

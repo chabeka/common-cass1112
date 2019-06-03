@@ -34,7 +34,7 @@ public class ParametersServiceTest {
 
   @After
   public void end() throws Exception {
-    server.resetData();
+    server.resetData(true);
     serverCQL.resetData();
   }
 

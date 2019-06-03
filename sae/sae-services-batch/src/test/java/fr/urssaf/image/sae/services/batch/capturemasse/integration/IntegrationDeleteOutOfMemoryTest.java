@@ -174,7 +174,7 @@ public class IntegrationDeleteOutOfMemoryTest {
 
       EasyMock.reset(provider, storageDocumentService);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

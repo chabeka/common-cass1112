@@ -57,7 +57,7 @@ public class RecycleBinServiceTest {
    @Before
    public void before() throws Exception {
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
       // Initialisation des droits
 
@@ -91,7 +91,7 @@ public class RecycleBinServiceTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
    }
 

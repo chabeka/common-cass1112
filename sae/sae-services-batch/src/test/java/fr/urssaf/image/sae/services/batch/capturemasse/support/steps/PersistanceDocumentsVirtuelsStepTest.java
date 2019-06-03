@@ -152,7 +152,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       saeListCaptureMasseReferenceFile.clear();
       saeListVirtualReferenceFile.clear();
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

@@ -188,7 +188,7 @@ public class IntegrationBUL001ErreurAvantInsertionTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

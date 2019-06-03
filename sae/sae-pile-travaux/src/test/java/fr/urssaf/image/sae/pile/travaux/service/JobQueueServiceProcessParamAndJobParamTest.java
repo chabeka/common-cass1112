@@ -76,7 +76,7 @@ public class JobQueueServiceProcessParamAndJobParamTest {
 
       }
 
-      serverBean.resetData();
+      serverBean.resetData(true);
    }
 
    @Test

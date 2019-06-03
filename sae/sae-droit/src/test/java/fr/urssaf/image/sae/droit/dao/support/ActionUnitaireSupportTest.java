@@ -40,7 +40,7 @@ public class ActionUnitaireSupportTest {
 
   @After
   public void end() throws Exception {
-    cassandraServer.resetData();
+    cassandraServer.resetData(true);
     cassandraServerCQL.resetData();
   }
 

@@ -94,7 +94,7 @@ public class MajRndServiceTest {
    @After
    public void after() throws Exception {
       EasyMock.reset(rndRecuperationService, lifeCycleRule, lifeCycleStep);
-      server.resetData();
+      server.resetData(true);
       logger.detachAppender(logAppender);
    }
 

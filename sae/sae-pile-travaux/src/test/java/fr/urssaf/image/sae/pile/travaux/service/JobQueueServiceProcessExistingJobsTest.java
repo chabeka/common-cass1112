@@ -48,12 +48,12 @@ public class JobQueueServiceProcessExistingJobsTest {
    InterruptedException, ConfigurationException{
       // on s'assure que le job initialisé dans le fichier dataSet-avec-job-ase-pile-travaux.xml est bien chargé
       // On démarre un serveur cassandra local
-      EmbeddedCassandraServerHelper.startEmbeddedCassandra();
+//      EmbeddedCassandraServerHelper.startEmbeddedCassandra();
    }
    
    @After
    public void end() throws Exception{
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    /**

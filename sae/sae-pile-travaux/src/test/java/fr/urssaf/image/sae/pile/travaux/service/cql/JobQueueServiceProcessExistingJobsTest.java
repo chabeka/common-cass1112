@@ -61,7 +61,7 @@ public class JobQueueServiceProcessExistingJobsTest {
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    /**

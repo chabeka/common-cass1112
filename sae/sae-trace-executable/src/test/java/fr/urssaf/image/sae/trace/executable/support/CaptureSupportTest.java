@@ -69,7 +69,7 @@ public class CaptureSupportTest {
 
    @After
    public void after() throws Exception {
-      serverBean.resetData();
+      serverBean.resetData(true);
    }
 
    @Test

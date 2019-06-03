@@ -97,7 +97,7 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
       EasyMock.reset(base);
       EasyMock.reset(dfceServices);

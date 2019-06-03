@@ -135,7 +135,7 @@ public class SAECommonCaptureServiceImplTest {
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true);
    }
 
    /**

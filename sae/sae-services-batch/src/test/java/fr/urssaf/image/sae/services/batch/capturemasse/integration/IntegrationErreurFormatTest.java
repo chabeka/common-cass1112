@@ -165,7 +165,7 @@ public class IntegrationErreurFormatTest {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

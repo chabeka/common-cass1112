@@ -47,7 +47,7 @@ public class SaePagmaServiceDatasTest {
    
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
    
    @Test(expected = PagmaReferenceException.class)

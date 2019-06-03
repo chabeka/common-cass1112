@@ -173,7 +173,7 @@ public class IntegrationRollBackTropDocRechercheSuccesTest {
 
       AuthenticationContext.setAuthenticationToken(null);
       
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

@@ -166,7 +166,7 @@ public class SAEEnrichmentMetadataServiceImplTest {
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true);
    }
 
    private void initDroits() {

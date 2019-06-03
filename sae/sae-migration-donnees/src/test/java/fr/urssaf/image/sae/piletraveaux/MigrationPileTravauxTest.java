@@ -118,7 +118,7 @@ public class MigrationPileTravauxTest {
    @After
    public final void after() throws Exception {
       // Après chaque test, on reset les données de cassandra
-      server.resetData();
+      server.resetData(true);
       servercql.resetData();
    }
 

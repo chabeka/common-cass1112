@@ -166,7 +166,7 @@ public class Integration201DroitsIncorrectsTest {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

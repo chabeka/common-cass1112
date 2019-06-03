@@ -173,7 +173,7 @@ public class SAESearchServiceImplDatasTest {
    @After
    public void end() throws IOException {
       try {
-         bean.resetData();
+         bean.resetData(true);
       } catch (final Exception e) {
          e.printStackTrace();
       }

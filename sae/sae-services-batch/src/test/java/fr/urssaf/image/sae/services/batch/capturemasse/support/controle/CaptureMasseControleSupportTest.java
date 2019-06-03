@@ -130,7 +130,7 @@ public class CaptureMasseControleSupportTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test(expected = EmptyDocumentEx.class)

@@ -43,7 +43,7 @@ public class RetrievalServiceTest {
 
    @After
    public void end() throws Exception {
-      serverBean.resetData();
+      serverBean.resetData(true);
    }
 
    @Autowired

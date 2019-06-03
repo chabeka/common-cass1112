@@ -164,7 +164,7 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       // Paramétrage du RND
 
-      //server.resetData();
+      //server.resetData(true);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -190,7 +190,7 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
 
       if (ecde != null) {
          try {

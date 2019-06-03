@@ -183,7 +183,7 @@ public class IntegrationRollbackFailureTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

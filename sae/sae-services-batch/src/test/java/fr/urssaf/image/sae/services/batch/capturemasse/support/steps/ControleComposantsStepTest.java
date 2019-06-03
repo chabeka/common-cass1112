@@ -127,7 +127,7 @@ public class ControleComposantsStepTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

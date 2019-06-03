@@ -43,7 +43,7 @@ public class PagmaSupportTest {
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    @Test

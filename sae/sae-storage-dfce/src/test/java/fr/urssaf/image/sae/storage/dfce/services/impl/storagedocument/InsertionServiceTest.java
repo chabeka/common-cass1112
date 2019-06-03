@@ -101,7 +101,7 @@ public class InsertionServiceTest {
    public void after() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
    }
 

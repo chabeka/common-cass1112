@@ -121,7 +121,7 @@ public class SAECopieServiceTest {
 
       // Paramétrage du RND
 
-      server.resetData();
+      server.resetData(true);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -149,7 +149,7 @@ public class SAECopieServiceTest {
       // on vide le contexte de sécurité
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,

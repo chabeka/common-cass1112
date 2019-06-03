@@ -92,7 +92,7 @@ public class TraitementServiceDatasTest {
 
    @After
    public void after() throws Exception {
-      serverBean.resetData();
+      serverBean.resetData(true);
    }
 
    @Test

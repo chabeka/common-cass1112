@@ -174,7 +174,7 @@ public class IntegrationBUL003Test {
 
       EasyMock.reset(provider, storageDocumentService);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

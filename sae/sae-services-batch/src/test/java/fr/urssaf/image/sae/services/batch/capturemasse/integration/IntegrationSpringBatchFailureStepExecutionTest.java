@@ -203,7 +203,7 @@ public class IntegrationSpringBatchFailureStepExecutionTest {
 
       logger.detachAppender(logAppenderSae);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

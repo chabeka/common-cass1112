@@ -180,7 +180,7 @@ public class IntegrationRollbackSuccessTest {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

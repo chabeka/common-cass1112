@@ -138,7 +138,7 @@ public class MetaDataPartielIntegrationTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
 
    }
 

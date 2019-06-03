@@ -180,7 +180,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
 
       EasyMock.reset(provider, storageDocumentService, impl);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

@@ -58,7 +58,7 @@ public class TraceRegTechniqueSupportTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

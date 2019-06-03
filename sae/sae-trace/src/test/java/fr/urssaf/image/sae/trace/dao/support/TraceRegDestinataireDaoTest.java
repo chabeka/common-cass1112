@@ -39,7 +39,7 @@ public class TraceRegDestinataireDaoTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test(expected = TraceRuntimeException.class)

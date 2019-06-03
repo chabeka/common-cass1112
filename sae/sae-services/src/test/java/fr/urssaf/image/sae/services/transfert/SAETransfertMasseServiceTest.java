@@ -116,7 +116,7 @@ public class SAETransfertMasseServiceTest {
    @After
    public void end() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       if (uidDocGNT != null) {
          testProviderGNT.deleteDocument(uidDocGNT);
@@ -131,7 +131,7 @@ public class SAETransfertMasseServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

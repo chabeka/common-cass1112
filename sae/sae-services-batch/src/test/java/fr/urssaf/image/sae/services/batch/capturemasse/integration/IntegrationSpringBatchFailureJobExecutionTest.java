@@ -188,7 +188,7 @@ public class IntegrationSpringBatchFailureJobExecutionTest {
 
       logger.detachAppender(logAppenderSae);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

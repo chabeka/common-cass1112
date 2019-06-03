@@ -84,8 +84,8 @@ public class DispatcheurServiceEvtDatasTest {
 
   @After
   public void after() throws Exception {
-    server.resetData();
-    serverCQL.resetData();
+    server.resetData(true);
+    serverCQL.resetData(true);
   }
 
   @Test

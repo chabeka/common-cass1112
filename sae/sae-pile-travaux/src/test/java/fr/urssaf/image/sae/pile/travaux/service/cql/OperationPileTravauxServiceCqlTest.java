@@ -49,7 +49,7 @@ public class OperationPileTravauxServiceCqlTest {
    @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    @Test

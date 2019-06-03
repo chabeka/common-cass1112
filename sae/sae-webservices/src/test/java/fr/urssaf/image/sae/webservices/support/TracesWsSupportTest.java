@@ -72,7 +72,7 @@ public class TracesWsSupportTest {
    @After
    public void after() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       AuthenticationContext.setAuthenticationToken(null);
 

@@ -121,7 +121,7 @@ public class MigrationJobStepTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
       servercql.resetData();
    }
 

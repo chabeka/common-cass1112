@@ -167,7 +167,7 @@ public class IntegrationVdocsTest {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

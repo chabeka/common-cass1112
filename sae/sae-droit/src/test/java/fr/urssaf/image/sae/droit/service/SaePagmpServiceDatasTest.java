@@ -45,7 +45,7 @@ public class SaePagmpServiceDatasTest {
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    @Test(expected = DroitRuntimeException.class)
