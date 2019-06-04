@@ -29,7 +29,7 @@ public class CassandraServerBean extends AbstractCassandraServer {
    */
   @Override
   public void resetData(final String... newDataSets) throws Exception {
-    resetData(false, newDataSets);
+    resetData(true, newDataSets);
 
   }
 
