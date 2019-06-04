@@ -41,14 +41,6 @@ public class SaePagmaServiceDatasTest {
 
    @Autowired
    private JobClockSupport clockSupport;
-
-   @Autowired
-   private CassandraServerBean cassandraServer;
-   
-   @After
-   public void end() throws Exception {
-      cassandraServer.resetData(true);
-   }
    
    @Test(expected = PagmaReferenceException.class)
    public void testPagmaDejaExistant() {

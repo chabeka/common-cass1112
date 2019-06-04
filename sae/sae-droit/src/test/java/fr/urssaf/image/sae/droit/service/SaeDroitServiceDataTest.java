@@ -122,9 +122,6 @@ public class SaeDroitServiceDataTest {
    private SaeDroitService service;
 
    @Autowired
-   private CassandraServerBean cassandraServer;
-
-   @Autowired
    private ContratServiceSupport contratSupport;
 
    @Autowired
@@ -147,11 +144,6 @@ public class SaeDroitServiceDataTest {
 
    @Autowired
    private ActionUnitaireSupport actionSupport;
-
-   @After
-   public void end() throws Exception {
-      cassandraServer.resetData(true);
-   }
 
    @Test
    public void testServiceContratServiceInexistant() {
