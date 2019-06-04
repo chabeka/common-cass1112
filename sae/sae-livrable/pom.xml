@@ -66,7 +66,7 @@
 				<applicationName>data-sae</applicationName>
 				<applicationBinFileName>data_sae.tar.gz</applicationBinFileName>
 				<fedex>false</fedex>
-				<skip>false</skip>
+				<skip>true</skip>
 			</configuration>
 		</plugin>
       </plugins>

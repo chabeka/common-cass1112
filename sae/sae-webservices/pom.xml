@@ -187,7 +187,7 @@
                <applicationName>ged</applicationName>
                <applicationBinFileName>${project.build.finalName}.war</applicationBinFileName>
                <fedex>false</fedex>
-               <skip>false</skip>
+               <skip>true</skip>
             </configuration>
          </plugin>
          <plugin>

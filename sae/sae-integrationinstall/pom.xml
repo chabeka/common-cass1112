@@ -105,7 +105,7 @@
 					<applicationName>${project.name}</applicationName>
 					<applicationBinFileName>${project.build.finalName}.jar</applicationBinFileName>
 					<fedex>false</fedex>
-					<skip>false</skip>
+					<skip>true</skip>
 				</configuration>
 			</plugin>
 		</plugins>
