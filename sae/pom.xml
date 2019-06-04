@@ -5,7 +5,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae</artifactId>
-	<version>19.7.1-SNAPSHOT</version>
+	<version>19.7.1</version>
 	<packaging>pom</packaging>
 
 	<name>sae</name>
@@ -209,13 +209,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.7.1
       </url>
 		<developerConnection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.7.1
       </developerConnection>
 		<connection>
-         scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/sae/
+         scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-19.7.1
       </connection>
 	</scm>
 
@@ -618,8 +618,7 @@
 									</goals>
 									<configuration>
 										<fileSets>
-											<fileSet
-												implementation="org.apache.maven.shared.model.fileset.FileSet">
+											<fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
 												<directory>${project.basedir}</directory>
 												<includes>
 													<include>**/*.exec</include>
