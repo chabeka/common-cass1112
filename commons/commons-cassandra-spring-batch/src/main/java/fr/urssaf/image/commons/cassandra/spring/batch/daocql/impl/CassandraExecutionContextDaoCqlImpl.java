@@ -1,40 +1,36 @@
 /**
- *
+ *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.commons.cassandra.spring.batch.dao;
+package fr.urssaf.image.commons.cassandra.spring.batch.daocql.impl;
 
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.core.repository.dao.ExecutionContextDao;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.impl.CassandraExecutionContextDaoCqlImpl;
-import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraExecutionContextDaoThrift;
+import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
 
 /**
- *
- *
+ * TODO (AC75095028) Description du type
  */
-public class CassandraExecutionContextDao implements ExecutionContextDao {
+@Component
+public class CassandraExecutionContextDaoCqlImpl implements ExecutionContextDao {
 
-   /** le nom de la table associée */
-   private final String cfName = "jobexecution";
-
-   /** le dao cql */
-   private final CassandraExecutionContextDaoCqlImpl jobExeContextDaoCql;
-
-   /** le dao thrift */
-   private final CassandraExecutionContextDaoThrift jobExeContextDaoThrift;
+   @Autowired
+   IJobExecutionDaoCql jobExeDaoCql;
 
    /**
-    * @param daoCql
-    * @param daoThrift
+    * Constructeur
+    *
+    * @param keyspace
+    *           : keyspace cassandra
     */
-   public CassandraExecutionContextDao(final CassandraExecutionContextDaoCqlImpl daoCql, final CassandraExecutionContextDaoThrift daoThrift) {
-      super();
-      this.jobExeContextDaoCql = daoCql;
-      this.jobExeContextDaoThrift = daoThrift;
+   public CassandraExecutionContextDaoCqlImpl() {
+
    }
 
    @Override
@@ -74,18 +70,9 @@ public class CassandraExecutionContextDao implements ExecutionContextDao {
    }
 
    @Override
-   public void updateExecutionContext(final JobExecution jobExecution) {
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-
-      if (ModeGestionAPI.MODE_API.DATASTAX.equals(modeApi)) {
-         jobExeContextDaoCql.updateExecutionContext(jobExecution);
-      } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
-         jobExeContextDaoThrift.updateExecutionContext(jobExecution);
-      } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
-         // Pour exemple
-         // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
-      }
-
+   public final void updateExecutionContext(final JobExecution jobExecution) {
+      final JobExecutionCql executionCql = JobTranslateUtils.JobExecutionToJobExecutionCql(jobExecution);
+      jobExeDaoCql.saveWithMapper(executionCql);
    }
 
    @Override

@@ -15,7 +15,7 @@
 		<version>1.1.3</version>
 	</parent>
 
-	<properties>      
+	<properties>
       <!-- Version des plug-ins Maven -->
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
@@ -23,7 +23,7 @@
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
       
       <!-- Version de commons-cassandra -->
-		<commons-cassandra.version>1.0.2</commons-cassandra.version>
+		<commons-cassandra.version>2.0.1-SNAPSHOT</commons-cassandra.version>
       
       <!-- Version des framework -->
 		<junit.version>4.8.2</junit.version>
@@ -58,7 +58,12 @@
 			<artifactId>commons-cassandra</artifactId>
 			<version>${commons-cassandra.version}</version>
 		</dependency>
-
+		<!-- SAE -->
+		<dependency>
+			<groupId>fr.urssaf.image.sae</groupId>
+			<artifactId>sae-commons</artifactId>
+			<version>19.3.1-SNAPSHOT</version>
+		</dependency>
 
       <!-- Spring et SPRING BATCH -->
 
@@ -143,8 +148,10 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-
+	
+	
+		
+		
       <!-- JUNIT -->
 
 		<dependency>

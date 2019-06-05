@@ -1,4 +1,4 @@
-package fr.urssaf.image.commons.cassandra.spring.batch.dao;
+package fr.urssaf.image.commons.cassandra.spring.batch.daothrift;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,12 +10,10 @@ import java.util.Map;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
-import org.cassandraunit.AbstractCassandraUnit4TestCase;
-import org.cassandraunit.dataset.DataSet;
-import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobInstance;
@@ -23,7 +21,14 @@ import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift;
+import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraStepExecutionDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator;
@@ -33,18 +38,29 @@ import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import junit.framework.Assert;
 import me.prettyprint.hector.api.Keyspace;
 
-public class CassandraStepExecutionDAOTest extends
-      AbstractCassandraUnit4TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-cassandra-local.xml" })
+public class CassandraStepExecutionDAOThriftTest {
 
-   private CassandraJobExecutionDao jobExecutionDao;
-   private CassandraJobInstanceDao jobInstanceDao;
-   private CassandraStepExecutionDao stepExecutionDao;
+   private CassandraJobExecutionDaoThrift jobExecutionDao;
+
+   private CassandraJobInstanceDaoThrift jobInstanceDao;
+
+   private CassandraStepExecutionDaoThrift stepExecutionDao;
+
    private TestingServer zkServer;
+
    private CuratorFramework zkClient;
 
-   @Override
-   public DataSet getDataSet() {
-      return new ClassPathXmlDataSet("dataSet-commons-cassandra-spring-batch.xml");
+   @Autowired
+   private CassandraServerBean server;
+
+   @Autowired
+   private CassandraClientFactory ccf;
+
+   @After
+   public void after() throws Exception {
+      server.resetData();
    }
 
    @Before
@@ -54,49 +70,50 @@ public class CassandraStepExecutionDAOTest extends
       zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
 
       // Récupération du keyspace de cassandra-unit, et création des dao
-      Keyspace keyspace = getKeyspace();
-      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(keyspace);
-      jobExecutionDao = new CassandraJobExecutionDao(keyspace, new JobExecutionIdGenerator(keyspace, zkClient,clockSupport));
-      jobInstanceDao = new CassandraJobInstanceDao(keyspace, new JobInstanceIdGenerator(keyspace, zkClient,clockSupport));
-      stepExecutionDao = new CassandraStepExecutionDao(keyspace, new StepExecutionIdGenerator(keyspace, zkClient,clockSupport));
+      final Keyspace keyspace = ccf.getKeyspace();
+      final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(keyspace);
+      jobExecutionDao = new CassandraJobExecutionDaoThrift(keyspace, new JobExecutionIdGenerator(keyspace, zkClient, clockSupport));
+      jobInstanceDao = new CassandraJobInstanceDaoThrift(keyspace, new JobInstanceIdGenerator(keyspace, zkClient, clockSupport));
+      stepExecutionDao = new CassandraStepExecutionDaoThrift(keyspace, new StepExecutionIdGenerator(keyspace, zkClient, clockSupport));
    }
 
    @After
    public void clean() {
       zkClient.close();
-    try {
-      zkServer.close();
-    }
-    catch (IOException e) {
-      e.printStackTrace();
-    }
+      try {
+         zkServer.close();
+      }
+      catch (final IOException e) {
+         e.printStackTrace();
+      }
    }
-   
+
    private void initZookeeperServer() throws Exception {
-      if (zkServer == null)
+      if (zkServer == null) {
          zkServer = new TestingServer();
+      }
    }
 
    @Test
    public void saveAndAddStepExecutionsTest() {
-      CassandraStepExecutionDao dao = stepExecutionDao;
+      final CassandraStepExecutionDaoThrift dao = stepExecutionDao;
 
       // Création d'une exécution
-      JobExecution jobExecution = get0rCreateTestJobExecution("job");
+      final JobExecution jobExecution = get0rCreateTestJobExecution("job");
 
       // Création de 2 steps
       createTestSteps(jobExecution, 2);
 
       // Récupération des steps
-      Long jobExecutionId = jobExecution.getId();
-      JobExecution jobExecution2 = jobExecutionDao
-            .getJobExecution(jobExecutionId);
+      final Long jobExecutionId = jobExecution.getId();
+      final JobExecution jobExecution2 = jobExecutionDao
+                                                        .getJobExecution(jobExecutionId);
       dao.addStepExecutions(jobExecution2);
-      Collection<StepExecution> steps = jobExecution2.getStepExecutions();
+      final Collection<StepExecution> steps = jobExecution2.getStepExecutions();
 
       // Vérification des steps
       Assert.assertEquals(2, steps.size());
-      for (StepExecution stepExecution : steps) {
+      for (final StepExecution stepExecution : steps) {
          if (stepExecution.getStepName().equals("step1")) {
             Assert.assertEquals(1, stepExecution.getCommitCount());
          } else if (stepExecution.getStepName().equals("step2")) {
@@ -109,15 +126,16 @@ public class CassandraStepExecutionDAOTest extends
 
    /**
     * Création des steps pour le jobExecution passé en paramètre
-    * 
+    *
     * @param jobExecution
-    * @param count   nombre de steps à créer
+    * @param count
+    *           nombre de steps à créer
     */
-   private void createTestSteps(JobExecution jobExecution, int count) {
+   private void createTestSteps(final JobExecution jobExecution, final int count) {
       // Création des steps
-      List<StepExecution> steps = new ArrayList<StepExecution>(count);
+      final List<StepExecution> steps = new ArrayList<StepExecution>(count);
       for (int i = 1; i <= count; i++) {
-         StepExecution step = new StepExecution("step" + i, jobExecution);
+         final StepExecution step = new StepExecution("step" + i, jobExecution);
          step.setCommitCount(i);
          step.setLastUpdated(new Date(System.currentTimeMillis()));
          // Enregistrement du step
@@ -129,54 +147,54 @@ public class CassandraStepExecutionDAOTest extends
 
    @Test
    public void deleteTest() {
-      CassandraStepExecutionDao dao = stepExecutionDao;
+      final CassandraStepExecutionDaoThrift dao = stepExecutionDao;
       // Création d'un jobExecution avec 2 steps
-      JobExecution jobExecution = get0rCreateTestJobExecution("job");
+      final JobExecution jobExecution = get0rCreateTestJobExecution("job");
       createTestSteps(jobExecution, 2);
 
       // Suppression des steps
       dao.deleteStepsOfExecution(jobExecution);
 
       // Chargement des steps
-      Long jobExecutionId = jobExecution.getId();
-      JobExecution jobExecution2 = jobExecutionDao
-            .getJobExecution(jobExecutionId);
+      final Long jobExecutionId = jobExecution.getId();
+      final JobExecution jobExecution2 = jobExecutionDao
+                                                        .getJobExecution(jobExecutionId);
       dao.addStepExecutions(jobExecution2);
-      Collection<StepExecution> steps = jobExecution2.getStepExecutions();
+      final Collection<StepExecution> steps = jobExecution2.getStepExecutions();
 
       // Vérification qu'il n'y a plus de step
       Assert.assertEquals(0, steps.size());
    }
-   
+
    @Test
    public void testCountStepExecutions() {
-      CassandraStepExecutionDao dao = stepExecutionDao;
-      JobExecution je1 = createJobExecution("job1");
+      final CassandraStepExecutionDaoThrift dao = stepExecutionDao;
+      final JobExecution je1 = createJobExecution("job1");
       createTestSteps(je1, 2);
-      JobExecution je2 = createJobExecution("job2");
+      final JobExecution je2 = createJobExecution("job2");
       createTestSteps(je2, 3);
       Assert.assertEquals(1, dao.countStepExecutions("job1", "step1"));
    }
 
    @Test
    public void testFindStepExecutions() {
-      CassandraStepExecutionDao dao = stepExecutionDao;
-      JobExecution je1 = createJobExecution("job1");
+      final CassandraStepExecutionDaoThrift dao = stepExecutionDao;
+      final JobExecution je1 = createJobExecution("job1");
       createTestSteps(je1, 2);
-      JobExecution je2 = createJobExecution("job2");
+      final JobExecution je2 = createJobExecution("job2");
       createTestSteps(je2, 3);
-      Collection<StepExecution> steps = dao.findStepExecutions("job1", "step1", 0, 100);
+      final Collection<StepExecution> steps = dao.findStepExecutions("job1", "step1", 0, 100);
       Assert.assertEquals(1, steps.size());
-      Collection<StepExecution> allSteps = dao.findStepExecutions("job1", "st*ep*", 0, 100);
+      final Collection<StepExecution> allSteps = dao.findStepExecutions("job1", "st*ep*", 0, 100);
       Assert.assertEquals(2, allSteps.size());
    }
-   
+
    @Test
    public void testfindStepNamesForJobExecution() {
-      CassandraStepExecutionDao dao = stepExecutionDao;
-      JobExecution je1 = createJobExecution("job1");
+      final CassandraStepExecutionDaoThrift dao = stepExecutionDao;
+      final JobExecution je1 = createJobExecution("job1");
       createTestSteps(je1, 2);
-      JobExecution je2 = createJobExecution("job2");
+      final JobExecution je2 = createJobExecution("job2");
       createTestSteps(je2, 3);
       Collection<String> stepNames = dao.findStepNamesForJobExecution("job1", "toto");
       Assert.assertEquals(2, stepNames.size());
@@ -185,40 +203,42 @@ public class CassandraStepExecutionDAOTest extends
       stepNames = dao.findStepNamesForJobExecution("job2", "toto");
       Assert.assertEquals(3, stepNames.size());
       Assert.assertTrue(stepNames.contains("step3"));
-      
+
       stepNames = dao.findStepNamesForJobExecution("job1", "s*");
       Assert.assertEquals(0, stepNames.size());
    }
-   
-   private JobExecution get0rCreateTestJobExecution(String jobName) {
-      CassandraJobExecutionDao dao = jobExecutionDao;
-      JobInstance jobInstance = getTestOrCreateJobInstance(jobName);
-      List<JobExecution> list = dao.findJobExecutions(jobInstance);
-      if (!list.isEmpty()) return list.get(0);
+
+   private JobExecution get0rCreateTestJobExecution(final String jobName) {
+      final CassandraJobExecutionDaoThrift dao = jobExecutionDao;
+      final JobInstance jobInstance = getTestOrCreateJobInstance(jobName);
+      final List<JobExecution> list = dao.findJobExecutions(jobInstance);
+      if (!list.isEmpty()) {
+         return list.get(0);
+      }
       return createJobExecution(jobName);
    }
 
-   private JobExecution createJobExecution(String jobName) {
-      CassandraJobExecutionDao dao = jobExecutionDao;
-      JobInstance jobInstance = getTestOrCreateJobInstance(jobName);
-      JobExecution jobExecution = new JobExecution(jobInstance);
-      Map<String, Object> mapContext = new HashMap<String, Object>();
+   private JobExecution createJobExecution(final String jobName) {
+      final CassandraJobExecutionDaoThrift dao = jobExecutionDao;
+      final JobInstance jobInstance = getTestOrCreateJobInstance(jobName);
+      final JobExecution jobExecution = new JobExecution(jobInstance);
+      final Map<String, Object> mapContext = new HashMap<String, Object>();
       mapContext.put("contexte1", "test1");
       mapContext.put("contexte2", 2);
-      ExecutionContext executionContext = new ExecutionContext(mapContext);
+      final ExecutionContext executionContext = new ExecutionContext(mapContext);
       jobExecution.setExecutionContext(executionContext);
       jobExecution.setExitStatus(new ExitStatus("123", "test123"));
       dao.saveJobExecution(jobExecution);
       return jobExecution;
    }
-   
-   private JobInstance getTestOrCreateJobInstance(String jobName) {
-      CassandraJobInstanceDao dao = jobInstanceDao;
-      Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
+
+   private JobInstance getTestOrCreateJobInstance(final String jobName) {
+      final CassandraJobInstanceDaoThrift dao = jobInstanceDao;
+      final Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
       mapJobParameters.put("premier_parametre", new JobParameter("test1"));
       mapJobParameters.put("deuxieme_parametre", new JobParameter("test2"));
       mapJobParameters.put("troisieme_parametre", new JobParameter(122L));
-      JobParameters jobParameters = new JobParameters(mapJobParameters);
+      final JobParameters jobParameters = new JobParameters(mapJobParameters);
 
       JobInstance jobInstance = dao.getJobInstance(jobName, jobParameters);
       if (jobInstance == null) {

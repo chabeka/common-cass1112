@@ -9,7 +9,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao;
+import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDaoThrift;
 
 
 /**
@@ -21,7 +21,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionD
 public class SpringContextTest2 {
 
    @Autowired
-   private CassandraJobExecutionDao jobExecutionDao;
+   private CassandraJobExecutionDaoThrift jobExecutionDao;
    
    @Test
    public final void springContextTest () {

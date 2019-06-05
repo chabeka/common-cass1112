@@ -7,101 +7,118 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
-import org.cassandraunit.AbstractCassandraUnit4TestCase;
-import org.cassandraunit.dataset.DataSet;
-import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 
-public class JobExecutionIdGeneratorTest extends AbstractCassandraUnit4TestCase {
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/applicationContext-cassandra-local.xml"})
+public class JobExecutionIdGeneratorTest {
 
-   private TestingServer zkServer;
-   private CuratorFramework zkClient;
+  private TestingServer zkServer;
 
-   @Override
-   public DataSet getDataSet() {
-      return new ClassPathXmlDataSet("dataSet-commons-cassandra-spring-batch.xml");
-   }
+  private CuratorFramework zkClient;
 
-   @Before
-   public void init() throws Exception {
-      // Connexion à un serveur zookeeper local
-      initZookeeperServer();
-      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
-   }
+  @Autowired
+  private CassandraServerBean server;
 
-   @After
-   public void clean() {
+  @Autowired
+  private CassandraClientFactory ccf;
+
+  @After
+  public void after() throws Exception {
+    server.resetData();
+  }
+
+  @Before
+  public void init() throws Exception {
+    // Connexion à un serveur zookeeper local
+    initZookeeperServer();
+    zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+  }
+
+  @After
+  public void clean() {
     try {
       zkServer.close();
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       e.printStackTrace();
     }
-   }
+  }
 
-   private void initZookeeperServer() throws Exception {
-      if (zkServer == null)
-         zkServer = new TestingServer();
-   }
+  private void initZookeeperServer() throws Exception {
+    if (zkServer == null) {
+      zkServer = new TestingServer();
+    }
+  }
 
-   @Test
-   public void testMonoThread() {
-      
-      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(getKeyspace());
-      
-      IdGenerator generator = new JobExecutionIdGenerator(getKeyspace(),
-            zkClient,clockSupport);
-      for (int i = 1; i < 5; i++) {
-         Assert.assertEquals(i, generator.getNextId());
-      }
-   }
+  @Test
+  public void testMonoThread() {
 
-   @Test
-   public void testMultiThread() throws InterruptedException {
-      
-      JobClockSupport clockSupport =  JobClockSupportFactory.createJobClockSupport(getKeyspace());
-      
-      IdGenerator generator = new JobExecutionIdGenerator(getKeyspace(),
-            zkClient,clockSupport);
-      Map<Long, Long> map = new ConcurrentHashMap<Long, Long>();
-      SimpleThread[] threads = new SimpleThread[10]; 
-      for (int i = 0; i < 10; i++) {
-         threads[i] = new SimpleThread(generator, map);
-         threads[i].start();
-      }
-      for (int i = 0; i < 10; i++) {
-         threads[i].join();
-      }
-      Assert.assertEquals(50, map.size());
-      for (Entry<Long, Long> entry : map.entrySet()) {
-         System.out.print(entry.getKey() + " ");
-      }
-   }
+    final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(ccf.getKeyspace());
 
-   private class SimpleThread extends Thread {
-      
-      IdGenerator generator;
-      Map<Long, Long> map;
-      
-      public SimpleThread(IdGenerator generator, Map<Long, Long> map) {
-         super();
-         this.generator = generator;
-         this.map = map;
-      }
+    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(),
+                                                              zkClient,
+                                                              clockSupport);
+    for (int i = 1; i < 5; i++) {
+      Assert.assertEquals(i, generator.getNextId());
+    }
+  }
 
-      public void run() {
-         for (int i = 0; i < 5; i++) {
-            long id = generator.getNextId();
-            map.put(id, id);
-         }
+  @Test
+  public void testMultiThread() throws InterruptedException {
+
+    final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(ccf.getKeyspace());
+
+    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(),
+                                                              zkClient,
+                                                              clockSupport);
+    final Map<Long, Long> map = new ConcurrentHashMap<Long, Long>();
+    final SimpleThread[] threads = new SimpleThread[10];
+    for (int i = 0; i < 10; i++) {
+      threads[i] = new SimpleThread(generator, map);
+      threads[i].start();
+    }
+    for (int i = 0; i < 10; i++) {
+      threads[i].join();
+    }
+    Assert.assertEquals(50, map.size());
+    for (final Entry<Long, Long> entry : map.entrySet()) {
+      System.out.print(entry.getKey() + " ");
+    }
+  }
+
+  private class SimpleThread extends Thread {
+
+    IdGenerator generator;
+
+    Map<Long, Long> map;
+
+    public SimpleThread(final IdGenerator generator, final Map<Long, Long> map) {
+      super();
+      this.generator = generator;
+      this.map = map;
+    }
+
+    @Override
+    public void run() {
+      for (int i = 0; i < 5; i++) {
+        final long id = generator.getNextId();
+        map.put(id, id);
       }
-   }
+    }
+  }
 
 }
