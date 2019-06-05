@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
-   ID="bad id" IssueInstant="2007-03-21T12:50:01.152Z"
-   Version="2.0">
-   
-</saml:Assertion>
