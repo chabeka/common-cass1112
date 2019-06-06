@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-droid</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.1.1-SNAPSHOT</version>
 
 	<name>commons-droid</name>
    
@@ -28,7 +28,7 @@
 		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
 		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
 		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<droid.version>7.0</droid.version>
+		<droid.version>6.4</droid.version>
 
 	</properties>
    
@@ -201,31 +201,61 @@
 			<artifactId>spring-web</artifactId>
 			<version>${spring.framework.version}</version>
 		</dependency>
-         
-      <!-- Droid -->
 		<dependency>
-			<groupId>fr.urssaf.image.droid</groupId>
-         <!--
-         <artifactId>droid-container</artifactId>
-         -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+         
+            <!-- Droid -->
+		<dependency>
+			<groupId>uk.gov.nationalarchives</groupId>
 			<artifactId>droid-command-line</artifactId>
 			<version>${droid.version}</version>
 			<exclusions>
+<!-- 				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion> -->
+				<!-- <exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-bindings-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-bindings-soap</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-frontend-simple</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-common-schemas</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-common-utilities</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-transports-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-core</artifactId>
+				</exclusion> -->
+				<exclusion>
+					<groupId>com.sun</groupId>
+					<artifactId>tools</artifactId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.springframework</groupId>
-					<artifactId>spring</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax</groupId>
-					<artifactId>javaee-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>javax.persistence</groupId>
-					<artifactId>persistence-api</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>

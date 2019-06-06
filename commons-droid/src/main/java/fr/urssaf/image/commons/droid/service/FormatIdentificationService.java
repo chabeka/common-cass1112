@@ -15,6 +15,7 @@ public interface FormatIdentificationService {
     *           le fichier dont il faut identifier le format
     * @return l'identifiant PRONOM du format, ou null si le format n'a pas été
     *         identifié
+    * @throws IOException @{@link IOException}
     */
    String identifie(File file) throws IOException;
 
