@@ -16,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -36,6 +37,9 @@ public class JobQueueServiceStartingJobCqlTest {
 
    @Autowired
    private JobLectureCqlService jobLectureService;
+   
+   @Autowired
+   private CassandraServerBeanCql cassandraServer;
 
    private UUID idJob;
 
@@ -44,8 +48,8 @@ public class JobQueueServiceStartingJobCqlTest {
    }
 
    @Before
-   public void before() {
-
+   public void before() throws Exception {
+      cassandraServer.resetData(true);
       setJob(null);
    }
 

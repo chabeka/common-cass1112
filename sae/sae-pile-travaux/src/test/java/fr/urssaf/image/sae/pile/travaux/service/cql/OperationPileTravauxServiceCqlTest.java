@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -36,17 +38,15 @@ public class OperationPileTravauxServiceCqlTest {
 
    @Autowired
    private JobLectureCqlService jobLectureService;
-
-   @Autowired
-   private Keyspace keyspace;
+   
 
    @Autowired
    private OperationPileTravauxCqlService operationPileTravauxService;
 
    @Autowired
-   private CassandraServerBean cassandraServer;
+   private CassandraServerBeanCql cassandraServer;
 
-   @After
+   @Before
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
       cassandraServer.resetData(true);

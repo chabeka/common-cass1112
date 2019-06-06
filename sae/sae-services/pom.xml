@@ -55,6 +55,16 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
          <version>19.3.1-SNAPSHOT</version>
+         <exclusions>
+         	<exclusion>
+         		<groupId>org.hamcrest</groupId>
+         		<artifactId>hamcrest-all</artifactId>
+         	</exclusion>
+         	<exclusion>
+         		<groupId>org.hamcrest</groupId>
+         		<artifactId>hamcrest-core</artifactId>
+         	</exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
@@ -150,6 +160,14 @@
          <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
+      
+      <!-- JAXB -->
+      <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+	<dependency>
+	    <groupId>com.sun.xml.bind</groupId>
+	    <artifactId>jaxb-impl</artifactId>
+	    <version>2.1.13</version>
+	</dependency>
 
    </dependencies>
 
