@@ -1,19 +1,20 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.commons.context;
+package fr.urssaf.image.commons.cassandra.cql.codec;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import org.codehaus.jackson.JsonProcessingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.TypeFactory;
+import org.codehaus.jackson.type.JavaType;
 
 import com.datastax.driver.core.DataType;
 import com.datastax.driver.core.ProtocolVersion;
 import com.datastax.driver.core.TypeCodec;
 import com.datastax.driver.core.exceptions.InvalidTypeException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.type.TypeFactory;
 
 /**
  * TODO (AC75095028) Description du type
@@ -34,7 +35,7 @@ public class JsonCodec<T> extends TypeCodec<T> {
     try {
       return ByteBuffer.wrap(objectMapper.writeValueAsBytes(value));
     }
-    catch (final JsonProcessingException e) {
+    catch (final IOException e) {
       throw new InvalidTypeException(e.getMessage(), e);
     }
   }

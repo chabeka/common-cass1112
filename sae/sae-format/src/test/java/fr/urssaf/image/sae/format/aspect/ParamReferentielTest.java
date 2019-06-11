@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.format.aspect;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSuppo
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Utils;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })

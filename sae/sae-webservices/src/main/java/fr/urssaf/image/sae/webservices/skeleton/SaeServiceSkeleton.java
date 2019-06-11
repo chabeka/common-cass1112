@@ -9,6 +9,21 @@
  */
 package fr.urssaf.image.sae.webservices.skeleton;
 
+import java.io.IOException;
+import java.rmi.RemoteException;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.axis2.AxisFault;
+import org.apache.axis2.context.MessageContext;
+import org.apache.axis2.transport.http.HTTPConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
+
 import fr.cirtil.www.saeservice.AjoutNote;
 import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
@@ -67,7 +82,6 @@ import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertMasse;
 import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
-
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
@@ -135,27 +149,6 @@ import fr.urssaf.image.sae.webservices.service.WSSuppressionService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertMasseService;
 import fr.urssaf.image.sae.webservices.service.WSTransfertService;
 import fr.urssaf.image.sae.webservices.util.WsMessageRessourcesUtils;
-
-import org.apache.axis2.AxisFault;
-import org.apache.axis2.context.MessageContext;
-import org.apache.axis2.transport.http.HTTPConstants;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.beans.factory.annotation.Autowired;
-
-import org.springframework.security.access.AccessDeniedException;
-
-import org.springframework.stereotype.Component;
-
-import org.springframework.util.Assert;
-
-import java.io.IOException;
-
-import java.rmi.RemoteException;
-
-import javax.servlet.http.HttpServletResponse;
 
 
 /**

@@ -3,15 +3,14 @@
  */
 package fr.urssaf.image.sae.trace.dao;
 
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.TraceRegTechniqueIndexSerializer;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * Service DAO de la famille de colonnes "TraceRegTechniqueIndex"

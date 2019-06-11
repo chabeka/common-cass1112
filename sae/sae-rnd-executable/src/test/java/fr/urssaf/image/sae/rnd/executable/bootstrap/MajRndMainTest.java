@@ -6,7 +6,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import fr.urssaf.image.sae.rnd.executable.bootstrap.MajRndMain;
 import fr.urssaf.image.sae.rnd.executable.service.RndServiceProvider;
 import fr.urssaf.image.sae.rnd.service.MajRndService;
 

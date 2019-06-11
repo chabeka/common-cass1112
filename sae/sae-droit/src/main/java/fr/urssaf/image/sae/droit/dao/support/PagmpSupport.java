@@ -3,10 +3,6 @@
  */
 package fr.urssaf.image.sae.droit.dao.support;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +10,9 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.PagmpDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagmp;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * Classe de support de la classe {@link PagmpDao}

@@ -6,8 +6,6 @@ import java.net.URI;
 
 import javax.xml.stream.XMLStreamReader;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.easymock.EasyMock;
@@ -32,6 +30,7 @@ import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseRun
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
 import fr.urssaf.image.sae.webservices.util.XMLStreamUtils;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })

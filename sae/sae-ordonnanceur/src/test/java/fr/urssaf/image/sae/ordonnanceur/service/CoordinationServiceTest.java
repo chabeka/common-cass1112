@@ -23,7 +23,6 @@ import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.model.OrdonnanceurConfiguration;
 import fr.urssaf.image.sae.ordonnanceur.support.DFCESupport;
-import fr.urssaf.image.sae.ordonnanceur.util.ProcessChecker;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;

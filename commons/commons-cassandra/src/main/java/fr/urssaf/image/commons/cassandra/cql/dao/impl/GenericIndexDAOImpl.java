@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.commons.dao.impl;
+package fr.urssaf.image.commons.cassandra.cql.dao.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -15,9 +15,9 @@ import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.MappingManager;
 
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
-import fr.urssaf.image.sae.commons.dao.IGenericIndexDAO;
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
  * @param <T>

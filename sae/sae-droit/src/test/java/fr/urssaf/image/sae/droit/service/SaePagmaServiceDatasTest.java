@@ -5,9 +5,6 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.Arrays;
 
-import junit.framework.Assert;
-
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
@@ -24,6 +20,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenc
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })

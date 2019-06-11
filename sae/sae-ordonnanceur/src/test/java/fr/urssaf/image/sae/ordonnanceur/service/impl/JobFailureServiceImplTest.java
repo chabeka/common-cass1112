@@ -3,12 +3,11 @@ package fr.urssaf.image.sae.ordonnanceur.service.impl;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.exception.NestableException;
 import org.junit.Test;
 
 import fr.urssaf.image.sae.ordonnanceur.service.impl.JobFailureServiceImpl.JobFailureInfo;
+import junit.framework.Assert;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class JobFailureServiceImplTest {

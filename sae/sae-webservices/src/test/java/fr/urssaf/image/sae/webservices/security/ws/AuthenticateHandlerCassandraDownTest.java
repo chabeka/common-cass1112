@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.security.ws;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import me.prettyprint.hector.api.exceptions.HectorException;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.context.MessageContext;
@@ -22,6 +21,7 @@ import fr.urssaf.image.sae.webservices.modele.WebServiceConfiguration;
 import fr.urssaf.image.sae.webservices.security.SecurityService;
 import fr.urssaf.image.sae.webservices.security.igc.IgcService;
 import fr.urssaf.image.sae.webservices.util.Axis2Utils;
+import me.prettyprint.hector.api.exceptions.HectorException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml",

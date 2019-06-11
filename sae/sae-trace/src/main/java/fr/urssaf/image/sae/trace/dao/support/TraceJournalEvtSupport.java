@@ -6,11 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.SliceQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +22,10 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndexDoc;
 import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Support de la classe DAO {@link TraceJournalEvtDao}

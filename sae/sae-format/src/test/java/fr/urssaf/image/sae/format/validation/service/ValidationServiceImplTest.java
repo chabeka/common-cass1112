@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.format.validation.service;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationE
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.impl.ValidationServiceImpl;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
+import junit.framework.Assert;
 
 /**
  * 

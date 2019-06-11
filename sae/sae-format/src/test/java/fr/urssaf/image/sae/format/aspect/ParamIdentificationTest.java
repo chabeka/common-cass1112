@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisa
 import fr.urssaf.image.sae.format.identification.identifiers.pdfa.PdfaIdentifierImpl;
 import fr.urssaf.image.sae.format.identification.service.impl.IdentificationServiceImpl;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })

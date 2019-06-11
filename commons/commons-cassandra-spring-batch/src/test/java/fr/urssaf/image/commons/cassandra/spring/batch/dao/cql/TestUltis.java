@@ -17,7 +17,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceToJobE
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.SequencesCql;
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
  * TODO (AC75095028) Description du type

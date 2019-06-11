@@ -15,7 +15,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
-import fr.urssaf.image.sae.rnd.factory.ConvertFactory;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.ws.adrn.modele.RNDTypeDocument;

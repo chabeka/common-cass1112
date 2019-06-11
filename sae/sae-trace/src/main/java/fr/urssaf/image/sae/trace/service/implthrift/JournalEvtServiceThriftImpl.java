@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import javanet.staxutils.IndentingXMLEventWriter;
-
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -36,6 +34,7 @@ import fr.urssaf.image.sae.trace.service.JournalEvtServiceThrift;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
 import fr.urssaf.image.sae.trace.utils.StaxUtils;
+import javanet.staxutils.IndentingXMLEventWriter;
 
 /**
  * Classe d'implémentation du support {@link JournalEvtService}. Cette classe

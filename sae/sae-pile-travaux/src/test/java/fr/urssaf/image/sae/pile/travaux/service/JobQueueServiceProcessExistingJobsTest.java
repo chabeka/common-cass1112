@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.cassandra.exceptions.ConfigurationException;
-import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.slf4j.Logger;
 
-import fr.urssaf.image.sae.commons.dao.IGenericDAO;
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.model.Trace;
 import fr.urssaf.image.sae.trace.dao.model.TraceIndex;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;

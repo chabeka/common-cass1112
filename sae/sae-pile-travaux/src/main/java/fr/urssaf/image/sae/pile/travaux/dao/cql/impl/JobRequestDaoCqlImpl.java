@@ -12,10 +12,10 @@ import org.springframework.stereotype.Repository;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
+import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
+import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
-import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
-import fr.urssaf.image.sae.commons.context.JsonCodec;
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;

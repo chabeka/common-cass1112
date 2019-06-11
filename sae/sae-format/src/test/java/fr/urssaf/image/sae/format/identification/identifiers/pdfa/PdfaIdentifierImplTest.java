@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.format.identification.identifiers.pdfa;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntim
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
+import junit.framework.Assert;
 
 /**
  * 

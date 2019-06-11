@@ -3,6 +3,13 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
+import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 import me.prettyprint.cassandra.model.BasicColumnDefinition;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.ThriftKsDef;
@@ -13,14 +20,6 @@ import me.prettyprint.hector.api.ddl.ColumnIndexType;
 import me.prettyprint.hector.api.ddl.ComparatorType;
 import me.prettyprint.hector.api.ddl.KeyspaceDefinition;
 import me.prettyprint.hector.api.factory.HFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
-import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotRuntimeException;
 
 /**
  * Classe permettant la mise à jour du schéma du keyspace SAE dans cassandra

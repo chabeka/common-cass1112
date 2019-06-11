@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
+import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
@@ -30,9 +33,6 @@ import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.ExecutionContextCodec;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
-import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
-import fr.urssaf.image.sae.commons.context.JsonCodec;
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 
 @Repository
 public class JobStepExecutionDaoCqlImpl extends GenericDAOImpl<JobStepCql, Long> implements IJobStepExecutionDaoCql {

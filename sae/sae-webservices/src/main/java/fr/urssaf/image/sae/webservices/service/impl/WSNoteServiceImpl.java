@@ -2,7 +2,6 @@ package fr.urssaf.image.sae.webservices.service.impl;
 
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
 import fr.urssaf.image.sae.services.exception.SAEDocumentNoteException;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.webservices.exception.AjoutNoteAxisFault;
-import fr.urssaf.image.sae.webservices.exception.TransfertAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSNoteService;
 import fr.urssaf.image.sae.webservices.service.factory.ObjectNoteFactory;
 

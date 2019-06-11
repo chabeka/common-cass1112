@@ -12,6 +12,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.support.AbstractTraceSupport;
 import fr.urssaf.image.sae.trace.dao.support.TraceRegTechniqueSupport;
+import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.service.RegTechniqueServiceThrift;
 import fr.urssaf.image.sae.trace.service.impl.RegTechniqueServiceImpl;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;

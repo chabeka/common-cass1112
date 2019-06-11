@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.commons.dao.IGenericDAO;
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;

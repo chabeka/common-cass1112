@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })

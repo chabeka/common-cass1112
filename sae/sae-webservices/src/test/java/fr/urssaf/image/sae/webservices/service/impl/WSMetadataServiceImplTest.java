@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
-import junit.framework.Assert;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -9,14 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import fr.cirtil.www.saeservice.MetadonneeDispoType;
 import fr.cirtil.www.saeservice.RecuperationMetadonneesResponse;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
+import junit.framework.Assert;
 
 /**
  * Tests unitaires de la classe {@link WSMetadataServiceImpl}

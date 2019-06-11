@@ -3,6 +3,13 @@ package fr.urssaf.image.sae.lotinstallmaj.service.utils;
 import java.util.Arrays;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.urssaf.image.sae.lotinstallmaj.modele.FormatProfil;
+import fr.urssaf.image.sae.lotinstallmaj.modele.ReferentielFormat;
+import fr.urssaf.image.sae.lotinstallmaj.serializer.FormatProfilSerializer;
+import fr.urssaf.image.sae.lotinstallmaj.serializer.ListSerializer;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -11,14 +18,6 @@ import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.urssaf.image.sae.lotinstallmaj.modele.FormatProfil;
-import fr.urssaf.image.sae.lotinstallmaj.modele.ReferentielFormat;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.FormatProfilSerializer;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.ListSerializer;
 
 /**
  * Classe utilitaire pour assurer les service d'update des CF référentiels.

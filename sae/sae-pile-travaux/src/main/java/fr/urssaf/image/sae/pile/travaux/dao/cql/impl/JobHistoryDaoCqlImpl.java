@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 

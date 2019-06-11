@@ -11,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.services.batch.exception.JobTypeInexistantException;
 import fr.urssaf.image.sae.services.batch.support.TraitementExecutionSupport;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Implémentation du service {@link TraitementAsynchroneService}

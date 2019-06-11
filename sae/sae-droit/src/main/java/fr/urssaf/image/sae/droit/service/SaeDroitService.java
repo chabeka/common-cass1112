@@ -9,8 +9,8 @@ import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.exception.ContratServiceNotFoundException;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmNotFoundException;
-import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaeContratService;
+import fr.urssaf.image.sae.droit.model.SaeDroitsEtFormat;
 import fr.urssaf.image.sae.droit.model.SaePagm;
 
 /**

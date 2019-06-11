@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,6 +28,7 @@ import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
 import fr.urssaf.image.sae.pile.travaux.service.JobQueueService;
 import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSDeblocageService;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Classe de test du ws de déblocage de traitement de masse en erreur.

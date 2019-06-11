@@ -5,8 +5,8 @@ package fr.urssaf.image.commons.cassandra.spring.batch.daocql;
 
 import java.util.Optional;
 
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericIndexDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
-import fr.urssaf.image.sae.commons.dao.IGenericIndexDAO;
 
 /**
  * TODO (AC75095028) Description du type

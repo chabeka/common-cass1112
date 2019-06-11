@@ -8,9 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-import net.docubase.toolkit.model.document.Document;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,8 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
+import junit.framework.Assert;
+import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })

@@ -58,15 +58,8 @@
 			<artifactId>commons-cassandra</artifactId>
 			<version>${commons-cassandra.version}</version>
 		</dependency>
-		<!-- SAE -->
-		<dependency>
-			<groupId>fr.urssaf.image.sae</groupId>
-			<artifactId>sae-commons</artifactId>
-			<version>19.3.1-SNAPSHOT</version>
-		</dependency>
 
       <!-- Spring et SPRING BATCH -->
-
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-tx</artifactId>

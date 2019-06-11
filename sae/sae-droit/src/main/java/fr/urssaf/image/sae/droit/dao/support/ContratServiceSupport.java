@@ -5,9 +5,6 @@ package fr.urssaf.image.sae.droit.dao.support;
 
 import java.util.Arrays;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,8 @@ import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.ContratServiceDao;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
 import fr.urssaf.image.sae.droit.dao.serializer.ListSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
 /**
  * Classe de support de la classe {@link ContratServiceDao}

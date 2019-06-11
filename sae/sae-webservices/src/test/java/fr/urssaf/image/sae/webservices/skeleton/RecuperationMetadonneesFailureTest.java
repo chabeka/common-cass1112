@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
-import junit.framework.Assert;
-
 import org.apache.axis2.AxisFault;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -14,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.cirtil.www.saeservice.RecuperationMetadonnees;
 import fr.urssaf.image.sae.services.metadata.MetadataService;
 import fr.urssaf.image.sae.webservices.exception.ErreurInterneAxisFault;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-service-test.xml" })

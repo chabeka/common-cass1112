@@ -19,8 +19,6 @@ import java.util.UUID;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import net.docubase.toolkit.model.document.Document;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.pdfbox.io.IOUtils;
@@ -29,10 +27,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import au.com.bytecode.opencsv.CSVReader;
-
 import com.docubase.dfce.exception.SearchQueryParseException;
 
+import au.com.bytecode.opencsv.CSVReader;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.documents.executable.exception.PurgeRuntimeException;
@@ -53,6 +50,7 @@ import fr.urssaf.image.sae.documents.executable.service.TraitementService;
 import fr.urssaf.image.sae.documents.executable.support.TracesDfceSupport;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Classe d'implémentation du service <b>TraitementService</b>. Cette classe est

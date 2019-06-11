@@ -24,6 +24,9 @@ import com.datastax.driver.core.querybuilder.Delete;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.collect.Iterators;
 
+import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
+import fr.urssaf.image.commons.cassandra.cql.codec.JsonCodec;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
@@ -37,13 +40,9 @@ import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionsRunni
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceToJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
-import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.ExecutionContextCodec;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
-import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
-import fr.urssaf.image.sae.commons.context.JsonCodec;
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 @Repository
 public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long> implements IJobExecutionDaoCql {

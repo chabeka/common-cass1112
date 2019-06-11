@@ -2,8 +2,6 @@ package fr.urssaf.image.sae.webservices.security.ws;
 
 import javax.xml.namespace.QName;
 
-import me.prettyprint.hector.api.exceptions.HectorException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.soap.SOAPHeader;
 import org.apache.axis2.AxisFault;
@@ -27,6 +25,7 @@ import fr.urssaf.image.sae.webservices.security.exception.SaeCertificateAxisFaul
 import fr.urssaf.image.sae.webservices.security.exception.VIEmptyAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.VIVerificationAxisFault;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
+import me.prettyprint.hector.api.exceptions.HectorException;
 
 /**
  * Classe aspect d'authentification des web services<br>

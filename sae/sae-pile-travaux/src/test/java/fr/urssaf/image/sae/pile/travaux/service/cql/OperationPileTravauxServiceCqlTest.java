@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
@@ -27,7 +25,6 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import junit.framework.Assert;
 import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-import me.prettyprint.hector.api.Keyspace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })

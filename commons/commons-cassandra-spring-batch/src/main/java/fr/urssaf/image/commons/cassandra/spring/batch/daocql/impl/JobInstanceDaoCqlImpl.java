@@ -22,6 +22,8 @@ import org.springframework.util.Assert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
+import fr.urssaf.image.commons.cassandra.cql.codec.BytesBlobCodec;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
@@ -34,8 +36,6 @@ import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobParametersCodec;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.JobTranslateUtils;
-import fr.urssaf.image.sae.commons.context.BytesBlobCodec;
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
 
 /**
  * TODO (AC75095028) Description du type

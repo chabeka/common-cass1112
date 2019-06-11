@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.cxf.common.util.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSRepriseService;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Classe de test du ws de reprise de traitement de masse en erreur.

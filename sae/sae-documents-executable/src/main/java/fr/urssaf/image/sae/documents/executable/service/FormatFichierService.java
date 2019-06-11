@@ -8,7 +8,6 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
-
 import net.docubase.toolkit.model.document.Document;
 
 /**

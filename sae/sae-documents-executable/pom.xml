@@ -85,6 +85,14 @@
 			<artifactId>commons-beanutils</artifactId>
 			<version>${apache.commons-beanutils.version}</version>
 		</dependency>
+		
+	  <!-- Open CSV -->
+	    <dependency>
+         <groupId>net.sf.opencsv</groupId>
+         <artifactId>opencsv</artifactId>
+         <version>${opencsv.version}</version>
+      	</dependency>
+	
 
 	</dependencies>
 

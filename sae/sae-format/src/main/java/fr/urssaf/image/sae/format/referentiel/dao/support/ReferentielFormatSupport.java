@@ -3,17 +3,6 @@ package fr.urssaf.image.sae.format.referentiel.dao.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.prettyprint.cassandra.serializers.BytesArraySerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +18,16 @@ import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeExcep
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 import fr.urssaf.image.sae.format.utils.Constantes;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.beans.OrderedRows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /***
  * 

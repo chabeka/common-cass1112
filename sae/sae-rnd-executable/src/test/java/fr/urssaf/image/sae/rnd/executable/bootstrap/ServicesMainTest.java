@@ -4,8 +4,6 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import fr.urssaf.image.sae.rnd.executable.bootstrap.ServicesMain;
-
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class ServicesMainTest {
 

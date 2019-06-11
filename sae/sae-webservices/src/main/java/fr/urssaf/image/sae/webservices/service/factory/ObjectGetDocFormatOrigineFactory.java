@@ -13,8 +13,6 @@ import fr.cirtil.www.saeservice.GetDocFormatOrigineResponse;
 import fr.cirtil.www.saeservice.GetDocFormatOrigineResponseType;
 import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedDocumentAttachment;
-import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.webservices.modele.ConsultationDataSource;
 
 /**

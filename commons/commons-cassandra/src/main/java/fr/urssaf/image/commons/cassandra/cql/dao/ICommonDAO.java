@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.commons.dao;
+package fr.urssaf.image.commons.cassandra.cql.dao;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -23,9 +23,9 @@ import com.datastax.driver.mapping.Mapper;
 import com.datastax.driver.mapping.Mapper.Option;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
-import fr.urssaf.image.sae.commons.utils.QueryUtils;
-import fr.urssaf.image.sae.commons.utils.Utils;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
+import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 /**
  * TODO (AC75095028) Description du type

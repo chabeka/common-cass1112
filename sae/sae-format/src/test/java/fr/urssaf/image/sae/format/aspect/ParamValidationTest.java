@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.format.aspect;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidationRuntimeExcepti
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.Validator;
 import fr.urssaf.image.sae.format.validation.validators.pdfa.PdfaValidatorImpl;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })

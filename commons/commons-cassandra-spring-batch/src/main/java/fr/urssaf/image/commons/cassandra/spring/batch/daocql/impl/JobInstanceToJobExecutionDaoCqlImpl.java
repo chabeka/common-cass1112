@@ -11,10 +11,10 @@ import org.springframework.util.Assert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericIndexDAOImpl;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceToJobExecutionCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceToJobExecutionDaoCql;
-import fr.urssaf.image.sae.commons.dao.impl.GenericIndexDAOImpl;
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 
 /**
  * TODO (AC75095028) Description du type

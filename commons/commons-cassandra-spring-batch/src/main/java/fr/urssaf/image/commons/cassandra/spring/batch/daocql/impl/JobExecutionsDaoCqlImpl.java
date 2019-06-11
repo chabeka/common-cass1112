@@ -11,9 +11,9 @@ import org.springframework.util.Assert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericIndexDAOImpl;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionsDaoCql;
-import fr.urssaf.image.sae.commons.dao.impl.GenericIndexDAOImpl;
 
 /**
  * TODO (AC75095028) Description du type

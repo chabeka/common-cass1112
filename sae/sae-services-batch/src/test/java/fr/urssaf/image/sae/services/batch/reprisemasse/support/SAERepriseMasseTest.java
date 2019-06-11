@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

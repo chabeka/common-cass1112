@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
-import junit.framework.Assert;
-import net.docubase.toolkit.model.document.Document;
-
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +18,8 @@ import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
+import junit.framework.Assert;
+import net.docubase.toolkit.model.document.Document;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-documents-executable-test.xml" })

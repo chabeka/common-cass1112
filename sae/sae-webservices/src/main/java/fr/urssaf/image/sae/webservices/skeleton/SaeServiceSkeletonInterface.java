@@ -1,5 +1,9 @@
 package fr.urssaf.image.sae.webservices.skeleton;
 
+import java.rmi.RemoteException;
+
+import org.apache.axis2.AxisFault;
+
 import fr.cirtil.www.saeservice.AjoutNote;
 import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.ArchivageMasse;
@@ -58,7 +62,6 @@ import fr.cirtil.www.saeservice.Transfert;
 import fr.cirtil.www.saeservice.TransfertMasse;
 import fr.cirtil.www.saeservice.TransfertMasseResponse;
 import fr.cirtil.www.saeservice.TransfertResponse;
-
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -92,10 +95,6 @@ import fr.urssaf.image.sae.webservices.exception.ConsultationAxisFault;
 import fr.urssaf.image.sae.webservices.exception.CopieAxisFault;
 import fr.urssaf.image.sae.webservices.exception.DocumentExistantAxisFault;
 import fr.urssaf.image.sae.webservices.security.exception.SaeAccessDeniedAxisFault;
-
-import org.apache.axis2.AxisFault;
-
-import java.rmi.RemoteException;
 
 
 /**

@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.metadata.messages;
 
 import org.springframework.context.MessageSource;
+
 import fr.urssaf.image.sae.metadata.constants.Constants;
 import fr.urssaf.image.sae.metadata.context.MetadataApplicationContext;
 

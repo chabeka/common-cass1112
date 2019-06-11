@@ -6,12 +6,11 @@ package fr.urssaf.image.sae.droit.dao.serializer;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.model.Pagm;
+import junit.framework.Assert;
 
 /**
  * 

@@ -16,9 +16,9 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
-import fr.urssaf.image.sae.commons.utils.ColumnUtil;
-import fr.urssaf.image.sae.commons.utils.QueryUtils;
-import fr.urssaf.image.sae.commons.utils.Utils;
+import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
+import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
+import fr.urssaf.image.commons.cassandra.utils.Utils;
 import junit.framework.Assert;
 
 /**

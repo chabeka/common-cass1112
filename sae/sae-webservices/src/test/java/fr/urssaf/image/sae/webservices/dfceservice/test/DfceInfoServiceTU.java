@@ -1,7 +1,7 @@
 package fr.urssaf.image.sae.webservices.dfceservice.test;
 
-import net.docubase.toolkit.service.ServiceProvider;
 import fr.urssaf.image.sae.exploitation.service.DfceInfoService;
+import net.docubase.toolkit.service.ServiceProvider;
 
 /**
  * Classe de service d'informations sur l'etat de DFCE.

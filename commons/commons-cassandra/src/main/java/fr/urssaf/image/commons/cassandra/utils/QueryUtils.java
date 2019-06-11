@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.commons.utils;
+package fr.urssaf.image.commons.cassandra.utils;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 

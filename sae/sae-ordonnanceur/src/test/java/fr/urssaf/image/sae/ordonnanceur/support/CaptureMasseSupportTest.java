@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +19,7 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

@@ -9,8 +9,6 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBException;
 
-import me.prettyprint.hector.api.Keyspace;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +30,7 @@ import fr.urssaf.image.sae.lotinstallmaj.service.utils.XmlUtils;
 import fr.urssaf.image.sae.metadata.referential.dao.SaeMetadataDao;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
+import me.prettyprint.hector.api.Keyspace;
 
 /**
  * Service d'initialisation du référentiel des métadonnées suite au passage au

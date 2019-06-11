@@ -4,6 +4,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.MapSerializer;
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
+import fr.urssaf.image.sae.pile.travaux.exception.PileTravauxRuntimeException;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.model.JobState;
+import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
@@ -18,17 +28,6 @@ import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import fr.urssaf.image.commons.cassandra.serializer.NullableDateSerializer;
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.MapSerializer;
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.VISerializer;
-import fr.urssaf.image.sae.pile.travaux.exception.PileTravauxRuntimeException;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.model.JobState;
-import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
  * DAO de la colonne famille <code>JobRequest</code>

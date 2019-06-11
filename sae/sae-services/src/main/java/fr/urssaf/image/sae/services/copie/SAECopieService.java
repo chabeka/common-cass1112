@@ -3,6 +3,8 @@ package fr.urssaf.image.sae.services.copie;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -29,8 +31,6 @@ import fr.urssaf.image.sae.services.exception.copie.SAECopieServiceException;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-
-import org.springframework.security.access.prepost.PreAuthorize;
 
 public interface SAECopieService {
 

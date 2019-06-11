@@ -2,7 +2,7 @@ package fr.urssaf.image.sae.trace.daocql.impl;
 
 import org.springframework.stereotype.Repository;
 
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.daocql.ITraceRegTechniqueIndexCqlDao;
 

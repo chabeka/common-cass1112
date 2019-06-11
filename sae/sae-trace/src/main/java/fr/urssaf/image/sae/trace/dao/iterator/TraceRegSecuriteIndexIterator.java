@@ -6,14 +6,13 @@ package fr.urssaf.image.sae.trace.dao.iterator;
 import java.util.Iterator;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.ColumnSliceIterator;
-import me.prettyprint.hector.api.beans.HColumn;
-import me.prettyprint.hector.api.query.SliceQuery;
-
 import org.apache.commons.lang.NotImplementedException;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.serializer.TraceRegSecuriteIndexSerializer;
+import me.prettyprint.cassandra.service.ColumnSliceIterator;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Itérateur sur les index des traces de sécurité

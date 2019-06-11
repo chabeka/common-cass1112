@@ -13,8 +13,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.trace.utils.HostnameUtil;
 import fr.urssaf.image.sae.webservices.component.IgcConfigUtils;
 import fr.urssaf.image.sae.webservices.security.igc.exception.LoadCertifsAndCrlException;
 import fr.urssaf.image.sae.webservices.support.TracesWsSupport;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-traces-test.xml" })

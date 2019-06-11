@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.commons.context;
+package fr.urssaf.image.commons.cassandra.cql.codec;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;

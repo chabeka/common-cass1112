@@ -8,6 +8,10 @@ import java.util.UUID;
 
 import org.apache.cassandra.thrift.Column;
 
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import me.prettyprint.cassandra.model.HColumnImpl;
 import me.prettyprint.cassandra.model.OrderedRowsImpl;
 import me.prettyprint.cassandra.model.QueryResultImpl;
@@ -21,11 +25,6 @@ import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.exceptions.HectorException;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
-import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 
 /**
  * Itérateur permettant d'itérer sur rows de la CF JobRequest.

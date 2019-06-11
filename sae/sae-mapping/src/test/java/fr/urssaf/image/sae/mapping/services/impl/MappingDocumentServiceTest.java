@@ -8,8 +8,6 @@ import java.util.List;
 
 import javax.activation.DataHandler;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,7 @@ import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.VirtualStorageDocument;
+import junit.framework.Assert;
 
 /**
  * Classe qui permet de faire les tests sur les services

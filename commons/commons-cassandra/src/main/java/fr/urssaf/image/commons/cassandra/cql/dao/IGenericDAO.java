@@ -1,7 +1,7 @@
 /**
  *  TODO (AC75095028) Description du fichier
  */
-package fr.urssaf.image.sae.commons.dao;
+package fr.urssaf.image.commons.cassandra.cql.dao;
 
 import java.util.Iterator;
 import java.util.Optional;
