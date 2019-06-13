@@ -23,26 +23,26 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSe
  * Classe de sérialisation/désérialisation des JobParameters
  * Elle est utilisée par le {@link Mapper} qui se charge de mapper
  * une ligne extraite de la base cassandra pour un CF donnée.
- * <br>
+ * 
  * Si la classe {@link JobParameters} est associée à une CF, chaque ligne de la CF
  * correspondrait à un {@link Object} java de type {@link JobParameters}
- * <br>
+ * 
  * Mapping automatique: 1 instance de {@link JobParameters} == 1 ligne de la CF
- * <br>
+ * 
  * Si la classe associée à la CF contient un champ de type {@link JobParameters}
  * Exemple: {@link JobInstance}
- * <br>
+ * 
  * Lors de la sauvegarde/extraction de données dans la CF, le champs sera serialisé/désérialisé
  * par le {@link Mapper} en se servant des méthodes de cette classe.
- * <br>
+ * 
  * Dans tous les cas, pour utiliser ce mapping automatique, il faudrait enregistré la classe
  * dans les Codecs du {@link Cluster}
- * <br>
+ *
  * Les méthodes de sérialisation/désérialisation de la classe
  * se baseent sur la classe {@link JobParametersSerializer}
- * <br>
+ * 
  * Exemple d'utilisation:
- * <blockquote>Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance)<blockquote>
+ * Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance)
  */
 public class JobParametersCodec extends TypeCodec<JobParameters> {
 
