@@ -56,12 +56,12 @@ public class CassandraStepExecutionDAOThriftTest {
    @Autowired
    private CassandraClientFactory ccf;
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
-   }
-
    @Before
+   public void before() throws Exception {
+      server.resetData();
+      init();
+   }
+  
    public void init() throws Exception {
       // Connexion à un serveur zookeeper local
       initZookeeperServer();

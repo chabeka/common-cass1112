@@ -62,12 +62,12 @@ public class CassandraJobExecutionDAOThriftTest {
   @Autowired
   private CassandraClientFactory ccf;
 
-  @After
+  @Before
   public void after() throws Exception {
     server.resetData();
+    init();
   }
 
-  @Before
   public void init() throws Exception {
     // Connexion à un serveur zookeeper local
     initZookeeperServer();
@@ -86,8 +86,7 @@ public class CassandraJobExecutionDAOThriftTest {
     zkClient.close();
     try {
       zkServer.close();
-    }
-    catch (final IOException e) {
+    } catch (final IOException e) {
       e.printStackTrace();
     }
   }
@@ -132,12 +131,9 @@ public class CassandraJobExecutionDAOThriftTest {
       Thread.sleep(100);
     }
     // On vérifie qu'on trouve bien la plus récente
-    final JobExecution jobExecution2 = jobExecutionDao
-                                                      .getLastJobExecution(jobInstance);
-    Assert.assertEquals("test123", jobExecution2.getExitStatus()
-                                                .getExitDescription());
-    Assert.assertEquals(2, jobExecution2.getExecutionContext()
-                                        .getInt(INDEX));
+    final JobExecution jobExecution2 = jobExecutionDao.getLastJobExecution(jobInstance);
+    Assert.assertEquals("test123", jobExecution2.getExitStatus().getExitDescription());
+    Assert.assertEquals(2, jobExecution2.getExecutionContext().getInt(INDEX));
   }
 
   @Test
@@ -146,8 +142,7 @@ public class CassandraJobExecutionDAOThriftTest {
     final JobExecution jobExecution = createJobExecution(jobInstance, 333);
     final Long executionId = jobExecution.getId();
     final JobExecution jobExecution2 = jobExecutionDao.getJobExecution(executionId);
-    Assert.assertEquals(333, jobExecution2.getExecutionContext().getInt(
-                                                                        INDEX));
+    Assert.assertEquals(333, jobExecution2.getExecutionContext().getInt(INDEX));
   }
 
   @Test
@@ -169,8 +164,7 @@ public class CassandraJobExecutionDAOThriftTest {
     final Set<JobExecution> set = dao.findRunningJobExecutions(MY_JOB_NAME);
     Assert.assertEquals(1, set.size());
     final JobExecution jobExecution = set.iterator().next();
-    Assert
-          .assertEquals(1, jobExecution.getExecutionContext().getInt(INDEX));
+    Assert.assertEquals(1, jobExecution.getExecutionContext().getInt(INDEX));
 
     // On vérifie qu'on ne trouve aucun running exécution pour un job qui
     // n'existe pas
@@ -247,7 +241,7 @@ public class CassandraJobExecutionDAOThriftTest {
 
   private JobExecution createJobExecution(final JobInstance jobInstance, final int index) {
     final JobExecution jobExecution = new JobExecution(jobInstance);
-    final Map<String, Object> mapContext = new HashMap<String, Object>();
+    final Map<String, Object> mapContext = new HashMap<>();
     mapContext.put("contexte1", "test1");
     mapContext.put("contexte2", 2);
     mapContext.put(INDEX, index);
@@ -260,7 +254,7 @@ public class CassandraJobExecutionDAOThriftTest {
 
   private JobInstance getOrCreateTestJobInstance(final String jobName) {
     final CassandraJobInstanceDaoThrift dao = jobInstanceDao;
-    final Map<String, JobParameter> mapJobParameters = new HashMap<String, JobParameter>();
+    final Map<String, JobParameter> mapJobParameters = new HashMap<>();
     mapJobParameters.put("premier_parametre", new JobParameter("test1"));
     mapJobParameters.put("deuxieme_parametre", new JobParameter("test2"));
     mapJobParameters.put("troisieme_parametre", new JobParameter(122L));
