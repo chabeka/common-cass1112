@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-   xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
-      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+   xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xsi:schemaLocation="
+   						http://www.springframework.org/schema/jdbc 
+   						http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd
+      					http://www.springframework.org/schema/beans 
+      					http://www.springframework.org/schema/beans/spring-beans.xsd
+      					http://www.springframework.org/schema/context 
+        				http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+      					>
 
    <!--
       On ne travaille pas en mode transactionnel, mais un
@@ -16,8 +24,8 @@
    
    <bean id="cassandraJobInstanceDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobInstanceDao">
-      <constructor-arg ref="keyspace" />
-      <constructor-arg ref="jobInstanceIdGenerator" />
+      <constructor-arg ref="jobInstanceDaoCqlImpl" />
+      <constructor-arg ref="cassandraJobInstanceDaoThrift" />
    </bean>
    <bean id="jobInstanceIdGenerator"
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator">
@@ -27,8 +35,8 @@
    </bean>
    <bean id="cassandraJobExecutionDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraJobExecutionDao">
-      <constructor-arg ref="keyspace" />
-      <constructor-arg ref="jobExecutionIdGenerator" />
+      <constructor-arg ref="jobExecutionDaoCqlImpl" />
+      <constructor-arg ref="cassandraJobExecutionDaoThrift" />
    </bean>
    <bean id="jobExecutionIdGenerator"
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator">
@@ -38,8 +46,8 @@
    </bean>
    <bean id="cassandraStepExecutionDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraStepExecutionDao">
-      <constructor-arg ref="keyspace" />
-      <constructor-arg ref="stepExecutionIdGenerator" />
+      <constructor-arg ref="jobStepExecutionDaoCqlImpl" />
+      <constructor-arg ref="cassandraStepExecutionDaoThrift" />
    </bean>
    <bean id="stepExecutionIdGenerator"
       class="fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator">
@@ -49,9 +57,39 @@
    </bean>
    <bean id="cassandraExecutionContextDao"
       class="fr.urssaf.image.commons.cassandra.spring.batch.dao.CassandraExecutionContextDao">
+      <constructor-arg ref="cassandraExecutionContextDaoCqlImpl" />
+      <constructor-arg ref="cassandraExecutionContextDaoThrift" />
+   </bean>
+	
+   <!--  thrift BEANS -->
+   
+   <bean id="cassandraStepExecutionDaoThrift"
+      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraStepExecutionDaoThrift">
+      <constructor-arg ref="keyspace" />
+      <constructor-arg ref="stepExecutionIdGenerator" />
+   </bean>
+   <bean id="cassandraExecutionContextDaoThrift"
+      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraExecutionContextDaoThrift">
       <constructor-arg ref="keyspace" />
    </bean>
+   <bean id="cassandraJobExecutionDaoThrift"
+      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDaoThrift">
+      <constructor-arg ref="keyspace" />
+      <constructor-arg ref="jobExecutionIdGenerator" />
+   </bean>
+   <bean id="cassandraJobInstanceDaoThrift"
+      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift">
+      <constructor-arg ref="keyspace" />
+      <constructor-arg ref="jobInstanceIdGenerator" />
+   </bean>
+   
+	<!--  CQL BEANS -->
+	<context:component-scan base-package="fr.urssaf.image.commons.cassandra.spring" />
+   
 
+	
+	
+	
    <!-- Importation de la définition du keyspace et de zkClient -->
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
 

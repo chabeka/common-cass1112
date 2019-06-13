@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra-spring-batch</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>2.0.1-SNAPSHOT</version>
 
 	<name>commons-cassandra-spring-batch</name>
 
@@ -23,7 +23,7 @@
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
       
       <!-- Version de commons-cassandra -->
-		<commons-cassandra.version>1.0.2</commons-cassandra.version>
+		<commons-cassandra.version>2.0.1-SNAPSHOT</commons-cassandra.version>
       
       <!-- Version des framework -->
 		<junit.version>4.8.2</junit.version>

@@ -2,7 +2,7 @@
 <keyspace xmlns="http://xml.dataset.cassandraunit.org"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="http://xml.dataset.cassandraunit.org cassandraUnitDataset.xsd ">
-   <name>Batch</name>
+   <name>keyspace_tu</name>
    <strategy>org.apache.cassandra.locator.SimpleStrategy</strategy>
    <replicationFactor>1</replicationFactor>
    <columnFamilies>
@@ -10,9 +10,10 @@
          <name>JobInstance</name>
          <comparatorType>AsciiType</comparatorType>
          <columnMetadata>
-            <name>jobKey</name>
+            <name>6a6f624b6579</name>
             <validationClass>BytesType</validationClass>
             <indexType>KEYS</indexType>
+            <indexName>jobRKey_idx</indexName>
          </columnMetadata>
       </columnFamily>
       <columnFamily>

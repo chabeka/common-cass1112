@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
+
+import me.prettyprint.cassandra.serializers.StringSerializer;
 
 public class JobParametersSerializerTest {
 
