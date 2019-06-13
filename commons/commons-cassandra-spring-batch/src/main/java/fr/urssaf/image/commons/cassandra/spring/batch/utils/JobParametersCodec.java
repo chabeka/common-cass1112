@@ -42,7 +42,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSe
  * se baseent sur la classe {@link JobParametersSerializer}
  * <br>
  * Exemple d'utilisation:
- * <blockquote>Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);<blockquote>
+ * <blockquote>Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance)<blockquote>
  */
 public class JobParametersCodec extends TypeCodec<JobParameters> {
 
