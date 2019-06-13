@@ -18,12 +18,12 @@ public class StepExecutionIdGeneratorCql implements IdGenerator {
   /**
    * Constructeur
    *
-   * @param keyspace
-   *          Keyspace cassandra
    * @param curatorClient
    *          Connexion à zookeeper
    * @param jobClockSupport
    *          support de l'horloge
+   * @param sequencesdao
+   *          DOA de sequences
    */
   @Autowired
   public StepExecutionIdGeneratorCql(final CuratorFramework curatorClient, final JobClockSupport jobClockSupport, final ISequencesDaoCql sequencesdao) {

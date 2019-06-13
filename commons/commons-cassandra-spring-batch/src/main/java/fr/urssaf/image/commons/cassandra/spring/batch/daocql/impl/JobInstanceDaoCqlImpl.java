@@ -113,6 +113,7 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    * Enregistre une jobInstance dans cassandra et ajout tous les liens associé à la CF
    *
    * @param instance
+   *          job dans job instance
    */
   private void saveJobInstance(final JobInstance instance) {
 
@@ -130,10 +131,6 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    *
    * @param instanceId
    *          Id de l'instance à supprimer
-   * @param executionDao
-   *          DAO permettant de supprimer les executions de l'instance
-   * @param stepExecutionDao
-   *          DAO permettant de supprimer les steps de l'instance
    */
   @Override
   public final void deleteJobInstance(final Long instanceId) {

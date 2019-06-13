@@ -25,6 +25,8 @@ public class JobExecutionIdGeneratorCql implements IdGenerator {
    *          Connexion à zookeeper
    * @param jobClockSupport
    *          support de l'horloge
+   * @param sequencesdao
+   *          DAO de sequences
    */
   @Autowired
   public JobExecutionIdGeneratorCql(final Keyspace keyspace, final CuratorFramework curatorClient, final JobClockSupport jobClockSupport,

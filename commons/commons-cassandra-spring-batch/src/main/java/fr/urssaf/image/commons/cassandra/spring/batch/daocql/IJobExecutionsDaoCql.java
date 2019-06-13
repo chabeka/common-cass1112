@@ -13,12 +13,12 @@ import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
  */
 public interface IJobExecutionsDaoCql extends IGenericIndexDAO<JobExecutionsCql, String> {
 
-   /**
-    * Recherche par colonne indexée
-    *
-    * @param id
-    *           la colonne indexée
-    * @return
-    */
-   public Optional<JobExecutionsCql> findByJobExecutionId(final Long id);
+  /**
+   * Recherche par colonne indexée
+   *
+   * @param id
+   *          la colonne indexée
+   * @return l'optional de {@link JobExecutionsCql}
+   */
+  public Optional<JobExecutionsCql> findByJobExecutionId(final Long id);
 }

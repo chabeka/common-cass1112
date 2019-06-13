@@ -18,12 +18,12 @@ public class JobInstanceIdGeneratorCql implements IdGenerator {
   /**
    * Constructeur
    *
-   * @param keyspace
-   *          Keyspace cassandra
    * @param curatorClient
    *          Connexion à zookeeper
    * @param jobClockSupport
    *          support de l'horloge
+   * @param sequencesdao
+   *          DAO de sequences
    */
   @Autowired
   public JobInstanceIdGeneratorCql(final CuratorFramework curatorClient, final JobClockSupport jobClockSupport, final ISequencesDaoCql sequencesdao) {

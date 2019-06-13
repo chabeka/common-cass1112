@@ -17,138 +17,128 @@ import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
  * utilisé est stockée dans cassandra On utilise zookeeper pour accéder de
  * manière exclusive à la séquence
  */
-// @Component(value = "cassandraidgeneratorcql")
 public class CassandraIdGeneratorCql implements IdGenerator {
 
-   ISequencesDaoCql sequencesdao;
+  ISequencesDaoCql sequencesdao;
 
-   private static final String SEQUENCE_CF = "sequences";
+  private static final String SEQUENCE_CF = "sequences";
 
-   private static final String SEQUENCE_KEY = "sequences";
+  private String sequenceName = null;
 
-   private String sequenceName = null;
+  private CuratorFramework curatorClient = null;
 
-   private CuratorFramework curatorClient = null;
+  private static final int DEFAULT_TIME_OUT = 20;
 
-   private static final int DEFAULT_TIME_OUT = 20;
+  private int lockTimeOut = DEFAULT_TIME_OUT;
 
-   private int lockTimeOut = DEFAULT_TIME_OUT;
+  /**
+  *
+  */
+  public CassandraIdGeneratorCql() {
 
-   /**
+  }
+
+  /**
+   * Constructeur
    *
+   * @param curatorClient
+   *          Connexion à zookeeper
+   * @param sequenceName
+   *          Nom de la séquence (doit identifier la séquence de manière unique)
+   * @param sequencesdao
+   *          DAO de sequences
    */
-   public CassandraIdGeneratorCql() {
+  public CassandraIdGeneratorCql(final CuratorFramework curatorClient, final String sequenceName, final ISequencesDaoCql sequencesdao) {
+    this.sequenceName = sequenceName;
+    this.curatorClient = curatorClient;
+    this.sequencesdao = sequencesdao;
 
-   }
+  }
 
-   /**
-    * Constructeur
-    *
-    * @param keyspace
-    *           Keyspace cassandra
-    * @param curatorClient
-    *           Connexion à zookeeper
-    * @param sequenceName
-    *           Nom de la séquence (doit identifier la séquence de manière unique)
-    * @param jobClockSupport
-    *           support de l'horloge
-    */
-   public CassandraIdGeneratorCql(final CuratorFramework curatorClient, final String sequenceName, final ISequencesDaoCql sequencesdao) {
-      this.sequenceName = sequenceName;
-      this.curatorClient = curatorClient;
-      this.sequencesdao = sequencesdao;
+  @Override
+  public final long getNextId() {
 
-   }
-
-   @Override
-   public final long getNextId() {
-
-      final ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/sequences/"
-            + sequenceName);
-      try {
-         if (!mutex.acquire(lockTimeOut, TimeUnit.SECONDS)) {
-            throw new IdGeneratorException(
-                                           "Erreur lors de la tentative d'acquisition du lock pour la séquence "
-                                                 + sequenceName
-                                                 + " : on n'a pas obtenu le lock au bout de 20 secondes.");
-         }
-         // On a le lock.
-         // On lit la valeur courante de la séquence
-         final SequencesCql seqclq = readCurrentSequence();
-
-         // On écrit dans cassandra la valeur incrémentée
-         final long newValue = incrementSequenceValue(seqclq, sequenceName);
-
-         // On vérifie qu'on a toujours le lock. Si oui, on peut utiliser la
-         // séquence.
-         if (mutex.isObjectStillLocked(lockTimeOut, TimeUnit.SECONDS)) {
-            // On peut utiliser la valeur incrémentée
-            return newValue;
-         } else {
-            throw new IdGeneratorException(
-                                           "Erreur lors de la tentative d'acquisition du lock pour la séquence "
-                                                 + sequenceName + ". Problème de connexion zookeeper ?");
-         }
-
+    final ZookeeperMutex mutex = new ZookeeperMutex(curatorClient, "/sequences/" + sequenceName);
+    try {
+      if (!mutex.acquire(lockTimeOut, TimeUnit.SECONDS)) {
+        throw new IdGeneratorException("Erreur lors de la tentative d'acquisition du lock pour la séquence " + sequenceName
+            + " : on n'a pas obtenu le lock au bout de 20 secondes.");
       }
-      finally {
-         mutex.release();
-      }
-   }
+      // On a le lock.
+      // On lit la valeur courante de la séquence
+      final SequencesCql seqclq = readCurrentSequence();
 
-   /**
-    * Lit la valeur de la séquence dans cassandra
-    *
-    * @return colonne lue
-    */
-   private SequencesCql readCurrentSequence() {
-      final Select select = QueryBuilder.select().from(SEQUENCE_CF);
-      select.where(QueryBuilder.eq("jobidname", sequenceName));
-      final Result<SequencesCql> seqcql = sequencesdao.getMapper().map(sequencesdao.getSession().execute(select));
-      return seqcql.one();
-   }
+      // On écrit dans cassandra la valeur incrémentée
+      final long newValue = incrementSequenceValue(seqclq, sequenceName);
 
-   /**
-    * Incrémente la séquence, et la fait persister dans cassandra
-    *
-    * @param currentSequence
-    *           la {@link SequencesCql} dans laquelle on incremente la valeur
-    * @return nouvelle valeur de la séquence
-    */
-   private long incrementSequenceValue(SequencesCql currentSequence, final String sequenceName) {
-      long currentValue;
-
-      if (currentSequence == null) {
-         currentValue = 0;
-         currentSequence = new SequencesCql();
-         currentSequence.setJobIdName(sequenceName);
+      // On vérifie qu'on a toujours le lock. Si oui, on peut utiliser la
+      // séquence.
+      if (mutex.isObjectStillLocked(lockTimeOut, TimeUnit.SECONDS)) {
+        // On peut utiliser la valeur incrémentée
+        return newValue;
       } else {
-         currentValue = currentSequence.getValue();
+        throw new IdGeneratorException("Erreur lors de la tentative d'acquisition du lock pour la séquence " + sequenceName
+            + ". Problème de connexion zookeeper ?");
       }
 
-      final long newValue = currentValue + 1;
-      currentSequence.setValue(newValue);
-      sequencesdao.saveWithMapper(currentSequence);
-      return newValue;
-   }
+    } finally {
+      mutex.release();
+    }
+  }
 
-   /**
-    * Spécifie le timeout du lock, en seconde (par défaut : 20s)
-    *
-    * @param lockTimeOut
-    *           timeout, en seconde
-    */
-   public final void setLockTimeOut(final int lockTimeOut) {
-      this.lockTimeOut = lockTimeOut;
-   }
+  /**
+   * Lit la valeur de la séquence dans cassandra
+   *
+   * @return colonne lue
+   */
+  private SequencesCql readCurrentSequence() {
+    final Select select = QueryBuilder.select().from(SEQUENCE_CF);
+    select.where(QueryBuilder.eq("jobidname", sequenceName));
+    final Result<SequencesCql> seqcql = sequencesdao.getMapper().map(sequencesdao.getSession().execute(select));
+    return seqcql.one();
+  }
 
-   /**
-    * Récupère la valeur du timeout pour le lock
-    *
-    * @return timeout, en seconde
-    */
-   public final int getLockTimeOut() {
-      return lockTimeOut;
-   }
+  /**
+   * Incrémente la séquence, et la fait persister dans cassandra
+   *
+   * @param currentSequence
+   *          la {@link SequencesCql} dans laquelle on incremente la valeur
+   * @return nouvelle valeur de la séquence
+   */
+  private long incrementSequenceValue(SequencesCql currentSequence, final String sequenceName) {
+    long currentValue;
+
+    if (currentSequence == null) {
+      currentValue = 0;
+      currentSequence = new SequencesCql();
+      currentSequence.setJobIdName(sequenceName);
+    } else {
+      currentValue = currentSequence.getValue();
+    }
+
+    final long newValue = currentValue + 1;
+    currentSequence.setValue(newValue);
+    sequencesdao.saveWithMapper(currentSequence);
+    return newValue;
+  }
+
+  /**
+   * Spécifie le timeout du lock, en seconde (par défaut : 20s)
+   *
+   * @param lockTimeOut
+   *          timeout, en seconde
+   */
+  public final void setLockTimeOut(final int lockTimeOut) {
+    this.lockTimeOut = lockTimeOut;
+  }
+
+  /**
+   * Récupère la valeur du timeout pour le lock
+   *
+   * @return timeout, en seconde
+   */
+  public final int getLockTimeOut() {
+    return lockTimeOut;
+  }
 
 }

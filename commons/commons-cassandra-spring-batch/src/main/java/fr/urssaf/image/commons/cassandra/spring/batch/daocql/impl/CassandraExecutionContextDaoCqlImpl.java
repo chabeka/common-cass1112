@@ -26,8 +26,6 @@ public class CassandraExecutionContextDaoCqlImpl implements ExecutionContextDao 
    /**
     * Constructeur
     *
-    * @param keyspace
-    *           : keyspace cassandra
     */
    public CassandraExecutionContextDaoCqlImpl() {
 

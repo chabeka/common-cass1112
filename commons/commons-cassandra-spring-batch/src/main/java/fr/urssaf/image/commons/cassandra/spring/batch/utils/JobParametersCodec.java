@@ -27,7 +27,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.JobParametersSe
  * Si la classe {@link JobParameters} est associée à une CF, chaque ligne de la CF
  * correspondrait à un {@link Object} java de type {@link JobParameters}
  * <br>
- * Mapping automatique: 1 instance de {@link JobParameters} <==> 1 ligne de la CF
+ * Mapping automatique: 1 instance de {@link JobParameters} == 1 ligne de la CF
  * <br>
  * Si la classe associée à la CF contient un champ de type {@link JobParameters}
  * Exemple: {@link JobInstance}
@@ -49,8 +49,7 @@ public class JobParametersCodec extends TypeCodec<JobParameters> {
   public static final JobParametersCodec instance = new JobParametersCodec();
 
   /**
-   * @param cqlType
-   * @param javaClass
+   * Constructeur
    */
   protected JobParametersCodec() {
     super(DataType.blob(), JobParameters.class);
@@ -81,8 +80,7 @@ public class JobParametersCodec extends TypeCodec<JobParameters> {
    */
   @Override
   public JobParameters parse(final String value) throws InvalidTypeException {
-    final byte[] bytes = value == null || value.isEmpty() || value.equalsIgnoreCase("NULL")
-        ? null : Bytes.fromHexString(value).array();
+    final byte[] bytes = value == null || value.isEmpty() || value.equalsIgnoreCase("NULL") ? null : Bytes.fromHexString(value).array();
     final JobParametersSerializer serializer = JobParametersSerializer.get();
     final JobParameters jobParameters = serializer.fromBytes(bytes);
     return jobParameters;

@@ -26,31 +26,28 @@ import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContex
  * <br>
  * Si la classe {@link ExecutionContext} est associée à une CF, chaque ligne de la CF
  * correspondrait à un {@link Object} java de type {@link ExecutionContext}
- * <br>
- * Mapping automatique: 1 instance de {@link ExecutionContext} <==> 1 ligne de la CF
- * <br>
+ * Mapping automatique: 1 instance de {@link ExecutionContext} == 1 ligne de la CF
  * Si la classe associée à la CF contient un champ de type {@link ExecutionContext}
  * Exemple: {@link JobExecution}
- * <br>
+ * 
  * Lors de la sauvegarde/extraction de données dans la CF, le champs sera serialisé/désérialisé
  * par le {@link Mapper} en se servant des méthodes de cette classe.
- * <br>
+ * 
  * Dans tous les cas, pour utiliser ce mapping automatique, il faudrait enregistré la classe
  * dans les Codecs du {@link Cluster}
- * <br>
+ * 
  * Les méthodes de sérialisation/désérialisation de la classe
  * se basent sur la classe {@link ExecutionContextSerializer}
- * <br>
+ * 
  * Exemple d'utilisation:
- * <blockquote>Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);</blockquote>
+ *    Cluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
  */
 public class ExecutionContextCodec extends TypeCodec<ExecutionContext> {
 
   public static final ExecutionContextCodec instance = new ExecutionContextCodec();
 
   /**
-   * @param cqlType
-   * @param javaClass
+   * Constructeur
    */
   protected ExecutionContextCodec() {
     super(DataType.blob(), ExecutionContext.class);

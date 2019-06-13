@@ -14,68 +14,68 @@ import com.datastax.driver.mapping.annotations.Table;
 @Table(name = "jobexecutionscql")
 public class JobExecutionsCql {
 
-   /**
-    * correspond soit au nom du job
-    */
-   @PartitionKey(0)
-   @Column(name = "jobname")
-   private String jobName;
-
-   @ClusteringColumn
-   @Column(name = "jobexecutionid")
-   private Long jobExecutionId;
-
-   private String value;
-
-   /**
-   *
+  /**
+   * correspond soit au nom du job
    */
-   public JobExecutionsCql() {
-   }
+  @PartitionKey(0)
+  @Column(name = "jobname")
+  private String jobName;
 
-   /**
-    * @return the jobExecutionId
-    */
-   public Long getJobExecutionId() {
-      return jobExecutionId;
-   }
+  @ClusteringColumn
+  @Column(name = "jobexecutionid")
+  private Long jobExecutionId;
 
-   /**
-    * @param jobExecutionId
-    *           the jobExecutionId to set
-    */
-   public void setJobExecutionId(final Long jobExecutionId) {
-      this.jobExecutionId = jobExecutionId;
-   }
+  private String value;
 
-   /**
-    * @return the firstkey
-    */
-   public String getJobName() {
-      return jobName;
-   }
+  /**
+  *
+  */
+  public JobExecutionsCql() {
+  }
 
-   /**
-    * @param firstkey
-    *           the firstkey to set
-    */
-   public void setJobName(final String jobName) {
-      this.jobName = jobName;
-   }
+  /**
+   * @return the jobExecutionId
+   */
+  public Long getJobExecutionId() {
+    return jobExecutionId;
+  }
 
-   /**
-    * @return the value
-    */
-   public String getValue() {
-      return value;
-   }
+  /**
+   * @param jobExecutionId
+   *          the jobExecutionId to set
+   */
+  public void setJobExecutionId(final Long jobExecutionId) {
+    this.jobExecutionId = jobExecutionId;
+  }
 
-   /**
-    * @param value
-    *           the value to set
-    */
-   public void setValue(final String value) {
-      this.value = value;
-   }
+  /**
+   * @return the job name
+   */
+  public String getJobName() {
+    return jobName;
+  }
+
+  /**
+   * @param jobName
+   *          the job name to set
+   */
+  public void setJobName(final String jobName) {
+    this.jobName = jobName;
+  }
+
+  /**
+   * @return the value
+   */
+  public String getValue() {
+    return value;
+  }
+
+  /**
+   * @param value
+   *          the value to set
+   */
+  public void setValue(final String value) {
+    this.value = value;
+  }
 
 }

@@ -50,7 +50,7 @@ public class JobTranslateUtils {
    /**
     * Crée un objet {@link JobExecution} à partir d'un {@link JobExecutionsCql}.
     *
-    * @param result
+    * @param jobExCql
     *           Données de cassandra
     * @param jobInstance
     *           Si non nul : jobInstance lié au jobExecution à renvoyé
@@ -88,7 +88,7 @@ public class JobTranslateUtils {
     * Transforme un {@link JobInstance} en {@link JobInstanceCql}
     *
     * @param instance
-    * @return
+    * @return Le job de jobInstance
     */
    public static JobInstanceCql getJobInstanceCqlToJobInstance(final JobInstance instance) {
       final JobInstanceCql job = new JobInstanceCql();
@@ -106,8 +106,9 @@ public class JobTranslateUtils {
    /**
     * transforme un {@link JobInstance} en {@link JobInstanceCql}
     *
-    * @param jobCql
-    * @return
+    * @param jobCql job de JobInstance
+    * 
+    * @return le job de JobInstance
     */
    public static JobInstance getJobInstanceToJobInstanceCql(final JobInstanceCql jobCql) {
       if (jobCql == null) {
@@ -121,8 +122,8 @@ public class JobTranslateUtils {
    /**
     * transforme un {@link JobInstanceCql} en {@link JobInstancesByNameCql}
     *
-    * @param jobCql
-    * @return
+    * @param jobCql job de JobInstance
+    * @return le job de JobInstance
     */
    public static JobInstancesByNameCql getJobInstancesByNameCqlToJobInstance(final JobInstanceCql jobCql) {
       final JobInstancesByNameCql job = new JobInstancesByNameCql();
@@ -134,7 +135,7 @@ public class JobTranslateUtils {
    /**
     * Crée un objet {@link JobStepCql} à partir d'un objet {@link StepExecution}
     *
-    * @param {@link
+    * @param stepExecution {@link
     *           StepExecution}
     *           : le {@link StepExecution} référencé par le step à créer (éventuellement null)
     * @return Le {@link JobStepCql} à enregistrer dans cassandra
@@ -178,9 +179,9 @@ public class JobTranslateUtils {
     *
     * @param jobExecution
     *           : le jobExecution référencé par le step à créer (éventuellement null)
-    * @param result
-    *           : données cassandra
-    * @return
+    * @param stepCql
+    *           : job step
+    * @return un objet StepExecution à partir d'une ligne lue de cassandra
     */
    public static StepExecution getStepExecutionFromStpeCql(final JobExecution jobExecution, final JobStepCql stepCql) {
 
