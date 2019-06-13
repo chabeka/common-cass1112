@@ -38,6 +38,7 @@
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
 
 		<hector.version>2.0-0</hector.version>
+		<cassandra-driver.version>3.2.0</cassandra-driver.version>
 		<curator.version>4.0.1</curator.version>
 		<cassandra-all.version>2.2.13</cassandra-all.version>
 		<cassandra-unit.version>2.2.2.1</cassandra-unit.version>

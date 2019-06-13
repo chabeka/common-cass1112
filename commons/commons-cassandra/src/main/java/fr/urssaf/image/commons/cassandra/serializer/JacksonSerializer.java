@@ -2,12 +2,12 @@ package fr.urssaf.image.commons.cassandra.serializer;
 
 import java.nio.ByteBuffer;
 
-import me.prettyprint.cassandra.serializers.AbstractSerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
-
 import org.apache.commons.lang.SerializationException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+import me.prettyprint.cassandra.serializers.AbstractSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 
 /**
  * Classe de sérialisation d'un objet en json, qui utilise jackson

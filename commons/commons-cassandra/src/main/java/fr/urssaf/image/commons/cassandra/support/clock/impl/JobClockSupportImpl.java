@@ -1,15 +1,14 @@
 package fr.urssaf.image.commons.cassandra.support.clock.impl;
 
-import me.prettyprint.cassandra.utils.Assert;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.beans.HColumn;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.urssaf.image.commons.cassandra.exception.ClockSynchronizationException;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import me.prettyprint.cassandra.utils.Assert;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.beans.HColumn;
 
 /**
  * Implémentation du support {@link JobClockSupport}
