@@ -97,7 +97,7 @@ public class JobTranslateUtils {
                                                                                            .getJobParameters());
       job.setJobKey(jobKey);
       job.setJobparameters(instance.getJobParameters());
-      job.setReservedBy("");
+      job.setReservedBy(Constante.UNRESERVED_KEY);
       job.setVersion(instance.getVersion());
       job.setJobName(instance.getJobName());
       return job;
@@ -128,7 +128,6 @@ public class JobTranslateUtils {
       final JobInstancesByNameCql job = new JobInstancesByNameCql();
       job.setJobName(jobCql.getJobName());
       job.setJobInstanceId(jobCql.getJobInstanceId());
-      // job.setReservedBy(jobCql.getReservedBy());
       return job;
    }
 

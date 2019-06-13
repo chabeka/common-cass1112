@@ -18,6 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
@@ -34,14 +35,18 @@ public class JobExecutionIdGeneratorTest {
   private CassandraServerBean server;
 
   @Autowired
+  private CassandraServerBeanCql serverCql;
+
+  @Autowired
   private CassandraClientFactory ccf;
 
-  @After
-  public void after() throws Exception {
+  @Before
+  public void before() throws Exception {
     server.resetData();
+    serverCql.resetData();
+    init();
   }
 
-  @Before
   public void init() throws Exception {
     // Connexion à un serveur zookeeper local
     initZookeeperServer();
@@ -52,8 +57,7 @@ public class JobExecutionIdGeneratorTest {
   public void clean() {
     try {
       zkServer.close();
-    }
-    catch (final IOException e) {
+    } catch (final IOException e) {
       e.printStackTrace();
     }
   }
@@ -69,9 +73,7 @@ public class JobExecutionIdGeneratorTest {
 
     final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(ccf.getKeyspace());
 
-    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(),
-                                                              zkClient,
-                                                              clockSupport);
+    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(), zkClient, clockSupport);
     for (int i = 1; i < 5; i++) {
       Assert.assertEquals(i, generator.getNextId());
     }
@@ -82,10 +84,8 @@ public class JobExecutionIdGeneratorTest {
 
     final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(ccf.getKeyspace());
 
-    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(),
-                                                              zkClient,
-                                                              clockSupport);
-    final Map<Long, Long> map = new ConcurrentHashMap<Long, Long>();
+    final IdGenerator generator = new JobExecutionIdGenerator(ccf.getKeyspace(), zkClient, clockSupport);
+    final Map<Long, Long> map = new ConcurrentHashMap<>();
     final SimpleThread[] threads = new SimpleThread[10];
     for (int i = 0; i < 10; i++) {
       threads[i] = new SimpleThread(generator, map);

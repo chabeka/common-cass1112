@@ -54,12 +54,12 @@ public class CassandraExecutionContextDAOThriftTest {
    @Autowired
    private CassandraClientFactory ccf;
 
-   @After
-   public void after() throws Exception {
+   @Before
+   public void before() throws Exception {
       server.resetData();
+      init();
    }
 
-   @Before
    public void init() throws Exception {
       // Connexion à un serveur zookeeper local
       initZookeeperServer();

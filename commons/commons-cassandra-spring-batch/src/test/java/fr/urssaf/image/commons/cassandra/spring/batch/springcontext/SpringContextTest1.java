@@ -23,7 +23,7 @@ import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInst
  * Test la création de la DAO JobInstance par spring
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"/applicationContext-cassandra-local.xml"})
+@ContextConfiguration(locations = {"/applicationContext-cassandra-main.xml"})
 @DirtiesContext(classMode=ClassMode.AFTER_CLASS)      // Pour fermer le serveur zookeeper à la fin de la classe
 public class SpringContextTest1 {
 

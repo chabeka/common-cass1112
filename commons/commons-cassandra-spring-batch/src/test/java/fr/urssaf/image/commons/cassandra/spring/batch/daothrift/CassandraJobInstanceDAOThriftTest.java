@@ -35,7 +35,7 @@ import me.prettyprint.hector.api.Keyspace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-cassandra-local.xml"})
-public class CassandraJobInstanceDoaThriftTest {
+public class CassandraJobInstanceDAOThriftTest {
 
   private static final Logger LOG = LoggerFactory
                                                  .getLogger(CassandraJobExecutionDAOThriftTest.class);

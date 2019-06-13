@@ -55,12 +55,13 @@ public class CassandraExecutionContextDAOCqlTest {
    @Autowired
    private CassandraCQLClientFactory ccf;
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
+   @Before
+   public void before() throws Exception {
+      server.resetData(true);
+      init();
    }
 
-   @Before
+   
    public void init() throws Exception {
       // Connexion à un serveur zookeeper local
       initZookeeperServer();

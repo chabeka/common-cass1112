@@ -113,5 +113,5 @@ CREATE TABLE modeapi (
 	cfname text PRIMARY KEY, 
 	mode text
 );
-INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DATASTAX');
-INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'HECTOR');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutions' , 'DUAL_MODE');
+INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'DUAL_MODE');

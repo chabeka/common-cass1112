@@ -66,23 +66,19 @@ public class CassandraJobExecutionDAOCqlTest {
    @Autowired
    private CassandraServerBeanCql server;
 
-   @Autowired
-   private CassandraCQLClientFactory ccf;
-
-   private CuratorFramework zkClient;
-
    private TestingServer zkServer;
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
+   @Before
+   public void before() throws Exception {
+      server.resetData(true);
+      init();
    }
 
    @Before
    public void init() throws Exception {
       // Connexion à un serveur zookeeper local
       initZookeeperServer();
-      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+      ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
       if (!server.getStartLocal()) {
          // TestUltis.truncateBase(jobInstToJExDaoCql.getSession());
       }
