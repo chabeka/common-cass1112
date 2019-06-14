@@ -16,6 +16,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -34,6 +35,9 @@ public class JobQueueServiceRenseignerPidJobCqlTest {
    @Autowired
    private JobLectureCqlService jobLectureService;
 
+   @Autowired
+   private CassandraServerBeanCql serverBean;
+   
    private UUID idJob;
 
    private void setJob(final UUID idJob) {
@@ -41,8 +45,8 @@ public class JobQueueServiceRenseignerPidJobCqlTest {
    }
 
    @Before
-   public void before() {
-
+   public void before() throws Exception {
+     serverBean.resetData(true);
       setJob(null);
    }
 
