@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.services.documentExistent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -96,7 +96,7 @@ public class SAEDocumentExistantServiceTest {
 
       // Paramétrage du RND
 
-      server.resetData();
+      server.resetData(true);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -124,7 +124,7 @@ public class SAEDocumentExistantServiceTest {
       // on vide le contexte de sécurité
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,

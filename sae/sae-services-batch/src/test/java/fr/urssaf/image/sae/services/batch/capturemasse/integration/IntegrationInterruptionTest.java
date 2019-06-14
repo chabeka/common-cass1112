@@ -130,7 +130,7 @@ public class IntegrationInterruptionTest {
 
       // EasyMock.reset(provider, storageDocumentService);
 
-      server.resetData();
+      server.resetData(true);
    }
 
 

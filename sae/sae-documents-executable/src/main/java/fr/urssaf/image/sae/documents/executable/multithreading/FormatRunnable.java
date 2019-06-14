@@ -3,7 +3,6 @@ package fr.urssaf.image.sae.documents.executable.multithreading;
 import java.io.File;
 import java.io.IOException;
 
-import net.docubase.toolkit.model.document.Document;
 import fr.urssaf.image.sae.documents.executable.exception.FormatValidationRuntimeException;
 import fr.urssaf.image.sae.documents.executable.service.FormatFichierService;
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
@@ -12,6 +11,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationException;
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Thread de validation du format de fichiers.

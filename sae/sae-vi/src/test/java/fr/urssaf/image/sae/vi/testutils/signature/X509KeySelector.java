@@ -2,9 +2,9 @@ package fr.urssaf.image.sae.vi.testutils.signature;
 
 import java.security.Key;
 import java.security.PublicKey;
+import java.security.cert.X509Certificate;
 import java.util.Iterator;
 
-import java.security.cert.X509Certificate;
 import javax.xml.crypto.AlgorithmMethod;
 import javax.xml.crypto.KeySelector;
 import javax.xml.crypto.KeySelectorException;

@@ -22,8 +22,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -104,6 +102,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * 

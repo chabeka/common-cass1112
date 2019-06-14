@@ -8,8 +8,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -25,8 +23,8 @@ import fr.urssaf.image.sae.ecde.util.test.EcdeTestTools;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseEcdeWriteFileException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireHashException;
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.CaptureMasseSommaireTypeHashException;
-import fr.urssaf.image.sae.services.batch.capturemasse.support.ecde.EcdeControleSupport;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceRuntimeException;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-batch-test.xml" })

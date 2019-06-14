@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.format.conversion.convertisseurs.tiff;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
@@ -12,7 +13,6 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import de.schlichtherle.io.FileInputStream;
 import fr.urssaf.image.commons.itext.exception.FormatConversionException;
 import fr.urssaf.image.commons.itext.exception.FormatConversionParametrageException;
 import fr.urssaf.image.commons.itext.service.FormatConversionService;

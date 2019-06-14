@@ -6,8 +6,6 @@ package fr.urssaf.image.sae.droit.dao.support;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.After;
 import org.junit.Test;
@@ -19,7 +17,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.sae.droit.dao.model.ServiceContract;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -38,13 +38,17 @@ public class ContratServiceDatasSupportTest {
 
    @Autowired
    private CassandraServerBean cassandraServer;
+   
+   @Autowired
+   private CassandraServerBeanCql cassandraServerCQL;
 
    @Autowired
    private ContratServiceSupport support;
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
+      cassandraServerCQL.resetData();
    }
 
    @Test

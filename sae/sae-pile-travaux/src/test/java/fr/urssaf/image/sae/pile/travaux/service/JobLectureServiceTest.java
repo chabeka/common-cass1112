@@ -10,9 +10,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -34,6 +31,9 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
+import me.prettyprint.hector.api.Keyspace;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
@@ -51,6 +51,9 @@ public class JobLectureServiceTest {
 
    @Autowired
    private JobClockSupport jobClockSupport;
+
+   @Autowired
+   private Keyspace keyspace;
 
    private UUID idJob;
 
@@ -70,6 +73,7 @@ public class JobLectureServiceTest {
    @After
    public void after() {
 
+     //List<JobRequest> jobList = jobLectureService.getAllJobs(keyspace);
       // suppression du traitement de masse
       if (idJob != null) {
 

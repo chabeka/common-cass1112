@@ -3,10 +3,12 @@
  */
 package fr.urssaf.image.sae.trace.dao.model;
 
+import com.datastax.driver.mapping.annotations.Table;
+
 /**
  * Classe de modèle de la CF TraceJournalEvtindex
- * 
  */
+@Table(name = "tracejournalevtindex")
 public class TraceJournalEvtIndex extends TraceIndex {
 
    /**
@@ -32,7 +34,7 @@ public class TraceJournalEvtIndex extends TraceIndex {
     * @param exploitation
     *           trace d'exploitation
     */
-   public TraceJournalEvtIndex(TraceJournalEvt exploitation) {
+  public TraceJournalEvtIndex(final TraceJournalEvt exploitation) {
       super(exploitation);
       this.contexte = exploitation.getContexte();
       this.contratService = exploitation.getContratService();
@@ -49,7 +51,7 @@ public class TraceJournalEvtIndex extends TraceIndex {
     * @param contexte
     *           le contexte de l'événement
     */
-   public final void setContexte(String contexte) {
+  public final void setContexte(final String contexte) {
       this.contexte = contexte;
    }
 
@@ -61,9 +63,10 @@ public class TraceJournalEvtIndex extends TraceIndex {
    }
 
    /**
-    * @param contratService the contratService to set
+   * @param contratService
+   *          the contratService to set
     */
-   public void setContratService(String contratService) {
+  public void setContratService(final String contratService) {
       this.contratService = contratService;
    }
 

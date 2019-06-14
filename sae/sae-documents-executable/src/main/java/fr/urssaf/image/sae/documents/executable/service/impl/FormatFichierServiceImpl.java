@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import net.docubase.toolkit.model.document.Document;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import fr.urssaf.image.sae.format.validation.exceptions.ValidatorInitialisationE
 import fr.urssaf.image.sae.format.validation.exceptions.ValidatorUnhandledException;
 import fr.urssaf.image.sae.format.validation.service.ValidationService;
 import fr.urssaf.image.sae.format.validation.validators.model.ValidationResult;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Classe d'implémentation du service <b>FormatFichierService</b>. Cette classe

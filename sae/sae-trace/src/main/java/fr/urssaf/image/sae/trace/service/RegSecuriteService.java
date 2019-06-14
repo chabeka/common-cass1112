@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -8,9 +8,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 
 /**
  * Services du registre de sécurité
- * 
  */
-public interface RegSecuriteService extends
-      RegService<TraceRegSecurite, TraceRegSecuriteIndex> {
+public interface RegSecuriteService extends RegService<TraceRegSecurite, TraceRegSecuriteIndex> {
 
 }

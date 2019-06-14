@@ -164,7 +164,6 @@ public class SAEDocumentAttachmentServiceImplTest {
 
       // Paramétrage du RND
 
-      //server.resetData();
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 

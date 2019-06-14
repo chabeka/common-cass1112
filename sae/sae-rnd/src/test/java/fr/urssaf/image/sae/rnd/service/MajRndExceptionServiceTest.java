@@ -58,7 +58,7 @@ public class MajRndExceptionServiceTest {
    @After
    public void after() throws Exception {
       EasyMock.reset(rndRecuperationService);
-      server.resetData();
+      server.resetData(true);
       logger.detachAppender(logAppender);
    }
 

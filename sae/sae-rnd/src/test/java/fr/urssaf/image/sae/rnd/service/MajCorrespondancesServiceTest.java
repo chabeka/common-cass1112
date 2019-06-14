@@ -47,7 +47,7 @@ public class MajCorrespondancesServiceTest {
    @After
    public void after() throws Exception {
       EasyMock.reset(rndRecuperationService);
-      server.resetData();
+      server.resetData(true);
    }
 
    @Ignore

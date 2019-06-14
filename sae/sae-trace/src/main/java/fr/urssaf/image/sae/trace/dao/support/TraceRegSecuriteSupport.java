@@ -4,10 +4,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.query.SliceQuery;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,15 +15,17 @@ import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
+import fr.urssaf.image.sae.trace.dao.serializer.MapSerializer;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Support de la classe DAO {@link TraceRegSecuriteDao}
- * 
  */
 @Component
-public class TraceRegSecuriteSupport extends
-      AbstractTraceSupport<TraceRegSecurite, TraceRegSecuriteIndex> {
+public class TraceRegSecuriteSupport extends AbstractTraceSupport<TraceRegSecurite, TraceRegSecuriteIndex> {
 
    private static final String REG_SECURITE_NAME = "registre de sécurité";
 
@@ -37,8 +35,7 @@ public class TraceRegSecuriteSupport extends
 
    private final TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(TraceRegSecuriteSupport.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(TraceRegSecuriteSupport.class);
 
    /**
     * @param dao
@@ -49,9 +46,8 @@ public class TraceRegSecuriteSupport extends
     *           Utilitaires pour créer des TimeUUID
     */
    @Autowired
-   public TraceRegSecuriteSupport(TraceRegSecuriteDao dao,
-         TraceRegSecuriteIndexDao indexDao,
-         TimeUUIDEtTimestampSupport timeUUIDSupport) {
+   public TraceRegSecuriteSupport(final TraceRegSecuriteDao dao, final TraceRegSecuriteIndexDao indexDao,
+                                  final TimeUUIDEtTimestampSupport timeUUIDSupport) {
       super();
       this.dao = dao;
       this.indexDao = indexDao;
@@ -62,9 +58,11 @@ public class TraceRegSecuriteSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected void completeCreateTrace(
-         ColumnFamilyUpdater<UUID, String> updater, TraceRegSecurite trace,
-         long clock) {
+   protected void completeCreateTrace(final ColumnFamilyUpdater<UUID, String> updater, final TraceRegSecurite trace, final long clock) {
+
+      if (trace.getInfos() != null) {
+         getDao().writeColumnInfos(updater, trace.getInfos(), clock);
+      }
 
       getDao().writeColumnContexte(updater, trace.getContexte(), clock);
 
@@ -90,7 +88,7 @@ public class TraceRegSecuriteSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected TraceRegSecuriteIndex getIndexFromTrace(TraceRegSecurite trace) {
+   protected TraceRegSecuriteIndex getIndexFromTrace(final TraceRegSecurite trace) {
       return new TraceRegSecuriteIndex(trace);
    }
 
@@ -106,8 +104,7 @@ public class TraceRegSecuriteSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected Iterator<TraceRegSecuriteIndex> getIterator(
-         SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery) {
+   protected Iterator<TraceRegSecuriteIndex> getIterator(final SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery) {
       return new TraceRegSecuriteIndexIterator(sliceQuery);
    }
 
@@ -115,19 +112,20 @@ public class TraceRegSecuriteSupport extends
     * {@inheritDoc}
     */
    @Override
-   protected Iterator<TraceRegSecuriteIndex> getIterator(
-         SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery,
-         UUID startUuid, UUID endUuid, boolean reversed) {
-      return new TraceRegSecuriteIndexIterator(sliceQuery, startUuid, endUuid,
-            reversed);
+   protected Iterator<TraceRegSecuriteIndex> getIterator(final SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery,
+                                                         final UUID startUuid, final UUID endUuid, final boolean reversed) {
+      return new TraceRegSecuriteIndexIterator(sliceQuery, startUuid, endUuid, reversed);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   protected void completeTraceFromResult(TraceRegSecurite trace,
-         ColumnFamilyResult<UUID, String> result) {
+   protected void completeTraceFromResult(final TraceRegSecurite trace, final ColumnFamilyResult<UUID, String> result) {
+      final byte[] bValue = result.getByteArray(TraceRegTechniqueDao.COL_INFOS);
+      if (bValue != null) {
+         trace.setInfos(MapSerializer.get().fromBytes(bValue));
+      }
       trace.setContexte(result.getString(TraceRegTechniqueDao.COL_CONTEXTE));
    }
 
@@ -135,7 +133,7 @@ public class TraceRegSecuriteSupport extends
     * {@inheritDoc}
     */
    @Override
-   public TraceRegSecurite createNewInstance(UUID idTrace, Date timestamp) {
+   public TraceRegSecurite createNewInstance(final UUID idTrace, final Date timestamp) {
       return new TraceRegSecurite(idTrace, timestamp);
    }
 

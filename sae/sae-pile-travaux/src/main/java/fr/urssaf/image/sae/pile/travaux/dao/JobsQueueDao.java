@@ -2,6 +2,11 @@ package fr.urssaf.image.sae.pile.travaux.dao;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -14,12 +19,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 import me.prettyprint.hector.api.query.SliceQuery;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 
 /**
  * DAO de la colonne famille <code>JobsQueue</code>

@@ -6,8 +6,6 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -24,6 +22,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.JobRuntimeException;
 import fr.urssaf.image.sae.ordonnanceur.service.CoordinationService;
 import fr.urssaf.image.sae.ordonnanceur.service.JobFailureService;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-ordonnanceur-commande-test.xml" })

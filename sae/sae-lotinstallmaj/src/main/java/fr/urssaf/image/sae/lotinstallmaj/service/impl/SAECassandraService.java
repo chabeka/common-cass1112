@@ -2,17 +2,16 @@ package fr.urssaf.image.sae.lotinstallmaj.service.impl;
 
 import java.util.List;
 
-import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
-import me.prettyprint.hector.api.exceptions.HCassandraInternalException;
-import me.prettyprint.hector.api.exceptions.HectorException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
+import me.prettyprint.hector.api.Cluster;
+import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
+import me.prettyprint.hector.api.exceptions.HCassandraInternalException;
+import me.prettyprint.hector.api.exceptions.HectorException;
 
 /**
  * classe de services CASSANDRA

@@ -38,7 +38,7 @@ public interface ModificationMasseControleSupport {
 
    /**
     * <br>Service permettant de contrôler le fichier et les métadonnées d'un
-    * document à modifier dans un traitement de modification de masse.</br>
+    * document à modifier dans un traitement de modification de masse.
     * @param document
     *           Modèle métier du document
     * @param ecdeDirectory
@@ -69,7 +69,7 @@ public interface ModificationMasseControleSupport {
    /**
     * <br>
     * Service permettant de contrôler les métadonnées d'un document à modifier
-    * dans un traitement de modification de masse.</br>
+    * dans un traitement de modification de masse.
     * 
     * @param item
     *           Document à modifier.

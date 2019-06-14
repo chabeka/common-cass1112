@@ -5,8 +5,6 @@ package fr.urssaf.image.sae.commons.xml;
 
 import java.io.OutputStream;
 
-import javanet.staxutils.IndentingXMLEventWriter;
-
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
 import javax.xml.stream.XMLOutputFactory;
@@ -14,6 +12,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.StartDocument;
 
 import fr.urssaf.image.sae.commons.exception.StaxRuntimeException;
+import javanet.staxutils.IndentingXMLEventWriter;
 
 /**
  * Classe permettant l'écriture de fichiers XML

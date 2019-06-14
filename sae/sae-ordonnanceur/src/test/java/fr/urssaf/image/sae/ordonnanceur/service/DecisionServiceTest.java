@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.exception.NestableException;
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +24,7 @@ import fr.urssaf.image.sae.ordonnanceur.exception.AucunJobALancerException;
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import junit.framework.Assert;
 
 //import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 

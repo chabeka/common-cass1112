@@ -1,9 +1,9 @@
 package fr.urssaf.image.sae.webservices.aspect;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
+
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Aspect permettant de gérer le MDC pour les logs.

@@ -3,8 +3,8 @@ package fr.urssaf.image.sae.lotinstallmaj.serializer;
 import java.nio.ByteBuffer;
 import java.util.List;
 
-import me.prettyprint.cassandra.serializers.AbstractSerializer;
 import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
+import me.prettyprint.cassandra.serializers.AbstractSerializer;
 
 /**
  * Serializer de liste de String

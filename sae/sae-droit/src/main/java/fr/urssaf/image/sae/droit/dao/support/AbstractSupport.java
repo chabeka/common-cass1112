@@ -6,6 +6,9 @@ package fr.urssaf.image.sae.droit.dao.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
@@ -14,9 +17,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
 
 /**
  * Classe de mère de support

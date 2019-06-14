@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.droit.aspect;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +10,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
+import junit.framework.Assert;
 
 /**
  * 

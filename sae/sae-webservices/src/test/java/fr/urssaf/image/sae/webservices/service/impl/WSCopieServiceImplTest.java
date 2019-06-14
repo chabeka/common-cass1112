@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.webservices.service.impl;
 
 import static org.junit.Assert.assertNotNull;
-import fr.cirtil.www.saeservice.ListeMetadonneeType;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -24,6 +23,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import fr.cirtil.www.saeservice.Copie;
 import fr.cirtil.www.saeservice.CopieRequestType;
 import fr.cirtil.www.saeservice.CopieResponse;
+import fr.cirtil.www.saeservice.ListeMetadonneeType;
 import fr.cirtil.www.saeservice.MetadonneeType;
 import fr.cirtil.www.saeservice.UuidType;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;

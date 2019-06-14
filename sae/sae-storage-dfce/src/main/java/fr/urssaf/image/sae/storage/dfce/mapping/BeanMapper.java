@@ -444,10 +444,7 @@ public final class BeanMapper {
             // Si la date de creation est définie on remplace la date du
             // jour par la dite date
             if (storageMetadata.getValue() != null) {
-            	dateCreation = (Date) storageMetadata.getValue();
-//            	DateFormat simpleDateFormat=new SimpleDateFormat("yyyy-MM-dd");
-//				dateCreation = (Date) simpleDateFormat.parse((String) storageMetadata.getValue());
-				
+            	dateCreation = (Date) storageMetadata.getValue();			
             }
             document.setCreationDate(dateCreation);
          } else if (technical.getShortCode().equals(

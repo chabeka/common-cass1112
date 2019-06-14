@@ -3,8 +3,6 @@ package fr.urssaf.image.sae.format.identification.identifiers.pdfa;
 import java.io.IOException;
 import java.io.InputStream;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,7 @@ import fr.urssaf.image.sae.format.identification.exceptions.IdentificationRuntim
 import fr.urssaf.image.sae.format.identification.exceptions.IdentifierInitialisationException;
 import fr.urssaf.image.sae.format.identification.identifiers.model.IdentificationResult;
 import fr.urssaf.image.sae.format.model.EtapeEtResultat;
+import junit.framework.Assert;
 
 /**
  * 
@@ -60,21 +59,21 @@ public class PdfaIdentifierImplTest {
       // Détails, 1ère étape : DROID renvoie fmt/354
       EtapeEtResultat etape1 = result.getDetails().get(0);
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
                   .getEtape());
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             "PUUID : fmt/354", etape1.getResultat());
 
       // Détails, 2ème étape : Le format identifié par DROID est directement le
       // fmt/354
       EtapeEtResultat etape2 = result.getDetails().get(1);
       Assert.assertEquals(
-            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "L'étape 2 de l'identification ne correspond pas à l'attendu",
             "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
       Assert.assertEquals(
-            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "L'étape 2 de l'identification ne correspond pas à l'attendu",
             "PUUID = IDFORMAT.", etape2.getResultat());
 
    }
@@ -175,11 +174,11 @@ public class PdfaIdentifierImplTest {
       // Détails, 1ère étape : DROID renvoie fmt/95
       EtapeEtResultat etape1 = result.getDetails().get(0);
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
                   .getEtape());
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             String.format("PUUID : %s", idFormatDetecteDroid), etape1
                   .getResultat());
 
@@ -187,11 +186,11 @@ public class PdfaIdentifierImplTest {
       // formats compatibles
       EtapeEtResultat etape2 = result.getDetails().get(1);
       Assert.assertEquals(
-            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "L'étape 2 de l'identification ne correspond pas à l'attendu",
             "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
       Assert
             .assertEquals(
-                  "L'étape 2 de l'identification en correspond pas à l'attendu",
+                  "L'étape 2 de l'identification ne correspond pas à l'attendu",
                   "PUUID différent de IDFORMAT mais fait partie de la liste des formats compatibles.",
                   etape2.getResultat());
 
@@ -224,22 +223,22 @@ public class PdfaIdentifierImplTest {
       // Détails, 1ère étape : DROID renvoie fmt/40
       EtapeEtResultat etape1 = result.getDetails().get(0);
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             "Etape 1 : Récupération du PUUID à partir de DROID.", etape1
                   .getEtape());
       Assert.assertEquals(
-            "L'étape 1 de l'identification en correspond pas à l'attendu",
+            "L'étape 1 de l'identification ne correspond pas à l'attendu",
             "PUUID : fmt/40", etape1.getResultat());
 
       // Détails, 2ème étape : Le format identifié par DROID est directement le
       // fmt/354
       EtapeEtResultat etape2 = result.getDetails().get(1);
       Assert.assertEquals(
-            "L'étape 2 de l'identification en correspond pas à l'attendu",
+            "L'étape 2 de l'identification ne correspond pas à l'attendu",
             "Etape 2 : Comparaison du PUUID avec idFormat.", etape2.getEtape());
       Assert
             .assertEquals(
-                  "L'étape 2 de l'identification en correspond pas à l'attendu",
+                  "L'étape 2 de l'identification ne correspond pas à l'attendu",
                   "PUUID différent de IDFORMAT et ne fait pas partie de la liste des formats compatibles.",
                   etape2.getResultat());
 

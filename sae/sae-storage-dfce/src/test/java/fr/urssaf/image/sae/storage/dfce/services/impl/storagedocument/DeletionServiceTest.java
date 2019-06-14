@@ -58,7 +58,7 @@ public class DeletionServiceTest {
    @Before
    public void before() throws Exception {
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
       // Initialisation des droits
 
@@ -92,7 +92,7 @@ public class DeletionServiceTest {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
    }
 

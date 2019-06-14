@@ -5,7 +5,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae</artifactId>
-	<version>19.7.1-SNAPSHOT</version>
+	<version>19.10.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>sae</name>
@@ -38,20 +38,20 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>1.0.2</commons.cassandra>
+		<commons.cassandra>2.0.1-SNAPSHOT</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
-		<commons.cassandra.spring.batch>1.0.1</commons.cassandra.spring.batch>
+		<commons.cassandra.spring.batch>2.0.1-SNAPSHOT</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>1.9.15-SNAPSHOT</commons.dfce>
+		<commons.dfce>1.9.16-SNAPSHOT</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
 		<commons-pdfbox>1.0.1</commons-pdfbox>
 
 		<!-- ========================================== commons-droid ========================================== -->
-		<commons-droid>1.0.1</commons-droid>
+		<commons-droid>1.1.1-SNAPSHOT</commons-droid>
 
 		<!-- ========================================== commons-itext ========================================== -->
 		<commons-itext>1.0.2</commons-itext>
@@ -66,17 +66,17 @@
 
 		<!-- ========================================== SLF4J (Simple Logging Facade 
 			for Java) http://www.slf4j.org/ ========================================== -->
-		<org.slf4j.version>1.6.1</org.slf4j.version>
+		<org.slf4j.version>1.7.7</org.slf4j.version>
 
 
 		<!-- ========================================== Ponts entre SLF4J et d'autres 
 			frameworks de log http://www.slf4j.org/legacy.html ========================================== -->
 
 		<!-- JCL (Jakarta Commons Logging) vers SLF4J -->
-		<jcl-over-slf4j.version>1.6.1</jcl-over-slf4j.version>
+		<jcl-over-slf4j.version>1.7.7</jcl-over-slf4j.version>
 
 		<!-- Log4J vers SLF4J -->
-		<log4j-over-slf4j.version>1.6.1</log4j-over-slf4j.version>
+		<log4j-over-slf4j.version>1.7.7</log4j-over-slf4j.version>
 
 		<!-- ========================================== Logback http://logback.qos.ch/ 
 			========================================== -->
@@ -139,7 +139,7 @@
 
 		<!-- ========================================== Google Guava http://code.google.com/p/guava-libraries/ 
 			========================================== -->
-		<guava.version>13.0.1</guava.version>
+		<guava.version>19.0</guava.version>
 
 
 		<!-- ========================================== Javassist http://www.javassist.org/ 
@@ -165,6 +165,9 @@
 		<!-- ========================================== XMLUnit https://www.xmlunit.org/ 
 			========================================== -->
 		<xmlunit.version>2.6.2</xmlunit.version>
+		
+		<!-- Open CSV -->
+		<opencsv.version>2.3</opencsv.version>
 
 	</properties>
 

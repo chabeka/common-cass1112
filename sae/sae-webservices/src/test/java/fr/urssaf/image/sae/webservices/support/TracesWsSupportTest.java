@@ -10,8 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
@@ -43,6 +41,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import fr.urssaf.image.sae.webservices.constantes.TracesConstantes;
 import fr.urssaf.image.sae.webservices.exception.RechercheAxis2Fault;
 import fr.urssaf.image.sae.webservices.util.HostnameUtil;
+import junit.framework.Assert;
 
 /**
  * Tests unitaires de la classe {@link TracesWsSupport}
@@ -72,7 +71,7 @@ public class TracesWsSupportTest {
    @After
    public void after() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       AuthenticationContext.setAuthenticationToken(null);
 

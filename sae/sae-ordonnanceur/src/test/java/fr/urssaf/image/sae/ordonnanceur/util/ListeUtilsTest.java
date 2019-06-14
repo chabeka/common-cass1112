@@ -4,9 +4,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
+
+import junit.framework.Assert;
 
 /**
  * Tests unitaires de la classe ListeUtils

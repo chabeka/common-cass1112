@@ -87,7 +87,7 @@ public class UpdateServiceTest {
       AuthenticationContext.setAuthenticationToken(token);
 
       try {
-         cassandraServerBean.resetData();
+         cassandraServerBean.resetData(true);
       } catch (final Exception exception) {
          // rien à faire
       }
@@ -97,7 +97,7 @@ public class UpdateServiceTest {
    public void after() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData();
+      cassandraServerBean.resetData(true);
 
    }
 

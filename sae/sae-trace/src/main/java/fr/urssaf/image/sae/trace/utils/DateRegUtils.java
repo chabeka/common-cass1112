@@ -14,7 +14,6 @@ import org.apache.commons.lang.time.DateUtils;
 
 /**
  * classe utilitaire sur le calcul d'intervalle de dates
- * 
  */
 public final class DateRegUtils {
 
@@ -30,7 +29,7 @@ public final class DateRegUtils {
     *           date de référence, date minimale
     * @return la nouvelle date de début calculée
     */
-   public static Date getStartDate(Date currentDate, Date dateDebut) {
+  public static Date getStartDate(final Date currentDate, final Date dateDebut) {
 
       Date date;
       if (DateUtils.isSameDay(currentDate, dateDebut)) {
@@ -51,7 +50,7 @@ public final class DateRegUtils {
     *           de fin de référence
     * @return la nouvelle date de fin calculée
     */
-   public static Date getEndDate(Date currentDate, Date dateFin) {
+  public static Date getEndDate(final Date currentDate, final Date dateFin) {
       Date date;
       if (DateUtils.isSameDay(currentDate, dateFin)) {
          date = dateFin;
@@ -70,7 +69,7 @@ public final class DateRegUtils {
     *           date de fin de référence
     * @return la date de début ad'hoc
     */
-   public static Date getFirstDate(Date dateDebut, Date dateFin) {
+  public static Date getFirstDate(final Date dateDebut, final Date dateFin) {
 
       Date startDate;
       if (DateUtils.isSameDay(dateDebut, dateFin)) {
@@ -93,8 +92,8 @@ public final class DateRegUtils {
     *           dernière date
     * @return la liste des dates comprises dans cet intervalle
     */
-   public static List<Date> getListFromDates(Date dateDebut, Date dateFin) {
-      List<Date> list = new ArrayList<Date>();
+  public static List<Date> getListFromDates(final Date dateDebut, final Date dateFin) {
+    final List<Date> list = new ArrayList<Date>();
 
       Date currentDate = dateDebut;
 
@@ -117,8 +116,23 @@ public final class DateRegUtils {
     *           le timestamp
     * @return la journée au format AAAAMMJJ
     */
-   public static String getJournee(Date timestamp) {
+  public static String getJournee(final Date timestamp) {
       return new SimpleDateFormat("yyyyMMdd", Locale.FRANCE).format(timestamp);
    }
+
+  /**
+   * Renvoie la date du jour sans les heures
+   * 
+   * @return
+   */
+  public static Date getDateWithoutTime() {
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(new Date());
+    cal.set(Calendar.HOUR, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    return cal.getTime();
+  }
 
 }

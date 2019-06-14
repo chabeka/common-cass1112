@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.1-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services</artifactId>
-   <version>19.7.1-SNAPSHOT</version>
+   <version>19.10.0-SNAPSHOT</version>
 
    <name>sae-services</name>
 
@@ -37,52 +37,62 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-format</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
+         <exclusions>
+         	<exclusion>
+         		<groupId>org.hamcrest</groupId>
+         		<artifactId>hamcrest-all</artifactId>
+         	</exclusion>
+         	<exclusion>
+         		<groupId>org.hamcrest</groupId>
+         		<artifactId>hamcrest-core</artifactId>
+         	</exclusion>
+         </exclusions>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-rnd</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-ecde</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-metadata</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-mapping</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-droit</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-vi</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
-         <version>19.7.1-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->
@@ -145,6 +155,14 @@
          <version>${easymock.version}</version>
          <scope>test</scope>
       </dependency>
+      
+    <!-- JAXB -->
+    <!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+	<dependency>
+	    <groupId>com.sun.xml.bind</groupId>
+	    <artifactId>jaxb-impl</artifactId>
+	    <version>2.1.13</version>
+	</dependency>
 
    </dependencies>
 

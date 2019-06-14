@@ -161,7 +161,7 @@ public class Integration205Test {
       AuthenticationContext.setAuthenticationToken(null);
 
       logger.detachAppender(logAppender);
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

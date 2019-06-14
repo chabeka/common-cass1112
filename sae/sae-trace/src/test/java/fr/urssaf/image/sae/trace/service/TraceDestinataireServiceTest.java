@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -24,14 +24,13 @@ public class TraceDestinataireServiceTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test
    public void testGetCodeEvenementByTypeTrace() {
-    
+
       service.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
    }
 
- 
 }

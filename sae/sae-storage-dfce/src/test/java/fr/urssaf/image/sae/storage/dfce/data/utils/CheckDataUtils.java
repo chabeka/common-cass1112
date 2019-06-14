@@ -6,13 +6,12 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.time.DateUtils;
 
 import fr.urssaf.image.sae.storage.dfce.utils.Utils;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
+import junit.framework.Assert;
 
 /**
  * Classe utilitaire proposant des services de contrôle des éléments des

@@ -1,16 +1,15 @@
 package fr.urssaf.image.sae.metadata.referential.dao;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
+
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.IntegerSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
-
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
 
 /**
  * Dao permettant d'éffectuer les opérations d'écriture sur la CF MetaData

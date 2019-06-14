@@ -6,17 +6,16 @@ package fr.urssaf.image.sae.trace.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * Service DAO de la famille de colonnes "TraceDestinataire"

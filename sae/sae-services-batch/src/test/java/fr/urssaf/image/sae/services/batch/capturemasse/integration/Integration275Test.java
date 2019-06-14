@@ -166,7 +166,7 @@ public class Integration275Test {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

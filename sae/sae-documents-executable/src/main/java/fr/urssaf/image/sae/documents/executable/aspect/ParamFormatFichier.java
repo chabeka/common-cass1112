@@ -4,8 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.docubase.toolkit.model.document.Document;
-
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -14,6 +12,7 @@ import fr.urssaf.image.sae.documents.executable.exception.ParametreRuntimeExcept
 import fr.urssaf.image.sae.documents.executable.utils.Constantes;
 import fr.urssaf.image.sae.documents.executable.utils.MetadataUtils;
 import fr.urssaf.image.sae.documents.executable.utils.messages.SaeDocumentsExecutableMessageHandler;
+import net.docubase.toolkit.model.document.Document;
 
 /**
  * Classe de validation des paramètres obligatoires.

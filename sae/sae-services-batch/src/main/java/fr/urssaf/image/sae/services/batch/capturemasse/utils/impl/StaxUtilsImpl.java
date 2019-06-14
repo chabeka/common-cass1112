@@ -9,8 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javanet.staxutils.IndentingXMLEventWriter;
-
 import javax.xml.parsers.FactoryConfigurationError;
 import javax.xml.stream.XMLEventFactory;
 import javax.xml.stream.XMLEventWriter;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.services.batch.capturemasse.exception.EcdePermissionException;
 import fr.urssaf.image.sae.services.batch.capturemasse.utils.StaxUtils;
+import javanet.staxutils.IndentingXMLEventWriter;
 
 /**
  * Implémentation du service {@link StaxUtils}. Cette classe est une

@@ -6,18 +6,12 @@
    -->
 
   
-	<!-- 
+ 
 	
 	<Environment name="SAE_Fichier_Configuration" type="java.lang.String"
       value="@SAE_HOME@/sae-config.properties" />
-	 -->
-   
-    
-    
-   <Environment name="SAE_Fichier_Configuration" type="java.lang.String"
-      value="c:/hawai/data/sae/sae-config.properties" />
-   
       
+   
    <!-- 
    Configuration Windows (poste de developpeur) (exemple)
    

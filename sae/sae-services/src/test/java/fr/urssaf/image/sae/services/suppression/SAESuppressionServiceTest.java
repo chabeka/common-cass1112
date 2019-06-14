@@ -100,7 +100,7 @@ public class SAESuppressionServiceTest {
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
 
       if (ecde != null) {
          // supprime le repertoire ecde
@@ -112,7 +112,7 @@ public class SAESuppressionServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

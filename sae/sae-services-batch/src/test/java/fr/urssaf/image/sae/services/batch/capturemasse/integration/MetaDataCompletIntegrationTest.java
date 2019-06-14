@@ -138,7 +138,7 @@ public class MetaDataCompletIntegrationTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true);
    }
 
    @Test

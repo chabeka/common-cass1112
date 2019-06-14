@@ -35,12 +35,12 @@ public class MetadataReferenceDAOImplTest {
 
    @Before
    public void before() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
 
    /**

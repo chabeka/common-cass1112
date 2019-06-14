@@ -1,8 +1,8 @@
 package fr.urssaf.image.sae.rnd.service;
 
-import org.junit.Before;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ public class RndServiceTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true);
    }
    
    @Before

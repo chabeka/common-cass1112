@@ -3,12 +3,12 @@ package fr.urssaf.image.sae.commons.dao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import fr.urssaf.image.sae.commons.bo.Parameter;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
-import fr.urssaf.image.sae.commons.bo.Parameter;
 
 /**
  * Classe permettant de réaliser des opérations sur la base CASSANDRA

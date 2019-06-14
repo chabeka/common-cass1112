@@ -1,6 +1,9 @@
 package fr.urssaf.image.sae.services.copie;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -121,7 +124,7 @@ public class SAECopieServiceTest {
 
       // Paramétrage du RND
 
-      server.resetData();
+      server.resetData(true);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -149,7 +152,7 @@ public class SAECopieServiceTest {
       // on vide le contexte de sécurité
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true);
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,

@@ -5,24 +5,28 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
+import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.beans.OrderedRows;
 import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-
-import org.apache.commons.lang.StringUtils;
-
-import fr.urssaf.image.sae.commons.utils.Constantes;
-import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
-import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Support pour l'utilisation de {@link JobsQueueDao}
  * 
  * 
  */
+@Component
 public class JobsQueueSupport {
 
    /**
@@ -30,16 +34,21 @@ public class JobsQueueSupport {
     */
    private static final String JOBS_WAITING_KEY = "jobsWaiting";
 
-   private final JobsQueueDao jobsQueueDao;
+  @Autowired
+  private JobsQueueDao jobsQueueDao;
+  
+  public JobsQueueSupport(){
+	  
+  }
 
    /**
     * 
     * @param jobsQueueDao
     *           DAO de la colonne famille JobsQueue
     */
-   public JobsQueueSupport(JobsQueueDao jobsQueueDao) {
+  public JobsQueueSupport(JobsQueueDao jobsQueueDao) {
 
-      this.jobsQueueDao = jobsQueueDao;
+	  this.jobsQueueDao = jobsQueueDao;
 
    }
 
@@ -407,4 +416,19 @@ public class JobsQueueSupport {
          mutator.execute();
       }
    }
+
+  /**
+   * @return
+   */
+  public SliceQuery<String, UUID, String> createSliceQuery() {
+    return jobsQueueDao.createSliceQuery();
+  }
+
+  /**
+   * @return
+   */
+  public ColumnFamilyTemplate<String, UUID> getJobsQueueTmpl() {
+    // TODO Auto-generated method stub
+    return jobsQueueDao.getJobsQueueTmpl();
+  }
 }

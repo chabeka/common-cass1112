@@ -13,11 +13,11 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
+import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.utils.StaxUtils;
 
 /**
  * Classe de support pour la création des fichiers de traces
- * 
  */
 @Component
 public class TraceFileSupport {
@@ -34,7 +34,7 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireEntete(StaxUtils staxUtils) throws XMLStreamException {
+  public final void ecrireEntete(final StaxUtils staxUtils) throws XMLStreamException {
       // entete XML
       staxUtils.startDocument();
 
@@ -53,8 +53,8 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireInfosJournalPrecedent(StaxUtils staxUtils,
-         String idJournalPrecedent, String hashJournalPrecedent)
+  public final void ecrireInfosJournalPrecedent(final StaxUtils staxUtils,
+                                                final String idJournalPrecedent, final String hashJournalPrecedent)
          throws XMLStreamException {
 
       staxUtils.addStartElement("journalPrecedent", PX_RES, NS_RES);
@@ -77,10 +77,13 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireDate(StaxUtils staxUtils, Date date)
+  public final void ecrireDate(final StaxUtils staxUtils, final Date date)
          throws XMLStreamException {
-      staxUtils.createTag("dateJournee", DateFormatUtils.ISO_DATE_FORMAT
-            .format(date), PX_RES, NS_RES);
+    staxUtils.createTag("dateJournee",
+                        DateFormatUtils.ISO_DATE_FORMAT
+                                                       .format(date),
+                        PX_RES,
+                        NS_RES);
 
    }
 
@@ -92,11 +95,65 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireBaliseDebutTraces(StaxUtils staxUtils)
+  public final void ecrireBaliseDebutTraces(final StaxUtils staxUtils)
          throws XMLStreamException {
 
       staxUtils.addStartElement("traces", PX_RES, NS_RES);
    }
+
+  // TODO VOIR COMMENT FACTORISER LES DEUX METHODE
+  /**
+   * Ecrire la balise concernant la date
+   *
+   * @param staxUtils
+   *          objet servant à l'écriture du flux
+   * @param trace
+   *          trace dont il faut écrire les valeurs
+   * @throws XMLStreamException
+   *           exception levée en cas d'erreur d'écriture
+   */
+  public final void ecrireTrace(final StaxUtils staxUtils, final TraceJournalEvtCql trace)
+      throws XMLStreamException {
+
+    staxUtils.addStartElement("trace", PX_RES, NS_RES);
+
+    staxUtils.createTag("id", trace.getIdentifiant().toString(), PX_RES, NS_RES);
+    staxUtils.createTag("timestamp",
+                        DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(trace
+                                                                                  .getTimestamp()),
+                        PX_RES,
+                        NS_RES);
+    staxUtils.createTag("codeEvt", trace.getCodeEvt(), PX_RES, NS_RES);
+    staxUtils.createTag("contexte", trace.getContexte(), PX_RES, NS_RES);
+    staxUtils.createTag("cs", trace.getContratService(), PX_RES, NS_RES);
+
+    staxUtils.addStartElement("pagms", PX_RES, NS_RES);
+    if (CollectionUtils.isNotEmpty(trace.getPagms())) {
+      for (final String pagm : trace.getPagms()) {
+        staxUtils.createTag("pagm", pagm, PX_RES, NS_RES);
+      }
+    }
+    staxUtils.addEndElement("pagms", PX_RES, NS_RES);
+
+    staxUtils.createTag("login", trace.getLogin(), PX_RES, NS_RES);
+
+    staxUtils.addStartElement("infos", PX_RES, NS_RES);
+    if (MapUtils.isNotEmpty(trace.getInfos())) {
+      for (final String key : trace.getInfos().keySet()) {
+
+        staxUtils.addStartElement("info", PX_RES, NS_RES);
+        staxUtils.createTag("code", key, PX_RES, NS_RES);
+        staxUtils.createTag("valeur",
+                            trace.getInfos().get(key).toString(),
+                            PX_RES,
+                            NS_RES);
+        staxUtils.addEndElement("info", PX_RES, NS_RES);
+      }
+    }
+    staxUtils.addEndElement("infos", PX_RES, NS_RES);
+
+    staxUtils.addEndElement("trace", PX_RES, NS_RES);
+  }
 
    /**
     * Ecrire la balise concernant la date
@@ -108,7 +165,7 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireTrace(StaxUtils staxUtils, TraceJournalEvt trace)
+  public final void ecrireTrace(final StaxUtils staxUtils, final TraceJournalEvt trace)
          throws XMLStreamException {
 
       staxUtils.addStartElement("trace", PX_RES, NS_RES);
@@ -116,14 +173,16 @@ public class TraceFileSupport {
       staxUtils.createTag("id", trace.getIdentifiant().toString(), PX_RES, NS_RES);
       staxUtils.createTag("timestamp",
             DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.format(trace
-                  .getTimestamp()), PX_RES, NS_RES);
+                                                                                  .getTimestamp()),
+                        PX_RES,
+                        NS_RES);
       staxUtils.createTag("codeEvt", trace.getCodeEvt(), PX_RES, NS_RES);
       staxUtils.createTag("contexte", trace.getContexte(), PX_RES, NS_RES);
       staxUtils.createTag("cs", trace.getContratService(), PX_RES, NS_RES);
 
       staxUtils.addStartElement("pagms", PX_RES, NS_RES);
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
-         for (String pagm : trace.getPagms()) {
+      for (final String pagm : trace.getPagms()) {
             staxUtils.createTag("pagm", pagm, PX_RES, NS_RES);
          }
       }
@@ -133,12 +192,14 @@ public class TraceFileSupport {
 
       staxUtils.addStartElement("infos", PX_RES, NS_RES);
       if (MapUtils.isNotEmpty(trace.getInfos())) {
-         for (String key : trace.getInfos().keySet()) {
+      for (final String key : trace.getInfos().keySet()) {
 
             staxUtils.addStartElement("info", PX_RES, NS_RES);
             staxUtils.createTag("code", key, PX_RES, NS_RES);
-            staxUtils.createTag("valeur", trace.getInfos().get(key).toString(),
-                  PX_RES, NS_RES);
+        staxUtils.createTag("valeur",
+                            trace.getInfos().get(key).toString(),
+                            PX_RES,
+                            NS_RES);
             staxUtils.addEndElement("info", PX_RES, NS_RES);
          }
       }
@@ -155,7 +216,7 @@ public class TraceFileSupport {
     * @throws XMLStreamException
     *            exception levée en cas d'erreur d'écriture
     */
-   public final void ecrireBalisesFin(StaxUtils staxUtils) throws XMLStreamException {
+  public final void ecrireBalisesFin(final StaxUtils staxUtils) throws XMLStreamException {
 
       staxUtils.addEndElement("traces", PX_RES, NS_RES);
       staxUtils.addEndElement("journal", PX_RES, NS_RES);

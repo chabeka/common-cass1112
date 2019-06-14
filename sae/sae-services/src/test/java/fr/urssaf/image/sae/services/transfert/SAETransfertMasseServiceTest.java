@@ -21,7 +21,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +115,7 @@ public class SAETransfertMasseServiceTest {
    @After
    public void end() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       if (uidDocGNT != null) {
          testProviderGNT.deleteDocument(uidDocGNT);
@@ -131,7 +130,7 @@ public class SAETransfertMasseServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

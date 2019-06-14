@@ -6,15 +6,14 @@ package fr.urssaf.image.sae.droit.dao.support;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.droit.dao.PagmaDao;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * Classe de support de la classe {@link PagmaDao}

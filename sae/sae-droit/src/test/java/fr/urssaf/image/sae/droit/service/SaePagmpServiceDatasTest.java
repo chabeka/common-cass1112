@@ -6,8 +6,6 @@ package fr.urssaf.image.sae.droit.service;
 import java.util.HashMap;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +21,7 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException
 import fr.urssaf.image.sae.droit.dao.support.PagmpSupport;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
@@ -45,7 +44,7 @@ public class SaePagmpServiceDatasTest {
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData();
+      cassandraServer.resetData(true);
    }
 
    @Test(expected = DroitRuntimeException.class)

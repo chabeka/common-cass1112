@@ -10,6 +10,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
+import com.google.common.cache.LoadingCache;
+
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
+import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
+import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
+import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
@@ -21,24 +38,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
-
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
-import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
-import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
-import fr.urssaf.image.sae.trace.dao.serializer.ListSerializer;
-import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 
 /**
  * Support de la classe DAO {@link TraceDestinataireDao}

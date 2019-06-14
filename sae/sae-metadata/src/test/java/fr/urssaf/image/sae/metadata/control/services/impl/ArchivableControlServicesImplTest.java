@@ -88,7 +88,7 @@ public class ArchivableControlServicesImplTest{
    @After
    public void after() throws Exception {
 
-      server.resetData();
+      server.resetData(true);
 
    }
 }

@@ -32,6 +32,7 @@
       <constructor-arg ref="saeConfigResource" />
    </bean>
    
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    <import resource="applicationContext-sae-trace.xml" />
 
 </beans>
