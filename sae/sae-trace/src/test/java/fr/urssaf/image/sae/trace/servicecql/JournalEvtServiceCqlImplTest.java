@@ -182,7 +182,7 @@ public class JournalEvtServiceCqlImplTest {
   public void testPurgeDateDebutObligatoire() {
     GestionModeApiTest.setModeApiCql(cfName);
     try {
-      service.purge(null);
+      service.purge(null, 1);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }

@@ -172,7 +172,7 @@ public class RegSecuriteCqlServiceTest {
   public void testPurgeDateDebutObligatoire() {
     GestionModeApiTest.setModeApiCql(cfName);
     try {
-      service.purge(null);
+      service.purge(null, 1);
       Assert.fail(ILLEGAL_EXPECTED);
 
     }

@@ -42,8 +42,6 @@ public class Trace {
    /** Le ou les PAGM */
    private List<String> pagms = new ArrayList<String>();
 
-   /** informations supplémentaires de la trace */
-   private Map<String, Object> infos;
    
   /**
    *
@@ -88,21 +86,6 @@ public class Trace {
       this.timestamp =getDateCopy(timestamp);
       this.identifiant = idTrace;
 
-      if (CollectionUtils.isNotEmpty(listInfos)
-            && MapUtils.isNotEmpty(trace.getInfos())) {
-         this.infos = new HashMap<String, Object>();
-         for (String info : listInfos) {
-            if (trace.getInfos().get(info) != null) {
-               this.infos.put(info, trace.getInfos().get(info));
-            }
-         }
-
-         // on récupère toutes les infos
-         if (listInfos.size() == 1
-               && Constantes.REG_ALL_INFOS.equals(listInfos.get(0))) {
-            infos.putAll(trace.getInfos());
-         }
-      }
    }
 
    /**
@@ -183,20 +166,6 @@ public class Trace {
       this.pagms = pagms;
    }
 
-  /**
-   * @return les informations supplémentaires de la trace
-   */
-  public Map<String, Object> getInfos() {
-     return infos;
-  }
-
-  /**
-   * @param infos
-   *           tinformations supplémentaires de la trace
-   */
-  public void setInfos(Map<String, Object> infos) {
-     this.infos = infos;
-  }
   
   private Date getDateCopy(final Date date) {
       Date tDate = null;

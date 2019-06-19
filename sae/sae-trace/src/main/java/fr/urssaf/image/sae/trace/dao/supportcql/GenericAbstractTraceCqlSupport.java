@@ -95,6 +95,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
     *           date à laquelle supprimer les traces
     * @param clock
     *           horloge de la suppression
+    *           
     * @return le nombre de traces purgées
     */
    @SuppressWarnings("unchecked")

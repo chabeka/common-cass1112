@@ -217,8 +217,8 @@ public class RegSecuriteCqlServiceDatasTest {
       GestionModeApiTest.setModeApiCql(cfName);
       createTraces();
 
-      service.purge(DATE_JOUR_PRECEDENT);
-      service.purge(DATE);
+      service.purge(DATE_JOUR_PRECEDENT, 1);
+      service.purge(DATE, 1);
 
       List<TraceRegSecuriteIndex> result = service.lecture(DATE_JOUR_PRECEDENT,
                                                            DATE,

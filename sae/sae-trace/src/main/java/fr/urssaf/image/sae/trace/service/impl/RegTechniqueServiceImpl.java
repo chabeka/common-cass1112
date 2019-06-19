@@ -139,7 +139,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
   }
 
   @Override
-  public void purge(final Date date) {
+  public void purge(final Date date, final int nbMaxLigneEvtToDelete) {
     final String prefix = "purge()";
     getLogger().debug(DEBUT_LOG, prefix);
 
@@ -158,11 +158,11 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
                                                                    getClockSupport().currentCLock());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = regTechniqueServiceThrift.getSupport().delete(dateIndex,
-                                                                      getClockSupport().currentCLock());
+                                                                      getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
       nbTracesPurgees = regTechniqueServiceThrift.getSupport()
           .delete(dateIndex,
-                  getClockSupport().currentCLock());
+                  getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);
     }
 
     getLoggerSupport()
