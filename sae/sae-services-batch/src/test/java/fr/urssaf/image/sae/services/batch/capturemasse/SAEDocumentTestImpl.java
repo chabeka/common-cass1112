@@ -43,23 +43,30 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 public class SAEDocumentTestImpl implements SAEDocumentService {
 
    private Object[] consultUUIDResult;
-   private int consultUUIDIndex = 0;
+
+   private final int consultUUIDIndex = 0;
+
    private Object[] consultParamsResult;
-   private int consultParamsIndex = 0;
+
+   private final int consultParamsIndex = 0;
+
    private Object[] searchResult;
-   private int searchIndex = 0;
+
+   private final int searchIndex = 0;
+
    private Object[] searchMaxResult;
-   private int searchMaxIndex = 0;
+
+   private final int searchMaxIndex = 0;
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(UUID idArchive)
+   public final UntypedDocument consultation(final UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
-      Object object = getResult(consultUUIDResult, consultUUIDIndex);
+      final Object object = getResult(consultUUIDResult, consultUUIDIndex);
 
       if (object == null) {
          return null;
@@ -78,11 +85,11 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(ConsultParams consultParams)
+   public final UntypedDocument consultation(final ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
-      Object object = getResult(consultParamsResult, consultParamsIndex);
+      final Object object = getResult(consultParamsResult, consultParamsIndex);
 
       if (object == null) {
          return null;
@@ -102,12 +109,13 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     */
    @SuppressWarnings("unchecked")
    @Override
-   public final List<UntypedDocument> search(String requete,
-         List<String> listMetaDesired) throws MetaDataUnauthorizedToSearchEx,
+   public final List<UntypedDocument> search(final String requete,
+                                             final List<String> listMetaDesired)
+         throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
 
-      Object object = getResult(searchResult, searchIndex);
+      final Object object = getResult(searchResult, searchIndex);
 
       if (object == null) {
          return null;
@@ -133,13 +141,13 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     */
    @SuppressWarnings("unchecked")
    @Override
-   public final List<UntypedDocument> search(String requete,
-         List<String> listMetaDesired, int maxResult)
+   public final List<UntypedDocument> search(final String requete,
+                                             final List<String> listMetaDesired, final int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
 
-      Object object = getResult(searchMaxResult, searchMaxIndex);
+      final Object object = getResult(searchMaxResult, searchMaxIndex);
 
       if (object == null) {
          return null;
@@ -165,11 +173,11 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     */
    @Override
    public PaginatedUntypedDocuments searchPaginated(
-         List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata,
-         List<AbstractMetadata> equalsFilters,
-         List<AbstractMetadata> notEqualsFilters, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata, final List<String> indexOrderPreferenceList)
+                                                    final List<UntypedMetadata> fixedMetadatas,
+                                                    final UntypedRangeMetadata varyingMetadata,
+                                                    final List<AbstractMetadata> equalsFilters,
+                                                    final List<AbstractMetadata> notEqualsFilters, final int nbDocumentsParPage,
+                                                    final String pageId, final List<String> listeDesiredMetadata, final List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx {
@@ -182,11 +190,12 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     */
    @Override
    public final UntypedDocument consultationAffichable(
-         ConsultParams consultParams) throws SAEConsultationServiceException,
+                                                       final ConsultParams consultParams)
+         throws SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
 
-      Object object = getResult(consultParamsResult, consultParamsIndex);
+      final Object object = getResult(consultParamsResult, consultParamsIndex);
 
       if (object == null) {
          return null;
@@ -205,7 +214,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login)
+   public void addDocumentNote(final UUID docUuid, final String contenu, final String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx {
       // TODO Auto-generated method stub
 
@@ -215,7 +224,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
+   public List<StorageDocumentNote> getDocumentNotes(final UUID docUuid)
          throws SAEDocumentNoteException {
       // TODO Auto-generated method stub
       return null;
@@ -227,14 +236,14 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * @throws Exception
     * @throws Throwable
     */
-   private Object getResult(Object[] objects, int index) {
+   private Object getResult(final Object[] objects, int index) {
 
       if (ArrayUtils.isEmpty(objects) || index >= objects.length) {
          throw new RuntimeException(
-               "impossible de récupérer le comportement attendu");
+                                    "impossible de récupérer le comportement attendu");
       }
 
-      Object object = objects[index];
+      final Object object = objects[index];
       index++;
 
       return object;
@@ -244,7 +253,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * @param consultUUIDResult
     *           the consultUUIDResult to set
     */
-   public final void setConsultUUIDResult(Object[] consultUUIDResult) {
+   public final void setConsultUUIDResult(final Object[] consultUUIDResult) {
       this.consultUUIDResult = consultUUIDResult;
    }
 
@@ -252,7 +261,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * @param consultParamsResult
     *           the consultParamsResult to set
     */
-   public final void setConsultParamsResult(Object[] consultParamsResult) {
+   public final void setConsultParamsResult(final Object[] consultParamsResult) {
       this.consultParamsResult = consultParamsResult;
    }
 
@@ -260,7 +269,7 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * @param searchResult
     *           the searchResult to set
     */
-   public final void setSearchResult(Object[] searchResult) {
+   public final void setSearchResult(final Object[] searchResult) {
       this.searchResult = searchResult;
    }
 
@@ -268,45 +277,46 @@ public class SAEDocumentTestImpl implements SAEDocumentService {
     * @param searchMaxResult
     *           the searchMaxResult to set
     */
-   public final void setSearchMaxResult(Object[] searchMaxResult) {
+   public final void setSearchMaxResult(final Object[] searchMaxResult) {
       this.searchMaxResult = searchMaxResult;
    }
 
    @Override
-   public void addDocumentAttachmentBinaire(UUID docUuid, String docName,
-         String extension, DataHandler contenu) throws SAEDocumentAttachmentEx,
+   public void addDocumentAttachmentBinaire(final UUID docUuid, final String docName,
+                                            final String extension, final DataHandler contenu)
+         throws SAEDocumentAttachmentEx,
          ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
-   public void addDocumentAttachmentBinaireRollbackParent(UUID docUuid,
-         String docName, String extension, DataHandler contenu)
+   public void addDocumentAttachmentBinaireRollbackParent(final UUID docUuid,
+                                                          final String docName, final String extension, final DataHandler contenu)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
          EmptyFileNameEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
-   public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrl(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
-   public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrlRollbackParent(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
       // TODO Auto-generated method stub
-      
+
    }
 
    @Override
-   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       // TODO Auto-generated method stub
       return null;

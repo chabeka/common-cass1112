@@ -2,8 +2,6 @@ package fr.urssaf.image.sae.storage.model.storagedocument;
 
 /**
  * Classe concrète représentant la liste des documents
- * 
- *
  */
 public class PaginatedStorageDocuments extends StorageDocuments {
 
@@ -13,9 +11,10 @@ public class PaginatedStorageDocuments extends StorageDocuments {
    private Boolean lastPage;
 
    /**
-    * Valeur de la métadonnée à retourner au client dans l'identifiant de la dernière page
+    * Valeur à retourner au client correspond à l'id de la prochaine page
     */
-   private String valeurMetaLastPage;
+   private String pageId;
+
    /**
     * @return the lastPage
     */
@@ -24,23 +23,25 @@ public class PaginatedStorageDocuments extends StorageDocuments {
    }
 
    /**
-    * @param lastPage the lastPage to set
+    * @param lastPage
+    *           the lastPage to set
     */
-   public final void setLastPage(Boolean lastPage) {
+   public final void setLastPage(final Boolean lastPage) {
       this.lastPage = lastPage;
    }
 
    /**
-    * @return the valeurMetaLastPage
+    * @return l'id de la prochaine page
     */
-   public String getValeurMetaLastPage() {
-      return valeurMetaLastPage;
+   public String getPageId() {
+      return pageId;
    }
 
    /**
-    * @param valeurMetaLastPage the valeurMetaLastPage to set
+    * @param pageId
+    *           l'id de la prochaine page
     */
-   public void setValeurMetaLastPage(String valeurMetaLastPage) {
-      this.valeurMetaLastPage = valeurMetaLastPage;
+   public void setPageId(final String pageId) {
+      this.pageId = pageId;
    }
 }

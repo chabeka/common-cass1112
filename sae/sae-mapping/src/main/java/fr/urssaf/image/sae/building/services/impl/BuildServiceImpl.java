@@ -3,8 +3,8 @@ package fr.urssaf.image.sae.building.services.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 
 import javax.activation.DataHandler;
 
@@ -32,12 +32,13 @@ public class BuildServiceImpl implements BuildService {
    /**
     * {@inheritDoc}
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final LuceneCriteria buildStorageLuceneCriteria(
-         final String luceneQuery, final int limit,
-         final List<SAEMetadata> metadatas) {
-      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
-      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+                                                          final String luceneQuery, final int limit,
+                                                          final List<SAEMetadata> metadatas) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<>();
+      for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
          desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
       }
@@ -46,25 +47,29 @@ public class BuildServiceImpl implements BuildService {
 
    @Override
    public PaginatedLuceneCriteria buildStoragePaginatedLuceneCriteria(
-         String luceneQuery, int limit, List<SAEMetadata> metadatas,
-         List<AbstractFilter> filters, UUID lastIdDoc, String codeCourtVaryingMeta) {
-      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
-      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+                                                                      final String luceneQuery, final int limit, final List<SAEMetadata> metadatas,
+                                                                      final List<AbstractFilter> filters, final String pageId) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<>();
+      for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
          desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
       }
-      return new PaginatedLuceneCriteria(luceneQuery, limit, desiredMetadata,
-            filters, lastIdDoc, codeCourtVaryingMeta);
+      return new PaginatedLuceneCriteria(luceneQuery,
+                                         limit,
+                                         desiredMetadata,
+                                         filters,
+                                         pageId);
    }
 
    /**
     * {@inheritDoc}
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
-         final List<SAEMetadata> metadatas) {
-      final List<StorageMetadata> desiredMetadata = new ArrayList<StorageMetadata>();
-      for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+                                                      final List<SAEMetadata> metadatas) {
+      final List<StorageMetadata> desiredMetadata = new ArrayList<>();
+      for (final SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
          desiredMetadata.add(new StorageMetadata(metadata.getShortCode()));
 
       }
@@ -74,14 +79,16 @@ public class BuildServiceImpl implements BuildService {
    /**
     * {@inheritDoc}
     */
+   @Override
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    public final UntypedDocument buildUntypedDocument(final DataHandler content,
-         final Map<String, String> metadatas) {
-      final List<UntypedMetadata> uMetadatas = new ArrayList<UntypedMetadata>();
-      for (Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)
-            .entrySet()) {
-         uMetadatas.add(new UntypedMetadata(uMetadata.getKey(), uMetadata
-               .getValue()));
+                                                     final Map<String, String> metadatas) {
+      final List<UntypedMetadata> uMetadatas = new ArrayList<>();
+      for (final Entry<String, String> uMetadata : Utils.nullSafeMap(metadatas)
+                                                        .entrySet()) {
+         uMetadatas.add(new UntypedMetadata(uMetadata.getKey(),
+                                            uMetadata
+                                                     .getValue()));
       }
       return new UntypedDocument(content, uMetadatas);
 

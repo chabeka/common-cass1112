@@ -53,7 +53,7 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(RepriseCaptureMasseInitTasklet.class);
+                                                     .getLogger(RepriseCaptureMasseInitTasklet.class);
 
    /**
     * Nombre de documents par page d'itération par défaut.
@@ -127,36 +127,38 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
    private boolean lastIteration = false;
 
    /**
-    * Dernier identifiant de document remonté à l'itération précédente.
+    * Identifiant de la prochaine page, remonté à l'itération précédente.
     */
-   private UUID lastIdDoc = null;
+   private String pageId = null;
 
    /**
     * Liste des métadonnées que l'on souhaite récupérés
     */
-   private final static List<SAEMetadata> DESIRED_METADATAS = new ArrayList<SAEMetadata>();
+   private final static List<SAEMetadata> DESIRED_METADATAS = new ArrayList<>();
 
    /**
     * {@inheritDoc}
     */
    @Override
    public RepeatStatus execute(final StepContribution contribution,
-                               final ChunkContext chunkContext) throws Exception {
+                               final ChunkContext chunkContext)
+         throws Exception {
       LOGGER.info("Début Rollback reprise archivage de masse");
       int incr = 0;
 
       final StepExecution stepExecution = chunkContext.getStepContext()
-            .getStepExecution();
+                                                      .getStepExecution();
 
-      final String ident = stepExecution.getJobParameters().getString(
-                                                                      Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
+      final String ident = stepExecution.getJobParameters()
+                                        .getString(
+                                                   Constantes.ID_TRAITEMENT_A_REPRENDRE_BATCH);
 
       Assert.notNull(ident, "L'identifiant du job à reprendre est requis");
 
       final UUID idTraitement = UUID.fromString(ident);
 
       final JobRequest jobAReprendre = jobLectureService
-            .getJobRequest(idTraitement);
+                                                        .getJobRequest(idTraitement);
 
       Assert.notNull(jobAReprendre, "Le job à reprendre est requis");
 
@@ -174,7 +176,8 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       URI sommaireURL;
       try {
          sommaireURL = URI.create(urlECDE);
-      } catch (final IllegalArgumentException e) {
+      }
+      catch (final IllegalArgumentException e) {
          throw new RepriseException("Erreur de parsing de l'url ECDE : "
                + e.getMessage(), idTraitement.toString());
       }
@@ -183,11 +186,12 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
       if (sommaireFile == null) {
          throw new RepriseException("Le fichier " + sommaireURL.toString()
-         + " ne peut être lu", idTraitement.toString());
+               + " ne peut être lu", idTraitement.toString());
       }
 
-      stepExecution.getJobExecution().getExecutionContext()
-      .put(Constantes.SOMMAIRE_FILE, sommaireFile.getAbsolutePath());
+      stepExecution.getJobExecution()
+                   .getExecutionContext()
+                   .put(Constantes.SOMMAIRE_FILE, sommaireFile.getAbsolutePath());
 
       final String batchmode = XmlReadUtils.getElementValue(sommaireFile,
                                                             Constantes.BATCH_MODE_ELEMENT_NAME);
@@ -200,16 +204,18 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
       if (BatchModeType.TOUT_OU_RIEN.name().equals(batchmode)) {
          requeteLucene = StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE
-               .getShortCode() + ":" + idTraitement;
+                                                                              .getShortCode()
+               + ":" + idTraitement;
 
          try {
             // Vérification de la requête lucène
             SAESearchUtil.verifieSyntaxeLucene(requeteLucene);
-         } catch (final SyntaxLuceneEx e) {
+         }
+         catch (final SyntaxLuceneEx e) {
             throw new RepriseException(
                                        "La requete lucene de recherche des documents à supprimer est erroné : "
                                              + requeteLucene,
-                                             idTraitement.toString());
+                                       idTraitement.toString());
          }
 
          StorageDocument doc = null;
@@ -219,13 +225,18 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
             if (doc != null) {
                try {
-                  LOGGER.debug("Suppression du document {} en cours", doc
-                               .getUuid().toString());
+                  LOGGER.debug("Suppression du document {} en cours",
+                               doc
+                                  .getUuid()
+                                  .toString());
                   support.rollback(doc.getUuid());
                   incr++;
-                  LOGGER.debug("Fin suppression du document {} en cours", doc
-                               .getUuid().toString());
-               } catch (final Exception e) {
+                  LOGGER.debug("Fin suppression du document {} en cours",
+                               doc
+                                  .getUuid()
+                                  .toString());
+               }
+               catch (final Exception e) {
                   throw new RepriseException(e);
                }
                isFirstRound = false;
@@ -279,7 +290,7 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
    }
 
    /**
-    * Recupere le prochain element.
+    * Récupère le prochain element.
     *
     * @return StorageDocument
     */
@@ -297,42 +308,41 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
       PaginatedStorageDocuments paginatedStorageDocuments = null;
       boolean hasMore = false;
       try {
-         String strIdDoc;
-         if (lastIdDoc == null) {
-            strIdDoc = "null";
+         String strPageId;
+         if (pageId == null) {
+            strPageId = "null";
          } else {
-            strIdDoc = lastIdDoc.toString();
+            strPageId = pageId.toString();
          }
 
-         LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
+         LOGGER.debug("fetchMore : {} - {}", requeteLucene, strPageId);
          final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
-               .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                                                    limit > 0 ? limit : MAX_PAR_PAGE, DESIRED_METADATAS,
-                                                          new ArrayList<AbstractFilter>(), lastIdDoc, "");
+                                                                             .buildStoragePaginatedLuceneCriteria(requeteLucene,
+                                                                                                                  limit > 0 ? limit : MAX_PAR_PAGE,
+                                                                                                                  DESIRED_METADATAS,
+                                                                                                                  new ArrayList<AbstractFilter>(),
+                                                                                                                  pageId);
 
          paginatedStorageDocuments = storageServiceProvider
-               .getStorageDocumentService().searchPaginatedStorageDocuments(
-                                                                            paginatedLuceneCriteria);
+                                                           .getStorageDocumentService()
+                                                           .searchPaginatedStorageDocuments(
+                                                                                            paginatedLuceneCriteria);
 
-         // recupere les infos de la requete
+         // récupère les infos de la requête
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments()
-               .iterator();
+                                                 .iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
-         if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments()
-                  .size();
-            lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments()
-                  .get(nbElements - 1).getUuid();
-            hasMore = true;
-         } else {
-            hasMore = false;
-         }
+         pageId = paginatedStorageDocuments.getPageId();
+         hasMore = paginatedStorageDocuments.getAllStorageDocuments().size() > 0;
 
-      } catch (final ConnectionServiceEx except) {
+      }
+      catch (final ConnectionServiceEx except) {
          throw new RepriseException(except);
-      } catch (final SearchingServiceEx except) {
+      }
+      catch (final SearchingServiceEx except) {
          throw new RepriseException(except);
-      } catch (final QueryParseServiceEx except) {
+      }
+      catch (final QueryParseServiceEx except) {
          throw new RepriseException(except);
       }
       return hasMore;
@@ -352,11 +362,11 @@ public class RepriseCaptureMasseInitTasklet implements Tasklet {
 
          try {
             interruptionSupport.interruption(currentDate, config);
-         } catch (final InterruptionTraitementException e) {
+         }
+         catch (final InterruptionTraitementException e) {
             throw new RepriseException(e);
          }
       }
    }
-
 
 }

@@ -215,13 +215,12 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       final UntypedRangeMetadata untypedRangeMeta = recupererRangeMetadata(requetePrincipale);
 
       // Si l'identifiant de la page est renseigné (lorsque ce n'est pas le
-      // premier appel)
+      // premier appel), on le récupère
       // on met à jour la valeur min de la métadonnée de type range avec la
       // valeur de l'identifiant
-      UUID idDoc = null;
+      String idPage = null;
       if (identifiantPage != null) {
-         untypedRangeMeta.setValeurMin(identifiantPage.getValeur().getMetadonneeValeurType());
-         idDoc = UUID.fromString(identifiantPage.getIdArchive().getUuidType());
+         idPage = identifiantPage.getValeur().getMetadonneeValeurType();
       }
 
       final FiltreType filtres = params.getFiltres();
@@ -234,22 +233,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
       final int nbDocsParPage = params.getNbDocumentsParPage();
 
       // Liste des métadonnées souhaitées en retour de recherche
-      List<String> listeMetaSouhaitees = recupererListMDDesired(recupererListMDSearch(request));
-
-      // On ajoute la métadonnée variable dans la liste des méta désirés, car
-      // on a forcément besoin de la récupérer pour pouvoir mettre la valeur dans
-      // l'identifiant de la dernière page
-      boolean isMetaVariableAjoute = false;
-      if (!listeMetaSouhaitees.contains(untypedRangeMeta.getLongCode())) {
-         if (listeMetaSouhaitees.isEmpty()) {
-            listeMetaSouhaitees = new ArrayList<>();
-            listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
-            isMetaVariableAjoute = true;
-         } else {
-            listeMetaSouhaitees.add(untypedRangeMeta.getLongCode());
-            isMetaVariableAjoute = true;
-         }
-      }
+      final List<String> listeMetaSouhaitees = recupererListMDDesired(recupererListMDSearch(request));
 
       try {
 
@@ -268,7 +252,7 @@ public class WSRechercheServiceImpl implements WSRechercheService {
                                                                                          listeFiltreEgalite,
                                                                                          listeFiltreDifferent,
                                                                                          nbDocsParPage,
-                                                                                         idDoc,
+                                                                                         idPage,
                                                                                          listeMetaSouhaitees,
                                                                                          indexOrderPreferenceList);
 
@@ -277,24 +261,18 @@ public class WSRechercheServiceImpl implements WSRechercheService {
 
          // Récupération de l'UUID du dernier document retourné
          UUID lastUuid = null;
-         UntypedDocument lastDoc = null;
-         if (listeUDoc.size() > 0) {
-            lastDoc = listeUDoc.get(listeUDoc.size() - 1);
+         if (!listeUDoc.isEmpty()) {
+            final UntypedDocument lastDoc = listeUDoc.get(listeUDoc.size() - 1);
             lastUuid = lastDoc.getUuid();
          }
 
-         response = createRechercheParIterateurResponse(listeUDoc,
-                                                        isMetaVariableAjoute,
-                                                        untypedRangeMeta.getLongCode());
+         response = createRechercheParIterateurResponse(listeUDoc);
 
          response.getRechercheParIterateurResponse().setDernierePage(lastPage);
 
-         // Identifiant de la derniere page retournee par la recherche
-         final IdentifiantPageType idPage = recupererIdPage(paginatedUDoc, lastUuid);
-
-         // recupererIdPage(requetePrincipale, lastDoc, lastUuid);
-         // rechParItRespType.setIdentifiantPageSuivante(idPage);
-         response.getRechercheParIterateurResponse().setIdentifiantPageSuivante(idPage);
+         // Identifiant de la dernière page retournée par la recherche
+         final IdentifiantPageType identifiantNextPage = recupererIdPage(paginatedUDoc, lastUuid);
+         response.getRechercheParIterateurResponse().setIdentifiantPageSuivante(identifiantNextPage);
 
       }
       catch (final MetaDataUnauthorizedToSearchEx e) {
@@ -331,18 +309,18 @@ public class WSRechercheServiceImpl implements WSRechercheService {
    }
 
    private IdentifiantPageType recupererIdPage(final PaginatedUntypedDocuments paginatedUDoc, final UUID lastUuid) {
-      IdentifiantPageType idPage = null;
+      IdentifiantPageType identifiantPage = null;
       if (lastUuid != null) {
-         idPage = new IdentifiantPageType();
+         identifiantPage = new IdentifiantPageType();
          final UuidType lastUuidType = new UuidType();
          lastUuidType.setUuidType(lastUuid.toString());
-         idPage.setIdArchive(lastUuidType);
+         identifiantPage.setIdArchive(lastUuidType);
 
          final MetadonneeValeurType metaLastDoc = new MetadonneeValeurType();
-         metaLastDoc.setMetadonneeValeurType(paginatedUDoc.getValeurMetaLastPage());
-         idPage.setValeur(metaLastDoc);
+         metaLastDoc.setMetadonneeValeurType(paginatedUDoc.getPageId());
+         identifiantPage.setValeur(metaLastDoc);
       }
-      return idPage;
+      return identifiantPage;
    }
 
    /**

@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.batch.restore.support.stockage.batch;
 
 import java.util.Iterator;
-import java.util.UUID;
 
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -34,15 +33,15 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
 
 /**
  * Item reader permettant de récupérer les documents à partir de la requête lucene.
- *
  */
 @Component
 @Scope("step")
 public class RecycleBeanStorageDocumentReader
-implements ItemReader<StorageDocument> {
+                                              implements
+                                              ItemReader<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(RecycleBeanStorageDocumentReader.class);
+                                                     .getLogger(RecycleBeanStorageDocumentReader.class);
 
    /**
     * Requete lucene récupéré dans le contexte du job d'exécution
@@ -76,7 +75,7 @@ implements ItemReader<StorageDocument> {
    private final static int MAX_PAR_PAGE = 500;
 
    /**
-    * Iterateur de documents.
+    * Itérateur de documents.
     */
    private Iterator<StorageDocument> iterateurDoc = null;
 
@@ -86,12 +85,13 @@ implements ItemReader<StorageDocument> {
    private boolean lastIteration = false;
 
    /**
-    * Dernier identifiant de document remonté à l'itération précédente.
+    * Identifie la page à retourner (ou null pour la 1ere page)
     */
-   private UUID lastIdDoc = null;
+   private String pageId = null;
 
    /**
     * Permet de verifier s'il y a un élément suivant.
+    * 
     * @return boolean
     * @throws RestoreMasseSearchException
     */
@@ -118,6 +118,7 @@ implements ItemReader<StorageDocument> {
 
    /**
     * Recupere le prochain element.
+    * 
     * @return StorageDocument
     */
    private StorageDocument next() {
@@ -126,6 +127,7 @@ implements ItemReader<StorageDocument> {
 
    /**
     * Permet de récupérer les prochains éléments.
+    * 
     * @return boolean
     * @throws RestoreMasseSearchException
     */
@@ -134,38 +136,38 @@ implements ItemReader<StorageDocument> {
       boolean hasMore = false;
       try {
          String strIdDoc;
-         if (lastIdDoc == null) {
+         if (pageId == null) {
             strIdDoc = "null";
          } else {
-            strIdDoc = lastIdDoc.toString();
+            strIdDoc = pageId.toString();
          }
 
          LOGGER.debug("fetchMore : {} - {}", requeteLucene, strIdDoc);
          final PaginatedLuceneCriteria paginatedLuceneCriteria = buildService
-               .buildStoragePaginatedLuceneCriteria(requeteLucene,
-                                                    MAX_PAR_PAGE, null, null,
-                                                    lastIdDoc, "");
+                                                                             .buildStoragePaginatedLuceneCriteria(requeteLucene,
+                                                                                                                  MAX_PAR_PAGE,
+                                                                                                                  null,
+                                                                                                                  null,
+                                                                                                                  pageId);
 
          paginatedStorageDocuments = storageServiceProvider
-               .getStorageDocumentService().searchStorageDocumentsInRecycleBean(
-                                                                                paginatedLuceneCriteria);
+                                                           .getStorageDocumentService()
+                                                           .searchStorageDocumentsInRecycleBean(
+                                                                                                paginatedLuceneCriteria);
 
-         // recupere les infos de la requete
+         // récupère les infos de la requête
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
-         if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
-            lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
-            hasMore = true;
-         } else {
-            hasMore = false;
-         }
-
-      } catch (final ConnectionServiceEx except) {
+         hasMore = !paginatedStorageDocuments.getAllStorageDocuments().isEmpty();
+         pageId = paginatedStorageDocuments.getPageId();
+      }
+      catch (final ConnectionServiceEx except) {
          throw new RestoreMasseSearchException(except);
-      } catch (final SearchingServiceEx except) {
+      }
+      catch (final SearchingServiceEx except) {
          throw new RestoreMasseSearchException(except);
-      } catch (final QueryParseServiceEx except) {
+      }
+      catch (final QueryParseServiceEx except) {
          throw new RestoreMasseSearchException(except);
       }
       return hasMore;
@@ -176,7 +178,7 @@ implements ItemReader<StorageDocument> {
     */
    @Override
    public StorageDocument read() throws Exception, UnexpectedInputException,
-   ParseException, NonTransientResourceException {
+         ParseException, NonTransientResourceException {
 
       StorageDocument doc = null;
       if (hasNext()) {
@@ -190,6 +192,7 @@ implements ItemReader<StorageDocument> {
 
    /**
     * Methode permettant de gerer la plage d'interruption.
+    * 
     * @throws RestoreMasseSearchException
     */
    private void gererInterruption() throws RestoreMasseSearchException {
@@ -201,7 +204,8 @@ implements ItemReader<StorageDocument> {
 
          try {
             support.interruption(currentDate, config);
-         } catch (final InterruptionTraitementException e) {
+         }
+         catch (final InterruptionTraitementException e) {
             throw new RestoreMasseSearchException(e);
          }
       }

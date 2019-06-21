@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.Analyzer;
@@ -106,9 +105,9 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
    private boolean lastIteration = false;
 
    /**
-    * Dernier identifiant de document remonté à l'itération précédente.
+    * Identifie la page à retourner (ou null pour la 1ere page)
     */
-   private UUID lastIdDoc = null;
+   private String pageId = null;
 
    /**
     * Liste des métadonnées que l'on souhaite récupérer
@@ -175,10 +174,10 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
       boolean hasMore = false;
       try {
          String strIdDoc;
-         if (lastIdDoc == null) {
+         if (pageId == null) {
             strIdDoc = "null";
          } else {
-            strIdDoc = lastIdDoc.toString();
+            strIdDoc = pageId.toString();
          }
 
          // On cherche l'index le plus pertinent à utiliser pour la requête
@@ -203,8 +202,7 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
                                                                                                                   MAX_PAR_PAGE,
                                                                                                                   DESIRED_METADATAS,
                                                                                                                   new ArrayList<AbstractFilter>(),
-                                                                                                                  lastIdDoc,
-                                                                                                                  "");
+                                                                                                                  pageId);
 
          PaginatedStorageDocuments paginatedStorageDocuments;
          if (bestIndex != null && !bestIndex.isEmpty()) {
@@ -222,13 +220,8 @@ public class StorageDocumentReader implements ItemReader<StorageDocument> {
          // récupère le résultat de la requête
          iterateurDoc = paginatedStorageDocuments.getAllStorageDocuments().iterator();
          lastIteration = paginatedStorageDocuments.getLastPage();
-         if (!paginatedStorageDocuments.getAllStorageDocuments().isEmpty()) {
-            final int nbElements = paginatedStorageDocuments.getAllStorageDocuments().size();
-            lastIdDoc = paginatedStorageDocuments.getAllStorageDocuments().get(nbElements - 1).getUuid();
-            hasMore = true;
-         } else {
-            hasMore = false;
-         }
+         hasMore = !paginatedStorageDocuments.getAllStorageDocuments().isEmpty();
+         pageId = paginatedStorageDocuments.getPageId();
 
       }
       catch (final ConnectionServiceEx | SearchingServiceEx | QueryParseServiceEx | IndexCompositeException except) {

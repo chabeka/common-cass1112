@@ -26,8 +26,6 @@ import fr.urssaf.image.sae.webservices.factory.ObjectTypeFactory;
  * <ul>
  * <li>{@link RechercheResponse}</li>
  * </ul>
- * 
- * 
  */
 public final class ObjectRechercheFactory {
 
@@ -58,12 +56,12 @@ public final class ObjectRechercheFactory {
     * @return instance de {@link RechercheResponse}
     */
    public static RechercheResponse createRechercheResponse(
-         List<UntypedDocument> untypedDocuments, boolean resultatTronque) {
+                                                           final List<UntypedDocument> untypedDocuments, final boolean resultatTronque) {
 
-      RechercheResponse response = new RechercheResponse();
-      RechercheResponseType responseType = new RechercheResponseType();
+      final RechercheResponse response = new RechercheResponse();
+      final RechercheResponseType responseType = new RechercheResponseType();
 
-      ListeResultatRechercheType resultatsType = new ListeResultatRechercheType();
+      final ListeResultatRechercheType resultatsType = new ListeResultatRechercheType();
 
       resultatsType.setResultat(new ResultatRechercheType[] {});
 
@@ -73,19 +71,19 @@ public final class ObjectRechercheFactory {
             taille = untypedDocuments.size() - 1;
          }
          for (int i = 0; i < taille; i++) {
-            UntypedDocument storageDocument = untypedDocuments.get(i);
-            ResultatRechercheType resultatRecherche = ObjectTypeFactory
-                  .createResultatRechercheType();
+            final UntypedDocument storageDocument = untypedDocuments.get(i);
+            final ResultatRechercheType resultatRecherche = ObjectTypeFactory
+                                                                             .createResultatRechercheType();
 
             resultatRecherche.setIdArchive(ObjectTypeFactory
-                  .createUuidType(storageDocument.getUuid()));
-            ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
-                  .createListeMetadonneeType();
+                                                            .createUuidType(storageDocument.getUuid()));
+            final ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
+                                                                         .createListeMetadonneeType();
 
-            List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
+            final List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
 
             if (CollectionUtils.isNotEmpty(metadonnees)) {
-               for (MetadonneeType metaDonnee : metadonnees) {
+               for (final MetadonneeType metaDonnee : metadonnees) {
                   listeMetadonnee.addMetadonnee(metaDonnee);
                }
             }
@@ -103,7 +101,6 @@ public final class ObjectRechercheFactory {
     * instanciation de {@link RechercheParIterateurResponse}.<br>
     * Implementation de {@link RechercheParIterateurResponseType}
     * 
-    * 
     * @param untypedDocuments
     *           valeur de <code>listeResultatRechercheType</code>
     * @param isMetaVariableAjoute
@@ -113,40 +110,31 @@ public final class ObjectRechercheFactory {
     * @return instance de {@link RechercheResponse}
     */
    public static RechercheParIterateurResponse createRechercheParIterateurResponse(
-         List<UntypedDocument> untypedDocuments, boolean isMetaVariableAjoute,
-         String nomMetaVariable) {
+                                                                                   final List<UntypedDocument> untypedDocuments) {
 
-      RechercheParIterateurResponse response = new RechercheParIterateurResponse();
-      RechercheParIterateurResponseType responseType = new RechercheParIterateurResponseType();
-      ListeResultatRechercheType resultatsType = new ListeResultatRechercheType();
+      final RechercheParIterateurResponse response = new RechercheParIterateurResponse();
+      final RechercheParIterateurResponseType responseType = new RechercheParIterateurResponseType();
+      final ListeResultatRechercheType resultatsType = new ListeResultatRechercheType();
 
       resultatsType.setResultat(new ResultatRechercheType[] {});
 
       if (CollectionUtils.isNotEmpty(untypedDocuments)) {
-         int taille = untypedDocuments.size();
+         final int taille = untypedDocuments.size();
          for (int i = 0; i < taille; i++) {
-            UntypedDocument untypedDocument = untypedDocuments.get(i);
-            ResultatRechercheType resultatRecherche = ObjectTypeFactory
-                  .createResultatRechercheType();
+            final UntypedDocument untypedDocument = untypedDocuments.get(i);
+            final ResultatRechercheType resultatRecherche = ObjectTypeFactory
+                                                                             .createResultatRechercheType();
 
             resultatRecherche.setIdArchive(ObjectTypeFactory
-                  .createUuidType(untypedDocument.getUuid()));
-            ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
-                  .createListeMetadonneeType();
+                                                            .createUuidType(untypedDocument.getUuid()));
+            final ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
+                                                                         .createListeMetadonneeType();
 
-            List<MetadonneeType> metadonnees = createListMetadonneeType(untypedDocument);
+            final List<MetadonneeType> metadonnees = createListMetadonneeType(untypedDocument);
 
             if (CollectionUtils.isNotEmpty(metadonnees)) {
-               for (MetadonneeType metaDonnee : metadonnees) {
-                  // On regarde s'il faut supprimer la métadonnée variable du
-                  // résultat si elle n'a pas été demandé par le client
-                  if (metaDonnee.getCode().getMetadonneeCodeType().equals(nomMetaVariable)) {
-                     if (!isMetaVariableAjoute) {
-                        listeMetadonnee.addMetadonnee(metaDonnee);
-                     }
-                  } else {
-                     listeMetadonnee.addMetadonnee(metaDonnee);
-                  }
+               for (final MetadonneeType metaDonnee : metadonnees) {
+                  listeMetadonnee.addMetadonnee(metaDonnee);
                }
             }
             resultatRecherche.setMetadonnees(listeMetadonnee);
@@ -183,12 +171,12 @@ public final class ObjectRechercheFactory {
     * @return instance de {@link RechercheResponse}
     */
    public static RechercheNbResResponse createRechercheNbResResponse(
-         List<UntypedDocument> untypedDocuments, boolean resultatTronque,
-         int maxResult) {
+                                                                     final List<UntypedDocument> untypedDocuments, final boolean resultatTronque,
+                                                                     final int maxResult) {
 
-      RechercheNbResResponse response = new RechercheNbResResponse();
-      RechercheNbResResponseType responseType = new RechercheNbResResponseType();
-      ListeResultatRechercheNbResType resultatsType = new ListeResultatRechercheNbResType();
+      final RechercheNbResResponse response = new RechercheNbResResponse();
+      final RechercheNbResResponseType responseType = new RechercheNbResResponseType();
+      final ListeResultatRechercheNbResType resultatsType = new ListeResultatRechercheNbResType();
 
       resultatsType.setResultat(new ResultatRechercheType[] {});
 
@@ -200,19 +188,19 @@ public final class ObjectRechercheFactory {
             taille = maxResult;
          }
          for (int i = 0; i < taille; i++) {
-            UntypedDocument storageDocument = untypedDocuments.get(i);
-            ResultatRechercheType resultatRecherche = ObjectTypeFactory
-                  .createResultatRechercheType();
+            final UntypedDocument storageDocument = untypedDocuments.get(i);
+            final ResultatRechercheType resultatRecherche = ObjectTypeFactory
+                                                                             .createResultatRechercheType();
 
             resultatRecherche.setIdArchive(ObjectTypeFactory
-                  .createUuidType(storageDocument.getUuid()));
-            ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
-                  .createListeMetadonneeType();
+                                                            .createUuidType(storageDocument.getUuid()));
+            final ListeMetadonneeType listeMetadonnee = ObjectTypeFactory
+                                                                         .createListeMetadonneeType();
 
-            List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
+            final List<MetadonneeType> metadonnees = createListMetadonneeType(storageDocument);
 
             if (CollectionUtils.isNotEmpty(metadonnees)) {
-               for (MetadonneeType metaDonnee : metadonnees) {
+               for (final MetadonneeType metaDonnee : metadonnees) {
                   listeMetadonnee.addMetadonnee(metaDonnee);
                }
             }
@@ -247,19 +235,20 @@ public final class ObjectRechercheFactory {
     * @return collection d'instance de {@link MetadonneeType}
     */
    public static List<MetadonneeType> createListMetadonneeType(
-         UntypedDocument untypedDocument) {
+                                                               final UntypedDocument untypedDocument) {
 
-      List<MetadonneeType> metadonnees = new ArrayList<MetadonneeType>();
+      final List<MetadonneeType> metadonnees = new ArrayList<>();
       String valeur = null;
-      for (UntypedMetadata untypedMetadata : untypedDocument.getUMetadatas()) {
-         String code = untypedMetadata.getLongCode();
+      for (final UntypedMetadata untypedMetadata : untypedDocument.getUMetadatas()) {
+         final String code = untypedMetadata.getLongCode();
          if (untypedMetadata.getValue() == null) {
             valeur = StringUtils.EMPTY;
          } else {
             valeur = untypedMetadata.getValue().toString();
          }
-         MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
-               code, valeur);
+         final MetadonneeType metadonnee = ObjectTypeFactory.createMetadonneeType(
+                                                                                  code,
+                                                                                  valeur);
          metadonnees.add(metadonnee);
       }
       return metadonnees;

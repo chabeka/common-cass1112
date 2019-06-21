@@ -6,8 +6,6 @@ import java.util.List;
  * Classe représentant une page de document. Une page de document correspond à
  * un appel du service, et comporte une liste de documents, ainsi qu’un flag
  * indiquant s’il s’agit de la dernière page
- * 
- * 
  */
 public class PaginatedUntypedDocuments {
 
@@ -20,11 +18,11 @@ public class PaginatedUntypedDocuments {
     * Valeur maximum de la métadonnée
     */
    private Boolean lastPage;
-   
+
    /**
-    * Valeur de la métadonnée à retourner au client dans l'identifiant de la dernière page
+    * Valeur de l'id de la prochaine page à retourner au client
     */
-   private String valeurMetaLastPage;
+   private String pageId;
 
    /**
     * @return the documents
@@ -34,9 +32,10 @@ public class PaginatedUntypedDocuments {
    }
 
    /**
-    * @param documents the documents to set
+    * @param documents
+    *           the documents to set
     */
-   public final void setDocuments(List<UntypedDocument> documents) {
+   public final void setDocuments(final List<UntypedDocument> documents) {
       this.documents = documents;
    }
 
@@ -48,25 +47,26 @@ public class PaginatedUntypedDocuments {
    }
 
    /**
-    * @param lastPage the lastPage to set
+    * @param lastPage
+    *           the lastPage to set
     */
-   public final void setLastPage(Boolean lastPage) {
+   public final void setLastPage(final Boolean lastPage) {
       this.lastPage = lastPage;
    }
 
    /**
-    * @return the valeurMetaLastPage
+    * @return the pageId
     */
-   public String getValeurMetaLastPage() {
-      return valeurMetaLastPage;
+   public String getPageId() {
+      return pageId;
    }
 
    /**
-    * @param valeurMetaLastPage the valeurMetaLastPage to set
+    * @param pageId
+    *           the pageId to set
     */
-   public void setValeurMetaLastPage(String valeurMetaLastPage) {
-      this.valeurMetaLastPage = valeurMetaLastPage;
+   public void setPageId(final String pageId) {
+      this.pageId = pageId;
    }
 
- 
 }
