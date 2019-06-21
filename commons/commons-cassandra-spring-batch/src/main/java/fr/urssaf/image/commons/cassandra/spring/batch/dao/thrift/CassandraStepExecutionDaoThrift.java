@@ -7,20 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import me.prettyprint.cassandra.model.HSlicePredicate;
-import me.prettyprint.cassandra.serializers.*;
-import me.prettyprint.cassandra.service.ColumnSliceIterator;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.beans.*;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.mutation.Mutator;
-import me.prettyprint.hector.api.query.*;
-
-import org.springframework.batch.admin.service.SearchableStepExecutionDao;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.BatchStatus;
+import org.springframework.batch.core.ExitStatus;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.StepExecution;
 import org.springframework.batch.item.ExecutionContext;
 import org.springframework.util.Assert;
 
@@ -29,6 +19,27 @@ import fr.urssaf.image.commons.cassandra.spring.batch.dao.AbstractCassandraDAO;
 import fr.urssaf.image.commons.cassandra.spring.batch.helper.CassandraJobHelper;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.IdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.serializer.ExecutionContextSerializer;
+import me.prettyprint.cassandra.model.HSlicePredicate;
+import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.CompositeSerializer;
+import me.prettyprint.cassandra.serializers.IntegerSerializer;
+import me.prettyprint.cassandra.serializers.LongSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.ColumnSliceIterator;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.beans.ColumnSlice;
+import me.prettyprint.hector.api.beans.Composite;
+import me.prettyprint.hector.api.beans.HColumn;
+import me.prettyprint.hector.api.beans.Row;
+import me.prettyprint.hector.api.beans.Rows;
+import me.prettyprint.hector.api.factory.HFactory;
+import me.prettyprint.hector.api.mutation.Mutator;
+import me.prettyprint.hector.api.query.MultigetSliceQuery;
+import me.prettyprint.hector.api.query.QueryResult;
+import me.prettyprint.hector.api.query.SliceQuery;
 
 /**
  * Classe implémentant StepExecutionDao, qui utilise cassandra. L'implémentation

@@ -62,21 +62,21 @@
    <!--  thrift BEANS -->
    
    <bean id="cassandraStepExecutionDaoThrift"
-      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraStepExecutionDaoThrift">
+      class="fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraStepExecutionDaoThrift">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="stepExecutionIdGenerator" />
    </bean>
    <bean id="cassandraExecutionContextDaoThrift"
-      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraExecutionContextDaoThrift">
+      class="fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraExecutionContextDaoThrift">
       <constructor-arg ref="keyspace" />
    </bean>
    <bean id="cassandraJobExecutionDaoThrift"
-      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDaoThrift">
+      class="fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExecutionDaoThrift">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="jobExecutionIdGenerator" />
    </bean>
    <bean id="cassandraJobInstanceDaoThrift"
-      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift">
+      class="fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="jobInstanceIdGenerator" />
    </bean>
