@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -317,14 +318,15 @@ public class WSRechercheServiceImpl implements WSRechercheService {
          identifiantPage.setIdArchive(lastUuidType);
 
          final MetadonneeValeurType metaLastDoc = new MetadonneeValeurType();
-         metaLastDoc.setMetadonneeValeurType(paginatedUDoc.getPageId());
+         final String pageId = StringUtils.defaultString(paginatedUDoc.getPageId());
+         metaLastDoc.setMetadonneeValeurType(pageId);
          identifiantPage.setValeur(metaLastDoc);
       }
       return identifiantPage;
    }
 
    /**
-    * Récuperation de la liste des filtres de type "egal à" ou "contenu dans"
+    * Récupération de la liste des filtres de type "égal à" ou "contenu dans"
     * et conversion en liste de métadonnées
     * 
     * @param filtres
