@@ -105,6 +105,11 @@ public interface DFCEServices {
    SearchResult search(SearchQuery searchQuery) throws ExceededSearchLimitException, SearchQueryParseException;
 
    /**
+    * @see net.docubase.toolkit.service.ged.RecycleBinService#search(SearchQuery)
+    */
+   SearchResult searchInRecycleBin(SearchQuery searchQuery) throws ExceededSearchLimitException, SearchQueryParseException;
+
+   /**
     * @see net.docubase.toolkit.service.administration.BaseAdministrationService#updateBase(Base)
     */
    Base updateBase(Base base);

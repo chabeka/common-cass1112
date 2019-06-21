@@ -242,6 +242,15 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    @Override
    @AutoReconnectDfceServiceAnnotation
+   public SearchResult searchInRecycleBin(final SearchQuery searchQuery) throws ExceededSearchLimitException, SearchQueryParseException {
+      return dfceService.getRecycleBinService().search(searchQuery);
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   @AutoReconnectDfceServiceAnnotation
    public Base updateBase(final Base base) {
       return dfceService.getBaseAdministrationService().updateBase(base);
    }
