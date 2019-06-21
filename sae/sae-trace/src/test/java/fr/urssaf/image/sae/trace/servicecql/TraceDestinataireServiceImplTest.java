@@ -61,7 +61,7 @@ public class TraceDestinataireServiceImplTest {
       tracesupport.create(trace, new Date().getTime());
 
       final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
-      Assert.assertEquals(11, str.size());
+      Assert.assertEquals(14, str.size());
       
       List<TraceDestinataire> dests = traceDestinataireCqlSupport.findAll();
       Assert.assertEquals(1, dests.size());
