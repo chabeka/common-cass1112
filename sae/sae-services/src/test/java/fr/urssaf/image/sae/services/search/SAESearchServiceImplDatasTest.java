@@ -611,7 +611,7 @@ public class SAESearchServiceImplDatasTest {
                           documents.getDocuments()
                                    .size());
 
-      Assert.assertEquals("UUID attendu incorect",
+      Assert.assertEquals("UUID attendu incorrect",
                           uuid,
                           documents
                                    .getDocuments()
