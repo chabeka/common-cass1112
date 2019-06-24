@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeException;
 import uk.gov.nationalarchives.droid.command.container.AbstractContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.command.container.Ole2ContainerContentIdentifier;
 import uk.gov.nationalarchives.droid.command.container.ZipContainerContentIdentifier;
@@ -15,12 +16,10 @@ import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.TriggerPuid;
 import uk.gov.nationalarchives.droid.container.ole2.Ole2IdentifierEngine;
 import uk.gov.nationalarchives.droid.container.zip.ZipIdentifierEngine;
-import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationRequest;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResult;
 import uk.gov.nationalarchives.droid.core.interfaces.IdentificationResultCollection;
 import uk.gov.nationalarchives.droid.core.interfaces.archive.IdentificationRequestFactory;
-import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeException;
 
 /**
  * Classe de support pour l'analyse de format par DROID.<br>
@@ -37,203 +36,194 @@ import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeExcept
 @Component
 public class DroidAnalyseSupport {
 
-   private static final String OLE2_CONTAINER = "OLE2";
-   private static final String ZIP_CONTAINER = "ZIP";
+  private static final String OLE2_CONTAINER = "OLE2";
 
-   private final BinarySignatureIdentifier binarySignatureIdentifier;
-   private final ContainerSignatureDefinitions containerSignatureDefinitions;
-   private final boolean matchAllExtensions;
+  private static final String ZIP_CONTAINER = "ZIP";
 
-   private final List<TriggerPuid> triggerPuids;
+  private final MyBinarySignatureIdentifier binarySignatureIdentifier;
 
-   private final Ole2ContainerContentIdentifier ole2Identifier;
-   private final ZipContainerContentIdentifier zipIdentifier;
+  private final ContainerSignatureDefinitions containerSignatureDefinitions;
 
-   /**
-    * Constructeur
-    * 
-    * @param binarySignatureIdentifier
-    *           le mécanisme d'identification DROID par signatures binaires
-    * @param containerSignatureDefinitions
-    *           la définition des signatures des conteneurs
-    */
-   @Autowired
-   public DroidAnalyseSupport(
-         BinarySignatureIdentifier binarySignatureIdentifier,
-         ContainerSignatureDefinitions containerSignatureDefinitions) {
+  private final boolean matchAllExtensions;
 
-      // Mémorise les éléments passés en constructeur
-      this.binarySignatureIdentifier = binarySignatureIdentifier;
-      this.containerSignatureDefinitions = containerSignatureDefinitions;
+  private final List<TriggerPuid> triggerPuids;
 
-      // Une constante aujourd'hui, un paramètre demain
-      matchAllExtensions = false;
+  private final Ole2ContainerContentIdentifier ole2Identifier;
 
-      // Construit une moulinette pour les conteneurs
-      triggerPuids = containerSignatureDefinitions.getTiggerPuids();
+  private final ZipContainerContentIdentifier zipIdentifier;
 
-      // Construit l'analyseur de conteneur Ole2
-      IdentificationRequestFactory requestFactoryOle2 = new ContainerFileIdentificationRequestFactory();
-      ole2Identifier = new Ole2ContainerContentIdentifier();
-      ole2Identifier.init(containerSignatureDefinitions, OLE2_CONTAINER);
-      Ole2IdentifierEngine ole2IdentifierEngine = new Ole2IdentifierEngine();
-      ole2IdentifierEngine.setRequestFactory(requestFactoryOle2);
-      ole2Identifier.setIdentifierEngine(ole2IdentifierEngine);
+  /**
+   * Constructeur
+   * 
+   * @param binarySignatureIdentifier
+   *          le mécanisme d'identification DROID par signatures binaires
+   * @param containerSignatureDefinitions
+   *          la définition des signatures des conteneurs
+   */
+  @Autowired
+  public DroidAnalyseSupport(final MyBinarySignatureIdentifier binarySignatureIdentifier, final ContainerSignatureDefinitions containerSignatureDefinitions) {
 
-      // Construit l'analyseur de Conteneur Zip
-      IdentificationRequestFactory requestFactoryZip = new ContainerFileIdentificationRequestFactory();
-      zipIdentifier = new ZipContainerContentIdentifier();
-      zipIdentifier.init(containerSignatureDefinitions, ZIP_CONTAINER);
-      ZipIdentifierEngine zipIdentifierEngine = new ZipIdentifierEngine();
-      zipIdentifierEngine.setRequestFactory(requestFactoryZip);
-      zipIdentifier.setIdentifierEngine(zipIdentifierEngine);
+    // Mémorise les éléments passés en constructeur
+    this.binarySignatureIdentifier = binarySignatureIdentifier;
+    this.containerSignatureDefinitions = containerSignatureDefinitions;
 
-   }
+    // Une constante aujourd'hui, un paramètre demain
+    matchAllExtensions = false;
 
-   /**
-    * Identifie un format de fichier à l'aide des signatures binaires
-    * 
-    * @param request
-    *           la requête d'identification
-    * @return les résultats de l'identification
-    */
-   public final IdentificationResultCollection handleSignatures(
-         IdentificationRequest request) {
-      return binarySignatureIdentifier.matchBinarySignatures(request);
-   }
+    // Construit une moulinette pour les conteneurs
+    triggerPuids = containerSignatureDefinitions.getTiggerPuids();
 
-   /**
-    * Approfondit la première analyse des signatures binaires, avec l'analyse
-    * des formats conteneurs
-    * 
-    * @param request
-    *           la requête d'identification
-    * @param results
-    *           les résultats de l'identification avec les signatures binaires
-    * @return les résultats de l'analyse
-    */
-   @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
-   public final IdentificationResultCollection handleContainer(
-         IdentificationRequest request, IdentificationResultCollection results) {
+    // Construit l'analyseur de conteneur Ole2
+    final IdentificationRequestFactory requestFactoryOle2 = new ContainerFileIdentificationRequestFactory();
+    ole2Identifier = new Ole2ContainerContentIdentifier();
+    ole2Identifier.init(containerSignatureDefinitions, OLE2_CONTAINER);
+    final Ole2IdentifierEngine ole2IdentifierEngine = new Ole2IdentifierEngine();
+    ole2IdentifierEngine.setRequestFactory(requestFactoryOle2);
+    ole2Identifier.setIdentifierEngine(ole2IdentifierEngine);
 
-      IdentificationResultCollection containerResults = new IdentificationResultCollection(
-            request);
+    // Construit l'analyseur de Conteneur Zip
+    final IdentificationRequestFactory requestFactoryZip = new ContainerFileIdentificationRequestFactory();
+    zipIdentifier = new ZipContainerContentIdentifier();
+    zipIdentifier.init(containerSignatureDefinitions, ZIP_CONTAINER);
+    final ZipIdentifierEngine zipIdentifierEngine = new ZipIdentifierEngine();
+    zipIdentifierEngine.setRequestFactory(requestFactoryZip);
+    zipIdentifier.setIdentifierEngine(zipIdentifierEngine);
 
-      if (results.getResults().size() > 0
-            && containerSignatureDefinitions != null) {
+  }
 
-         for (IdentificationResult identResult : results.getResults()) {
+  /**
+   * Identifie un format de fichier à l'aide des signatures binaires
+   * 
+   * @param request
+   *          la requête d'identification
+   * @return les résultats de l'identification
+   */
+  public final IdentificationResultCollection handleSignatures(final IdentificationRequest request) {
+    return binarySignatureIdentifier.matchBinarySignatures(request);
+  }
 
-            String filePuid = identResult.getPuid();
+  /**
+   * Approfondit la première analyse des signatures binaires, avec l'analyse
+   * des formats conteneurs
+   * 
+   * @param request
+   *          la requête d'identification
+   * @param results
+   *          les résultats de l'identification avec les signatures binaires
+   * @return les résultats de l'analyse
+   */
+  @SuppressWarnings("PMD.AvoidDeeplyNestedIfStmts")
+  public final IdentificationResultCollection handleContainer(final IdentificationRequest request, final IdentificationResultCollection results) {
 
-            if (filePuid != null) {
+    IdentificationResultCollection containerResults = new IdentificationResultCollection(request);
 
-               TriggerPuid containerPuid = getTriggerPuidByPuid(filePuid);
-               if (containerPuid != null) {
+    if (results.getResults().size() > 0 && containerSignatureDefinitions != null) {
 
-                  String containerType = containerPuid.getContainerType();
+      for (final IdentificationResult identResult : results.getResults()) {
 
-                  AbstractContainerContentIdentifier contentIdentifier = getContainerContentIdentifier(containerType);
+        final String filePuid = identResult.getPuid();
 
-                  try {
-                     containerResults = contentIdentifier.process(request
-                           .getSourceInputStream(), containerResults);
-                  } catch (IOException ex) {
-                     throw new FormatIdentificationRuntimeException(ex);
-                  }
+        if (filePuid != null) {
 
-               }
+          final TriggerPuid containerPuid = getTriggerPuidByPuid(filePuid);
+          if (containerPuid != null) {
+
+            final String containerType = containerPuid.getContainerType();
+
+            final AbstractContainerContentIdentifier contentIdentifier = getContainerContentIdentifier(containerType);
+
+            try {
+              containerResults = contentIdentifier.process(request.getSourceInputStream(), containerResults);
+            } catch (final IOException ex) {
+              throw new FormatIdentificationRuntimeException(ex);
             }
-         }
 
+          }
+        }
       }
 
-      return containerResults;
-   }
+    }
 
-   private AbstractContainerContentIdentifier getContainerContentIdentifier(
-         String containerType) {
+    return containerResults;
+  }
 
-      AbstractContainerContentIdentifier result = null;
+  private AbstractContainerContentIdentifier getContainerContentIdentifier(final String containerType) {
 
-      if (OLE2_CONTAINER.equals(containerType)) {
-         result = ole2Identifier;
-      } else if (ZIP_CONTAINER.equals(containerType)) {
-         result = zipIdentifier;
-      } else {
-         throw new FormatIdentificationRuntimeException(
-               "Le type de conteneur suivant est inconnu : " + containerType);
+    AbstractContainerContentIdentifier result = null;
+
+    if (OLE2_CONTAINER.equals(containerType)) {
+      result = ole2Identifier;
+    } else if (ZIP_CONTAINER.equals(containerType)) {
+      result = zipIdentifier;
+    } else {
+      throw new FormatIdentificationRuntimeException("Le type de conteneur suivant est inconnu : " + containerType);
+    }
+
+    return result;
+
+  }
+
+  private TriggerPuid getTriggerPuidByPuid(final String puid) {
+    for (final TriggerPuid tp : triggerPuids) {
+      if (tp.getPuid().equals(puid)) {
+        return tp;
       }
+    }
+    return null;
+  }
 
-      return result;
+  /**
+   * Analyse à l'aide des extensions de fichiers. S'appuie sur des résultats
+   * d'analyse avec les signatures binaires, éventuellement approfondis avec la
+   * recherche dans les conteneurs
+   * 
+   * @param request
+   *          la requête d'identification
+   * @param results
+   *          les résultats précédement obtenus
+   * @return les résultats de l'analyse
+   */
+  public final IdentificationResultCollection handleExtensions(final IdentificationRequest request, final IdentificationResultCollection results) {
 
-   }
+    binarySignatureIdentifier.removeLowerPriorityHits(results);
 
-   private TriggerPuid getTriggerPuidByPuid(final String puid) {
-      for (final TriggerPuid tp : triggerPuids) {
-         if (tp.getPuid().equals(puid)) {
-            return tp;
-         }
+    IdentificationResultCollection extensionResults = results;
+    final List<IdentificationResult> resultList = results.getResults();
+    if (resultList != null && resultList.isEmpty()) {
+      // If we call matchExtensions with "true", it will match
+      // ALL files formats which have a given extension.
+      // If "false", it will only match file formats for which
+      // there is no other signature defined.
+      final IdentificationResultCollection checkExtensionResults = binarySignatureIdentifier.matchExtensions(request, matchAllExtensions);
+      if (checkExtensionResults != null) {
+        extensionResults = checkExtensionResults;
       }
+    } else {
+      binarySignatureIdentifier.checkForExtensionsMismatches(extensionResults, request.getExtension());
+    }
+
+    return extensionResults;
+
+  }
+
+  /**
+   * Fin de l'analyse : renvoie l'identifiant PRONOM à partir des résultats
+   * obtenus
+   * 
+   * @param request
+   *          la requête d'identification
+   * @param results
+   *          les résultats obtenus
+   * @return l'identifiant PRONOM, ou null si le format n'a pas été identifié
+   */
+  public final String handleResult(final IdentificationRequest request, final IdentificationResultCollection results) {
+
+    if (results == null || CollectionUtils.isEmpty(results.getResults())) {
       return null;
-   }
+    } else {
+      return results.getResults().get(0).getPuid();
+    }
 
-   /**
-    * Analyse à l'aide des extensions de fichiers. S'appuie sur des résultats
-    * d'analyse avec les signatures binaires, éventuellement approfondis avec la
-    * recherche dans les conteneurs
-    * 
-    * @param request
-    *           la requête d'identification
-    * @param results
-    *           les résultats précédement obtenus
-    * @return les résultats de l'analyse
-    */
-   public final IdentificationResultCollection handleExtensions(
-         IdentificationRequest request, IdentificationResultCollection results) {
-
-      binarySignatureIdentifier.removeLowerPriorityHits(results);
-
-      IdentificationResultCollection extensionResults = results;
-      List<IdentificationResult> resultList = results.getResults();
-      if (resultList != null && resultList.isEmpty()) {
-         // If we call matchExtensions with "true", it will match
-         // ALL files formats which have a given extension.
-         // If "false", it will only match file formats for which
-         // there is no other signature defined.
-         IdentificationResultCollection checkExtensionResults = binarySignatureIdentifier
-               .matchExtensions(request, matchAllExtensions);
-         if (checkExtensionResults != null) {
-            extensionResults = checkExtensionResults;
-         }
-      } else {
-         binarySignatureIdentifier.checkForExtensionsMismatches(
-               extensionResults, request.getExtension());
-      }
-
-      return extensionResults;
-
-   }
-
-   /**
-    * Fin de l'analyse : renvoie l'identifiant PRONOM à partir des résultats
-    * obtenus
-    * 
-    * @param request
-    *           la requête d'identification
-    * @param results
-    *           les résultats obtenus
-    * @return l'identifiant PRONOM, ou null si le format n'a pas été identifié
-    */
-   public final String handleResult(IdentificationRequest request,
-         IdentificationResultCollection results) {
-
-      if ((results == null) || CollectionUtils.isEmpty(results.getResults())) {
-         return null;
-      } else {
-         return results.getResults().get(0).getPuid();
-      }
-
-   }
+  }
 
 }

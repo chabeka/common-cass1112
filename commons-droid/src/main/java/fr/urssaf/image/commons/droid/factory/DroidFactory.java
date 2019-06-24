@@ -10,7 +10,6 @@ import fr.urssaf.image.commons.droid.exception.FormatIdentificationRuntimeExcept
 import fr.urssaf.image.commons.droid.support.MyBinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureDefinitions;
 import uk.gov.nationalarchives.droid.container.ContainerSignatureSaxParser;
-import uk.gov.nationalarchives.droid.core.BinarySignatureIdentifier;
 import uk.gov.nationalarchives.droid.core.SignatureParseException;
 
 /**
@@ -34,7 +33,7 @@ public final class DroidFactory {
    * @return l'objet BinarySignatureIdentifier prêt à être utilisé
    * @throws SignatureParseException @{@link SignatureParseException}
    */
-  public static BinarySignatureIdentifier loadSignatures(final Resource signatures) throws SignatureParseException {
+  public static MyBinarySignatureIdentifier loadSignatures(final Resource signatures) throws SignatureParseException {
 
     final MyBinarySignatureIdentifier binarySignatureIdentifier = new MyBinarySignatureIdentifier(signatures);
 
