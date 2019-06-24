@@ -23,21 +23,26 @@ import fr.urssaf.image.sae.trace.model.DfceTraceDoc;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
 public class CycleVieServiceDatasTest {
 
    private static final String VALUE = "valeur";
+
    private static final String KEY = "clé";
 
    private static final String TYPE_EVT = "CUSTOM";
 
    private static final String USERNAME = "_ADMIN";
+
    private static final String CONTRAT = "contrat de service";
+
    private static final String CODE_EVT = "code événement";
+
    private static final String ACTION = "action";
+
    private static final Map<String, Object> INFOS;
    static {
-      INFOS = new HashMap<String, Object>();
+      INFOS = new HashMap<>();
       INFOS.put(KEY, VALUE);
    }
 
@@ -49,7 +54,10 @@ public class CycleVieServiceDatasTest {
 
    @Test
    public void testCreation() {
-      final Date startDate = new Date();
+      // Date de début : date courante moins 30 secondes
+      final Calendar calendar = Calendar.getInstance();
+      final long t = calendar.getTimeInMillis();
+      final Date startDate = new Date(t - 30000);
 
       final UUID uuid = UUID.randomUUID();
       createTrace(uuid);
@@ -59,7 +67,7 @@ public class CycleVieServiceDatasTest {
       endDate = DateUtils.truncate(endDate, Calendar.DATE);
 
       final List<DfceTraceDoc> result = service
-            .lecture(startDate, endDate, 10, true);
+                                               .lecture(startDate, endDate, 100, true);
 
       Assert.assertNotNull("il doit y avoir un résultat", result);
 
@@ -72,8 +80,6 @@ public class CycleVieServiceDatasTest {
 
       Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
    }
-
-
 
    private void createTrace(final UUID uuid) {
       final TraceToCreate trace = new TraceToCreate();
