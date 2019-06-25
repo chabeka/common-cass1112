@@ -181,36 +181,49 @@ public class SaeDumpTest {
 
 
     session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitpagmcql (\r\n" +
-        "  code text,\r\n" +
-        "  pagma text,\r\n" +
-        "  pagmp text,\r\n" +
-        "  pagmf text,\r\n" +
-        "  parametres map<text,text>,\r\n" +
+        " code text,\r\n" +
+        " " +
         "  PRIMARY KEY (code)\r\n" +
         ");");
+    /*
+     * "  description text,\r\n" +
+     * "  pagma text,\r\n" +
+     * "  pagmp text,\r\n" +
+     * "  pagmf text,\r\n" +
+     * "  parametres map<text,text>,\r\n" +
+     * "  compressionPdfActive boolean,\r\n" +
+     * "  seuilCompressionPdf int,\r\n" +
+     */
+
+    // compressionPdfActive seuilCompressionPdf
   }
 
   @Test
   public void truncateTable_droitpagmcqlTest() throws Exception {
-    final ResultSet rs = session.execute("TRUNCATE  \"SAE\".droitpagmcql");
+    session.execute("TRUNCATE  \"SAE\".droitpagmcql");
   }
 
   @Test
   public void insert_CS_CIME_droitpagmcqlTest() throws Exception {
     final PreparedStatement prepared = session.prepare(
-        "INSERT INTO \"SAE\".droitpagmcql(code,pagma,pagmp,pagmf,parametres) VALUES (?, ?, ?, ?, ?)");
-    final Map<String, Object> map = new HashMap<>();
-    map.put("description", "DUEFAX - Cas d'utilisation GNS");
-    map.put("code", "PAGM_DUEFAX_GNS");
-    map.put("pagma", "PAGM_DUEFAX_GNS_PAGMa");
-    map.put("pagmp", "PAGM_DUEFAX_GNS_PAGMp");
-    map.put("parametres", "{}");
+        "INSERT INTO \"SAE\".droitpagmcql(code,pagm) VALUES (?,?)");
+    final Map<String, String> map1 = new HashMap<>();
+    final Map<String, String> map2 = new HashMap<>();
+    final Map<String, Object> pagm = new HashMap<>();
+    map1.put("code", "PAGM_RECHERCHE_DOCUMENTAIRE_GNS");
+    map1.put("description", "Droits de la recherche documentaire");
+    map1.put("pagma", "PAGM_RECHERCHE_DOCUMENTAIRE_GNS_PAGMa");
+    map1.put("pagmp", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_GNS_PAGMp");
+    map1.put("parametres", "{}");
+    pagm.put("PAGM_RECHERCHE_DOCUMENTAIRE_GNS", map1);
+    map2.put("code", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION");
+    map2.put("description", "Recherche et consultation de tous les documents cotisants");
+    map2.put("pagma", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION_PAGMa");
+    map2.put("pagmp", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION_PAGMp");
+    map2.put("parametres", "{}");
+    pagm.put("PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION", map2);
 
-    final BoundStatement bound = prepared.bind("CS_CIME",
-                                               "",
-                                               "",
-                                               "",
-                                               map);
+    final BoundStatement bound = prepared.bind("CS_RECHERCHE_DOCUMENTAIRE", pagm);
     session.execute(bound);
 
     /*
@@ -229,7 +242,12 @@ public class SaeDumpTest {
     dumper.dumpRows(rs);
   }
 
-  // Table droitpagmacql
+  // Table droitpagmpcql
+  /**
+   * Création de la table droitpagmacql
+   * 
+   * @throws Exception
+   */
   @Test // 1 fois
   public void createTable_droitpagmacqlTest() throws Exception {
     session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitpagmacql (\r\n" +
@@ -239,11 +257,21 @@ public class SaeDumpTest {
         ");");
   }
 
+  /**
+   * Suppression des données de la table droitpagmacql
+   * 
+   * @throws Exception
+   */
   @Test
   public void truncateTable_droitpgamcqlTest() throws Exception {
     session.execute("TRUNCATE  \"SAE\".droitpagmacql");
   }
 
+  /**
+   * Insertion dans la table droitpagmacql
+   * 
+   * @throws Exception
+   */
   @Test
   public void insert__droitpagmacqlTest() throws Exception {
 
@@ -253,9 +281,122 @@ public class SaeDumpTest {
         "    ['archivage_masse','reprise_masse']);");
   }
 
+  /**
+   * Récupération des données de la table droitpagmacql
+   * 
+   * @throws Exception
+   */
   @Test
   public void testDump_droitpagmacqlTest() throws Exception {
     final ResultSet rs = session.execute("select * from \"SAE\".droitpagmacql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table droitpagmpcql
+  /**
+   * Création de la table droitpagmpcql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_droitpagmpcqlTest() throws Exception {
+    session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitpagmpcql (\r\n" +
+        "  code text,\r\n" +
+        "  description text,\r\n" +
+        "  prmd text,\r\n" +
+        "  PRIMARY KEY (code)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table droitpgampcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_droitpagmpcqlTest() throws Exception {
+    session.execute("TRUNCATE  \"SAE\".droitpagmpcql");
+  }
+
+  /**
+   * Insertion dans la table droitpgampcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__droitpagmpcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".droitpagmpcql \r\n" +
+        "    (code, description, prmd)\r\n" +
+        "      VALUES ('PAGM_V2_ARCHIVAGE_QD12K_QD12_L07_PAGMp',\r\n" +
+        "   'QD12K QD12.L07','PRMD_V2_QD12K_QD12_L07');");
+  }
+
+  /**
+   * Récupération des données de la table droitpagmpcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_droitpagmpcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".droitpagmpcql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table droitprmdcql
+  /**
+   * Création de la table droitpagmpcql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_droitprmdcqlTest() throws Exception {
+    session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitprmdcql (\r\n" +
+        "  code text,\r\n" +
+        "  bean text,\r\n" +
+        "  description text,\r\n" +
+        "  lucene text,\r\n" +
+        "  metadata frozen<map<text,frozen<list<text>>>>,\r\n" +
+        "  PRIMARY KEY (code)\r\n" +
+        ");");
+  }
+
+  // pagm frozen<map<text,frozen<map<text,text>>>>,\r\n
+  /**
+   * Suppression des données de la table droitprmdcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_droitprmdcqlTest() throws Exception {
+    session.execute("DROP TABLE \"SAE\".droitprmdcql");
+  }
+
+  /**
+   * Insertion dans la table droitprmdcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__droitprmdcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".droitprmdcql \r\n" +
+        "    (code, bean, description, prmd)\r\n" +
+        "    VALUES ('PRMD_V2_PI06I_PI06_L09'," +
+        "   '',\r\n" +
+        "   'V2 - PI06I PI06.L09',\r\n" +
+        "   'CodeRND:2.1.4.5.1 AND ApplicationProductrice:ADELAIDE AND DomaineCotisant:true',\r\n" +
+        "   {'CodeRND': ['3\\.2\\.1\\.5\\.1', '3\\.2\\.1\\.5\\.1']});");
+  }
+
+  /**
+   * Récupération des données de la table droitprmdcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_droitprmdcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".droitpagmpcql limit 100");
     dumper.dumpRows(rs);
   }
 }
