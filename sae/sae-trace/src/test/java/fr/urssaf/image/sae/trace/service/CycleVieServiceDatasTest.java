@@ -49,7 +49,10 @@ public class CycleVieServiceDatasTest {
 
    @Test
    public void testCreation() {
-      final Date startDate = new Date();
+     // Date de début : date courante moins 30 secondes
+     final Calendar calendar = Calendar.getInstance();
+     final long t = calendar.getTimeInMillis();
+     final Date startDate = new Date(t - 30000);
 
       final UUID uuid = UUID.randomUUID();
       createTrace(uuid);
@@ -59,7 +62,7 @@ public class CycleVieServiceDatasTest {
       endDate = DateUtils.truncate(endDate, Calendar.DATE);
 
       final List<DfceTraceDoc> result = service
-            .lecture(startDate, endDate, 10, true);
+            .lecture(startDate, endDate, 100, true);
 
       Assert.assertNotNull("il doit y avoir un résultat", result);
 

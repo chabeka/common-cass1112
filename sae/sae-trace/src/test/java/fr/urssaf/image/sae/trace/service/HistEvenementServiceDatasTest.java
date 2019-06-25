@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -73,15 +75,21 @@ public class HistEvenementServiceDatasTest {
 
    @Test
    public void testRetourUnSeulElementLimite() {
-      final Date dateDebut = new Date();
+
+     // Date de début : date courante moins 30 secondes
+     final Calendar calendar = Calendar.getInstance();
+     final long t = calendar.getTimeInMillis();
+     final Date dateDebut = new Date(t - 30000);
+
+     // Création d'une trace
       final UUID uuid = UUID.randomUUID();
       createTrace(uuid, "");
+      
       Date dateFin = new Date();
-
       dateFin = DateUtils.addDays(dateFin, 1);
       dateFin = DateUtils.truncate(dateFin, Calendar.DATE);
 
-      final List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 10, true);
+      final List<DfceTraceSyst> result = service.lecture(dateDebut, dateFin, 100, true);
 
       Assert.assertNotNull("il doit y avoir un résultat", result);
 
