@@ -1,8 +1,6 @@
 package fr.urssaf.javaDriverTest;
 
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -179,61 +177,43 @@ public class SaeDumpTest {
   @Test // 1 fois
   public void createTable_droitpagmcqlTest() throws Exception {
 
-
     session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitpagmcql (\r\n" +
         " code text,\r\n" +
-        " " +
-        "  PRIMARY KEY (code)\r\n" +
+        " codePagm text,\r\n" +
+        "  description text,\r\n" +
+        "  pagma text,\r\n" +
+        "  pagmp text,\r\n" +
+        "  pagmf text,\r\n" +
+        "  parametres map<text,text>,\r\n" +
+        "  compressionPdfActive boolean,\r\n" +
+        "  seuilCompressionPdf int,\r\n" +
+        "  PRIMARY KEY (code,codePagm)\r\n" +
         ");");
-    /*
-     * "  description text,\r\n" +
-     * "  pagma text,\r\n" +
-     * "  pagmp text,\r\n" +
-     * "  pagmf text,\r\n" +
-     * "  parametres map<text,text>,\r\n" +
-     * "  compressionPdfActive boolean,\r\n" +
-     * "  seuilCompressionPdf int,\r\n" +
-     */
-
-    // compressionPdfActive seuilCompressionPdf
   }
 
   @Test
   public void truncateTable_droitpagmcqlTest() throws Exception {
-    session.execute("TRUNCATE  \"SAE\".droitpagmcql");
+    session.execute("TRUNCATE \"SAE\".droitpagmcql");
   }
 
   @Test
   public void insert_CS_CIME_droitpagmcqlTest() throws Exception {
     final PreparedStatement prepared = session.prepare(
-        "INSERT INTO \"SAE\".droitpagmcql(code,pagm) VALUES (?,?)");
-    final Map<String, String> map1 = new HashMap<>();
-    final Map<String, String> map2 = new HashMap<>();
-    final Map<String, Object> pagm = new HashMap<>();
-    map1.put("code", "PAGM_RECHERCHE_DOCUMENTAIRE_GNS");
-    map1.put("description", "Droits de la recherche documentaire");
-    map1.put("pagma", "PAGM_RECHERCHE_DOCUMENTAIRE_GNS_PAGMa");
-    map1.put("pagmp", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_GNS_PAGMp");
-    map1.put("parametres", "{}");
-    pagm.put("PAGM_RECHERCHE_DOCUMENTAIRE_GNS", map1);
-    map2.put("code", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION");
-    map2.put("description", "Recherche et consultation de tous les documents cotisants");
-    map2.put("pagma", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION_PAGMa");
-    map2.put("pagmp", "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION_PAGMp");
-    map2.put("parametres", "{}");
-    pagm.put("PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_CONSULTATION", map2);
+                                                       "INSERT INTO \"SAE\".droitpagmcql(code,codePagm,description, pagma, pagmp, pagmf,parametres,compressionPdfActive,seuilCompressionPdf)"
+                                                           + " VALUES (?,?,?,?,?,?,?,?,?)");
 
-    final BoundStatement bound = prepared.bind("CS_RECHERCHE_DOCUMENTAIRE", pagm);
+    final BoundStatement bound = prepared.bind("CS_RECHERCHE_DOCUMENTAIRE",
+                                               "PAGM_RECHERCHE_DOCUMENTAIRE_GNS",
+                                               "Droits de la recherche documentaire",
+                                               "PAGM_RECHERCHE_DOCUMENTAIRE_GNS_PAGMa",
+                                               "PAGM_RECHERCHE_DOCUMENTAIRE_RECHERCHE_GNS_PAGMp",
+                                               "",
+                                               null,
+                                               false,
+                                               0);
     session.execute(bound);
 
-    /*
-     * session.execute("INSERT INTO \"SAE\".droitpagmcql(code,pagma,pagmp,pagmf,parametres) VALUES (?, ?, ?, ?, ?)",
-     * "CS_CIME",
-     * "",
-     * "",
-     * "",
-     * "{'description':'DUEFAX - Cas d'utilisation GNS','code':'PAGM_DUEFAX_GNS','pagma':'PAGM_DUEFAX_GNS_PAGMa','pagmp':'PAGM_DUEFAX_GNS_PAGMp'}");
-     */
+
   }
 
   @Test
@@ -356,7 +336,7 @@ public class SaeDumpTest {
         "  bean text,\r\n" +
         "  description text,\r\n" +
         "  lucene text,\r\n" +
-        "  metadata frozen<map<text,frozen<list<text>>>>,\r\n" +
+        "  metadata map<text,frozen<list<text>>>,\r\n" +
         "  PRIMARY KEY (code)\r\n" +
         ");");
   }
@@ -369,7 +349,7 @@ public class SaeDumpTest {
    */
   @Test
   public void truncateTable_droitprmdcqlTest() throws Exception {
-    session.execute("DROP TABLE \"SAE\".droitprmdcql");
+    session.execute(" TRUNCATE \"SAE\".droitprmdcql");
   }
 
   /**
@@ -381,12 +361,31 @@ public class SaeDumpTest {
   public void insert__droitprmdcqlTest() throws Exception {
 
     session.execute("INSERT INTO \"SAE\".droitprmdcql \r\n" +
-        "    (code, bean, description, prmd)\r\n" +
-        "    VALUES ('PRMD_V2_PI06I_PI06_L09'," +
-        "   '',\r\n" +
-        "   'V2 - PI06I PI06.L09',\r\n" +
-        "   'CodeRND:2.1.4.5.1 AND ApplicationProductrice:ADELAIDE AND DomaineCotisant:true',\r\n" +
-        "   {'CodeRND': ['3\\.2\\.1\\.5\\.1', '3\\.2\\.1\\.5\\.1']});");
+        "    (code,bean,description, lucene,metadata)\r\n" +
+        "      VALUES ('PRMD_V2_PCA1D_PCA1_L04',\r\n" +
+        "      '',\r\n" +
+        "     'V2 - PCA1D PCA1.L04',\r\n" +
+        "     '(CodeRND:3.2.2.A.X OR CodeRND:3.2.4.C.X OR CodeRND:3.2.1.5.2 OR CodeRND:3.2.3.2.2 OR CodeRND:3.2.2.3.1 OR CodeRND:3.2.1.5.1" +
+        "     OR CodeRND:3.2.5.2.3) AND ApplicationProductrice:ADELAIDE AND DomaineCotisant:true',\r\n" +
+        "   {'CodeRND':['3\\.2\\.2\\.A\\.X','3\\.2\\.4\\.C\\.X','3\\.2\\.1\\.5\\.2','3\\.2\\.3\\.2\\.2','3\\.2\\.2\\.3\\.1','3\\.2\\.1\\.5\\.1','3\\.2\\.5\\.2\\.3'],"
+        + " 'FormatFichier':['fmt/354'], 'ApplicationProductrice':['ADELAIDE'],'DomaineCotisant':['true']});");
+
+    /*
+     * final PreparedStatement prepared = session.prepare(
+     * "INSERT INTO \"SAE\".droitprmdcql(code,bean,description, lucene, metadata)"
+     * + " VALUES (?,?,?,?,?)");
+     * final Map<String, Object> metadata = new HashMap<>();
+     * final List<String> list = new ArrayList<>();
+     * list.add("3\\\\.2\\\\.1\\\\.5\\\\.1");
+     * list.add("3\\\\.2\\\\.1\\\\.5\\\\.1");
+     * metadata.put("CodeRND", list);
+     * final BoundStatement bound = prepared.bind("PRMD_V2_PI06I_PI06_L09",
+     * "",
+     * "V2 - PI06I PI06.L09",
+     * "CodeRND:2.1.4.5.1 AND ApplicationProductrice:ADELAIDE AND DomaineCotisant:true",
+     * metadata);
+     * session.execute(bound);
+     */
   }
 
   /**
@@ -397,6 +396,235 @@ public class SaeDumpTest {
   @Test
   public void testDump_droitprmdcqlTest() throws Exception {
     final ResultSet rs = session.execute("select * from \"SAE\".droitpagmpcql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table droitpagmfcql
+  /**
+   * Création de la table droitpagmfcql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_droitpagmfcqlTest() throws Exception {
+    session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".droitpagmfcql (\r\n" +
+        "  codePagmf text,\r\n" +
+        "  description text,\r\n" +
+        "  codeFormatControlProfil text,\r\n" +
+        "  PRIMARY KEY (codePagmf)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table droitpgamfcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_droitpagmfcqlTest() throws Exception {
+    session.execute("TRUNCATE  \"SAE\".droitpagmfcql");
+  }
+
+  /**
+   * Insertion dans la table droitpgamfcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__droitpagmfcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".droitpagmfcql \r\n" +
+        "    (codePagmf, description, codeFormatControlProfil)\r\n" +
+        "      VALUES ('PAGMF000',\r\n" +
+        "   'CODE PAGMF000','VALID_FMT_354');");
+  }
+
+  /**
+   * Récupération des données de la table droitpagmfcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_droitpagmfcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".droitpagmfcql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table parameters
+  /**
+   * Création de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_parameterscqlTest() throws Exception {
+    session.execute("CREATE TABLE IF NOT EXISTS  \"SAE\".parameterscql (\r\n" +
+        "  typeParameters text,\r\n" +
+        "  parameters map<text,text>,\r\n" +
+        "  PRIMARY KEY (typeParameters)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_parameterscqlTest() throws Exception {
+    session.execute("DROP TABLE  \"SAE\".parameterscql");
+  }
+
+  /**
+   * Insertion dans la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__droitparameterscqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".parameterscql \r\n" +
+        "    (typeParameters, parameters)\r\n" +
+        "      VALUES ('parametresRnd',\r\n" +
+        "   {'VERSION_RND_DATE_MAJ':'Tue Mar 05 00:38:12 CET 2019','VERSION_RND_NUMERO':'13.11'});");
+  }
+
+  /**
+   * Récupération des données de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_parameterscqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".parameterscql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table metadata
+  /**
+   * Création de la table metadatacql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_metadatacqlTest() throws Exception {
+    session.execute("CREATE TABLE \"SAE\".metadatacql (\r\n" +
+        "  codeRND text,\r\n" +
+        "  arch  boolean,\r\n" +
+        "  cons boolean,\r\n" +
+        "  defCons boolean,\r\n" +
+        "  descr text,\r\n" +
+        "  dictName text,\r\n" +
+        "  dispo boolean,\r\n" +
+        "  hasDict boolean,\r\n" +
+        "  indexs boolean,\r\n" +
+        "  int boolean,\r\n" +
+        "  label text,\r\n" +
+        "  leftTrim boolean,\r\n" +
+        "  length int,\r\n" +
+        "  pattern text,\r\n" +
+        "  reqArch boolean,\r\n" +
+        "  reqStor boolean,\r\n" +
+        "  rightTrim boolean,\r\n" +
+        "  sCode text,\r\n" +
+        "  search boolean,\r\n" +
+        "  transf boolean,\r\n" +
+        "  type text,\r\n" +
+        "  updates boolean,\r\n" +
+        "  modif boolean,\r\n" +
+        "  PRIMARY KEY (codeRND));");
+  }
+  /**
+   * Suppression des données de la table metadatacql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_metadatacqlTest() throws Exception {
+    session.execute("TRUNCATE \"SAE\".metadatacql");
+  }
+  /**
+   * Insertion dans la table metadatacql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__metadatacqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".metadatacql \r\n" +
+        "    (codeRND, arch, cons, defCons, descr, dictName, dispo, hasDict, indexs, int, label, leftTrim, length, pattern, reqArch, reqStor, rightTrim, "
+        + " sCode, search, transf, type, updates, modif)  \r\n"
+        + "      VALUES ('ApplicationProductrice', true, true, false, 'Code de l''application qui a produit le fichier','', true, false, false, false,"
+        + "  'Application Productrice du document', true, 15, '', true, true, true, 'apr', true, true, '', false, false); \r\n");
+  }
+
+  /**
+   * Récupération des données de la table metadatacql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_metadatacqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".metadatacql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table referentielformatcql
+  /**
+   * Création de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_referentielformatcqlTest() throws Exception {
+    session.execute("CREATE TABLE \"SAE\".referentielformatcql (\r\n" +
+        "  codeFormat text,\r\n" +
+        "  autoriseGED boolean,\r\n" +
+        "  convertisseur text,\r\n" +
+        "  description text,\r\n" +
+        "  extension text,\r\n" +
+        "  idFormat  text,\r\n" +
+        "  identifieur text,\r\n" +
+        "  typeMime text,\r\n" +
+        "  validator text,\r\n" +
+        "  visualisable boolean,\r\n" +
+        "  PRIMARY KEY (codeFormat)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_referentielformatcqlTest() throws Exception {
+    session.execute("DROP TABLE  \"SAE\".referentielformatcql");
+  }
+
+  /**
+   * Insertion dans la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__referentielformatcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".referentielformatcql \r\n" +
+        "    (codeFormat, autoriseGED, convertisseur, description,  extension, idFormat, identifieur, typeMime,validator, visualisable )\r\n" +
+        "      VALUES ('fmt/354',true, 'pdfSplitterImpl', 'PDF/A 1b', 'pdf', 'fmt/354', 'pdfaIdentifierImpl',  'application/pdf', 'pdfaValidatorImpl', true  \r\n"
+        +
+        "   );");
+  }
+
+  /**
+   * Récupération des données de la table parameterscql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_referentielformatcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".referentielformatcql limit 100");
     dumper.dumpRows(rs);
   }
 }
