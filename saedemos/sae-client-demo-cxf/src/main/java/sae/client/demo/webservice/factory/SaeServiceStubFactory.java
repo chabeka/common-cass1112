@@ -1,6 +1,7 @@
 package sae.client.demo.webservice.factory;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -79,7 +80,8 @@ public final class SaeServiceStubFactory {
     */
    public static SaeService createStubAvecAuthentification() throws IOException {
 
-      final SaeService saeService = new SaeService();
+      final URL wsdlURL = SaeServiceStubFactory.class.getClassLoader().getResource("SaeService_WSDL/SaeService.wsdl");
+      final SaeService saeService = new SaeService(wsdlURL);
 
       // Ajout du port avec l'url du web service au service
       saeService.addPort(SaeService.SaeServicePort, SOAPBinding.SOAP12HTTP_MTOM_BINDING, litUrlSaeService());
@@ -99,7 +101,8 @@ public final class SaeServiceStubFactory {
     */
    public static SaeService createStubSansAuthentification() throws IOException {
 
-      final SaeService saeService = new SaeService();
+      final URL wsdlURL = SaeServiceStubFactory.class.getClassLoader().getResource("SaeService_WSDL/SaeService.wsdl");
+      final SaeService saeService = new SaeService(wsdlURL);
 
       // Ajout du port avec l'url du web service au service
       saeService.addPort(SaeService.SaeServicePort, SOAPBinding.SOAP12HTTP_MTOM_BINDING, litUrlSaeService());
