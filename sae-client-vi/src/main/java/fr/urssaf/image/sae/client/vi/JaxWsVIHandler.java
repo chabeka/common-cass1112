@@ -29,116 +29,122 @@ import fr.urssaf.image.sae.client.vi.signature.KeyStoreInterface;
  */
 public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(JaxWsVIHandler.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(JaxWsVIHandler.class);
 
-  private KeyStoreInterface iKeyStore = null;
+   private KeyStoreInterface iKeyStore = null;
 
-  private List<String> pagms = null;
+   private List<String> pagms = null;
 
-  private String issuer = null;
+   private String issuer = null;
 
-  private String login = null;
+   private String login = null;
 
-  /**
-   * Constructeur
-   *
-   * @param iKeyStore
-   *          keystore à utiliser
-   * @param pagms
-   *          liste des pagms
-   * @param issuer
-   *          issuer
-   * @param login
-   *          login de l'utilisateur demandeur du service
-   */
-  public JaxWsVIHandler(final KeyStoreInterface iKeyStore, final List<String> pagms,
-                        final String issuer, final String login) {
-    super();
-    this.iKeyStore = iKeyStore;
-    this.issuer = issuer;
-    this.pagms = pagms;
-    this.login = login;
+   /**
+    * Constructeur
+    *
+    * @param iKeyStore
+    *           keystore à utiliser
+    * @param pagms
+    *           liste des pagms
+    * @param issuer
+    *           issuer
+    * @param login
+    *           login de l'utilisateur demandeur du service
+    */
+   public JaxWsVIHandler(final KeyStoreInterface iKeyStore, final List<String> pagms,
+                         final String issuer, final String login) {
+      super();
+      this.iKeyStore = iKeyStore;
+      this.issuer = issuer;
+      this.pagms = pagms;
+      this.login = login;
 
-    LOGGER.debug("Instanciation d'un VIHandler avec les paramètres suivants : issuer={}, login={}, pagms={}, iKeyStore={}",
-                 issuer,
-                 login,
-                 pagms,
-                 iKeyStore);
-  }
+      LOGGER.debug("Instanciation d'un VIHandler avec les paramètres suivants : issuer={}, login={}, pagms={}, iKeyStore={}",
+                   issuer,
+                   login,
+                   pagms,
+                   iKeyStore);
+   }
 
-  /*
+   /*
    * (non-Javadoc)
    * @see javax.xml.ws.handler.Handler#handleMessage(javax.xml.ws.handler.MessageContext)
    */
-  @Override
-  public boolean handleMessage(final SOAPMessageContext msgCtx) {
+   @Override
+   public boolean handleMessage(final SOAPMessageContext msgCtx) {
 
-    // Ajout de l'en-tête WS-Security chargé depuis un fichier de ressource
-    // XML
-    try {
+      // Ajout de l'en-tête WS-Security chargé depuis un fichier de ressource
+      // XML
+      try {
 
-      // Génération de l'en-tête wsse
-      final Document doc = VIGenerator.getWsseHeader(issuer, login, pagms, iKeyStore.getKeystore(), iKeyStore.getAlias(), iKeyStore.getPassword());
+         final Boolean outboundProperty = (Boolean) msgCtx.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+         if (!outboundProperty) {
+            return true;
+         }
 
-      // Ajout du message dans le header
-      final SOAPMessage soapMsg = msgCtx.getMessage();
-      final SOAPPart soapPart = soapMsg.getSOAPPart();
-      final SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
-      SOAPHeader soapHeader = soapEnvelope.getHeader();
-      if (soapHeader == null) {
-        soapHeader = soapEnvelope.addHeader();
+         // Génération de l'en-tête wsse
+         final Document doc = VIGenerator.getWsseHeader(issuer, login, pagms, iKeyStore.getKeystore(), iKeyStore.getAlias(), iKeyStore.getPassword());
+
+         // Ajout du message dans le header
+         final SOAPMessage soapMsg = msgCtx.getMessage();
+         final SOAPPart soapPart = soapMsg.getSOAPPart();
+         final SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+         SOAPHeader soapHeader = soapEnvelope.getHeader();
+         if (soapHeader == null) {
+            soapHeader = soapEnvelope.addHeader();
+         }
+         addXMLDocumentToSoapHeader(doc, soapMsg);
+
       }
-      addXMLDocumentToSoapHeader(doc, soapMsg);
+      catch (final Exception e) {
+         throw new ViSignatureException(e);
+      }
+      return true;
 
-    }
-    catch (final Exception e) {
-      throw new ViSignatureException(e);
-    }
-    return true;
+   }
 
-  }
-
-  /*
+   /*
    * (non-Javadoc)
    * @see javax.xml.ws.handler.Handler#close(javax.xml.ws.handler.MessageContext)
    */
-  @Override
-  public void close(final MessageContext arg0) {
-    // do nothing
-  }
+   @Override
+   public void close(final MessageContext arg0) {
+      // do nothing
+   }
 
-  /*
+   /*
    * (non-Javadoc)
    * @see javax.xml.ws.handler.Handler#handleFault(javax.xml.ws.handler.MessageContext)
    */
-  @Override
-  public boolean handleFault(final SOAPMessageContext arg0) {
-    // Return true to continue processing
-    return true;
-  }
+   @Override
+   public boolean handleFault(final SOAPMessageContext arg0) {
+      // Return true to continue processing
+      return true;
+   }
 
-  /*
+   /*
    * (non-Javadoc)
    * @see javax.xml.ws.handler.soap.SOAPHandler#getHeaders()
    */
-  @Override
-  public Set<QName> getHeaders() {
-    // Pas de traitement spécifique sur les headers
-    return null;
-  }
+   @Override
+   public Set<QName> getHeaders() {
+      // Pas de traitement spécifique sur les headers
+      return null;
+   }
 
-  /*
+   /*
    * Permet d'ajouter un fragment XML dans les entêtes SOAP
    */
-  private static void addXMLDocumentToSoapHeader(final Document document, final SOAPMessage soapMessage) throws SOAPException {
-    final DocumentFragment docFrag = document.createDocumentFragment();
-    final Element rootElement = document.getDocumentElement();
-    if (rootElement != null) {
-      docFrag.appendChild(rootElement);
-      final Document ownerDoc = soapMessage.getSOAPHeader().getOwnerDocument();
-      final org.w3c.dom.Node replacingNode = ownerDoc.importNode(docFrag, true);
-      soapMessage.getSOAPHeader().appendChild(replacingNode);
-    }
-  }
+   private static void addXMLDocumentToSoapHeader(final Document document, final SOAPMessage soapMessage) throws SOAPException {
+      final DocumentFragment docFrag = document.createDocumentFragment();
+      final Element rootElement = document.getDocumentElement();
+      if (rootElement != null) {
+         docFrag.appendChild(rootElement);
+         final SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+         final Document ownerDoc = soapHeader.getOwnerDocument();
+         final org.w3c.dom.Node replacingNode = ownerDoc.importNode(docFrag, true);
+         soapMessage.getSOAPHeader().appendChild(replacingNode);
+      }
+   }
 
 }
