@@ -78,73 +78,73 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @Service
 public class SAETransfertServiceImpl extends AbstractSAEServices implements SAETransfertService {
 
-	/**
-	 * Logger
-	 */
-	private static final Logger LOG = LoggerFactory.getLogger(SAETransfertServiceImpl.class);
+  /**
+   * Logger
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(SAETransfertServiceImpl.class);
 
-	/**
-	 * Provider de service pour l'archivage de document
-	 */
-	@Autowired
-	private StorageDocumentService storageDocumentService;
+  /**
+   * Provider de service pour l'archivage de document
+   */
+  @Autowired
+  private StorageDocumentService storageDocumentService;
 
-	/**
-	 * Provider de service pour la connexion DFCE de la GNS
-	 */
-	@Autowired
-	private StorageTransfertService storageTransfertService;
+  /**
+   * Provider de service pour la connexion DFCE de la GNS
+   */
+  @Autowired
+  private StorageTransfertService storageTransfertService;
 
-	/**
-	 * Objet de manipulation des métadonnées du reférentiel des meta
-	 */
-	@Autowired
-	private MetadataReferenceDAO metadataReferenceDAO;
+  /**
+   * Objet de manipulation des métadonnées du reférentiel des meta
+   */
+  @Autowired
+  private MetadataReferenceDAO metadataReferenceDAO;
 
-	@Autowired
-	private RndService rndService;
+  @Autowired
+  private RndService rndService;
 
-	/**
-	 * Liste des évents du cycle de vie des docs par id du doc
-	 */
-	@Autowired
-	private CycleVieService cycleVieService;
+  /**
+   * Liste des évents du cycle de vie des docs par id du doc
+   */
+  @Autowired
+  private CycleVieService cycleVieService;
 
-	/**
-	 * Liste des events du SAE par id du doc
-	 */
-	@Autowired
-	private JournalEvtServiceImpl journalEvtService;
+  /**
+   * Liste des events du SAE par id du doc
+   */
+  @Autowired
+  private JournalEvtServiceImpl journalEvtService;
 
-	/**
-	 * Service pour le mapping de document
-	 */
-	@Autowired
-	private MappingDocumentService mappingService;
+  /**
+   * Service pour le mapping de document
+   */
+  @Autowired
+  private MappingDocumentService mappingService;
 
-	/**
-	 *  
-	 */
-	@Autowired
-	ZookeeperClientFactory zookeeperCfactory;
-	
-	/**
-	 * Service pour la verifications des PRMD
-	 */
-	@Autowired
-	private PrmdService prmdService;
+  /**
+   *  
+   */
+  @Autowired
+  ZookeeperClientFactory zookeeperCfactory;
 
-	/**
-	 * @param idArchive
-	 * @throws ReferentialException
-	 * @throws RetrievalServiceEx
-	 * @throws InvalidSAETypeException
-	 * @throws MappingFromReferentialException
-	 *             Permet de vérifier les droits avant le transfert
-	 */
-	@Override
-	public final void controleDroitTransfert(final UUID idArchive)
-			throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
+  /**
+   * Service pour la verifications des PRMD
+   */
+  @Autowired
+  private PrmdService prmdService;
+
+  /**
+   * @param idArchive
+   * @throws ReferentialException
+   * @throws RetrievalServiceEx
+   * @throws InvalidSAETypeException
+   * @throws MappingFromReferentialException
+   *           Permet de vérifier les droits avant le transfert
+   */
+  @Override
+  public final void controleDroitTransfert(final UUID idArchive)
+      throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
     // On récupère les métadonnées du document à partir de l'UUID, avec
     // toutes les
@@ -420,26 +420,26 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     final String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible : ";
 
-	String uuid = document.getUuid().toString();
-	ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + uuid);
-	
+    final String uuid = document.getUuid().toString();
+    final ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + uuid);
+
     try {
-    	
+
       // Lock du document
       ZookeeperUtils.acquire(mutex, uuid);
-      
+
       transfertDocument(document);
 
       deleteDocApresTransfert(document.getUuid());
-      
+
       // A la fin on vérifie qu'on à toujours le lock
-	  if (!ZookeeperUtils.isLock(mutex)){
-	     // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
-	     // devrait jamais arriver.
-	     String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert de masse"
-	           + uuid + ". Problème de connexion zookeeper ?";
-	     LOG.warn(message);
-	  }
+      if (!ZookeeperUtils.isLock(mutex)) {
+        // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
+        // devrait jamais arriver.
+        final String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert de masse"
+            + uuid + ". Problème de connexion zookeeper ?";
+        LOG.warn(message);
+      }
       LOG.debug("{} - Fin de transfert du document {}",
                 new Object[] {trcPrefix, document.getUuid().toString()});
 
@@ -451,7 +451,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     catch (final ReferentialException ex) {
       LOG.error(erreur + ex.getCause() + " - " + ex.getMessage());
       throw new TransfertException(ex.getMessage(), ex);
-    } finally {
+    }
+    finally {
       mutex.release();
     }
   }
@@ -547,25 +548,13 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     document.getMetadatas().add(dateArchivageGNT);
 
-    // -- Suppression des métadonnées vides (impératif api dfce)
-    // Supprime aussi la métadonnée DateArchivage qui est non transférable
-    final List<StorageMetadata> metadata = document.getMetadatas();
-    for (int i = 0; i < metadata.size(); i++) {
-      if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
-          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
-        metadata.remove(i);
-        i--;
-      }
-    }
-
     // modification des métadonnées avant transfert
     if (!CollectionUtils.isEmpty(listeMeta)) {
       final List<StorageMetadata> metadataMasse = new ArrayList<>();
       Boolean bool = false;
       for (final StorageMetadata meta : document.getMetadatas()) {
         for (final StorageMetadata meta2 : listeMeta) {
-          if (meta.getShortCode().equals(meta2.getShortCode())
-              && StringUtils.isNotBlank(meta2.getValue().toString())) {
+          if (meta.getShortCode().equals(meta2.getShortCode())) {
             metadataMasse.add(meta2);
             bool = true;
           }
@@ -580,6 +569,17 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       completeMetadatas(metadataMasse);
 
       document.setMetadatas(metadataMasse);
+    }
+
+    // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
+    // Supprime aussi la métadonnée DateArchivage qui est non transférable
+    final List<StorageMetadata> metadata = document.getMetadatas();
+    for (int i = 0; i < metadata.size(); i++) {
+      if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
+          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
+        metadata.remove(i);
+        i--;
+      }
     }
 
     // Ajout de la metadonnées idTransfertMasseInterne
@@ -930,150 +930,151 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         }
       } else {
         // -- Le document existe en GNT
-    	  
-		String docUUID = document.getUuid().toString();
-		ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + docUUID);
-		
-		try {
-			
-			// Lock du document
-			ZookeeperUtils.acquire(mutex, docUUID);
-			
-	        // -- On vérifie si le document n'est pas gelé
-	        if (idArchive != null) {
-	          final String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
-	          final List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
-	          if (isFrozenDocument(listeMetadataDocument)) {
-	            throw new TransfertException(
-	                                         StringUtils.replace(frozenDocMsgException, "{0}", idArchive.toString()));
-	          }
-	        }
-	
-	        // -- On recherche le document sur la GNS
-	        StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
-	
-	        // -- On s'assure que le document n'existe pas en GNS
-	        // -- OU si il existe en GNT et GNS, on le supprime de la GNS
-	        if (documentGNS == null
-	            || getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) {
-	
-	          if (getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) {
-	            try {
-	              storageTransfertService.deleteStorageDocument(idArchive);
-	              LOG.info("{} - Transfert - Suppression du document {} de la GNS.",
-	                       "transfertDoc",
-	                       idArchive.toString());
-	            }
-	            catch (final DeletionServiceEx ex) {
-	              final String message = "Transfert - La suppression du document {0} de la GNS a échoué.";
-	              throw new TransfertException(StringUtils.replace(message, "{0}", idArchive.toString()));
-	            }
-	          }
-	
-	          // -- Modification des métadonnées du document pour le
-	          // transfert
-	          updateMetaDocumentForTransfert(document);
-	
-	          // -- Archivage du document en GNS
-	          try {
-	            documentGNS = storageTransfertService.insertBinaryStorageDocument(document);
-	
-	            // -- Récupération des notes associées au document
-	            // transféré
-	            final List<StorageDocumentNote> listeNotes = storageDocumentService
-	                                                                               .getDocumentsNotes(document.getUuid());
-	            // -- Ajout des notes sur le document archivés en GNS
-	            for (final StorageDocumentNote note : listeNotes) {
-	              try {
-	                storageTransfertService.addDocumentNote(documentGNS.getUuid(),
-	                                                        note.getContenu(),
-	                                                        note.getAuteur(),
-	                                                        note.getDateCreation(),
-	                                                        note.getUuid());
-	              }
-	              catch (final DocumentNoteServiceEx e) {
-	                // Les notes n'ont pas pu être transférées, on
-	                // annule le
-	                // transfert (suppression du document en GNS)
-	                try {
-	                  storageTransfertService.deleteStorageDocument(idArchive);
-	                }
-	                catch (final DeletionServiceEx erreurSupprGNS) {
-	                  throw new TransfertException(erreurSupprGNS);
-	                }
-	                throw new TransfertException(erreur, e);
-	              }
-	            }
-	
-	            // -- Récupération du document attaché éventuel
-	            StorageDocumentAttachment docAttache;
-	            try {
-	              docAttache = storageDocumentService.getDocumentAttachment(document.getUuid());
-	              // -- Ajout du document attaché sur le document
-	              // archivés en
-	              // GNS
-	              if (docAttache != null) {
-	                storageTransfertService.addDocumentAttachment(documentGNS.getUuid(),
-	                                                              docAttache.getName(),
-	                                                              docAttache.getExtension(),
-	                                                              docAttache.getContenu());
-	              }
-	            }
-	            catch (final StorageDocAttachmentServiceEx e) {
-	              // Le document attaché n'a pas pu être transféré, on
-	              // annule
-	              // le transfert (suppression du document en GNS)
-	              try {
-	                storageTransfertService.deleteStorageDocument(idArchive);
-	              }
-	              catch (final DeletionServiceEx erreurSupprGNS) {
-	                throw new TransfertException(erreurSupprGNS);
-	              }
-	              throw new TransfertException(erreur, e);
-	            }
-	
-	          }
-	          catch (final InsertionServiceEx ex) {
-	            throw new TransfertException(erreur, ex);
-	          }
-	          catch (final InsertionIdGedExistantEx e1) {
-	            throw new TransfertException(erreur, e1);
-	          }
-	        } else if (getHashDocument(documentGNS) != null && !getHashDocument(documentGNS).equals(hashDocGNT)) {
-	          // -- L'idGed du document à transférer existe déjà en GNS
-	          final String msg = "L'identifiant ged spécifié '%s' existe déjà en GNS et ne peut être utilisé. Transfert impossible.";
-	          throw new InsertionIdGedExistantEx(String.format(msg, idArchive.toString()));
-	        }
-	
-	        // -- Suppression du document transféré de la GNT
-	        try {
-	          storageDocumentService.deleteStorageDocumentTraceTransfert(idArchive);
-	        }
-	        catch (final DeletionServiceEx erreurSupprGNT) {
-	          final StorageDocument documentGNT = storageDocumentService
-	                                                                    .searchMetaDatasByUUIDCriteria(uuidCriteria);
-	          if (documentGNT != null) {
-	            // -- Le document existe toujours dans la GNT
-	            try {
-	              storageTransfertService.deleteStorageDocument(idArchive);
-	            }
-	            catch (final DeletionServiceEx erreurSupprGNS) {
-	              throw new TransfertException(erreurSupprGNS);
-	            }
-	          }
-	          throw new TransfertException(erreur, erreurSupprGNT);
-	        }
-	        
-	    	if (!ZookeeperUtils.isLock(mutex)){
-	            // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
-	            // devrait jamais arriver.
-	            String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert "
-	                  + idArchive + ". Problème de connexion zookeeper ?";
-	            LOG.warn(message);
-	     	}
-		} finally {
-			mutex.release();
-		}
+
+        final String docUUID = document.getUuid().toString();
+        final ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + docUUID);
+
+        try {
+
+          // Lock du document
+          ZookeeperUtils.acquire(mutex, docUUID);
+
+          // -- On vérifie si le document n'est pas gelé
+          if (idArchive != null) {
+            final String frozenDocMsgException = "Le document {0} est gelé et ne peut pas être traité.";
+            final List<StorageMetadata> listeMetadataDocument = getListeStorageMetadatasWithGel(idArchive);
+            if (isFrozenDocument(listeMetadataDocument)) {
+              throw new TransfertException(
+                                           StringUtils.replace(frozenDocMsgException, "{0}", idArchive.toString()));
+            }
+          }
+
+          // -- On recherche le document sur la GNS
+          StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
+
+          // -- On s'assure que le document n'existe pas en GNS
+          // -- OU si il existe en GNT et GNS, on le supprime de la GNS
+          if (documentGNS == null
+              || getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) {
+
+            if (getHashDocument(documentGNS) != null && getHashDocument(documentGNS).equals(hashDocGNT)) {
+              try {
+                storageTransfertService.deleteStorageDocument(idArchive);
+                LOG.info("{} - Transfert - Suppression du document {} de la GNS.",
+                         "transfertDoc",
+                         idArchive.toString());
+              }
+              catch (final DeletionServiceEx ex) {
+                final String message = "Transfert - La suppression du document {0} de la GNS a échoué.";
+                throw new TransfertException(StringUtils.replace(message, "{0}", idArchive.toString()));
+              }
+            }
+
+            // -- Modification des métadonnées du document pour le
+            // transfert
+            updateMetaDocumentForTransfert(document);
+
+            // -- Archivage du document en GNS
+            try {
+              documentGNS = storageTransfertService.insertBinaryStorageDocument(document);
+
+              // -- Récupération des notes associées au document
+              // transféré
+              final List<StorageDocumentNote> listeNotes = storageDocumentService
+                                                                                 .getDocumentsNotes(document.getUuid());
+              // -- Ajout des notes sur le document archivés en GNS
+              for (final StorageDocumentNote note : listeNotes) {
+                try {
+                  storageTransfertService.addDocumentNote(documentGNS.getUuid(),
+                                                          note.getContenu(),
+                                                          note.getAuteur(),
+                                                          note.getDateCreation(),
+                                                          note.getUuid());
+                }
+                catch (final DocumentNoteServiceEx e) {
+                  // Les notes n'ont pas pu être transférées, on
+                  // annule le
+                  // transfert (suppression du document en GNS)
+                  try {
+                    storageTransfertService.deleteStorageDocument(idArchive);
+                  }
+                  catch (final DeletionServiceEx erreurSupprGNS) {
+                    throw new TransfertException(erreurSupprGNS);
+                  }
+                  throw new TransfertException(erreur, e);
+                }
+              }
+
+              // -- Récupération du document attaché éventuel
+              StorageDocumentAttachment docAttache;
+              try {
+                docAttache = storageDocumentService.getDocumentAttachment(document.getUuid());
+                // -- Ajout du document attaché sur le document
+                // archivés en
+                // GNS
+                if (docAttache != null) {
+                  storageTransfertService.addDocumentAttachment(documentGNS.getUuid(),
+                                                                docAttache.getName(),
+                                                                docAttache.getExtension(),
+                                                                docAttache.getContenu());
+                }
+              }
+              catch (final StorageDocAttachmentServiceEx e) {
+                // Le document attaché n'a pas pu être transféré, on
+                // annule
+                // le transfert (suppression du document en GNS)
+                try {
+                  storageTransfertService.deleteStorageDocument(idArchive);
+                }
+                catch (final DeletionServiceEx erreurSupprGNS) {
+                  throw new TransfertException(erreurSupprGNS);
+                }
+                throw new TransfertException(erreur, e);
+              }
+
+            }
+            catch (final InsertionServiceEx ex) {
+              throw new TransfertException(erreur, ex);
+            }
+            catch (final InsertionIdGedExistantEx e1) {
+              throw new TransfertException(erreur, e1);
+            }
+          } else if (getHashDocument(documentGNS) != null && !getHashDocument(documentGNS).equals(hashDocGNT)) {
+            // -- L'idGed du document à transférer existe déjà en GNS
+            final String msg = "L'identifiant ged spécifié '%s' existe déjà en GNS et ne peut être utilisé. Transfert impossible.";
+            throw new InsertionIdGedExistantEx(String.format(msg, idArchive.toString()));
+          }
+
+          // -- Suppression du document transféré de la GNT
+          try {
+            storageDocumentService.deleteStorageDocumentTraceTransfert(idArchive);
+          }
+          catch (final DeletionServiceEx erreurSupprGNT) {
+            final StorageDocument documentGNT = storageDocumentService
+                                                                      .searchMetaDatasByUUIDCriteria(uuidCriteria);
+            if (documentGNT != null) {
+              // -- Le document existe toujours dans la GNT
+              try {
+                storageTransfertService.deleteStorageDocument(idArchive);
+              }
+              catch (final DeletionServiceEx erreurSupprGNS) {
+                throw new TransfertException(erreurSupprGNS);
+              }
+            }
+            throw new TransfertException(erreur, erreurSupprGNT);
+          }
+
+          if (!ZookeeperUtils.isLock(mutex)) {
+            // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne
+            // devrait jamais arriver.
+            final String message = "Erreur lors de la tentative d'acquisition du lock pour le transfert "
+                + idArchive + ". Problème de connexion zookeeper ?";
+            LOG.warn(message);
+          }
+        }
+        finally {
+          mutex.release();
+        }
         LOG.debug("{} - Fin de transfert du document {}", new Object[] {trcPrefix, idArchive.toString()});
       }
     }
