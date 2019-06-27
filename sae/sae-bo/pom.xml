@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.2</version>
+      <version>19.7.3-SNAPSHOT</version>
    </parent>
    
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-bo</artifactId>
-   <version>19.7.2</version>
+   <version>19.7.3-SNAPSHOT</version>
    
    <name>sae-bo</name>
    
