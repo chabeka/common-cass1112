@@ -11,7 +11,7 @@
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-anais-portail</artifactId>
-	<version>1.0.24-SNAPSHOT</version>
+	<version>1.0.24</version>
 
 	<packaging>war</packaging>
 
@@ -325,13 +325,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-anais-portail-1.0.24
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-anais-portail-1.0.24
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/saedemos/sae-anais-portail/
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/sae-anais-portail-1.0.24
       </connection>
 	</scm>
 
