@@ -63,8 +63,6 @@ public interface WebServiceVIValidateService {
     *           information du jeton SAML à vérifier
     * @param serviceVise
     *           URI décrivant le service visé
-    * @param idAppliClient
-    *           Identifiant de l'application consommatrice du service
     * @param systemDate
     *           date du système
     * @throws VIInvalideException
@@ -81,8 +79,7 @@ public interface WebServiceVIValidateService {
     *            Le service visé ne correspond pas au service indiqué dans
     *            l'assertion
     */
-   void validate(SamlAssertionData data, URI serviceVise, String idAppliClient,
-         Date systemDate) throws VIInvalideException, VIAppliClientException,
+   void validate(SamlAssertionData data, URI serviceVise, Date systemDate) throws VIInvalideException, VIAppliClientException,
          VINivAuthException, VIPagmIncorrectException,
          VIServiceIncorrectException;
 

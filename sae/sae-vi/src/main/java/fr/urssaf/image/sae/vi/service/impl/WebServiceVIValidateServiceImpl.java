@@ -95,8 +95,7 @@ public class WebServiceVIValidateServiceImpl implements
    /**
     * {@inheritDoc}
     */
-   public final void validate(SamlAssertionData data, URI serviceVise,
-         String idAppliClient, Date systemDate) throws VIInvalideException,
+   public final void validate(SamlAssertionData data, URI serviceVise, Date systemDate) throws VIInvalideException,
          VIAppliClientException, VINivAuthException, VIPagmIncorrectException,
          VIServiceIncorrectException {
 
@@ -159,15 +158,6 @@ public class WebServiceVIValidateServiceImpl implements
          throw new VIPagmIncorrectException(
                "Aucun PAGM n'est spécifié dans le VI, or il est obligatoire d'en spécifier au moins un");
       }
-
-      // FIXME - A décommenter si une application cliente a un et un seul CS
-      // idAppliClient doit être égal à Issuer
-      // if (!idAppliClient.equals(data.getAssertionParams().getCommonsParams()
-      // .getIssuer())) {
-      //
-      // throw new VIAppliClientException(data.getAssertionParams()
-      // .getCommonsParams().getIssuer());
-      // }
 
    }
 

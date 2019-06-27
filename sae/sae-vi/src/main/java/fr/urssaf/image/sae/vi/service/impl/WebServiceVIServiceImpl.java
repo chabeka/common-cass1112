@@ -126,22 +126,8 @@ public class WebServiceVIServiceImpl implements WebServiceVIService {
          issuer = OLD_CS;
       }
 
-      // Extraction de l'identifiant de l'application cliente depuis le
-      // certificat
-      // de la clé publique de signature du VI
-      // l'extraction du CN vient du code
-      // http://stackoverflow.com/questions/2914521/how-to-extract-cn-from-x509certificate-in-java
-      String idAppliCliente;
-      try {
-         X509Principal principal = PrincipalUtil.getSubjectX509Principal(data
-               .getClePublique());
-         idAppliCliente = (String) principal.getValues(X509Name.CN).get(0);
-      } catch (CertificateEncodingException e) {
-         throw new IllegalStateException(e);
-      }
-
       // vérification supplémentaires sur le jeton SAML
-      validateService.validate(data, serviceVise, idAppliCliente, new Date());
+      validateService.validate(data, serviceVise, new Date());
 
       List<String> pagms = data.getAssertionParams().getCommonsParams()
             .getPagm();
