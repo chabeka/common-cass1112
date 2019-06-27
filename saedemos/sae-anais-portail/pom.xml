@@ -37,7 +37,7 @@
 		<sae.anais.framework.version>1.0.2</sae.anais.framework.version>
 		<commons.maquette.version>2.0.1</commons.maquette.version>
 
-		<sae.version>19.7.0-SNAPSHOT</sae.version>
+		<sae.version>19.7.2</sae.version>
 
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
