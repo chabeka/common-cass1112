@@ -152,6 +152,25 @@ public interface MappingDocumentService {
 
   /**
    * Service de conversion d’une liste d'objets de type {@link UntypedMetadata}
+   * vers une liste d'objets de type{@link StorageMetadata}.
+   * 
+   * @param metadatas
+   *          : la liste des métadonnées
+   *          {@link fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata}
+   * @return un objet de type liste de {@link StorageMetadata}
+   * @throws InvalidSAETypeException
+   *           Exception levée lorsque la conversion ne se passe pas bien.
+   * @throws MappingFromReferentialException
+   *           Exception levée lorsque la récupération de la métadata du
+   *           référentiel n'abouti pas
+   */
+  List<StorageMetadata> untypedMetadatasToStorageMetadatas(
+                                                           final List<UntypedMetadata> metadatas)
+      throws InvalidSAETypeException,
+      MappingFromReferentialException;
+
+  /**
+   * Service de conversion d’une liste d'objets de type {@link UntypedMetadata}
    * vers une liste d'objets de type{@link SAEMetadata}. Cette méthode ne
    * génère pas d'exception si la valeur de la métadonnée est nulle ou chaine
    * vide. On renvoie null comme valeur convertie.

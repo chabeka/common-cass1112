@@ -329,6 +329,30 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
+  public List<StorageMetadata> untypedMetadatasToStorageMetadatas(final List<UntypedMetadata> metadatas)
+      throws InvalidSAETypeException, MappingFromReferentialException {
+    final List<StorageMetadata> saeStorageMetadatas = new ArrayList<>();
+    for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+      try {
+        final MetadataReference reference = referenceDAO
+                                                        .getByLongCode(metadata.getLongCode());
+        saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), Utils.conversionToObject(metadata.getValue(), reference)));
+      }
+      catch (final ParseException parseExcept) {
+        throw new InvalidSAETypeException(parseExcept);
+      }
+      catch (final ReferentialException refExcpt) {
+        throw new MappingFromReferentialException(refExcpt);
+      }
+    }
+
+    return saeStorageMetadatas;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public List<UntypedMetadata> storageMetadataToUntypedMetadata(
                                                                 final List<StorageMetadata> storageMetas)
       throws InvalidSAETypeException,
@@ -421,4 +445,5 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   public void setReferenceDAO(final MetadataReferenceDAO referenceDAO) {
     this.referenceDAO = referenceDAO;
   }
+
 }

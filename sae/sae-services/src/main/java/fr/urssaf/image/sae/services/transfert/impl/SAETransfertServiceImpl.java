@@ -39,10 +39,20 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.utils.Utils;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.rnd.service.RndService;
+import fr.urssaf.image.sae.services.controles.SAEControlesModificationService;
 import fr.urssaf.image.sae.services.document.impl.AbstractSAEServices;
 import fr.urssaf.image.sae.services.enrichment.xml.model.SAEArchivalMetadatas;
 import fr.urssaf.image.sae.services.exception.ArchiveInexistanteEx;
+import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
+import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
+import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
+import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
+import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertMasseRuntimeException;
@@ -121,6 +131,12 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    */
   @Autowired
   private MappingDocumentService mappingService;
+
+  /**
+   * ControleModificationService
+   */
+  @Autowired
+  private SAEControlesModificationService controleModification;
 
   /**
    *  
@@ -528,13 +544,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
   /**
    * {@inheritDoc}
-   * 
-   * @throws UnknownCodeRndEx
    */
   @Override
   public final StorageDocument updateMetaDocumentForTransfertMasse(final StorageDocument document,
                                                                    final List<StorageMetadata> listeMeta, final UUID idTraitementMasse)
-      throws ReferentialException, TransfertException, UnknownCodeRndEx {
+      throws TransfertException {
 
     // -- Ajout métadonnée "DateArchivageGNT"
     final Object dateArchivage = StorageMetadataUtils.valueObjectMetadataFinder(document.getMetadatas(),
@@ -550,25 +564,37 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     // modification des métadonnées avant transfert
     if (!CollectionUtils.isEmpty(listeMeta)) {
-      final List<StorageMetadata> metadataMasse = new ArrayList<>();
-      Boolean bool = false;
-      for (final StorageMetadata meta : document.getMetadatas()) {
-        for (final StorageMetadata meta2 : listeMeta) {
-          if (meta.getShortCode().equals(meta2.getShortCode())) {
-            metadataMasse.add(meta2);
-            bool = true;
+      try {
+        final List<StorageMetadata> metadataMasseModifie = new ArrayList<>();
+        final List<StorageMetadata> metadataMasse = new ArrayList<>();
+        Boolean bool = false;
+        for (final StorageMetadata meta : document.getMetadatas()) {
+          for (final StorageMetadata meta2 : listeMeta) {
+            if (meta.getShortCode().equals(meta2.getShortCode())) {
+              metadataMasse.add(meta2);
+              if (meta.getValue() != null && StringUtils.isNotBlank(meta2.getValue().toString())) {
+                metadataMasseModifie.add(meta2);
+              }
+              bool = true;
+            }
           }
+          if (bool.equals(false)) {
+            metadataMasse.add(meta);
+          }
+          bool = false;
         }
-        if (bool.equals(false)) {
-          metadataMasse.add(meta);
-        }
-        bool = false;
-      }
-      // Gestion des règles concernant le code RND
-      metadataMasse.add(dateDebutConservationMeta);
-      completeMetadatas(metadataMasse);
+        // On vérifie que les métadonnées modifiées sont modifiables
+        controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataMasseModifie));
 
-      document.setMetadatas(metadataMasse);
+        // Gestion des règles concernant le code RND
+        metadataMasse.add(dateDebutConservationMeta);
+        completeMetadatas(metadataMasse);
+
+        document.setMetadatas(metadataMasse);
+      }
+      catch (NotModifiableMetadataEx | UnknownCodeRndEx | ReferentialException | InvalidSAETypeException | MappingFromReferentialException e) {
+        throw new TransfertException(e);
+      }
     }
 
     // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
@@ -781,9 +807,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
   @Override
   public final StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
-                                                              final List<StorageMetadata> storageMetas, final boolean isReprise, final UUID idTraitementMasse)
-      throws TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx,
-      TraitementRepriseAlreadyDoneException, UnknownCodeRndEx {
+                                                              final List<StorageMetadata> storageMetas, final boolean isReprise, final UUID idTraitementMasse,
+                                                              final boolean isSuppression)
+      throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException {
     final String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
     StorageDocument document = new StorageDocument();
 
@@ -801,12 +827,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
         if (isReprise) {
           // -- Pour la reprise, on supprime le document de la GNS et
-          // on
-          // reprend le transfert uniquement si le document contient
-          // un
-          // idTransfertMasseInterne possédant la même valeur
-          // d'identifiant
-          // que le traitement de masse en cours d'execution.
+          // on reprend le transfert uniquement si le document contient
+          // un idTransfertMasseInterne possédant la même valeur
+          // d'identifiant que le traitement de masse en cours d'execution.
           if (ckeckIdTraitementExiste(documentGNS.getMetadatas(), idTraitementMasse)) {
             try {
               storageTransfertService.deleteStorageDocument(idArchive);
@@ -829,24 +852,22 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         }
       }
 
+      // Mise à jour de la liste des métadonnées pour le transfert
       document = updateMetaDocumentForTransfertMasse(document, storageMetas, idTraitementMasse);
 
+      if (!isSuppression) {
+        // Contrôle des métadonnées qui serviront pour le transfert
+        controleModification.checkSaeMetadataForTransfertMasse(mappingService.storageMetadataToUntypedMetadata(document.getMetadatas()));
+      }
+
+      // Contrôle des droits de transfert
       controleDroitTransfertMasse(document.getMetadatas());
 
     }
-    catch (final SearchingServiceEx ex) {
-      throw new TransfertException(erreur, ex);
-    }
-    catch (final ReferentialException ex) {
-      throw new TransfertException(erreur, ex);
-    }
-    catch (final RetrievalServiceEx ex) {
-      throw new TransfertException(erreur, ex);
-    }
-    catch (final InvalidSAETypeException ex) {
-      throw new TransfertException(erreur, ex);
-    }
-    catch (final MappingFromReferentialException ex) {
+    catch (final SearchingServiceEx | ReferentialException | RetrievalServiceEx | InvalidSAETypeException | MappingFromReferentialException |
+        ReferentialRndException | InvalidValueTypeAndFormatMetadataEx | UnknownMetadataEx | DuplicatedMetadataEx | NotSpecifiableMetadataEx |
+        RequiredArchivableMetadataEx | UnknownHashCodeEx | NotModifiableMetadataEx | MetadataValueNotInDictionaryEx | UnknownCodeRndEx |
+        ArchiveInexistanteEx ex) {
       throw new TransfertException(erreur, ex);
     }
 

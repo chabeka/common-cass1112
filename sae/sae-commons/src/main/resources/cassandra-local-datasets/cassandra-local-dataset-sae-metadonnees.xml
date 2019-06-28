@@ -2075,7 +2075,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2163,7 +2163,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2251,7 +2251,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2335,7 +2335,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2363,7 +2363,7 @@
             </column>
             <column>
                <name>update</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>dispo</name>
@@ -2511,7 +2511,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -2791,7 +2791,7 @@
             </column>
             <column>
                <name>update</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>dispo</name>
@@ -2807,7 +2807,7 @@
             </column>
             <column>
                <name>transf</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>    
          </row>
 
@@ -3107,7 +3107,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3791,7 +3791,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -5751,7 +5751,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -5925,6 +5925,93 @@
             </column>
             <column>
                <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Date de stockage dans la GED technique</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Date à laquelle le document a été stocké dans la GED technique</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
+         </row>
+         <row>
+            <key>DateArchivageGNT</key>
+            <column>
+               <name>sCode</name>
+               <value>dag</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Date</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(10)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>arch</name>
                <value>bytes(00)</value>
             </column>
             <column>
@@ -5958,6 +6045,350 @@
             <column>
                <name>dispo</name>
                <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
+         </row>
+         <row>
+            <key>BonAPayer</key>
+            <column>
+               <name>sCode</name>
+               <value>bap</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Boolean</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Bon à payer</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Flag bon à payer</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
+         </row>
+         <row>
+            <key>AnneeExercice</key>
+            <column>
+               <name>sCode</name>
+               <value>aex</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Integer</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(4)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Année de l'exercice</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Année de l'exercice de la facture</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
+         </row>
+		 <row>
+            <key>MontantCheque</key>
+            <column>
+               <name>sCode</name>
+               <value>mch</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>Long</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(4)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Montant du chèque</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Montant du chèque (en centimes d'euro)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>   
+         </row>
+         <row>
+            <key>IdPere</key>
+            <column>
+               <name>sCode</name>
+               <value>ipe</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>UUID</value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(4)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>arch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>UUID du document père</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>UUID du document père pour la gérer la notion de pièces jointes</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>leftTrim</name>

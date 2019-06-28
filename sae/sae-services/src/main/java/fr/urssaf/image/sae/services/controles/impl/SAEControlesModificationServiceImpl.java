@@ -207,7 +207,6 @@ public class SAEControlesModificationServiceImpl implements
    /**
     * {@inheritDoc}
     * 
-    * @throws MetadataValueNotInDictionaryEx
     */
    @Override
    public final void checkSaeMetadataForTransfertMasse(List<UntypedMetadata> metadatas)
@@ -231,8 +230,6 @@ public class SAEControlesModificationServiceImpl implements
          throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
                "capture.metadonnees.inconnu", listeCodeLong));
       }
-
-      checkModifiables(metadatas);
 
       try {
 
@@ -259,10 +256,8 @@ public class SAEControlesModificationServiceImpl implements
          if (CollectionUtils.isNotEmpty(errors)) {
             listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
             LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-                  "modification.metadonnees.non.modifiable", listeCodeLong));
-            throw new NotModifiableMetadataEx(ResourceMessagesUtils
-                  .loadMessage("modification.metadonnees.non.modifiable",
-                        listeCodeLong));
+                  "capture.metadonnees.interdites", listeCodeLong));
+            throw new NotSpecifiableMetadataEx(ResourceMessagesUtils.loadMessage("capture.metadonnees.interdites", listeCodeLong));
          }
          
          errors = metadataCS.checkDuplicateMetadata(metadatas);
@@ -296,7 +291,11 @@ public class SAEControlesModificationServiceImpl implements
       LOG.debug("{} - fin", trcPrefix);
    }
    
-   private void checkModifiables(List<UntypedMetadata> metadatas)
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void checkModifiables(List<UntypedMetadata> metadatas)
          throws NotModifiableMetadataEx {
       String trcPrefix = "checkModifiables";
       LOG.debug(

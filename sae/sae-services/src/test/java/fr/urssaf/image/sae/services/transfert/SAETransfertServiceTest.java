@@ -336,8 +336,6 @@ public class SAETransfertServiceTest {
          throw new TransfertException(erreur, ex);
       } catch (final TraitementRepriseAlreadyDoneException ex) {
          throw new TransfertException(erreur, ex);
-      } catch (final UnknownCodeRndEx e) {
-         throw new TransfertException(erreur, e);
       }
    }
 
