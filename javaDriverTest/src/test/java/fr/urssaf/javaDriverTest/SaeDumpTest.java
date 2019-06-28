@@ -599,7 +599,7 @@ public class SaeDumpTest {
    */
   @Test
   public void truncateTable_referentielformatcqlTest() throws Exception {
-    session.execute("DROP TABLE  \"SAE\".referentielformatcql");
+    session.execute("TRUNCATE  \"SAE\".referentielformatcql");
   }
 
   /**
@@ -627,4 +627,165 @@ public class SaeDumpTest {
     final ResultSet rs = session.execute("select * from \"SAE\".referentielformatcql limit 100");
     dumper.dumpRows(rs);
   }
+
+  // Table rndcql
+  /**
+   * Création de la table rndcql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_rndcqlTest() throws Exception {
+    session.execute("CREATE TABLE \"SAE\".rndcql (\r\n" +
+        "  code text,\r\n" +
+        "  codeFonction int,\r\n" +
+        "  codeActivite int,\r\n" +
+        "  dureeConservation bigint,\r\n" +
+        "  cloture boolean,\r\n" +
+        "  type text,\r\n" +
+        "  libelleEnd text,\r\n" +
+        "  PRIMARY KEY (code)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table rndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_rndcqlTest() throws Exception {
+    session.execute("TRUNCATE TABLE  \"SAE\".rndcql");
+  }
+
+  /**
+   * Insertion dans la table rndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__rndcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".rndcql \r\n" +
+        "    (code, codeFonction, codeActivite, dureeConservation,  cloture, type, libelleEnd)\r\n" +
+        "      VALUES ('1.2.1.1.3',1,2, 2555, false, 'ARCHIVABLE_AED', 'LIASSE AFFILIATION ACT UR COMPETENTE' \r\n" +
+        "   );");
+  }
+
+  /**
+   * Récupération des données de la table rndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_rndcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".rndcql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table correspondancesrndcql
+  /**
+   * Création de la table correspondancesrndcql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_correspondancesrndcqlTest() throws Exception {
+    session.execute("CREATE TABLE  \"SAE\".correspondancesrndcql (\r\n" +
+        "  codeTemporaire text,\r\n" +
+        "  codeDefinitif text,\r\n" +
+        "  versionCourante text,\r\n" +
+        "  etat text,\r\n" +
+        "  dateDebutMaj timestamp,\r\n" +
+        "  dateFinMaj timestamp,\r\n" +
+        "  PRIMARY KEY (codeTemporaire)\r\n" +
+        ");");
+  }
+
+  /**
+   * Suppression des données de la table correspondancesrndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_correspondancesrndcqlTest() throws Exception {
+    session.execute("TRUNCATE TABLE  \"SAE\".correspondancesrndcql");
+  }
+
+  /**
+   * Insertion dans la table correspondancesrndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__correspondancesrndcqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".correspondancesrndcql \r\n" +
+        "    (codeTemporaire, codeDefinitif, versionCourante, etat,  dateDebutMaj, dateFinMaj)\r\n" +
+        "      VALUES ('CODETEMP','CODEDEF','VERSION1', 'CREATED', 1559044863263, 1559044865000\r\n" +
+        "   );");
+  }
+
+  /**
+   * Récupération des données de la table correspondancesrndcql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_correspondancerndcqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".correspondancesrndcql limit 100");
+    dumper.dumpRows(rs);
+  }
+
+  // Table dictionarycql
+  /**
+   * Création de la table dictionarycql
+   * 
+   * @throws Exception
+   */
+  @Test // 1 fois
+  public void createTable_dictionarycqlTest() throws Exception {
+    session.execute("CREATE TABLE \"SAE\".dictionarycql (\r\n" +
+        "  code text,\r\n" +
+        "  valeurSpecifique map<text,text>,\r\n" +
+        "  PRIMARY KEY (code)\r\n" +
+        ");");
+
+  }
+
+  /**
+   * Suppression des données de la table dictionarycql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void truncateTable_dictionarycqlTest() throws Exception {
+    session.execute("TRUNCATE TABLE  \"SAE\".dictionarycql");
+  }
+
+  /**
+   * Insertion dans la table dictionarycql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void insert__dictionarycqlTest() throws Exception {
+
+    session.execute("INSERT INTO \"SAE\".dictionarycql \r\n" +
+        "    (code, valeurSpecifique)\r\n" +
+        "      VALUES ('dicCog',{'UR750': '', 'UR730':'' }\r\n" +
+        "   );");
+  }
+
+  /**
+   * Récupération des données de la table dictionarycql
+   * 
+   * @throws Exception
+   */
+  @Test
+  public void testDump_dictionarycqlTest() throws Exception {
+    final ResultSet rs = session.execute("select * from \"SAE\".dictionarycql limit 100");
+    dumper.dumpRows(rs);
+  }
+
 }
