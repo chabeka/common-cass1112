@@ -2075,7 +2075,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2163,7 +2163,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2251,7 +2251,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2335,7 +2335,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -2511,7 +2511,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3107,7 +3107,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -3791,7 +3791,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>label</name>
@@ -6075,7 +6075,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>cons</name>
@@ -6158,7 +6158,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -6245,7 +6245,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
@@ -6332,7 +6332,7 @@
             </column>
             <column>
                <name>reqStor</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>length</name>
