@@ -2251,7 +2251,7 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
@@ -3151,7 +3151,7 @@
             </column>
             <column>
                <name>transf</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>   
          </row>
 

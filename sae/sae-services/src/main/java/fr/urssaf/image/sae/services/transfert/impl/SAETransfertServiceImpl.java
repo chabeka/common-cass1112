@@ -550,18 +550,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                                                                    final List<StorageMetadata> listeMeta, final UUID idTraitementMasse)
       throws TransfertException {
 
-    // -- Ajout métadonnée "DateArchivageGNT"
-    final Object dateArchivage = StorageMetadataUtils.valueObjectMetadataFinder(document.getMetadatas(),
-                                                                                StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
-    final StorageMetadata dateArchivageGNT = new StorageMetadata(
-                                                                 StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(),
-                                                                 dateArchivage);
-
-    // Récupération de la date de début de conservation
-    final StorageMetadata dateDebutConservationMeta = getDateDebutConservation(document.getUuid());
-
-    document.getMetadatas().add(dateArchivageGNT);
-
     // modification des métadonnées avant transfert
     if (!CollectionUtils.isEmpty(listeMeta)) {
       try {
@@ -583,79 +571,68 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           }
           bool = false;
         }
-        // On vérifie que les métadonnées modifiées sont modifiables
+        // On vérifie que les métadonnées à modifier sont modifiables
         controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataMasseModifie));
-
-        // Gestion des règles concernant le code RND
-        metadataMasse.add(dateDebutConservationMeta);
-        completeMetadatas(metadataMasse);
 
         document.setMetadatas(metadataMasse);
       }
-      catch (NotModifiableMetadataEx | UnknownCodeRndEx | ReferentialException | InvalidSAETypeException | MappingFromReferentialException e) {
+      catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException e) {
         throw new TransfertException(e);
       }
     }
 
     // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
-    // Supprime aussi la métadonnée DateArchivage qui est non transférable
+    // Supprime la métadonnée DateArchivage qui est non transférable
+    // Supprime les métadonnées DateFinConservation, CodeFonction, VersionRND et ContratDeService qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées)
     final List<StorageMetadata> metadata = document.getMetadatas();
     for (int i = 0; i < metadata.size(); i++) {
       if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
-          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())) {
+          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getShortCode())
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_FONCTION.getShortCode())
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())) {
         metadata.remove(i);
         i--;
       }
     }
 
-    // Ajout de la metadonnées idTransfertMasseInterne
-    final String idTransfertMasseInterne = StorageMetadataUtils.valueMetadataFinder(document.getMetadatas(),
-                                                                                    StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode());
-    if (idTransfertMasseInterne == null || StringUtils.isEmpty(idTransfertMasseInterne)) {
-      document.getMetadatas()
-              .add(new StorageMetadata(
-                                       StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode(),
-                                       idTraitementMasse.toString()));
-    } else if (StringUtils.isNotEmpty(idTransfertMasseInterne)
-        // Gestion du cas particulier de suppression de doc avec un iti
-        && !idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
-      final String erreur = "La métadonnée idTransfertMasseInterne ne peut être alimenté alors que le document n'a pas été transféré";
-      throw new TransfertException(erreur);
-    }
-
-    // -- Ajout traces (preachivage) au document
-    final String traces = getTracePreArchivageAsJson(document);
-    final String shortCode = StorageTechnicalMetadatas.TRACABILITE_PRE_ARCHIVAGE.getShortCode();
-    document.getMetadatas().add(new StorageMetadata(shortCode, traces));
-
     return document;
   }
 
   /**
-   * Gestion de la modification du codeRND dans le transfert
+   * Gestion des métadonnées enrichie par la GED dans le transfert
    * 
-   * @param modifiedMetadatas
-   *          la liste des métadonnées à modifier
-   * @return la nouvelle liste enrichie des métadonnées
+   * @param document
+   *          Document à transferer
+   * @param idTraitementMasse
+   *          Identifiant du traitement de masse
+   * @param metadonneesAConserver
+   *          Map de métadonnées à conserver lors du transfert
    * @throws UnknownCodeRndEx
+   * @{@link UnknownCodeRndEx}
    * @throws ReferentialException
-   * @throws CodeRndInexistantException
+   * @{@link ReferentialException}
+   * @throws TransfertException
+   * @{@link TransfertException}
    */
-  private List<StorageMetadata> completeMetadatas(final List<StorageMetadata> metadataMasse)
-      throws UnknownCodeRndEx, ReferentialException {
+  private void completeMetadatas(final StorageDocument document, final UUID idTraitementMasse, final Map<String, Object> metadonneesAConserver)
+      throws UnknownCodeRndEx, ReferentialException, TransfertException {
 
     final String trcPrefix = "completeMetadatas";
     LOG.debug("{} - début", trcPrefix);
+
+    final List<StorageMetadata> metadataMasse = document.getMetadatas();
 
     final String codeRnd = (String) getValueMetaByCode(StorageTechnicalMetadatas.TYPE.getShortCode(),
                                                        metadataMasse);
 
     try {
       if (StringUtils.isNotBlank(codeRnd)) {
+        // Récupération de la date de début de conservation
+        final StorageMetadata dateDebutConservationMeta = getDateDebutConservation(document.getUuid());
 
-        final Date date = (Date) getValueMetaByCode(
-                                                    StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode(),
-                                                    metadataMasse);
+        final Date date = (Date) dateDebutConservationMeta.getValue();
         final String codeActivite = rndService.getCodeActivite(codeRnd);
         final String codeFonction = rndService.getCodeFonction(codeRnd);
 
@@ -706,6 +683,46 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           metadataMasse.remove(indexCodeFonction.intValue());
         }
       }
+
+      // -- Ajout métadonnée "DateArchivageGNT"
+      final Object dateArchivage = metadonneesAConserver.get(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
+
+      final StorageMetadata dateArchivageGNT = new StorageMetadata(
+                                                                   StorageTechnicalMetadatas.DATE_ARCHIVE_GNT.getShortCode(),
+                                                                   dateArchivage);
+      // On supprime la date d'archivage car n'est pas transférable
+      metadonneesAConserver.remove(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode());
+
+      // Récupération de la date de début de conservation
+      final StorageMetadata dateDebutConservationMeta = getDateDebutConservation(document.getUuid());
+
+      metadataMasse.add(dateArchivageGNT);
+      metadataMasse.add(dateDebutConservationMeta);
+
+      // Ajout de la metadonnées idTransfertMasseInterne
+      final String idTransfertMasseInterne = StorageMetadataUtils.valueMetadataFinder(metadataMasse,
+                                                                                      StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode());
+      if (idTransfertMasseInterne == null || StringUtils.isEmpty(idTransfertMasseInterne)) {
+        metadataMasse.add(new StorageMetadata(
+                                              StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode(),
+                                              idTraitementMasse.toString()));
+      } else if (StringUtils.isNotEmpty(idTransfertMasseInterne)
+          // Gestion du cas particulier de suppression de doc avec un iti
+          && !idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
+        final String erreur = "La métadonnée idTransfertMasseInterne ne peut être alimenté alors que le document n'a pas été transféré";
+        throw new TransfertException(erreur);
+      }
+
+      // On ajoute les métadonnées à conserver dans les métadonnées à transferer
+      for (final String shortCode : metadonneesAConserver.keySet()) {
+        document.getMetadatas().add(new StorageMetadata(shortCode, metadonneesAConserver.get(shortCode)));
+      }
+
+      // -- Ajout traces (preachivage) au document
+      final String traces = getTracePreArchivageAsJson(document);
+      final String shortCode = StorageTechnicalMetadatas.TRACABILITE_PRE_ARCHIVAGE.getShortCode();
+      metadataMasse.add(new StorageMetadata(shortCode, traces));
+
     }
     catch (final CodeRndInexistantException e) {
       throw new UnknownCodeRndEx(e.getMessage(), e);
@@ -715,7 +732,6 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     }
 
     LOG.debug("{} - fin", trcPrefix);
-    return metadataMasse;
   }
 
   private String getTracePreArchivageAsJson(final StorageDocument document) throws TransfertException {
@@ -852,6 +868,17 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         }
       }
 
+      // On récupére les métadonnées qui doivent être conserver pour le transfert
+      final Map<String, Object> metadonneesAConserver = new HashMap<>();
+      for (final StorageMetadata storageMetadata : document.getMetadatas()) {
+        if (storageMetadata.getValue() != null && !storageMetadata.getValue().equals(StringUtils.EMPTY) &&
+            (storageMetadata.getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
+                || storageMetadata.getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
+                || storageMetadata.getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode()))) {
+          metadonneesAConserver.put(storageMetadata.getShortCode(), storageMetadata.getValue());
+        }
+      }
+
       // Mise à jour de la liste des métadonnées pour le transfert
       document = updateMetaDocumentForTransfertMasse(document, storageMetas, idTraitementMasse);
 
@@ -859,6 +886,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         // Contrôle des métadonnées qui serviront pour le transfert
         controleModification.checkSaeMetadataForTransfertMasse(mappingService.storageMetadataToUntypedMetadata(document.getMetadatas()));
       }
+
+      // Gestion des règles concernant les métadonnées enrichie par la GED
+      completeMetadatas(document, idTraitementMasse, metadonneesAConserver);
 
       // Contrôle des droits de transfert
       controleDroitTransfertMasse(document.getMetadatas());
