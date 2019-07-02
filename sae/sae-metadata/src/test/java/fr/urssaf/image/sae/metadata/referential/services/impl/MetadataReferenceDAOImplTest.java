@@ -614,7 +614,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
             .assertEquals(
                   "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
-                  53, metadonnees.size());
+                  52, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
