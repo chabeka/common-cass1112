@@ -583,7 +583,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
     // Supprime la métadonnée DateArchivage qui est non transférable
-    // Supprime les métadonnées DateFinConservation, CodeActivite, CodeFonction, VersionRND et ContratDeService qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées)
+    // Supprime toutes les métadonnées qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées sans erreur). C'est métadonnées seront réalimenté avant transfert du document.
     final List<StorageMetadata> metadata = document.getMetadatas();
     for (int i = 0; i < metadata.size(); i++) {
       if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
@@ -592,7 +592,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_FONCTION.getShortCode())
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())) {
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())
+          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode())
+          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode())) {
         metadata.remove(i);
         i--;
       }
@@ -875,7 +877,9 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         if (storageMetadata.getValue() != null && !storageMetadata.getValue().equals(StringUtils.EMPTY) &&
             (storageMetadata.getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
                 || storageMetadata.getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
-                || storageMetadata.getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode()))) {
+                || storageMetadata.getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())
+                || storageMetadata.getShortCode().equals(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode())
+                || storageMetadata.getShortCode().equals(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode()))) {
           metadonneesAConserver.put(storageMetadata.getShortCode(), storageMetadata.getValue());
         }
       }
