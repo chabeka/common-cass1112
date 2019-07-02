@@ -614,7 +614,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
             .assertEquals(
                   "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
-                  52, metadonnees.size());
+                  53, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
@@ -861,7 +861,7 @@ public class MetadataReferenceDAOImplTest {
       Assert
       .assertEquals(
             "Le nombre de métadonnées transférables attendues est incorrect",
-            59, metadonnees.size());
+            58, metadonnees.size());
 
       for (Map.Entry<String, MetadataReference> metadata : metadonnees
             .entrySet()) {
