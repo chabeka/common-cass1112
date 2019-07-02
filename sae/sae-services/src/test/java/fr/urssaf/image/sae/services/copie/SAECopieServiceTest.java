@@ -205,24 +205,6 @@ public class SAECopieServiceTest {
 
       uuid = capture();
 
-      //
-      String[] parsePatterns = new String[] { "yyyy-MM-dd" };
-      Map<String, Object> metadatas = new HashMap<String, Object>();
-
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("cop", "CER69");
-      metadatas.put("cog", "UR750");
-      metadatas.put("vrn", "11.1");
-      metadatas.put("dom", "2");
-      metadatas.put("act", "3");
-      metadatas.put("nbp", "8");
-      metadatas.put("ffi", "fmt/354");
-      metadatas.put("cse", "ATT_PROD_002");
-      metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
-      metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
-      metadatas.put("cot", Boolean.TRUE);
-      metadatas.put("CodeRND", "2.3.1.1.12");
-
       List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
 
       fin.add(new UntypedMetadata("NbPages", "4"));
@@ -244,23 +226,6 @@ public class SAECopieServiceTest {
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx {
 
       uuid = UUID.fromString("C675CED1-6ACE-463E-BA58-725A103A320A");
-
-      String[] parsePatterns = new String[] { "yyyy-MM-dd" };
-      Map<String, Object> metadatas = new HashMap<String, Object>();
-
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("cop", "CER69");
-      metadatas.put("cog", "UR750");
-      metadatas.put("vrn", "11.1");
-      metadatas.put("dom", "2");
-      metadatas.put("act", "3");
-      metadatas.put("nbp", "8");
-      metadatas.put("ffi", "fmt/354");
-      metadatas.put("cse", "ATT_PROD_002");
-      metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
-      metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
-      metadatas.put("cot", Boolean.TRUE);
-      metadatas.put("CodeRND", "2.3.1.1.12");
 
       List<UntypedMetadata> fin = new ArrayList<UntypedMetadata>();
 

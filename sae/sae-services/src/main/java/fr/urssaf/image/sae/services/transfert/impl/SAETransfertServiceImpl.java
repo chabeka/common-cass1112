@@ -583,7 +583,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
     // Supprime la métadonnée DateArchivage qui est non transférable
-    // Supprime les métadonnées DateFinConservation, CodeFonction, VersionRND et ContratDeService qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées)
+    // Supprime les métadonnées DateFinConservation, CodeActivite, CodeFonction, VersionRND et ContratDeService qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées)
     final List<StorageMetadata> metadata = document.getMetadatas();
     for (int i = 0; i < metadata.size(); i++) {
       if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
@@ -591,7 +591,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getShortCode())
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_FONCTION.getShortCode())
           || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())) {
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
+          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())) {
         metadata.remove(i);
         i--;
       }
