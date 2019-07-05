@@ -1117,23 +1117,26 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     // Récupération des métas du document
     final UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
     final List<StorageMetadata> listeStorageMeta = storageDocumentService.retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
-    final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
 
-    // -- On vérifie si le document n'est pas gelé
-    if (isFrozenDocument(listeStorageMeta)) {
-      throw new TransfertException(String.format("Le document %s est gelé et ne peut pas être transféré", idArchive.toString()));
-    }
+    if (listeStorageMeta.size() != 0) {
+      final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
 
-    // Vérification des droits
-    LOG.debug("{} - Récupération des droits", trcPrefix);
-    final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-                                                                                 .getAuthentication();
-    final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
-    LOG.debug("{} - Vérification des droits", trcPrefix);
-    final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+      // -- On vérifie si le document n'est pas gelé
+      if (isFrozenDocument(listeStorageMeta)) {
+        throw new TransfertException(String.format("Le document %s est gelé et ne peut pas être transféré", idArchive.toString()));
+      }
 
-    if (!isPermitted) {
-      throw new AccessDeniedException("Le document est refusé au transfert car les droits sont insuffisants");
+      // Vérification des droits
+      LOG.debug("{} - Récupération des droits", trcPrefix);
+      final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
+                                                                                   .getAuthentication();
+      final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
+      LOG.debug("{} - Vérification des droits", trcPrefix);
+      final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+
+      if (!isPermitted) {
+        throw new AccessDeniedException("Le document est refusé au transfert car les droits sont insuffisants");
+      }
     }
 
   }
