@@ -343,7 +343,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
           saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), StringUtils.EMPTY));
         }
       }
-      catch (final ParseException parseExcept) {
+      catch (final ParseException | IllegalArgumentException parseExcept) {
         throw new InvalidSAETypeException(parseExcept);
       }
       catch (final ReferentialException refExcpt) {
@@ -441,7 +441,6 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
     }
   }
 
-  
   /**
    * {@inheritDoc}
    */
@@ -464,7 +463,7 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
 
     return saeMetadatas;
   }
-  
+
   /**
    * Setter pour referenceDAO
    * 
