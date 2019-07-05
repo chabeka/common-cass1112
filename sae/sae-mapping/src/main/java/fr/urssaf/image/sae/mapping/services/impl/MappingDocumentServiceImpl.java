@@ -336,12 +336,17 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
       try {
         final MetadataReference reference = referenceDAO
                                                         .getByLongCode(metadata.getLongCode());
-        if (metadata.getValue() != null && StringUtils.isNotBlank(metadata.getValue().toString())) {
-          saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), Utils.conversionToObject(metadata.getValue(), reference)));
+        if (reference != null) {
+          if (metadata.getValue() != null && StringUtils.isNotBlank(metadata.getValue().toString())) {
+            saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), Utils.conversionToObject(metadata.getValue(), reference)));
+          } else {
+            // Correspond à une métadonnée à supprimer, on met donc volontairement une chaine vide.
+            saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), StringUtils.EMPTY));
+          }
         } else {
-          // Correspond à une métadonnée à supprimer, on met donc volontairement une chaine vide.
-          saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), StringUtils.EMPTY));
+          throw new ReferentialException("La métadonnées " + metadata.getLongCode() + " n'est pas référencé.");
         }
+
       }
       catch (final ParseException | IllegalArgumentException parseExcept) {
         throw new InvalidSAETypeException(parseExcept);
