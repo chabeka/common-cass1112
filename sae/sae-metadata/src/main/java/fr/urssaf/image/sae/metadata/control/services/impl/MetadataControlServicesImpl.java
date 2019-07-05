@@ -28,6 +28,7 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 import fr.urssaf.image.sae.metadata.utils.Utils;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 import fr.urssaf.image.sae.trace.service.DispatcheurService;
 import fr.urssaf.image.sae.trace.utils.HostnameUtil;
@@ -772,5 +773,61 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
       dispatcheurService.ajouterTrace(traceToCreate);
 
    }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<MetadataError> checkNonArchivableMetadata(final List<SAEMetadata> metadatas) {
+    final List<MetadataError> errors = new ArrayList<MetadataError>();
+    for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+       try {
+          final MetadataReference reference = referenceDAO
+                .getByLongCode(metadata.getLongCode());
+          if (ruleFactory.getArchivableRule().isSatisfiedBy(metadata,
+                reference)) {
+            errors.add(new MetadataError(MetadataMessageHandler
+                   .getMessage("metadata.control.archivage"), metadata
+                   .getLongCode(), MetadataMessageHandler.getMessage(
+                         "metadata.archivable", metadata.getLongCode())));
+          }
+       } catch (ReferentialException refExcept) {
+         errors.add(new MetadataError(MetadataMessageHandler
+                .getMessage("metadata.referentiel.error"), metadata
+                .getLongCode(), MetadataMessageHandler.getMessage(
+                      "metadata.referentiel.retrieve", metadata.getLongCode())));
+       }
+       }
+    
+    return errors;
+ 
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<MetadataError> checkExistingStorageMetadataList(List<StorageMetadata> metadatas) {
+    final List<MetadataError> errors = new ArrayList<MetadataError>();
+    for (StorageMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+       try {
+          final MetadataReference reference = referenceDAO
+                .getByShortCode(metadata.getShortCode());
+          if (!ruleFactory.getExistingRule().isSatisfiedBy(
+                metadata.getShortCode(), reference)) {
+             errors.add(new MetadataError(MetadataMessageHandler
+                   .getMessage("metadata.control.existing"), metadata
+                   .getShortCode(), MetadataMessageHandler.getMessage(
+                         "metadata.not.exist", metadata.getShortCode())));
+          }
+       } catch (ReferentialException refExcept) {
+          errors.add(new MetadataError(MetadataMessageHandler
+                .getMessage("metadata.referentiel.error"), metadata
+                .getShortCode(), MetadataMessageHandler.getMessage(
+                      "metadata.referentiel.retrieve", metadata.getShortCode())));
+       }
+    }
+    return errors;
+ }
 
 }

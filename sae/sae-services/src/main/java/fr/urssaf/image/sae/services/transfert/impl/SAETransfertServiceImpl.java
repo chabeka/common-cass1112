@@ -533,18 +533,25 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                                                                    final List<StorageMetadata> listeMeta, final UUID idTraitementMasse)
       throws TransfertException {
 
-    // modification des métadonnées avant transfert
-    if (!CollectionUtils.isEmpty(listeMeta)) {
-      try {
-        final List<StorageMetadata> metadataMasseModifie = new ArrayList<>();
+    try {
+      // modification des métadonnées avant transfert
+      if (!CollectionUtils.isEmpty(listeMeta)) {
+        controleModification.checkExistingMetaList(listeMeta);
+
+        final List<StorageMetadata> metadataModifie = new ArrayList<>();
+        final List<StorageMetadata> metadataDelete = new ArrayList<>();
         final List<StorageMetadata> metadataMasse = new ArrayList<>();
         Boolean bool = false;
         for (final StorageMetadata meta : document.getMetadatas()) {
           for (final StorageMetadata meta2 : listeMeta) {
             if (meta.getShortCode().equals(meta2.getShortCode())) {
               metadataMasse.add(meta2);
-              if (meta.getValue() != null && StringUtils.isNotBlank(meta2.getValue().toString())) {
-                metadataMasseModifie.add(meta2);
+              if (meta.getValue() != null) {
+                if (StringUtils.isNotBlank(meta2.getValue().toString())) {
+                  metadataModifie.add(meta2);
+                } else {
+                  metadataDelete.add(meta2);
+                }
               }
               bool = true;
             }
@@ -554,33 +561,35 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
           }
           bool = false;
         }
+
         // On vérifie que les métadonnées à modifier sont modifiables
-        controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataMasseModifie));
+        controleModification.checkNonArchivable(metadataDelete);
+        controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataModifie));
 
         document.setMetadatas(metadataMasse);
       }
-      catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException e) {
-        throw new TransfertException(e);
+      // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
+      // Supprime la métadonnée DateArchivage qui est non transférable
+      // Supprime toutes les métadonnées qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées à transférer sans erreur). Ces métadonnées seront réalimentées avant transfert du document.
+      final List<StorageMetadata> metadata = document.getMetadatas();
+      for (int i = 0; i < metadata.size(); i++) {
+        if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
+            || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_FONCTION.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())
+            || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode())
+            || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode())) {
+          metadata.remove(i);
+          i--;
+        }
       }
-    }
 
-    // -- Suppression des métadonnées vides (impératif api dfce). Vide = non modifié ou à supprimer
-    // Supprime la métadonnée DateArchivage qui est non transférable
-    // Supprime toutes les métadonnées qui ne sont pas archivable (Permet de passer les contrôles sur les métadonnées sans erreur). C'est métadonnées seront réalimenté avant transfert du document.
-    final List<StorageMetadata> metadata = document.getMetadatas();
-    for (int i = 0; i < metadata.size(); i++) {
-      if (metadata.get(i).getValue() == null || metadata.get(i).getValue().equals(StringUtils.EMPTY)
-          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.DATE_ARCHIVE.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_FONCTION.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
-          || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())
-          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode())
-          || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode())) {
-        metadata.remove(i);
-        i--;
-      }
+    }
+    catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException | NotSpecifiableMetadataEx | UnknownMetadataEx e) {
+      throw new TransfertException(e);
     }
 
     return document;
@@ -892,242 +901,242 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     return document;
   }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final void transfertDoc(final UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
-         ArchiveInexistanteEx, InsertionIdGedExistantEx {
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final void transfertDoc(final UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
+      ArchiveInexistanteEx, InsertionIdGedExistantEx {
 
-      // -- On trace le début du transfert
-      final String trcPrefix = "transfertDoc";
-      LOG.debug("{} - début", trcPrefix);
-      LOG.debug("{} - Début de transfert du document {}", new Object[] {trcPrefix, idArchive});
+    // -- On trace le début du transfert
+    final String trcPrefix = "transfertDoc";
+    LOG.debug("{} - début", trcPrefix);
+    LOG.debug("{} - Début de transfert du document {}", new Object[] {trcPrefix, idArchive});
 
-      final String errorString = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
+    final String errorString = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
 
-      final String docUUID = idArchive.toString();
-      final ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + docUUID);
-      try {
-         verifieDroitsEtGel(idArchive, trcPrefix);
+    final String docUUID = idArchive.toString();
+    final ZookeeperMutex mutex = new ZookeeperMutex(zookeeperCfactory.getClient(), "/Transfert/" + docUUID);
+    try {
+      verifieDroitsEtGel(idArchive, trcPrefix);
 
-         // Lock du document
-         ZookeeperUtils.acquire(mutex, docUUID);
-         doTransfertDoc(idArchive, errorString);
-         if (!ZookeeperUtils.isLock(mutex)) {
-            // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne devrait jamais arriver.
-            LOG.warn("Erreur lors de la tentative d'acquisition du lock pour le transfert du doc {}. Problème de connexion zookeeper ?", idArchive);
-         }
+      // Lock du document
+      ZookeeperUtils.acquire(mutex, docUUID);
+      doTransfertDoc(idArchive, errorString);
+      if (!ZookeeperUtils.isLock(mutex)) {
+        // On a sûrement été déconnecté de zookeeper. C'est un cas qui ne devrait jamais arriver.
+        LOG.warn("Erreur lors de la tentative d'acquisition du lock pour le transfert du doc {}. Problème de connexion zookeeper ?", idArchive);
       }
-      catch (final SearchingServiceEx | ReferentialException | InvalidSAETypeException | MappingFromReferentialException | RetrievalServiceEx |
-            InsertionIdGedExistantEx | InsertionServiceEx ex) {
-         throw new TransfertException(errorString, ex);
-      }
-      finally {
-         mutex.release();
-      }
-   }
+    }
+    catch (final SearchingServiceEx | ReferentialException | InvalidSAETypeException | MappingFromReferentialException | RetrievalServiceEx |
+        InsertionIdGedExistantEx | InsertionServiceEx ex) {
+      throw new TransfertException(errorString, ex);
+    }
+    finally {
+      mutex.release();
+    }
+  }
 
-   /**
-    * Procède au transfert du document, soit copie en GNS et suppression en GNT. Cette méthode est protégée en amont par un mutex.
-    * 
-    * @param idArchive
-    * @param errorString
-    * @throws InsertionServiceEx
-    */
-   private void doTransfertDoc(final UUID idArchive, final String errorString) throws ReferentialException, SearchingServiceEx,
-         ArchiveInexistanteEx, ArchiveAlreadyTransferedException, TransfertException, InsertionIdGedExistantEx, InsertionServiceEx {
-      final String trcPrefix = "doTransfertDoc";
-      LOG.debug("{} - recherche du document", trcPrefix);
-      // On récupère le document avec uniquement les méta transférables
-      final List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
-      final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
+  /**
+   * Procède au transfert du document, soit copie en GNS et suppression en GNT. Cette méthode est protégée en amont par un mutex.
+   * 
+   * @param idArchive
+   * @param errorString
+   * @throws InsertionServiceEx
+   */
+  private void doTransfertDoc(final UUID idArchive, final String errorString) throws ReferentialException, SearchingServiceEx,
+      ArchiveInexistanteEx, ArchiveAlreadyTransferedException, TransfertException, InsertionIdGedExistantEx, InsertionServiceEx {
+    final String trcPrefix = "doTransfertDoc";
+    LOG.debug("{} - recherche du document", trcPrefix);
+    // On récupère le document avec uniquement les méta transférables
+    final List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
+    final UUIDCriteria uuidCriteria = new UUIDCriteria(idArchive, desiredMetas);
 
-      StorageDocument document = storageDocumentService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
-      final String hashDocGNT = getHashDocument(document);
+    StorageDocument document = storageDocumentService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
+    final String hashDocGNT = getHashDocument(document);
 
-      // -- Le document n'existe pas en GNT
+    // -- Le document n'existe pas en GNT
+    if (document == null) {
+      // -- On recherche le document sur la GNS
+      document = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
+
+      final String uuid = idArchive.toString();
+
       if (document == null) {
-         // -- On recherche le document sur la GNS
-         document = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
-
-         final String uuid = idArchive.toString();
-
-         if (document == null) {
-            // -- Le document n'existe pas non plus sur la GNS
-            final String message = "Le document {0} n'existe pas. Transfert impossible.";
-            throw new ArchiveInexistanteEx(StringUtils.replace(message, "{0}", uuid));
-         } else {
-            // -- Le document existe sur la GNS
-            final String message = "Le document {0} a déjà été transféré.";
-            throw new ArchiveAlreadyTransferedException(StringUtils.replace(message, "{0}", uuid));
-         }
+        // -- Le document n'existe pas non plus sur la GNS
+        final String message = "Le document {0} n'existe pas. Transfert impossible.";
+        throw new ArchiveInexistanteEx(StringUtils.replace(message, "{0}", uuid));
       } else {
-         // -- Le document existe en GNT
-
-         // -- On recherche le document sur la GNS
-         final StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
-         if (documentGNS != null) {
-            // Le doc existe en GNS.
-            // On regarde s'il s'agit du même document qu'en GNT. Si oui, on le supprime
-            final String hashDocumentGNS = getHashDocument(documentGNS);
-            if (hashDocumentGNS.equals(hashDocGNT)) {
-               // Il s'agit bien du même document
-               try {
-                  storageTransfertService.deleteStorageDocument(idArchive);
-                  LOG.info("{} - Transfert - Suppression du document {} de la GNS.", trcPrefix, idArchive);
-               }
-               catch (final DeletionServiceEx ex) {
-                  final String message = "Transfert - La suppression du document {0} de la GNS a échoué.";
-                  throw new TransfertException(StringUtils.replace(message, "{0}", idArchive.toString()));
-               }
-            } else {
-               // -- L'idGed du document à transférer existe déjà en GNS
-               final String msg = "L'identifiant ged spécifié '%s' existe déjà en GNS et ne peut être utilisé. Transfert impossible.";
-               throw new InsertionIdGedExistantEx(String.format(msg, idArchive.toString()));
-            }
-         }
-
-         // -- Modification des métadonnées du document pour le transfert
-         updateMetaDocumentForTransfert(document);
-         // -- Archivage du document en GNS
-         sendToGNS(idArchive, errorString, document);
-         // -- Suppression du document transféré de la GNT
-         deleteFromGNT(idArchive, errorString, uuidCriteria);
-
-         LOG.debug("{} - Fin de transfert du document {}", trcPrefix, idArchive);
+        // -- Le document existe sur la GNS
+        final String message = "Le document {0} a déjà été transféré.";
+        throw new ArchiveAlreadyTransferedException(StringUtils.replace(message, "{0}", uuid));
       }
-   }
+    } else {
+      // -- Le document existe en GNT
 
-   private void deleteFromGNT(final UUID idArchive, final String errorString, final UUIDCriteria uuidCriteria) throws SearchingServiceEx, TransfertException {
-      try {
-         storageDocumentService.deleteStorageDocumentTraceTransfert(idArchive);
-      }
-      catch (final DeletionServiceEx erreurSupprGNT) {
-         final StorageDocument documentGNT = storageDocumentService.searchMetaDatasByUUIDCriteria(uuidCriteria);
-         if (documentGNT != null) {
-            // -- Le document existe toujours dans la GNT
-            try {
-               storageTransfertService.deleteStorageDocument(idArchive);
-            }
-            catch (final DeletionServiceEx erreurSupprGNS) {
-               throw new TransfertException(erreurSupprGNS);
-            }
-         }
-         throw new TransfertException(errorString, erreurSupprGNT);
-      }
-   }
-
-   private void sendToGNS(final UUID idArchive, final String erreur, final StorageDocument document)
-         throws InsertionServiceEx, InsertionIdGedExistantEx, TransfertException {
-      StorageDocument documentGNS;
-      documentGNS = storageTransfertService.insertBinaryStorageDocument(document);
-
-      // -- Récupération des notes associées au document
-      // transféré
-      final List<StorageDocumentNote> listeNotes = storageDocumentService
-                                                                         .getDocumentsNotes(document.getUuid());
-      // -- Ajout des notes sur le document archivés en GNS
-      for (final StorageDocumentNote note : listeNotes) {
-         try {
-            storageTransfertService.addDocumentNote(documentGNS.getUuid(),
-                                                    note.getContenu(),
-                                                    note.getAuteur(),
-                                                    note.getDateCreation(),
-                                                    note.getUuid());
-         }
-         catch (final DocumentNoteServiceEx e) {
-            // Les notes n'ont pas pu être transférées, on
-            // annule le
-            // transfert (suppression du document en GNS)
-            try {
-               storageTransfertService.deleteStorageDocument(idArchive);
-            }
-            catch (final DeletionServiceEx erreurSupprGNS) {
-               throw new TransfertException(erreurSupprGNS);
-            }
-            throw new TransfertException(erreur, e);
-         }
-      }
-
-      // -- Récupération du document attaché éventuel
-      StorageDocumentAttachment docAttache;
-      try {
-         docAttache = storageDocumentService.getDocumentAttachment(document.getUuid());
-         // -- Ajout du document attaché sur le document
-         // archivés en
-         // GNS
-         if (docAttache != null) {
-            storageTransfertService.addDocumentAttachment(documentGNS.getUuid(),
-                                                          docAttache.getName(),
-                                                          docAttache.getExtension(),
-                                                          docAttache.getContenu());
-         }
-      }
-      catch (final StorageDocAttachmentServiceEx e) {
-         // Le document attaché n'a pas pu être transféré, on
-         // annule
-         // le transfert (suppression du document en GNS)
-         try {
+      // -- On recherche le document sur la GNS
+      final StorageDocument documentGNS = storageTransfertService.searchStorageDocumentByUUIDCriteria(uuidCriteria);
+      if (documentGNS != null) {
+        // Le doc existe en GNS.
+        // On regarde s'il s'agit du même document qu'en GNT. Si oui, on le supprime
+        final String hashDocumentGNS = getHashDocument(documentGNS);
+        if (hashDocumentGNS.equals(hashDocGNT)) {
+          // Il s'agit bien du même document
+          try {
             storageTransfertService.deleteStorageDocument(idArchive);
-         }
-         catch (final DeletionServiceEx erreurSupprGNS) {
-            throw new TransfertException(erreurSupprGNS);
-         }
-         throw new TransfertException(erreur, e);
-      }
-   }
-
-   /**
-    * Vérifie que le document peut bien être transféré, et envoie une exception sinon
-    * 
-    * @param idArchive
-    * @param trcPrefix
-    * @throws ReferentialException
-    * @throws RetrievalServiceEx
-    * @throws InvalidSAETypeException
-    * @throws MappingFromReferentialException
-    * @throws TransfertException
-    */
-   private void verifieDroitsEtGel(final UUID idArchive, final String trcPrefix)
-         throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException, TransfertException {
-      // On récupère les métadonnées du document à partir de l'UUID, avec
-      // toutes les
-      // métadonnées du référentiel sauf la note qui n'est pas utilise
-      // pour
-      // les droits
-      final List<StorageMetadata> allMeta = new ArrayList<>();
-      final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
-                                                                              .getAllMetadataReferencesPourVerifDroits();
-      for (final String mapKey : listeAllMeta.keySet()) {
-         allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
-      }
-      // Ajout de la meta GEL puisque non récupéré avant
-      allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
-
-      // Récupération des métas du document
-      final UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
-      final List<StorageMetadata> listeStorageMeta = storageDocumentService.retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
-      final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
-
-      // -- On vérifie si le document n'est pas gelé
-      if (isFrozenDocument(listeStorageMeta)) {
-         throw new TransfertException(String.format("Le document %s est gelé et ne peut pas être transféré", idArchive.toString()));
+            LOG.info("{} - Transfert - Suppression du document {} de la GNS.", trcPrefix, idArchive);
+          }
+          catch (final DeletionServiceEx ex) {
+            final String message = "Transfert - La suppression du document {0} de la GNS a échoué.";
+            throw new TransfertException(StringUtils.replace(message, "{0}", idArchive.toString()));
+          }
+        } else {
+          // -- L'idGed du document à transférer existe déjà en GNS
+          final String msg = "L'identifiant ged spécifié '%s' existe déjà en GNS et ne peut être utilisé. Transfert impossible.";
+          throw new InsertionIdGedExistantEx(String.format(msg, idArchive.toString()));
+        }
       }
 
-      // Vérification des droits
-      LOG.debug("{} - Récupération des droits", trcPrefix);
-      final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-                                                                                   .getAuthentication();
-      final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
-      LOG.debug("{} - Vérification des droits", trcPrefix);
-      final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+      // -- Modification des métadonnées du document pour le transfert
+      updateMetaDocumentForTransfert(document);
+      // -- Archivage du document en GNS
+      sendToGNS(idArchive, errorString, document);
+      // -- Suppression du document transféré de la GNT
+      deleteFromGNT(idArchive, errorString, uuidCriteria);
 
-      if (!isPermitted) {
-         throw new AccessDeniedException("Le document est refusé au transfert car les droits sont insuffisants");
+      LOG.debug("{} - Fin de transfert du document {}", trcPrefix, idArchive);
+    }
+  }
+
+  private void deleteFromGNT(final UUID idArchive, final String errorString, final UUIDCriteria uuidCriteria) throws SearchingServiceEx, TransfertException {
+    try {
+      storageDocumentService.deleteStorageDocumentTraceTransfert(idArchive);
+    }
+    catch (final DeletionServiceEx erreurSupprGNT) {
+      final StorageDocument documentGNT = storageDocumentService.searchMetaDatasByUUIDCriteria(uuidCriteria);
+      if (documentGNT != null) {
+        // -- Le document existe toujours dans la GNT
+        try {
+          storageTransfertService.deleteStorageDocument(idArchive);
+        }
+        catch (final DeletionServiceEx erreurSupprGNS) {
+          throw new TransfertException(erreurSupprGNS);
+        }
       }
+      throw new TransfertException(errorString, erreurSupprGNT);
+    }
+  }
 
-   }
+  private void sendToGNS(final UUID idArchive, final String erreur, final StorageDocument document)
+      throws InsertionServiceEx, InsertionIdGedExistantEx, TransfertException {
+    StorageDocument documentGNS;
+    documentGNS = storageTransfertService.insertBinaryStorageDocument(document);
+
+    // -- Récupération des notes associées au document
+    // transféré
+    final List<StorageDocumentNote> listeNotes = storageDocumentService
+                                                                       .getDocumentsNotes(document.getUuid());
+    // -- Ajout des notes sur le document archivés en GNS
+    for (final StorageDocumentNote note : listeNotes) {
+      try {
+        storageTransfertService.addDocumentNote(documentGNS.getUuid(),
+                                                note.getContenu(),
+                                                note.getAuteur(),
+                                                note.getDateCreation(),
+                                                note.getUuid());
+      }
+      catch (final DocumentNoteServiceEx e) {
+        // Les notes n'ont pas pu être transférées, on
+        // annule le
+        // transfert (suppression du document en GNS)
+        try {
+          storageTransfertService.deleteStorageDocument(idArchive);
+        }
+        catch (final DeletionServiceEx erreurSupprGNS) {
+          throw new TransfertException(erreurSupprGNS);
+        }
+        throw new TransfertException(erreur, e);
+      }
+    }
+
+    // -- Récupération du document attaché éventuel
+    StorageDocumentAttachment docAttache;
+    try {
+      docAttache = storageDocumentService.getDocumentAttachment(document.getUuid());
+      // -- Ajout du document attaché sur le document
+      // archivés en
+      // GNS
+      if (docAttache != null) {
+        storageTransfertService.addDocumentAttachment(documentGNS.getUuid(),
+                                                      docAttache.getName(),
+                                                      docAttache.getExtension(),
+                                                      docAttache.getContenu());
+      }
+    }
+    catch (final StorageDocAttachmentServiceEx e) {
+      // Le document attaché n'a pas pu être transféré, on
+      // annule
+      // le transfert (suppression du document en GNS)
+      try {
+        storageTransfertService.deleteStorageDocument(idArchive);
+      }
+      catch (final DeletionServiceEx erreurSupprGNS) {
+        throw new TransfertException(erreurSupprGNS);
+      }
+      throw new TransfertException(erreur, e);
+    }
+  }
+
+  /**
+   * Vérifie que le document peut bien être transféré, et envoie une exception sinon
+   * 
+   * @param idArchive
+   * @param trcPrefix
+   * @throws ReferentialException
+   * @throws RetrievalServiceEx
+   * @throws InvalidSAETypeException
+   * @throws MappingFromReferentialException
+   * @throws TransfertException
+   */
+  private void verifieDroitsEtGel(final UUID idArchive, final String trcPrefix)
+      throws ReferentialException, RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException, TransfertException {
+    // On récupère les métadonnées du document à partir de l'UUID, avec
+    // toutes les
+    // métadonnées du référentiel sauf la note qui n'est pas utilise
+    // pour
+    // les droits
+    final List<StorageMetadata> allMeta = new ArrayList<>();
+    final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
+                                                                            .getAllMetadataReferencesPourVerifDroits();
+    for (final String mapKey : listeAllMeta.keySet()) {
+      allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
+    }
+    // Ajout de la meta GEL puisque non récupéré avant
+    allMeta.add(new StorageMetadata(StorageTechnicalMetadatas.GEL.getShortCode()));
+
+    // Récupération des métas du document
+    final UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
+    final List<StorageMetadata> listeStorageMeta = storageDocumentService.retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
+    final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
+
+    // -- On vérifie si le document n'est pas gelé
+    if (isFrozenDocument(listeStorageMeta)) {
+      throw new TransfertException(String.format("Le document %s est gelé et ne peut pas être transféré", idArchive.toString()));
+    }
+
+    // Vérification des droits
+    LOG.debug("{} - Récupération des droits", trcPrefix);
+    final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
+                                                                                 .getAuthentication();
+    final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
+    LOG.debug("{} - Vérification des droits", trcPrefix);
+    final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
+
+    if (!isPermitted) {
+      throw new AccessDeniedException("Le document est refusé au transfert car les droits sont insuffisants");
+    }
+
+  }
 
   /**
    * Retourne le hash du storageDocument passé en paramètre

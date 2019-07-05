@@ -6,6 +6,8 @@ package fr.urssaf.image.sae.services.controles;
 import java.util.List;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
+import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.services.exception.MetadataValueNotInDictionaryEx;
 import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
@@ -16,6 +18,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Service permettant de réaliser des contrôles sur le document avant sa
@@ -130,11 +133,42 @@ public interface SAEControlesModificationService {
       throws DuplicatedMetadataEx;
 
   /**
-    * Contrôle que les métadonnées sont modifiables
-    * @param metadatas liste des métadonnées
-    * @throws NotModifiableMetadataEx @{@link NotModifiableMetadataEx}
-    */
-   public void checkModifiables(final List<UntypedMetadata> metadatas)
-       throws NotModifiableMetadataEx;
-   
+   * Contrôle que les métadonnées sont modifiables
+   * 
+   * @param metadatas
+   *          liste des métadonnées
+   * @throws NotModifiableMetadataEx
+   * @{@link NotModifiableMetadataEx}
+   */
+  public void checkModifiables(final List<UntypedMetadata> metadatas)
+      throws NotModifiableMetadataEx;
+
+  /**
+   * Contrôle que les métadonnées sont non archivables
+   * 
+   * @param metadata
+   *          métadonnées à vérifier
+   * @throws NotSpecifiableMetadataEx
+   * @{@link NotSpecifiableMetadataEx}
+   * @throws InvalidSAETypeException
+   * @{@link InvalidSAETypeException}
+   * @throws MappingFromReferentialException
+   * @{@link MappingFromReferentialException}
+   */
+  void checkNonArchivable(List<StorageMetadata> metadatas) throws NotSpecifiableMetadataEx, InvalidSAETypeException, MappingFromReferentialException;
+
+  /**
+   * Contrôle que les métadonnées existent dans le référentiel
+   * 
+   * @param metadata
+   *          métadonnées à vérifier
+   * @throws UnknownMetadataEx
+   * @{@link UnknownMetadataEx}
+   * @throws InvalidSAETypeException
+   * @{@link InvalidSAETypeException}
+   * @throws MappingFromReferentialException
+   * @{@link MappingFromReferentialException}
+   */
+  void checkExistingMetaList(List<StorageMetadata> metadatas) throws InvalidSAETypeException, MappingFromReferentialException, UnknownMetadataEx;
+
 }

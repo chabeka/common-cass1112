@@ -200,12 +200,9 @@ public class SAETransfertMasseServiceTest {
     final List<StorageMetadata> listeMeta = new ArrayList<>();
     listeMeta.add(new StorageMetadata("srn", "siren"));
     listeMeta.add(new StorageMetadata("cop", "CER68"));
-    listeMeta.add(new StorageMetadata("dre", ""));
-    listeMeta.add(new StorageMetadata("bap", ""));
-    listeMeta.add(new StorageMetadata("aex", ""));
-    listeMeta.add(new StorageMetadata("mch", ""));
-    // listeMeta.add(new StorageMetadata("ipe", ""));
-    listeMeta.add(new StorageMetadata("mre", ""));
+    listeMeta.add(new StorageMetadata("toa", ""));
+    listeMeta.add(new StorageMetadata("dco", ""));
+    listeMeta.add(new StorageMetadata("SM_ARCHIVAGE_DATE", ""));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -231,11 +228,8 @@ public class SAETransfertMasseServiceTest {
 
       Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "srn").equals("siren"));
       Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "cop").equals("CER68"));
-      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dre"));
-      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "bap"));
-      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "aex"));
-      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "mch"));
-      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "mre"));
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "toa"));
+      Assert.assertNull(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dco"));
 
     }
     catch (final TraitementRepriseAlreadyDoneException e) {
@@ -264,6 +258,65 @@ public class SAETransfertMasseServiceTest {
     }
     catch (final TransfertException e) {
       Assert.assertTrue("L'exception de type NotModifiableMetadataEx est attendue", e.getCause() instanceof NotModifiableMetadataEx);
+      ;
+    }
+  }
+
+  @Test
+  public void testErreurMetaNonSupprimable()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
+
+    // MODIFIER DES METADONNEES
+
+    // -- Transfert du document vers la GNS
+    final List<StorageMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new StorageMetadata("dre", ""));
+    listeMeta.add(new StorageMetadata("bap", ""));
+    listeMeta.add(new StorageMetadata("aex", ""));
+    listeMeta.add(new StorageMetadata("mch", ""));
+    listeMeta.add(new StorageMetadata("mre", ""));
+
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof NotSpecifiableMetadataEx);
+      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : AnneeExercice, BonAPayer, DateReception, MontantCheque, MontantRegle'",
+                        e.getCause()
+                         .getMessage()
+                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : AnneeExercice, BonAPayer, DateReception, MontantCheque, MontantRegle"));
+    }
+  }
+
+  @Test
+  public void testErreurMetaNonSupprimableCodeRnd()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
+
+    // MODIFIER DES METADONNEES
+
+    // -- Transfert du document vers la GNS
+    final List<StorageMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", ""));
+
+    try {
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof NotSpecifiableMetadataEx);
+      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND'",
+                        e.getCause()
+                         .getMessage()
+                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
       ;
     }
   }
@@ -335,8 +388,9 @@ public class SAETransfertMasseServiceTest {
       Assert.assertNull("Métadonnée non transférable, ajout impossible ", StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dco"));
 
     }
-    catch (final TransfertException | StorageException | ReferentialException | ArchiveInexistanteEx | InvalidSAETypeException | MappingFromReferentialException e) {
-      Assert.fail("Exception non prévu");
+    catch (final TransfertException | StorageException | ReferentialException | ArchiveInexistanteEx | InvalidSAETypeException |
+        MappingFromReferentialException e) {
+      Assert.fail("Exception non prévu : " + e.getMessage());
     }
   }
 
@@ -470,8 +524,38 @@ public class SAETransfertMasseServiceTest {
       }
     }
     catch (final TraitementRepriseAlreadyDoneException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      Assert.fail("Aucune exception ne doit être remonté");
+    }
+  }
+
+  @Test
+  public void testErreurMetaInexistante()
+      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
+
+    // -- Insertion d'un document de test sur la GNT
+    uidDocGNT = insertDoc(testProviderGNT);
+
+    // MODIFIER DES METADONNEES
+
+    // -- Transfert du document vers la GNS
+    final List<StorageMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new StorageMetadata("Titi", "Test"));
+    listeMeta.add(new StorageMetadata("Toto", "11"));
+
+    try {
+      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
+
+      saeTransfertService.transfertDocMasse(document);
+
+      Assert.fail("Une exception de type TransfertException est attendue");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof UnknownMetadataEx);
+      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto'",
+                        e.getCause()
+                         .getMessage()
+                         .contains("La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto"));
+      ;
     }
   }
 
@@ -503,8 +587,8 @@ public class SAETransfertMasseServiceTest {
     metadatas.put("bap", Boolean.TRUE);
     metadatas.put("aex", "100");
     metadatas.put("mch", "100");
-    // metadatas.put("ipe", UUID.randomUUID());
     metadatas.put("mre", "100");
+    metadatas.put("jdp", "1A2B3C4D5E6F7G8H9I");
 
     final String documentTitle = "attestation_transfert";
     final String documentType = "pdf";
