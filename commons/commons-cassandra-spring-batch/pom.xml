@@ -17,24 +17,24 @@
 
 	<properties>      
       <!-- Version des plug-ins Maven -->
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
       
       <!-- Version de commons-cassandra -->
 		<commons-cassandra.version>2.0.1-SNAPSHOT</commons-cassandra.version>
       
       <!-- Version des framework -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.6.1</slf4j-api.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
-		<spring.batch.version>2.1.8.RELEASE</spring.batch.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
+		<spring.batch.version>2.1.9.RELEASE</spring.batch.version>
 
-		<spring-batch-admin-manager.version>1.2.1.RELEASE</spring-batch-admin-manager.version>
-		<spring-batch-integration.version>1.2.1.RELEASE</spring-batch-integration.version>
+		<spring-batch-admin-manager.version>1.2.2.RELEASE</spring-batch-admin-manager.version>
+		<spring-batch-integration.version>1.2.2.RELEASE</spring-batch-integration.version>
 	</properties>
    
    <!-- Configuration SVN pour le plug-in maven-release -->
@@ -80,6 +80,30 @@
 			<version>${spring.framework.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.batch</groupId>
@@ -92,6 +116,12 @@
 			<artifactId>spring-batch-test</artifactId>
 			<version>${spring.batch.version}</version>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jdbc</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -144,6 +174,18 @@
 			</exclusions>
 		</dependency>
 
+		<!-- JSON -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.8.11.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+			<version>2.8.11</version>
+		</dependency>
 
       <!-- JUNIT -->
 
