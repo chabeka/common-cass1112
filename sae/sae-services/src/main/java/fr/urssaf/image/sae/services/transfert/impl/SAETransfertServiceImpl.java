@@ -823,7 +823,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                                                               final List<StorageMetadata> storageMetas, final boolean isReprise, final UUID idTraitementMasse,
                                                               final boolean isSuppression)
       throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException {
-    final String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible";
+    final String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible :";
     StorageDocument document = new StorageDocument();
 
     try {
@@ -897,7 +897,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         ReferentialRndException | InvalidValueTypeAndFormatMetadataEx | UnknownMetadataEx | DuplicatedMetadataEx | NotSpecifiableMetadataEx |
         RequiredArchivableMetadataEx | UnknownHashCodeEx | NotModifiableMetadataEx | MetadataValueNotInDictionaryEx | UnknownCodeRndEx |
         ArchiveInexistanteEx ex) {
-      throw new TransfertException(erreur, ex);
+      throw new TransfertException(erreur + ex.getMessage() != null ? ex.getMessage() : StringUtils.EMPTY, ex);
     }
 
     return document;
