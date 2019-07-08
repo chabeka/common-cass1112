@@ -48,6 +48,7 @@ import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
@@ -563,7 +564,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         }
 
         // On vérifie que les métadonnées à modifier sont modifiables
-        controleModification.checkNonArchivable(metadataDelete);
+        controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataDelete));
+        controleModification.checkNonRequisStockages(mappingService.storageMetadatasToSaeMetadatas(metadataDelete));
         controleModification.checkModifiables(mappingService.storageMetadataToUntypedMetadata(metadataModifie));
 
         document.setMetadatas(metadataMasse);
@@ -588,7 +590,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       }
 
     }
-    catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException | NotSpecifiableMetadataEx | UnknownMetadataEx e) {
+    catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException | UnknownMetadataEx | RequiredStorageMetadataEx e) {
       throw new TransfertException(e);
     }
 

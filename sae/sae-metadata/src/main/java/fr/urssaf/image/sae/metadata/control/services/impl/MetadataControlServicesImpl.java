@@ -778,35 +778,6 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
    * {@inheritDoc}
    */
   @Override
-  public List<MetadataError> checkNonArchivableMetadata(final List<SAEMetadata> metadatas) {
-    final List<MetadataError> errors = new ArrayList<MetadataError>();
-    for (SAEMetadata metadata : Utils.nullSafeIterable(metadatas)) {
-       try {
-          final MetadataReference reference = referenceDAO
-                .getByLongCode(metadata.getLongCode());
-          if (ruleFactory.getArchivableRule().isSatisfiedBy(metadata,
-                reference)) {
-            errors.add(new MetadataError(MetadataMessageHandler
-                   .getMessage("metadata.control.archivage"), metadata
-                   .getLongCode(), MetadataMessageHandler.getMessage(
-                         "metadata.archivable", metadata.getLongCode())));
-          }
-       } catch (ReferentialException refExcept) {
-         errors.add(new MetadataError(MetadataMessageHandler
-                .getMessage("metadata.referentiel.error"), metadata
-                .getLongCode(), MetadataMessageHandler.getMessage(
-                      "metadata.referentiel.retrieve", metadata.getLongCode())));
-       }
-       }
-    
-    return errors;
- 
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
   public List<MetadataError> checkExistingStorageMetadataList(List<StorageMetadata> metadatas) {
     final List<MetadataError> errors = new ArrayList<MetadataError>();
     for (StorageMetadata metadata : Utils.nullSafeIterable(metadatas)) {
@@ -829,5 +800,34 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
     }
     return errors;
  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<MetadataError> checkNoRequiredForStorageUntypedMetadataList(List<SAEMetadata> metadatas) {
+    
+    
+    final List<MetadataError> errors = new ArrayList<MetadataError>();
+      try {
+      for (Entry<String, MetadataReference> metadata : Utils.nullSafeMap(referenceDAO.getRequiredForStorageMetadataReferences()).entrySet()) {
+        if (Utils.isInRequiredList(metadata.getValue(), metadatas)) {
+          errors.add(new MetadataError(MetadataMessageHandler
+                                                             .getMessage("metadata.control.required"),
+                                       metadata.getValue()
+                                               .getLongCode(),
+                                       MetadataMessageHandler.getMessage(
+                                                                         "metadata.required",
+                                                                         metadata.getValue().getLongCode())));
+        }
+      }
+     } catch (ReferentialException refExcept) {
+        errors.add(new MetadataError(MetadataMessageHandler
+              .getMessage("metadata.referentiel.error"), null,
+              MetadataMessageHandler
+              .getMessage("metadata.referentiel.retrieve")));
+     }
+
+ return errors;}
 
 }

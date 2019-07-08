@@ -25,6 +25,7 @@ import fr.urssaf.image.sae.services.exception.capture.DuplicatedMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.NotSpecifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
+import fr.urssaf.image.sae.services.exception.capture.RequiredStorageMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownHashCodeEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
@@ -366,34 +367,6 @@ public class SAEControlesModificationServiceImpl implements
 
   /**
    * {@inheritDoc}
-   */
-  @Override
-  public void checkNonArchivable(final List<StorageMetadata> metadatas)
-      throws NotSpecifiableMetadataEx, InvalidSAETypeException, MappingFromReferentialException {
-    final String trcPrefix = "checkNonArchivable";
-    LOG.debug(
-              "{} - vérification de la possibilité de modifier les métadonnées",
-              trcPrefix);
-    final List<SAEMetadata> saeMetadata = mappingService.storageMetadatasToSaeMetadatas(metadatas);
-
-    String listeCodeLong;
-    final List<MetadataError> errors = metadataCS.checkNonArchivableMetadata(saeMetadata);
-    if (CollectionUtils.isNotEmpty(errors)) {
-      listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
-      LOG.debug("{} - {}",
-                trcPrefix,
-                ResourceMessagesUtils.loadMessage(
-                                                  "capture.metadonnees.archivage.obligatoire",
-                                                  listeCodeLong));
-      throw new NotSpecifiableMetadataEx(ResourceMessagesUtils.loadMessage(
-                                                                           "capture.metadonnees.archivage.obligatoire",
-                                                                           listeCodeLong));
-
-    }
-  }
-
-  /**
-   * {@inheritDoc}
    * 
    * @throws UnknownMetadataEx
    */
@@ -416,6 +389,30 @@ public class SAEControlesModificationServiceImpl implements
       throw new UnknownMetadataEx(ResourceMessagesUtils.loadMessage(
                                                                     "capture.metadonnees.inconnu",
                                                                     listeCodeLong));
+    }
+
+  }
+
+  /**
+   * {@inheritDoc} 
+   */
+  @Override
+  public void checkNonRequisStockages(final List<SAEMetadata> metadatas) throws RequiredStorageMetadataEx {
+    final String trcPrefix = "checkNonRequisStockages";
+    LOG.debug(
+              "{} - vérification de la possibilité que les métadonnées soient requis au stockage",
+              trcPrefix);
+
+    String listeCodeLong;
+    final List<MetadataError> errors = metadataCS
+                                                 .checkNoRequiredForStorageUntypedMetadataList(metadatas);
+    if (CollectionUtils.isNotEmpty(errors)) {
+      listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+      LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
+            "capture.metadonnees.stockage.obligatoire", listeCodeLong));
+      throw new RequiredStorageMetadataEx(ResourceMessagesUtils
+            .loadMessage("capture.metadonnees.archivage.obligatoire", listeCodeLong));
+   
     }
 
   }

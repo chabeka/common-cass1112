@@ -202,7 +202,6 @@ public class SAETransfertMasseServiceTest {
     listeMeta.add(new StorageMetadata("cop", "CER68"));
     listeMeta.add(new StorageMetadata("toa", ""));
     listeMeta.add(new StorageMetadata("dco", ""));
-    listeMeta.add(new StorageMetadata("SM_ARCHIVAGE_DATE", ""));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -250,6 +249,7 @@ public class SAETransfertMasseServiceTest {
     final List<StorageMetadata> listeMeta = new ArrayList<>();
     listeMeta.add(new StorageMetadata("apr", "ADELA"));
     listeMeta.add(new StorageMetadata("cop", "CER68"));
+    listeMeta.add(new StorageMetadata("SM_ARCHIVAGE_DATE", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -273,11 +273,9 @@ public class SAETransfertMasseServiceTest {
 
     // -- Transfert du document vers la GNS
     final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("dre", ""));
-    listeMeta.add(new StorageMetadata("bap", ""));
-    listeMeta.add(new StorageMetadata("aex", ""));
-    listeMeta.add(new StorageMetadata("mch", ""));
-    listeMeta.add(new StorageMetadata("mre", ""));
+    listeMeta.add(new StorageMetadata("cop", ""));
+    listeMeta.add(new StorageMetadata("SM_CREATION_DATE", ""));
+    listeMeta.add(new StorageMetadata("SM_TITLE", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -285,11 +283,11 @@ public class SAETransfertMasseServiceTest {
       Assert.fail("Une exception de type TransfertException est attendue");
     }
     catch (final TransfertException e) {
-      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof NotSpecifiableMetadataEx);
-      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : AnneeExercice, BonAPayer, DateReception, MontantCheque, MontantRegle'",
+      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
+      Assert.assertTrue("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
                         e.getCause()
                          .getMessage()
-                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : AnneeExercice, BonAPayer, DateReception, MontantCheque, MontantRegle"));
+                         .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre"));
     }
   }
 
@@ -312,37 +310,12 @@ public class SAETransfertMasseServiceTest {
       Assert.fail("Une exception de type TransfertException est attendue");
     }
     catch (final TransfertException e) {
-      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof NotSpecifiableMetadataEx);
-      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND'",
+      Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
+      Assert.assertTrue("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
                         e.getCause()
                          .getMessage()
                          .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
       ;
-    }
-  }
-
-  @Test
-  public void testErreurMetaNonArchivable()
-      throws ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException, ConnectionServiceEx, IOException, ParseException {
-
-    // -- Insertion d'un document de test sur la GNT
-    uidDocGNT = insertDoc(testProviderGNT);
-
-    // MODIFIER DES METADONNEES
-
-    // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("srn", "siren"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
-    listeMeta.add(new StorageMetadata("toa", "testToto"));
-
-    try {
-      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
-
-      Assert.fail("Une exception de type TransfertException est attendue");
-    }
-    catch (final TransfertException e) {
-      Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof NotSpecifiableMetadataEx);
     }
   }
 

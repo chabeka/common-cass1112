@@ -379,8 +379,8 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
                                                  Utils.convertToString(metadata.getValue(), reference)));
 
       }
-      catch (final ParseException parseExcept) {
-        throw new InvalidSAETypeException(parseExcept);
+      catch (final ParseException | IllegalArgumentException parseExcept) {
+        throw new InvalidSAETypeException(MessageFormat.format("Le type de la  métadonnée \"{0}\" n'est pas valide.", metadata), parseExcept);
       }
       catch (final ReferentialException refExcpt) {
         throw new MappingFromReferentialException(refExcpt);

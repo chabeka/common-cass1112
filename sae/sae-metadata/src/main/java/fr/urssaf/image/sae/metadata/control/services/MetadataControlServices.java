@@ -257,12 +257,12 @@ public interface MetadataControlServices {
                                  String contratService, List<String> listePagms, String login);
 
   /**
-   * Contrôle que les métadonnées sont autorisées à l'archivables.
+   * Vérifie que les métadonnées passées en paramètre sont toutes non requis à l'archivage
    * 
    * @param metadatas
-   *          : la liste des métadonnées
-   * @return un objet de type {@link MetadataError}
+   *          liste des métadonnées à contrôler
+   * @return une liste d'erreur
    */
-  List<MetadataError> checkNonArchivableMetadata(final List<SAEMetadata> metadatas);
+  List<MetadataError> checkNoRequiredForStorageUntypedMetadataList(List<SAEMetadata> metadatas);
 
 }
