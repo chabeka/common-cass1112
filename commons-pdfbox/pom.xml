@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-pdfbox</artifactId>
-	<version>1.0.2-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 
 	<name>commons-pdfbox</name>
    
@@ -18,15 +18,17 @@
 	<properties>
      
       <!-- Version des plug-ins Maven -->
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
-		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
-		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+      	<maven-resources-plugin.version>3.0.1</maven-resources-plugin.version>
       
       <!-- version des framework -->
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<apache.commons-email.version>1.2</apache.commons-email.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<pdfbox.version>1.8.1.1</pdfbox.version>
 
 	</properties>
@@ -97,6 +99,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -106,7 +109,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<quiet>true</quiet>
+					<additionalparam>${javadoc.opts}</additionalparam>
+					<doclint>none</doclint>
 				</configuration>
 			</plugin>
 
@@ -184,19 +188,19 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.framework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.framework.version}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-test</artifactId>
-			<version>3.0.5.RELEASE</version>
+			<version>${spring.framework.version}</version>
 			<scope>test</scope>
 		</dependency>
       <!-- FIN SPRING -->

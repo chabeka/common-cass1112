@@ -4,7 +4,7 @@
 	<groupId>fr.urssaf.image</groupId>
 	<artifactId>pdfa-validator</artifactId>
 	<name>pdfa-validator</name>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.1.0-SNAPSHOT</version>
 	<description>Outil en ligne de commande permettant d'analyser la conformité d'un PDF/A par rapport aux normes.</description>
   
   	<!-- Utilisation du fichier POM parent ALTAIR -->
@@ -16,9 +16,9 @@
 
 	<properties>
 		<org.slf4j.version>1.6.1</org.slf4j.version>
-		<logback.version>0.9.30</logback.version>
+		<logback.version>1.2.3</logback.version>
 		<commons.pdfbox.version>1.0.1</commons.pdfbox.version>
-		<junit.version>4.8.2</junit.version>
+		<junit.version>4.12</junit.version>
 		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
 		<maven-resources-plugin.version>2.5</maven-resources-plugin.version>
 		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
