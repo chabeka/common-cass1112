@@ -531,20 +531,28 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    */
   @Override
   public final StorageDocument updateMetaDocumentForTransfertMasse(final StorageDocument document,
-                                                                   final List<StorageMetadata> listeMeta, final UUID idTraitementMasse)
+                                                                   final List<UntypedMetadata> listeMetaClient, final UUID idTraitementMasse)
       throws TransfertException {
 
     try {
       // modification des métadonnées avant transfert
-      if (!CollectionUtils.isEmpty(listeMeta)) {
-        controleModification.checkExistingMetaList(listeMeta);
+      if (!CollectionUtils.isEmpty(listeMetaClient)) {
+        controleModification.checkExistingMetaList(listeMetaClient);
+
+        List<StorageMetadata> storageMetas = new ArrayList<>();
+        try {
+          storageMetas = mappingService.untypedMetadatasToStorageMetadatas(listeMetaClient);
+        }
+        catch (final InvalidSAETypeException | MappingFromReferentialException e) {
+          throw new TransfertException(e);
+        }
 
         final List<StorageMetadata> metadataModifie = new ArrayList<>();
         final List<StorageMetadata> metadataDelete = new ArrayList<>();
         final List<StorageMetadata> metadataMasse = new ArrayList<>();
         Boolean bool = false;
         for (final StorageMetadata meta : document.getMetadatas()) {
-          for (final StorageMetadata meta2 : listeMeta) {
+          for (final StorageMetadata meta2 : storageMetas) {
             if (meta.getShortCode().equals(meta2.getShortCode())) {
               metadataMasse.add(meta2);
               if (meta.getValue() != null) {
@@ -820,7 +828,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
   @Override
   public final StorageDocument controleDocumentTransfertMasse(final UUID idArchive,
-                                                              final List<StorageMetadata> storageMetas, final boolean isReprise, final UUID idTraitementMasse,
+                                                              final List<UntypedMetadata> listeMetaClient, final boolean isReprise,
+                                                              final UUID idTraitementMasse,
                                                               final boolean isSuppression)
       throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException {
     final String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible :";
@@ -879,7 +888,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       }
 
       // Mise à jour de la liste des métadonnées pour le transfert
-      document = updateMetaDocumentForTransfertMasse(document, storageMetas, idTraitementMasse);
+      document = updateMetaDocumentForTransfertMasse(document, listeMetaClient, idTraitementMasse);
 
       if (!isSuppression) {
         // Contrôle des métadonnées qui serviront pour le transfert

@@ -1,10 +1,8 @@
 package fr.urssaf.image.sae.services.batch.transfert.support.controle.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -145,18 +143,8 @@ public class TransfertMasseControleSupportImpl implements TransfertMasseControle
     final String trcPrefix = "controleSAEDocumentTransfert()";
     LOGGER.debug("{} - début", trcPrefix);
 
-    List<StorageMetadata> storageMetas = new ArrayList<>();
-    if (!CollectionUtils.isEmpty(untypedDoc.getUMetadatas())) {
-      try {
-        storageMetas = mappingDocumentService.untypedMetadatasToStorageMetadatas(untypedDoc.getUMetadatas());
-      }
-      catch (final InvalidSAETypeException | MappingFromReferentialException e) {
-        throw new TransfertException(e);
-      }
-    }
-
     final StorageDocument document = transfertService.controleDocumentTransfertMasse(untypedDoc.getUuid(),
-                                                                                     storageMetas,
+                                                                                     untypedDoc.getUMetadatas(),
                                                                                      isReprise,
                                                                                      idTraitementMasse,
                                                                                      untypedDoc.getBatchActionType().equals("SUPPRESSION"));

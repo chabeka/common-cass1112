@@ -157,7 +157,7 @@ public interface SAEControlesModificationService {
    * @throws MappingFromReferentialException
    * @{@link MappingFromReferentialException}
    */
-  void checkExistingMetaList(List<StorageMetadata> metadatas) throws InvalidSAETypeException, MappingFromReferentialException, UnknownMetadataEx;
+  void checkExistingMetaList(List<UntypedMetadata> metadatas) throws InvalidSAETypeException, MappingFromReferentialException, UnknownMetadataEx;
 
   /**
    * Contrôle que les métadonnées sont modifiables

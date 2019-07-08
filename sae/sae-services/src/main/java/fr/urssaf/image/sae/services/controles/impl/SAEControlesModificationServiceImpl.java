@@ -34,7 +34,6 @@ import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeEx
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.util.MetadataErrorUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Service implémentant l'interface {@link SAEControlesModificationService}.
@@ -371,7 +370,7 @@ public class SAEControlesModificationServiceImpl implements
    * @throws UnknownMetadataEx
    */
   @Override
-  public void checkExistingMetaList(final List<StorageMetadata> metadatas) throws InvalidSAETypeException, MappingFromReferentialException, UnknownMetadataEx {
+  public void checkExistingMetaList(final List<UntypedMetadata> metadatas) throws InvalidSAETypeException, MappingFromReferentialException, UnknownMetadataEx {
     final String trcPrefix = "checkExistingMetaList";
     LOG.debug("{} - début", trcPrefix);
 
@@ -394,7 +393,7 @@ public class SAEControlesModificationServiceImpl implements
   }
 
   /**
-   * {@inheritDoc} 
+   * {@inheritDoc}
    */
   @Override
   public void checkNonRequisStockages(final List<SAEMetadata> metadatas) throws RequiredStorageMetadataEx {
@@ -408,11 +407,14 @@ public class SAEControlesModificationServiceImpl implements
                                                  .checkNoRequiredForStorageUntypedMetadataList(metadatas);
     if (CollectionUtils.isNotEmpty(errors)) {
       listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
-      LOG.debug("{} - {}", trcPrefix, ResourceMessagesUtils.loadMessage(
-            "capture.metadonnees.stockage.obligatoire", listeCodeLong));
+      LOG.debug("{} - {}",
+                trcPrefix,
+                ResourceMessagesUtils.loadMessage(
+                                                  "capture.metadonnees.stockage.obligatoire",
+                                                  listeCodeLong));
       throw new RequiredStorageMetadataEx(ResourceMessagesUtils
-            .loadMessage("capture.metadonnees.archivage.obligatoire", listeCodeLong));
-   
+                                                               .loadMessage("capture.metadonnees.archivage.obligatoire", listeCodeLong));
+
     }
 
   }

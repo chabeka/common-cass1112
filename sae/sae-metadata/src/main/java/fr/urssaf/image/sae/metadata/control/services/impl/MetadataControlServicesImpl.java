@@ -778,24 +778,24 @@ public class MetadataControlServicesImpl implements MetadataControlServices {
    * {@inheritDoc}
    */
   @Override
-  public List<MetadataError> checkExistingStorageMetadataList(List<StorageMetadata> metadatas) {
+  public List<MetadataError> checkExistingStorageMetadataList(List<UntypedMetadata> metadatas) {
     final List<MetadataError> errors = new ArrayList<MetadataError>();
-    for (StorageMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+    for (UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
        try {
           final MetadataReference reference = referenceDAO
-                .getByShortCode(metadata.getShortCode());
+                .getByLongCode(metadata.getLongCode());
           if (!ruleFactory.getExistingRule().isSatisfiedBy(
-                metadata.getShortCode(), reference)) {
+                metadata.getLongCode(), reference)) {
              errors.add(new MetadataError(MetadataMessageHandler
                    .getMessage("metadata.control.existing"), metadata
-                   .getShortCode(), MetadataMessageHandler.getMessage(
-                         "metadata.not.exist", metadata.getShortCode())));
+                   .getLongCode(), MetadataMessageHandler.getMessage(
+                         "metadata.not.exist", metadata.getLongCode())));
           }
        } catch (ReferentialException refExcept) {
           errors.add(new MetadataError(MetadataMessageHandler
                 .getMessage("metadata.referentiel.error"), metadata
-                .getShortCode(), MetadataMessageHandler.getMessage(
-                      "metadata.referentiel.retrieve", metadata.getShortCode())));
+                .getLongCode(), MetadataMessageHandler.getMessage(
+                      "metadata.referentiel.retrieve", metadata.getLongCode())));
        }
     }
     return errors;

@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
 import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
@@ -104,7 +105,7 @@ public interface SAETransfertService {
    * @throws TransfertException
    *           @{@link TransfertException}
    */
-  StorageDocument updateMetaDocumentForTransfertMasse(StorageDocument document, final List<StorageMetadata> listeMeta,
+  StorageDocument updateMetaDocumentForTransfertMasse(StorageDocument document, final List<UntypedMetadata> listeMeta,
                                                       UUID idTraitementMasse)
       throws TransfertException;
 
@@ -133,7 +134,7 @@ public interface SAETransfertService {
    * @throws UnknownCodeRndEx
    *           @{@link UnknownCodeRndEx}
    */
-  StorageDocument controleDocumentTransfertMasse(final UUID idArchive, final List<StorageMetadata> storageMetas,
+  StorageDocument controleDocumentTransfertMasse(final UUID idArchive, final List<UntypedMetadata> listeMetaClient,
                                                  boolean isReprise, UUID idTraitementMasse, boolean isSuppression)
       throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException;
 

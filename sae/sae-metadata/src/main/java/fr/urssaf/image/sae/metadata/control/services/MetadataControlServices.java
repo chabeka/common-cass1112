@@ -174,7 +174,7 @@ public interface MetadataControlServices {
    *          : La liste des métadonnées
    * @return une liste d’objet de type {@link MetadataError}
    */
-  List<MetadataError> checkExistingStorageMetadataList(final List<StorageMetadata> metadatas);
+  List<MetadataError> checkExistingStorageMetadataList(final List<UntypedMetadata> metadatas);
 
   /**
    * Contrôle que les valeurs des métadonnées obligatoires sont spécifiées.

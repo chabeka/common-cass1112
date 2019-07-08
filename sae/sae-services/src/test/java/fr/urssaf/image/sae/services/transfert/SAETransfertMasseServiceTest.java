@@ -30,6 +30,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -68,7 +69,6 @@ import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
 import fr.urssaf.image.sae.storage.exception.StorageException;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
@@ -197,11 +197,11 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("srn", "siren"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
-    listeMeta.add(new StorageMetadata("toa", ""));
-    listeMeta.add(new StorageMetadata("dco", ""));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("Siren", "siren"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+    listeMeta.add(new UntypedMetadata("TracabilitePostArchivage", ""));
+    listeMeta.add(new UntypedMetadata("DureeConservation", ""));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -246,10 +246,10 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("apr", "ADELA"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
-    listeMeta.add(new StorageMetadata("SM_ARCHIVAGE_DATE", ""));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+    listeMeta.add(new UntypedMetadata("DateArchivage", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -272,10 +272,10 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("cop", ""));
-    listeMeta.add(new StorageMetadata("SM_CREATION_DATE", ""));
-    listeMeta.add(new StorageMetadata("SM_TITLE", ""));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", ""));
+    listeMeta.add(new UntypedMetadata("DateCreation", ""));
+    listeMeta.add(new UntypedMetadata("Titre", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -301,8 +301,8 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", ""));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("CodeRND", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -329,10 +329,10 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("srn", "siren"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
-    listeMeta.add(new StorageMetadata("dco", "1"));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("Siren", "siren"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
+    listeMeta.add(new UntypedMetadata("DureeConservation", "1"));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -377,9 +377,9 @@ public class SAETransfertMasseServiceTest {
 
       final UUID uuid = UUID.randomUUID();
 
-      final List<StorageMetadata> listeMeta = new ArrayList<>();
-      listeMeta.add(new StorageMetadata("apr", "ADELA"));
-      listeMeta.add(new StorageMetadata("cop", "CER68"));
+      final List<UntypedMetadata> listeMeta = new ArrayList<>();
+      listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
+      listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
 
       saeTransfertService.controleDocumentTransfertMasse(uuid,
                                                          listeMeta,
@@ -413,9 +413,9 @@ public class SAETransfertMasseServiceTest {
                          "l'UUID '" + uidDocGNS + "' doit exister sur la GNS",
                          doc);
 
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("apr", "ADELA"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
+    listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
 
     // -- Appel méthode de transfert sur un doc déjà transféré
     try {
@@ -456,14 +456,9 @@ public class SAETransfertMasseServiceTest {
     // -- Ajout d'une note au document
     testProviderGNT.addNoteDocument(uidDocGNT, "Contenu de la note");
 
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("apr", "ADELA"));
-    listeMeta.add(new StorageMetadata("cop", "CER68"));
-
     // -- Transfert du document vers la GNS
     try {
-      final StorageDocument document = saeTransfertService
-                                                          .controleDocumentTransfertMasse(
+      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(
                                                                                           uidDocGNT,
                                                                                           null,
                                                                                           false,
@@ -511,9 +506,9 @@ public class SAETransfertMasseServiceTest {
     // MODIFIER DES METADONNEES
 
     // -- Transfert du document vers la GNS
-    final List<StorageMetadata> listeMeta = new ArrayList<>();
-    listeMeta.add(new StorageMetadata("Titi", "Test"));
-    listeMeta.add(new StorageMetadata("Toto", "11"));
+    final List<UntypedMetadata> listeMeta = new ArrayList<>();
+    listeMeta.add(new UntypedMetadata("Titi", "Test"));
+    listeMeta.add(new UntypedMetadata("Toto", "11"));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
