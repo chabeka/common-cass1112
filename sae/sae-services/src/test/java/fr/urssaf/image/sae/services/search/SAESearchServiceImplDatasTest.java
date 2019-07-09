@@ -156,8 +156,8 @@ public class SAESearchServiceImplDatasTest {
       prmd.setCode("default");
       prmd.setLucene("Siret:12345678901234");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "recherche_iterateur",
-                                            "archivage_unitaire", "recherche", "suppression" };
+      final String[] roles = new String[] { "ROLE_recherche_iterateur",
+                                            "ROLE_archivage_unitaire", "ROLE_recherche", "ROLE_suppression" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche_iterateur", saePrmds);

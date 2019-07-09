@@ -144,7 +144,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobCaptureMasse_success() {
 
-      String[] roles = new String[] { "archivage_masse" };
+      String[] roles = new String[] { "ROLE_archivage_masse" };
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             "cle", "valeur", roles);
       AuthenticationContext.setAuthenticationToken(token);
@@ -182,7 +182,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobSuppressionMasse_success() {
 
-      String[] roles = new String[] { "suppression_masse" };
+      String[] roles = new String[] { "ROLE_suppression_masse" };
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             "cle", "valeur", roles);
       AuthenticationContext.setAuthenticationToken(token);
@@ -216,7 +216,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobRestoreMasse_success() {
 
-      String[] roles = new String[] { "restore_masse" };
+      String[] roles = new String[] { "ROLE_restore_masse" };
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             "cle", "valeur", roles);
       AuthenticationContext.setAuthenticationToken(token);
@@ -249,7 +249,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobModificationMasse_success() {
 
-      String[] roles = new String[] { "modification_masse" };
+      String[] roles = new String[] { "ROLE_modification_masse" };
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             "cle", "valeur", roles);
       AuthenticationContext.setAuthenticationToken(token);
@@ -293,7 +293,7 @@ public class TraitementAsynchroneServiceTest {
    @Test
    public void ajouterJobTransfertMasse_succes() {
 
-      String[] roles = new String[] { "transfert_masse" };
+      String[] roles = new String[] { "ROLE_transfert_masse" };
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             "clé", "valeur", roles);
       AuthenticationContext.setAuthenticationToken(token);

@@ -156,7 +156,7 @@ public class WSRepriseServiceImplTest {
       jobQueueService.changerEtatJobRequest(job.getIdJob(),
             JobState.FAILURE.name(), failureDate, null);
       
-      String[] roles = new String[] { "reprise_masse" };
+      String[] roles = new String[] { "ROLE_reprise_masse" };
       // Similation du service de reprise
       String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
       VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);

@@ -113,10 +113,12 @@ public class SAECopieServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "copie" };
+			final String[] roles = new String[] {"ROLE_copie", "ROLE_consultation", "ROLE_archivage_unitaire"};
       saePrmds.add(saePrmd);
 
       saeDroits.put("copie", saePrmds);
+    	saeDroits.put("consultation", saePrmds);
+    	saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);

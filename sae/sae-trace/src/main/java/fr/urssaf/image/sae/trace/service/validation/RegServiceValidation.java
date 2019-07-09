@@ -9,12 +9,14 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 /**
  * Classe de validation des implémentations des méthodes de l'interface
  * RegService
  */
 @Aspect
+@Component
 public class RegServiceValidation {
 
    private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";

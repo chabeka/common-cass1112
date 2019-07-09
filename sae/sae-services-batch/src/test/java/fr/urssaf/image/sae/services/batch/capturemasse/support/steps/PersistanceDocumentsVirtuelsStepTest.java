@@ -113,7 +113,7 @@ public class PersistanceDocumentsVirtuelsStepTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse" };
+      String[] roles = new String[] { "ROLE_archivage_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);

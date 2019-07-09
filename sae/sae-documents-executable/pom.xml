@@ -101,6 +101,19 @@
          <artifactId>opencsv</artifactId>
          <version>${opencsv.version}</version>
       	</dependency>
+      	
+      	<!-- Spring -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.framework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
 
 	</dependencies>
 
@@ -108,21 +121,38 @@
 		<finalName>${project.name}</finalName>
 		<plugins>
 
-         <!-- Compilation Aspect -->
+			<!-- Compilation Aspect -->
 			<plugin>
 				<inherited>true</inherited>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>aspectj-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
 				<configuration>
-					<argumentFileName>builddef-sae-documents-executable.lst</argumentFileName>
-				</configuration>
+						<encoding>${project.build.sourceEncoding}</encoding>
+						<source>1.8</source>
+						<target>1.8</target>
+						<complianceLevel>1.8</complianceLevel>
+						<showWeaveInfo>true</showWeaveInfo>
+						<verbose>true</verbose>
+						<Xlint>ignore</Xlint>
+						<encoding>UTF-8</encoding>
+						<argumentFileName>builddef-sae-documents-executable.lst</argumentFileName>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.aspectj</groupId>
+							<artifactId>aspectjtools</artifactId>
+							<version>${aspectj.version}</version>
+							<scope>compile</scope>
+						</dependency>
+					</dependencies>
+					<executions>
+						<execution>
+							<goals>
+								<goal>compile</goal>
+								<goal>test-compile</goal>
+							</goals>
+						</execution>
+					</executions>
 			</plugin>
 
 			<plugin>

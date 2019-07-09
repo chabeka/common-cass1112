@@ -92,7 +92,7 @@ public class SAETransfertMasseTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "transfert_masse" };
+      String[] roles = new String[] { "ROLE_transfert_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("transfert_masse", saePrmds);

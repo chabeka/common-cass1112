@@ -72,7 +72,12 @@
          <artifactId>aspectjrt</artifactId>
          <version>${aspectj.version}</version>
       </dependency>
-
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		
       <!-- SPRING -->
 
       <dependency>
@@ -100,6 +105,12 @@
          <scope>test</scope>
       </dependency>
 
+	  <dependency>
+		 <groupId>org.springframework</groupId>
+		 <artifactId>spring-aop</artifactId>
+		 <version>${spring.framework.version}</version>
+	  </dependency>
+		
       <!-- GUAVA -->
 
       <dependency>

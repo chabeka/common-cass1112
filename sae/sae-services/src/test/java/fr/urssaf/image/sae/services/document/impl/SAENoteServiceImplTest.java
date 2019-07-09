@@ -159,8 +159,8 @@ public class SAENoteServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "archivage_unitaire", "ajout_note",
-      "consultation" };
+      final String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_ajout_note",
+      "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
@@ -547,7 +547,7 @@ public class SAENoteServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "recherche" };
+      final String[] roles = new String[] { "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche", saePrmds);

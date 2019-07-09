@@ -72,7 +72,7 @@ public class SAESuppressionMasseServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] {"suppression_masse", "recherche_iterateur"};
+      final String[] roles = new String[] {"ROLE_suppression_masse", "ROLE_recherche_iterateur"};
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression_masse", saePrmds);

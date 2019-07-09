@@ -69,7 +69,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     * {@inheritDoc}
     */
    @Override
-   public final ExitTraitement captureMasse(final URI sommaireURL,
+   public ExitTraitement captureMasse(final URI sommaireURL,
          final UUID idTraitement) {
 
       ExitTraitement exitTraitement = captureMasse(sommaireURL, idTraitement, null, null);
@@ -115,7 +115,7 @@ public class SAECaptureMasseServiceImpl implements SAECaptureMasseService {
     */
    @SuppressWarnings(CATCH)
    @Override
-   public final ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
+   public ExitTraitement captureMasse(URI sommaireURI, UUID idTraitement,
          String hash, String typeHash) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       mapParam.put(Constantes.SOMMAIRE,

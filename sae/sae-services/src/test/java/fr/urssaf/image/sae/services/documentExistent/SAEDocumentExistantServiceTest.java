@@ -85,7 +85,7 @@ public class SAEDocumentExistantServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "documentExistant" };
+      String[] roles = new String[] { "ROLE_documentExistant" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("documentExistant", saePrmds);

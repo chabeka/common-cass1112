@@ -3,6 +3,7 @@ package fr.urssaf.image.sae.rnd.aspect;
 import org.apache.commons.lang.StringUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.rnd.modele.Correspondance;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
@@ -15,6 +16,7 @@ import fr.urssaf.image.sae.rnd.modele.VersionRnd;
  * 
  */
 @Aspect
+@Component
 public class ServiceValidation {
 
    private static final String AJOUTER_CORRES = "execution(void fr.urssaf.image.sae.rnd.dao.support.CorrespondancesRndSupport.ajouterCorrespondance(*,*))"

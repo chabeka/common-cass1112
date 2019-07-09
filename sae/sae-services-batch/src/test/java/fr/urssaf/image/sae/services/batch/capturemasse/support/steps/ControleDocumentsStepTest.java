@@ -59,7 +59,7 @@ public class ControleDocumentsStepTest {
     AuthenticationToken token = AuthenticationFactory.createAuthentication(
                                                                            extrait.getIdUtilisateur(),
                                                                            extrait,
-                                                                           new String[] {"PRMD_PERMIT_ALL"});
+                                                                           new String[] {"ROLE_PRMD_PERMIT_ALL"});
     SecurityContextHolder.getContext().setAuthentication(token);
   }
 

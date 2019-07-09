@@ -22,90 +22,98 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 
 /**
  * Classe permettant de gérer les droits pour les traitements de masse.
- * 
- * <br><br><b>Note :</b> A la différence de l'ajout des jobs dans la pile 
- * qui passe par un contexte de sécurité initialisé par le WebService, 
+ * <br>
+ * <br>
+ * <b>Note :</b> A la différence de l'ajout des jobs dans la pile
+ * qui passe par un contexte de sécurité initialisé par le WebService,
  * le lancement de job utilise cette classe.
  * 
  * @see {@link TraitementAsynchroneService#lancerJob(java.util.UUID) }
- * 
  */
 public final class BatchAuthentificationUtils {
 
-   private static final String ROLE_RECHERCHE = "recherche";
-   
-   private static final String ROLE_RECHERCHE_ITERATEUR = "recherche_iterateur";
+  private static final String SPRING_ROLE_PRFX = "ROLE_";
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(BatchAuthentificationUtils.class);
+  private static final String ROLE_RECHERCHE = "ROLE_recherche";
 
-   private BatchAuthentificationUtils() {}
+  private static final String ROLE_RECHERCHE_ITERATEUR = "ROLE_recherche_iterateur";
 
-   /**
-    * 
-    * @param job
-    *           le job
-    * @return le token d'authentification
-    */
-   public static AuthenticationToken getToken(JobRequest job) {
-      VIContenuExtrait viExtrait = job.getVi();
-      AuthenticationToken token;
+  private static final Logger LOG = LoggerFactory
+                                                 .getLogger(BatchAuthentificationUtils.class);
 
-      String trcPrefix = "getToken()";
+  private BatchAuthentificationUtils() {
+  }
 
-      // chargement des droits autorisant tout afin d'associer les droits ses
-      // droits en recherche à la capture de masse.
-      // Dans le cas d'un rollback, si on ne possède pas les droits en
-      // recherche, le programme s'arrête en erreur
-      List<String> pagms = new ArrayList<String>();
-      pagms.add("ACCES_FULL_PAGM");
-      SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
-      SaeDroits saeDroits = new SaeDroits();
-      try {
-         //---------------------------------------------
-         SaeDroitsEtFormat saeDroitsEtFormat = new SaeDroitsEtFormat();
-         saeDroitsEtFormat = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
-         
-         saeDroits = saeDroitsEtFormat.getSaeDroits();
-         
-         //saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
-      } catch (ContratServiceNotFoundException e) {
-         LOG.warn("impossible de créer un accès total");
-      } 
+  /**
+   * @param job
+   *          le job
+   * @return le token d'authentification
+   */
+  public static AuthenticationToken getToken(final JobRequest job) {
+    VIContenuExtrait viExtrait = job.getVi();
+    AuthenticationToken token;
 
-      List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
+    final String trcPrefix = "getToken()";
 
-      if (viExtrait == null) {
-         LOG.debug("{} - le Vi est null, on met toutes les autorisations",
-               trcPrefix);
+    // chargement des droits autorisant tout afin d'associer les droits ses
+    // droits en recherche à la capture de masse.
+    // Dans le cas d'un rollback, si on ne possède pas les droits en
+    // recherche, le programme s'arrête en erreur
+    final List<String> pagms = new ArrayList<>();
+    pagms.add("ACCES_FULL_PAGM");
+    final SaeDroitServiceSkipImpl impl = new SaeDroitServiceSkipImpl();
+    SaeDroits saeDroits = new SaeDroits();
+    try {
+      // ---------------------------------------------
+      SaeDroitsEtFormat saeDroitsEtFormat = new SaeDroitsEtFormat();
+      saeDroitsEtFormat = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
 
-         viExtrait = new VIContenuExtrait();
-         viExtrait.setCodeAppli("aucun contrat de service");
-         viExtrait.setIdUtilisateur("aucun contrat de service");
-         viExtrait.setSaeDroits(saeDroits);
+      saeDroits = saeDroitsEtFormat.getSaeDroits();
 
-      }
+      // saeDroits = impl.loadSaeDroits("CS_ANCIEN_SYSTEME", pagms);
+    }
+    catch (final ContratServiceNotFoundException e) {
+      LOG.warn("impossible de créer un accès total");
+    }
 
-      List<String> lRoles = new ArrayList<String>();
-      lRoles.addAll(viExtrait.getSaeDroits().keySet());
-      if (!lRoles.contains(ROLE_RECHERCHE)) {
-         lRoles.add(ROLE_RECHERCHE);
-      }
-      // Attention, en suppression de masse et restore de masse
-      // nous avons besoin de faire de la recherche par iterateur
-      // on ajoute les droits si le vi ne l'a pas
-      if (!lRoles.contains(ROLE_RECHERCHE_ITERATEUR)) {
-         lRoles.add(ROLE_RECHERCHE_ITERATEUR);
-      }
+    final List<SaePrmd> prmdList = saeDroits.get(ROLE_RECHERCHE);
 
-      String[] roles = new String[lRoles.size()];
-      lRoles.toArray(roles);
-      viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
-      viExtrait.getSaeDroits().put(ROLE_RECHERCHE_ITERATEUR, prmdList);
-      
-      token = AuthenticationFactory.createAuthentication(viExtrait
-            .getIdUtilisateur(), viExtrait, roles);
+    if (viExtrait == null) {
+      LOG.debug("{} - le Vi est null, on met toutes les autorisations",
+                trcPrefix);
 
-      return token;
-   }
+      viExtrait = new VIContenuExtrait();
+      viExtrait.setCodeAppli("aucun contrat de service");
+      viExtrait.setIdUtilisateur("aucun contrat de service");
+      viExtrait.setSaeDroits(saeDroits);
+
+    }
+
+    final List<String> lRoles = new ArrayList<>();
+    for (final String role : viExtrait.getSaeDroits().keySet()) {
+      lRoles.add(SPRING_ROLE_PRFX + role);
+    }
+
+    if (!lRoles.contains(ROLE_RECHERCHE)) {
+      lRoles.add(ROLE_RECHERCHE);
+    }
+    // Attention, en suppression de masse et restore de masse
+    // nous avons besoin de faire de la recherche par iterateur
+    // on ajoute les droits si le vi ne l'a pas
+    if (!lRoles.contains(ROLE_RECHERCHE_ITERATEUR)) {
+      lRoles.add(ROLE_RECHERCHE_ITERATEUR);
+    }
+
+    final String[] roles = new String[lRoles.size()];
+    lRoles.toArray(roles);
+    viExtrait.getSaeDroits().put(ROLE_RECHERCHE, prmdList);
+    viExtrait.getSaeDroits().put(ROLE_RECHERCHE_ITERATEUR, prmdList);
+
+    token = AuthenticationFactory.createAuthentication(viExtrait
+                                                                .getIdUtilisateur(),
+                                                       viExtrait,
+                                                       roles);
+
+    return token;
+  }
 }

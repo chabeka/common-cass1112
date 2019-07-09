@@ -134,7 +134,7 @@ public class IntegrationRollBack0DocRechercheSuccesTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse", "recherche" };
+      String[] roles = new String[] { "ROLE_archivage_masse", "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);

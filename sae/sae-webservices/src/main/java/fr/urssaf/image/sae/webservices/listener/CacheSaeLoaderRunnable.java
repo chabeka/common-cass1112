@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.webservices.lintener;
+package fr.urssaf.image.sae.webservices.listener;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

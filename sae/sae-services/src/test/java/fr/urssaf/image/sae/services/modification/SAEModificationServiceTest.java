@@ -148,8 +148,8 @@ public class SAEModificationServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "modification", "archivage_unitaire",
-      "suppression" };
+      final String[] roles = new String[] { "ROLE_modification", "ROLE_archivage_unitaire",
+      "ROLE_suppression" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("modification", saePrmds);

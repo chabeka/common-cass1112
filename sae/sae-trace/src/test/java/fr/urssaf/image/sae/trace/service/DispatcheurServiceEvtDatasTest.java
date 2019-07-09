@@ -114,7 +114,7 @@ public class DispatcheurServiceEvtDatasTest {
   }
 
   @Test
-  public void testCreationTraceSecuriteSuccesContratNonRenseigné() {
+  public void testCreationTraceSecuriteSuccesContratNonRenseigne() {
     createDestinataireEvt();
 
     final TraceToCreate traceToCreate = new TraceToCreate();

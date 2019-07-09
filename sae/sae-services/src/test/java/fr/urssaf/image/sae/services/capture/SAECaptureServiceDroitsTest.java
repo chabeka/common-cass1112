@@ -108,7 +108,7 @@ public class SAECaptureServiceDroitsTest {
       prmd.setMetadata(metadata);
       prmd.setCode("CER75");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      String[] roles = new String[] { "ROLE_archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
