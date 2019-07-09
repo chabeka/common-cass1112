@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -17,6 +18,7 @@ import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
  *
  */
 @Aspect
+@Component
 public class SaeControleMetadataServiceValidation {
 
    private static final String CHECK_UNTYPED_METHOD = "execution(void fr.urssaf.image.sae.services.controles.SaeControleMetadataService.checkUntypedMetadatas(*))"
