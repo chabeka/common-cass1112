@@ -28,7 +28,7 @@
 	
    <!--  thrift BEANS -->
    <bean id="cassandraJobExecutionDaoThrift"
-      class="fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDaoThrift">
+      class="fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExecutionDaoThrift">
       <constructor-arg ref="keyspace" />
       <constructor-arg ref="jobExecutionIdGenerator" />
    </bean>

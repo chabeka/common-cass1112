@@ -63,11 +63,6 @@ public class DFCEServicesImpl implements DFCEServices {
     */
    private static final Logger LOG = LoggerFactory.getLogger(DFCEServicesImpl.class);
 
-  /**
-   * Prefixe Spring security pour le user login
-   */
-  private static final String SPRING_USER_PREFIXE = "ROLE_";
-
    private final DFCEConnection dfceConnection;
 
    private ServiceProvider dfceService;
@@ -97,8 +92,7 @@ public class DFCEServicesImpl implements DFCEServices {
    private void connect() {
       dfceService = ServiceProvider.newServiceProvider();
       final String serverUrl = ObjectUtils.toString(this.dfceConnection.getServerUrl());
-      final String login = SPRING_USER_PREFIXE + dfceConnection.getLogin();
-      dfceService.connect(login,
+      dfceService.connect(this.dfceConnection.getLogin(),
                           this.dfceConnection.getPassword(),
                           serverUrl,
                           this.dfceConnection.getTimeout());
