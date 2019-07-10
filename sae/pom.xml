@@ -474,14 +474,6 @@
 
 		</pluginManagement>
 
-		<extensions>
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>${wagon-webdav.version}</version>
-			</extension>
-		</extensions>
-
 	</build>
 
 	<dependencies>
@@ -508,6 +500,11 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.maven.wagon</groupId>
+			<artifactId>wagon-file</artifactId>
+			<version>${wagon-webdav.version}</version>
 		</dependency>
 	</dependencies>
 
