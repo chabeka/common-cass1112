@@ -1,3 +1,0 @@
-// CHECKSTYLE:OFF
-@SuppressWarnings("all")
-public enum
