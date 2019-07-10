@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<ns1:consultationMTOM xmlns:ns1="http://www.cirtil.fr/saeService">
-   <ns1:idArchive>cc4a5ec1-788d-4b41-baa8-d349947865bf</ns1:idArchive>
-   <ns1:metadonnees>
-      <ns1:metadonneeCode>TypeHash</ns1:metadonneeCode>
-      <ns1:metadonneeCode>NbPages</ns1:metadonneeCode>
-   </ns1:metadonnees>
-</ns1:consultationMTOM>
