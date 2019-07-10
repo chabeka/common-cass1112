@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.sae.commons.dao.impl.GenericDAOImpl;
+import fr.urssaf.image.commons.cassandra.cql.dao.impl.GenericDAOImpl;
 import fr.urssaf.image.sae.jobspring.dao.IGenericJobExecutionDAO;
 import fr.urssaf.image.sae.jobspring.model.GenericJobExecution;
 
