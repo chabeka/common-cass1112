@@ -55,6 +55,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
+import fr.urssaf.image.sae.services.exception.transfert.NotTransferableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertMasseRuntimeException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
@@ -538,6 +539,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // modification des métadonnées avant transfert
       if (!CollectionUtils.isEmpty(listeMetaClient)) {
         controleModification.checkExistingMetaList(listeMetaClient);
+        controleModification.checkTransferable(listeMetaClient);
 
         List<StorageMetadata> storageMetas = new ArrayList<>();
         try {
@@ -598,7 +600,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       }
 
     }
-    catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException | UnknownMetadataEx | RequiredStorageMetadataEx e) {
+    catch (NotModifiableMetadataEx | InvalidSAETypeException | MappingFromReferentialException | UnknownMetadataEx | RequiredStorageMetadataEx |
+        NotTransferableMetadataEx e) {
       throw new TransfertException(e);
     }
 

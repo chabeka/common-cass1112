@@ -62,6 +62,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
+import fr.urssaf.image.sae.services.exception.transfert.NotTransferableMetadataEx;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
 import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.dfce.mapping.BeanMapper;
@@ -201,7 +202,6 @@ public class SAETransfertMasseServiceTest {
     listeMeta.add(new UntypedMetadata("Siren", "siren"));
     listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
     listeMeta.add(new UntypedMetadata("TracabilitePostArchivage", ""));
-    listeMeta.add(new UntypedMetadata("DureeConservation", ""));
 
     try {
       final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -249,7 +249,6 @@ public class SAETransfertMasseServiceTest {
     final List<UntypedMetadata> listeMeta = new ArrayList<>();
     listeMeta.add(new UntypedMetadata("ApplicationProductrice", "ADELA"));
     listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
-    listeMeta.add(new UntypedMetadata("DateArchivage", ""));
 
     try {
       saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
@@ -258,7 +257,10 @@ public class SAETransfertMasseServiceTest {
     }
     catch (final TransfertException e) {
       Assert.assertTrue("L'exception de type NotModifiableMetadataEx est attendue", e.getCause() instanceof NotModifiableMetadataEx);
-      ;
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice",
+                        e.getCause()
+                         .getMessage()
+                         .contains("La ou les métadonnées suivantes ne sont pas modifiables : ApplicationProductrice"));
     }
   }
 
@@ -284,7 +286,7 @@ public class SAETransfertMasseServiceTest {
     }
     catch (final TransfertException e) {
       Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
-      Assert.assertTrue("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre",
                         e.getCause()
                          .getMessage()
                          .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeOrganismeProprietaire, DateCreation, Titre"));
@@ -311,11 +313,10 @@ public class SAETransfertMasseServiceTest {
     }
     catch (final TransfertException e) {
       Assert.assertTrue("L'exception de type RequiredStorageMetadataEx est attendue", e.getCause() instanceof RequiredStorageMetadataEx);
-      Assert.assertTrue("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND",
                         e.getCause()
                          .getMessage()
                          .contains("La ou les métadonnées suivantes, obligatoires lors de l'archivage, ne sont pas renseignées : CodeRND"));
-      ;
     }
   }
 
@@ -333,37 +334,20 @@ public class SAETransfertMasseServiceTest {
     listeMeta.add(new UntypedMetadata("Siren", "siren"));
     listeMeta.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER68"));
     listeMeta.add(new UntypedMetadata("DureeConservation", "1"));
+    listeMeta.add(new UntypedMetadata("DateDebutConservation", "1"));
+    listeMeta.add(new UntypedMetadata("Gel", "true"));
 
     try {
-      final StorageDocument document = saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
-      saeTransfertService.transfertDocMasse(document);
+      saeTransfertService.controleDocumentTransfertMasse(uidDocGNT, listeMeta, false, UUID.randomUUID(), false);
 
-      // -- Vérification présence fichier transféré
-      final Document doc = testProviderGNS.searchDocument(uidDocGNT);
-      Assert.assertNotNull("l'UUID '" + uidDocGNT
-          + "' doit exister dans la GNS", doc);
-
-      // recupere l'identifiant du document que l'on a transfere en GNS
-      // pour pouvoir le supprimer a la fin du test
-      uidDocGNS = doc.getUuid();
-
-      // le doc à été supprimé par transferDoc()
-      // ne pas le re-suppr. dans "@After" erreur dfce.
-      uidDocGNT = null;
-
-      // test sur les métadonnées techniques
-      assertDocument(doc);
-
-      final StorageDocument documentGNS = BeanMapper.dfceMetaDataToStorageDocument(doc, null, testProviderGNS.getDfceServices());
-
-      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "srn").equals("siren"));
-      Assert.assertTrue(StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "cop").equals("CER68"));
-      Assert.assertNull("Métadonnée non transférable, ajout impossible ", StorageMetadataUtils.valueObjectMetadataFinder(documentGNS.getMetadatas(), "dco"));
-
+      Assert.fail("Une exception de type TransfertException est attendue");
     }
-    catch (final TransfertException | StorageException | ReferentialException | ArchiveInexistanteEx | InvalidSAETypeException |
-        MappingFromReferentialException e) {
-      Assert.fail("Exception non prévu : " + e.getMessage());
+    catch (final TransfertException e) {
+      Assert.assertTrue("L'exception de type NotTransferableMetadataEx est attendue", e.getCause() instanceof NotTransferableMetadataEx);
+      Assert.assertTrue("Attendu : La ou les métadonnées suivantes ne sont pas transférables : DateDebutConservation, DureeConservation, Gel",
+                        e.getCause()
+                         .getMessage()
+                         .contains("La ou les métadonnées suivantes ne sont pas transférables : DateDebutConservation, DureeConservation, Gel"));
     }
   }
 
@@ -519,7 +503,7 @@ public class SAETransfertMasseServiceTest {
     }
     catch (final Exception e) {
       Assert.assertTrue("L'exception de type NotSpecifiableMetadataEx est attendue", e.getCause() instanceof UnknownMetadataEx);
-      Assert.assertTrue("Le message de l'exception attendue est : 'La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto'",
+      Assert.assertTrue("Attendu : Le message de l'exception attendue est : 'La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto'",
                         e.getCause()
                          .getMessage()
                          .contains("La ou les métadonnées suivantes n'existent pas dans le référentiel des métadonnées : Titi, Toto"));

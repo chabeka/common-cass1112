@@ -32,6 +32,7 @@ import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.ModificationRuntimeException;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.transfert.NotTransferableMetadataEx;
 import fr.urssaf.image.sae.services.util.MetadataErrorUtils;
 import fr.urssaf.image.sae.services.util.ResourceMessagesUtils;
 
@@ -415,6 +416,33 @@ public class SAEControlesModificationServiceImpl implements
       throw new RequiredStorageMetadataEx(ResourceMessagesUtils
                                                                .loadMessage("capture.metadonnees.archivage.obligatoire", listeCodeLong));
 
+    }
+
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void checkTransferable(final List<UntypedMetadata> metadatas) throws NotTransferableMetadataEx {
+    final String trcPrefix = "checkModifiables";
+    LOG.debug(
+              "{} - vérification de la possibilité de modifier les métadonnées",
+              trcPrefix);
+
+    String listeCodeLong;
+    final List<MetadataError> errors = metadataCS
+                                                 .checkTransferableMetadataList(metadatas);
+    if (CollectionUtils.isNotEmpty(errors)) {
+      listeCodeLong = MetadataErrorUtils.buildLongCodeError(errors);
+      LOG.debug("{} - {}",
+                trcPrefix,
+                ResourceMessagesUtils.loadMessage(
+                                                  "transfert.metadonnees.non.transferable",
+                                                  listeCodeLong));
+      throw new NotTransferableMetadataEx(ResourceMessagesUtils.loadMessage(
+                                                                            "transfert.metadonnees.non.transferable",
+                                                                            listeCodeLong));
     }
 
   }

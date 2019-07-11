@@ -7,7 +7,6 @@ import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
  * Fournit les services de contrôle des métadonnées.
@@ -264,5 +263,14 @@ public interface MetadataControlServices {
    * @return une liste d'erreur
    */
   List<MetadataError> checkNoRequiredForStorageUntypedMetadataList(List<SAEMetadata> metadatas);
+
+  /**
+   * Vérifie que les métadonnées passées en paramètre sont toutes transférables
+   * 
+   * @param metadatas
+   *          liste des métadonnées à contrôler
+   * @return une liste d'erreur
+   */
+  List<MetadataError> checkTransferableMetadataList(List<UntypedMetadata> metadatas);
 
 }

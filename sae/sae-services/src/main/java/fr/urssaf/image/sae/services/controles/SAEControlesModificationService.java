@@ -20,6 +20,7 @@ import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
 import fr.urssaf.image.sae.services.exception.enrichment.ReferentialRndException;
 import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.modification.NotModifiableMetadataEx;
+import fr.urssaf.image.sae.services.exception.transfert.NotTransferableMetadataEx;
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 
 /**
@@ -167,5 +168,14 @@ public interface SAEControlesModificationService {
    * @throws RequiredStorageMetadataEx @{@link RequiredStorageMetadataEx}
    */
   void checkNonRequisStockages(List<SAEMetadata> metadatas) throws RequiredStorageMetadataEx;
+
+  /**
+   * Contrôle que les métadonnées sont transférables
+   * 
+   * @param metadatas
+   *          liste des métadonnées
+   * @throws NotTransferableMetadataEx @{@link NotTransferableMetadataEx}
+   */
+  void checkTransferable(List<UntypedMetadata> listeMetaClient) throws NotTransferableMetadataEx;
 
 }
