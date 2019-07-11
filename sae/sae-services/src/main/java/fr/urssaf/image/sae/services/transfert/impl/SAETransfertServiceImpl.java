@@ -409,7 +409,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
   }
 
   @Override
-  public final void transfertDocMasse(final StorageDocument document)
+  public void transfertDocMasse(final StorageDocument document)
       throws TransfertException, ArchiveAlreadyTransferedException, ArchiveInexistanteEx, ReferentialException,
       RetrievalServiceEx, InvalidSAETypeException, MappingFromReferentialException {
 
