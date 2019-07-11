@@ -82,13 +82,7 @@ import net.docubase.toolkit.model.note.Note;
 public class SAETransfertServiceTest {
 
    @Autowired
-   private StorageTransfertService storageTransfertService;
-
-   @Autowired
    private SAETransfertService saeTransfertService;
-
-   @Autowired
-   private StorageTransfertService transfertService;
 
    @Autowired
    private CassandraServerBean server;

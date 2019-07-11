@@ -145,7 +145,7 @@ public class SAECaptureServiceTest {
     prmd.setBean("permitAll");
     prmd.setCode("default");
     saePrmd.setPrmd(prmd);
-    final String[] roles = new String[] {"archivage_unitaire"};
+    final String[] roles = new String[] {"ROLE_archivage_unitaire"};
     saePrmds.add(saePrmd);
 
     saeDroits.put("archivage_unitaire", saePrmds);
