@@ -98,7 +98,7 @@ public class SAEModificationServiceImpl extends AbstractSAEServices implements S
 	 *
 	 */
 	@Override
-	public final void modification(final UUID idArchive, final List<UntypedMetadata> metadonnees)
+	public void modification(final UUID idArchive, final List<UntypedMetadata> metadonnees)
 			throws InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx, DuplicatedMetadataEx,
 			NotSpecifiableMetadataEx, RequiredArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
 			UnknownHashCodeEx, NotModifiableMetadataEx, ModificationException, ArchiveInexistanteEx,

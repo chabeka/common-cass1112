@@ -113,7 +113,7 @@ SAEConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(final UUID idArchive)
+   public UntypedDocument consultation(final UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
@@ -126,7 +126,7 @@ SAEConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultation(final ConsultParams consultParams)
+   public UntypedDocument consultation(final ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
 
@@ -242,7 +242,7 @@ SAEConsultationService {
     * {@inheritDoc}
     */
    @Override
-   public final UntypedDocument consultationAffichable(
+   public UntypedDocument consultationAffichable(
                                                        final ConsultParams consultParams) throws SAEConsultationServiceException,
    UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
    SAEConsultationAffichableParametrageException {
