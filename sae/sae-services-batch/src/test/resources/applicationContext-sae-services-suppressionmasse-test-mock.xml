@@ -10,11 +10,7 @@
    <bean id="indexCompositeService" factory-bean="mockFactory"
       factory-method="createIndexCompositeService" primary="true">
    </bean>
-
-   <bean id="indexCompositeService" factory-bean="mockFactory"
-      factory-method="createIndexCompositeService" primary="true">
-   </bean>
-
+   
    <bean id="storageDocumentService" factory-bean="mockFactory"
       factory-method="createStorageDocumentService" primary="true">
       <qualifier value="storageDocumentService" />

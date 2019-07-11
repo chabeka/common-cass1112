@@ -137,7 +137,7 @@ public class IntegrationErreurUUIDNonConforme2Test {
     prmd.setBean("permitAll");
     prmd.setCode("default");
     saePrmd.setPrmd(prmd);
-    final String[] roles = new String[] {"transfert_masse"};
+    final String[] roles = new String[] {"ROLE_transfert_masse"};
     saePrmds.add(saePrmd);
 
     saeDroits.put("transfert_masse", saePrmds);
