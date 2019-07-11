@@ -350,7 +350,7 @@ public class SAECaptureServiceTest {
 
     saeDroits.put("archivage_unitaire", saePrmds);
     viExtrait.setSaeDroits(saeDroits);
-    final String[] roles = new String[] {"archivage_unitaire"};
+    final String[] roles = new String[] {"ROLE_archivage_unitaire"};
     final AuthenticationToken token = AuthenticationFactory.createAuthentication(viExtrait.getIdUtilisateur(), viExtrait, roles);
     AuthenticationContext.setAuthenticationToken(token);
     // - Fin init contexte de sécurité
