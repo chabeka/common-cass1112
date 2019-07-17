@@ -1,5 +1,7 @@
 package fr.urssaf.image.sae.services.executable;
 
+import java.util.UUID;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -46,11 +48,5 @@ public class ServicesMainTest {
       }
    }
 
-   @Test
-   public void ServicesMain_traitementMasse() {
-
-      String[] args = new String[] { "traitementMasse"};
-
-      ServicesMain.main(args);
-   }
+   
 }
