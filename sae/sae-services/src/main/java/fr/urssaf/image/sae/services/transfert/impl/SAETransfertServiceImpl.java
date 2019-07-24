@@ -171,14 +171,14 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
 
     final List<StorageMetadata> allMeta = new ArrayList<>();
     final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
-                                                                            .getAllMetadataReferencesPourVerifDroits();
+        .getAllMetadataReferencesPourVerifDroits();
     for (final String mapKey : listeAllMeta.keySet()) {
       allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
     }
     final UUIDCriteria uuidCriteriaDroit = new UUIDCriteria(idArchive, allMeta);
 
     final List<StorageMetadata> listeStorageMeta = storageDocumentService
-                                                                         .retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
+        .retrieveStorageDocumentMetaDatasByUUID(uuidCriteriaDroit);
 
     if (listeStorageMeta.size() != 0) {
       final List<UntypedMetadata> listeUMeta = mappingService.storageMetadataToUntypedMetadata(listeStorageMeta);
@@ -186,7 +186,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // Vérification des droits
       LOG.debug("{} - Récupération des droits", "transfertDoc");
       final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-                                                                                   .getAuthentication();
+          .getAuthentication();
       final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert_masse");
       LOG.debug("{} - Vérification des droits", "transfertDoc");
       final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
@@ -215,7 +215,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // Vérification des droits
       LOG.debug("{} - Récupération des droits", "transfertDoc");
       final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-                                                                                   .getAuthentication();
+          .getAuthentication();
       final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert_masse");
       LOG.debug("{} - Vérification des droits", "transfertDoc");
       final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
@@ -229,8 +229,8 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
   @Override
   public final StorageDocument transfertControlePlateforme(StorageDocument document, final UUID idArchive,
                                                            final boolean isReprise, final UUID idTraitementMasse)
-      throws ArchiveAlreadyTransferedException, SearchingServiceEx,
-      ReferentialException, ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
+                                                               throws ArchiveAlreadyTransferedException, SearchingServiceEx,
+                                                               ReferentialException, ArchiveInexistanteEx, TraitementRepriseAlreadyDoneException {
     String message = null;
     // On récupère le document avec uniquement les méta transférables
     final List<StorageMetadata> desiredMetas = getTransferableStorageMeta();
@@ -272,7 +272,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // -- Le document existe en GNT
       // -- On recherche le document sur la GNS
       final StorageDocument documentGNS = storageTransfertService
-                                                                 .searchStorageDocumentByUUIDCriteria(uuidCriteria);
+          .searchStorageDocumentByUUIDCriteria(uuidCriteria);
       return documentGNS;
     }
   }
@@ -533,7 +533,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
   @Override
   public final StorageDocument updateMetaDocumentForTransfertMasse(final StorageDocument document,
                                                                    final List<UntypedMetadata> listeMetaClient, final UUID idTraitementMasse)
-      throws TransfertException {
+                                                                       throws TransfertException {
 
     try {
       // modification des métadonnées avant transfert
@@ -592,6 +592,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
             || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.VERSION_RND.getShortCode())
             || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CONTRAT_DE_SERVICE.getShortCode())
             || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.CODE_ACTIVITE.getShortCode())
+            || metadata.get(i).getShortCode().equals(SAEArchivalMetadatas.DOCUMENT_ARCHIVABLE.getShortCode())
             || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_TRAITEMENT_MASSE_INTERNE.getShortCode())
             || metadata.get(i).getShortCode().equals(StorageTechnicalMetadatas.ID_MODIFICATION_MASSE_INTERNE.getShortCode())) {
           metadata.remove(i);
@@ -645,11 +646,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
         final String codeFonction = rndService.getCodeFonction(codeRnd);
 
         final MetadataReference codeActiviteRef = metadataReferenceDAO
-                                                                      .getByLongCode(SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode());
+            .getByLongCode(SAEArchivalMetadatas.CODE_ACTIVITE.getLongCode());
         final MetadataReference codeFonctionRef = metadataReferenceDAO
-                                                                      .getByLongCode(SAEArchivalMetadatas.CODE_FONCTION.getLongCode());
+            .getByLongCode(SAEArchivalMetadatas.CODE_FONCTION.getLongCode());
         final MetadataReference dateFinConservationRef = metadataReferenceDAO
-                                                                             .getByLongCode(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode());
+            .getByLongCode(SAEArchivalMetadatas.DATE_FIN_CONSERVATION.getLongCode());
 
         final int duration = rndService.getDureeConservation(codeRnd);
         if (date != null) {
@@ -834,7 +835,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
                                                               final List<UntypedMetadata> listeMetaClient, final boolean isReprise,
                                                               final UUID idTraitementMasse,
                                                               final boolean isSuppression)
-      throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException {
+                                                                  throws TransfertException, ArchiveAlreadyTransferedException, TraitementRepriseAlreadyDoneException {
     final String erreur = "Une erreur interne à l'application est survenue lors du controle du transfert. Transfert impossible :";
     StorageDocument document = new StorageDocument();
 
@@ -920,7 +921,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    */
   @Override
   public final void transfertDoc(final UUID idArchive) throws TransfertException, ArchiveAlreadyTransferedException,
-      ArchiveInexistanteEx, InsertionIdGedExistantEx {
+  ArchiveInexistanteEx, InsertionIdGedExistantEx {
 
     // -- On trace le début du transfert
     final String trcPrefix = "transfertDoc";
@@ -959,7 +960,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
    * @throws InsertionServiceEx
    */
   private void doTransfertDoc(final UUID idArchive, final String errorString) throws ReferentialException, SearchingServiceEx,
-      ArchiveInexistanteEx, ArchiveAlreadyTransferedException, TransfertException, InsertionIdGedExistantEx, InsertionServiceEx {
+  ArchiveInexistanteEx, ArchiveAlreadyTransferedException, TransfertException, InsertionIdGedExistantEx, InsertionServiceEx {
     final String trcPrefix = "doTransfertDoc";
     LOG.debug("{} - recherche du document", trcPrefix);
     // On récupère le document avec uniquement les méta transférables
@@ -1049,7 +1050,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     // -- Récupération des notes associées au document
     // transféré
     final List<StorageDocumentNote> listeNotes = storageDocumentService
-                                                                       .getDocumentsNotes(document.getUuid());
+        .getDocumentsNotes(document.getUuid());
     // -- Ajout des notes sur le document archivés en GNS
     for (final StorageDocumentNote note : listeNotes) {
       try {
@@ -1121,7 +1122,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     // les droits
     final List<StorageMetadata> allMeta = new ArrayList<>();
     final Map<String, MetadataReference> listeAllMeta = metadataReferenceDAO
-                                                                            .getAllMetadataReferencesPourVerifDroits();
+        .getAllMetadataReferencesPourVerifDroits();
     for (final String mapKey : listeAllMeta.keySet()) {
       allMeta.add(new StorageMetadata(listeAllMeta.get(mapKey).getShortCode()));
     }
@@ -1143,7 +1144,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       // Vérification des droits
       LOG.debug("{} - Récupération des droits", trcPrefix);
       final AuthenticationToken token = (AuthenticationToken) SecurityContextHolder.getContext()
-                                                                                   .getAuthentication();
+          .getAuthentication();
       final List<SaePrmd> saePrmds = token.getSaeDroits().get("transfert");
       LOG.debug("{} - Vérification des droits", trcPrefix);
       final boolean isPermitted = prmdService.isPermitted(listeUMeta, saePrmds);
@@ -1232,11 +1233,11 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
     StorageMetadata dateDebutConservationMeta = null;
     final List<StorageMetadata> desiredStorageMetadatas = new ArrayList<>();
     desiredStorageMetadatas
-                           .add(new StorageMetadata(StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode()));
+    .add(new StorageMetadata(StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode()));
     try {
       final List<StorageMetadata> metadatasFind = storageDocumentService
-                                                                        .retrieveStorageDocumentMetaDatasByUUID(new UUIDCriteria(uuidDoc,
-                                                                                                                                 desiredStorageMetadatas));
+          .retrieveStorageDocumentMetaDatasByUUID(new UUIDCriteria(uuidDoc,
+                                                                   desiredStorageMetadatas));
       final Object dateDebutConservation = StorageMetadataUtils.valueObjectMetadataFinder(metadatasFind,
                                                                                           StorageTechnicalMetadatas.DATE_DEBUT_CONSERVATION.getShortCode());
       dateDebutConservationMeta = new StorageMetadata(
