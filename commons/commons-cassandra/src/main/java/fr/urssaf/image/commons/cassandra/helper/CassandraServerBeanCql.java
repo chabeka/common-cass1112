@@ -198,9 +198,9 @@ public class CassandraServerBeanCql extends AbstractCassandraServer {
         LOG.debug(logFinMerge);
 
         return new FileCQLDataSet(FileSystems.getDefault()
-                                             .getPath(new UrlResource(getClass().getClassLoader().getResource(dataSets[0]).toURI()).getFile().getAbsolutePath())
-                                             .toFile()
-                                             .getAbsolutePath(),
+                                  .getPath(new UrlResource(getClass().getClassLoader().getResource(dataSets[0]).toURI()).getFile().getAbsolutePath())
+                                  .toFile()
+                                  .getAbsolutePath(),
                                   createKeyspace,
                                   dropAndCreateKeyspace,
                                   AbstractCassandraServer.KEYSPACE_TU);

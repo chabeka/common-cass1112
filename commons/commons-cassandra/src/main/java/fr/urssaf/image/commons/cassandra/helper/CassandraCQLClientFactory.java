@@ -22,6 +22,7 @@ import com.datastax.driver.core.QueryOptions;
 import com.datastax.driver.core.Session;
 
 import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.utils.HostsUtils;
 
 /**
  * Factory pour récupérer une connexion à cassandra. Utile pour faire des
@@ -99,30 +100,9 @@ public final class CassandraCQLClientFactory implements DisposableBean {
       // Construire la liste des hosts qui sera sans le port ou on
       // l'ajoute 9160
       final String tmpHosts = cassandraProp.getProperty(CASSANDRA_HOSTS);
-      // Suppresion de la présence de port dans la chaîne des hosts
-      String hostsModifiedInitial = "";
-      String hostsModifiedFinal = "";
-      if (tmpHosts.contains(":9160") || tmpHosts.contains(":9042")) {
-        // Remplacement par une chaîne vide
-        hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
-        hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-      } else {
-        hostsModifiedFinal = tmpHosts;
-      }
-      String hosts = "";
-      // Découpage des hosts si il y en a plusieurs
-      if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
-        final String[] tabHosts = hostsModifiedFinal.split(",");
-        final int compteur = tabHosts.length - 1;
-        for (int i = 0; i < tabHosts.length; i++) {
-          if (i != compteur) {
-            // Placement du port correct de connexion
-            hosts = hosts.concat(tabHosts[i] + ":9042,");
-          } else {
-            hosts = hosts.concat(tabHosts[i] + ":9042");
-          }
-        }
-      }
+     
+      // On affecte le port dédié suivant la connexion en thrift ou en Cql
+      final String hosts = HostsUtils.buildHost(tmpHosts, true);
 
       final String dataset = cassandraProp.getProperty(CASSANDRA_DATASET);
       final String userName = cassandraProp.getProperty(CASSANDRA_USERNAME);
@@ -177,31 +157,8 @@ public final class CassandraCQLClientFactory implements DisposableBean {
     // Construire la liste des hosts qui sera sans le port ou on
     // l'ajoute 9160
     final String tmpHosts = cassandraServer.getHosts();
-    // Suppresion de la présence de port dans la chaîne des hosts
-    String hostsModifiedInitial = "";
-    String hostsModifiedFinal = "";
-    if (tmpHosts.contains(":9160") || tmpHosts.contains(":9042")) {
-      // Remplacement par une chaîne vide
-      hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
-      hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-    } else {
-      hostsModifiedFinal = tmpHosts;
-    }
-    String hosts = "";
-    // Découpage des hosts si il y en a plusieurs
-    if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
-      final String[] tabHosts = hostsModifiedFinal.split(",");
-      final int compteur = tabHosts.length - 1;
-      for (int i = 0; i < tabHosts.length; i++) {
-        if (i != compteur) {
-          // Placement du port correct de connexion
-          hosts = hosts.concat(tabHosts[i] + ":9042,");
-        } else {
-          hosts = hosts.concat(tabHosts[i] + ":9042");
-        }
-      }
-    }
-
+    
+    final String hosts = HostsUtils.buildHost(tmpHosts, true);
     cassandraServer.setHosts(hosts);
 
     initCassandra(cassandraServer, keyspaceName, userName, password);
@@ -225,16 +182,16 @@ public final class CassandraCQLClientFactory implements DisposableBean {
       poolingOptions.setConnectionsPerHost(HostDistance.LOCAL, 1, 1).setConnectionsPerHost(HostDistance.REMOTE, 1, 1);
       session = cassandraServer.getTestSession();
       cluster = cassandraServer.getTestSession().getCluster();
-      this.keyspaceName = CassandraServerBeanCql.KEYSPACE_TU;
+      this.keyspaceName = AbstractCassandraServer.KEYSPACE_TU;
 
     } else {
       final List<InetSocketAddress> adresses = getInetSocketAddressList(cassandraServer);
       cluster = Cluster.builder()
-                       .addContactPointsWithPorts(adresses)
-                       .withCredentials(userName, password)
-                       .withPoolingOptions(poolingOptions)
-                       .withQueryOptions(qo)
-                       .build();
+          .addContactPointsWithPorts(adresses)
+          .withCredentials(userName, password)
+          .withPoolingOptions(poolingOptions)
+          .withQueryOptions(qo)
+          .build();
       session = cluster.connect('\"' + keyspaceName + '\"');
       this.keyspaceName = '\"' + keyspaceName + '\"';
     }

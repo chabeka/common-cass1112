@@ -14,6 +14,7 @@ import org.springframework.core.io.AbstractResource;
 
 import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.model.NoConnectionKeyspace;
+import fr.urssaf.image.commons.cassandra.utils.HostsUtils;
 import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.service.CassandraHostConfigurator;
 import me.prettyprint.cassandra.service.FailoverPolicy;
@@ -82,30 +83,9 @@ public final class CassandraClientFactory implements DisposableBean {
       // l'ajoute 9160
       final String tmpHosts = cassandraProp.getProperty(CASSANDRA_HOSTS);
       // Suppresion de la présence de port dans la chaîne des hosts
-      String hostsModifiedInitial = "";
-      String hostsModifiedFinal = "";
-      if (tmpHosts.contains(":9160") || tmpHosts.contains(":9042")) {
-        // Remplacement par une chaîne vide
-        hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
-        hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-      }
-      else {
-        hostsModifiedFinal = tmpHosts;
-      }
-      String hosts = "";
-      // Découpage des hosts si il y en a plusieurs
-      if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
-        final String[] tabHosts = hostsModifiedFinal.split(",");
-        final int compteur = tabHosts.length - 1;
-        for (int i = 0; i < tabHosts.length; i++) {
-          if (i != compteur) {
-            // Placement du port correct de connexion
-            hosts = hosts.concat(tabHosts[i] + ":9160,");
-          } else {
-            hosts = hosts.concat(tabHosts[i] + ":9160");
-          }
-        }
-      }
+      
+      final String hosts = HostsUtils.buildHost(tmpHosts, false);
+
       final String dataset = cassandraProp.getProperty(CASSANDRA_DATASET);
       final String userName = cassandraProp.getProperty(CASSANDRA_USERNAME);
       final String password = cassandraProp.getProperty(CASSANDRA_PASSWORD);
@@ -146,35 +126,16 @@ public final class CassandraClientFactory implements DisposableBean {
   public CassandraClientFactory(final CassandraServerBean cassandraServer, final String keyspaceName, final String userName,
                                 final String password) throws InterruptedException {
 
+
     // Construire la liste des hosts qui sera sans le port ou on
     // l'ajoute 9160
     final String tmpHosts = cassandraServer.getHosts();
-    // Suppresion de la présence de port dans la chaîne des hosts
-    String hostsModifiedInitial = "";
-    String hostsModifiedFinal = "";
-    if (tmpHosts.contains(":9160") || tmpHosts.contains(":9042")) {
-      // Remplacement par une chaîne vide
-      hostsModifiedInitial = tmpHosts.replaceAll(":9160", "");
-      hostsModifiedFinal = hostsModifiedInitial.replaceAll(":9042", "");
-    }
-    else {
-      hostsModifiedFinal = tmpHosts;
-    }
-    String hosts = "";
-    // Découpage des hosts si il y en a plusieurs
-    if (hostsModifiedFinal != null && hostsModifiedFinal != "") {
-      final String[] tabHosts = hostsModifiedFinal.split(",");
-      final int compteur = tabHosts.length - 1;
-      for (int i = 0; i < tabHosts.length; i++) {
-        if (i != compteur) {
-          // Placement du port correct de connexion
-          hosts = hosts.concat(tabHosts[i] + ":9160,");
-        } else {
-          hosts = hosts.concat(tabHosts[i] + ":9160");
-        }
-      }
-    }
 
+
+  
+    final String hosts = HostsUtils.buildHost(tmpHosts, false);
+
+    cassandraServer.setHosts(hosts);
     initCassandra(cassandraServer, keyspaceName, userName, password);
   }
 

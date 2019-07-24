@@ -58,7 +58,7 @@ public class CassandraApiGestionServiceImpl {
                    return getApiModeFromConfiguration();
                  }
                });
-
+    ccf.getSession().getCluster().getMetadata().getKeyspace("keyspace_tu");
     if (initCacheOnStartup) {
       populateCache();
     }
@@ -76,6 +76,7 @@ public class CassandraApiGestionServiceImpl {
     // Requête en CQL via API Datastax pour aller scruter le contenu de la CF "modeapi"
     final Select selectQuery = QueryBuilder.select().all().from(ccf.getKeyspace(), cfName);
     // Parcours du ResultSet
+    ccf.getSession().getCluster().getMetadata().getKeyspace("keyspace_tu");
     final ResultSet results = ccf.getSession().execute(selectQuery);
     final Iterator<Row> iter = results.iterator();
     while (iter.hasNext()) {
