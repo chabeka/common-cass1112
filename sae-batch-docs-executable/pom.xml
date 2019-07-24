@@ -11,7 +11,7 @@
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-batch-docs-executable</artifactId>
 	<name>sae-batch-docs-executable</name>
-	<version>19.7.5-SNAPSHOT</version>
+	<version>19.7.5</version>
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
