@@ -13,7 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import junit.framework.Assert;
 
@@ -27,15 +27,11 @@ public class ParametersServiceTest {
   @Autowired
   private CassandraServerBean server;
 
-  @Autowired
-  private CassandraServerBeanCql serverCQL;
-
   private final Date date = new Date();
 
   @After
   public void end() throws Exception {
-    server.resetData(true);
-    serverCQL.resetData();
+    server.resetData(true, MODE_API.HECTOR);
   }
 
   @Test
