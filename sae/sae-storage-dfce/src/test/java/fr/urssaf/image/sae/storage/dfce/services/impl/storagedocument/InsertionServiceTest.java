@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -100,7 +101,7 @@ public class InsertionServiceTest {
    public void after() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData(true);
+      cassandraServerBean.resetData(true, MODE_API.HECTOR);
 
    }
 

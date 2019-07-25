@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
@@ -97,7 +98,7 @@ public class InsertionServiceTestCategoryException extends CommonsServices {
 
       AuthenticationContext.setAuthenticationToken(null);
 
-      cassandraServerBean.resetData(true);
+      cassandraServerBean.resetData(true, MODE_API.HECTOR);
 
       EasyMock.reset(base);
       EasyMock.reset(dfceServices);

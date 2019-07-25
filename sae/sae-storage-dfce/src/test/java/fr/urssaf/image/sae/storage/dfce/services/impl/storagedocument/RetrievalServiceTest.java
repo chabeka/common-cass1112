@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.storage.dfce.data.constants.Constants;
 import fr.urssaf.image.sae.storage.dfce.data.model.SaeDocument;
 import fr.urssaf.image.sae.storage.dfce.data.utils.CheckDataUtils;
@@ -43,7 +44,7 @@ public class RetrievalServiceTest {
 
    @After
    public void end() throws Exception {
-      serverBean.resetData(true);
+      serverBean.resetData(true, MODE_API.HECTOR);
    }
 
    @Autowired
