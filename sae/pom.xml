@@ -39,7 +39,7 @@
 
 
 		<!-- ========================================== commons-cassandra ========================================== -->
-		<commons.cassandra>2.0.1-SNAPSHOT</commons.cassandra>
+		<commons.cassandra>2.0.2-SNAPSHOT</commons.cassandra>
 
 		<!-- ========================================== commons-cassandra-spring-batch 
 			========================================== -->
