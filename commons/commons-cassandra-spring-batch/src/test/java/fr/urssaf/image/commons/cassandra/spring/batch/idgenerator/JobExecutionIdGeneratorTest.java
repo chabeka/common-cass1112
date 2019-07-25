@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.support.JobClockSupportFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
@@ -35,15 +35,11 @@ public class JobExecutionIdGeneratorTest {
   private CassandraServerBean server;
 
   @Autowired
-  private CassandraServerBeanCql serverCql;
-
-  @Autowired
   private CassandraClientFactory ccf;
 
   @Before
   public void before() throws Exception {
-    server.resetData();
-    serverCql.resetData();
+	server.resetData(true, MODE_API.HECTOR);
     init();
   }
 

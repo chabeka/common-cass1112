@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.test.TestingServer;
 import org.junit.After;
 import org.junit.Before;
@@ -26,15 +25,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstanceCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionsDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceToJobExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
 import fr.urssaf.image.commons.zookeeper.ZookeeperClientFactory;
 import junit.framework.Assert;
 
@@ -64,13 +58,13 @@ public class CassandraJobExecutionDAOCqlTest {
    private static final String INDEX = "index";
 
    @Autowired
-   private CassandraServerBeanCql server;
+   private CassandraServerBean server;
 
    private TestingServer zkServer;
 
-   @Before
+   @After
    public void before() throws Exception {
-      server.resetData(true);
+      server.resetData(true, MODE_API.DATASTAX);
       init();
    }
 

@@ -20,7 +20,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobInstancesByNameCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceToJobExecutionDaoCql;
@@ -46,7 +47,7 @@ public class CassandraJobInstanceDAOCqlTest {
   private IJobInstancesByNameDaoCql jobInstByNamedaocql;
 
   @Autowired
-  private CassandraServerBeanCql serverCql;
+  private CassandraServerBean serverCql;
 
   @Autowired
   private CassandraClientFactory ccf;
@@ -62,7 +63,7 @@ public class CassandraJobInstanceDAOCqlTest {
 
   @Before
   public void before() throws Exception {
-    serverCql.resetData(true);
+    serverCql.resetData(true, MODE_API.DATASTAX);
     init();
   }
 

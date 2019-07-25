@@ -24,7 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
@@ -49,11 +50,11 @@ public class CassandraStepExecutionDAOCqlTest {
   private CuratorFramework zkClient;
 
   @Autowired
-  private CassandraServerBeanCql server;
+  private CassandraServerBean server;
 
   @Before
   public void before() throws Exception {
-    server.resetData(true);
+    server.resetData(true, MODE_API.DATASTAX);
     init();
   }
 
