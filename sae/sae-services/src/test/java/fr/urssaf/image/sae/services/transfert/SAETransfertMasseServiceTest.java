@@ -29,6 +29,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -115,7 +116,7 @@ public class SAETransfertMasseServiceTest {
    @After
    public void end() throws Exception {
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
 
       if (uidDocGNT != null) {
          testProviderGNT.deleteDocument(uidDocGNT);
@@ -130,7 +131,7 @@ public class SAETransfertMasseServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

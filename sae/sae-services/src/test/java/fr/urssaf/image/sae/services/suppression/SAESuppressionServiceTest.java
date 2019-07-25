@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -100,7 +101,7 @@ public class SAESuppressionServiceTest {
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
 
       if (ecde != null) {
          // supprime le repertoire ecde
@@ -112,7 +113,7 @@ public class SAESuppressionServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");

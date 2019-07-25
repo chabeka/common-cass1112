@@ -44,6 +44,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.sun.istack.ByteArrayDataSource;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -155,7 +156,7 @@ public class SAECaptureServiceTest {
 
     // Paramétrage du RND
 
-    server.resetData(true);
+    server.resetData(true, MODE_API.HECTOR);
     parametersService.setVersionRndDateMaj(new Date());
     parametersService.setVersionRndNumero("11.2");
 
@@ -180,7 +181,7 @@ public class SAECaptureServiceTest {
 
     AuthenticationContext.setAuthenticationToken(null);
 
-    server.resetData(true);
+    server.resetData(true, MODE_API.HECTOR);
 
     if (ecde != null) {
       // supprime le repertoire ecde

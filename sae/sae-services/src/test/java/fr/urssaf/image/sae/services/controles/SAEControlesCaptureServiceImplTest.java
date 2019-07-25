@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
@@ -427,7 +428,7 @@ public class SAEControlesCaptureServiceImplTest {
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    private void initDroits() {
