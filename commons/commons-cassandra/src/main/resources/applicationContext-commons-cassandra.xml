@@ -23,7 +23,7 @@
    
    <!-- la session cassandra à utiliser pour les connections CQL -->
    <bean id="cassandraCQLClientFactory" class="fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory" >
-      <constructor-arg ref="cassandraServerCql" />
+      <constructor-arg ref="cassandraServer" />
       <constructor-arg value="${cassandra.keyspace}" />
       <constructor-arg value="${cassandra.username}" />
       <constructor-arg value="${cassandra.password}" />
@@ -36,13 +36,10 @@
    <bean id="cassandraServer" class="fr.urssaf.image.commons.cassandra.helper.CassandraServerBean">
       <property name="startLocal" value="${cassandra.startlocal}"/>
       <property name="hosts" value="${cassandra.hosts}" />
-      <property name="dataSet" value="${cassandra.dataset}"/>
+      <property name="dataSet" value="${cassandra.dataset}"/>  
+      <property name="dataSetCql" value="${cassandra.dataset.cql}"/>
    </bean>
-      <bean id="cassandraServerCql" class="fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql">
-      <property name="startLocal" value="${cassandra.startlocal}"/>
-      <property name="hosts" value="${cassandra.hosts}" />
-      <property name="dataSet" value="${cassandra.dataset.cql}"/>
-   </bean>
+
    <bean id="cassandraApiGestionServiceImpl" class="fr.urssaf.image.commons.cassandra.helper.CassandraApiGestionServiceImpl">
    		<constructor-arg ref="cassandraCQLClientFactory" />
    		<constructor-arg name="value" value="${sae.api.gestion.profil.cache}" />

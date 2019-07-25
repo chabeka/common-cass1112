@@ -129,7 +129,7 @@ public final class CassandraClientFactory implements DisposableBean {
 
     // Construire la liste des hosts qui sera sans le port ou on
     // l'ajoute 9160
-    final String tmpHosts = cassandraServer.getHosts();
+    final String tmpHosts = cassandraServer.getThriftHosts();
 
 
   
@@ -150,14 +150,14 @@ public final class CassandraClientFactory implements DisposableBean {
    */
   private void initCassandra(final CassandraServerBean cassandraServer, final String keyspaceName, final String userName,
                              final String password) throws InterruptedException {
-    LOG.debug("Creation d'un client cassandra utilisant les serveurs suivants : " + cassandraServer.getHosts());
+    LOG.debug("Creation d'un client cassandra utilisant les serveurs suivants : " + cassandraServer.getThriftHosts());
     final ConfigurableConsistencyLevel ccl = new ConfigurableConsistencyLevel();
     ccl.setDefaultReadConsistencyLevel(HConsistencyLevel.QUORUM);
     ccl.setDefaultWriteConsistencyLevel(HConsistencyLevel.QUORUM);
     final HashMap<String, String> credentials = new HashMap<>();
     credentials.put("username", userName);
     credentials.put("password", password);
-    final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(cassandraServer.getHosts());
+    final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(cassandraServer.getThriftHosts());
     if (cassandraServer.getStartLocal()) {
       // Mode test : petit pool de connexion
       hostConfigurator.setMaxActive(1);

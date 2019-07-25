@@ -7,6 +7,9 @@ import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+
 /**
  * TODO (AC75095028) Description du type
  */
@@ -42,4 +45,38 @@ public class Utils {
     }
     return fields;
   }
+  
+  /**
+	  * Cette methode permet de determiner le mode de connection au cluster en se basant sur 
+	  * l'extension du fichier.<br>
+	  * On considère dans ce cas-ci que toutes les injection de données via des fichiers
+	  * se font de la manière suivante: <br>
+	  * <ul>
+	  * <li>Pour les injections en mode thritf on utilise uniquement des fichiers xml<br></li>
+	  * <li>Pour les injections en mode CQL on utilise uniquement des fichiers avec extention .cql<br></li>
+	  * </ul>
+	  * @param newDataSets
+	  *          Jeu(x) de données à utiliser
+	  * @throws Exception
+	  *           Une erreur est survenue
+	  */
+	public static String setAPIConnecterMode(final String... newDataSets) {
+	  String mode = "";
+	  String ext = "";
+	  if (newDataSets.length > 0) {
+		  String dataset = newDataSets[0];
+		  int pos = dataset.lastIndexOf('.');
+		  if(pos > 0) {
+			  ext = dataset.substring(pos +1);
+		  }
+		  if("cql".equals(ext)) {
+			  mode = ModeGestionAPI.MODE_API.DATASTAX;
+		  } else if("xml".equals(ext)) {
+			  mode = ModeGestionAPI.MODE_API.HECTOR;
+		  } else {
+			  throw new CassandraConfigurationException("le type d'extension du fichier dataset n'est pas pris en compte");
+		  }
+	  }
+	  return mode;
+	}
 }

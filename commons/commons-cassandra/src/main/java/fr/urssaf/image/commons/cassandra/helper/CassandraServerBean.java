@@ -1,185 +1,294 @@
 package fr.urssaf.image.commons.cassandra.helper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import org.apache.cassandra.io.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.cassandraunit.DataLoader;
-import org.cassandraunit.dataset.DataSet;
-import org.cassandraunit.dataset.xml.ClassPathXmlDataSet;
-import org.cassandraunit.model.ColumnFamilyModel;
+import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
-import fr.urssaf.image.commons.cassandra.model.MemoryDataSet;
-import me.prettyprint.cassandra.service.CassandraHostConfigurator;
-import me.prettyprint.hector.api.Cluster;
-import me.prettyprint.hector.api.factory.HFactory;
+import com.datastax.driver.core.Session;
+
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.utils.Utils;
 
 /**
- * Classe utilitaire facilitant la création d'un serveur cassandra local par un
- * bean spring.
- */
-public class CassandraServerBean extends AbstractCassandraServer {
+*
+*
+*/
+public class CassandraServerBean implements InitializingBean, DisposableBean {
 
-  private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
+	private static final Logger LOG = LoggerFactory.getLogger(CassandraServerBean.class);
+	
+	public static final String KEYSPACE_TU = "keyspace_tu";
+	
+	private String[] dataSets;
+	 
+	private String[] dataSetsCql;
+	
+	private boolean startLocal = false;
+	
+	private boolean isCassandraStarted = false;
+	
+	private String hosts = null;
+		
+	private Session cqlSession;
+	 
+	 @Override
+	 public void afterPropertiesSet() throws Exception {
+		 LOG.debug("CassandraServerBean : startLocal={} - dataSet={}", startLocal, dataSets);
+		 resetData();
+	 }
 
-  private Cluster testCluster = null;
+	 @Override
+	 public void destroy() throws Exception {
+	   // Pas besoin d'arrêter le serveur
+	 }
+	 /**
+	  * Réinitialise les données de la base cassandra locale, avec le jeu de
+	  * données utilisé initialement lors de la création du serveur
+	  *
+	  * @throws Exception
+	  *           Une erreur est survenue
+	  */
+	 public void resetData() throws Exception {
+		 if(dataSets != null && dataSets.length > 0)
+			 resetData(true, MODE_API.HECTOR, dataSets);
+		 if(dataSetsCql != null && dataSetsCql.length > 0)
+			 resetData(false, MODE_API.DATASTAX, dataSetsCql);
+	 }
+	 
+	 /**
+	  * Réinitialise les données de la base cassandra locale
+	  *
+	  * @param dropAndCreateKeyspace
+	  *          Si true, suppression et creation d'un nouveau keyspace sinon false.
+	  * @param newDataSets
+	  *          Jeu(x) de données à utiliser
+	  * @throws Exception
+	  *           Une erreur est survenue
+	  */
+	 /*public void resetData(final String... newDataSets) throws Exception {
+		 String mode = Utils.setAPIConnecterMode(newDataSets);
+		 resetData(true, mode, newDataSets);
+	
+	 }*/
+	 	 
+	 public  void resetData(boolean dropAndCreateKeyspace, String mode, String... newDataSets) throws Exception{
+		if (!startLocal) {
+	      return;
+	    }
+	  	    
+	    // demarage du serveur 
+	    cassandraUnitInitilization();
+	    
+	    // injection des données en mode thrift ou cql
+	    
+	    if(ModeGestionAPI.MODE_API.HECTOR.equals(mode)) {
+	    	if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
+	  	      newDataSets = dataSets;
+	  	    }
+		    // creer le connecteur au cluster thrift et charger les datasets
+		    ClusterThriftConnecter connecter = new ClusterThriftConnecter(getThriftHosts());
+		    connecter.loadDataSetToServer(dropAndCreateKeyspace, newDataSets);
+		    
+	    } else if(ModeGestionAPI.MODE_API.DATASTAX.equals(mode)){ 
+	    	if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
+	  	      newDataSets = dataSetsCql;
+	  	    }
+	    	// creer le connecteur au cluster cql et charger les datasets
+	    	ClusterCQLConnecter cqlconnecter = new ClusterCQLConnecter(getCqlHosts());
+	    	cqlSession = cqlconnecter.getTestSession();
+	    	// On inject les jeux de données via le connecteur cql
+	        cqlconnecter.loadDataSetToServer(dropAndCreateKeyspace, newDataSets);
+	    }
+	 }
+	 	
+	 /**
+	  * @throws IOException
+	  */
+ 	protected void cassandraUnitInitilization() throws Exception {
+ 		
+ 		if (isCassandraStarted) {
+ 			return;
+ 		}
+	 	LOG.debug("CassandraServerBean : reseting data...");
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void resetData(final String... newDataSets) throws Exception {
-    resetData(true, newDataSets);
-
-  }
-
-  /**
-   * Réinitialise les données de la base cassandra locale, avec le jeu de
-   * données utilisé initialement lors de la création du serveur
-   *
-   * @param dropAndCreateKeyspace
-   *          Si true, suppression et creation d'un nouveau keyspace sinon false.
-   * @param newDataSets
-   * @throws Exception
-   *           Une erreur est survenue
-   */
-  public void resetData(final boolean dropAndCreateKeyspace, String... newDataSets) throws Exception {
-
-    if (!startLocal) {
-      return;
-    }
-
-    if (newDataSets == null || newDataSets != null && newDataSets.length == 0) {
-      newDataSets = dataSets;
-    }
-
-    // demarage du serveur
-    cassandraUnitInitilization();
-
-    // On attend que le serveur soit prêt
-    waitForServer();
-
-    // Fusionne les DataSets
-    final DataSet dataSet = mergeDataSets(newDataSets);
-    // Charge les données
-    final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
-    dataLoader.load(dataSet, !(testCluster.describeKeyspace(KEYSPACE_TU) != null && !dropAndCreateKeyspace));
-
-  }
-
-  /**
-   * Il arrive que le serveur cassandra local mette du temps avant d'être
-   * opérationnel. Cette méthode fait en sorte d'attendre jusqu'à ce qu'il soit
-   * opérationnel
-   *
-   * @throws InterruptedException
-   *           : on a été interrompu
-   */
-  @Override
-  protected void waitForServer() throws InterruptedException {
-    Cluster cluster = getTestCluster();
-    for (int i = 0; i < WAIT_MAX_TRY; i++) {
-      try {
-        cluster.describeKeyspaces();
-        break;
-      } catch (final Exception e) {
-        LOG.debug("CassandraServerBean : waiting for server (" + i + ")...");
-        Thread.sleep(WAIT_MS);
-        LOG.debug("CassandraServerBean : reseting cluster (" + i + ")...");
-        try {
-          HFactory.shutdownCluster(testCluster);
-        } catch (final Exception ex) {
-          LOG.debug("CassandraServerBean : error while shutdowning cluster", ex);
-        }
-        cluster = getTestCluster();
-      }
-    }
-  }
-
-  private Cluster getTestCluster() {
-    if (testCluster == null) {
-      final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(getHosts());
-      hostConfigurator.setMaxActive(1);
-      testCluster = HFactory.getOrCreateCluster(TEST_CLUSTER_NAME, hostConfigurator);
-    }
-    return testCluster;
-  }
-
-  /**
-   * Arrête le cluster (partie cliente) de test
-   */
-  @Override
-  public final void shutdownTestCluster() {
-    if (testCluster != null) {
-      HFactory.shutdownCluster(testCluster);
-    }
-  }
-
-  /**
-   * Renvoie la chaîne de connexion au serveur cassandra
-   *
-   * @return chaîne de connexion
-   */
-  @Override
-  public final String getHosts() {
-    if (startLocal) {
-      // Petite bidouille : on met le serveur localhost 3 fois : ça permet de
-      // tenter 3 fois
-      // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
-      // serveur cassandra local
-      // ne se lance pas assez rapidement)
-      return "localhost:9171,localhost:9171,localhost:9171";
-    } else {
-      return hosts;
-    }
-  }
-
-  private DataSet mergeDataSets(final String... dataSets) {
-    // Vérification des paramètres d'entrée
-    Assert.notEmpty(dataSets, "La liste des Dataset est vide");
-
-    // Construit l'objet de résultat de la méthode : un dataSet
-    // dans lequel on va fusionner les datasets passés en arguments
-    final MemoryDataSet dataSetResult = new MemoryDataSet();
-
-    // Récupère la définition du keyspace et des CF dans le 1er dataset
-    final String premierDataSet = dataSets[0];
-    final ClassPathXmlDataSet premierDataSetObj = new ClassPathXmlDataSet(premierDataSet);
-    dataSetResult.setKeyspace(premierDataSetObj.getKeyspace());
-    dataSetResult.setColumnFamilies(premierDataSetObj.getColumnFamilies());
-
-    // Boucle sur le reste des DataSet
-    // Et fusionne les CF avec celles du premier DataSet
-    for (int i = 1; i < dataSets.length; i++) {
-      final String dataSet = dataSets[i];
-      final ClassPathXmlDataSet dataSetObj = new ClassPathXmlDataSet(dataSet);
-      if (!StringUtils.equals(dataSetObj.getKeyspace().getName(), dataSetResult.getKeyspace().getName())) {
-        throw new IllegalArgumentException("Les KeySpace des datasets sont différents !");
-      }
-      for (final ColumnFamilyModel cfm : dataSetObj.getColumnFamilies()) {
-        dataSetResult.getColumnFamilies().add(cfm);
-      }
-    }
-
-    // Renvoie l'objet Dataset fusionné
-    return dataSetResult;
-
-  }
-
-  /**
-   * @return the keyspaceTu
-   */
-  @Override
-  public String getKeyspaceTu() {
-    return KEYSPACE_TU;
-  }
-
-  /*
-   * (non-Javadoc)
-   * @see fr.urssaf.image.commons.cassandra.helper.AbstractCassandraServer#getLogger()
-   */
-  @Override
-  public Logger getLogger() {
-    return LOG;
-  }
+	   // System.setProperty("cassandra.unsafesystem", "true");
+	
+	   // ERREUR: https://github.com/jsevellec/cassandra-unit/issues/186
+	   System.setProperty("cassandra.storagedir", "/tmp/cassandra" + System.nanoTime());
+	
+	   /*
+	    * Pour cause d'apparution de cette erreur (adresse ci-dessous) dû à un bug dans la version de cassandra unit utilisée,
+	    * https://github.com/jsevellec/cassandra-unit/issues/221
+	    * Lors de la création des différents repertoires de cassandra, le fichier de conf n'est pas initialisé
+	    * ce qui cré un NullPointerException à:
+	    * DatabaseDescriptor.createAllDirectories():
+	    * if (conf.data_file_directories.length == 0) ==> NullPointerException
+	    * car conf == null
+	    * Pour contourner le problème il y a 2 solutions:
+	    * solution 1:
+	    * On charge d'abord le context (fichier de conf) avant de lancer EmbeddedCassandraServerHelper
+	    */
+	   final String tmpDir = EmbeddedCassandraServerHelper.DEFAULT_TMP_DIR;
+	   final String yamlFile = "/" + EmbeddedCassandraServerHelper.DEFAULT_CASSANDRA_YML_FILE;
+	   final File file = new File(tmpDir + yamlFile);
+	   System.setProperty("cassandra.config", "file:" + file.getAbsolutePath());
+	   // On verifie que le fichier existe sinon on le cré
+	   if (!file.exists()) {
+	     copyYamlFile(yamlFile, tmpDir);
+	   }
+	
+	   EmbeddedCassandraServerHelper.startEmbeddedCassandra(200000L);
+	   isCassandraStarted = true;
+	 }
+	
+	 /**
+	  * Creation du fichier cassandra.yaml
+	  *
+	  * @param resource
+	  * @param directory
+	  * @throws IOException
+	  */
+	 private static void copyYamlFile(final String resource, final String directory) throws IOException {
+	   FileUtils.createDirectory(directory);
+	   final String fileName = resource.substring(resource.lastIndexOf("/") + 1);
+	   final File file = new File(directory + System.getProperty("file.separator") + fileName);
+	   try (
+	        InputStream is = EmbeddedCassandraServerHelper.class.getResourceAsStream(resource);
+	        OutputStream out = new FileOutputStream(file)) {
+	     final byte buf[] = new byte[1024];
+	     int len;
+	     while ((len = is.read(buf)) > 0) {
+	       out.write(buf, 0, len);
+	     }
+	     out.close();
+	   }
+	 }
+	
+	 /**
+	  * Recupere la session de connection au cluster via l'api datastax
+	  * @return
+	 * @throws InterruptedException 
+	  * @throws Exception
+	  */
+	 public Session getCQLSession() throws InterruptedException  {
+		 if(cqlSession == null) {
+			 ClusterCQLConnecter cqlconnecter = new ClusterCQLConnecter(getCqlHosts());
+			 cqlSession =cqlconnecter.getTestSession();
+		 }
+		 return cqlSession;
+	 }
+	 
+	 /**
+	  * Dans le cas d'un cassandra zookeeper non local, il s'agit de la chaîne de
+	  * connexion
+	  *
+	  * @param hosts
+	  *          Chaîne de connexion (ex :
+	  *          "toto.toto.com:9160,titi.titi.com:9160")
+	  */
+	 public void setHosts(final String hosts) {
+	   this.hosts = hosts;
+	 }
+	 
+	 /**
+	  * get cql port
+	  * Renvoie la chaîne de connexion au serveur cassandra
+	  * @return
+	  */
+	 public final String getCqlHosts() {
+	    if (startLocal) {
+	      // Petite bidouille : on met le serveur localhost 3 fois : ça permet de
+	      // tenter 3 fois
+	      // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
+	      // serveur cassandra local
+	      // ne se lance pas assez rapidement)
+	      return "localhost:9171,localhost:9171,localhost:9171";
+	    } else {
+	      return hosts;
+	    }
+	 }
+	 
+	 /**
+	  * Thrift port
+	  * Renvoie la chaîne de connexion au serveur cassandra
+	  *
+	  * @return chaîne de connexion
+	 */
+	 public final String getThriftHosts() {
+	   if (startLocal) {
+	     // Petite bidouille : on met le serveur localhost 3 fois : ça permet de
+	     // tenter 3 fois
+	     // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
+	     // serveur cassandra local
+	     // ne se lance pas assez rapidement)
+	     return "localhost:9171,localhost:9171,localhost:9171";
+	   } else {
+	     return hosts;
+	   }
+	 }
+	 
+	 /**
+	  * @return the keyspaceTu
+	 */
+	 
+	 public String getKeyspaceTu() {
+	   return KEYSPACE_TU;
+	 }
+	 
+	 /**
+	  * Indique quel jeu de données cassandraUnit doit être utilisé lors de
+	  * l'initialisation du serveur cassandra
+	  *
+	  * @param dataSet
+	  *          Jeu de données
+	  */
+	 public void setDataSet(final String dataSet) {
+	
+	   // Il peut y avoir plusieurs dataSets séparés par des ;
+	   dataSets = StringUtils.split(dataSet, ';');
+	
+	 }
+	 
+	 /**
+	  * Indique quel jeu de données cassandraUnit doit être utilisé lors de
+	  * l'initialisation du serveur cassandra
+	  *
+	  * @param dataSet
+	  *          Jeu de données
+	  */
+	 public void setDataSetCql(final String dataSetCql) {
+	
+	   // Il peut y avoir plusieurs dataSets séparés par des ;
+	   dataSetsCql = StringUtils.split(dataSetCql, ';');
+	
+	 }
+	
+	 /**
+	  * Indique s'il faut lancer un serveur cassandra local
+	  *
+	  * @param startLocal
+	  *          vrai s'il faut lancer un serveur local
+	  */
+	 public void setStartLocal(final boolean startLocal) {
+	   this.startLocal = startLocal;
+	 }
+	
+	 /**
+	  * @return vrai si le serveur cassandra est lancé localement
+	  */
+	 public boolean getStartLocal() {
+	   return startLocal;
+	 }
+	
 }

@@ -121,7 +121,7 @@ public class CassandraCQLClientFactoryTest {
       final FileSystemResource ress = new FileSystemResource(ressFile);
       ccf = new CassandraCQLClientFactory(ress);
       final File fileReseted = new File(tmpDir + yamlFile);
-      Assert.assertTrue("", fileReseted.exists());
+      Assert.assertTrue("Le fichier doit exister", fileReseted.exists());
     } catch (final Exception e) {
       Assert.fail("Exception non prévu : " + e.getMessage());
     } finally {
