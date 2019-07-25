@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,7 +18,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -40,12 +42,12 @@ public class JobQueueServiceCqlTest {
    private JobLectureCqlService jobLectureService;
 
    @Autowired
-   private CassandraServerBeanCql cassandraServer;
+   private CassandraServerBean cassandraServer;
 
-   @Before
+   @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
-      cassandraServer.resetData(true);
+	   cassandraServer.resetData(true, MODE_API.DATASTAX);
    }
 
    @Test

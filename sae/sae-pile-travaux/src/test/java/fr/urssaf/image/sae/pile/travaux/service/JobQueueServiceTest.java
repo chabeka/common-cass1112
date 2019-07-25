@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -45,7 +46,7 @@ public class JobQueueServiceTest {
    @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
-      cassandraServer.resetData(true);
+      cassandraServer.resetData(true, MODE_API.HECTOR);
    }
 
    @Test

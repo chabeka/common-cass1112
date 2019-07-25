@@ -16,7 +16,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -36,7 +37,7 @@ public class JobQueueServiceUpdateToCheckFlagCqlTest {
    private JobLectureCqlService jobLectureService;
    
    @Autowired
-   private CassandraServerBeanCql cassandraServer;
+   private CassandraServerBean cassandraServer;
 
    private UUID idJob;
 
@@ -46,7 +47,7 @@ public class JobQueueServiceUpdateToCheckFlagCqlTest {
 
    @Before
    public void before() throws Exception {
-      cassandraServer.resetData(true);
+      cassandraServer.resetData(true, MODE_API.DATASTAX);
       setJob(null);
    }
 

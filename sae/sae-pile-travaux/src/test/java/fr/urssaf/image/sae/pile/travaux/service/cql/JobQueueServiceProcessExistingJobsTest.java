@@ -20,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -61,7 +62,7 @@ public class JobQueueServiceProcessExistingJobsTest {
 
    @After
    public void end() throws Exception {
-      cassandraServer.resetData(true);
+	   cassandraServer.resetData(true, MODE_API.DATASTAX);
    }
 
    /**
