@@ -24,6 +24,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.CollectionUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitationIndex;
@@ -71,7 +72,7 @@ public class TracesWsSupportTest {
    @After
    public void after() throws Exception {
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
 
       AuthenticationContext.setAuthenticationToken(null);
 
