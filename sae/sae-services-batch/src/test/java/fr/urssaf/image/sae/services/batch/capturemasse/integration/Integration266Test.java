@@ -31,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -162,7 +163,7 @@ public class Integration266Test {
 
       logger.detachAppender(logAppender);
 
-      server.resetData(true);
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test
