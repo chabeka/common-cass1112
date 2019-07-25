@@ -16,7 +16,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import junit.framework.Assert;
 
@@ -33,15 +33,11 @@ public class ActionUnitaireSupportTest {
   private CassandraServerBean cassandraServer;
 
   @Autowired
-  private CassandraServerBeanCql cassandraServerCQL;
-
-  @Autowired
   private ActionUnitaireSupport support;
 
   @After
   public void end() throws Exception {
-    cassandraServer.resetData(true);
-    cassandraServerCQL.resetData();
+    cassandraServer.resetData(true, MODE_API.HECTOR);
   }
 
   @Test
