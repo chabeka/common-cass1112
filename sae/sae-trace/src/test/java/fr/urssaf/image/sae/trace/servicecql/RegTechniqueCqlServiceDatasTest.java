@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
@@ -67,7 +68,7 @@ public class RegTechniqueCqlServiceDatasTest {
    private RegTechniqueService service;
 
    @Autowired
-   private CassandraServerBeanCql servercql;
+   private CassandraServerBean server;
 
    @Autowired
    private TraceRegTechniqueCqlSupport support;
@@ -77,7 +78,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
    @After
    public void after() throws Exception {
-      servercql.resetData(true);
+      server.resetData(true, MODE_API.DATASTAX);
    }
 
    @Test

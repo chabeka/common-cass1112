@@ -20,7 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
@@ -60,14 +61,14 @@ public class TraceRegTechniqueCqlSupportTest {
    private TraceRegTechniqueCqlSupport support;
 
    @Autowired
-   private CassandraServerBeanCql servercql;
+   private CassandraServerBean servercql;
 
    @Autowired
    private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
    @After
    public void after() throws Exception {
-      servercql.resetData(true);
+      servercql.resetData(true, MODE_API.DATASTAX);
    }
 
    @Test

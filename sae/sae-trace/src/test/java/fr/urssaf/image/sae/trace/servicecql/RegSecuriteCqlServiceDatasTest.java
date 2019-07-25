@@ -18,7 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
@@ -65,7 +66,7 @@ public class RegSecuriteCqlServiceDatasTest {
    private RegSecuriteService service;
 
    @Autowired
-   private CassandraServerBeanCql servercql;
+   private CassandraServerBean server;
 
    @Autowired
    private TraceRegSecuriteCqlSupport support;
@@ -75,7 +76,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
    @After
    public void after() throws Exception {
-      servercql.resetData(true);
+      server.resetData(true, MODE_API.DATASTAX);
    }
 
    @Test

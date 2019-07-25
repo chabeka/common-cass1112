@@ -21,7 +21,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -77,15 +76,11 @@ public class DispatcheurServiceEvtDatasTest {
   private CassandraServerBean server;
 
   @Autowired
-  private CassandraServerBeanCql serverCQL;
-
-  @Autowired
   private JournalEvtService evtService;
 
   @After
   public void after() throws Exception {
-    server.resetData(true);
-    serverCQL.resetData(false);
+    server.resetData();
   }
 
   @Test
