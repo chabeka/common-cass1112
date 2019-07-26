@@ -51,27 +51,8 @@ public class JobLectureServiceCqlTest {
     otherJob = idJob;
   }
 
-  @Before
-  public void before(){
-    setJob(null);
-  }
-
   @After
   public void after() throws Exception {
-
-    // List<JobRequest> jobList = jobLectureService.getAllJobs(keyspace);
-    // suppression du traitement de masse
-    if (idJob != null) {
-
-      jobQueueService.deleteJob(idJob);
-
-    }
-
-    if (otherJob != null) {
-
-      jobQueueService.deleteJob(otherJob);
-
-    }
     cassandraServer.resetData(true,MODE_API.DATASTAX);
   }
 

@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.TableMetadata;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
@@ -52,14 +53,18 @@ public class JobQueueServiceProcessParamAndJobParamCqlTest {
 
   @After
   public void after() throws Exception {
-    serverBean.resetData();
+    serverBean.resetData(true, MODE_API.DATASTAX);
   }
 
   @Test
   public void startingJob_success() throws JobInexistantException, JobDejaReserveException, LockTimeoutException, InterruptedException {
 
     idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-
+     
+    System.out.println(serverBean.getKeyspaceTu());
+    for(TableMetadata meta : serverBean.getCQLSession().getCluster().getMetadata().getKeyspace(serverBean.getKeyspaceTu()).getTables()){
+    	System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>> " + meta.getName());
+    }
     createJobWithParam(idJobWithParam);
 
     idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();

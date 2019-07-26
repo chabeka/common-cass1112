@@ -46,25 +46,10 @@ public class JobQueueServiceEndingJobTest {
 
   private UUID idJob;
 
-  private void setJob(final UUID idJob) {
-    this.idJob = idJob;
-  }
-
-  @Before
-  public void before() throws Exception {
-	cassandraServer.resetData(true, MODE_API.DATASTAX);
-    setJob(null);
-  }
 
   @After
-  public void after() {
-
-    // suppression du traitement de masse
-    if (idJob != null) {
-
-      jobQueueService.deleteJob(idJob);
-
-    }
+  public void after() throws Exception {
+	  cassandraServer.resetData(true, MODE_API.DATASTAX);
   }
 
   @Test

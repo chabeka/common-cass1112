@@ -17,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.LockTimeoutException;
@@ -37,25 +39,12 @@ public class JobQueueServiceHostsTest {
 
    private UUID idJob;
 
-   private void setJob(final UUID idJob) {
-      this.idJob = idJob;
-   }
-
-   @Before
-   public void before() {
-
-      setJob(null);
-   }
-
+   @Autowired
+   private CassandraServerBean cassandraServer;
+   
    @After
-   public void after() {
-
-      // suppression du traitement de masse
-      if (idJob != null) {
-
-         jobQueueService.deleteJob(idJob);
-
-      }
+   public void after() throws Exception {
+	   cassandraServer.resetData(true, MODE_API.DATASTAX);
    }
 
    @Test
