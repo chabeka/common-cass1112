@@ -44,27 +44,17 @@ public class JobQueueServiceProcessParamAndJobParamCqlTest {
   @Autowired
   private JobLectureCqlService jobLectureService;
 
-  @Autowired
-  private CassandraServerBean serverBean;
-
   private UUID idJobWithParam;
 
   private UUID idJobWithJobParam;
 
-  @After
-  public void after() throws Exception {
-    serverBean.resetData(true, MODE_API.DATASTAX);
-  }
-
+  
   @Test
   public void startingJob_success() throws JobInexistantException, JobDejaReserveException, LockTimeoutException, InterruptedException {
 
     idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
      
-    System.out.println(serverBean.getKeyspaceTu());
-    for(TableMetadata meta : serverBean.getCQLSession().getCluster().getMetadata().getKeyspace(serverBean.getKeyspaceTu()).getTables()){
-    	System.out.println(" >>>>>>>>>>>>>>>>>>>>>>>> " + meta.getName());
-    }
+  
     createJobWithParam(idJobWithParam);
 
     idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
