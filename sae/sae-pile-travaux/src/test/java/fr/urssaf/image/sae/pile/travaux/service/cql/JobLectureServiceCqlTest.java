@@ -52,13 +52,12 @@ public class JobLectureServiceCqlTest {
   }
 
   @Before
-  public void before() throws Exception {
-    cassandraServer.resetData(true,MODE_API.DATASTAX);
+  public void before(){
     setJob(null);
   }
 
   @After
-  public void after() {
+  public void after() throws Exception {
 
     // List<JobRequest> jobList = jobLectureService.getAllJobs(keyspace);
     // suppression du traitement de masse
@@ -73,6 +72,7 @@ public class JobLectureServiceCqlTest {
       jobQueueService.deleteJob(otherJob);
 
     }
+    cassandraServer.resetData(true,MODE_API.DATASTAX);
   }
 
   @Test

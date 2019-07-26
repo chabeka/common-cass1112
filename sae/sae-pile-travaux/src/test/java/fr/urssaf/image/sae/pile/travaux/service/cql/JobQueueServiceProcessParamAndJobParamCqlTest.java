@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.pile.travaux.service.cql;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import com.datastax.driver.core.Cluster;
+import com.datastax.driver.core.TableMetadata;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
@@ -46,42 +50,16 @@ public class JobQueueServiceProcessParamAndJobParamCqlTest {
 
   private UUID idJobWithJobParam;
 
-  private void setJobWithParam(final UUID idJob) {
-    idJobWithParam = idJob;
-  }
-
-  private void setJobWithJobParam(final UUID idJob) {
-    idJobWithJobParam = idJob;
-  }
-
-  @Before
-  public void before() throws Exception {
-	serverBean.resetData(true, MODE_API.DATASTAX);
-    setJobWithParam(null);
-    setJobWithJobParam(null);
-  }
-
   @After
   public void after() throws Exception {
-
-    // suppression du traitement de masse
-    if (idJobWithParam != null) {
-
-      jobQueueService.deleteJob(idJobWithParam);
-
-    }
-    // suppression du traitement de masse avec les job parameters
-    if (idJobWithJobParam != null) {
-
-      jobQueueService.deleteJob(idJobWithJobParam);
-
-    }
+    serverBean.resetData();
   }
 
   @Test
-  public void startingJob_success() throws JobInexistantException, JobDejaReserveException, LockTimeoutException {
+  public void startingJob_success() throws JobInexistantException, JobDejaReserveException, LockTimeoutException, InterruptedException {
 
     idJobWithParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+
     createJobWithParam(idJobWithParam);
 
     idJobWithJobParam = TimeUUIDUtils.getUniqueTimeUUIDinMillis();

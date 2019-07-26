@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,10 +45,10 @@ public class OperationPileTravauxServiceCqlTest {
    @Autowired
    private CassandraServerBean cassandraServer;
 
-   @Before
+   @After
    public final void init() throws Exception {
       // Après chaque test, on reset les données de cassandra
-      cassandraServer.resetData(true, MODE_API.DATASTAX);
+      cassandraServer.resetData();
    }
 
    @Test
