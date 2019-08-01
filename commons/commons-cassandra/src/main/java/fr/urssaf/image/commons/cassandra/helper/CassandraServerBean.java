@@ -62,7 +62,9 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	 public void resetData() throws Exception {	
 		 if(dataSets != null)
 			 resetData(true, MODE_API.HECTOR, dataSets);
-		 else if(dataSets != null && dataSetsCql != null)
+		 
+		 // si keyspace déjà créé, pas besoin de recréer dropAndCreateKeyspace = false
+		 if(dataSets != null && dataSetsCql != null)
 			 resetData(false, MODE_API.DATASTAX, dataSetsCql);
 		 else if (dataSetsCql != null){
 			 resetData(true, MODE_API.DATASTAX, dataSetsCql);

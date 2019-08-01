@@ -84,6 +84,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
          manager = new MappingManager(ccf.getSession());
          mapper = (Mapper<T>) manager.mapper(daoType);
       }
+      // getMapper().setDefaultDeleteOptions(Option.timestamp(clock));
       return mapper;
    }
 
