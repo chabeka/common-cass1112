@@ -85,9 +85,11 @@ public class JobExecutionDaoCqlImpl extends GenericDAOImpl<JobExecutionCql, Long
     */
    @PostConstruct
    public void setRegister() {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<BatchStatus>(BatchStatus.class));
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+	   if(ccf != null) {
+	      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<BatchStatus>(BatchStatus.class));
+	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+	      ccf.getCluster().getConfiguration().getCodecRegistry().register(ExecutionContextCodec.instance);
+	   }
 
    }
 

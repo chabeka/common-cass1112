@@ -77,8 +77,10 @@ public class JobInstanceDaoCqlImpl extends GenericDAOImpl<JobInstanceCql, Long> 
    */
   @PostConstruct
   public void setRegister() {
-    ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
-    ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+	  if(ccf != null) {
+	    ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+	    ccf.getCluster().getConfiguration().getCodecRegistry().register(JobParametersCodec.instance);
+	  }
 
   }
 
