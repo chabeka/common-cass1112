@@ -301,13 +301,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
         traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
-        exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
+        exploitCqlSupport.create(traceCql);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         exploitSupport.create(traceExploit, clockSupport.currentCLock());
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         TraceRegExploitationCql traceCql = new TraceRegExploitationCql();
         traceCql = UtilsTraceMapper.createTraceRegExploitationFromThriftToCql(traceExploit);
-        exploitCqlSupport.create(traceCql, clockSupport.currentCLock());
+        exploitCqlSupport.create(traceCql);
         exploitSupport.create(traceExploit, clockSupport.currentCLock());
       }
     } else if (TraceDestinataireDao.COL_REG_SECURITE.equals(type)) {
@@ -318,13 +318,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
         traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
-        secuCqlSupport.create(traceCql, clockSupport.currentCLock());
+        secuCqlSupport.create(traceCql);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         secuSupport.create(traceSecurite, clockSupport.currentCLock());
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         TraceRegSecuriteCql traceCql = new TraceRegSecuriteCql();
         traceCql = UtilsTraceMapper.createTraceRegSecuFromThriftToCql(traceSecurite);
-        secuCqlSupport.create(traceCql, clockSupport.currentCLock());
+        secuCqlSupport.create(traceCql);
         secuSupport.create(traceSecurite, clockSupport.currentCLock());
       }
 
@@ -336,13 +336,13 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
         traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
-        techCqlSupport.create(traceCql, clockSupport.currentCLock());
+        techCqlSupport.create(traceCql);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
         techSupport.create(traceTechnique, clockSupport.currentCLock());
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         TraceRegTechniqueCql traceCql = new TraceRegTechniqueCql();
         traceCql = UtilsTraceMapper.createTraceRegTechniqueFromThriftToCql(traceTechnique);
-        techCqlSupport.create(traceCql, clockSupport.currentCLock());
+        techCqlSupport.create(traceCql);
         techSupport.create(traceTechnique, clockSupport.currentCLock());
       }
 
@@ -357,7 +357,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
         TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
         traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
-        evtCqlSupport.create(traceCql, currentCLock);
+        evtCqlSupport.create(traceCql);
         final Map<String, Object> mapInfos = trace.getInfos();
         if (MapUtils.isNotEmpty(mapInfos)) {
           if (mapInfos.containsKey(KEY_ID_DOC)) {
@@ -377,7 +377,7 @@ public class DispatcheurServiceImpl implements DispatcheurService {
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
         TraceJournalEvtCql traceCql = new TraceJournalEvtCql();
         traceCql = UtilsTraceMapper.createTraceJournalEvtFromThriftToCql(traceTechnique);
-        evtCqlSupport.create(traceCql, currentCLock);
+        evtCqlSupport.create(traceCql);
         final Map<String, Object> mapInfos = trace.getInfos();
         if (MapUtils.isNotEmpty(mapInfos)) {
           if (mapInfos.containsKey(KEY_ID_DOC)) {

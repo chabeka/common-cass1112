@@ -93,7 +93,7 @@ public class TraceRegTechniqueCqlSupportTest {
       final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
       createTrace(uuid);
 
-      final long nbTracesPurgees = support.delete(new Date(), new Date().getTime());
+      final long nbTracesPurgees = support.delete(new Date());
 
       final Optional<TraceRegTechniqueCql> securiteOp = support.find(uuid);
       Assert.assertFalse("aucune trace ne doit etre touvée", securiteOp.isPresent());
@@ -188,6 +188,6 @@ public class TraceRegTechniqueCqlSupportTest {
       trace.setLogin(LOGIN);
       trace.setInfos(INFOS);
 
-      support.create(trace, new Date().getTime());
+      support.create(trace);
    }
 }

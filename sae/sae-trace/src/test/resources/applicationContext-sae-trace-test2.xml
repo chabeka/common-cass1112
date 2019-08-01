@@ -9,11 +9,7 @@
 
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
    <import resource="classpath*:/applicationContext-sae-commons.xml" />
-   <import resource="classpath*:/applicationContext-commons-dfce-connection.xml" />  
-
-   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
-   <import resource="classpath*:/applicationContext-sae-commons.xml" />
-   <import resource="classpath*:/applicationContext-commons-dfce-connection.xml" />  
+   <import resource="classpath*:/applicationContext-commons-dfce-connection.xml" />   
 
    <bean id="resourceSaeConfig" class="org.springframework.core.io.ClassPathResource">
       <constructor-arg value="config/commons-config2.properties" />

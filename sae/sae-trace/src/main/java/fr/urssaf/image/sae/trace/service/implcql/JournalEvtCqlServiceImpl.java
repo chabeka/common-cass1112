@@ -17,18 +17,28 @@ import org.apache.commons.lang.time.DateFormatUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtIndexDocCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtCqlDao;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexCqlDao;
+import fr.urssaf.image.sae.trace.daocql.ITraceJournalEvtIndexDocCqlDao;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceJournalEvtCqlDaoImpl;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceJournalEvtIndexCqlDaoImpl;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceJournalEvtIndexDocDaoCqlImpl;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.service.JournalEvtServiceCql;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 import fr.urssaf.image.sae.trace.service.support.TraceFileSupport;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.TraceUtils;
 
 /**
@@ -46,9 +56,7 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
 
    private static final String PATTERN_DATE = "yyyyMMdd";
 
-   private final TraceJournalEvtCqlSupport supportcql;
-
-   private final JobClockSupport clockSupport;
+   private TraceJournalEvtCqlSupport supportcql;
 
    private final LoggerSupport loggerSupport;
 
@@ -69,9 +77,28 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
                                    final TraceFileSupport traceFileSupport) {
       super();
       this.supportcql = support;
-      this.clockSupport = clockSupport;
       this.loggerSupport = loggerSupport;
       this.traceFileSupport = traceFileSupport;
+   }
+   
+   public JournalEvtCqlServiceImpl(ApplicationContext appContext) {
+
+		CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
+		if(ccf == null) {
+	   		throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+		}
+		ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
+		dao.setCcf(ccf);
+		ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();
+		indexdao.setCcf(ccf);
+		ITraceJournalEvtIndexDocCqlDao indexdocdao = new TraceJournalEvtIndexDocDaoCqlImpl();
+		indexdocdao.setCcf(ccf);
+		
+		TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
+		TraceJournalEvtCqlSupport support = new TraceJournalEvtCqlSupport(dao, indexdao, indexdocdao, timeUUIDSupport);
+	    this.supportcql = support;
+	    this.loggerSupport = new LoggerSupport();
+		this.traceFileSupport = new TraceFileSupport();
    }
 
    /**
@@ -143,14 +170,6 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
    @Override
    public LoggerSupport getLoggerSupport() {
       return loggerSupport;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public JobClockSupport getClockSupport() {
-      return clockSupport;
    }
 
    /**

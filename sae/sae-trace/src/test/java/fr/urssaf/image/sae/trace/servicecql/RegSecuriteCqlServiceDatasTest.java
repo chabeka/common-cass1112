@@ -280,6 +280,6 @@ public class RegSecuriteCqlServiceDatasTest {
       trace.setLogin(LOGIN + suffixe);
       trace.setInfos(INFOS);
 
-      support.create(trace, new Date().getTime());
+      support.create(trace);
    }
 }

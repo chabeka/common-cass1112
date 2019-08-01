@@ -349,7 +349,7 @@ public class JournalEvtCqlServiceDatasTest {
       trace.setInfos(INFOS);
       trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
-      support.create(trace, new Date().getTime());
+      support.create(trace);
    }
 
    private void createTrace(final Date date, final String suffixe, final UUID id) {
@@ -361,6 +361,6 @@ public class JournalEvtCqlServiceDatasTest {
       trace.setInfos(INFOS);
       trace.setPagms(Arrays.asList("PAGM " + suffixe));
 
-      support.create(trace, new Date().getTime());
+      support.create(trace);
    }
 }

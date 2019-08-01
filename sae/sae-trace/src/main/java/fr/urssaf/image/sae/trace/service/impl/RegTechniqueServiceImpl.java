@@ -81,7 +81,15 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
    * {@inheritDoc}
    */
   public JobClockSupport getClockSupport() {
-    return clockSupport;
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    	// nothing => le clock est gerer automatiquement par datastax
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return regTechniqueServiceThrift.getClockSupport();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return regTechniqueServiceThrift.getClockSupport();
+    }
+    return null;
   }
 
   /**
@@ -154,8 +162,7 @@ public class RegTechniqueServiceImpl implements RegTechniqueService {
 
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-      nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex,
-                                                                   getClockSupport().currentCLock());
+      nbTracesPurgees = regTechniqueServiceCql.getSupport().delete(dateIndex);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       nbTracesPurgees = regTechniqueServiceThrift.getSupport().delete(dateIndex,
                                                                       getClockSupport().currentCLock(), nbMaxLigneEvtToDelete);

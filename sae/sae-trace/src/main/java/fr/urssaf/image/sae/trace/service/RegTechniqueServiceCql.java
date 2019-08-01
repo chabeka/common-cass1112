@@ -6,8 +6,8 @@ package fr.urssaf.image.sae.trace.service;
 import java.util.UUID;
 
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
 
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
@@ -26,11 +26,6 @@ public interface RegTechniqueServiceCql {
    * @return le support de log
    */
   LoggerSupport getLoggerSupport();
-
-  /**
-   * @return le support de timing des opérations
-   */
-  JobClockSupport getClockSupport();
 
   /**
    * @return le logger de la classe concernée

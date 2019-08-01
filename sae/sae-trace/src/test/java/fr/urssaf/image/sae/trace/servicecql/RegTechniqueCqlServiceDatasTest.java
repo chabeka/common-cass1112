@@ -257,6 +257,6 @@ public class RegTechniqueCqlServiceDatasTest {
       trace.setStacktrace(STACK + suffixe);
       trace.setInfos(INFOS);
 
-      support.create(trace, new Date().getTime());
+      support.create(trace);
    }
 }

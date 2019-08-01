@@ -9,16 +9,23 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.GenericAbstractTraceCqlSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegSecuriteCqlSupport;
+import fr.urssaf.image.sae.trace.daocql.ITraceRegSecuriteCqlDao;
+import fr.urssaf.image.sae.trace.daocql.ITraceRegSecuriteIndexCqlDao;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceRegSecuriteCqlDaoImpl;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceRegSecuriteIndexCqlDaoImpl;
 import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.service.RegSecuriteServiceCql;
 import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
+import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 
 /**
  * Classe d'implémentation du support {@link RegSecuriteService}. Cette classe
@@ -28,9 +35,7 @@ import fr.urssaf.image.sae.trace.service.support.LoggerSupport;
 @Component
 public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
 
-   private final TraceRegSecuriteCqlSupport support;
-
-   private final JobClockSupport clockSupport;
+   private TraceRegSecuriteCqlSupport support;
 
    private final LoggerSupport loggerSupport;
 
@@ -46,22 +51,32 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
     *           Support pour l'écriture des traces applicatives
     */
    @Autowired
-   public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support,
-                                    final JobClockSupport clockSupport, final LoggerSupport loggerSupport) {
+   public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support, final LoggerSupport loggerSupport) {
       super();
       this.support = support;
-      this.clockSupport = clockSupport;
       this.loggerSupport = loggerSupport;
    }
-
    /**
-    * {@inheritDoc}
+    * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
+    * @param context
     */
-   @Override
-   public JobClockSupport getClockSupport() {
-      return clockSupport;
-   }
+   public RegSecuriteCqlServiceImpl(ApplicationContext context) {
 
+      CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) context.getBean("cassandraCQLClientFactory"); 
+	  if (ccf == null) {
+	  	throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+	  }
+	  ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
+	  dao.setCcf(ccf);
+	  ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
+	  indexDao.setCcf(ccf);
+	  TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
+	  
+	  TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
+      this.support = support;
+      this.loggerSupport = new LoggerSupport();
+   }
+  
    /**
     * {@inheritDoc}
     */

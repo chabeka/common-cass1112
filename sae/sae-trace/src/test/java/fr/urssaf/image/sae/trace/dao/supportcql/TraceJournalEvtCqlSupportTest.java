@@ -80,7 +80,7 @@ public class TraceJournalEvtCqlSupportTest {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, DATE.getTime());
+    cqlsupport.create(trace);
 
     final Optional<TraceJournalEvtCql> securiteOp = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet est non null", securiteOp.isPresent());
@@ -93,9 +93,9 @@ public class TraceJournalEvtCqlSupportTest {
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, new Date().getTime());
+    cqlsupport.create(trace);
 
-    final long nbTracesPurgees = cqlsupport.delete(new Date(), new Date().getTime());
+    final long nbTracesPurgees = cqlsupport.delete(new Date());
 
     final Optional<TraceJournalEvtCql> securiteOpt = cqlsupport.find(uuid);
     Assert.assertFalse("aucune trace ne doit etre touvée", securiteOpt.isPresent());
@@ -108,7 +108,7 @@ public class TraceJournalEvtCqlSupportTest {
   public void testCreateFindByPlageSuccess() {
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(new Date());
     final TraceJournalEvtCql trace = createTrace(uuid);
-    cqlsupport.create(trace, new Date().getTime());
+    cqlsupport.create(trace);
 
     final Optional<TraceJournalEvtCql> exploitationOpt = cqlsupport.find(uuid);
     Assert.assertTrue("L'objet doit etre non null", exploitationOpt.isPresent());

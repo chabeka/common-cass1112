@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -21,10 +22,13 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.LoadingCache;
 
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.daocql.ITraceDestinataireCqlDao;
+import fr.urssaf.image.sae.trace.daocql.impl.TraceDestinataireCqlDaoImpl;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 
 /**
@@ -38,7 +42,7 @@ public class TraceDestinataireCqlSupport {
    @Autowired
    ITraceDestinataireCqlDao destinatairecqldao;
 
-   private final LoadingCache<String, TraceDestinataire> traces;
+   private LoadingCache<String, TraceDestinataire> traces;
 
    /**
     * Constructeur
@@ -62,6 +66,16 @@ public class TraceDestinataireCqlSupport {
                                   });
    }
 
+   public TraceDestinataireCqlSupport(ApplicationContext appContext) {
+	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
+		if(ccf == null) {
+			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+		}
+		
+		ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
+		dao.setCcf(ccf);
+		this.destinatairecqldao = dao;
+   }
    /**
     * Création d'une trace destinataire
     *
