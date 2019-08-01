@@ -131,7 +131,7 @@ public class SAETransfertMasseServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData(true, MODE_API.HECTOR);
+      //server.resetData(true, MODE_API.HECTOR);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
