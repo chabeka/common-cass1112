@@ -59,11 +59,15 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	  * @throws Exception
 	  *           Une erreur est survenue
 	  */
-	 public void resetData() throws Exception {
-		 if(dataSets != null && dataSets.length > 0)
+	 public void resetData() throws Exception {	
+		 if(dataSets != null)
 			 resetData(true, MODE_API.HECTOR, dataSets);
-		 if(dataSetsCql != null && dataSetsCql.length > 0)
+		 else if(dataSets != null && dataSetsCql != null)
 			 resetData(false, MODE_API.DATASTAX, dataSetsCql);
+		 else if (dataSetsCql != null){
+			 resetData(true, MODE_API.DATASTAX, dataSetsCql);
+		 }
+		 
 	 }
 	 
 	 /**
@@ -149,7 +153,9 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	   }
 	
 	   EmbeddedCassandraServerHelper.startEmbeddedCassandra(200000L);
-	   isCassandraStarted = true;
+	   if(getCQLSession() != null) {
+		   isCassandraStarted = true;
+	   }
 	 }
 	
 	 /**
@@ -213,7 +219,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	      // l'opération si elle échoue la 1ere fois (ça arrive lorsque le
 	      // serveur cassandra local
 	      // ne se lance pas assez rapidement)
-	      return "localhost:9171,localhost:9171,localhost:9171";
+	      return "localhost:9042,localhost:9042,localhost:9042";
 	    } else {
 	      return hosts;
 	    }
@@ -290,5 +296,9 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	 public boolean getStartLocal() {
 	   return startLocal;
 	 }
+
+	public boolean isCassandraStarted() {
+		return isCassandraStarted;
+	}
 	
 }

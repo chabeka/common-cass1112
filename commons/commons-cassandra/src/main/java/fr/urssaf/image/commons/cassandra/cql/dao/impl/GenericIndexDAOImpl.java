@@ -95,4 +95,9 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
       return getMapper().map(getSession().execute(select)).iterator();
    }
 
+	@Override
+	public void setCcf(CassandraCQLClientFactory ccf) {
+		this.ccf = ccf;
+	}
+
 }

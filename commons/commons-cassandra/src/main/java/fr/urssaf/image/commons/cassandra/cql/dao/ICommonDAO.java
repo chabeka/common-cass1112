@@ -236,6 +236,10 @@ public interface ICommonDAO<T, ID> {
    CassandraCQLClientFactory getCcf();
 
    /**
+    *  initialise l'instance de la classe {@link CassandraCQLClientFactory}
+    */
+   public void setCcf(CassandraCQLClientFactory  ccf);
+   /**
     * @return
     */
    Mapper<T> getMapper();

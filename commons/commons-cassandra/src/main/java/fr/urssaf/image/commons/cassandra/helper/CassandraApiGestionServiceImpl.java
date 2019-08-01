@@ -58,7 +58,9 @@ public class CassandraApiGestionServiceImpl {
                    return getApiModeFromConfiguration();
                  }
                });
-    ccf.getSession().getCluster().getMetadata().getKeyspace("keyspace_tu");
+    if(ccf != null) {
+    	ccf.getSession().getCluster().getMetadata().getKeyspace("keyspace_tu");
+    }
     if (initCacheOnStartup) {
       populateCache();
     }

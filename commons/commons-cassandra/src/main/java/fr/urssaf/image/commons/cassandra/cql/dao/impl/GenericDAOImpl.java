@@ -66,6 +66,11 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
    public CassandraCQLClientFactory getCcf() {
       return ccf;
    }
+   
+   @Override
+   public void setCcf(CassandraCQLClientFactory ccf) {
+	   this.ccf = ccf;
+   }
 
    /**
     * Mapper le type T à la table cassandra
