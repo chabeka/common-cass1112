@@ -13,7 +13,7 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 
 public interface IJobsQueueDaoCql extends IGenericDAO<JobQueueCql, String> {
 
-   public void deleteByIdAndIndexColumn(final UUID id, final String key, long clock);
+   public void deleteByIdAndIndexColumn(final UUID id, final String key);
 
    public Iterator<JobQueueCql> getUnreservedJobRequest();
 

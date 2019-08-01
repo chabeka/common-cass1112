@@ -11,8 +11,17 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobHistoryDaoCqlImpl;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobRequestDaoCqlImpl;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobsQueueDaoCqlImpl;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
@@ -30,13 +39,17 @@ import me.prettyprint.hector.api.Keyspace;
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
-   private final JobRequestSupportCql jobRequestSupportCql;
+   private  JobRequestSupportCql jobRequestSupportCql;
 
-   private final JobsQueueSupportCql jobsQueueSupportCql;
+   private  JobsQueueSupportCql jobsQueueSupportCql;
 
-   private final JobHistorySupportCql jobHistorySupportCql;
+   private JobHistorySupportCql jobHistorySupportCql;
 
    private static final int MAX_ALL_JOBS = 200;
+
+   public JobLectureServiceCqlImpl() {
+	super();
+   }
 
    @Autowired
    public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
@@ -46,7 +59,36 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
       this.jobRequestSupportCql = jobRequestSupportCql;
       this.jobsQueueSupportCql = jobsQueueSupportCql;
    }
-
+   
+   /**
+    * 
+    */
+   public JobLectureServiceCqlImpl(ApplicationContext appContext) {
+	   super();
+	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
+	   if(ccf == null) {
+			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+	   }
+	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+	   jobHistoryDaoCql.setCcf(ccf);
+	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+	   jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
+	   
+	   IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+	   jobRequestDaoCql.setCcf(ccf);
+	   JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+	   jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
+	   
+	   IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+	   jobsQueueDaoCql.setCcf(ccf);
+	   JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+	   jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
+	   
+	   this.jobHistorySupportCql = jobHistorySupportCql;
+	   this.jobRequestSupportCql = jobRequestSupportCql;
+	   this.jobsQueueSupportCql = jobsQueueSupportCql;
+   }
+   
    @Override
    public JobRequestCql getJobRequest(final UUID jobRequestUUID) {
 

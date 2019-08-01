@@ -27,9 +27,10 @@ public class JobHistorySupportCql {
     *           DAO de la colonne famille JobHistory
     */
    public JobHistorySupportCql() {
-
-      // this.jobHistoryDaoCql = jobHistoryDaoCql;
-
+   }
+   
+   public JobHistorySupportCql(IJobHistoryDaoCql jobHistoryDaoCql) {
+      this.jobHistoryDaoCql = jobHistoryDaoCql;
    }
 
    /**
@@ -76,7 +77,7 @@ public class JobHistorySupportCql {
     * @param clock
     *           horloge de suppression du job
     */
-   public final void supprimerHistorique(final UUID idJob, final long clock) {
+   public final void supprimerHistorique(final UUID idJob) {
       jobHistoryDaoCql.deleteById(idJob);
    }
 
@@ -87,4 +88,9 @@ public class JobHistorySupportCql {
    public Iterator<JobHistoryCql> findAll() {
       return jobHistoryDaoCql.findAll();
    }
+
+	public void setJobHistoryDaoCql(IJobHistoryDaoCql jobHistoryDaoCql) {
+		this.jobHistoryDaoCql = jobHistoryDaoCql;
+	}
+   
 }

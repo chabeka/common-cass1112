@@ -24,7 +24,15 @@ public class JobRequestSupportCql {
    @Autowired
    private IJobRequestDaoCql jobRequestDaoCql;
 
-   /**
+   
+   public JobRequestSupportCql() {
+   }
+   
+   public JobRequestSupportCql(IJobRequestDaoCql jobRequestDaoCql) {
+	   this.jobRequestDaoCql = jobRequestDaoCql;
+   }
+
+/**
     * Création d'un nouveau traitement.
     *
     * @param jobToCreate
@@ -32,8 +40,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la création du nouveau job
     */
-   public final void ajouterJobDansJobRequest(final JobToCreate jobToCreate,
-                                              final long clock) {
+   public final void ajouterJobDansJobRequest(final JobToCreate jobToCreate) {
 
       final JobRequestCql job = new JobRequestCql();
 
@@ -66,7 +73,7 @@ public class JobRequestSupportCql {
     *           horloge de la réservation du job
     */
    public final void reserverJobDansJobRequest(final UUID idJob, final String reservedBy,
-                                               final Date reservationDate, final long clock) {
+                                               final Date reservationDate) {
 
       Assert.notNull(idJob, "L'id du job doit être fournit");
       Assert.notNull(reservedBy, "Le host du serveur de reservation doit être renseigné");
@@ -91,8 +98,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge du démarrage du job
     */
-   public final void passerEtatEnCoursJobRequest(final UUID idJob, final Date startingDate,
-                                                 final long clock) {
+   public final void passerEtatEnCoursJobRequest(final UUID idJob, final Date startingDate) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -119,7 +125,7 @@ public class JobRequestSupportCql {
     *           horloge de conclusion du job
     */
    public final void passerEtatTermineJobRequest(final UUID idJob, final Date endingDate,
-                                                 final boolean success, final String message, final int nbDocTraite, final long clock) {
+                                                 final boolean success, final String message, final int nbDocTraite) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -153,8 +159,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de l'ajout du PID
     */
-   public final void renseignerPidDansJobRequest(final UUID idJob, final Integer pid,
-                                                 final long clock) {
+   public final void renseignerPidDansJobRequest(final UUID idJob, final Integer pid) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -179,7 +184,7 @@ public class JobRequestSupportCql {
     *           horloge de l'ajout du flag
     */
    public final void renseignerCheckFlagDansJobRequest(final UUID idJob,
-                                                       final Boolean toCheckFlag, final String raison, final long clock) {
+                                                       final Boolean toCheckFlag, final String raison) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -198,7 +203,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la suppression
     */
-   public final void deleteJobRequest(final UUID idJob, final long clock) {
+   public final void deleteJobRequest(final UUID idJob) {
 
       jobRequestDaoCql.deleteById(idJob);
    }
@@ -213,7 +218,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de la remise à zéro
     */
-   public final void resetJob(final UUID idJob, final String etat, final long clock) {
+   public final void resetJob(final UUID idJob, final String etat) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -251,8 +256,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de l'ajout du PID
     */
-   public final void renseignerDocCountDansJobRequest(final UUID idJob, final Integer nbDocs,
-                                                      final long clock) {
+   public final void renseignerDocCountDansJobRequest(final UUID idJob, final Integer nbDocs) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -275,7 +279,7 @@ public class JobRequestSupportCql {
     *           horloge de l'ajout du PID
     */
    public final void renseignerDocCountTraiteDansJobRequest(final UUID idJob,
-                                                            final Integer nbDocs, final long clock) {
+                                                            final Integer nbDocs) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -301,7 +305,7 @@ public class JobRequestSupportCql {
     * @param clock
     *           horloge de conclusion du job
     */
-   public final void changerEtatJobRequest(final UUID idJob, final String state, final Date endingDate, final String message, final long clock) {
+   public final void changerEtatJobRequest(final UUID idJob, final String state, final Date endingDate, final String message) {
 
       final Optional<JobRequestCql> opt = jobRequestDaoCql.findWithMapperById(idJob);
       Assert.notNull(opt.orElse(null), "L'id fournit ne correspond à aucun job");
@@ -327,4 +331,9 @@ public class JobRequestSupportCql {
       final Optional<JobRequestCql> opt = jobRequestDaoCql.getJobRequestIdByJobKey(jobKey);
       return opt.orElse(null).getIdJob();
    }
+
+	public void setJobRequestDaoCql(IJobRequestDaoCql jobRequestDaoCql) {
+		this.jobRequestDaoCql = jobRequestDaoCql;
+	}
+     
 }

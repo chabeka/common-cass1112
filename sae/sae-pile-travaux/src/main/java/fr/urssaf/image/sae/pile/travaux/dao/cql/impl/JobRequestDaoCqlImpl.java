@@ -39,9 +39,11 @@ public class JobRequestDaoCqlImpl extends GenericDAOImpl<JobRequestCql, UUID> im
     */
    @PostConstruct
    public void setRegister() {
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<VIContenuExtrait>(VIContenuExtrait.class));
-      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
-      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+	  if(ccf != null) {
+	      ccf.getCluster().getConfiguration().getCodecRegistry().register(new JsonCodec<VIContenuExtrait>(VIContenuExtrait.class));
+	      // ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<JobState>(JobState.class));
+	      ccf.getCluster().getConfiguration().getCodecRegistry().register(BytesBlobCodec.instance);
+	  }
    }
 
    /**

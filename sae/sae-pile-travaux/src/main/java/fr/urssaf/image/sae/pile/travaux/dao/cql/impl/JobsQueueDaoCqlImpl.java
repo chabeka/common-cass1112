@@ -64,10 +64,9 @@ public class JobsQueueDaoCqlImpl extends GenericDAOImpl<JobQueueCql, String> imp
     * {@inheritDoc}
     */
    @Override
-   public void deleteByIdAndIndexColumn(final UUID id, final String key, final long clock) {
+   public void deleteByIdAndIndexColumn(final UUID id, final String key) {
       Assert.notNull(id, " id est requis");
       Assert.notNull(key, " key est requis");
-      Assert.notNull(clock, " le clock est requis");
       final Delete delete = QueryBuilder.delete().from(ccf.getKeyspace(), getTypeArgumentsName());
       final Field keyField = ColumnUtil.getSimplePartionKeyField(daoType);
       Assert.notNull(keyField, "La clé de l'entité à supprimer ne peut être null");

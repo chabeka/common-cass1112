@@ -49,8 +49,10 @@ public class JobsQueueSupportCql {
     */
    public JobsQueueSupportCql() {
 
-      // this.jobsQueueDaoCql = jobsQueueDaoCql;
-
+   }
+   
+   public JobsQueueSupportCql(IJobsQueueDaoCql jobsQueueDaoCql) {
+      this.jobsQueueDaoCql = jobsQueueDaoCql;
    }
 
    /**
@@ -66,7 +68,7 @@ public class JobsQueueSupportCql {
     *           horloge de l'ajout du job en attente
     */
    public final void ajouterJobDansJobQueuesEnWaiting(final UUID idJob, final String type,
-                                                      final Map<String, String> jobParameters, final long clock) {
+                                                      final Map<String, String> jobParameters) {
 
       final JobQueueCql jobQueue = createNewJobQueue(idJob, type, jobParameters, JOBS_WAITING_KEY);
 
@@ -89,7 +91,7 @@ public class JobsQueueSupportCql {
     *           horloge de réservation du job
     */
    public final void reserverJobDansJobQueues(final UUID idJob, final String reservedBy,
-                                              final String type, final Map<String, String> jobParameters, final long clock) {
+                                              final String type, final Map<String, String> jobParameters) {
 
       // Dans la CF JobQueues, on "switch" le job entre :
       // - la clé "jobsWaiting" (suppression)
@@ -107,7 +109,7 @@ public class JobsQueueSupportCql {
          this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL);
       }
       // suppression de la file d'attente
-      jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, JOBS_WAITING_KEY, 0);
+      jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, JOBS_WAITING_KEY);
 
       // Ajout dans l'historique des hosts serveurs
 
@@ -143,7 +145,7 @@ public class JobsQueueSupportCql {
       final Optional<JobQueueCql> opt = getJobQueueByIndexedColumn(idJob);
       if (opt.isPresent()) {
          final JobQueueCql job = opt.get();
-         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(job.getIdJob(), job.getKey(), 0);
+         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(job.getIdJob(), job.getKey());
       }
 
    }
@@ -155,12 +157,11 @@ public class JobsQueueSupportCql {
     * @param reservedBy
     * @param clock
     */
-   public final void deleteJobFromJobsReserved(final UUID idJob, final String reservedBy,
-                                               final long clock) {
+   public final void deleteJobFromJobsReserved(final UUID idJob, final String reservedBy) {
 
       // Opération 1: Suppression du job de la liste de la file d'attente
       if (StringUtils.isNotEmpty(reservedBy)) {
-         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy, clock);
+         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy);
       }
    }
 
@@ -180,12 +181,12 @@ public class JobsQueueSupportCql {
     *           horloge de déréservation
     */
    public final void unreservedJob(final UUID idJob, final String type,
-                                   final Map<String, String> jobParameters, final String hote, final long clock) {
+                                   final Map<String, String> jobParameters, final String hote) {
 
       final JobQueueCql jobQueue = createNewJobQueue(idJob, type, jobParameters, JOBS_WAITING_KEY);
 
       // on suprime le job de la liste de reservation
-      this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, hote, clock);
+      this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, hote);
       // ajout le job de la liste d'attente
       this.jobsQueueDaoCql.saveWithMapper(jobQueue, TTL);
 
@@ -226,13 +227,13 @@ public class JobsQueueSupportCql {
     *           horloge de suppression du job de la file d'exécution/réservation
     */
    public void supprimerCodeTraitementDeJobsQueues(final UUID idJob, final boolean succes,
-                                                   final String codeTraitement, final long clock) {
+                                                   final String codeTraitement) {
       // Si le traitement du job est en succès, on supprime la colonne avec code traitement.
       // Si le traitement du job est en erreur, on laisse la colonne avec code traitement.
       if (succes && (codeTraitement != null && !codeTraitement.isEmpty())) {
 
          // Opération 1 : Suppression du job de la liste de la file d'attente
-         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement, clock);
+         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, Constantes.PREFIXE_SEMAPHORE_JOB + codeTraitement);
 
       }
    }
@@ -267,19 +268,23 @@ public class JobsQueueSupportCql {
       return jobQueue;
    }
 
-   public void supprimerJobDeJobsQueues(final UUID idJob, final String reservedBy, final long clock) {
+   public void supprimerJobDeJobsQueues(final UUID idJob, final String reservedBy) {
 
       // Opération 1: Suppression du job de la liste des jobs reservés
       if (StringUtils.isNotEmpty(reservedBy)) {
-         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy, clock);
+         this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, reservedBy);
       }
 
       // Opération 2: Suppression du job de la liste des jobs non réservé
-      this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, JOBS_WAITING_KEY, clock);
+      this.jobsQueueDaoCql.deleteByIdAndIndexColumn(idJob, JOBS_WAITING_KEY);
    }
 
    public Optional<JobQueueCql> getJobQueueByIndexedColumn(final UUID idjob) {
       return jobsQueueDaoCql.findByIndexedColumn(idjob);
-
    }
+
+	public void setJobsQueueDaoCql(IJobsQueueDaoCql jobsQueueDaoCql) {
+		this.jobsQueueDaoCql = jobsQueueDaoCql;
+	}
+     
 }

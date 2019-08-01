@@ -15,12 +15,21 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
+import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
+import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
 import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobHistoryDaoCqlImpl;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobRequestDaoCqlImpl;
+import fr.urssaf.image.sae.pile.travaux.dao.cql.impl.JobsQueueDaoCqlImpl;
 import fr.urssaf.image.sae.pile.travaux.exception.JobDejaReserveException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.exception.JobNonReinitialisableException;
@@ -45,15 +54,15 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
    private final CuratorFramework curatorClient;
 
-   private final JobClockSupport jobClockSupport;
+  // private final JobClockSupport jobClockSupport;
 
-   private final JobsQueueSupportCql jobsQueueSupportCql;
+   private  JobsQueueSupportCql jobsQueueSupportCql;
 
-   private final JobHistorySupportCql jobHistorySupportCql;
+   private JobHistorySupportCql jobHistorySupportCql;
 
-   private final JobLectureCqlService jobLectureCqlService;
+   private  JobLectureCqlService jobLectureCqlService;
 
-   private final JobRequestSupportCql jobRequestSupportCql;
+   private  JobRequestSupportCql jobRequestSupportCql;
 
    /**
     * Time-out du lock, en secondes
@@ -78,7 +87,6 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
                                  final CuratorFramework curatorClient) {
       super();
       this.curatorClient = curatorClient;
-      this.jobClockSupport = jobClockSupport;
       this.jobLectureCqlService = jobLectureCqlService;
       this.jobRequestSupportCql = jobRequestSupportCql;
       this.jobsQueueSupportCql = jobsQueueSupportCql;
@@ -86,14 +94,40 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
    }
 
+	public JobQueueServiceCqlImpl(ApplicationContext appContext, CuratorFramework curatorClient) {
+		
+	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
+	   if(ccf == null) {
+			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+	   }
+	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+	   jobHistoryDaoCql.setCcf(ccf);
+	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+	   jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
+	   
+	   IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+	   jobRequestDaoCql.setCcf(ccf);
+	   JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+	   jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
+	   
+	   IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+	   jobsQueueDaoCql.setCcf(ccf);
+	   JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+	   jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
+	   
+	   this.curatorClient = curatorClient ;
+	   this.jobHistorySupportCql = jobHistorySupportCql;
+	   this.jobRequestSupportCql = jobRequestSupportCql;
+	   this.jobsQueueSupportCql = jobsQueueSupportCql;
+	   this.jobLectureCqlService = new JobLectureServiceCqlImpl(appContext);
+	   		
+	}
+	
    @Override
    public void addJob(final JobToCreate jobToCreate) {
-      // Timestamp de l'opération
-      // Pas besoin de gérer le décalage ici : on ne fait que la création
-      final long clock = jobClockSupport.currentCLock();
 
       // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.ajouterJobDansJobRequest(jobToCreate, clock);
+      this.jobRequestSupportCql.ajouterJobDansJobRequest(jobToCreate);
 
       // Ecriture dans la CF "JobQueues"
       this.addJobsQueue(jobToCreate);
@@ -141,14 +175,12 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
          // Ecriture dans la CF "JobRequest"
          this.jobRequestSupportCql.reserverJobDansJobRequest(idJob,
                                                              hostname,
-                                                             dateReservation,
-                                                             0);
+                                                             dateReservation);
 
          this.jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
                                                            hostname,
                                                            type,
-                                                           jobRequest.getJobParameters(),
-                                                           0);
+                                                           jobRequest.getJobParameters());
 
          // Ecriture dans la CF "JobHistory"
          final String messageTrace = "RESERVATION DU JOB";
@@ -219,8 +251,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       }
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupportCql.passerEtatEnCoursJobRequest(idJob,
-                                                            dateDebutTraitement,
-                                                            0);
+                                                            dateDebutTraitement);
 
       // Ecriture dans la CF "JobQueues"
       // rien à écrire
@@ -261,8 +292,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
                                                             dateFinTraitement,
                                                             succes,
                                                             message,
-                                                            nbDocumentTraite,
-                                                            0);
+                                                            nbDocumentTraite);
 
       // Gestion du succès de la reprise de masse
       if (jobRequest.getType().equals(Constantes.REPRISE_MASSE_JN)) {
@@ -283,7 +313,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
                                        "Repris avec succes");
             // Supprimer le sémaphore du traitement repris
             this.jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(
-                                                                         idJobAReprendre, succes, cdTraitement, 0);
+                                                                         idJobAReprendre, succes, cdTraitement);
          }
 
          // Renseigne le nombre de documents traités par le traitement de masse
@@ -295,13 +325,12 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       // Lecture des propriétés du job dont on a besoin
       final String reservedBy = jobRequest.getReservedBy();
       // Ecriture dans la CF "JobQueues" pour hostname
-      this.jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy, 0);
+      this.jobsQueueSupportCql.supprimerJobDeJobsQueues(idJob, reservedBy);
 
       // Ecriture dans la CF "JobQueues" pour semaphore code traitement
       this.jobsQueueSupportCql.supprimerCodeTraitementDeJobsQueues(idJob,
                                                                    succes,
-                                                                   codeTraitement,
-                                                                   0);
+                                                                   codeTraitement);
 
       // Ecriture dans la CF "JobHistory"
       final String messageTrace = "FIN DU JOB";
@@ -333,8 +362,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupportCql.renseignerDocCountTraiteDansJobRequest(idJob,
-                                                                       nbDocs,
-                                                                       0);
+                                                                       nbDocs);
 
       // Ecriture dans la CF "JobQueues"
       // rien à écrire
@@ -364,7 +392,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       }
 
       // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerPidDansJobRequest(idJob, pid, 0);
+      this.jobRequestSupportCql.renseignerPidDansJobRequest(idJob, pid);
 
       // Ecriture dans la CF "JobQueues"
       // rien à écrire
@@ -386,7 +414,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       }
 
       // Ecriture dans la CF "JobRequest"
-      this.jobRequestSupportCql.renseignerDocCountDansJobRequest(idJob, nbDocs, 0);
+      this.jobRequestSupportCql.renseignerDocCountDansJobRequest(idJob, nbDocs);
 
       // Ecriture dans la CF "JobQueues"
       // rien à écrire
@@ -410,8 +438,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       // Ecriture dans la CF "JobRequest"
       this.jobRequestSupportCql.renseignerCheckFlagDansJobRequest(idJob,
                                                                   toCheckFlag,
-                                                                  raison,
-                                                                  0);
+                                                                  raison);
 
       // Ecriture dans la CF "JobQueues"
       // rien à écrire
@@ -434,7 +461,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       }
 
       // Suppression de la CF "JobRequest"
-      this.jobRequestSupportCql.deleteJobRequest(idJob, 0);
+      this.jobRequestSupportCql.deleteJobRequest(idJob);
 
       // Suppression de la CF "JobQueues"
       final String reservedBy = jobRequest.getReservedBy();
@@ -444,7 +471,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       this.jobsQueueSupportCql.supprimerJobDeJobsAllQueues(idJob);
 
       // Suppression de la CF "JobHistory"
-      this.jobHistorySupportCql.supprimerHistorique(idJob, 0);
+      this.jobHistorySupportCql.supprimerHistorique(idJob);
    }
 
    @Override
@@ -463,14 +490,13 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
          final String reservedBy = jobRequest.getReservedBy();
 
          // Ecriture dans la CF "JobRequest"
-         this.jobRequestSupportCql.resetJob(idJob, etat, 0);
+         this.jobRequestSupportCql.resetJob(idJob, etat);
 
          this.jobsQueueSupportCql.unreservedJob(idJob,
                                                 type,
                                                 jobRequest
                                                           .getJobParameters(),
-                                                reservedBy,
-                                                0);
+                                                reservedBy);
 
          // Ecriture dans la CF "JobHistory"
          final String messageTrace = "RESET DU JOB";
@@ -504,14 +530,9 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
     */
    private void addJobQueue(final JobToCreate jobToCreate, Long clock) {
 
-      if (clock == null) {
-         clock = jobClockSupport.currentCLock();
-      }
-
       this.jobsQueueSupportCql.ajouterJobDansJobQueuesEnWaiting(jobToCreate.getIdJob(),
                                                                 jobToCreate.getType(),
-                                                                jobToCreate.getJobParameters(),
-                                                                0);
+                                                                jobToCreate.getJobParameters());
    }
 
    @Override
@@ -538,8 +559,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
       this.jobsQueueSupportCql.reserverJobDansJobQueues(idJob,
                                                         hostname,
                                                         type,
-                                                        jobParameters,
-                                                        clock);
+                                                        jobParameters);
    }
 
    @Override
@@ -557,7 +577,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
    @Override
    public void changerEtatJobRequest(final UUID idJob, final String stateJob, final Date endingDate, final String message) {
-      this.jobRequestSupportCql.changerEtatJobRequest(idJob, stateJob, endingDate, message, 0);
+      this.jobRequestSupportCql.changerEtatJobRequest(idJob, stateJob, endingDate, message);
    }
 
    @Override
