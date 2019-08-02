@@ -45,5 +45,22 @@ public class ServicesMainTest {
                      .getMessage());
       }
    }
+   
+   @Test
+   public void ServicesMain_traitementMasse() {
 
+      String[] args = new String[] { "traitementMasse"};
+
+      try {
+    	  
+    	  ServicesMain.main(args);
+    	  
+      } catch (IllegalArgumentException e) {
+
+          Assert
+                .assertEquals("le message de l'exception est incorrect",
+                      "L'identifiant du traitement de masse doit être renseigné.", e
+                            .getMessage());
+       }
+   }
 }
