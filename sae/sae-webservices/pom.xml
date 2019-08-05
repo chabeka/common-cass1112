@@ -285,9 +285,31 @@
 					<groupId>axis</groupId>
 					<artifactId>axis-wsdl4j</artifactId>
 				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-frontend-jaxws</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-bindings-http</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.cxf</groupId>
+					<artifactId>cxf-rt-bindings-soap</artifactId>
+				</exclusion>
 			</exclusions>
 		</dependency>
-
+		<!-- CXF -->
+		<dependency>
+		    <groupId>org.apache.cxf</groupId>
+		    <artifactId>cxf-rt-bindings-soap</artifactId>
+		    <version>${cxf.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.fasterxml.jackson.jaxrs</groupId>
+		    <artifactId>jackson-jaxrs-json-provider</artifactId>
+		    <version>${jackson.version}</version>
+		</dependency>
 		<!-- Traitements de masses -->
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
@@ -307,6 +329,12 @@
 			<groupId>org.apache.axis2</groupId>
 			<artifactId>axis2-jaxws</artifactId>
 			<version>${axis2.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.sun.xml.bind</groupId>
+					<artifactId>jaxb-impl</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
