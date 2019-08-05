@@ -4,6 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra</artifactId>
+
 	<version>2.0.2-SNAPSHOT</version>
 
 	<name>commons-cassandra</name>
@@ -32,8 +33,8 @@
       <!-- Version des framework -->
 
 		<junit.version>4.12</junit.version>
-		<slf4j-api.version>1.7.7</slf4j-api.version>
-		<logback.version>1.1.3</logback.version>
+		<slf4j-api.version>1.6.1</slf4j-api.version>
+		<logback.version>1.2.2</logback.version>
 		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<xstream.version>1.3.1</xstream.version>
 		<apache.commons-lang.version>2.6</apache.commons-lang.version>
@@ -43,6 +44,7 @@
 		<curator.version>4.0.1</curator.version>
 		<cassandra-all.version>2.2.13</cassandra-all.version>
 		<cassandra-unit.version>2.2.2.1</cassandra-unit.version>
+		<libthrift.version>0.7.0</libthrift.version>
 		<jettison.version>1.3.1</jettison.version>
 		<jackson-mapper-asl.version>1.9.2</jackson-mapper-asl.version>
 		<zookeeper.version>3.4.11</zookeeper.version>
@@ -135,6 +137,10 @@
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -274,6 +280,12 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>${logback.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -301,6 +313,11 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-core</artifactId>
+		    <version>${logback.version}</version>
 		</dependency>
 
 		<dependency>
