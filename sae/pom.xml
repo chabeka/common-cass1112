@@ -35,6 +35,9 @@
 		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<maven-war-plugin.version>3.2.2</maven-war-plugin.version>
 		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		
+		<jackson.version>2.8.2</jackson.version>
+		<cxf.version>3.0.1</cxf.version>
 		<!-- ========================================================= Version 
 			des dépendances des librairies réutilisables Image ========================================================= -->
 
@@ -47,7 +50,7 @@
 		<commons.cassandra.spring.batch>1.1.1-SNAPSHOT</commons.cassandra.spring.batch>
 
 		<!-- ========================================== commons-dfce ========================================== -->
-		<commons.dfce>1.10.1-SNAPSHOT</commons.dfce>
+		<commons.dfce>1.11.0-SNAPSHOT</commons.dfce>
 
 		<!-- ========================================== commons-pdfbox ========================================== -->
 		<commons-pdfbox>1.0.1</commons-pdfbox>
@@ -82,7 +85,7 @@
 
 		<!-- ========================================== Logback http://logback.qos.ch/ 
 			========================================== -->
-		<logback.version>1.2.3</logback.version>
+		<logback.version>1.2.2</logback.version>
 
 
 		<!-- ========================================== Spring http://www.springsource.org/ 
