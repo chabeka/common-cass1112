@@ -129,6 +129,14 @@
                <groupId>bouncycastle</groupId>
                <artifactId>bcprov-jdk14</artifactId>
             </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-common-utilities</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-common-schemas</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
