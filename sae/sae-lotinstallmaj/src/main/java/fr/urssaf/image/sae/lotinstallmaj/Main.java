@@ -29,13 +29,14 @@ public final class Main {
       String cheminFicConfSae = args[0];
       String nomOperation = args[1];
 
+      System.out.println(cheminFicConfSae);
+      System.out.println(nomOperation);
       // Démarrage du contexte spring
       ApplicationContext context = startContextSpring(cheminFicConfSae);
 
       // Récupération du contexte Spring du bean permettant de lancer
       // l'opération
-      MajLotService majLotService = context.getBean("majLotServiceImpl",
-            MajLotService.class);
+      // MajLotService majLotService = context.getBean("majLotServiceImpl",MajLotService.class);
 
       // Retire des arguments de la ligne de commande ceux que l'on a déjà
       // traités.
@@ -43,7 +44,15 @@ public final class Main {
       String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
 
       // Démarre l'opération
-      majLotService.demarre(nomOperation, argsSpecifiques);
+      //majLotService.demarre(nomOperation, argsSpecifiques);
+      
+      
+      // Récupération du contexte Spring du bean permettant de lancer
+      // l'opération
+      MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
+            MajLotService.class);
+      // Démarre l'opération
+      majLotServicecql.demarre(nomOperation, argsSpecifiques);
 
    }
 

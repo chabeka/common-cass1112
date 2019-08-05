@@ -27,6 +27,7 @@ import fr.urssaf.image.sae.lotinstallmaj.modele.CassandraConfig;
 import fr.urssaf.image.sae.lotinstallmaj.modele.DataBaseModel;
 import fr.urssaf.image.sae.lotinstallmaj.modele.SaeCategory;
 import fr.urssaf.image.sae.lotinstallmaj.service.MajLotService;
+import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.DFCEKeyspaceConnecter;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.base.Base;
@@ -175,7 +176,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
   }
 
-  private final ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
+  private ServiceProvider serviceProvider;
 
   // LOGGER
   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceImpl.class);
@@ -513,6 +514,7 @@ public final class MajLotServiceImpl implements MajLotService {
    * Connexion à DFCE
    */
   private void connectDfce() {
+	  serviceProvider = new ServiceProvider();
     serviceProvider.connect(dfceConfig.getLogin(),
                             dfceConfig.getPassword(),
                             dfceConfig.getUrlToolkit(),
@@ -1270,7 +1272,7 @@ public final class MajLotServiceImpl implements MajLotService {
     LOG.info("Fin de l'opération : Lot 151000 - Mise à jour du schéma DFCE");
   }
 
-
+ 
   /**
    * Création de la base GED
    */

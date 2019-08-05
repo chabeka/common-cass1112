@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.lotinstallmaj.exception.MajLotGeneralException;
+import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.MajLotServiceCQLImpl;
 import fr.urssaf.image.sae.lotinstallmaj.service.impl.MajLotServiceImpl;
 
 /**
@@ -287,6 +288,61 @@ public class MainValidation {
                                                .equalsIgnoreCase(nomOperation)) {
       return;
     }
+    
+    // CAS Nouvelle version de la DFCE 2.3.1 avec les scripts cql
+    
+    if (MajLotServiceCQLImpl.DFCE_192_TO_200_SCHEMA
+	            .equalsIgnoreCase(nomOperation)) {
+    	return;
+	}
+    if (MajLotServiceCQLImpl.DFCE_200_TO_210_SCHEMA
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+    if (MajLotServiceCQLImpl.DFCE_210_TO_230_SCHEMA
+            .equalsIgnoreCase(nomOperation)) {
+    	return;
+	}
+	if (MajLotServiceCQLImpl.DFCE_230_TO_192_SCHEMA
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+    
+    // Cas migration cql des tables de la base SAE
+    
+	if (MajLotServiceCQLImpl.SAE_MODE_API
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_MIG_TRACES
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_MIG_PILE_TRAVAUX
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_MIG_JOB_SPRING
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	
+	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_JOB_SPRING
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_PILE_TRAVAUX
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_DELETE_MIG_TRACES
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
+	if (MajLotServiceCQLImpl.SAE_DELETE_MODE_API
+	            .equalsIgnoreCase(nomOperation)) {
+		return;
+	}
 
     // TODO : Traiter le cas de la mise à jour de la durée de conservation de
     // 3.1.3.1.1 (en attente du JIRA CRTL-81)
