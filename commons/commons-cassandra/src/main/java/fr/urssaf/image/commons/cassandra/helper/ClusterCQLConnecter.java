@@ -152,7 +152,7 @@ public class ClusterCQLConnecter {
 	                                            .getAbsolutePath(),
 	                                 createKeyspace,
 	                                 dropAndCreateKeyspace,
-	                                 AbstractCassandraServer.KEYSPACE_TU);
+	                                 CassandraServerBean.KEYSPACE_TU);
 	     }
 	
 	   } catch (final IOException | URISyntaxException e) {
@@ -164,7 +164,7 @@ public class ClusterCQLConnecter {
 	   }
 	
 	   // Renvoie l'objet Dataset fusionné
-	   return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, AbstractCassandraServer.KEYSPACE_TU);
+	   return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, CassandraServerBean.KEYSPACE_TU);
 	 }
 	 
 	 /**
@@ -178,14 +178,14 @@ public class ClusterCQLConnecter {
 	    boolean existKeyspace = false;
 
 	    // Vérification de l'existence du keyspace
-	    final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + AbstractCassandraServer.KEYSPACE_TU + "'";
+	    final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + CassandraServerBean.KEYSPACE_TU + "'";
 	    final ResultSet keyspaceQueryResult = session.execute(selectQuery);
 
 	    existKeyspace = keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext();
 
 	    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par défaut dans le librairie cassandra-unit.
 	    if (existKeyspace) {
-	      final String useQuery = "USE " + AbstractCassandraServer.KEYSPACE_TU;
+	      final String useQuery = "USE " + CassandraServerBean.KEYSPACE_TU;
 	      LOG.debug("executing : " + useQuery);
 	      session.execute(useQuery);
 	    }

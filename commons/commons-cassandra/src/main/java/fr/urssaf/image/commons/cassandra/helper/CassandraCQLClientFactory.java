@@ -31,6 +31,8 @@ import fr.urssaf.image.commons.cassandra.utils.HostsUtils;
 public final class CassandraCQLClientFactory implements DisposableBean {
 
   private static final Logger LOG = LoggerFactory.getLogger(CassandraCQLClientFactory.class);
+  
+  public static final String KEYSPACE_TU = "keyspace_tu";
 
   private final static String SAE_CONFIG_CASSANDRA_TRANSFERT_CONFIG = "sae.cassandra.transfert.cheminFichierConfig";
 
