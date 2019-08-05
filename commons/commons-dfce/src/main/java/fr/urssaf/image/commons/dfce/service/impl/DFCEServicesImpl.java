@@ -97,8 +97,8 @@ public class DFCEServicesImpl implements DFCEServices {
   private void connect() {
     dfceService = ServiceProvider.newServiceProvider();
     final String serverUrl = ObjectUtils.toString(dfceConnection.getServerUrl());
-    final String login = SPRING_USER_PREFIXE + dfceConnection.getLogin();
-    dfceService.connect(login,
+    //final String login = SPRING_USER_PREFIXE + dfceConnection.getLogin();
+    dfceService.connect(dfceConnection.getLogin(),
                         dfceConnection.getPassword(),
                         serverUrl,
                         dfceConnection.getTimeout());
