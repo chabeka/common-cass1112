@@ -177,7 +177,7 @@ public final class MajLotServiceImpl implements MajLotService {
 
   }
 
-  private final ServiceProvider serviceProvider = ServiceProvider.newServiceProvider();
+  private ServiceProvider serviceProvider;
 
   // LOGGER
   private static final Logger LOG = LoggerFactory.getLogger(MajLotServiceImpl.class);
@@ -521,6 +521,7 @@ public final class MajLotServiceImpl implements MajLotService {
    * Connexion à DFCE
    */
   private void connectDfce() {
+	  serviceProvider = new ServiceProvider();
     serviceProvider.connect(dfceConfig.getLogin(),
                             dfceConfig.getPassword(),
                             dfceConfig.getUrlToolkit(),
