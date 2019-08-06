@@ -100,11 +100,23 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
          <version>19.10.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-batch</artifactId>
          <version>19.10.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
 
       <!-- Spring -->
@@ -124,12 +136,24 @@
          <artifactId>jcl-over-slf4j</artifactId>
          <version>${jcl-over-slf4j.version}</version>
          <scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>log4j-over-slf4j</artifactId>
          <version>${log4j-over-slf4j.version}</version>
          <scope>runtime</scope>   
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
 
       <!-- Apache Commons -->
@@ -169,6 +193,17 @@
          <scope>test</scope>
       </dependency>
 
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
    </dependencies>
 	<profiles>
 		<profile>
