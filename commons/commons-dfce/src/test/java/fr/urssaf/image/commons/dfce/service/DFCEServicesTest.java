@@ -20,7 +20,6 @@ import net.docubase.toolkit.model.search.SearchResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-commons-dfce-connection-test.xml" })
-@Ignore
 public class DFCEServicesTest {
 
    @Autowired
