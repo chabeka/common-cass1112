@@ -1,42 +1,31 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.cqlimpl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import javax.validation.constraints.AssertTrue;
-
 import org.apache.cassandra.exceptions.ConfigurationException;
-import org.apache.cassandra.thrift.Cassandra.system_add_column_family_args;
-import org.cassandraunit.utils.EmbeddedCassandraServerHelper;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.datastax.driver.core.ColumnMetadata;
-import com.datastax.driver.core.Metadata;
 import com.datastax.driver.core.ResultSet;
-import com.datastax.driver.core.Session;
-import com.datastax.driver.core.TableMetadata;
 
 import fr.urssaf.image.sae.lotinstallmaj.cql.UtilsCassandraUnitStartHelper;
 import fr.urssaf.image.sae.lotinstallmaj.cql.UtilsColunmFalmilly;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.DFCECassandraUpdaterCQL;
 import fr.urssaf.image.sae.lotinstallmaj.service.cql.impl.DFCEKeyspaceConnecter;
-import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.CQLDataFileLoader;
-import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.CQLDataFileSet;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-lotinstallmaj-multiple-cf-test.xml"})
+@Ignore
 public class DFCEUpdaterCqlTest {
 
 	private static final String DFCE = "DFCE";
@@ -61,7 +50,7 @@ public class DFCEUpdaterCqlTest {
 		
 		try {
 			List<String> tableNames = UtilsColunmFalmilly.getTablesNames(dcf.getSession(), DFCE);
-			Assert.assertTrue("", tableNames.size() > 0); 
+			Assert.assertTrue("les noms des tables ne peut être vide", tableNames.size() > 0); 
 		}catch (Exception e) {
 			fail("problème de connection au keyspace DFCE");
 		}		

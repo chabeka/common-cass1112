@@ -13,10 +13,10 @@ public class SAECassandraUpdaterCQL {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DFCECassandraUpdaterCQL.class);
 	
-	private static final String SAE_TRACES_SCHEMA = "/cql/sae-traces.cql";
-	private static final String SAE_JOB_SPRING_SCHEMA = "/cql/sae-job-spring.cql";
-	private static final String SAE_PILE_TRAVAUX_SCHEMA = "/cql/sae-pile-travaux.cql";
-	private static final String SAE_MODE_API = "/cql/modeapi.cql";
+	private static final String SAE_CREATE_TRACES_SCRIPT = "/cql/sae-traces.cql";
+	private static final String SAE_CREATE_JOB_SPRING_SCRIPT = "/cql/sae-job-spring.cql";
+	private static final String SAE_CREATE_PILE_TRAVAUX_SCRIPT = "/cql/sae-pile-travaux.cql";
+	private static final String SAE_CREATE_MODE_API_SCRIPT = "/cql/modeapi.cql";
 	
 	// Script de delete
 	private static final String SAE_DELETE_MODE_API_SCRIPT = "DROP TABLE modeapi;";
@@ -36,7 +36,7 @@ public class SAECassandraUpdaterCQL {
     		
     	CQLDataFileSet cqlData;
     	//
-		cqlData = new CQLDataFileSet(SAE_TRACES_SCHEMA);
+		cqlData = new CQLDataFileSet(SAE_CREATE_TRACES_SCRIPT);
 		CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
 		dataLoader.load(cqlData);
 	   
@@ -51,7 +51,7 @@ public class SAECassandraUpdaterCQL {
     	
     	CQLDataFileSet cqlData;
     	//
-		cqlData = new CQLDataFileSet(SAE_PILE_TRAVAUX_SCHEMA);
+		cqlData = new CQLDataFileSet(SAE_CREATE_PILE_TRAVAUX_SCRIPT);
 		CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
 		dataLoader.load(cqlData);	
 	   
@@ -66,7 +66,7 @@ public class SAECassandraUpdaterCQL {
     	
 	   CQLDataFileSet cqlData;
 	   //
-	   cqlData = new CQLDataFileSet(SAE_JOB_SPRING_SCHEMA);
+	   cqlData = new CQLDataFileSet(SAE_CREATE_JOB_SPRING_SCRIPT);
 	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
 	   dataLoader.load(cqlData);
 	   
@@ -82,7 +82,7 @@ public class SAECassandraUpdaterCQL {
 	   
 	   CQLDataFileSet cqlData;
 	   //
-	   cqlData = new CQLDataFileSet(SAE_MODE_API);
+	   cqlData = new CQLDataFileSet(SAE_CREATE_MODE_API_SCRIPT);
 	   CQLDataFileLoader dataLoader = new CQLDataFileLoader(saecf.getSession());
 	   dataLoader.load(cqlData);
 	   

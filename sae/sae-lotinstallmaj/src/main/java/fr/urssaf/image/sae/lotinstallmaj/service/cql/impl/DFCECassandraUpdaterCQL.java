@@ -1,11 +1,8 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.cql.impl;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.lotinstallmaj.service.utils.cql.CQLDataFileLoader;
