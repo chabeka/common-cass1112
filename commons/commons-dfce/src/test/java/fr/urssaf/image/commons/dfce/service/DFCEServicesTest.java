@@ -12,12 +12,15 @@ import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
 import org.junit.Assert;
+import org.junit.Ignore;
+
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-commons-dfce-connection-test.xml" })
+@Ignore
 public class DFCEServicesTest {
 
    @Autowired
