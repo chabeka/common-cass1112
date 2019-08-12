@@ -35,6 +35,7 @@ public class CQLDataFileLoader {
             	session.execute(query);
             	log.info("Query ===>  " + query);
             } catch (Exception e) {
+            	e.printStackTrace();
 				log.error("Problème d'execution de la requete : " + query);
 				//return;
 			}

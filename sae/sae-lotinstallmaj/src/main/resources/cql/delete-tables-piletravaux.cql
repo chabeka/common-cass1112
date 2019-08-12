@@ -1,8 +1,8 @@
 /*
 ##################### SUPPRESSION DES TABLES PILE DES TRAVAUX #######################
 */
-CREATE TABLE jobhistorycql;
+DROP TABLE jobhistorycql;
 
-CREATE TABLE jobqueuecql;
+DROP TABLE jobqueuecql;
 
-CREATE TABLE jobrequestcql;
+DROP TABLE jobrequestcql;
