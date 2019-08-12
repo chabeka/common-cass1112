@@ -47,9 +47,9 @@ public class DFCEConnectionFactoryTest {
 
    private static final String DIGEST_ALGO = "SHA-1";
 
-   private static final String BASE_NAME = "SAE-INT";
+   private static final String BASE_NAME = "PAJE-GNT-INT";
 
-   private static final String BASE_NAME_TRANSFERT = "SAE-INT";
+   private static final String BASE_NAME_TRANSFERT = "PAJE-GNT-INT";
 
    private final static String CHEMIN_SAE_CONFIG = "src/test/resources/config/sae-config-test.properties";
    private final static String CHEMIN_DFCE_CONFIG = "src/test/resources/config/dfce-config-test.properties";
