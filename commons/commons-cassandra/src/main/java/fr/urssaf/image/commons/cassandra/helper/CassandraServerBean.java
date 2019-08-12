@@ -60,7 +60,7 @@ public class CassandraServerBean implements InitializingBean, DisposableBean {
 	  *           Une erreur est survenue
 	  */
 	 public void resetData() throws Exception {	
-		 if(dataSets != null)
+		 if(dataSets != null && dataSets.length > 0)
 			 resetData(true, MODE_API.HECTOR, dataSets);
 		 
 		 // si keyspace déjà créé, pas besoin de recréer dropAndCreateKeyspace = false

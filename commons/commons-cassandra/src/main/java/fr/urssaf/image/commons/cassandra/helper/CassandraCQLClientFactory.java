@@ -247,7 +247,7 @@ public final class CassandraCQLClientFactory implements DisposableBean {
         try {
           addr = new InetSocketAddress(inetAddressParam[0], Integer.parseInt(inetAddressParam[1]));
         } catch (final Exception e) {
-          LOG.error("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : " + cassandraServer.getThriftHosts());
+          LOG.error("Le port n'est pas un entier. La connection vers le serveur suivante ne pourra etre realise : " + cassandraServer.getCqlHosts());
         }
       } else {
         LOG.error("Seul le hostname (ou IP) et le port sont autorises. La connection vers le serveur suivante ne pourra etre realise : "
