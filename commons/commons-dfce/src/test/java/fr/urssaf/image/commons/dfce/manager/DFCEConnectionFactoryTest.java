@@ -19,15 +19,15 @@ public class DFCEConnectionFactoryTest {
 
    private static final String PASSWORD_VALUE = "DOCUBASE";
 
-   private static final String URL_VALUE = "http://hwi31intgnspajeboappli2.gidn.recouv:8080/dfce-webapp/";
+   private static final String URL_VALUE = "http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
    private static final String URL_VALUE_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/";
 
-   private static final String URL_SECURE_VALUE = "https://hwi31intgnspajeboappli2.gidn.recouv:8080/dfce-webapp/";
+   private static final String URL_SECURE_VALUE = "https://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
    private static final String EXPECTED_MESSAGE = "le message de l'exception est inattendu";
 
-   private static final String HOST_NAME = "hwi31intgnspajeboappli2.gidn.recouv";
+   private static final String HOST_NAME = "hwi31intgntpajeboappli1.gidn.recouv";
 
    private static final String HOST_NAME_TRANSFERT = "hwi31picgnsboappli1.gidn.recouv";
 
@@ -39,7 +39,7 @@ public class DFCEConnectionFactoryTest {
 
    private static final int TIMEOUT = 30000;
 
-   private static final String URL_TOOLKIT = "http://hwi31intgnspajeboappli2.gidn.recouv:8080/dfce-webapp/";
+   private static final String URL_TOOLKIT = "http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
    private static final String URL_TOOLKIT_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/";
 
