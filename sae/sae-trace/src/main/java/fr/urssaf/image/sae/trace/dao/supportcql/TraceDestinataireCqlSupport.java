@@ -66,12 +66,8 @@ public class TraceDestinataireCqlSupport {
                                   });
    }
 
-   public TraceDestinataireCqlSupport(ApplicationContext appContext) {
-	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
-		if(ccf == null) {
-			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-		}
-		
+   public TraceDestinataireCqlSupport(CassandraCQLClientFactory ccf) {
+	   
 		ITraceDestinataireCqlDao dao = new TraceDestinataireCqlDaoImpl();
 		dao.setCcf(ccf);
 		this.destinatairecqldao = dao;

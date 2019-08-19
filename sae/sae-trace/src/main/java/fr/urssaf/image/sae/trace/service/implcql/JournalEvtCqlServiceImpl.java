@@ -81,12 +81,8 @@ public class JournalEvtCqlServiceImpl implements JournalEvtServiceCql {
       this.traceFileSupport = traceFileSupport;
    }
    
-   public JournalEvtCqlServiceImpl(ApplicationContext appContext) {
+   public JournalEvtCqlServiceImpl(CassandraCQLClientFactory ccf) {
 
-		CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
-		if(ccf == null) {
-	   		throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-		}
 		ITraceJournalEvtCqlDao dao = new TraceJournalEvtCqlDaoImpl();
 		dao.setCcf(ccf);
 		ITraceJournalEvtIndexCqlDao indexdao = new TraceJournalEvtIndexCqlDaoImpl();

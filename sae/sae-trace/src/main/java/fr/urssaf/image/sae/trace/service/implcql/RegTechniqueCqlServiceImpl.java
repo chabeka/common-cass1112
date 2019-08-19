@@ -59,13 +59,8 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
       this.loggerSupport = loggerSupport;
    }
    
-   public RegTechniqueCqlServiceImpl(ApplicationContext appContext) {
-	   
-	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
-	   if (ccf == null) {
-	   		throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-	   }
-	   
+   public RegTechniqueCqlServiceImpl(CassandraCQLClientFactory ccf) {
+	   	   
 	   ITraceRegTechniqueCqlDao dao = new TraceRegTechniqueDaoImpl();
 	   dao.setCcf(ccf);
 	   ITraceRegTechniqueIndexCqlDao indexDao = new TraceRegTechniqueIndexCqlDaoImpl();

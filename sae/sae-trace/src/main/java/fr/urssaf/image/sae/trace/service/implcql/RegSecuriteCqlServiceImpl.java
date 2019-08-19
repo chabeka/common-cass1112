@@ -60,12 +60,8 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
     * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
     * @param context
     */
-   public RegSecuriteCqlServiceImpl(ApplicationContext context) {
+   public RegSecuriteCqlServiceImpl(CassandraCQLClientFactory ccf) {
 
-      CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) context.getBean("cassandraCQLClientFactory"); 
-	  if (ccf == null) {
-	  	throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-	  }
 	  ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
 	  dao.setCcf(ccf);
 	  ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
