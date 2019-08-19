@@ -15,11 +15,9 @@ import org.apache.curator.framework.CuratorFramework;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.zookeeper.ZookeeperMutex;
@@ -94,12 +92,8 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 
    }
 
-	public JobQueueServiceCqlImpl(ApplicationContext appContext, CuratorFramework curatorClient) {
+	public JobQueueServiceCqlImpl(CassandraCQLClientFactory ccf, CuratorFramework curatorClient) {
 		
-	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
-	   if(ccf == null) {
-			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-	   }
 	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
 	   jobHistoryDaoCql.setCcf(ccf);
 	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
@@ -119,7 +113,7 @@ public class JobQueueServiceCqlImpl implements JobQueueCqlService {
 	   this.jobHistorySupportCql = jobHistorySupportCql;
 	   this.jobRequestSupportCql = jobRequestSupportCql;
 	   this.jobsQueueSupportCql = jobsQueueSupportCql;
-	   this.jobLectureCqlService = new JobLectureServiceCqlImpl(appContext);
+	   this.jobLectureCqlService = new JobLectureServiceCqlImpl(ccf);
 	   		
 	}
 	

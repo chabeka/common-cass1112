@@ -131,7 +131,7 @@ public class JobLectureServiceImpl implements JobLectureService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       final List<JobRequest> listJobT = new ArrayList<>();
-      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs(keyspace);
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs();
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
@@ -149,7 +149,7 @@ public class JobLectureServiceImpl implements JobLectureService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       final List<JobRequest> listJobT = new ArrayList<>();
-      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs(keyspace, maxKeysToRead);
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs(maxKeysToRead);
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
@@ -167,7 +167,7 @@ public class JobLectureServiceImpl implements JobLectureService {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
     if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
       final List<JobRequest> listJobT = new ArrayList<>();
-      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getJobsToDelete(keyspace, dateMax);
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getJobsToDelete(dateMax);
       for (final JobRequestCql job : listRequestCql) {
         listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }

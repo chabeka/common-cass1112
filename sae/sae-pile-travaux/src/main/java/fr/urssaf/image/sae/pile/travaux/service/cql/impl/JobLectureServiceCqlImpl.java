@@ -11,10 +11,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 
-import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
@@ -31,7 +29,6 @@ import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
 import fr.urssaf.image.sae.pile.travaux.support.JobHistorySupportCql;
 import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupportCql;
 import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
-import me.prettyprint.hector.api.Keyspace;
 
 /**
  * @author AC75007648
@@ -63,12 +60,8 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    /**
     * 
     */
-   public JobLectureServiceCqlImpl(ApplicationContext appContext) {
-	   super();
-	   CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) appContext.getBean("cassandraCQLClientFactory");
-	   if(ccf == null) {
-			throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
-	   }
+   public JobLectureServiceCqlImpl(CassandraCQLClientFactory ccf) {
+	   
 	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
 	   jobHistoryDaoCql.setCcf(ccf);
 	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
@@ -142,7 +135,7 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    }
 
    @Override
-   public List<JobRequestCql> getAllJobs(final Keyspace keyspace) {
+   public List<JobRequestCql> getAllJobs() {
 
       final List<JobRequestCql> listJR = new ArrayList<>();
       final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
@@ -154,7 +147,7 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    }
 
    @Override
-   public List<JobRequestCql> getAllJobs(final Keyspace keyspace, int maxKeysToRead) {
+   public List<JobRequestCql> getAllJobs(int maxKeysToRead) {
 
       final List<JobRequestCql> listJR = new ArrayList<>();
       final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
@@ -167,7 +160,7 @@ public class JobLectureServiceCqlImpl implements JobLectureCqlService {
    }
 
    @Override
-   public List<JobRequestCql> getJobsToDelete(final Keyspace keyspace, final Date dateMax) {
+   public List<JobRequestCql> getJobsToDelete(final Date dateMax) {
 
       final List<JobRequestCql> listJR = new ArrayList<>();
       final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();

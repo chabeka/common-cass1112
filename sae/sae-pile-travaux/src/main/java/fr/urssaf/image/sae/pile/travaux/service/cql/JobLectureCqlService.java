@@ -9,7 +9,6 @@ import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobHistoryCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobQueueCql;
 import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
-import me.prettyprint.hector.api.Keyspace;
 
 /**
  * Service de lecture de la pile des travaux
@@ -72,7 +71,7 @@ public interface JobLectureCqlService {
     *           Keyspace
     * @return liste des traitements
     */
-   List<JobRequestCql> getAllJobs(Keyspace keyspace);
+   List<JobRequestCql> getAllJobs();
 
    /**
     * Récupère l'ensemble des jobs présents dans la pile des travaux
@@ -84,7 +83,7 @@ public interface JobLectureCqlService {
     *           Nombre de job max à retourner
     * @return liste des traitements
     */
-   List<JobRequestCql> getAllJobs(Keyspace keyspace, int maxKeysToRead);
+   List<JobRequestCql> getAllJobs(int maxKeysToRead);
 
    /**
     * Récupère l'ensemble des jobs présents dans la pile des travaux (non
@@ -97,7 +96,7 @@ public interface JobLectureCqlService {
     *           date maximum
     * @return liste des traitements
     */
-   List<JobRequestCql> getJobsToDelete(Keyspace keyspace, Date dateMax);
+   List<JobRequestCql> getJobsToDelete(Date dateMax);
 
    /**
     * Teste si le job peut être réinitialisé (ie : si le job est à l'état

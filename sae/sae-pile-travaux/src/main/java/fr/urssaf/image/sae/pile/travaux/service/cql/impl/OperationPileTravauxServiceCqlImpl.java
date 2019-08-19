@@ -15,7 +15,6 @@ import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
 import fr.urssaf.image.sae.pile.travaux.service.cql.JobQueueCqlService;
 import fr.urssaf.image.sae.pile.travaux.service.cql.OperationPileTravauxCqlService;
-import me.prettyprint.hector.api.Keyspace;
 
 /**
  * Implémentation du service {@link OperationPileTravauxCqlService} Classe
@@ -39,12 +38,6 @@ public class OperationPileTravauxServiceCqlImpl implements OperationPileTravauxC
    @Autowired
    private JobLectureCqlService jobLectureCqlService;
 
-   /**
-    * Keyspace utilisé
-    */
-   @Autowired
-   private Keyspace keyspace;
-
    @Override
    public void purger(final Date dateMax) {
       if (dateMax == null) {
@@ -52,7 +45,7 @@ public class OperationPileTravauxServiceCqlImpl implements OperationPileTravauxC
                                             "La date maximum de suppression des jobs doit être renseignée");
       }
 
-      final List<JobRequestCql> listeJobRequest = jobLectureCqlService.getJobsToDelete(keyspace, dateMax);
+      final List<JobRequestCql> listeJobRequest = jobLectureCqlService.getJobsToDelete(dateMax);
 
       int nbJobSupprimes = 0;
       for (final JobRequestCql jobRequest : listeJobRequest) {
