@@ -65,13 +65,13 @@ public class DFCEServicesImpl implements DFCEServices {
 
    private final DFCEConnection dfceConnection;
 
-   private ServiceProvider dfceService;
+   private volatile ServiceProvider dfceService;
 
    /**
     * Correspond à la base DFCE qui nous intéresse
     * Cette base est mise en cache à chaque reconnexion
     */
-   private Base base;
+   private volatile Base base;
 
    /**
     * Constructeur.
@@ -206,7 +206,8 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public Document getDocumentByUUID(final UUID uuid) {
-      return dfceService.getSearchService().getDocumentByUUID(base, uuid);
+      final Base defaultBase = getBase();
+      return dfceService.getSearchService().getDocumentByUUID(defaultBase, uuid);
    }
 
    /**
@@ -224,7 +225,8 @@ public class DFCEServicesImpl implements DFCEServices {
    @Override
    @AutoReconnectDfceServiceAnnotation
    public Document getDocumentByUUIDFromRecycleBin(final UUID uuid) {
-      return dfceService.getRecycleBinService().getDocumentByUUID(base, uuid);
+      final Base defaultBase = getBase();
+      return dfceService.getRecycleBinService().getDocumentByUUID(defaultBase, uuid);
    }
 
    /**
