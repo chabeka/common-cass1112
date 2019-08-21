@@ -21,7 +21,6 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  * <li>@beforeStep : ouverture de la connexion DFCE</li>
  * <li>@afterStep : fermeture de la connexion DFCE</li>
  * </ul>
- *
  */
 public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
@@ -40,7 +39,8 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          getServiceProvider().openConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Exception e) {
+      }
+      catch (final Exception e) {
          getLogger().warn("{} - erreur de connexion à DFCE", trcPrefix, e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
@@ -69,10 +69,12 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
          getServiceProvider().closeConnexion();
 
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Exception e) {
+      }
+      catch (final Exception e) {
          getLogger().warn(
                           "{} - erreur lors de la fermeture de la base de données",
-                          trcPrefix, e);
+                          trcPrefix,
+                          e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -86,7 +88,7 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
       if (isModePartielBatch()) {
          // En mode PARTIEL, on regarde s'il y a une erreur déclarée dans la
-         // liste des erreurs. Si c'est le cas, on est en echec et non en
+         // liste des erreurs. Si c'est le cas, on est en échec et non en
          // success. Il faut donc remonter cet état.
          if (!getIndexErreurListe().isEmpty()) {
             exitStatus = ExitStatus.FAILED;
@@ -97,21 +99,19 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
    }
 
    /**
-    * Vérifie que le document est dans liste des document en erreur ou déjà
-    * traité (Reprise). Renvoi True si c'est le cas, false sinon.
+    * Regarde si le document est à traiter.
+    * Il est à traiter s'il n'est pas dans la liste des éléments déjà traités (utilisée en mode reprise)
+    * et s'il n'est pas dans la liste des documents en erreur
     *
     * @param index
     *           index du document traité
-    * @return True si le document est dans liste des document en erreur ou déjà
-    *         traité (Reprise), false sinon.
+    * @return True est à traiter, false sinon
     */
    protected boolean isDocumentATraite(final int index) {
       boolean isdocumentATraite = true;
       if (isModePartielBatch() || isRepriseActifBatch()) {
-         isdocumentATraite = isDocumentATraiteByListIndex(
-                                                          getIndexErreurListe(), index)
-               && isDocumentATraiteByListIndex(getIndexRepriseDoneListe(),
-                                               index);
+         isdocumentATraite = isDocumentATraiteByListIndex(getIndexErreurListe(), index)
+               && isDocumentATraiteByListIndex(getIndexRepriseDoneListe(), index);
       }
 
       return isdocumentATraite;
@@ -129,7 +129,8 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
       boolean isdocumentDejaTraite = false;
       if (isRepriseActifBatch()) {
          isdocumentDejaTraite = !isDocumentATraiteByListIndex(
-                                                              getIndexRepriseDoneListe(), index);
+                                                              getIndexRepriseDoneListe(),
+                                                              index);
       }
 
       return isdocumentDejaTraite;
@@ -160,11 +161,12 @@ public abstract class AbstractDocumentWriterListener extends AbstractListener {
 
    /**
     * Lancement du traitement du service concerné.
-    * @param storageDocument Document à traiter.
+    * 
+    * @param storageDocument
+    *           Document à traiter.
     * @return l'identifiant du document traité.
     */
    public abstract UUID launchTraitement(final AbstractStorageDocument storageDocument, final int index) throws Exception;
-
 
    /**
     * @return le serviceProvider

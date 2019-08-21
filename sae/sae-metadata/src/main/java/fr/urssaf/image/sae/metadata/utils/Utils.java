@@ -71,9 +71,9 @@ public final class Utils {
     */
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static boolean hasDuplicate(final UntypedMetadata metadata,
-         final List<UntypedMetadata> metadatas) {
+                                      final List<UntypedMetadata> metadatas) {
       int count = 0;
-      for (UntypedMetadata data : metadatas) {
+      for (final UntypedMetadata data : metadatas) {
          if (data.getLongCode().trim().equals(metadata.getLongCode().trim())) {
             count++;
          }
@@ -94,9 +94,9 @@ public final class Utils {
     */
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static boolean exist(final MetadataError error,
-         final List<MetadataError> errors) {
+                               final List<MetadataError> errors) {
       int count = 0;
-      for (MetadataError err : errors) {
+      for (final MetadataError err : errors) {
          if (err.getLongCode().contains(error.getLongCode())) {
             count++;
          }
@@ -117,9 +117,31 @@ public final class Utils {
     */
    @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
    public static boolean isInRequiredList(final MetadataReference metadata,
-         final List<SAEMetadata> metadatas) {
+                                          final List<SAEMetadata> metadatas) {
       boolean found = false;
-      for (SAEMetadata data : Utils.nullSafeIterable(metadatas)) {
+      for (final SAEMetadata data : Utils.nullSafeIterable(metadatas)) {
+         if (data.getLongCode().trim().equals(metadata.getLongCode().trim())) {
+            found = true;
+            break;
+         }
+      }
+      return found;
+   }
+
+   /**
+    * Permet de vérifier qu'une métadonnée est bien dans une liste spécifique de
+    * métadonnée.
+    * 
+    * @param metadata
+    *           : La métadonnée
+    * @param metadatas
+    *           : La liste des métadonnées.
+    * @return True si la liste contient un bien de la métadonnée fournit en
+    *         entrée.
+    */
+   public static boolean isInRequiredUntypedList(final MetadataReference metadata, final List<UntypedMetadata> metadatas) {
+      boolean found = false;
+      for (final UntypedMetadata data : Utils.nullSafeIterable(metadatas)) {
          if (data.getLongCode().trim().equals(metadata.getLongCode().trim())) {
             found = true;
             break;
@@ -130,20 +152,20 @@ public final class Utils {
 
    /**
     * Permet qu'une métadonnée est dans la liste de métadonnées
+    * 
     * @param references
     *           la liste des métadonnées
     * @param longCode
     *           le code long de la métadonnée
-    * 
     * @return True si la liste contient la métadonnée
     */
-   public static boolean isRequired(Map<String, MetadataReference> references,
-         String longCode) {
+   public static boolean isRequired(final Map<String, MetadataReference> references,
+                                    final String longCode) {
       boolean found = false;
 
       int index = 0;
-      List<MetadataReference> listReferences = new ArrayList<MetadataReference>(
-            nullSafeMap(references).values());
+      final List<MetadataReference> listReferences = new ArrayList<>(
+                                                                     nullSafeMap(references).values());
       while (!found && index < listReferences.size()) {
          if (longCode.equals(listReferences.get(index).getLongCode())) {
             found = true;
@@ -153,4 +175,5 @@ public final class Utils {
 
       return found;
    }
+
 }

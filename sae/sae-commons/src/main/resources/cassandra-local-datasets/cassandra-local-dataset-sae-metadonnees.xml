@@ -6229,7 +6229,7 @@
                <value>bytes(01)</value>
             </column>   
          </row>
-		 <row>
+         <row>
             <key>MontantCheque</key>
             <column>
                <name>sCode</name>
@@ -6317,14 +6317,14 @@
             </column>   
          </row>
          <row>
-            <key>IdPere</key>
+            <key>StatutWATT</key>
             <column>
                <name>sCode</name>
-               <value>ipe</value>
+               <value>swa</value>
             </column>
             <column>
                <name>type</name>
-               <value>UUID</value>
+               <value>String</value>
             </column>
             <column>
                <name>reqArch</name>
@@ -6336,7 +6336,7 @@
             </column>
             <column>
                <name>length</name>
-               <value>integer(4)</value>
+               <value>integer(50)</value>
             </column>
             <column>
                <name>cons</name>
@@ -6356,15 +6356,15 @@
             </column>
             <column>
                <name>arch</name>
-               <value>bytes(00)</value>
+               <value>bytes(01)</value>
             </column>
             <column>
                <name>label</name>
-               <value>UUID du document père</value>
+               <value>Statut WATT</value>
             </column>
             <column>
                <name>descr</name>
-               <value>UUID du document père pour la gérer la notion de pièces jointes</value>
+               <value>Statut WATT du document dans la GNT</value>
             </column>
             <column>
                <name>pattern</name>
@@ -6380,7 +6380,7 @@
             </column>
             <column>
                <name>index</name>
-               <value>bytes(01)</value>
+               <value>bytes(00)</value>
             </column>
             <column>
                <name>update</name>
@@ -6400,8 +6400,182 @@
             </column>
             <column>
                <name>transf</name>
+               <value>bytes(00)</value>
+            </column>
+         </row>
+         <row>
+            <key>DocumentArchivable</key>
+            <column>
+               <name>arch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>cons</name>
                <value>bytes(01)</value>
-            </column>   
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Document archivable en AED</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Document archivable en AED</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(50)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>sCode</name>
+               <value>dar</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(00)</value>
+            </column>
+         </row>
+         <row>
+            <key>NumeroIdArchivage</key>
+            <column>
+               <name>arch</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>cons</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>defCons</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>descr</name>
+               <value>Identifiant d'archivage AED</value>
+            </column>
+            <column>
+               <name>dictName</name>
+               <value></value>
+            </column>
+            <column>
+               <name>dispo</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>hasDict</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>index</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>int</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>label</name>
+               <value>Numero d'id d'archivage</value>
+            </column>
+            <column>
+               <name>leftTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>length</name>
+               <value>integer(20)</value>
+            </column>
+            <column>
+               <name>pattern</name>
+               <value></value>
+            </column>
+            <column>
+               <name>reqArch</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>reqStor</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>rightTrim</name>
+               <value>bytes(00)</value>
+            </column>
+            <column>
+               <name>sCode</name>
+               <value>nid</value>
+            </column>
+            <column>
+               <name>search</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>transf</name>
+               <value>bytes(01)</value>
+            </column>
+            <column>
+               <name>type</name>
+               <value>String</value>
+            </column>
+            <column>
+               <name>update</name>
+               <value>bytes(00)</value>
+            </column>
          </row>
       </columnFamily>
 

@@ -33,14 +33,14 @@ import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertServ
 
 /**
  * Item writer du transfert des documents dans la GNS
- *
  */
 @Component
 public class TransfertDocumentWriter extends AbstractDocumentWriterListener
-implements ItemWriter<StorageDocument> {
+                                     implements
+                                     ItemWriter<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
-         .getLogger(TransfertDocumentWriter.class);
+                                                     .getLogger(TransfertDocumentWriter.class);
 
    /**
     * Pool executor
@@ -82,6 +82,7 @@ implements ItemWriter<StorageDocument> {
    private TracesControlesSupport tracesSupport;
 
    private static final String TRC_INSERT = "TransfertDocumentWriter()";
+
    private static final String CATCH = "AvoidCatchingThrowable";
 
    @Override
@@ -93,10 +94,11 @@ implements ItemWriter<StorageDocument> {
       if (actionType != null) {
          if (actionType.equals("SUPPRESSION")) {
             final StorageDocument storageDoc = (StorageDocument) storageDocument;
-            storageDoc.getMetadatas().add(
-                                          new StorageMetadata(
-                                                              Constantes.CODE_COURT_META_DATE_CORBEILLE,
-                                                              new Date()));
+            storageDoc.getMetadatas()
+                      .add(
+                           new StorageMetadata(
+                                               Constantes.CODE_COURT_META_DATE_CORBEILLE,
+                                               new Date()));
             document = moveDocumentToRecycleBin(storageDoc);
          } else {
             document = transfertDocument((StorageDocument) storageDocument);
@@ -119,9 +121,11 @@ implements ItemWriter<StorageDocument> {
          throws TransfertException {
       try {
          transfertService.transfertDocMasse(document);
-      } catch (TransfertException e) {
-        throw e;
-      } catch (final Exception except) {
+      }
+      catch (final TransfertException e) {
+         throw e;
+      }
+      catch (final Exception except) {
          throw new TransfertException(except.getMessage(), except);
       }
       return document;
@@ -142,19 +146,21 @@ implements ItemWriter<StorageDocument> {
       try {
          // Récuperer l'id du traitement en cours
          final String idJob = getStepExecution().getJobParameters()
-               .getString(Constantes.ID_TRAITEMENT);
+                                                .getString(Constantes.ID_TRAITEMENT);
 
          UUID uuidJob = null;
-         if(StringUtils.isNotEmpty(idJob)){
+         if (StringUtils.isNotEmpty(idJob)) {
             // conversion
             uuidJob = UUID.fromString(idJob);
          }
 
          suppressionService.moveToRecycleBeanStorageDocument(uuidJob, document);
-      } catch (final Exception except) {
+      }
+      catch (final Exception except) {
          throw new SuppressionException(
                                         "Erreur Suppression - identifiant archivage "
-                                              + document.getUuid() + " : " + except.getMessage(), except);
+                                              + document.getUuid() + " : " + except.getMessage(),
+                                        except);
       }
       return document;
    }
@@ -184,35 +190,36 @@ implements ItemWriter<StorageDocument> {
          // Si le document n'est pas en erreur ou dans la liste de document déjà
          // traité (Reprise), on traite, sinon on passe au suivant.
          if (isdocumentATraite) {
-            command = new InsertionRunnable(getStepExecution().getReadCount()
-                                            + index, storageDocument, this, getStepExecution()
-                                            .getReadCount() + index);
+            command = new InsertionRunnable(getStepExecution().getReadCount() + index,
+                                            storageDocument,
+                                            this,
+                                            getStepExecution().getReadCount() + index);
 
             try {
                poolExecutor.execute(command);
-            } catch (final Exception e) {
+            }
+            catch (final Exception e) {
                if (isModePartielBatch()) {
                   getCodesErreurListe().add(Constantes.ERR_BUL002);
-                  getIndexErreurListe().add(
-                                            getStepExecution().getExecutionContext().getInt(
-                                                                                            Constantes.CTRL_INDEX));
+                  getIndexErreurListe().add(getStepExecution().getExecutionContext().getInt(Constantes.CTRL_INDEX));
                   getErrorMessageList().add(e.getMessage());
                   LOGGER.warn("Erreur lors de transfert du document en GNS", e);
                }
 
             }
-            LOGGER.debug(
-                         "{} - nombre de documents en attente dans le pool : {}",
-                         TRC_INSERT,
-                         "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
-                               + poolExecutor.getActiveCount());
-
+            if (LOGGER.isDebugEnabled()) {
+               LOGGER.debug(
+                            "{} - nombre de documents en attente dans le pool : {}",
+                            TRC_INSERT,
+                            "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : "
+                                  + poolExecutor.getActiveCount());
+            }
          } else if (!isdocumentATraite && isDocumentDejaTraite(index)) {
-            poolExecutor.getIntegratedDocuments().add(
-                                                      new TraitementMasseIntegratedDocument(storageDocument
-                                                                                            .getUuid(), null,
-                                                                                            getStepExecution().getReadCount()
-                                                                                            + index));
+            poolExecutor.getIntegratedDocuments()
+                        .add(
+                             new TraitementMasseIntegratedDocument(storageDocument.getUuid(),
+                                                                   null,
+                                                                   getStepExecution().getReadCount() + index));
          }
 
          index++;
@@ -234,9 +241,11 @@ implements ItemWriter<StorageDocument> {
       try {
          storageTransfertService.openConnexion();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Exception e) {
+      }
+      catch (final Exception e) {
          getLogger().warn("{} - erreur d'ouverture des services de transfert",
-                          trcPrefix, e);
+                          trcPrefix,
+                          e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());
@@ -258,9 +267,11 @@ implements ItemWriter<StorageDocument> {
       try {
          storageTransfertService.closeConnexion();
          /* nous sommes obligés de récupérer les throwable pour les erreurs DFCE */
-      } catch (final Exception e) {
+      }
+      catch (final Exception e) {
          getLogger().warn("{} - erreur lors de la fermeture des services de transfert",
-                          trcPrefix, e);
+                          trcPrefix,
+                          e);
          getCodesErreurListe().add(Constantes.ERR_BUL001);
          getIndexErreurListe().add(0);
          getErrorMessageList().add(e.getMessage());

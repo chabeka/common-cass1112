@@ -12,12 +12,19 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 public interface MetadataReferenceDAO {
 
    /**
-    * 
-    * @return La liste des métadonnées du référentiel des métadonnées.
+    * @return La liste des métadonnées du référentiel des métadonnées. La clé de la map est le code long de la métadonnée
     * @throws ReferentialException
     *            Exception levée lorsqu'un dysfonctionnement survient.
     */
    Map<String, MetadataReference> getAllMetadataReferences()
+         throws ReferentialException;
+
+   /**
+    * @return La liste des métadonnées du référentiel des métadonnées. La clé de la map est le code court de la métadonnée
+    * @throws ReferentialException
+    *            Exception levée lorsqu'un dysfonctionnement survient.
+    */
+   Map<String, MetadataReference> getAllMetadataReferencesByShortCode()
          throws ReferentialException;
 
    /**
@@ -35,7 +42,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées consultables par défaut du référentiel
     *         des métadonnées.
     * @throws ReferentialException
@@ -45,7 +51,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées consultables du référentiel des
     *         métadonnées.
     * @throws ReferentialException
@@ -55,7 +60,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées interrogables du référentiel des
     *         métadonnées.
     * @throws ReferentialException
@@ -65,7 +69,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées obligatoires pour le stockage du
     *         référentiel des métadonnées.
     * @throws ReferentialException
@@ -75,7 +78,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées obligatoires pour l'archivage du
     *         référentiel des métadonnées.
     * @throws ReferentialException
@@ -85,7 +87,6 @@ public interface MetadataReferenceDAO {
          throws ReferentialException;
 
    /**
-    * 
     * @return La liste des métadonnées archivable du référentiel des
     *         métadonnées.
     * @throws ReferentialException
@@ -139,7 +140,7 @@ public interface MetadataReferenceDAO {
    Map<String, MetadataReference> getRightTrimableMetadataReference();
 
    /**
-    * Charge les des métadonnées qui sont transférables
+    * Charge la liste des métadonnées qui sont transférables
     * 
     * @return la liste des métadonnées transférables
     * @throws ReferentialException
@@ -147,4 +148,15 @@ public interface MetadataReferenceDAO {
     */
    Map<String, MetadataReference> getTransferableMetadataReference()
          throws ReferentialException;
+
+   /**
+    * Charge la liste des métadonnées qui sont transférables, indexée sur le code court
+    * 
+    * @return la liste des métadonnées transférables
+    * @throws ReferentialException
+    *            Exception levée lorsqu'un dysfonctionnement survient.
+    */
+   Map<String, MetadataReference> getTransferableMetadataReferenceByShortCode()
+         throws ReferentialException;
+
 }
