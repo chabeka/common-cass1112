@@ -20,10 +20,9 @@ import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
 /**
  * Contient les tests sur les services de manipulation du referentiel des
  * métadonnées.
- * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-metadata-test.xml"})
 @SuppressWarnings("PMD")
 public class MetadataReferenceDAOImplTest {
 
@@ -55,129 +54,149 @@ public class MetadataReferenceDAOImplTest {
    public void getAllMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getAllMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getAllMetadataReferences();
 
       Assert.assertEquals("Le nombre de métadonnées attendues est incorrect",
-            72, metadonnees.size());
+                          74,
+                          metadonnees.size());
 
-      String metaNonTrouve = "Métadonnéee %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siren"), metadonnees
-            .containsKey("Siren"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siren"),
+                        metadonnees
+                                   .containsKey("Siren"));
       Assert.assertTrue(String.format(metaNonTrouve, "NniEmployeur"),
-            metadonnees.containsKey("NniEmployeur"));
+                        metadonnees.containsKey("NniEmployeur"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroPersonne"),
-            metadonnees.containsKey("NumeroPersonne"));
+                        metadonnees.containsKey("NumeroPersonne"));
       Assert.assertTrue(String.format(metaNonTrouve, "Denomination"),
-            metadonnees.containsKey("Denomination"));
+                        metadonnees.containsKey("Denomination"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeCategorieV2"),
-            metadonnees.containsKey("CodeCategorieV2"));
+                        metadonnees.containsKey("CodeCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeSousCategorieV2"),
-            metadonnees.containsKey("CodeSousCategorieV2"));
+                        metadonnees.containsKey("CodeSousCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteInterne"),
-            metadonnees.containsKey("NumeroCompteInterne"));
+                        metadonnees.containsKey("NumeroCompteInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteExterne"),
-            metadonnees.containsKey("NumeroCompteExterne"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siret"), metadonnees
-            .containsKey("Siret"));
+                        metadonnees.containsKey("NumeroCompteExterne"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siret"),
+                        metadonnees
+                                   .containsKey("Siret"));
       Assert.assertTrue(String.format(metaNonTrouve, "PseudoSiret"),
-            metadonnees.containsKey("PseudoSiret"));
+                        metadonnees.containsKey("PseudoSiret"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroStructure"),
-            metadonnees.containsKey("NumeroStructure"));
+                        metadonnees.containsKey("NumeroStructure"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroRecours"),
-            metadonnees.containsKey("NumeroRecours"));
+                        metadonnees.containsKey("NumeroRecours"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroIntControle"),
-            metadonnees.containsKey("NumeroIntControle"));
+                        metadonnees.containsKey("NumeroIntControle"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateReception"),
-            metadonnees.containsKey("DateReception"));
+                        metadonnees.containsKey("DateReception"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationTraitement"),
-            metadonnees.containsKey("ApplicationTraitement"));
+                        metadonnees.containsKey("ApplicationTraitement"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "SiteAcquisition"),
-            metadonnees.containsKey("SiteAcquisition"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"), metadonnees
-            .containsKey("VersionRND"));
+                        metadonnees.containsKey("SiteAcquisition"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"),
+                        metadonnees
+                                   .containsKey("VersionRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeFonction"),
-            metadonnees.containsKey("CodeFonction"));
+                        metadonnees.containsKey("CodeFonction"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeActivite"),
-            metadonnees.containsKey("CodeActivite"));
+                        metadonnees.containsKey("CodeActivite"));
       Assert.assertTrue(String.format(metaNonTrouve, "DureeConservation"),
-            metadonnees.containsKey("DureeConservation"));
+                        metadonnees.containsKey("DureeConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
-            metadonnees.containsKey("DateDebutConservation"));
+                        metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateFinConservation"),
-            metadonnees.containsKey("DateFinConservation"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
-            .containsKey("Gel"));
+                        metadonnees.containsKey("DateFinConservation"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Gel"),
+                        metadonnees
+                                   .containsKey("Gel"));
       Assert.assertTrue(
-            String.format(metaNonTrouve, "TracabilitePreArchivage"),
-            metadonnees.containsKey("TracabilitePreArchivage"));
+                        String.format(metaNonTrouve, "TracabilitePreArchivage"),
+                        metadonnees.containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
-            .containsKey("TracabilitePostArchivage"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
-            .containsKey("TypeHash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
-            .containsKey("NbPages"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"), metadonnees
-            .containsKey("NomFichier"));
+                              .format(metaNonTrouve, "TracabilitePostArchivage"),
+                        metadonnees
+                                   .containsKey("TracabilitePostArchivage"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"),
+                        metadonnees
+                                   .containsKey("TypeHash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"),
+                        metadonnees
+                                   .containsKey("NbPages"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"),
+                        metadonnees
+                                   .containsKey("NomFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "TailleFichier"),
-            metadonnees.containsKey("TailleFichier"));
+                        metadonnees.containsKey("TailleFichier"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "IdTraitementMasseInterne"), metadonnees
-            .containsKey("IdTraitementMasseInterne"));
+                              .format(metaNonTrouve, "IdTraitementMasseInterne"),
+                        metadonnees
+                                   .containsKey("IdTraitementMasseInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "IdTraitementMasse"),
-            metadonnees.containsKey("IdTraitementMasse"));
+                        metadonnees.containsKey("IdTraitementMasse"));
       Assert.assertTrue(String.format(metaNonTrouve, "DocumentVirtuel"),
-            metadonnees.containsKey("DocumentVirtuel"));
-      Assert.assertTrue(String.format(metaNonTrouve, "StartPage"), metadonnees
-            .containsKey("StartPage"));
-      Assert.assertTrue(String.format(metaNonTrouve, "EndPage"), metadonnees
-            .containsKey("EndPage"));
+                        metadonnees.containsKey("DocumentVirtuel"));
+      Assert.assertTrue(String.format(metaNonTrouve, "StartPage"),
+                        metadonnees
+                                   .containsKey("StartPage"));
+      Assert.assertTrue(String.format(metaNonTrouve, "EndPage"),
+                        metadonnees
+                                   .containsKey("EndPage"));
       Assert.assertTrue(String.format(metaNonTrouve, "ContratDeService"),
-            metadonnees.containsKey("ContratDeService"));
+                        metadonnees.containsKey("ContratDeService"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateArchivage"),
-            metadonnees.containsKey("DateArchivage"));
+                        metadonnees.containsKey("DateArchivage"));
       Assert.assertTrue(String.format(metaNonTrouve, "VersionNumber"),
-            metadonnees.containsKey("VersionNumber"));
+                        metadonnees.containsKey("VersionNumber"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateModification"),
-            metadonnees.containsKey("DateModification"));
+                        metadonnees.containsKey("DateModification"));
       Assert.assertTrue(String.format(metaNonTrouve, "JetonDePreuve"),
-            metadonnees.containsKey("JetonDePreuve"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RUM"), metadonnees
-            .containsKey("RUM"));
+                        metadonnees.containsKey("JetonDePreuve"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RUM"),
+                        metadonnees
+                                   .containsKey("RUM"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateSignature"),
-            metadonnees.containsKey("DateSignature"));
+                        metadonnees.containsKey("DateSignature"));
       Assert.assertTrue(String.format(metaNonTrouve, "ReferenceDocumentaire"),
-            metadonnees.containsKey("ReferenceDocumentaire"));
+                        metadonnees.containsKey("ReferenceDocumentaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCourrierV2"),
-            metadonnees.containsKey("DateCourrierV2"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"), metadonnees
-            .containsKey("RIBA"));
+                        metadonnees.containsKey("DateCourrierV2"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"),
+                        metadonnees
+                                   .containsKey("RIBA"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeProduitV2"),
-            metadonnees.containsKey("CodeProduitV2"));
+                        metadonnees.containsKey("CodeProduitV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeTraitementV2"),
-            metadonnees.containsKey("CodeTraitementV2"));
+                        metadonnees.containsKey("CodeTraitementV2"));
 
    }
 
@@ -194,125 +213,143 @@ public class MetadataReferenceDAOImplTest {
    public void getConsultableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getConsultableMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getConsultableMetadataReferences();
 
       Assert.assertEquals(
-            "Le nombre de métadonnées consultables attendues est incorrect",
-            67, metadonnees.size());
+                          "Le nombre de métadonnées consultables attendues est incorrect",
+                          69,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isConsultable());
       }
 
-      String metaNonTrouve = "Métadonnéee consultable %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee consultable %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siren"), metadonnees
-            .containsKey("Siren"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siren"),
+                        metadonnees
+                                   .containsKey("Siren"));
       Assert.assertTrue(String.format(metaNonTrouve, "NniEmployeur"),
-            metadonnees.containsKey("NniEmployeur"));
+                        metadonnees.containsKey("NniEmployeur"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroPersonne"),
-            metadonnees.containsKey("NumeroPersonne"));
+                        metadonnees.containsKey("NumeroPersonne"));
       Assert.assertTrue(String.format(metaNonTrouve, "Denomination"),
-            metadonnees.containsKey("Denomination"));
+                        metadonnees.containsKey("Denomination"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeCategorieV2"),
-            metadonnees.containsKey("CodeCategorieV2"));
+                        metadonnees.containsKey("CodeCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeSousCategorieV2"),
-            metadonnees.containsKey("CodeSousCategorieV2"));
+                        metadonnees.containsKey("CodeSousCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteInterne"),
-            metadonnees.containsKey("NumeroCompteInterne"));
+                        metadonnees.containsKey("NumeroCompteInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteExterne"),
-            metadonnees.containsKey("NumeroCompteExterne"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siret"), metadonnees
-            .containsKey("Siret"));
+                        metadonnees.containsKey("NumeroCompteExterne"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siret"),
+                        metadonnees
+                                   .containsKey("Siret"));
       Assert.assertTrue(String.format(metaNonTrouve, "PseudoSiret"),
-            metadonnees.containsKey("PseudoSiret"));
+                        metadonnees.containsKey("PseudoSiret"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroStructure"),
-            metadonnees.containsKey("NumeroStructure"));
+                        metadonnees.containsKey("NumeroStructure"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroRecours"),
-            metadonnees.containsKey("NumeroRecours"));
+                        metadonnees.containsKey("NumeroRecours"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroIntControle"),
-            metadonnees.containsKey("NumeroIntControle"));
+                        metadonnees.containsKey("NumeroIntControle"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateReception"),
-            metadonnees.containsKey("DateReception"));
+                        metadonnees.containsKey("DateReception"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationTraitement"),
-            metadonnees.containsKey("ApplicationTraitement"));
+                        metadonnees.containsKey("ApplicationTraitement"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "SiteAcquisition"),
-            metadonnees.containsKey("SiteAcquisition"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"), metadonnees
-            .containsKey("VersionRND"));
+                        metadonnees.containsKey("SiteAcquisition"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"),
+                        metadonnees
+                                   .containsKey("VersionRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeFonction"),
-            metadonnees.containsKey("CodeFonction"));
+                        metadonnees.containsKey("CodeFonction"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeActivite"),
-            metadonnees.containsKey("CodeActivite"));
+                        metadonnees.containsKey("CodeActivite"));
       Assert.assertTrue(String.format(metaNonTrouve, "DureeConservation"),
-            metadonnees.containsKey("DureeConservation"));
+                        metadonnees.containsKey("DureeConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
-            metadonnees.containsKey("DateDebutConservation"));
+                        metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateFinConservation"),
-            metadonnees.containsKey("DateFinConservation"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Gel"), metadonnees
-            .containsKey("Gel"));
+                        metadonnees.containsKey("DateFinConservation"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Gel"),
+                        metadonnees
+                                   .containsKey("Gel"));
       Assert.assertTrue(
-            String.format(metaNonTrouve, "TracabilitePreArchivage"),
-            metadonnees.containsKey("TracabilitePreArchivage"));
+                        String.format(metaNonTrouve, "TracabilitePreArchivage"),
+                        metadonnees.containsKey("TracabilitePreArchivage"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "TracabilitePostArchivage"), metadonnees
-            .containsKey("TracabilitePostArchivage"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
-            .containsKey("TypeHash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
-            .containsKey("NbPages"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"), metadonnees
-            .containsKey("NomFichier"));
+                              .format(metaNonTrouve, "TracabilitePostArchivage"),
+                        metadonnees
+                                   .containsKey("TracabilitePostArchivage"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"),
+                        metadonnees
+                                   .containsKey("TypeHash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"),
+                        metadonnees
+                                   .containsKey("NbPages"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"),
+                        metadonnees
+                                   .containsKey("NomFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "TailleFichier"),
-            metadonnees.containsKey("TailleFichier"));
+                        metadonnees.containsKey("TailleFichier"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "IdTraitementMasseInterne"), metadonnees
-            .containsKey("IdTraitementMasseInterne"));
+                              .format(metaNonTrouve, "IdTraitementMasseInterne"),
+                        metadonnees
+                                   .containsKey("IdTraitementMasseInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "IdTraitementMasse"),
-            metadonnees.containsKey("IdTraitementMasse"));
+                        metadonnees.containsKey("IdTraitementMasse"));
       Assert.assertTrue(String.format(metaNonTrouve, "ContratDeService"),
-            metadonnees.containsKey("ContratDeService"));
+                        metadonnees.containsKey("ContratDeService"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateArchivage"),
-            metadonnees.containsKey("DateArchivage"));
+                        metadonnees.containsKey("DateArchivage"));
       Assert.assertTrue(String.format(metaNonTrouve, "JetonDePreuve"),
-            metadonnees.containsKey("JetonDePreuve"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RUM"), metadonnees
-            .containsKey("RUM"));
+                        metadonnees.containsKey("JetonDePreuve"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RUM"),
+                        metadonnees
+                                   .containsKey("RUM"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateSignature"),
-            metadonnees.containsKey("DateSignature"));
+                        metadonnees.containsKey("DateSignature"));
       Assert.assertTrue(String.format(metaNonTrouve, "ReferenceDocumentaire"),
-            metadonnees.containsKey("ReferenceDocumentaire"));
+                        metadonnees.containsKey("ReferenceDocumentaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCourrierV2"),
-            metadonnees.containsKey("DateCourrierV2"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"), metadonnees
-            .containsKey("RIBA"));
+                        metadonnees.containsKey("DateCourrierV2"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"),
+                        metadonnees
+                                   .containsKey("RIBA"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeProduitV2"),
-            metadonnees.containsKey("CodeProduitV2"));
+                        metadonnees.containsKey("CodeProduitV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeTraitementV2"),
-            metadonnees.containsKey("CodeTraitementV2"));
+                        metadonnees.containsKey("CodeTraitementV2"));
 
    }
 
@@ -329,47 +366,54 @@ public class MetadataReferenceDAOImplTest {
    public void getDefaultConsultableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getDefaultConsultableMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getDefaultConsultableMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées consultables par défaut attendues est incorrect",
-                  12, metadonnees.size());
+                          "Le nombre de métadonnées consultables par défaut attendues est incorrect",
+                          12,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isDefaultConsultable());
       }
 
-      String metaNonTrouve = "Métadonnéee consultable par défaut %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee consultable par défaut %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateReception"),
-            metadonnees.containsKey("DateReception"));
+                        metadonnees.containsKey("DateReception"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"), metadonnees
-            .containsKey("NomFichier"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NomFichier"),
+                        metadonnees
+                                   .containsKey("NomFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "TailleFichier"),
-            metadonnees.containsKey("TailleFichier"));
+                        metadonnees.containsKey("TailleFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "ContratDeService"),
-            metadonnees.containsKey("ContratDeService"));
+                        metadonnees.containsKey("ContratDeService"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateArchivage"),
-            metadonnees.containsKey("DateArchivage"));
+                        metadonnees.containsKey("DateArchivage"));
 
    }
 
@@ -386,43 +430,51 @@ public class MetadataReferenceDAOImplTest {
    public void getRequiredForArchivalMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getRequiredForArchivalMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getRequiredForArchivalMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées obligatoires à l'archivage attendues est incorrect",
-                  10, metadonnees.size());
+                          "Le nombre de métadonnées obligatoires à l'archivage attendues est incorrect",
+                          10,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isRequiredForArchival());
       }
 
-      String metaNonTrouve = "Métadonnéee obligatoire à l'archivage %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee obligatoire à l'archivage %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
-            .containsKey("TypeHash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
-            .containsKey("NbPages"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"),
+                        metadonnees
+                                   .containsKey("TypeHash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"),
+                        metadonnees
+                                   .containsKey("NbPages"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
 
    }
 
@@ -439,55 +491,64 @@ public class MetadataReferenceDAOImplTest {
    public void getRequiredForStorageMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getRequiredForStorageMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getRequiredForStorageMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées obligatoires au stockage attendues est incorrect",
-                  16, metadonnees.size());
+                          "Le nombre de métadonnées obligatoires au stockage attendues est incorrect",
+                          16,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isRequiredForStorage());
       }
 
-      String metaNonTrouve = "Métadonnéee obligatoire au stockage %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee obligatoire au stockage %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"), metadonnees
-            .containsKey("VersionRND"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "VersionRND"),
+                        metadonnees
+                                   .containsKey("VersionRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
-            metadonnees.containsKey("DateDebutConservation"));
+                        metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateFinConservation"),
-            metadonnees.containsKey("DateFinConservation"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
-            .containsKey("TypeHash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
-            .containsKey("NbPages"));
+                        metadonnees.containsKey("DateFinConservation"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"),
+                        metadonnees
+                                   .containsKey("TypeHash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"),
+                        metadonnees
+                                   .containsKey("NbPages"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "DocumentVirtuel"),
-            metadonnees.containsKey("DocumentVirtuel"));
+                        metadonnees.containsKey("DocumentVirtuel"));
       Assert.assertTrue(String.format(metaNonTrouve, "ContratDeService"),
-            metadonnees.containsKey("ContratDeService"));
+                        metadonnees.containsKey("ContratDeService"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateArchivage"),
-            metadonnees.containsKey("DateArchivage"));
+                        metadonnees.containsKey("DateArchivage"));
 
    }
 
@@ -504,94 +565,105 @@ public class MetadataReferenceDAOImplTest {
    public void getSearchableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getSearchableMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getSearchableMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées utilisables en critère de recherche attendues est incorrect",
-            51, metadonnees.size());
+                          "Le nombre de métadonnées utilisables en critère de recherche attendues est incorrect",
+                          53,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isSearchable());
       }
 
-      String metaNonTrouve = "Métadonnéee %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siren"), metadonnees
-            .containsKey("Siren"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siren"),
+                        metadonnees
+                                   .containsKey("Siren"));
       Assert.assertTrue(String.format(metaNonTrouve, "NniEmployeur"),
-            metadonnees.containsKey("NniEmployeur"));
+                        metadonnees.containsKey("NniEmployeur"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroPersonne"),
-            metadonnees.containsKey("NumeroPersonne"));
+                        metadonnees.containsKey("NumeroPersonne"));
       Assert.assertTrue(String.format(metaNonTrouve, "Denomination"),
-            metadonnees.containsKey("Denomination"));
+                        metadonnees.containsKey("Denomination"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteInterne"),
-            metadonnees.containsKey("NumeroCompteInterne"));
+                        metadonnees.containsKey("NumeroCompteInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteExterne"),
-            metadonnees.containsKey("NumeroCompteExterne"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siret"), metadonnees
-            .containsKey("Siret"));
+                        metadonnees.containsKey("NumeroCompteExterne"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siret"),
+                        metadonnees
+                                   .containsKey("Siret"));
       Assert.assertTrue(String.format(metaNonTrouve, "PseudoSiret"),
-            metadonnees.containsKey("PseudoSiret"));
+                        metadonnees.containsKey("PseudoSiret"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroStructure"),
-            metadonnees.containsKey("NumeroStructure"));
+                        metadonnees.containsKey("NumeroStructure"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroRecours"),
-            metadonnees.containsKey("NumeroRecours"));
+                        metadonnees.containsKey("NumeroRecours"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroIntControle"),
-            metadonnees.containsKey("NumeroIntControle"));
+                        metadonnees.containsKey("NumeroIntControle"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateReception"),
-            metadonnees.containsKey("DateReception"));
+                        metadonnees.containsKey("DateReception"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationTraitement"),
-            metadonnees.containsKey("ApplicationTraitement"));
+                        metadonnees.containsKey("ApplicationTraitement"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "SiteAcquisition"),
-            metadonnees.containsKey("SiteAcquisition"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
+                        metadonnees.containsKey("SiteAcquisition"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeFonction"),
-            metadonnees.containsKey("CodeFonction"));
+                        metadonnees.containsKey("CodeFonction"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeActivite"),
-            metadonnees.containsKey("CodeActivite"));
+                        metadonnees.containsKey("CodeActivite"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
-            metadonnees.containsKey("DateDebutConservation"));
+                        metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateFinConservation"),
-            metadonnees.containsKey("DateFinConservation"));
+                        metadonnees.containsKey("DateFinConservation"));
       Assert.assertTrue(String
-            .format(metaNonTrouve, "IdTraitementMasseInterne"), metadonnees
-            .containsKey("IdTraitementMasseInterne"));
+                              .format(metaNonTrouve, "IdTraitementMasseInterne"),
+                        metadonnees
+                                   .containsKey("IdTraitementMasseInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "IdTraitementMasse"),
-            metadonnees.containsKey("IdTraitementMasse"));
+                        metadonnees.containsKey("IdTraitementMasse"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateArchivage"),
-            metadonnees.containsKey("DateArchivage"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RUM"), metadonnees
-            .containsKey("RUM"));
+                        metadonnees.containsKey("DateArchivage"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RUM"),
+                        metadonnees
+                                   .containsKey("RUM"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateSignature"),
-            metadonnees.containsKey("DateSignature"));
+                        metadonnees.containsKey("DateSignature"));
       Assert.assertTrue(String.format(metaNonTrouve, "ReferenceDocumentaire"),
-            metadonnees.containsKey("ReferenceDocumentaire"));
+                        metadonnees.containsKey("ReferenceDocumentaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCourrierV2"),
-            metadonnees.containsKey("DateCourrierV2"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"), metadonnees
-            .containsKey("RIBA"));
+                        metadonnees.containsKey("DateCourrierV2"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"),
+                        metadonnees
+                                   .containsKey("RIBA"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeProduitV2"),
-            metadonnees.containsKey("CodeProduitV2"));
+                        metadonnees.containsKey("CodeProduitV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeTraitementV2"),
-            metadonnees.containsKey("CodeTraitementV2"));
+                        metadonnees.containsKey("CodeTraitementV2"));
 
    }
 
@@ -608,100 +680,113 @@ public class MetadataReferenceDAOImplTest {
    public void getArchivableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getArchivableMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getArchivableMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
-                  52, metadonnees.size());
+                          "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
+                          54,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isArchivable());
       }
 
-      String metaNonTrouve = "Métadonnéee %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siren"), metadonnees
-            .containsKey("Siren"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siren"),
+                        metadonnees
+                                   .containsKey("Siren"));
       Assert.assertTrue(String.format(metaNonTrouve, "NniEmployeur"),
-            metadonnees.containsKey("NniEmployeur"));
+                        metadonnees.containsKey("NniEmployeur"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroPersonne"),
-            metadonnees.containsKey("NumeroPersonne"));
+                        metadonnees.containsKey("NumeroPersonne"));
       Assert.assertTrue(String.format(metaNonTrouve, "Denomination"),
-            metadonnees.containsKey("Denomination"));
+                        metadonnees.containsKey("Denomination"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeCategorieV2"),
-            metadonnees.containsKey("CodeCategorieV2"));
+                        metadonnees.containsKey("CodeCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeSousCategorieV2"),
-            metadonnees.containsKey("CodeSousCategorieV2"));
+                        metadonnees.containsKey("CodeSousCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteInterne"),
-            metadonnees.containsKey("NumeroCompteInterne"));
+                        metadonnees.containsKey("NumeroCompteInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteExterne"),
-            metadonnees.containsKey("NumeroCompteExterne"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siret"), metadonnees
-            .containsKey("Siret"));
+                        metadonnees.containsKey("NumeroCompteExterne"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siret"),
+                        metadonnees
+                                   .containsKey("Siret"));
       Assert.assertTrue(String.format(metaNonTrouve, "PseudoSiret"),
-            metadonnees.containsKey("PseudoSiret"));
+                        metadonnees.containsKey("PseudoSiret"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroStructure"),
-            metadonnees.containsKey("NumeroStructure"));
+                        metadonnees.containsKey("NumeroStructure"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroRecours"),
-            metadonnees.containsKey("NumeroRecours"));
+                        metadonnees.containsKey("NumeroRecours"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroIntControle"),
-            metadonnees.containsKey("NumeroIntControle"));
+                        metadonnees.containsKey("NumeroIntControle"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCreation"),
-            metadonnees.containsKey("DateCreation"));
+                        metadonnees.containsKey("DateCreation"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateReception"),
-            metadonnees.containsKey("DateReception"));
+                        metadonnees.containsKey("DateReception"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationProductrice"),
-            metadonnees.containsKey("ApplicationProductrice"));
+                        metadonnees.containsKey("ApplicationProductrice"));
       Assert.assertTrue(String.format(metaNonTrouve, "ApplicationTraitement"),
-            metadonnees.containsKey("ApplicationTraitement"));
+                        metadonnees.containsKey("ApplicationTraitement"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "SiteAcquisition"),
-            metadonnees.containsKey("SiteAcquisition"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
+                        metadonnees.containsKey("SiteAcquisition"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateDebutConservation"),
-            metadonnees.containsKey("DateDebutConservation"));
+                        metadonnees.containsKey("DateDebutConservation"));
       Assert.assertTrue(
-            String.format(metaNonTrouve, "TracabilitePreArchivage"),
-            metadonnees.containsKey("TracabilitePreArchivage"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Hash"), metadonnees
-            .containsKey("Hash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"), metadonnees
-            .containsKey("TypeHash"));
-      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"), metadonnees
-            .containsKey("NbPages"));
+                        String.format(metaNonTrouve, "TracabilitePreArchivage"),
+                        metadonnees.containsKey("TracabilitePreArchivage"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Hash"),
+                        metadonnees
+                                   .containsKey("Hash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "TypeHash"),
+                        metadonnees
+                                   .containsKey("TypeHash"));
+      Assert.assertTrue(String.format(metaNonTrouve, "NbPages"),
+                        metadonnees
+                                   .containsKey("NbPages"));
       Assert.assertTrue(String.format(metaNonTrouve, "FormatFichier"),
-            metadonnees.containsKey("FormatFichier"));
+                        metadonnees.containsKey("FormatFichier"));
       Assert.assertTrue(String.format(metaNonTrouve, "IdTraitementMasse"),
-            metadonnees.containsKey("IdTraitementMasse"));
+                        metadonnees.containsKey("IdTraitementMasse"));
       Assert.assertTrue(String.format(metaNonTrouve, "JetonDePreuve"),
-            metadonnees.containsKey("JetonDePreuve"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RUM"), metadonnees
-            .containsKey("RUM"));
+                        metadonnees.containsKey("JetonDePreuve"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RUM"),
+                        metadonnees
+                                   .containsKey("RUM"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateSignature"),
-            metadonnees.containsKey("DateSignature"));
+                        metadonnees.containsKey("DateSignature"));
       Assert.assertTrue(String.format(metaNonTrouve, "ReferenceDocumentaire"),
-            metadonnees.containsKey("ReferenceDocumentaire"));
+                        metadonnees.containsKey("ReferenceDocumentaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCourrierV2"),
-            metadonnees.containsKey("DateCourrierV2"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"), metadonnees
-            .containsKey("RIBA"));
+                        metadonnees.containsKey("DateCourrierV2"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"),
+                        metadonnees
+                                   .containsKey("RIBA"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeProduitV2"),
-            metadonnees.containsKey("CodeProduitV2"));
+                        metadonnees.containsKey("CodeProduitV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeTraitementV2"),
-            metadonnees.containsKey("CodeTraitementV2"));
+                        metadonnees.containsKey("CodeTraitementV2"));
 
    }
 
@@ -718,73 +803,83 @@ public class MetadataReferenceDAOImplTest {
    public void getModifiableMetadataReferences() throws IOException,
          ReferentialException {
 
-      Map<String, MetadataReference> metadonnees = referenceDAO
-            .getModifiableMetadataReferences();
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getModifiableMetadataReferences();
 
       Assert
             .assertEquals(
-                  "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
-                  34, metadonnees.size());
+                          "Le nombre de métadonnées spécifiables à l'archivage attendues est incorrect",
+                          34,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().isModifiable());
       }
 
-      String metaNonTrouve = "Métadonnéee %s non trouvée";
+      final String metaNonTrouve = "Métadonnéee %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Titre"), metadonnees
-            .containsKey("Titre"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siren"), metadonnees
-            .containsKey("Siren"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Titre"),
+                        metadonnees
+                                   .containsKey("Titre"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siren"),
+                        metadonnees
+                                   .containsKey("Siren"));
       Assert.assertTrue(String.format(metaNonTrouve, "NniEmployeur"),
-            metadonnees.containsKey("NniEmployeur"));
+                        metadonnees.containsKey("NniEmployeur"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroPersonne"),
-            metadonnees.containsKey("NumeroPersonne"));
+                        metadonnees.containsKey("NumeroPersonne"));
       Assert.assertTrue(String.format(metaNonTrouve, "Denomination"),
-            metadonnees.containsKey("Denomination"));
+                        metadonnees.containsKey("Denomination"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeCategorieV2"),
-            metadonnees.containsKey("CodeCategorieV2"));
+                        metadonnees.containsKey("CodeCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeSousCategorieV2"),
-            metadonnees.containsKey("CodeSousCategorieV2"));
+                        metadonnees.containsKey("CodeSousCategorieV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteInterne"),
-            metadonnees.containsKey("NumeroCompteInterne"));
+                        metadonnees.containsKey("NumeroCompteInterne"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroCompteExterne"),
-            metadonnees.containsKey("NumeroCompteExterne"));
-      Assert.assertTrue(String.format(metaNonTrouve, "Siret"), metadonnees
-            .containsKey("Siret"));
+                        metadonnees.containsKey("NumeroCompteExterne"));
+      Assert.assertTrue(String.format(metaNonTrouve, "Siret"),
+                        metadonnees
+                                   .containsKey("Siret"));
       Assert.assertTrue(String.format(metaNonTrouve, "PseudoSiret"),
-            metadonnees.containsKey("PseudoSiret"));
+                        metadonnees.containsKey("PseudoSiret"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroStructure"),
-            metadonnees.containsKey("NumeroStructure"));
+                        metadonnees.containsKey("NumeroStructure"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroRecours"),
-            metadonnees.containsKey("NumeroRecours"));
+                        metadonnees.containsKey("NumeroRecours"));
       Assert.assertTrue(String.format(metaNonTrouve, "NumeroIntControle"),
-            metadonnees.containsKey("NumeroIntControle"));
+                        metadonnees.containsKey("NumeroIntControle"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeProprietaire"), metadonnees
-            .containsKey("CodeOrganismeProprietaire"));
+                                      "CodeOrganismeProprietaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeProprietaire"));
       Assert.assertTrue(String.format(metaNonTrouve,
-            "CodeOrganismeGestionnaire"), metadonnees
-            .containsKey("CodeOrganismeGestionnaire"));
+                                      "CodeOrganismeGestionnaire"),
+                        metadonnees
+                                   .containsKey("CodeOrganismeGestionnaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "SiteAcquisition"),
-            metadonnees.containsKey("SiteAcquisition"));
-      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"), metadonnees
-            .containsKey("CodeRND"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RUM"), metadonnees
-            .containsKey("RUM"));
+                        metadonnees.containsKey("SiteAcquisition"));
+      Assert.assertTrue(String.format(metaNonTrouve, "CodeRND"),
+                        metadonnees
+                                   .containsKey("CodeRND"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RUM"),
+                        metadonnees
+                                   .containsKey("RUM"));
       Assert.assertTrue(String.format(metaNonTrouve, "ReferenceDocumentaire"),
-            metadonnees.containsKey("ReferenceDocumentaire"));
+                        metadonnees.containsKey("ReferenceDocumentaire"));
       Assert.assertTrue(String.format(metaNonTrouve, "DateCourrierV2"),
-            metadonnees.containsKey("DateCourrierV2"));
-      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"), metadonnees
-            .containsKey("RIBA"));
+                        metadonnees.containsKey("DateCourrierV2"));
+      Assert.assertTrue(String.format(metaNonTrouve, "RIBA"),
+                        metadonnees
+                                   .containsKey("RIBA"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeProduitV2"),
-            metadonnees.containsKey("CodeProduitV2"));
+                        metadonnees.containsKey("CodeProduitV2"));
       Assert.assertTrue(String.format(metaNonTrouve, "CodeTraitementV2"),
-            metadonnees.containsKey("CodeTraitementV2"));
+                        metadonnees.containsKey("CodeTraitementV2"));
 
    }
 
@@ -800,18 +895,20 @@ public class MetadataReferenceDAOImplTest {
    @Test
    public void getByLongCode() throws IOException, ReferentialException {
 
-      MetadataReference metadata = referenceDAO.getByLongCode("CodeRND");
+      final MetadataReference metadata = referenceDAO.getByLongCode("CodeRND");
 
       Assert.assertNotNull("La recherche par getByLongCode() n'a pas abouti",
-            metadata);
+                           metadata);
 
       Assert.assertEquals(
-            "La propriété longCode de la métadonnée est incorrect", "CodeRND",
-            metadata.getLongCode());
+                          "La propriété longCode de la métadonnée est incorrect",
+                          "CodeRND",
+                          metadata.getLongCode());
 
       Assert.assertEquals(
-            "La propriété songCode de la métadonnée est incorrect",
-            "SM_DOCUMENT_TYPE", metadata.getShortCode());
+                          "La propriété songCode de la métadonnée est incorrect",
+                          "SM_DOCUMENT_TYPE",
+                          metadata.getShortCode());
 
    }
 
@@ -827,22 +924,24 @@ public class MetadataReferenceDAOImplTest {
    @Test
    public void getByShortCode() throws IOException, ReferentialException {
 
-      MetadataReference metadata = referenceDAO
-            .getByShortCode("SM_DOCUMENT_TYPE");
+      final MetadataReference metadata = referenceDAO
+                                                     .getByShortCode("SM_DOCUMENT_TYPE");
 
       Assert.assertNotNull("La recherche par getByShortCode() n'a pas abouti",
-            metadata);
+                           metadata);
 
       Assert.assertEquals(
-            "La propriété longCode de la métadonnée est incorrect", "CodeRND",
-            metadata.getLongCode());
+                          "La propriété longCode de la métadonnée est incorrect",
+                          "CodeRND",
+                          metadata.getLongCode());
 
       Assert.assertEquals(
-            "La propriété songCode de la métadonnée est incorrect",
-            "SM_DOCUMENT_TYPE", metadata.getShortCode());
+                          "La propriété songCode de la métadonnée est incorrect",
+                          "SM_DOCUMENT_TYPE",
+                          metadata.getShortCode());
 
    }
-   
+
    /**
     * Permet de tester la récupération des métadonnées transférables
     * du reférentiel.
@@ -854,27 +953,30 @@ public class MetadataReferenceDAOImplTest {
     */
    @Test
    public void getTransferableMetadataReference() throws ReferentialException {
-      
-      Map<String, MetadataReference> metadonnees = referenceDAO
-         .getTransferableMetadataReference();
+
+      final Map<String, MetadataReference> metadonnees = referenceDAO
+                                                                     .getTransferableMetadataReference();
 
       Assert
-      .assertEquals(
-            "Le nombre de métadonnées transférables attendues est incorrect",
-            58, metadonnees.size());
+            .assertEquals(
+                          "Le nombre de métadonnées transférables attendues est incorrect",
+                          59,
+                          metadonnees.size());
 
-      for (Map.Entry<String, MetadataReference> metadata : metadonnees
-            .entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metadata : metadonnees
+                                                                            .entrySet()) {
          Assert.assertTrue(metadata.getValue().getTransferable());
       }
-      
-      String metaNonTrouve = "Métadonnéee %s non trouvée";
 
-      Assert.assertTrue(String.format(metaNonTrouve, "Periode"), metadonnees
-            .containsKey("Periode"));
-      
-      Assert.assertFalse(String.format(metaNonTrouve, "DateArchivage"), metadonnees
-            .containsKey("DateArchivage"));
+      final String metaNonTrouve = "Métadonnéee %s non trouvée";
+
+      Assert.assertTrue(String.format(metaNonTrouve, "Periode"),
+                        metadonnees
+                                   .containsKey("Periode"));
+
+      Assert.assertFalse(String.format(metaNonTrouve, "DateArchivage"),
+                         metadonnees
+                                    .containsKey("DateArchivage"));
    }
 
 }
