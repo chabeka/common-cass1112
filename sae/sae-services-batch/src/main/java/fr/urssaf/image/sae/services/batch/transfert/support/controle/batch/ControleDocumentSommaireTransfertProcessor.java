@@ -33,14 +33,14 @@ import fr.urssaf.image.sae.storage.util.StorageMetadataUtils;
  */
 @Component
 public class ControleDocumentSommaireTransfertProcessor extends
-                                                        AbstractDfceListener implements
-                                                        ItemProcessor<UntypedDocument, StorageDocument> {
+AbstractDfceListener implements
+ItemProcessor<UntypedDocument, StorageDocument> {
 
    /**
     * Logger
     */
    private static final Logger LOGGER = LoggerFactory
-                                                     .getLogger(ControleDocumentSommaireTransfertProcessor.class);
+         .getLogger(ControleDocumentSommaireTransfertProcessor.class);
 
    /**
     * Class de contrôle pour le transfert de masse
@@ -154,6 +154,8 @@ public class ControleDocumentSommaireTransfertProcessor extends
     * @param item
     * @param uuidString
     * @param idTraitementMasse
+    * @return
+    *         Renvoie un StorageDocument, qui contient les métadonnées que l'on veut modifier avant mise à la corbeille du document
     */
    private StorageDocument controlsForSuppression(final UntypedDocument item, final String uuidString, final UUID idTraitementMasse)
          throws Exception {
@@ -188,10 +190,10 @@ public class ControleDocumentSommaireTransfertProcessor extends
          final List<StorageMetadata> metadatasStorageDoc = serviceRestaureDoc.getMetadatasDocFromRecycleBean(document);
 
          final String idTransfertMasseInterne = StorageMetadataUtils
-                                                                    .valueMetadataFinder(
-                                                                                         metadatasStorageDoc,
-                                                                                         StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
-                                                                                                                                             .getShortCode());
+               .valueMetadataFinder(
+                                    metadatasStorageDoc,
+                                    StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
+                                    .getShortCode());
 
          if (StringUtils.isNotEmpty(idTransfertMasseInterne) && idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
             // Le document existe en corbeille et a été supprimé par la transfert à reprendre
@@ -212,8 +214,8 @@ public class ControleDocumentSommaireTransfertProcessor extends
          } else {
             // Le doc est dans la corbeille mais n'a pas d'id de traitement de transfert. On le rajoute
             document.getMetadatas()
-                    .add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode(),
-                                             idTraitementMasse.toString()));
+            .add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode(),
+                                     idTraitementMasse.toString()));
             return document;
          }
       }
