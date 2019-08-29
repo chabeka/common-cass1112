@@ -260,5 +260,16 @@ public final class Utils {
       }
       return value;
    }
-
+	
+   public static boolean isValidUUID(String uuid){
+	    if( uuid == null) return false;
+	    try {
+	        UUID fromStringUUID = UUID.fromString(uuid);
+	        String toStringUUID = fromStringUUID.toString();
+	        return toStringUUID.equals(uuid);
+	    } catch(IllegalArgumentException e) {
+	        return false;
+	    }
+	
+   }
 }

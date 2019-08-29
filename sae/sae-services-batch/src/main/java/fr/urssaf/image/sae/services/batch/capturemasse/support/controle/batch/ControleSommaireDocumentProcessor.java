@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
@@ -60,6 +61,28 @@ public class ControleSommaireDocumentProcessor extends AbstractListener
     try {
       CaptureMasseControlResult resultat = null;
       try {
+    	  
+    	  String idGedValueString = StringUtils.EMPTY;
+          for (final UntypedMetadata metadata : item.getUMetadatas()) {
+            if ("IdGed".equals(metadata.getLongCode())) {
+              String msg = "Erreur de parsing de l'UUID du document car la syntax ne respecte pas la nomenclature standard : '";
+              idGedValueString = metadata.getValue();
+              boolean isvalid = Utils.isValidUUID(idGedValueString);
+              if (!isvalid)
+            	  if (isModePartielBatch()) {
+        	        getCodesErreurListe().add(Constantes.ERR_BUL002);
+        	        getIndexErreurListe().add(
+        	                                  getStepExecution().getExecutionContext()
+        	                                                    .getInt(
+        	                                                            Constantes.CTRL_INDEX));
+        	        getErrorMessageList().add(msg+ idGedValueString + "'");
+        	        LOGGER.warn("Une erreur est survenue lors de contrôle des documents", msg+ idGedValueString + "'");
+        	      } else {
+        	    	  throw new Exception(msg + idGedValueString + "'");
+        	      }             	  
+            }
+          }
+          
         resultat = support.controleSAEDocument(item, ecdeDirectory);
       }
       catch (final NumberFormatException e) {
