@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<jaxws:bindings node="wsdl:definitions" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
-    
-    <!-- Explication sur le mode Wrapped or Non-Wrapped: https://dzone.com/articles/using-maven-generate-wrapped -->
-    <jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
-</jaxws:bindings>
