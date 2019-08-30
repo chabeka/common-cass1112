@@ -74,7 +74,7 @@ ItemProcessor<UntypedDocument, StorageDocument> {
 
       if (item.getUuid() == null) {
          final String message = "L'UUID du document n'a pas pu être trouvé. Ce document ne peut donc pas être traité.";
-         return sendException(message, new TransfertException(message));
+         return sendException(item, message, new TransfertException(message));
       }
 
       final String uuidString = item.getUuid().toString();
@@ -92,7 +92,7 @@ ItemProcessor<UntypedDocument, StorageDocument> {
          return controlsForTransfert(item, idTraitementMasse);
       } else {
          final String message = "BatchTypeAction inconnu : " + item.getBatchActionType();
-         return sendException(message, new TransfertException(message));
+         return sendException(item, message, new TransfertException(message));
       }
 
    }
@@ -120,7 +120,7 @@ ItemProcessor<UntypedDocument, StorageDocument> {
          return getEmptyDocumentFromItem(item);
       }
       catch (final Exception e) {
-         return sendException(e.getMessage(), e);
+         return sendException(item, e.getMessage(), e);
       }
    }
 
@@ -172,7 +172,7 @@ ItemProcessor<UntypedDocument, StorageDocument> {
          return getEmptyDocumentFromItem(item);
       }
       catch (final Exception e) {
-         return sendException("Une erreur est survenue lors du contrôle des documents", e);
+         return sendException(item, "Une erreur est survenue lors du contrôle des documents", e);
       }
    }
 
@@ -181,7 +181,7 @@ ItemProcessor<UntypedDocument, StorageDocument> {
 
       if (!isRepriseActifBatch()) {
          final String message = getAlreadyDeletedDocumentErrorMessage(uuidString);
-         return sendException(message, new ArchiveInexistanteEx(message));
+         return sendException(item, message, new ArchiveInexistanteEx(message));
       }
 
       try {
@@ -191,18 +191,18 @@ ItemProcessor<UntypedDocument, StorageDocument> {
 
          final String idTransfertMasseInterne = StorageMetadataUtils
                .valueMetadataFinder(
-                                    metadatasStorageDoc,
-                                    StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
-                                    .getShortCode());
+                     metadatasStorageDoc,
+                     StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE
+                     .getShortCode());
 
          if (StringUtils.isNotEmpty(idTransfertMasseInterne) && idTransfertMasseInterne.equals(idTraitementMasse.toString())) {
             // Le document existe en corbeille et a été supprimé par la transfert à reprendre
             final String message = "Le document {0} a déjà été supprimé par le traitement de transfert de masse en cours ({1})";
             final String messageFormat = StringUtils.replaceEach(message,
-                                                                 new String[] {"{0}", "{1}"},
-                                                                 new String[] {
-                                                                               item.getUuid().toString(),
-                                                                               idTraitementMasse.toString()});
+                  new String[] {"{0}", "{1}"},
+                  new String[] {
+                        item.getUuid().toString(),
+                        idTraitementMasse.toString()});
             LOGGER.warn(messageFormat);
             getIndexRepriseDoneListe().add(getIndexOfCurrentDocument());
             return document;
@@ -210,22 +210,22 @@ ItemProcessor<UntypedDocument, StorageDocument> {
             // le document a déjà été supprimé par un transfert différent
             // On retourne une exception ArchiveInexistanteEx
             final String message = getAlreadyDeletedDocumentErrorMessage(uuidString);
-            return sendException(message, new ArchiveInexistanteEx(message));
+            return sendException(item, message, new ArchiveInexistanteEx(message));
          } else {
             // Le doc est dans la corbeille mais n'a pas d'id de traitement de transfert. On le rajoute
             document.getMetadatas()
             .add(new StorageMetadata(StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode(),
-                                     idTraitementMasse.toString()));
+                  idTraitementMasse.toString()));
             return document;
          }
       }
       catch (final ArchiveInexistanteEx e) {
          final String message = getAlreadyDeletedDocumentErrorMessage(uuidString);
-         return sendException(message, new ArchiveInexistanteEx(message));
+         return sendException(item, message, new ArchiveInexistanteEx(message));
       }
       catch (final Exception e) {
          final String message = "Une exception a eu lieu lors de la récupération des métadonnées du document de la corbeille";
-         return sendException(message, e);
+         return sendException(item, message, e);
       }
 
    }
@@ -235,7 +235,8 @@ ItemProcessor<UntypedDocument, StorageDocument> {
    }
 
    /**
-    * En fonction du mode du batch : envoie une exception, ou log l'exception et renvoie null.
+    * En fonction du mode du batch : envoie une exception, ou log l'exception et renvoie une référence
+    * de document sans métadonnée, et alimente les listes d'erreur
     * En l'occurrence, le batch est forcément en mode partiel car le mode "tout ou rien" n'est pas implémenté
     * 
     * @param message
@@ -244,13 +245,13 @@ ItemProcessor<UntypedDocument, StorageDocument> {
     *           l'exception à lancer
     * @throws Exception
     */
-   private StorageDocument sendException(final String message, final Exception e) throws Exception {
+   private StorageDocument sendException(final UntypedDocument item, final String message, final Exception e) throws Exception {
       if (isModePartielBatch()) {
          getCodesErreurListe().add(Constantes.ERR_BUL002);
          getIndexErreurListe().add(getIndexOfCurrentDocument());
          getErrorMessageList().add(message);
          LOGGER.warn(message, e);
-         return null;
+         return getEmptyDocumentFromItem(item);
       } else {
          throw e;
       }
