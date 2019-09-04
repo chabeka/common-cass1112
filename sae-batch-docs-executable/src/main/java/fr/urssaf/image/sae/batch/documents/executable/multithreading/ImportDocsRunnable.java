@@ -101,11 +101,11 @@ public class ImportDocsRunnable implements Runnable {
          }
 
       } catch (final TagControlException e) {
-         final String mssg = "Une erreur c'est produite lors du controle du document {}: {}";
+         final String mssg = "Une erreur s'est produite lors du controle du document {}: {}";
          LOGGER.error(mssg, document.getUuid(), e.getMessage());
 
       } catch (final Exception e) {
-         final String mssg = "Une erreur c'est produite lors de l'import du document {}: {}";
+         final String mssg = "Une erreur s'est produite lors de l'import du document {}: {}";
          LOGGER.error(mssg, document.getUuid());
       }
 
