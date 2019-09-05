@@ -1,6 +1,6 @@
 package fr.urssaf.javaDriverTest.dao;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class RangeIndexEntity implements Comparable<RangeIndexEntity> {
 
@@ -84,6 +84,7 @@ public class RangeIndexEntity implements Comparable<RangeIndexEntity> {
    /**
     * {@inheritDoc}
     */
+   @Override
    public int compareTo(final RangeIndexEntity other) {
       if ("min_lower_bound".equals(LOWER_BOUND)) {
          return -1;

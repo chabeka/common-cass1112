@@ -4,30 +4,38 @@
 package fr.urssaf.javaDriverTest;
 
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
+import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.update;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.BatchStatement;
+import com.datastax.oss.driver.api.core.cql.BatchStatementBuilder;
+import com.datastax.oss.driver.api.core.cql.DefaultBatchType;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
+import com.datastax.oss.driver.api.querybuilder.insert.Insert;
 import com.datastax.oss.driver.api.querybuilder.select.Select;
 import com.datastax.oss.driver.api.querybuilder.update.Assignment;
 import com.datastax.oss.driver.api.querybuilder.update.Update;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
 import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
+import fr.urssaf.javaDriverTest.dao.IndexReference;
+import fr.urssaf.javaDriverTest.dao.IndexReferenceDAO;
 import fr.urssaf.javaDriverTest.dao.RangeIndexEntity;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
@@ -45,6 +53,7 @@ public class IndexReferenceUpdater {
    @Before
    public void init() throws Exception {
       String servers;
+      // servers = "cnp69imagedev.gidn.recouv";
       // servers = "cnp69saecas1,cnp69saecas2,cnp69saecas3";
       // servers = "cnp69saecas4.cer69.recouv, cnp69saecas5.cer69.recouv, cnp69saecas6.cer69.recouv";
       // servers = "cnp69gntcas1,cnp69gntcas2,cnp69gntcas3";
@@ -56,8 +65,8 @@ public class IndexReferenceUpdater {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
-      // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
+      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      // servers = "cnp6gntcvecas1.cve.recouv,cnp6gntcvecas2.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cer69imageint9.cer69.recouv";
       // servers = "cer69imageint10.cer69.recouv";
@@ -67,13 +76,15 @@ public class IndexReferenceUpdater {
       // servers = "hwi69ginsaecas2.cer69.recouv";
       // servers = "cer69-saeint3";
       // servers = "cnp69devgntcas1.gidn.recouv, cnp69devgntcas2.gidn.recouv";
-      // servers = "cnp69dev2gntcas1.gidn.recouv, cnp69dev2gntcas2.gidn.recouv";
+      servers = "cnp69dev2gntcas1.gidn.recouv, cnp69dev2gntcas2.gidn.recouv";
       // servers = "cnp69miggntcas1.gidn.recouv,cnp69miggntcas2.gidn.recouv"; // Migration cassandra V2
       // servers = "cnp69dev2gntcas1.gidn.recouv";
       // servers = "cnp69devgntcas1.gidn.recouv,cnp69devgntcas2.gidn.recouv";
       // servers = "hwi69intgnscas1.gidn.recouv,hwi69intgnscas2.gidn.recouv";
 
-      final String cassandraLocalDC = "DC6";
+      // final String cassandraLocalDC = "DC6";
+      // final String cassandraLocalDC = "LYON_SP";
+      final String cassandraLocalDC = "DC1";
       session = CassandraSessionFactory.getSession(servers, "root", "regina4932", cassandraLocalDC);
 
       sysout = new PrintStream(System.out, true, "UTF-8");
@@ -295,7 +306,7 @@ public class IndexReferenceUpdater {
     * @throws JsonMappingException
     */
    private void updateOneRangeCount(final UUID baseId, final String index, final int rangeId, final int countToSet)
-         throws Exception, IOException, JsonGenerationException, JsonMappingException {
+         throws Exception, IOException {
       final RangeIndexEntity rangeEntity = getRangeIndexEntity(baseId, index, rangeId);
       if (rangeEntity == null) {
          System.out.println("entity non trouvé pour rangeId=" + rangeId);
@@ -318,7 +329,6 @@ public class IndexReferenceUpdater {
    }
 
    @Test
-   // @Ignore
    public void updateDistinctUseCountTest() throws Exception {
       final UUID baseId = BaseDAO.getBaseUUID(session);
       // final String index = "den";
@@ -337,7 +347,6 @@ public class IndexReferenceUpdater {
    }
 
    @Test
-   // @Ignore
    public void updateTotalUseCountTest() throws Exception {
       final UUID baseId = BaseDAO.getBaseUUID(session);
       // final String index = "den";
@@ -352,6 +361,135 @@ public class IndexReferenceUpdater {
                                        .isEqualTo(literal(baseId))
                                        .ifExists();
       final ResultSet result = session.execute(query.build());
+      System.out.println("wasApplied=" + result.wasApplied());
+   }
+
+   @Test
+   /**
+    * Exemple de procédure pour annuler un split qui ne s'est pas terminé
+    */
+   public void cancelSplitTest() throws Exception {
+      final UUID baseId = BaseDAO.getBaseUUID(session);
+
+      final BatchStatementBuilder batchBuilder = BatchStatement.builder(DefaultBatchType.LOGGED);
+
+      final String index = "cot&cop&SM_DOCUMENT_TYPE&SM_ARCHIVAGE_DATE&";
+
+      // On passe un range en "NOMINAL" au lieu de SPLITTING
+      final int splitingRangeId = 22;
+      final RangeIndexEntity rangeIndexEntity = IndexReferenceDAO.getRangeIndexEntity(session, baseId, index, splitingRangeId);
+      rangeIndexEntity.setSTATE("NOMINAL");
+      final ObjectMapper jsonMapper = new ObjectMapper();
+      final String newJson = jsonMapper.writeValueAsString(rangeIndexEntity);
+      final Update updateQuery = update("dfce", "index_reference")
+                                                                  .set(Assignment.setMapValue("index_ranges", literal(splitingRangeId), literal(newJson)))
+                                                                  .whereColumn("index_name")
+                                                                  .isEqualTo(literal(index))
+                                                                  .whereColumn("base_id")
+                                                                  .isEqualTo(literal(baseId));
+      batchBuilder.addStatement(updateQuery.build());
+
+      // On supprime les ranges "BUILDING"
+      final int[] rangesToDelete = new int[] {185, 186, 187};
+      for (final int rangeIdToDelete : rangesToDelete) {
+         batchBuilder.addStatement(SimpleStatement.newInstance("DELETE index_ranges[?] FROM dfce.index_reference WHERE index_name=? AND base_id=?",
+                                                               rangeIdToDelete,
+                                                               index,
+                                                               baseId));
+      }
+
+      final BatchStatement batch = batchBuilder.build();
+      final ResultSet result = session.execute(batch);
+      System.out.println("Errors=" + result.getExecutionInfo().getErrors().toString());
+   }
+
+   @Test
+   public void jsonTest() throws Exception {
+      final UUID baseId = BaseDAO.getBaseUUID(session);
+      final String index = "cot&cop&SM_DOCUMENT_TYPE&SM_ARCHIVAGE_DATE&";
+      final int rangeId = 0;
+      final RangeIndexEntity rangeIndexEntity = IndexReferenceDAO.getRangeIndexEntity(session, baseId, index, rangeId);
+      // rangeIndexEntity.setSTATE("NOMINAL");
+      final ObjectMapper jsonMapper = new ObjectMapper();
+      final String newJson = jsonMapper.writeValueAsString(rangeIndexEntity);
+      System.out.println(newJson);
+   }
+
+   @Test
+   public void deleteOneRangeTest() throws Exception {
+      final UUID baseId = BaseDAO.getBaseUUID(session);
+
+      final BatchStatementBuilder batchBuilder = BatchStatement.builder(DefaultBatchType.LOGGED);
+
+      final String index = "cot&cop&djc&";
+      final int rangeToDelete = 4;
+      batchBuilder.addStatement(SimpleStatement.newInstance("DELETE index_ranges[?] FROM dfce.index_reference WHERE index_name=? AND base_id=?",
+                                                            rangeToDelete,
+                                                            index,
+                                                            baseId));
+      final BatchStatement batch = batchBuilder.build();
+      final ResultSet result = session.execute(batch);
+      System.out.println("Errors=" + result.getExecutionInfo().getErrors().toString());
+   }
+
+   @Test
+   public void findRangeIdTest() throws Exception {
+      final IndexReference index = new IndexReference();
+      final UUID baseId = BaseDAO.getBaseUUID(session);
+      index.readIndexReference(session, baseId, "SM_UUID", "NOMINAL");
+      final int rangeId = index.metaToRangeId("6224504e");
+      System.out.println("RangeId=" + rangeId);
+   }
+
+   @Test
+   public void deseactivateCompositeIndex() throws Exception {
+      final String index = "cot&cop&swa&cpr&ctr&SM_ARCHIVAGE_DATE&";
+
+      final Update query = QueryBuilder.update("dfce", "composite_index")
+                                       .set(Assignment.setColumn("computed", literal(false)))
+                                       .whereColumn("id")
+                                       .isEqualTo(literal(index))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
+      System.out.println("wasApplied=" + result.wasApplied());
+   }
+
+   @Test
+   public void activateCompositeIndex() throws Exception {
+      final String index = "cot&cop&swa&cpr&ctr&SM_ARCHIVAGE_DATE&";
+
+      final Update query = QueryBuilder.update("dfce", "composite_index")
+                                       .set(Assignment.setColumn("computed", literal(true)))
+                                       .whereColumn("id")
+                                       .isEqualTo(literal(index))
+                                       .ifExists();
+      final ResultSet result = session.execute(query.build());
+      System.out.println("wasApplied=" + result.wasApplied());
+   }
+
+   @Test
+   public void insertCompositeIndex() throws Exception {
+
+      final List<String> metaList = new ArrayList<>();
+      metaList.add("{\"name\":\"cot\",\"categoryType\":\"BOOLEAN\"}");
+      metaList.add("{\"name\":\"cop\",\"categoryType\":\"STRING\"}");
+      metaList.add("{\"name\":\"swa\",\"categoryType\":\"STRING\"}");
+      metaList.add("{\"name\":\"cpr\",\"categoryType\":\"STRING\"}");
+      metaList.add("{\"name\":\"ctr\",\"categoryType\":\"STRING\"}");
+      metaList.add("{\"name\":\"SM_ARCHIVAGE_DATE\",\"categoryType\":\"DATETIME\"}");
+      final Insert query = QueryBuilder.insertInto("dfce", "composite_index")
+                                       .value("id", literal("cot&cop&swa&cpr&ctr&SM_ARCHIVAGE_DATE&"))
+                                       .value("computed", literal(true))
+                                       .value("metadata_list", literal(metaList));
+      final ResultSet result = session.execute(query.build());
+      System.out.println("wasApplied=" + result.wasApplied());
+   }
+
+   @Test
+   public void deleteCompositeIndex() throws Exception {
+      final String id = "cot&cop&swa&cpr&ctr&SM_ARCHIVAGE_DATE&";
+      final SimpleStatement deleteQuery = SimpleStatement.newInstance("DELETE FROM dfce.composite_index WHERE id=?", id);
+      final ResultSet result = session.execute(deleteQuery);
       System.out.println("wasApplied=" + result.wasApplied());
    }
 

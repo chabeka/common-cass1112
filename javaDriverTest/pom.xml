@@ -8,6 +8,7 @@
       <java-driver.version>4.0.1</java-driver.version>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+      <jackson-version>2.9.8</jackson-version>
    </properties>
 
    <build>
@@ -59,6 +60,23 @@
     <artifactId>spring-batch-core</artifactId>
     <version>2.1.9.RELEASE</version>
 </dependency>
+
+      <!-- jackson -->
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-core</artifactId>
+         <version>${jackson-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-annotations</artifactId>
+         <version>${jackson-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>com.fasterxml.jackson.core</groupId>
+         <artifactId>jackson-databind</artifactId>
+         <version>${jackson-version}</version>
+      </dependency>
 
       <dependency>
          <groupId>junit</groupId>
