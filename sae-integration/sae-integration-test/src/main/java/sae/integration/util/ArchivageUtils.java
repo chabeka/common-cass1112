@@ -77,4 +77,37 @@ public final class ArchivageUtils {
       request.setDataFile(TestData.getPdfFile(metaList));
       return sendArchivageUnitaire(service, request);
    }
+
+   /**
+    * Archive un document Tiff de test, avec métadonnées aléatoires
+    * 
+    * @param service
+    *           L'accès aux services SAE
+    * @return
+    *         L'id document archivé
+    */
+   public static String archivageTiff(final SaeServicePortType service) {
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      final ListeMetadonneeType metaList = RandomData.getRandomMetadatas();
+      request.setMetadonnees(metaList);
+      request.setDataFile(TestData.getTiffFile(metaList));
+      return sendArchivageUnitaire(service, request);
+   }
+
+   /**
+    * Archive un document TXT de test, avec métadonnées aléatoires
+    * 
+    * @param service
+    *           L'accès aux services SAE
+    * @return
+    *         L'id document archivé
+    */
+   public static String archivageTxt(final SaeServicePortType service) {
+      final ArchivageUnitairePJRequestType request = new ArchivageUnitairePJRequestType();
+      final ListeMetadonneeType metaList = RandomData.getRandomMetadatas();
+      request.setMetadonnees(metaList);
+      request.setDataFile(TestData.getTxtFile(metaList));
+      return sendArchivageUnitaire(service, request);
+   }
+
 }

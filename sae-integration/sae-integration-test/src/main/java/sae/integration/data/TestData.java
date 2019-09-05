@@ -83,4 +83,43 @@ public class TestData {
       return dataFile;
    }
 
+   /**
+    * Alimente, dans la liste des métadonnées, les métadonnées relatives du document PDF de test, à savoir,
+    * FormatFichier, Hash, TypeHash, et NbPages
+    * 
+    * @param listMetasType
+    *           la liste de méta à enrichir
+    * @return le chemin du fichier
+    */
+   public static String addPdfFileMeta(final ListeMetadonneeType listMetasType) {
+      final DataFileType file = getPdfFile(listMetasType);
+      return "documents/" + file.getFileName();
+   }
+
+   /**
+    * Alimente, dans la liste des métadonnées, les métadonnées relatives du document Tiff de test, à savoir,
+    * FormatFichier, Hash, TypeHash, et NbPages
+    * 
+    * @param listMetasType
+    *           la liste de méta à enrichir
+    * @return le chemin du fichier
+    */
+   public static String addTiffFileMeta(final ListeMetadonneeType listMetasType) {
+      final DataFileType file = getTiffFile(listMetasType);
+      return "documents/" + file.getFileName();
+   }
+
+   /**
+    * Alimente, dans la liste des métadonnées, les métadonnées relatives du document TXT de test, à savoir,
+    * FormatFichier, Hash, TypeHash, et NbPages
+    * 
+    * @param listMetasType
+    *           la liste de méta à enrichir
+    * @return le chemin du fichier
+    */
+   public static String addTxtFileMeta(final ListeMetadonneeType listMetasType) {
+      final DataFileType file = getTxtFile(listMetasType);
+      return "documents/" + file.getFileName();
+   }
+
 }

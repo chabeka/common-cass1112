@@ -31,24 +31,27 @@ import sae.integration.webservice.modele.SaeServicePortType;
 
 /**
  * Test de la recherche par itérateur.
- * Reproduit des requêtes lancées par WATT, contenant des "OR".
- * Avant le lot 1907, tous les documents n'étaient pas trouvés
+ * On reproduit le comportement de l'application SCRIBE : recherche par itérateur
+ * et suppression des documents trouvés en cours d'itération.
  * Le test consiste à :
- * - archiver un certain nombre de documents, dont certains doivent répondre à une requête
+ * - archiver un certain nombre de documents
  * - lancer une requête de recherche par itérateur, et paginer sur l'ensemble des pages
- * - vérifier que l'ensemble des documents attendus sont trouvés
+ * - à chaque page : supprimer les documents trouvés
+ * - à la fin : on s'assure que tous les documents attendus ont été parcourus et supprimés
  */
-public class RechercheIterateurTest {
+public class RechercheIterateurAndDeletionTest {
 
    private static SaeServicePortType service;
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurTest.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurAndDeletionTest.class);
 
    private CleanHelper cleanHelper;
 
    private Instant archivageStartTime;
 
    private Instant archivageEndTime;
+
+   private String codeProduitV2;
 
    @BeforeClass
    public static void setup() {
@@ -73,6 +76,8 @@ public class RechercheIterateurTest {
    private void setContext() {
       // Récupération de l'heure courante (avec de la marge en cas de désynchronisation d'horloge)
       archivageStartTime = Instant.now().minusSeconds(30);
+      // On fixe un codeProduitV2 qui nous sert à bien identifier les documents
+      codeProduitV2 = RandomData.getRandomString(5);
 
       // Archivage des documents
       for (int i = 0; i < 20; i++) {
@@ -82,20 +87,9 @@ public class RechercheIterateurTest {
          request.setDataFile(TestData.getTxtFile(metaList));
 
          SoapBuilder.setMetaValue(metaList, "CodeOrganismeProprietaire", "UR827");
-         SoapBuilder.setMetaValue(metaList, "StatutWATT", "PRET");
-
-         String codeProduit, codeTraitement;
-         if (i % 2 == 0) {
-            // Document répondant à la requête
-            codeProduit = RandomData.getElementInArray(new String[] {"PC77A", "PC66A"});
-            codeTraitement = RandomData.getElementInArray(new String[] {"RP17", "TP17"});
-         } else {
-            // Document ne répondant pas à la requête
-            codeProduit = RandomData.getElementInArray(new String[] {"NC18", "NC19"});
-            codeTraitement = RandomData.getElementInArray(new String[] {"PC20", "PC21"});
-         }
-         SoapBuilder.setMetaValue(metaList, "CodeProduitV2", codeProduit);
-         SoapBuilder.setMetaValue(metaList, "CodeTraitementV2", codeTraitement);
+         SoapBuilder.setMetaValue(metaList, "ApplicationProductrice", "SCRIBE");
+         SoapBuilder.setMetaValue(metaList, "ATransfererScribe", "true");
+         SoapBuilder.setMetaValue(metaList, "CodeProduitV2", codeProduitV2);
 
          // Lancement de l'archivage
          ArchivageUtils.sendArchivageUnitaire(service, request, cleanHelper);
@@ -105,9 +99,9 @@ public class RechercheIterateurTest {
 
    @Test
    /**
-    * Reproduit une requête lancée par WATT
+    * Reproduit une requête lancée par Scribe
     */
-   public void rechercheIterateurWattTest() throws Exception {
+   public void rechercheIterateurScribeTest() throws Exception {
       // Archivage des documents
       LOGGER.info("Archivage des documents");
       setContext();
@@ -118,23 +112,19 @@ public class RechercheIterateurTest {
       final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
       SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
       SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR827");
-      SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "PRET");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC77A");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", "PC66A");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "RP17");
-      SoapBuilder.addMeta(fixedMetadatas, "CodeTraitementV2", "TP17");
+      SoapBuilder.addMeta(fixedMetadatas, "ApplicationProductrice", "SCRIBE");
+      SoapBuilder.addMeta(fixedMetadatas, "ATransfererScribe", "true");
+      SoapBuilder.addMeta(fixedMetadatas, "CodeProduitV2", codeProduitV2);
 
       mainRequest.setFixedMetadatas(fixedMetadatas);
       final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeDateTimeMetadata("DateArchivage", archivageStartTime, archivageEndTime);
       mainRequest.setVaryingMetadata(varyingMetadata);
       request.setRequetePrincipale(mainRequest);
       final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();
-      metadataToReturn.getMetadonneeCode().add("CodeTraitementV2");
-      metadataToReturn.getMetadonneeCode().add("CodeProduitV2");
       metadataToReturn.getMetadonneeCode().add("DateArchivage");
       request.setMetadonnees(metadataToReturn);
 
-      request.setNbDocumentsParPage(2);
+      request.setNbDocumentsParPage(3);
 
       // Boucle sur les différentes pages
       LOGGER.info("Parcours des documents");
@@ -146,6 +136,8 @@ public class RechercheIterateurTest {
             final String UUID = doc.getIdArchive();
             LOGGER.debug("Doc trouvé : {}", UUID);
             counter++;
+            // Suppression du doc
+            CleanHelper.deleteOneDocument(service, UUID);
          }
          if (response.isDernierePage()) {
             break;
@@ -153,6 +145,7 @@ public class RechercheIterateurTest {
          request.setIdentifiantPage(nextPageId);
       }
       LOGGER.info("Nombre de documents trouvés : {}", counter);
-      Assert.assertEquals("On s'attend à trouver 10 documents", 10, counter);
+      Assert.assertEquals("On s'attend à trouver 20 documents", 20, counter);
+
    }
 }

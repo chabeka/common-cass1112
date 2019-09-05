@@ -1,4 +1,4 @@
-package sae.integration.auto;
+package sae.integration.auto.transfert.unitaire;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -13,13 +13,12 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sae.integration.environment.Environments;
 import sae.integration.util.ArchivageUtils;
+import sae.integration.util.ArchivageValidationUtils;
 import sae.integration.util.CleanHelper;
 import sae.integration.util.SoapHelper;
-import sae.integration.webservice.factory.Environments;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
-import sae.integration.webservice.modele.ConsultationMTOMRequestType;
-import sae.integration.webservice.modele.ConsultationMTOMResponseType;
 import sae.integration.webservice.modele.SaeServicePortType;
 import sae.integration.webservice.modele.TransfertRequestType;
 
@@ -44,10 +43,12 @@ public class TransfertUnitaireMultithread {
 
    @BeforeClass
    public static void setup() {
-      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_INTERNE.getUrl());
-      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_INTERNE.getUrl());
+      // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_INTERNE.getUrl());
+      // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_INTERNE.getUrl());
       // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.LOCALHOST.getUrl());
       // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CLIENT.getUrl());
+      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_PIC.getUrl());
+      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_PIC.getUrl());
    }
 
    @After
@@ -61,7 +62,15 @@ public class TransfertUnitaireMultithread {
 
    @Test
    public void transfertMutithreadTest() throws Exception {
-      docId = ArchivageUtils.archivagePDF(gntService);
+      try {
+         docId = ArchivageUtils.archivagePDF(gntService);
+      }
+      catch (final SOAPFaultException e) {
+         LOGGER.warn(e.getMessage());
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
+
       LOGGER.info("Archivage d'un document en GNT : {}", docId);
 
       final ExecutorService executor = Executors.newFixedThreadPool(20);
@@ -91,8 +100,8 @@ public class TransfertUnitaireMultithread {
       LOGGER.info("Temporisation de 2 secondes");
       Thread.sleep(2000);
       LOGGER.info("Test d'existence en GNT et GNS", docId);
-      final boolean existsInGNT = docExists(gntService, docId);
-      final boolean existsInGNS = docExists(gnsService, docId);
+      final boolean existsInGNT = ArchivageValidationUtils.docExists(gntService, docId);
+      final boolean existsInGNS = ArchivageValidationUtils.docExists(gnsService, docId);
       LOGGER.info("Présence en GNT : {}", existsInGNT);
       LOGGER.info("Présence en GNS : {}", existsInGNS);
 
@@ -100,19 +109,5 @@ public class TransfertUnitaireMultithread {
       Assert.assertEquals("Le document doit exister en GNS", true, existsInGNS);
    }
 
-   private boolean docExists(final SaeServicePortType service, final String docId) {
-      try {
-         final ConsultationMTOMRequestType request = new ConsultationMTOMRequestType();
-         request.setIdArchive(docId);
-         final ConsultationMTOMResponseType response = service.consultationMTOM(request);
-         return response.getContenu().length > 0;
-      }
-      catch (final SOAPFaultException e) {
-         if (e.getMessage().contains("Il n'existe aucun document pour l'identifiant d'archivage")) {
-            return false;
-         }
-         throw e;
-      }
-   }
 
 }

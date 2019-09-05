@@ -10,8 +10,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sae.integration.environment.Environments;
 import sae.integration.util.SoapHelper;
-import sae.integration.webservice.factory.Environments;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.ConsultationMTOMRequestType;
 import sae.integration.webservice.modele.ConsultationMTOMResponseType;

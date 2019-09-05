@@ -62,8 +62,12 @@ public class SoapBuilder {
    }
 
    /**
+    * Récupère la liste des codes des métadonnées
+    * 
     * @param metadonnees
+    *           Liste des métadonnées valorisées
     * @return
+    *         Listes des codes des métadonnées
     */
    public static ListeMetadonneeCodeType extractMetaCodeList(final ListeMetadonneeType metadonnees) {
       final ListeMetadonneeCodeType result = new ListeMetadonneeCodeType();

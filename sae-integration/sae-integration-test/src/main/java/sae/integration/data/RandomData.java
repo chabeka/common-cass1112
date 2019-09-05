@@ -1,6 +1,7 @@
 package sae.integration.data;
 
 import java.util.Random;
+import java.util.UUID;
 
 import sae.integration.util.SoapBuilder;
 import sae.integration.webservice.modele.ListeMetadonneeType;
@@ -15,13 +16,13 @@ public class RandomData {
    private static final String[] AppliProductionceList = new String[] {"ADELAIDE", "CIME", "SCRIBE"};
 
    private static final String[] codeOrgaList = new String[] {"AC750", "UR117", "UR200", "UR217", "UR227", "UR237", "UR247", "UR257", "UR267", "UR317", "UR417",
-                                                              "UR427",
-                                                              "UR437", "UR527", "UR537", "UR547", "UR727", "UR737", "UR747", "UR827", "UR837", "UR917", "UR937",
-                                                              "CM430",
-                                                              "CM422", "CM330", "CM621", "UR971", "UR972", "UR973", "UR974", "UR976"};
+         "UR427",
+         "UR437", "UR527", "UR537", "UR547", "UR727", "UR737", "UR747", "UR827", "UR837", "UR917", "UR937",
+         "CM430",
+         "CM422", "CM330", "CM621", "UR971", "UR972", "UR973", "UR974", "UR976"};
 
    private static final String[] CodeRNDList = new String[] {"2.1.1.1.1", "1.2.2.4.12", "2.3.1.1.12", "1.2.5.F.X", "2.B.X.X.X", "3.D.X.X.X", "1.2.2.4.13",
-                                                             "3.3.1.1.2", "1.2.5.L.X", "3.1.2.1.2"};
+         "3.3.1.1.2", "1.2.5.L.X", "3.1.2.1.2"};
 
    private RandomData() {
       // Classe statique
@@ -40,6 +41,12 @@ public class RandomData {
       SoapBuilder.addMeta(metaList, "Denomination", getRandomString(20));
       SoapBuilder.addMeta(metaList, "NumeroCompteExterne", getRandomNumString(18));
       SoapBuilder.addMeta(metaList, "Siret", getRandomNumString(14));
+      return metaList;
+   }
+
+   public static ListeMetadonneeType getRandomMetadatasWithGedId() {
+      final ListeMetadonneeType metaList = getRandomMetadatas();
+      SoapBuilder.addMeta(metaList, "IdGed", UUID.randomUUID().toString());
       return metaList;
    }
 
@@ -70,7 +77,7 @@ public class RandomData {
 
    public static int getRandomNumber(final int min, final int max) {
       final Random rnd = new Random();
-      return rnd.nextInt((max - min) + 1) + min;
+      return rnd.nextInt(max - min + 1) + min;
    }
 
    public static String getRandomNumString(final int size) {

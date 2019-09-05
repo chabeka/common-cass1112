@@ -7,8 +7,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sae.integration.environment.Environments;
 import sae.integration.util.SoapBuilder;
-import sae.integration.webservice.factory.Environments;
+import sae.integration.util.SoapHelper;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.IdentifiantPageType;
 import sae.integration.webservice.modele.ListeMetadonneeCodeType;
@@ -23,9 +24,9 @@ import sae.integration.webservice.modele.SaeServicePortType;
 /**
  * Test de la recherche par itérateur, sur environnement d'intégration client GNT
  */
-public class RechercheIterateurTest {
+public class RechercheIterateurWattTest {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurTest.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(RechercheIterateurWattTest.class);
 
    @Test
    /**
@@ -35,7 +36,7 @@ public class RechercheIterateurTest {
       final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.LOCALHOST.getUrl());
 
-      final PrintStream sysout = new PrintStream("d:/tmp/out.txt");
+      final PrintStream sysout = new PrintStream("c:/temp/out.txt");
 
       final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
@@ -149,7 +150,7 @@ public class RechercheIterateurTest {
       final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.GNT_INT_CLIENT.getUrl());
       // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(Environments.LOCALHOST.getUrl());
 
-      final PrintStream sysout = new PrintStream("d:/tmp/out.txt");
+      final PrintStream sysout = new PrintStream("c:/temp/out.txt");
 
       final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
@@ -204,7 +205,7 @@ public class RechercheIterateurTest {
    public void rechercheIterateurWattTest3() throws Exception {
       final SaeServicePortType service = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_DEV2.getUrl());
 
-      final PrintStream sysout = new PrintStream("d:/tmp/out.txt");
+      final PrintStream sysout = new PrintStream("c:/temp/out.txt");
 
       final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
       final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
@@ -212,7 +213,6 @@ public class RechercheIterateurTest {
       SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
       SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", "UR827");
       SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "PRET");
-      addCodeProduitAndCodeTraitement3(fixedMetadatas);
 
       mainRequest.setFixedMetadatas(fixedMetadatas);
       final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190622", "20190702");
@@ -321,4 +321,68 @@ public class RechercheIterateurTest {
       SoapBuilder.addMeta(metadatas, "CodeProduitV2", "PC16");
    }
 
+   @Test
+   /**
+    * Recherche les documents au statut AFFAIRE mais sans numéro d'affaire
+    */
+   public void rechercheStatutAFFAIRETest() throws Exception {
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT("http://hwi69progednatgntcot1boweb1.cer69.recouv/ged/services/SaeService/");
+
+      final PrintStream sysout = new PrintStream("c:/temp/out.txt");
+
+      final String[] organismes = new String[] {"UR727", "UR837", "UR917", "UR747", "UR547", "UR257", "UR200"};
+      for (final String codeOrga : organismes) {
+         System.out.println("Orga : " + codeOrga);
+         rechercheStatutAFFAIREForOneOrga(service, sysout, codeOrga);
+      }
+      sysout.close();
+   }
+
+   private void rechercheStatutAFFAIREForOneOrga(final SaeServicePortType service, final PrintStream sysout, final String orgaToCheck) {
+      final RechercheParIterateurRequestType request = new RechercheParIterateurRequestType();
+      final RequetePrincipaleType mainRequest = new RequetePrincipaleType();
+      final ListeMetadonneeType fixedMetadatas = new ListeMetadonneeType();
+      SoapBuilder.addMeta(fixedMetadatas, "DomaineCotisant", "true");
+      SoapBuilder.addMeta(fixedMetadatas, "CodeOrganismeProprietaire", orgaToCheck);
+      SoapBuilder.addMeta(fixedMetadatas, "StatutWATT", "AFFAIRE");
+      addCodeProduitAndCodeTraitement(fixedMetadatas);
+
+      mainRequest.setFixedMetadatas(fixedMetadatas);
+      final RangeMetadonneeType varyingMetadata = SoapBuilder.buildRangeMetadata("DateArchivage", "20190101", "20251212");
+      mainRequest.setVaryingMetadata(varyingMetadata);
+      request.setRequetePrincipale(mainRequest);
+      final ListeMetadonneeCodeType metadataToReturn = new ListeMetadonneeCodeType();
+      metadataToReturn.getMetadonneeCode().add("NumeroAffaireWATT");
+      metadataToReturn.getMetadonneeCode().add("DateArchivage");
+      metadataToReturn.getMetadonneeCode().add("CodeOrganismeProprietaire");
+      request.setMetadonnees(metadataToReturn);
+
+      request.setNbDocumentsParPage(200);
+
+      // Boucle sur les différentes pages
+      int emptyCounter = 0;
+      int totalCounter = 0;
+      while (true) {
+         final RechercheParIterateurResponseType response = service.rechercheParIterateur(request);
+         final IdentifiantPageType nextPageId = response.getIdentifiantPageSuivante();
+         for (final ResultatRechercheType doc : response.getResultats().getResultat()) {
+            final String UUID = doc.getIdArchive();
+            final ListeMetadonneeType meta = doc.getMetadonnees();
+            final String numeroAffaire = SoapHelper.getMetaValue(meta, "NumeroAffaireWATT");
+            final String dateArchivage = SoapHelper.getMetaValue(meta, "DateArchivage");
+            final String codeOrga = SoapHelper.getMetaValue(meta, "CodeOrganismeProprietaire");
+            if (numeroAffaire.isEmpty()) {
+               sysout.println(UUID + " - " + codeOrga + " - " + dateArchivage);
+               emptyCounter++;
+            }
+            totalCounter++;
+         }
+         if (response.isDernierePage()) {
+            break;
+         }
+         request.setIdentifiantPage(nextPageId);
+      }
+      System.out.println("Nombre total de doc à l'état AFFAIRE : " + totalCounter);
+      System.out.println("Nombre de doc à l'état AFFAIRE sans numéro d'affaire : " + emptyCounter);
+   }
 }

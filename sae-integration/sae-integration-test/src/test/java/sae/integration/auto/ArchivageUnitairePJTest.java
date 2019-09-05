@@ -5,8 +5,6 @@ import java.io.IOException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.soap.SOAPBinding;
 
-import org.apache.commons.codec.digest.DigestUtils;
-import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -14,17 +12,12 @@ import org.slf4j.LoggerFactory;
 
 import sae.integration.data.RandomData;
 import sae.integration.data.TestData;
+import sae.integration.environment.Environments;
+import sae.integration.util.ArchivageValidationUtils;
 import sae.integration.util.CleanHelper;
-import sae.integration.util.SoapBuilder;
-import sae.integration.util.SoapHelper;
-import sae.integration.webservice.factory.Environments;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.ArchivageUnitairePJRequestType;
 import sae.integration.webservice.modele.ArchivageUnitairePJResponseType;
-import sae.integration.webservice.modele.ConsultationMTOMRequestType;
-import sae.integration.webservice.modele.ConsultationMTOMResponseType;
-import sae.integration.webservice.modele.ListeMetadonneeType;
-import sae.integration.webservice.modele.MetadonneeType;
 import sae.integration.webservice.modele.SaeServicePortType;
 
 /**
@@ -86,39 +79,11 @@ public class ArchivageUnitairePJTest {
       final String idDoc = response.getIdArchive();
       LOGGER.info("Archivage en succès. UUID reçu : {}", idDoc);
       // Validation
-      validateDocument(idDoc, request.getMetadonnees());
+      ArchivageValidationUtils.validateDocument(service, idDoc, request.getMetadonnees());
 
       // Nettoyage
       CleanHelper.deleteOneDocument(service, idDoc);
    }
 
-   /**
-    * Vérifie que le document archivé est bien arrivé, est consultable, et que ses métadonnées sont bonnes
-    * 
-    * @param archivageRequest
-    */
-   private void validateDocument(final String docId, final ListeMetadonneeType metaArchive) {
-      final ConsultationMTOMRequestType request = new ConsultationMTOMRequestType();
-      request.setIdArchive(docId);
-      request.setMetadonnees(SoapBuilder.extractMetaCodeList(metaArchive));
-      LOGGER.info("Récupération du document");
-      final ConsultationMTOMResponseType response = service.consultationMTOM(request);
-      final ListeMetadonneeType metaFromConsultation = response.getMetadonnees();
-      final String sha1FromConsultation = DigestUtils.sha1Hex(response.getContenu());
-      LOGGER.info("Vérification du hash du document récupéré");
-      Assert.assertEquals("Vérification du hash", SoapHelper.getMetaValue(metaArchive, "Hash"), sha1FromConsultation);
-      LOGGER.info("Vérification des métadonnées du document récupéré");
-      validateMeta(metaArchive, metaFromConsultation);
-   }
-
-   private void validateMeta(final ListeMetadonneeType metaArchive, final ListeMetadonneeType metaConsult) {
-      for (final MetadonneeType meta : metaArchive.getMetadonnee()) {
-         final String metaCode = meta.getCode();
-         final String valueArchive = meta.getValeur();
-         final String valueConsult = SoapHelper.getMetaValue(metaConsult, metaCode);
-         LOGGER.debug("Méta : {} - {} - {}", metaCode, valueArchive, valueConsult);
-         Assert.assertEquals("Vérfication de la méta " + metaCode, valueArchive, valueConsult);
-      }
-   }
 
 }

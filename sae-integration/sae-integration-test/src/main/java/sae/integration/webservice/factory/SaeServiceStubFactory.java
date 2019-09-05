@@ -41,6 +41,16 @@ public class SaeServiceStubFactory {
       return getSaeService(url, handler);
    }
 
+   public static SaeServicePortType getServiceForRechercheDocumentaireGNS(final String url) {
+      final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
+                                                                                RECHERCHE_DOCUMENTAIRE_PASS,
+                                                                                Arrays.asList("PAGM_RECHERCHE_DOCUMENTAIRE_GNS"),
+                                                                                "CS_RECHERCHE_DOCUMENTAIRE",
+                                                                                VI_LOGIN);
+
+      return getSaeService(url, handler);
+   }
+
    public static SaeServicePortType getServiceForDevToutesActions(final String url) {
       final AddViHeaderHandlerResolver handler = new AddViHeaderHandlerResolver("RECHERCHE-DOCUMENTAIRE.p12",
                                                                                 RECHERCHE_DOCUMENTAIRE_PASS,

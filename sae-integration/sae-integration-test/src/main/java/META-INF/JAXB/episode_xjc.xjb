@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<bindings version="2.1" xmlns="http://java.sun.com/xml/ns/jaxb">
+  <!--
+
+Ce fichier a été généré par l'implémentation de référence JavaTM Architecture for XML Binding (JAXB), v2.3.2 
+Voir <a href="https://javaee.github.io/jaxb-v2/">https://javaee.github.io/jaxb-v2/</a> 
+Toute modification apportée à ce fichier sera perdue lors de la recompilation du schéma source. 
+Généré le : 2019.09.04 à 10:35:02 AM CEST 
+
+  -->
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/commun_sommaire_et_resultat">
+    <schemaBindings map="false">
+      <package name="sae.integration.xml.modele"/>
+    </schemaBindings>
+    <bindings scd="~tns:integratedDocumentVirtuelType">
+      <class ref="sae.integration.xml.modele.IntegratedDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:documentVirtuelType">
+      <class ref="sae.integration.xml.modele.DocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedVirtualDocumentType">
+      <class ref="sae.integration.xml.modele.NonIntegratedVirtualDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:documentType">
+      <class ref="sae.integration.xml.modele.DocumentType"/>
+    </bindings>
+    <bindings scd="~tns:documentTypeMultiAction">
+      <class ref="sae.integration.xml.modele.DocumentTypeMultiAction"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedDocumentType">
+      <class ref="sae.integration.xml.modele.NonIntegratedDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:listeDocumentsTypeMultiAction">
+      <class ref="sae.integration.xml.modele.ListeDocumentsTypeMultiAction"/>
+    </bindings>
+    <bindings scd="~tns:listeDocumentsType">
+      <class ref="sae.integration.xml.modele.ListeDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:listeNonIntegratedDocumentsType">
+      <class ref="sae.integration.xml.modele.ListeNonIntegratedDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:listeNonIntegratedVirtualDocumentsType">
+      <class ref="sae.integration.xml.modele.ListeNonIntegratedVirtualDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:listeDocumentsVirtuelsType">
+      <class ref="sae.integration.xml.modele.ListeDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings scd="~tns:metadonneeType">
+      <class ref="sae.integration.xml.modele.MetadonneeType"/>
+    </bindings>
+    <bindings scd="~tns:listeMetadonneeType">
+      <class ref="sae.integration.xml.modele.ListeMetadonneeType"/>
+    </bindings>
+    <bindings scd="~tns:erreurType">
+      <class ref="sae.integration.xml.modele.ErreurType"/>
+    </bindings>
+    <bindings scd="~tns:listeErreurType">
+      <class ref="sae.integration.xml.modele.ListeErreurType"/>
+    </bindings>
+    <bindings scd="~tns:fichierType">
+      <class ref="sae.integration.xml.modele.FichierType"/>
+    </bindings>
+    <bindings scd="~tns:composantDocumentVirtuelType">
+      <class ref="sae.integration.xml.modele.ComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:nonIntegratedComposantDocumentVirtuelType">
+      <class ref="sae.integration.xml.modele.NonIntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:listeIntegratedDocumentsType">
+      <class ref="sae.integration.xml.modele.ListeIntegratedDocumentsType"/>
+    </bindings>
+    <bindings scd="~tns:integratedDocumentType">
+      <class ref="sae.integration.xml.modele.IntegratedDocumentType"/>
+    </bindings>
+    <bindings scd="~tns:listeIntegratedDocumentsVirtuelsType">
+      <class ref="sae.integration.xml.modele.ListeIntegratedDocumentsVirtuelsType"/>
+    </bindings>
+    <bindings scd="~tns:integratedComposantDocumentVirtuelType">
+      <class ref="sae.integration.xml.modele.IntegratedComposantDocumentVirtuelType"/>
+    </bindings>
+    <bindings scd="~tns:batchModeType">
+      <typesafeEnumClass ref="sae.integration.xml.modele.BatchModeType"/>
+    </bindings>
+    <bindings scd="~tns:batchActionType">
+      <typesafeEnumClass ref="sae.integration.xml.modele.BatchActionType"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/resultatsXml">
+    <schemaBindings map="false">
+      <package name="sae.integration.xml.modele"/>
+    </schemaBindings>
+    <bindings scd="~tns:resultatsType">
+      <class ref="sae.integration.xml.modele.ResultatsType"/>
+    </bindings>
+  </bindings>
+  <bindings scd="x-schema::tns" xmlns:tns="http://www.cirtil.fr/sae/sommaireXml">
+    <schemaBindings map="false">
+      <package name="sae.integration.xml.modele"/>
+    </schemaBindings>
+    <bindings scd="~tns:sommaireType">
+      <class ref="sae.integration.xml.modele.SommaireType"/>
+    </bindings>
+  </bindings>
+</bindings>
+

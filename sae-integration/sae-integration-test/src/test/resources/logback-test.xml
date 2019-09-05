@@ -10,6 +10,8 @@
       <appender-ref ref="console" />
    </logger>
    
+   <!--  <logger name="net.schmizz.sshj" level="error"/> -->
+   
    <root level="WARN">
       <appender-ref ref="console" />
    </root>
