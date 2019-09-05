@@ -159,7 +159,7 @@
 
 		<!-- ========================================== FasterXML woodstox https://github.com/FasterXML/woodstox 
 			========================================== -->
-		<woodstox.version>5.2.0</woodstox.version>
+		<woodstox.version>5.3.0</woodstox.version>
 
 		<!-- ========================================== stax-utils https://javalibs.com/artifact/net.java.dev.stax-utils/stax-utils 
 			========================================== -->
