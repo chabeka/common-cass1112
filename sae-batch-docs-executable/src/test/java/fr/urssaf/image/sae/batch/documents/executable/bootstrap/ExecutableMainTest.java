@@ -301,11 +301,11 @@ public class ExecutableMainTest {
    @Test
    @Ignore
    public void ExportIntegrationNationaleGns() {
-      final String LUCENE = "SM_ARCHIVAGE_DATE:[20150301 TO 20150409] AND cpt:true";
+      final String LUCENE = "SM_ARCHIVAGE_DATE:[20190904 TO 20190904]";
       final String[] args = {
                              "EXPORT_DOCUMENTS",
-                             "INTEGRATION_NATIONALE_GNS",
-                             "C:/Temp",
+                             "INTEGRATION_CLIENTE_PAJE_GNT",
+                             "C:/Tmp",
                              LUCENE
       };
       ExecutableMain.main(args);

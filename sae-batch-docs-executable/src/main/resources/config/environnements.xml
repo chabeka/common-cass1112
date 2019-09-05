@@ -72,7 +72,7 @@
 
    <configuration>
       <nom>INTEGRATION_CLIENTE_PAJE_GNS</nom>
-      <dfceAddress>http://hwi31intgnspajeboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31intgnspajeboappli1.gidn.recouv:8080/dfce-webapp/</dfceAddress>
       <dfceBaseName>SAE-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
@@ -82,7 +82,7 @@
    
    <configuration>
       <nom>INTEGRATION_CLIENTE_PAJE_GNT</nom>
-      <dfceAddress>http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/toolkit/</dfceAddress>
+      <dfceAddress>http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/</dfceAddress>
       <dfceBaseName>PAJE-GNT-INT</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
