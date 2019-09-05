@@ -15,6 +15,7 @@ import me.prettyprint.cassandra.model.ConfigurableConsistencyLevel;
 import me.prettyprint.cassandra.model.CqlQuery;
 import me.prettyprint.cassandra.model.CqlRows;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
+import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
@@ -58,9 +59,12 @@ public class SaeDumpTest {
             put("password", "regina4932");
          }
       };
-      String servers;
+      final String servers;
 
       // servers = "cnp69saecas1:9160, cnp69saecas2:9160, cnp69saecas3:9160, cnp31saecas1.cer31.recouv:9160";
+      // servers = "cnp69gntcas1:9160, cnp69gntcas2:9160, cnp69gntcas3:9160";
+      //
+      // servers = "cnp69gincleagntcas1:9160, cnp69gincleagntcas2:9160";
       // servers = "cnp69pregnscas1:9160, cnp69pregnscas2:9160, cnp69pregnscas3:9160";
       // servers = "cer69-saeint3.cer69.recouv";
       // servers = "cer69-saeint3.cer69.recouv";
@@ -69,11 +73,12 @@ public class SaeDumpTest {
       // servers = "cer69imageint9.cer69.recouv:9160";
       // INTEGRATION CLIENTE
       // -------------------
-      servers = "hwi69intgnscas1.gidn.recouv:9160,hwi69intgnscas2.gidn.recouv:9160";
+      // servers = "hwi69intgnscas1.gidn.recouv:9160,hwi69intgnscas2.gidn.recouv:9160";
       // servers = "cnp69intgntcas1.gidn.recouv:9160,cnp69intgntcas2.gidn.recouv:9160,cnp69intgntcas3.gidn.recouv:9160";
 
       // servers = "cer69imageint10.cer69.recouv:9160";
       // servers = "10.203.34.39:9160"; // Noufnouf
+      // servers = "cnp69givngntcas1.cer69.recouv:9160,cnp69givngntcas2.cer69.recouv:9160";
       // servers = "hwi69givnsaecas1.cer69.recouv:9160,hwi69givnsaecas2.cer69.recouv:9160";
       // servers = "hwi69devsaecas1.cer69.recouv:9160,hwi69devsaecas2.cer69.recouv:9160";
       // servers = "hwi69ginsaecas1.cer69.recouv:9160,hwi69ginsaecas2.cer69.recouv:9160";
@@ -81,11 +86,13 @@ public class SaeDumpTest {
       // servers = "cnp69devgntcas1.gidn.recouv:9160";
       // servers = "cnp69pregntcas1:9160, cnp69pregntcas2:9160";
       // servers = "hwi69dev2saecas1.gidn.recouv:9160, hwi69dev2saecas2.gidn.recouv:9160";
-      // servers = "cnp69dev2gntcas1.gidn.recouv:9160, cnp69dev2gntcas1.gidn.recouv:9160";
+      // servers = "cnp69dev2gntcas1.gidn.recouv:9160, cnp69dev2gntcas2.gidn.recouv:9160";
+      // servers = "cnp31devpicgnscas1.gidn.recouv:9160, cnp31devpicgnscas2.gidn.recouv:9160";
+      servers = "cnp31devpicgntcas1.gidn.recouv:9160, cnp31devpicgntcas2.gidn.recouv:9160";
       // servers = "cnp6gnscvecas01.cve.recouv:9160,cnp3gnscvecas01.cve.recouv:9160,cnp7gnscvecas01.cve.recouv:9160"; // Charge
       // servers = "cnp69miggntcas1.gidn.recouv:9160"; // Migration
       // servers = "cnp6gntcvecas1.cve.recouv:9160,cnp3gntcvecas1.cve.recouv:9160,cnp7gntcvecas1.cve.recouv:9160"; // Charge GNT
-
+      // servers = "cnp69intgntcas1.gidn.recouv:9160";
       // GIIN GNS
       // --------
       // servers = "hwi31ginsaecas1.cer31.recouv:9160,hwi31ginsaecas2.cer31.recouv:9160";
@@ -111,7 +118,7 @@ public class SaeDumpTest {
       sysout = new PrintStream(System.out, true, "UTF-8");
 
       // Pour dumper sur un fichier plutôt que sur la sortie standard
-      sysout = new PrintStream("d:/temp/out.txt");
+      sysout = new PrintStream("c:/temp/out.txt");
       dumper = new Dumper(keyspace, sysout);
    }
 
@@ -159,10 +166,10 @@ public class SaeDumpTest {
    protected void truncate(final String cfName) throws Exception {
       final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
       final CqlQuery<byte[], byte[], byte[]> cqlQuery = new CqlQuery<>(
-                                                                                             keyspace,
-                                                                                             bytesSerializer,
-                                                                                             bytesSerializer,
-                                                                                             bytesSerializer);
+            keyspace,
+            bytesSerializer,
+            bytesSerializer,
+            bytesSerializer);
       final String query = "truncate " + cfName;
       cqlQuery.setQuery(query);
       final QueryResult<CqlRows<byte[], byte[], byte[]>> result = cqlQuery.execute();
@@ -181,9 +188,9 @@ public class SaeDumpTest {
       System.out.println("Début");
 
       final ColumnFamilyTemplate<String, String> template = new ThriftColumnFamilyTemplate<>(keyspace,
-                                                                                                           "Parameters",
-                                                                                                           StringSerializer.get(),
-                                                                                                           StringSerializer.get());
+            "Parameters",
+            StringSerializer.get(),
+            StringSerializer.get());
       final ColumnFamilyUpdater<String, String> updater = template.createUpdater("parametresTracabilite");
       updater.setValue("PURGE_EVT_IS_RUNNING", false, ObjectSerializer.get());
       template.update(updater);
@@ -257,7 +264,7 @@ public class SaeDumpTest {
    @Test
    public void testDumpDroitPagm() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("DroitPagm", 50);
+      dumper.dumpCF("DroitPagm", 500);
    }
 
    @Test
@@ -275,19 +282,19 @@ public class SaeDumpTest {
    @Test
    public void testDumpDroitPagmf() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("DroitPagmf", 50);
+      dumper.dumpCF("DroitPagmf", 500);
    }
 
    @Test
    public void testDumpDroitPagmp() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("DroitPagmp", 50);
+      dumper.dumpCF("DroitPagmp", 500);
    }
 
    @Test
    public void testDumpDroitPrmd() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("DroitPrmd", 50);
+      dumper.dumpCF("DroitPrmd", 500);
    }
 
    @Test
@@ -303,15 +310,53 @@ public class SaeDumpTest {
    }
 
    @Test
+   public void testDumpOneJobExecutions() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.printColumnNameInHex = true;
+      final Long jobExecutionId = (long) 1364601;
+      final byte[] sliceStart = LongSerializer.get().toBytes(jobExecutionId);
+      final byte[] sliceEnd = LongSerializer.get().toBytes(jobExecutionId + 10);
+
+      byte[] key = StringSerializer.get().toBytes("capture_masse");
+      dumper.dumpCF_slice("JobExecutions", key, sliceStart, sliceEnd, 10, false);
+      key = StringSerializer.get().toBytes("_all");
+      dumper.dumpCF_slice("JobExecutions", key, sliceStart, sliceEnd, 10, false);
+   }
+
+   @Test
    public void testDumpJobExecutionsRunning() throws Exception {
       dumper.printKeyInHex = false;
       dumper.dumpCF("JobExecutionsRunning", 500);
    }
 
    @Test
-   public void testDumpJobExecutionToJobStep() throws Exception {
+   public void testDumpOneJobExecutionsRunning() throws Exception {
       dumper.printKeyInHex = false;
+      dumper.printColumnNameInHex = true;
+      final Long jobExecutionId = (long) 1364601;
+      final byte[] sliceStart = LongSerializer.get().toBytes(jobExecutionId);
+      final byte[] sliceEnd = LongSerializer.get().toBytes(jobExecutionId + 10);
+
+      byte[] key = StringSerializer.get().toBytes("capture_masse");
+      dumper.dumpCF_slice("JobExecutionsRunning", key, sliceStart, sliceEnd, 10, false);
+      key = StringSerializer.get().toBytes("_all");
+      dumper.dumpCF_slice("JobExecutionsRunning", key, sliceStart, sliceEnd, 10, false);
+   }
+
+   @Test
+   public void testDumpJobExecutionToJobStep() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.printColumnNameInHex = true;
       dumper.dumpCF("JobExecutionToJobStep", 500);
+   }
+
+   @Test
+   public void testDumpOneJobExecutionToJobStep() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.printColumnNameInHex = true;
+      final Long jobExecutionId = (long) 1364601;
+      final byte[] key = LongSerializer.get().toBytes(jobExecutionId);
+      dumper.dumpCF("JobExecutionToJobStep", key);
    }
 
    @Test
@@ -327,9 +372,27 @@ public class SaeDumpTest {
    }
 
    @Test
-   public void testDumpJobInstanceToJobExecution() throws Exception {
+   public void testDumpJobInstanceById() throws Exception {
       dumper.printKeyInHex = false;
+      final Long jobInstanceId = (long) 1364675;
+      final byte[] key = LongSerializer.get().toBytes(jobInstanceId);
+      dumper.dumpCF("JobInstance", key);
+   }
+
+   @Test
+   public void testDumpJobInstanceToJobExecution() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.printColumnNameInHex = true;
       dumper.dumpCF("JobInstanceToJobExecution", 500);
+   }
+
+   @Test
+   public void testDumpJobInstanceToJobExecutionByInstanceId() throws Exception {
+      dumper.printKeyInHex = true;
+      dumper.printColumnNameInHex = true;
+      final Long jobInstanceId = (long) 1364675;
+      final byte[] key = LongSerializer.get().toBytes(jobInstanceId);
+      dumper.dumpCF("JobInstanceToJobExecution", key);
    }
 
    @Test
@@ -345,9 +408,44 @@ public class SaeDumpTest {
    }
 
    @Test
+   public void testDumpJobRequestByKey() throws Exception {
+      dumper.printKeyInHex = true;
+      final byte[] key = ConvertHelper.hexStringToByteArray("907fe040-3c84-11e9-b15b-005056b93cde".replaceAll("-", ""));
+      dumper.dumpCF("JobRequest", key);
+   }
+
+   @Test
    public void testDumpJobStep() throws Exception {
       dumper.printKeyInHex = true;
       dumper.dumpCF("JobStep", 500, true);
+   }
+
+   @Test
+   public void testDumpOneJobStep() throws Exception {
+      dumper.printKeyInHex = true;
+      final Long jobStepId = (long) 12423188;
+      final byte[] key = LongSerializer.get().toBytes(jobStepId);
+      dumper.dumpCF("JobStep", key);
+   }
+
+   @Test
+   public void testDumpJobSteps() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.printColumnNameInHex = true;
+      dumper.dumpCF("JobSteps", 50, true);
+   }
+
+   @Test
+   public void testDumpOneJobSteps() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.printColumnNameInHex = true;
+
+      final Long jobStepId = (long) 12423188;
+      final byte[] sliceStart = LongSerializer.get().toBytes(jobStepId);
+      final byte[] sliceEnd = LongSerializer.get().toBytes(jobStepId + 10);
+
+      final byte[] key = StringSerializer.get().toBytes("jobSteps");
+      dumper.dumpCF_slice("JobSteps", key, sliceStart, sliceEnd, 10, false);
    }
 
    @Test
@@ -401,7 +499,16 @@ public class SaeDumpTest {
    @Test
    public void testDumpTraceRegTechnique() throws Exception {
       dumper.printKeyInHex = false;
-      dumper.dumpCF("TraceRegTechnique", 5000, true);
+      dumper.dumpCF("TraceRegTechnique", 500, true);
+   }
+
+   @Test
+   public void testDumpTraceRegTechniqueById() throws Exception {
+      dumper.printKeyInHex = false;
+      final UUID id = UUID.fromString("5a794bc0-e8f7-1741-8213-005056b9c0be");
+      final byte[] key = UUIDSerializer.get().toBytes(id);
+      dumper.maxValueLenght = 20000;
+      dumper.dumpCF("TraceRegTechnique", key);
    }
 
    @Test
@@ -440,12 +547,19 @@ public class SaeDumpTest {
       dumper.printColumnNameInHex = true;
       // byte[] key = ConvertHelper.hexStringToByteArray("b2737fb0-b6e4-11e4-af20-005056bf32d7".replace("-", ""));
       // byte[] key = ConvertHelper.hexStringToByteArray("80296690-b749-11e4-881e-005056bf1bac".replace("-", ""));
-      final byte[] key = ConvertHelper.hexStringToByteArray("9773e750d87b11e4b053005056bf2081".replace("-", ""));
+      final byte[] key = ConvertHelper.hexStringToByteArray("907fe0403c8411e9b15b005056b93cde".replace("-", ""));
       dumper.dumpCF("JobHistory", key);
    }
 
    @Test
-   public void testDumpJobsQueue() throws Exception {
+   public void testDumpJobsQueueAll() throws Exception {
+      dumper.printKeyInHex = false;
+      dumper.printColumnNameInHex = true;
+      dumper.dumpCF("JobsQueue", 70000, false);
+   }
+
+   @Test
+   public void testDumpJobsQueueWaiting() throws Exception {
       dumper.printKeyInHex = false;
       dumper.printColumnNameInHex = true;
       // dumper.dumpCF("JobsQueue", 300, false);
@@ -465,14 +579,25 @@ public class SaeDumpTest {
    @Test
    public void deleteJobDansJobRequest() {
 
-      final UUID idJob = UUID.fromString("9965db20-68b7-11e3-a563-000c29aa49ae");
+      final UUID idJob = UUID.fromString("907fe040-3c84-11e9-b15b-005056b93cde");
 
       final Mutator<UUID> mutator = HFactory.createMutator(keyspace,
                                                            UUIDSerializer
-                                                                         .get());
+                                                           .get());
       mutator.addDeletion(idJob, "JobRequest");
       mutator.execute();
+   }
 
+   @Test
+   public void deleteJobDansJobHistory() {
+
+      final UUID idJob = UUID.fromString("907fe040-3c84-11e9-b15b-005056b93cde");
+
+      final Mutator<UUID> mutator = HFactory.createMutator(keyspace,
+                                                           UUIDSerializer
+                                                           .get());
+      mutator.addDeletion(idJob, "JobHistory");
+      mutator.execute();
    }
 
    @Test

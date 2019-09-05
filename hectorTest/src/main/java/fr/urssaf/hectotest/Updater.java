@@ -4,6 +4,8 @@ import java.io.PrintStream;
 import java.util.Collection;
 import java.util.Date;
 
+import org.junit.Assert;
+
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.DateSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
@@ -16,51 +18,49 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
 
-import org.junit.Assert;
-
 public class Updater {
 
    Keyspace keyspace;
    PrintStream sysout;
 
-   public Updater(Keyspace k, PrintStream p) {
+   public Updater(final Keyspace k, final PrintStream p) {
       keyspace = k;
       sysout = p;
    }
 
-   public void updateColumn(String CFName, String rowName, String columnName,
-         Object value) throws Exception {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+   public void updateColumn(final String CFName, final String rowName, final String columnName,
+                            final Object value) throws Exception {
+      final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
             keyspace, CFName, StringSerializer.get(), StringSerializer.get());
 
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
+      final ColumnFamilyUpdater<String, String> updater = cfTmpl
             .createUpdater(rowName);
 
-      Collection<String> columnNames = cfTmpl.queryColumns(rowName)
+      final Collection<String> columnNames = cfTmpl.queryColumns(rowName)
             .getColumnNames();
 
       if (columnNames.contains(columnName)) {
 
          if (value != null && value instanceof String) {
-            HColumn<String, String> column = HFactory.createColumn(columnName,
-                  (String) value, StringSerializer.get(),
-                  StringSerializer.get());
+            final HColumn<String, String> column = HFactory.createColumn(columnName,
+                                                                         (String) value, StringSerializer.get(),
+                                                                         StringSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
          } else if (value != null && value instanceof Long) {
-            HColumn<String, Long> column = HFactory.createColumn(columnName,
-                  (Long) value, StringSerializer.get(), LongSerializer.get());
+            final HColumn<String, Long> column = HFactory.createColumn(columnName,
+                                                                       (Long) value, StringSerializer.get(), LongSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
          } else if (value != null && value instanceof Date) {
-            HColumn<String, Date> column = HFactory.createColumn(columnName,
-                  (Date) value, StringSerializer.get(), DateSerializer.get());
+            final HColumn<String, Date> column = HFactory.createColumn(columnName,
+                                                                       (Date) value, StringSerializer.get(), DateSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
          } else if (value != null && value instanceof Boolean) {
-            HColumn<String, Boolean> column = HFactory.createColumn(columnName,
-                  (Boolean) value, StringSerializer.get(),
-                  BooleanSerializer.get());
+            final HColumn<String, Boolean> column = HFactory.createColumn(columnName,
+                                                                          (Boolean) value, StringSerializer.get(),
+                                                                          BooleanSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
          } else if (value != null) {
@@ -74,23 +74,23 @@ public class Updater {
       }
    }
 
-   public void updateColumn(String CFName, String rowName, String columnName,
-         Object value, ObjectSerializer serializer) throws Exception {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+   public void updateColumn(final String CFName, final String rowName, final String columnName,
+                            final Object value, final ObjectSerializer serializer) throws Exception {
+      final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
             keyspace, CFName, StringSerializer.get(), StringSerializer.get());
 
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
+      final ColumnFamilyUpdater<String, String> updater = cfTmpl
             .createUpdater(rowName);
 
-      Collection<String> columnNames = cfTmpl.queryColumns(rowName)
+      final Collection<String> columnNames = cfTmpl.queryColumns(rowName)
             .getColumnNames();
 
       if (columnNames.contains(columnName)) {
 
          if (value != null) {
-            HColumn<String, Object> column = HFactory.createColumn(columnName,
-                  value, StringSerializer.get(),
-                  ObjectSerializer.get());
+            final HColumn<String, Object> column = HFactory.createColumn(columnName,
+                                                                         value, StringSerializer.get(),
+                                                                         ObjectSerializer.get());
             updater.setColumn(column);
             cfTmpl.update(updater);
 
@@ -102,28 +102,54 @@ public class Updater {
       }
    }
 
-   public void addColumn(String CFName, String rowName, String columnName,
-         Object value) throws Exception {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+   public void addColumn(final String CFName, final String rowName, final String columnName,
+                         final Object value) throws Exception {
+      final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
             keyspace, CFName, StringSerializer.get(), StringSerializer.get());
 
-      ColumnFamilyUpdater<String, String> updater = cfTmpl
+      final ColumnFamilyUpdater<String, String> updater = cfTmpl
             .createUpdater(rowName);
 
       if (value != null) {
-         HColumn<String, Object> column = HFactory.createColumn(columnName,
-               value, StringSerializer.get(), ObjectSerializer.get());
+         final HColumn<String, Object> column = HFactory.createColumn(columnName,
+                                                                      value, StringSerializer.get(), ObjectSerializer.get());
          updater.setColumn(column);
          cfTmpl.update(updater);
 
       }
 
       Assert.assertTrue(cfTmpl.queryColumns(rowName).getColumnNames()
-            .contains(columnName));
+                        .contains(columnName));
    }
 
-   public void deleteRows(String CFName, String rowName) {
-      ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<String, String>(
+   public void addColumn(final String CFName, final String rowName, final String columnName,
+                         final String value)
+         throws Exception {
+      final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
+                                                                                                         keyspace,
+                                                                                                         CFName,
+                                                                                                         StringSerializer.get(),
+                                                                                                         StringSerializer.get());
+
+      final ColumnFamilyUpdater<String, String> updater = cfTmpl
+                                                                .createUpdater(rowName);
+
+      if (value != null) {
+         final HColumn<String, String> column = HFactory.createColumn(columnName,
+                                                                      value,
+                                                                      StringSerializer.get(),
+                                                                      StringSerializer.get());
+         updater.setColumn(column);
+         cfTmpl.update(updater);
+      }
+
+      Assert.assertTrue(cfTmpl.queryColumns(rowName)
+                              .getColumnNames()
+                              .contains(columnName));
+   }
+
+   public void deleteRows(final String CFName, final String rowName) {
+      final ColumnFamilyTemplate<String, String> cfTmpl = new ThriftColumnFamilyTemplate<>(
             keyspace, CFName, StringSerializer.get(), StringSerializer.get());
       if (rowName != null) {
          cfTmpl.deleteRow(rowName);
