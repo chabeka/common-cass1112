@@ -47,15 +47,6 @@
                         https://issues.apache.org/jira/browse/BEANUTILS-278
                         -->
 								<filter>
-									<artifact>commons-beanutils:commons-beanutils</artifact>
-									<excludes>
-										<exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-										<exclude>org/apache/commons/collections/Buffer.class</exclude>
-										<exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-										<exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
-									</excludes>
-								</filter>
-								<filter>
 									<artifact>*:*</artifact>
 									<excludes>
 										<exclude>META-INF/*.SF</exclude>
@@ -75,6 +66,9 @@
 								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
+                              <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                 <resource>META-INF/cxf/bus-extensions.txt</resource>
+                              </transformer>
 							</transformers>
 						</configuration>
 					</execution>
