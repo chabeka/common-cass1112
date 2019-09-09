@@ -293,17 +293,6 @@
          <version>${javassist.version}</version>
       </dependency>
       
-      <!--
-      Bouncy Castle Cryptography APIs
-      Dépendance par transitivité, on fixe la version pour gérer
-      les conflits de versions.
-      -->
-      <dependency>
-         <groupId>bouncycastle</groupId>
-         <artifactId>bcprov-jdk16</artifactId>
-         <version>${bcprov-jdk16.version}</version>
-      </dependency>
-      
       <!-- commons-itext -->
       <dependency>
          <groupId>fr.urssaf.image.commons</groupId>

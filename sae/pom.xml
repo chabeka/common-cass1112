@@ -151,12 +151,6 @@
 			les conflits de version. ========================================== -->
 		<javassist.version>3.18.1-GA</javassist.version>
 
-		<!-- ========================================== Bouncy Castle Cryptography 
-			APIs http://www.bouncycastle.org/java.html On embarque Bouncy Castle par 
-			transitivité, on fixe la version pour résoudre les conflits de version. ========================================== -->
-		<bcprov-jdk16.version>140</bcprov-jdk16.version>
-
-
 		<!-- ========================================== FasterXML woodstox https://github.com/FasterXML/woodstox 
 			========================================== -->
 		<woodstox.version>5.3.0</woodstox.version>
@@ -656,7 +650,7 @@
 									<version>${maven-surefire-plugin.version}</version>
 								</dependency>
 							</dependencies>
-							<configuration combine.self="override">
+							<configuration>
 								<argLine>-Xms256m -Xmx512m ${surefireArgLine}</argLine>
 								<forkMode>pertest</forkMode>
 								<!-- 								<forkCount>64</forkCount>
