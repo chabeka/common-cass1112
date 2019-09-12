@@ -8,22 +8,22 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for rechercheParIterateurResponseType complex type.
+ * <p>Classe Java pour rechercheParIterateurResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rechercheParIterateurResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheType"/>
- *         &lt;element name="identifiantPageSuivante" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/>
- *         &lt;element name="dernierePage" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheParIterateurResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheType"/&gt;
+ *         &lt;element name="identifiantPageSuivante" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/&gt;
+ *         &lt;element name="dernierePage" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -44,7 +44,7 @@ public class RechercheParIterateurResponseType {
     protected boolean dernierePage;
 
     /**
-     * Gets the value of the resultats property.
+     * Obtient la valeur de la propriété resultats.
      * 
      * @return
      *     possible object is
@@ -56,7 +56,7 @@ public class RechercheParIterateurResponseType {
     }
 
     /**
-     * Sets the value of the resultats property.
+     * Définit la valeur de la propriété resultats.
      * 
      * @param value
      *     allowed object is
@@ -68,7 +68,7 @@ public class RechercheParIterateurResponseType {
     }
 
     /**
-     * Gets the value of the identifiantPageSuivante property.
+     * Obtient la valeur de la propriété identifiantPageSuivante.
      * 
      * @return
      *     possible object is
@@ -80,7 +80,7 @@ public class RechercheParIterateurResponseType {
     }
 
     /**
-     * Sets the value of the identifiantPageSuivante property.
+     * Définit la valeur de la propriété identifiantPageSuivante.
      * 
      * @param value
      *     allowed object is
@@ -92,7 +92,7 @@ public class RechercheParIterateurResponseType {
     }
 
     /**
-     * Gets the value of the dernierePage property.
+     * Obtient la valeur de la propriété dernierePage.
      * 
      */
     public boolean isDernierePage() {
@@ -100,7 +100,7 @@ public class RechercheParIterateurResponseType {
     }
 
     /**
-     * Sets the value of the dernierePage property.
+     * Définit la valeur de la propriété dernierePage.
      * 
      */
     public void setDernierePage(boolean value) {

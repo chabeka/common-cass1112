@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultationMTOMRequestType complex type.
+ * <p>Classe Java pour consultationMTOMRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="consultationMTOMRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="consultationMTOMRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class ConsultationMTOMRequestType {
     protected ListeMetadonneeCodeType metadonnees;
 
     /**
-     * Gets the value of the idArchive property.
+     * Obtient la valeur de la propriété idArchive.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class ConsultationMTOMRequestType {
     }
 
     /**
-     * Sets the value of the idArchive property.
+     * Définit la valeur de la propriété idArchive.
      * 
      * @param value
      *     allowed object is
@@ -65,7 +65,7 @@ public class ConsultationMTOMRequestType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -77,7 +77,7 @@ public class ConsultationMTOMRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

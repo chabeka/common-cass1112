@@ -1,15 +1,12 @@
 package fr.urssaf.image.sae.storage.model.storagedocument.searchcriteria;
 
 import java.util.List;
-import java.util.UUID;
 
 import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
 import fr.urssaf.image.sae.storage.model.storagedocument.filters.AbstractFilter;
 
 /**
  * Classe concrète contenant les critères pour une recherche paginée
- * 
- * 
  */
 public class PaginatedLuceneCriteria extends LuceneCriteria {
 
@@ -25,27 +22,16 @@ public class PaginatedLuceneCriteria extends LuceneCriteria {
     * @param filters
     *           Liste de filtre à rajouter après l'exécution de la requête
     *           principale
-    * @param lastIdDoc
-    *           Identifiant du dernier document de la page précédente
-    * 
-    * @param codeCourtVaryingMeta
-    *           Code court de la métadonnée variable
+    * @param pageId
+    *           Identifie la page à retourner (ou null pour la 1ere page)
     */
-   public PaginatedLuceneCriteria(String luceneQuery, int limit,
-         List<StorageMetadata> desiredStorageMetadatas,
-         List<AbstractFilter> filters, UUID lastIdDoc,
-         String codeCourtVaryingMeta) {
+   public PaginatedLuceneCriteria(final String luceneQuery, final int limit,
+                                  final List<StorageMetadata> desiredStorageMetadatas,
+                                  final List<AbstractFilter> filters, final String pageId) {
       super(luceneQuery, limit, desiredStorageMetadatas);
       this.filters = filters;
-      this.lastIdDoc = lastIdDoc;
-      this.codeCourtVaryingMeta = codeCourtVaryingMeta;
-
+      this.pageId = pageId;
    }
-
-   /**
-    * Nom de la métadonnée variable
-    */
-   private String codeCourtVaryingMeta;
 
    /**
     * Liste de filtre à rajouter après l'exécution de la requête principale
@@ -53,9 +39,9 @@ public class PaginatedLuceneCriteria extends LuceneCriteria {
    private List<AbstractFilter> filters;
 
    /**
-    * Identifiant du dernier document de la page précédente
+    * Identifie la page à retourner (ou null pour la 1ere page)
     */
-   private UUID lastIdDoc;
+   private String pageId;
 
    /**
     * @return the filters
@@ -68,38 +54,23 @@ public class PaginatedLuceneCriteria extends LuceneCriteria {
     * @param filters
     *           the filters to set
     */
-   public final void setFilters(List<AbstractFilter> filters) {
+   public final void setFilters(final List<AbstractFilter> filters) {
       this.filters = filters;
    }
 
    /**
     * @return the lastIdDoc
     */
-   public final UUID getLastIdDoc() {
-      return lastIdDoc;
+   public final String getPageId() {
+      return pageId;
    }
 
    /**
     * @param lastIdDoc
     *           the lastIdDoc to set
     */
-   public final void setLastIdDoc(UUID lastIdDoc) {
-      this.lastIdDoc = lastIdDoc;
-   }
-
-   /**
-    * @return the codeCourtVaryingMeta
-    */
-   public String getCodeCourtVaryingMeta() {
-      return codeCourtVaryingMeta;
-   }
-
-   /**
-    * @param codeCourtVaryingMeta
-    *           the codeCourtVaryingMeta to set
-    */
-   public void setCodeCourtVaryingMeta(String codeCourtVaryingMeta) {
-      this.codeCourtVaryingMeta = codeCourtVaryingMeta;
+   public final void setLastIdDoc(final String pageId) {
+      this.pageId = pageId;
    }
 
 }

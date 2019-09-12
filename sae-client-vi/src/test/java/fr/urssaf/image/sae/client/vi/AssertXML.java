@@ -13,8 +13,6 @@ import org.xml.sax.SAXException;
 
 /**
  * Classe d'assertion pour les tests sur les reponses des web services
- * 
- * 
  */
 public final class AssertXML {
 
@@ -23,7 +21,6 @@ public final class AssertXML {
    }
 
    /**
-    * 
     * @param expected
     *           balise à vérifier
     * @param namespaceURI
@@ -33,25 +30,33 @@ public final class AssertXML {
     * @param actual
     *           reponse du web service
     */
-   public static void assertElementContent(String expected,
-         String namespaceURI, String localName, String actual) {
+   public static void assertElementContent(final String expected,
+                                           final String namespaceURI, final String localName, final String actual) {
 
-      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+      final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
       dbf.setNamespaceAware(true);
       try {
-         Document doc = dbf.newDocumentBuilder().parse(
-               IOUtils.toInputStream(actual));
+         final Document doc = dbf.newDocumentBuilder()
+                                 .parse(
+                                        IOUtils.toInputStream(actual));
 
-         assertEquals(expected, doc.getElementsByTagNameNS(namespaceURI,
-               localName).item(0).getTextContent());
+         assertEquals(expected,
+                      doc.getElementsByTagNameNS(namespaceURI,
+                                                 localName)
+                         .item(0)
+                         .getTextContent());
 
-      } catch (SAXException e) {
+      }
+      catch (final SAXException e) {
          throw new IllegalStateException(e);
-      } catch (ParserConfigurationException e) {
+      }
+      catch (final ParserConfigurationException e) {
          throw new IllegalStateException(e);
-      } catch (IOException e) {
+      }
+      catch (final IOException e) {
          throw new IllegalStateException(e);
       }
 
    }
+
 }

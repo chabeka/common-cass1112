@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -626,7 +625,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                                                           final UntypedRangeMetadata varyingMetadata,
                                                           final List<AbstractMetadata> listeFiltreEgal,
                                                           final List<AbstractMetadata> listeFiltreDifferent, final int nbDocumentsParPage,
-                                                          final UUID lastIdDoc, final List<String> listeDesiredMetadata,
+                                                          final String pageId, final List<String> listeDesiredMetadata,
                                                           final List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
@@ -665,9 +664,9 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                    prefixeTrc,
                    nbDocumentsParPage);
          LOG.debug(
-                   "{} - Identifiant du dernier document renvoyé par la recherche par iterateur précédente : {}",
+                   "{} - Identifiant de la page renvoyée par l'itération précédente : {}",
                    prefixeTrc,
-                   lastIdDoc);
+                   pageId);
          LOG.debug(
                    "{} - Liste des métadonnées souhaitées envoyée par l'application cliente : {}",
                    prefixeTrc,
@@ -743,9 +742,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                                                                                requeteFinal,
                                                                                nbDocumentsParPage,
                                                                                abstractFilter,
-                                                                               lastIdDoc,
+                                                                               pageId,
                                                                                listCodCourtConsult,
-                                                                               codeCourtVaryingMeta,
                                                                                indexOrderPreferenceList);
 
          // liste de résultats à envoyer
@@ -760,7 +758,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
 
          pagUntypedDoc.setDocuments(listUntypedDocument);
          pagUntypedDoc.setLastPage(psd.getLastPage());
-         pagUntypedDoc.setValeurMetaLastPage(psd.getValeurMetaLastPage());
+         pagUntypedDoc.setPageId(psd.getPageId());
          
          // Log la requete lucene et l'index utilisé si la requete dure plus de  sae.duree.max.requete.soap secondes.
          final long endTime = System.currentTimeMillis();
@@ -969,8 +967,11 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    *
    * @param luceneQuery
    *          : Requête Lucene.
-   * @param maxResult
+    * @param nbDocumentsParPage
    *          : le nombre max de résultat à retourner.
+    * @param abstractFilter
+    * @param pageId
+    *           Identifie la page à retourner (null pour 1ere page)
    * @param listeDesiredMetadata
    *          : Liste des métadonnées souhaitées.
    * @param indexOrderPreferenceList
@@ -987,8 +988,8 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
    */
   private PaginatedStorageDocuments searchPaginatedStorageDocuments(
                                                                     final String requeteLucene, final int nbDocumentsParPage,
-                                                                    final List<AbstractFilter> abstractFilter, final UUID lastIdDoc,
-                                                                    final List<SAEMetadata> listeDesiredMetadata, final String codeCourtVaryingMeta,
+                                                                     final List<AbstractFilter> abstractFilter, final String pageId,
+                                                                     final List<SAEMetadata> listeDesiredMetadata,
                                                                     final List<String> indexOrderPreferenceList)
       throws SAESearchServiceEx, QueryParseServiceEx {
 
@@ -999,8 +1000,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
                                                                                                                nbDocumentsParPage,
                                                                                                                listeDesiredMetadata,
                                                                                                                abstractFilter,
-                                                                                                               lastIdDoc,
-                                                                                                               codeCourtVaryingMeta);
+                                                                                                                  pageId);
 
       if (indexOrderPreferenceList == null || indexOrderPreferenceList.isEmpty()) {
         paginatedStorageDocuments = getStorageDocumentService().searchPaginatedStorageDocuments(

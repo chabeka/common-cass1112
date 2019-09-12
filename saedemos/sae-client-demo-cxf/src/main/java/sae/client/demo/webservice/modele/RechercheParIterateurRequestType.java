@@ -8,24 +8,24 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for rechercheParIterateurRequestType complex type.
+ * <p>Classe Java pour rechercheParIterateurRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rechercheParIterateurRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="requetePrincipale" type="{http://www.cirtil.fr/saeService}requetePrincipaleType"/>
- *         &lt;element name="filtres" type="{http://www.cirtil.fr/saeService}filtreType" minOccurs="0"/>
- *         &lt;element name="nbDocumentsParPage" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="identifiantPage" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheParIterateurRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="requetePrincipale" type="{http://www.cirtil.fr/saeService}requetePrincipaleType"/&gt;
+ *         &lt;element name="filtres" type="{http://www.cirtil.fr/saeService}filtreType" minOccurs="0"/&gt;
+ *         &lt;element name="nbDocumentsParPage" type="{http://www.w3.org/2001/XMLSchema}int"/&gt;
+ *         &lt;element name="identifiantPage" type="{http://www.cirtil.fr/saeService}identifiantPageType" minOccurs="0"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -51,7 +51,7 @@ public class RechercheParIterateurRequestType {
     protected ListeMetadonneeCodeType metadonnees;
 
     /**
-     * Gets the value of the requetePrincipale property.
+     * Obtient la valeur de la propriété requetePrincipale.
      * 
      * @return
      *     possible object is
@@ -63,7 +63,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Sets the value of the requetePrincipale property.
+     * Définit la valeur de la propriété requetePrincipale.
      * 
      * @param value
      *     allowed object is
@@ -75,7 +75,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Gets the value of the filtres property.
+     * Obtient la valeur de la propriété filtres.
      * 
      * @return
      *     possible object is
@@ -87,7 +87,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Sets the value of the filtres property.
+     * Définit la valeur de la propriété filtres.
      * 
      * @param value
      *     allowed object is
@@ -99,7 +99,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Gets the value of the nbDocumentsParPage property.
+     * Obtient la valeur de la propriété nbDocumentsParPage.
      * 
      */
     public int getNbDocumentsParPage() {
@@ -107,7 +107,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Sets the value of the nbDocumentsParPage property.
+     * Définit la valeur de la propriété nbDocumentsParPage.
      * 
      */
     public void setNbDocumentsParPage(int value) {
@@ -115,7 +115,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Gets the value of the identifiantPage property.
+     * Obtient la valeur de la propriété identifiantPage.
      * 
      * @return
      *     possible object is
@@ -127,7 +127,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Sets the value of the identifiantPage property.
+     * Définit la valeur de la propriété identifiantPage.
      * 
      * @param value
      *     allowed object is
@@ -139,7 +139,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -151,7 +151,7 @@ public class RechercheParIterateurRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

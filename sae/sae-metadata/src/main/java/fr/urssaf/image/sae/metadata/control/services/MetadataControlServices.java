@@ -50,7 +50,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataValueTypeAndFormat(
-         final UntypedDocument untypedDoc);
+                                                       final UntypedDocument untypedDoc);
 
    /**
     * Contrôle que la liste des métadonnées fournit contient toutes les
@@ -81,7 +81,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkRequiredForStorageMetadataList(
-         final List<SAEMetadata> metadatas);
+                                                           final List<SAEMetadata> metadatas);
 
    /**
     * Contrôle que la liste des métadonnées est autorisée à la consultation.
@@ -92,11 +92,10 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkConsultableMetadata(
-         final List<SAEMetadata> metadatas);
+                                                final List<SAEMetadata> metadatas);
 
    /**
     * Contrôle que la liste des métadonnées est autorisée pour la recherche.
-    * 
     * 
     * @param metadatas
     *           : Liste des métadonnées métiers de type {@link SAEMetadata}
@@ -107,13 +106,12 @@ public interface MetadataControlServices {
    /**
     * Contrôle que la liste des métadonnées ne contient pas doublon.
     * 
-    * 
     * @param metadatas
     *           : Liste des métadonnées métiers de type {@link SAEMetadata}
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkDuplicateMetadata(
-         final List<UntypedMetadata> metadatas);
+                                              final List<UntypedMetadata> metadatas);
 
    /**
     * Contrôle que les valeurs des métadonnées obligatoires sont spécifiées.
@@ -123,7 +121,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataRequiredValue(
-         final UntypedDocument untypedDoc);
+                                                  final UntypedDocument untypedDoc);
 
    /**
     * Vérification de la valeur des métadonnées par rapport aux dictionnaires de
@@ -134,7 +132,7 @@ public interface MetadataControlServices {
     * @return Liste de type MetadataError
     */
    List<MetadataError> checkMetadataValueFromDictionary(
-         final UntypedDocument document);
+                                                        final UntypedDocument document);
 
    /**
     * Contrôle que la liste des métadonnées sont autorisées à l'archivables lors
@@ -145,7 +143,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkArchivableMetadataList(
-         final List<SAEMetadata> metadatas);
+                                                   final List<SAEMetadata> metadatas);
 
    /**
     * Contrôle que la liste des métadonnées fournit contient toutes les
@@ -156,7 +154,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkRequiredForArchivalMetadataList(
-         final List<SAEMetadata> metadatas);
+                                                            final List<SAEMetadata> metadatas);
 
    /**
     * Contrôle que la liste des métadonnées existe dans le référentiel.
@@ -166,7 +164,16 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkExistingMetadataList(
-         final List<UntypedMetadata> metadatas);
+                                                 final List<UntypedMetadata> metadatas);
+
+   /**
+    * Contrôle que la liste des métadonnées existe dans le référentiel.
+    * 
+    * @param metadatas
+    *           : La liste des métadonnées
+    * @return une liste d’objet de type {@link MetadataError}
+    */
+   List<MetadataError> checkExistingStorageMetadataList(final List<UntypedMetadata> metadatas);
 
    /**
     * Contrôle que les valeurs des métadonnées obligatoires sont spécifiées.
@@ -176,7 +183,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataListRequiredValue(
-         final List<UntypedMetadata> metadatas);
+                                                      final List<UntypedMetadata> metadatas);
 
    /**
     * Vérification de la valeur des métadonnées par rapport aux dictionnaires de
@@ -187,7 +194,7 @@ public interface MetadataControlServices {
     * @return Liste de type MetadataError
     */
    List<MetadataError> checkMetadataListValueFromDictionary(
-         final List<UntypedMetadata> metadatas);
+                                                            final List<UntypedMetadata> metadatas);
 
    /**
     * Contrôle le type, le format, la taille max de la valeur de chaque
@@ -198,8 +205,8 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataListValueTypeAndFormat(
-         final List<UntypedMetadata> metadatas);
-   
+                                                           final List<UntypedMetadata> metadatas);
+
    /**
     * Contrôle le type, le format, la taille max de la valeur de chaque
     * métadonnées spécifique pour le transfert de masse.
@@ -209,7 +216,7 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkMetadataListValueTypeAndFormatForTransfertMasse(
-         final List<UntypedMetadata> metadatas);
+                                                                            final List<UntypedMetadata> metadatas);
 
    /**
     * Vérifie que les métadonnées passées en paramètre sont toutes modifiables
@@ -219,7 +226,7 @@ public interface MetadataControlServices {
     * @return une liste d'erreur
     */
    List<MetadataError> checkModifiableMetadataList(
-         final List<UntypedMetadata> metadatas);
+                                                   final List<UntypedMetadata> metadatas);
 
    /**
     * Contrôle que les métadonnées de liste peuvent être supprimée (non
@@ -230,17 +237,40 @@ public interface MetadataControlServices {
     * @return une liste d’objet de type {@link MetadataError}
     */
    List<MetadataError> checkSupprimableMetadatas(
-         final List<UntypedMetadata> metadatas);
+                                                 final List<UntypedMetadata> metadatas);
 
    /**
     * Trim gauche et/ou droite des métadonnées dont le paramétrage le demande
-    * @param metadatas liste des métadonnées
-    * @param contratService le nom du contrat de service pour les traces
-    * @param listePagms la liste des PAGMs pour les traces
-    * @param login le login pour les traces
+    * 
+    * @param metadatas
+    *           liste des métadonnées
+    * @param contratService
+    *           le nom du contrat de service pour les traces
+    * @param listePagms
+    *           la liste des PAGMs pour les traces
+    * @param login
+    *           le login pour les traces
     * @return
     */
    List<SAEMetadata> trimMetadata(List<SAEMetadata> metadatas,
-         String contratService, List<String> listePagms, String login);
+                                  String contratService, List<String> listePagms, String login);
+
+   /**
+    * Vérifie que les métadonnées passées en paramètre sont toutes non requis à l'archivage
+    * 
+    * @param metadatas
+    *           liste des métadonnées à contrôler
+    * @return une liste d'erreur
+    */
+   List<MetadataError> checkNoRequiredForStorageUntypedMetadataList(List<UntypedMetadata> metadatas);
+
+   /**
+    * Vérifie que les métadonnées passées en paramètre sont toutes transférables
+    * 
+    * @param metadatas
+    *           liste des métadonnées à contrôler
+    * @return une liste d'erreur
+    */
+   List<MetadataError> checkTransferableMetadataList(List<UntypedMetadata> metadatas);
 
 }

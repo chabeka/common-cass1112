@@ -2,13 +2,9 @@ package fr.urssaf.image.sae.storage.dfce.services.impl.storagedocument.crud;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -66,7 +62,7 @@ import net.docubase.toolkit.model.ToolkitFactory;
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.ChainedFilter;
 import net.docubase.toolkit.model.search.ChainedFilter.ChainedFilterOperator;
-import net.docubase.toolkit.model.search.SearchQuery;
+import net.docubase.toolkit.model.search.IndexPaginationSearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
 import net.docubase.toolkit.model.search.SortedSearchQuery;
 
@@ -81,8 +77,6 @@ public class SearchingServiceImpl extends AbstractServices implements
                                                   .getLogger(SearchingServiceImpl.class);
 
    private static final String SEPARATOR_STRING = ", ";
-
-   private static final int LIMITE = 1000;
 
    @Autowired
    private MetadataReferenceDAO referenceDAO;
@@ -99,10 +93,6 @@ public class SearchingServiceImpl extends AbstractServices implements
    @Value("${sae.nom.instance.plateforme}")
    private String nomPlateforme;
 
-   public static final SimpleDateFormat DATE_TIME_FORMAT = new SimpleDateFormat(
-         "yyyyMMddHHmmssSSS");
-   public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
-         "yyyyMMdd");
    
    /**
     * {@inheritDoc}
@@ -265,17 +255,17 @@ public class SearchingServiceImpl extends AbstractServices implements
    }
 
    /**
-    * Methode de rechercher par iterateur.
+    * Méthode de rechercher par itérateur.
     *
     * @param paginatedLuceneCriteria
-    *           requete lucene que l'on veut paginer
+    *           requête lucene que l'on veut paginer
     * @param indexOrderPreferenceList
     *           Les index à utiliser, par ordre de préférence (au format DFCE)
     * @param searchInRecycleBean
-    *           boolean indiquant si l'on recherche dans le stockage par defaut
+    *           boolean indiquant si l'on recherche dans le stockage par défaut
     *           ou la corbeille
     * @param useChainedFilter
-    *           boolean indiquant si la requete peut utiliser les filtres
+    *           boolean indiquant si la requête peut utiliser les filtres
     * @return PaginatedStorageDocuments
     * @throws SearchingServiceEx
     *            exception levée lors d'une erreur de recherche
@@ -296,10 +286,9 @@ public class SearchingServiceImpl extends AbstractServices implements
          final List<StorageDocument> storageDocuments = new ArrayList<>();
 
          // Création de la SearchQuery
-         final SearchQuery searchQuery = ToolkitFactory.getInstance()
-                                                       .createMonobaseQuery(paginatedLuceneCriteria.getLuceneQuery(),
-                                                                            getBaseDFCE());
-         // Récupération du référentiel des métadonnés pour les différentes
+         final IndexPaginationSearchQuery searchQuery = new IndexPaginationSearchQuery(paginatedLuceneCriteria.getLuceneQuery(), getBaseDFCE());
+
+         // Récupération du référentiel des métadonnées pour les différentes
          // vérifications
          final Map<String, MetadataReference> referentielMeta = referenceDAO
                                                                             .getAllMetadataReferencesPourVerifDroits();
@@ -313,195 +302,136 @@ public class SearchingServiceImpl extends AbstractServices implements
             searchQuery.setChainedFilter(chainedFilter);
          }
          // On fixe le pas d'execution de l'itérateur
-         searchQuery.setSearchLimit(LIMITE);
+         final int limit = paginatedLuceneCriteria.getLimit();
+         searchQuery.setSearchLimit(limit);
 
-         // charger l'index à utliser dans l'objet searchQuery
+         // charger l'index à utiliser dans l'objet searchQuery
          if (indexOrderPreferenceList != null && !indexOrderPreferenceList.isEmpty()) {
             searchQuery.setIndexOrderPreference(indexOrderPreferenceList);
          }
 
-         // Recherche des documents par l'itérateur DFCE
-         Iterator<Document> iterateur;
-         if (searchInRecycleBean) {
-            iterateur = getDfceServices().createDocumentIteratorFromRecycleBin(searchQuery);
-         } else {
-            iterateur = getDfceServices().createDocumentIterator(searchQuery);
-         }
+         // On se positionne sur la bonne page
+         String currentPageId = paginatedLuceneCriteria.getPageId();
+         String pageIdToReturn = null;
+         int foundDocCount = 0;
 
-         final Integer limite = paginatedLuceneCriteria.getLimit();
-         Integer compteur = 0;
-
-         // On récupère la liste complète des métadonnées du référentiel afin de
-         // pouvoir tester les droits
-         final List<String> metadonneesRef = new ArrayList<>(referentielMeta
-                                                                            .keySet());
-
+         // On récupère la liste complète des métadonnées du référentiel afin de pouvoir tester les droits
          List<StorageMetadata> allMeta = null;
-         // dans le cas de la recherche dans la corbeille, on ne vérifie pas les droits pour éviter de récupérer le flag GEL dans le mauvais index
+         // Dans le cas de la recherche dans la corbeille, on ne vérifie pas les droits pour éviter de récupérer le flag GEL dans le mauvais index
+         AuthenticationToken token;
+         List<SaePrmd> saePrmds = null;
          if (!searchInRecycleBean) {
+            final List<String> metadonneesRef = new ArrayList<>(referentielMeta.keySet());
             allMeta = convertToStorageMeta(metadonneesRef);
+            token = AuthenticationContext.getAuthenticationToken();
+            saePrmds = token.getSaeDroits().get("recherche_iterateur");
          }
 
-         // Si appel au service de recherche avec passage de l'UUID du dernier
-         // document, on boucle sur l'itérateur jusqu'à ce qu'on ait atteint le
-         // dernier document
-         if (paginatedLuceneCriteria.getLastIdDoc() != null) {
-            final String lastUuid = paginatedLuceneCriteria.getLastIdDoc().toString();
-            while (iterateur.hasNext()) {
-               final Document doc = iterateur.next();
-               if (lastUuid.equals(doc.getUuid().toString())) {
-                  break;
-               }
-            }
-         }
+         // On boucle, jusqu'à temps qu'on trouve "assez" de documents.
+         // On s'arrête dès qu'on au au moins 50% de la limite fixée par le client
+         boolean shouldStop = false;
+         while (!shouldStop) {
 
-         // Ensuite, on continue l'itération pour récupérer les documents
-         // souhaités
-         while (iterateur.hasNext()) {
-            final Document doc = iterateur.next();
-            final StorageDocument storageDocument = BeanMapper
-                                                              .dfceDocumentToStorageDocument(doc,
-                                                                                             allMeta,
-                                                                                             getDfceServices(),
-                                                                                             nomPlateforme,
-                                                                                             true,
-                                                                                             false);
-            UntypedDocument untypedDocument = null;
-            // Vérification des droits
-            if (storageDocument != null) {
-               untypedDocument = mappingService
-                                               .storageDocumentToUntypedDocument(storageDocument);
+            searchQuery.setCurrentStep(currentPageId);
+
+            // Recherche des documents par l'itérateur DFCE
+            SearchResult searchResult;
+            if (searchInRecycleBean) {
+               searchResult = dfceServices.searchInRecycleBin(searchQuery);
+            } else {
+               searchResult = dfceServices.search(searchQuery);
+            }
+            currentPageId = searchResult.getLastReadIndex();
+
+            // Dans quelle liste va-ton stocker les documents de la page ?
+            List<StorageDocument> storageDocumentsForCurrentPage;
+            if (storageDocuments.isEmpty()) {
+               // Si storageDocuments est vide, on stocke directement dans cette liste
+               storageDocumentsForCurrentPage = storageDocuments;
+            } else {
+               // Sinon, on stocke dans une liste temporaire
+               storageDocumentsForCurrentPage = new ArrayList<>();
             }
 
-            if (compteur < limite) {
-               // On vérifie que le document courant est autorisé par le
-               // périmètre de donnée
+            // Récupération des documents de cette page
+            final List<Document> documents = searchResult.getDocuments();
+            int docCountForPage = 0;
+            for (final Document doc : documents) {
+
+               // On vérifie que le document courant est autorisé par le périmètre de donnée
+               // Dans le cas de la recherche dans la corbeille, on ne vérifie pas les droits pour éviter de récupérer le flag GEL dans le mauvais index
                boolean isPermitted = true;
-               // dans le cas de la recherche dans la corbeille, on ne verifie pas les droits pour eviter de recuperer le flag GEL dans le mauvais index
                if (!searchInRecycleBean) {
-                  LOG.debug("{} - Récupération des droits", prefixeTrc);
-                  final AuthenticationToken token = AuthenticationContext
-                                                                         .getAuthenticationToken();
-                  final List<SaePrmd> saePrmds = token.getSaeDroits()
-                                                      .get(
-                                                           "recherche_iterateur");
-                  LOG.debug("{} - Vérification des droits", prefixeTrc);
-                  isPermitted = prmdService.isPermitted(untypedDocument
-                                                                       .getUMetadatas(),
-                                                        saePrmds);
+                  final StorageDocument storageDocument = BeanMapper.dfceDocumentToStorageDocument(doc,
+                                                                                                   allMeta,
+                                                                                                   getDfceServices(),
+                                                                                                   nomPlateforme,
+                                                                                                   true,
+                                                                                                   false);
+                  UntypedDocument untypedDocument = null;
+                  if (storageDocument != null) {
+                     untypedDocument = mappingService.storageDocumentToUntypedDocument(storageDocument);
+                     isPermitted = prmdService.isPermitted(untypedDocument.getUMetadatas(), saePrmds);
+                  }
+                  if (!isPermitted) {
+                     LOG.debug("{} - Doc non autorisé : {}", prefixeTrc, doc.getUuid());
+                  }
                }
 
                if (isPermitted) {
-                  storageDocuments.add(BeanMapper
-                                                 .dfceDocumentToStorageDocument(doc,
-                                                                                paginatedLuceneCriteria
-                                                                                                       .getDesiredStorageMetadatas(),
-                                                                                getDfceServices(),
-                                                                                nomPlateforme,
-                                                                                true,
-                                                                                false));
-                  compteur++;
+                  storageDocumentsForCurrentPage.add(BeanMapper.dfceDocumentToStorageDocument(doc,
+                                                                                              paginatedLuceneCriteria.getDesiredStorageMetadatas(),
+                                                                                              getDfceServices(),
+                                                                                              nomPlateforme,
+                                                                                              true,
+                                                                                              false));
+                  docCountForPage++;
+               }
+            }
+            // Fin du parcours de la page.
+            LOG.debug("{} - Nombre de documents trouvés sur la page : {}", prefixeTrc, docCountForPage);
+
+            // On regarde si on doit prendre les documents de la page
+            if (foundDocCount + docCountForPage <= limit) {
+               // On prend cette page
+               if (!storageDocumentsForCurrentPage.equals(storageDocuments)) {
+                  storageDocuments.addAll(storageDocumentsForCurrentPage);
+               }
+               pageIdToReturn = currentPageId;
+               foundDocCount += docCountForPage;
+               // On s'arrête si on a assez de documents
+               if (foundDocCount >= limit / 2) {
+                  shouldStop = true;
                }
             } else {
-               paginatedStorageDocuments
-                                        .setAllStorageDocuments(storageDocuments);
-               paginatedStorageDocuments.setLastPage(false);
-               break;
+               // On ne prend pas cette page, car on aurait trop de documents
+               shouldStop = true;
+            }
+            // On s'arrête si l'itérateur n'a plus de documents en stock
+            if (currentPageId == null) {
+               shouldStop = true;
             }
          }
 
-         // Si il ne reste plus de documents
-         if (paginatedStorageDocuments.getLastPage() == null) {
-            paginatedStorageDocuments.setAllStorageDocuments(storageDocuments);
-            paginatedStorageDocuments.setLastPage(true);
-         }
+         // Renvoie des documents
+         paginatedStorageDocuments.setAllStorageDocuments(storageDocuments);
 
-         final String codeCourtVaryingMeta = paginatedLuceneCriteria
-                                                                    .getCodeCourtVaryingMeta();
-
-         // Si la recherche renvoie des documents, on récupère la valeur de la
-         // métadonnée variable afin de pouvoir la transmettre au client dans
-         // l'identifiant de la dernière page
-         if (storageDocuments.size() > 0) {
-            final String valeurMetaLastPage = recupererValeurMetaLastPage(
-                                                                          storageDocuments,
-                                                                          codeCourtVaryingMeta);
-            paginatedStorageDocuments.setValeurMetaLastPage(valeurMetaLastPage);
-         }
-
+         // Récupération de l'id de la page suivante
+         paginatedStorageDocuments.setPageId(pageIdToReturn);
+         paginatedStorageDocuments.setLastPage(pageIdToReturn == null);
       }
-      catch (final ReferentialException e) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
+      catch (final ReferentialException | MetadonneeInexistante | StorageException | IOException | InvalidSAETypeException |
+            MappingFromReferentialException e) {
+         throw new SearchingServiceEx(StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
                                       e.getMessage(),
                                       e);
       }
-      catch (final MetadonneeInexistante e) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
-                                      e.getMessage(),
-                                      e);
-      }
-      catch (final StorageException srcSerEx) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
-                                      srcSerEx.getMessage(),
-                                      srcSerEx);
-      }
-      catch (final IOException ioExcept) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
-                                      ioExcept.getMessage(),
-                                      ioExcept);
-      }
-      catch (final InvalidSAETypeException e) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
-                                      e.getMessage(),
-                                      e);
-      }
-      catch (final MappingFromReferentialException e) {
-         throw new SearchingServiceEx(StorageMessageHandler
-                                                           .getMessage(Constants.SRH_CODE_ERROR),
-                                      e.getMessage(),
-                                      e);
-      }
-      catch (final SearchQueryParseException e) {
-         throw new QueryParseServiceEx(StorageMessageHandler
-                                                            .getMessage(Constants.SRH_CODE_ERROR),
+      catch (final SearchQueryParseException | ExceededSearchLimitException e) {
+         throw new QueryParseServiceEx(StorageMessageHandler.getMessage(Constants.SRH_CODE_ERROR),
                                        e.getMessage(),
                                        e);
       }
       return paginatedStorageDocuments;
-   }
-
-   private String recupererValeurMetaLastPage(
-                                              final List<StorageDocument> storageDocuments,
-                                              final String codeCourtVaryingMeta) {
-      final StorageDocument storageDocument = storageDocuments.get(storageDocuments
-                                                                                   .size()
-            - 1);
-      final List<StorageMetadata> listeSMeta = storageDocument.getMetadatas();
-      String valeurMetaLastPage = "";
-      for (final StorageMetadata storageMetadata : listeSMeta) {
-         if (storageMetadata.getShortCode().equals(codeCourtVaryingMeta)) {
-            if (storageMetadata.getValue() instanceof Date) {
-               if (codeCourtVaryingMeta.equals("SM_ARCHIVAGE_DATE")) {
-                  // Convert Local Time to UTC (Works Fine)
-                  DATE_TIME_FORMAT.setTimeZone(TimeZone.getTimeZone("UTC"));
-                  valeurMetaLastPage = DATE_TIME_FORMAT.format(storageMetadata
-                                                               .getValue());
-               } else {
-                  valeurMetaLastPage = DATE_FORMAT.format(storageMetadata
-                                                          .getValue());
-               }
-            } else {
-               valeurMetaLastPage = storageMetadata.getValue().toString();
-            }
-            break;
-         }
-      }
-      return valeurMetaLastPage;
    }
 
    /**

@@ -30,10 +30,8 @@ import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
 
 /***
- * 
  * Classe support permettant d’exploiter le bean {@link FormatFichier} <br>
  * et la DAO {@link ReferentielFormatDao} du référentiel des formats.<br>
- * 
  * Classe permettant de réaliser les actions de manipulation des DAO pour la
  * famille de colonne "ReferentielFormat" *
  */
@@ -42,10 +40,13 @@ public class ReferentielFormatSupport {
 
    private final ReferentielFormatDao referentielFormatDao;
 
+  private final SaeFormatMessageHandler messageHandler;
+
    private static final String FIN_LOG = "{} - fin";
+
    private static final String DEBUT_LOG = "{} - début";
-   private static final Logger LOGGER = LoggerFactory
-         .getLogger(ReferentielFormatSupport.class);
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReferentielFormatSupport.class);
 
    /**
     * Constructeur de la classe support
@@ -54,8 +55,9 @@ public class ReferentielFormatSupport {
     *           la dao
     */
    @Autowired
-   public ReferentielFormatSupport(ReferentielFormatDao referentielFormatDao) {
+  public ReferentielFormatSupport(final ReferentielFormatDao referentielFormatDao, final SaeFormatMessageHandler messageHandler) {
       this.referentielFormatDao = referentielFormatDao;
+    this.messageHandler = messageHandler;
    }
 
    /**
@@ -67,38 +69,43 @@ public class ReferentielFormatSupport {
     * @param clock
     *           horloge de la création - paramètre obligatoire
     */
-   public final void create(FormatFichier referentielFormat, Long clock) {
+  public final void create(final FormatFichier referentielFormat, final Long clock) {
 
-      if (referentielFormat == null)
-         throw new IllegalArgumentException(SaeFormatMessageHandler
-               .getMessage("erreur.param"));
+    if (referentielFormat == null) {
+      throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage("erreur.param"));
+    }
 
-      String description = referentielFormat.getDescription();
-      String extension = referentielFormat.getExtension();
-      String identification = referentielFormat.getIdentificateur();
-      String idFormat = referentielFormat.getIdFormat();
-      String typeMime = referentielFormat.getTypeMime();
-      String validator = referentielFormat.getValidator();
-      Boolean autoriseGED = referentielFormat.isAutoriseGED();
-      Boolean visualisable = referentielFormat.isVisualisable();
-      String convertisseur = referentielFormat.getConvertisseur();
+    final String description = referentielFormat.getDescription();
+    final String extension = referentielFormat.getExtension();
+    final String identification = referentielFormat.getIdentificateur();
+    final String idFormat = referentielFormat.getIdFormat();
+    final String typeMime = referentielFormat.getTypeMime();
+    final String validator = referentielFormat.getValidator();
+    final Boolean autoriseGED = referentielFormat.isAutoriseGED();
+    final Boolean visualisable = referentielFormat.isVisualisable();
+    final String convertisseur = referentielFormat.getConvertisseur();
 
-      String opeRefFormatPrefix = "ajouterRefFormat";
+    final String opeRefFormatPrefix = "ajouterRefFormat";
       LOGGER.debug(DEBUT_LOG, opeRefFormatPrefix);
-      LOGGER.debug("{} - Identifiant du referentielFormat : {}", new String[] {
-            opeRefFormatPrefix, idFormat });
+    LOGGER.debug("{} - Identifiant du referentielFormat : {}", new String[] {opeRefFormatPrefix, idFormat});
 
-      ColumnFamilyUpdater<String, String> updater = referentielFormatDao
-            .getCfTmpl().createUpdater(idFormat);
+    final ColumnFamilyUpdater<String, String> updater = referentielFormatDao.getCfTmpl().createUpdater(idFormat);
 
-      referentielFormatDao.addNewFormat(updater, idFormat, typeMime, extension,
-            description, autoriseGED, visualisable, validator, identification,
-            convertisseur, clock);
+    referentielFormatDao.addNewFormat(updater,
+                                      idFormat,
+                                      typeMime,
+                                      extension,
+                                      description,
+                                      autoriseGED,
+                                      visualisable,
+                                      validator,
+                                      identification,
+                                      convertisseur,
+                                      clock);
 
       referentielFormatDao.getCfTmpl().update(updater);
 
-      LOGGER.info("{} - Ajout du format de fichier : {}", new String[] {
-            opeRefFormatPrefix, idFormat });
+    LOGGER.info("{} - Ajout du format de fichier : {}", new String[] {opeRefFormatPrefix, idFormat});
       LOGGER.debug(FIN_LOG, opeRefFormatPrefix);
 
    }
@@ -114,38 +121,35 @@ public class ReferentielFormatSupport {
     * @throws UnknownFormatException
     *            : le format renseigné n'existe pas en base
     */
-   public final void delete(String idFormat, Long clock)
-         throws UnknownFormatException {
+  @SuppressWarnings("static-access")
+  public final void delete(final String idFormat, final Long clock) throws UnknownFormatException {
 
-      if (idFormat == null)
-         throw new IllegalArgumentException(SaeFormatMessageHandler
-               .getMessage("erreur.referentielformat.notnull"));
+    if (idFormat == null) {
+      throw new IllegalArgumentException(messageHandler.getMessage("erreur.referentielformat.notnull"));
+    }
 
-      if (clock == null || clock <= 0)
-         throw new IllegalArgumentException(SaeFormatMessageHandler
-               .getMessage("erreur.param"));
+    if (clock == null || clock <= 0) {
+      throw new IllegalArgumentException(messageHandler.getMessage("erreur.param"));
+    }
 
-      FormatFichier refFormatExistant = find(idFormat);
+    final FormatFichier refFormatExistant = find(idFormat);
 
-      if (refFormatExistant == null) // le format renseigné n'existe pas en base
-         throw new UnknownFormatException(SaeFormatMessageHandler.getMessage(
-               "erreur.format.delete", idFormat));
+    if (refFormatExistant == null) {
+      throw new UnknownFormatException(messageHandler.getMessage("erreur.format.delete", idFormat));
+    }
 
       try {
-         Mutator<String> mutator = referentielFormatDao.createMutator();
-         referentielFormatDao.mutatorSuppressionRefFormat(mutator, idFormat,
-               clock);
+      final Mutator<String> mutator = referentielFormatDao.createMutator();
+      referentielFormatDao.mutatorSuppressionRefFormat(mutator, idFormat, clock);
          mutator.execute();
-      } catch (Exception except) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler
-               .getMessage("erreur.impossible.delete.format"), except);
+    } catch (final Exception except) {
+      throw new ReferentielRuntimeException(messageHandler.getMessage("erreur.impossible.delete.format"), except);
       }
    }
 
    /**
     * Récupération des informations associées à un format de fichier
     * {@link FormatFichier}.
-    * 
     * Si le format n'est pas trouvé en base, on renvoie null et pas une
     * exception typée pour des contraintes techniques de liées au cache Guava
     * réalisées dans la couche service
@@ -155,18 +159,17 @@ public class ReferentielFormatSupport {
     *           obligatoire
     * @return Un objet {@link FormatFichier} qui représente le format de fichier
     *         trouvé
-    * */
-   public final FormatFichier find(String idFormat) {
+   */
+  @SuppressWarnings("static-access")
+  public final FormatFichier find(final String idFormat) {
 
       if (StringUtils.isBlank(idFormat)) {
-         throw new IllegalArgumentException(SaeFormatMessageHandler.getMessage(
-               "erreur.param.obligatoire.null", idFormat));
+      throw new IllegalArgumentException(messageHandler.getMessage("erreur.param.obligatoire.null", idFormat));
       }
 
-      ColumnFamilyResult<String, String> result = referentielFormatDao
-            .getCfTmpl().queryColumns(idFormat);
+    final ColumnFamilyResult<String, String> result = referentielFormatDao.getCfTmpl().queryColumns(idFormat);
 
-      FormatFichier refFormat = getRefFormatFromResult(result, idFormat);
+    final FormatFichier refFormat = getRefFormatFromResult(result, idFormat);
 
       return refFormat;
 
@@ -186,8 +189,7 @@ public class ReferentielFormatSupport {
     *            : Erreur levée quand le format demandé n’existe pas au sein du
     *            référentiel
     */
-   private FormatFichier getRefFormatFromResult(
-         ColumnFamilyResult<String, String> result, String idFormat) {
+  private FormatFichier getRefFormatFromResult(final ColumnFamilyResult<String, String> result, final String idFormat) {
 
       // pour un besoin lié au cache GUAVA
       FormatFichier refFormat = null;
@@ -200,29 +202,27 @@ public class ReferentielFormatSupport {
          refFormat.setIdFormat(idFormat);
 
          // typeMime et extension peut être null
-         String typeMime = result.getString(Constantes.COL_TYPEMIME);
-         if (!StringUtils.isBlank(typeMime))
+      final String typeMime = result.getString(Constantes.COL_TYPEMIME);
+      if (!StringUtils.isBlank(typeMime)) {
             refFormat.setTypeMime(typeMime);
+      }
 
-         String extension = result.getString(Constantes.COL_EXTENSION);
-         if (!StringUtils.isBlank(extension))
+      final String extension = result.getString(Constantes.COL_EXTENSION);
+      if (!StringUtils.isBlank(extension)) {
             refFormat.setExtension(extension);
+      }
 
          refFormat.setDescription(result.getString(Constantes.COL_DESCRIPTION));
 
-         refFormat.setAutoriseGED(result
-               .getBoolean(Constantes.COL_AUTORISE_GED));
+      refFormat.setAutoriseGED(result.getBoolean(Constantes.COL_AUTORISE_GED));
 
-         refFormat.setVisualisable(result
-               .getBoolean(Constantes.COL_VISUALISABLE));
+      refFormat.setVisualisable(result.getBoolean(Constantes.COL_VISUALISABLE));
 
          refFormat.setValidator(result.getString(Constantes.COL_VALIDATOR));
 
-         refFormat.setIdentificateur(result
-               .getString(Constantes.COL_IDENTIFIEUR));
+      refFormat.setIdentificateur(result.getString(Constantes.COL_IDENTIFIEUR));
 
-         refFormat.setConvertisseur(result
-               .getString(Constantes.COL_CONVERTISSEUR));
+      refFormat.setConvertisseur(result.getString(Constantes.COL_CONVERTISSEUR));
 
       }
       // Erreur levée quand le format demandé n’existe pas au sein du
@@ -235,50 +235,47 @@ public class ReferentielFormatSupport {
    /**
     * Récupération de tous les formats de fichier présents dans le référentiel.
     * 
-    * 
     * @return Une liste d’objet {@link FormatFichier} représentant les formats
     *         présents dans le référentiel
     */
+  @SuppressWarnings("static-access")
    public final List<FormatFichier> findAll() {
 
       try {
-         BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+      final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
 
-         RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-               .createRangeSlicesQuery(referentielFormatDao.getKeyspace(),
-                     StringSerializer.get(), StringSerializer.get(),
+      final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory.createRangeSlicesQuery(referentielFormatDao.getKeyspace(),
+                                                                                                        StringSerializer.get(),
+                                                                                                        StringSerializer.get(),
                      bytesSerializer);
 
          rangeSlicesQuery.setColumnFamily(referentielFormatDao.getColumnFamilyName());
          rangeSlicesQuery.setRange("", "", false, AbstractDao.DEFAULT_MAX_COLS);
          rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-         QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery
-               .execute();
+      final QueryResult<OrderedRows<String, String, byte[]>> queryResult = rangeSlicesQuery.execute();
 
          // Convertion du résultat en ColumnFamilyResultWrapper pour mieux
          // l'utiliser
-         QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<String, String, byte[]>();
-         ColumnFamilyResultWrapper<String, String> result = converter
-               .getColumnFamilyResultWrapper(queryResult, StringSerializer
-                     .get(), StringSerializer.get(), bytesSerializer);
+      final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
+      final ColumnFamilyResultWrapper<String, String> result = converter.getColumnFamilyResultWrapper(queryResult,
+                                                                                                      StringSerializer.get(),
+                                                                                                      StringSerializer.get(),
+                                                                                                      bytesSerializer);
 
-         HectorIterator<String, String> resultIterator = new HectorIterator<String, String>(
-               result);
+      final HectorIterator<String, String> resultIterator = new HectorIterator<>(result);
 
-         List<FormatFichier> list = new ArrayList<FormatFichier>();
-         for (ColumnFamilyResult<String, String> row : resultIterator) {
+      final List<FormatFichier> list = new ArrayList<>();
+      for (final ColumnFamilyResult<String, String> row : resultIterator) {
             if (row != null && row.hasResults()) {
 
-               FormatFichier referentielFormat = getRefFormatFromResult(row,
-                     row.getKey());
+          final FormatFichier referentielFormat = getRefFormatFromResult(row, row.getKey());
                list.add(referentielFormat);
             }
          }
 
          return list;
-      } catch (Exception except) {
-         throw new ReferentielRuntimeException(SaeFormatMessageHandler
-               .getMessage("erreur.impossible.recup.info"), except);
+    } catch (final Exception except) {
+      throw new ReferentielRuntimeException(messageHandler.getMessage("erreur.impossible.recup.info"), except);
       }
    }
 

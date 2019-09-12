@@ -27,7 +27,6 @@ import fr.urssaf.image.sae.metadata.utils.Utils;
  * Classe qui implémente l'interface
  * {@link fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO
  * MetadataReferenceService}
- * 
  */
 @Service
 @Qualifier("metadataReferenceDAO")
@@ -37,7 +36,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    private ApplicationContext context;
 
    private enum MetaType {
-      ALL_METADATAS
+                          ALL_METADATAS
    };
 
    private final LoadingCache<MetaType, Map<String, MetadataReference>> metadataReference;
@@ -65,6 +64,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final Map<String, MetadataReference> getAllMetadataReferences() {
       synchronized (this) {
          return metadataReference.getUnchecked(MetaType.ALL_METADATAS);
@@ -73,15 +73,28 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    /**
     * {@inheritDoc}
-    * 
     */
-   public final Map<String, MetadataReference> getConsultableMetadataReferences()
-         throws ReferentialException {
-      final Map<String, MetadataReference> csltMetaDatas = new HashMap<String, MetadataReference>();
+   @Override
+   public Map<String, MetadataReference> getAllMetadataReferencesByShortCode() throws ReferentialException {
+      final Map<String, MetadataReference> result = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
 
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
+         result.put(metaData.getValue().getShortCode(), metaData.getValue());
+      }
+      return result;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Map<String, MetadataReference> getConsultableMetadataReferences()
+         throws ReferentialException {
+      final Map<String, MetadataReference> csltMetaDatas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
+
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isConsultable()) {
             csltMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -91,14 +104,13 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    /**
     * {@inheritDoc}
-    * 
     */
+   @Override
    public final Map<String, MetadataReference> getSearchableMetadataReferences()
          throws ReferentialException {
-      final Map<String, MetadataReference> srchMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> srchMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isSearchable()) {
             srchMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -108,14 +120,13 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    /**
     * {@inheritDoc}
-    * 
     */
+   @Override
    public final Map<String, MetadataReference> getArchivableMetadataReferences()
          throws ReferentialException {
-      final Map<String, MetadataReference> archMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> archMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isArchivable()) {
             archMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -125,8 +136,8 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    /**
     * {@inheritDoc}
-    * 
     */
+   @Override
    public final MetadataReference getByLongCode(final String longCode)
          throws ReferentialException {
 
@@ -135,14 +146,12 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
 
    /**
     * {@inheritDoc}
-    * 
     */
-   @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+   @Override
    public final MetadataReference getByShortCode(final String shortCode)
          throws ReferentialException {
       MetadataReference metadatafound = null;
-      for (Entry<String, MetadataReference> reference : Utils.nullSafeMap(
-            getAllMetadataReferences()).entrySet()) {
+      for (final Entry<String, MetadataReference> reference : Utils.nullSafeMap(getAllMetadataReferences()).entrySet()) {
          if (reference.getValue().getShortCode().equals(shortCode)) {
             metadatafound = reference.getValue();
          }
@@ -153,12 +162,12 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final Map<String, MetadataReference> getRequiredForStorageMetadataReferences()
          throws ReferentialException {
-      final Map<String, MetadataReference> reqMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> reqMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isRequiredForStorage()) {
             reqMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -169,12 +178,12 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final Map<String, MetadataReference> getDefaultConsultableMetadataReferences()
          throws ReferentialException {
-      final Map<String, MetadataReference> reqMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> reqMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isDefaultConsultable()) {
             reqMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -185,12 +194,12 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    /**
     * {@inheritDoc}
     */
+   @Override
    public final Map<String, MetadataReference> getRequiredForArchivalMetadataReferences()
          throws ReferentialException {
-      final Map<String, MetadataReference> reqMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> reqMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isRequiredForArchival()) {
             reqMetaDatas.put(metaData.getKey(), metaData.getValue());
          }
@@ -205,30 +214,30 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    @Autowired
    public MetadataReferenceDAOImpl(
-         @Value("${sae.metadata.cache}") int cacheDuration,
-         @Value("${sae.metadata.initCacheOnStartup}") boolean initCacheOnStartup,
-         final SaeMetadataSupport metadataSupport) {
+                                   @Value("${sae.metadata.cache}") final int cacheDuration,
+                                   @Value("${sae.metadata.initCacheOnStartup}") final boolean initCacheOnStartup,
+                                   final SaeMetadataSupport metadataSupport) {
       metadataReference = CacheBuilder.newBuilder()
-            .refreshAfterWrite(cacheDuration, TimeUnit.MINUTES)
-            .build(new CacheLoader<MetaType, Map<String, MetadataReference>>() {
+                                      .refreshAfterWrite(cacheDuration, TimeUnit.MINUTES)
+                                      .build(new CacheLoader<MetaType, Map<String, MetadataReference>>() {
 
-               @Override
-               public Map<String, MetadataReference> load(MetaType identifiant) {
-                  if (identifiant.equals(MetaType.ALL_METADATAS)) {
-                     List<MetadataReference> listeMeta = metadataSupport
-                           .findAll();
-                     Map<String, MetadataReference> mapMeta = new HashMap<String, MetadataReference>();
-                     for (MetadataReference meta : listeMeta) {
-                        mapMeta.put(meta.getLongCode(), meta);
-                     }
-                     return mapMeta;
-                  } else {
-                     throw new MetadataRuntimeException(
-                           "Le type de métadonnée n'est pas autorisé");
-                  }
-               }
+                                         @Override
+                                         public Map<String, MetadataReference> load(final MetaType identifiant) {
+                                            if (identifiant.equals(MetaType.ALL_METADATAS)) {
+                                               final List<MetadataReference> listeMeta = metadataSupport
+                                                                                                        .findAll();
+                                               final Map<String, MetadataReference> mapMeta = new HashMap<>();
+                                               for (final MetadataReference meta : listeMeta) {
+                                                  mapMeta.put(meta.getLongCode(), meta);
+                                               }
+                                               return mapMeta;
+                                            } else {
+                                               throw new MetadataRuntimeException(
+                                                                                  "Le type de métadonnée n'est pas autorisé");
+                                            }
+                                         }
 
-            });
+                                      });
 
       this.metadataSupport = metadataSupport;
 
@@ -247,11 +256,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    public final Map<String, MetadataReference> getModifiableMetadataReferences()
          throws ReferentialException {
 
-      final Map<String, MetadataReference> archMetas = new HashMap<String, MetadataReference>();
-      final Map<String, MetadataReference> referentiel = this.metadataReference
-            .getUnchecked(MetaType.ALL_METADATAS);
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      final Map<String, MetadataReference> archMetas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isModifiable()) {
             archMetas.put(metaData.getKey(), metaData.getValue());
          }
@@ -264,11 +271,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    @Override
    public final Map<String, MetadataReference> getLeftTrimableMetadataReference() {
-      final Map<String, MetadataReference> archMetas = new HashMap<String, MetadataReference>();
-      final Map<String, MetadataReference> referentiel = this.metadataReference
-            .getUnchecked(MetaType.ALL_METADATAS);
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      final Map<String, MetadataReference> archMetas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isLeftTrimable()) {
             archMetas.put(metaData.getKey(), metaData.getValue());
          }
@@ -281,11 +286,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
     */
    @Override
    public final Map<String, MetadataReference> getRightTrimableMetadataReference() {
-      final Map<String, MetadataReference> archMetas = new HashMap<String, MetadataReference>();
-      final Map<String, MetadataReference> referentiel = this.metadataReference
-            .getUnchecked(MetaType.ALL_METADATAS);
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      final Map<String, MetadataReference> archMetas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().isRightTrimable()) {
             archMetas.put(metaData.getKey(), metaData.getValue());
          }
@@ -299,11 +302,9 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    @Override
    public final Map<String, MetadataReference> getTransferableMetadataReference()
          throws ReferentialException {
-      final Map<String, MetadataReference> transMetas = new HashMap<String, MetadataReference>();
-      final Map<String, MetadataReference> referentiel = this.metadataReference
-            .getUnchecked(MetaType.ALL_METADATAS);
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      final Map<String, MetadataReference> transMetas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().getTransferable()) {
             transMetas.put(metaData.getKey(), metaData.getValue());
          }
@@ -311,18 +312,32 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
       return transMetas;
    }
 
-   
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public final Map<String, MetadataReference> getTransferableMetadataReferenceByShortCode()
+         throws ReferentialException {
+      final Map<String, MetadataReference> transMetas = new HashMap<>();
+      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
+         if (metaData.getValue().getTransferable()) {
+            transMetas.put(metaData.getValue().getShortCode(), metaData.getValue());
+         }
+      }
+      return transMetas;
+   }
+
    /**
     * {@inheritDoc}
     */
    @Override
    public Map<String, MetadataReference> getAllMetadataReferencesPourVerifDroits()
          throws ReferentialException {
-      final Map<String, MetadataReference> csltMetaDatas = new HashMap<String, MetadataReference>();
+      final Map<String, MetadataReference> csltMetaDatas = new HashMap<>();
       final Map<String, MetadataReference> referentiel = getAllMetadataReferences();
 
-      for (Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(
-            referentiel).entrySet()) {
+      for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
 
          if (!"not".equals(metaData.getValue().getShortCode())
                && !"gel".equals(metaData.getValue().getShortCode())

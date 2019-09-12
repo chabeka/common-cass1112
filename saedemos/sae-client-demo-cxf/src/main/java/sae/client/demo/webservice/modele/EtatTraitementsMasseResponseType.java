@@ -8,20 +8,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for etatTraitementsMasseResponseType complex type.
+ * <p>Classe Java pour etatTraitementsMasseResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="etatTraitementsMasseResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="traitementsMasse" type="{http://www.cirtil.fr/saeService}listeTraitementsMasseType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="etatTraitementsMasseResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="traitementsMasse" type="{http://www.cirtil.fr/saeService}listeTraitementsMasseType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -38,7 +38,7 @@ public class EtatTraitementsMasseResponseType {
     protected ListeTraitementsMasseType traitementsMasse;
 
     /**
-     * Gets the value of the traitementsMasse property.
+     * Obtient la valeur de la propriété traitementsMasse.
      * 
      * @return
      *     possible object is
@@ -50,7 +50,7 @@ public class EtatTraitementsMasseResponseType {
     }
 
     /**
-     * Sets the value of the traitementsMasse property.
+     * Définit la valeur de la propriété traitementsMasse.
      * 
      * @param value
      *     allowed object is

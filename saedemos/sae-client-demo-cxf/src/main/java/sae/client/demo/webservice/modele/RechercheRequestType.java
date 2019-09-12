@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for rechercheRequestType complex type.
+ * <p>Classe Java pour rechercheRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rechercheRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="requete" type="{http://www.cirtil.fr/saeService}requeteRechercheType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="requete" type="{http://www.cirtil.fr/saeService}requeteRechercheType"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeCodeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -42,7 +42,7 @@ public class RechercheRequestType {
     protected ListeMetadonneeCodeType metadonnees;
 
     /**
-     * Gets the value of the requete property.
+     * Obtient la valeur de la propriété requete.
      * 
      * @return
      *     possible object is
@@ -54,7 +54,7 @@ public class RechercheRequestType {
     }
 
     /**
-     * Sets the value of the requete property.
+     * Définit la valeur de la propriété requete.
      * 
      * @param value
      *     allowed object is
@@ -66,7 +66,7 @@ public class RechercheRequestType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class RechercheRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

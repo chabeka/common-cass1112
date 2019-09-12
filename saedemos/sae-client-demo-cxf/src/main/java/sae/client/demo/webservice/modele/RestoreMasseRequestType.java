@@ -8,23 +8,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d'entr�e de l'op�ration
+ * Paramètre d'entrée de l'opération
  *             'restoreMasse'
  * 
- * <p>Java class for restoreMasseRequestType complex type.
+ * <p>Classe Java pour restoreMasseRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="restoreMasseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="restoreMasseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class RestoreMasseRequestType {
     protected String uuid;
 
     /**
-     * Gets the value of the uuid property.
+     * Obtient la valeur de la propriété uuid.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class RestoreMasseRequestType {
     }
 
     /**
-     * Sets the value of the uuid property.
+     * Définit la valeur de la propriété uuid.
      * 
      * @param value
      *     allowed object is

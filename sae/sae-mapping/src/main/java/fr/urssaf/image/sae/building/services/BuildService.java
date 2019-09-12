@@ -24,7 +24,7 @@ public interface BuildService {
     * 
     * @param luceneQuery
     *           : La requête lucene contenant les codes courts des métadonnées.
-    *@param limit
+    * @param limit
     *           : Le nombre d'occurrence à retourner.
     * @param metadatas
     *           : La liste des objets de type {@link SAEMetadata}(chaque objet
@@ -32,7 +32,7 @@ public interface BuildService {
     * @return un objet de type {@link LuceneCriteria}
     */
    LuceneCriteria buildStorageLuceneCriteria(final String luceneQuery,
-         int limit, final List<SAEMetadata> metadatas);
+                                             int limit, final List<SAEMetadata> metadatas);
 
    /**
     * Service permettant de construire un objet de type
@@ -40,23 +40,21 @@ public interface BuildService {
     * 
     * @param luceneQuery
     *           : La requête lucene contenant les codes courts des métadonnées.
-    *@param limit
+    * @param limit
     *           : Le nombre d'occurrence à retourner.
     * @param metadatas
     *           : La liste des objets de type {@link SAEMetadata}(chaque objet
     *           contient un code court et code long).
     * @param filters
     *           Les filtres à appliquer après la recherche
-    * @param lastIdDoc
-    *           l'UUID du dernier doc retourné par la recherche précédente
-    * @param codeCourtVaryingMeta
-    *           Code court de la métadonnée variable
+    * @param pageId
+    *           Identifie la page à retourner (ou null pour la 1ere page)
     * @return un objet de type {@link LuceneCriteria}
     */
    PaginatedLuceneCriteria buildStoragePaginatedLuceneCriteria(
-         final String luceneQuery, int limit,
-         final List<SAEMetadata> metadatas, List<AbstractFilter> filters,
-         UUID lastIdDoc, String codeCourtVaryingMeta);
+                                                               final String luceneQuery, int limit,
+                                                               final List<SAEMetadata> metadatas, List<AbstractFilter> filters,
+                                                               String pageId);
 
    /**
     * Service permettant de construire un objet de type {@link UUIDCriteria} à
@@ -64,14 +62,13 @@ public interface BuildService {
     * 
     * @param uuid
     *           : identifiant unique du document UUID.
-    * 
     * @param metadatas
     *           : La liste des objets de type {@link SAEMetadata}(chaque objet
     *           contient un code court et code long).
     * @return un objet de type {@link UUIDCriteria}
     */
    UUIDCriteria buildStorageUuidCriteria(final UUID uuid,
-         final List<SAEMetadata> metadatas);
+                                         final List<SAEMetadata> metadatas);
 
    /**
     * Service permettant de construire un objet de type {@link UntypedDocument}
@@ -85,6 +82,6 @@ public interface BuildService {
     */
    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops")
    UntypedDocument buildUntypedDocument(final DataHandler content,
-         final Map<String, String> metadatas);
+                                        final Map<String, String> metadatas);
 
 }

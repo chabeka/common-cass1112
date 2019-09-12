@@ -8,20 +8,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for etatTraitementsMasseRequestType complex type.
+ * <p>Classe Java pour etatTraitementsMasseRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="etatTraitementsMasseRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="listeUuid" type="{http://www.cirtil.fr/saeService}listeUuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="etatTraitementsMasseRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="listeUuid" type="{http://www.cirtil.fr/saeService}listeUuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -38,7 +38,7 @@ public class EtatTraitementsMasseRequestType {
     protected ListeUuidType listeUuid;
 
     /**
-     * Gets the value of the listeUuid property.
+     * Obtient la valeur de la propriété listeUuid.
      * 
      * @return
      *     possible object is
@@ -50,7 +50,7 @@ public class EtatTraitementsMasseRequestType {
     }
 
     /**
-     * Sets the value of the listeUuid property.
+     * Définit la valeur de la propriété listeUuid.
      * 
      * @param value
      *     allowed object is

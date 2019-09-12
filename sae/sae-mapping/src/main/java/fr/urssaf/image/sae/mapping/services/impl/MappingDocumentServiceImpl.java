@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.mapping.services.impl;
 
+import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -329,6 +330,40 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
    * {@inheritDoc}
    */
   @Override
+  public List<StorageMetadata> untypedMetadatasToStorageMetadatas(final List<UntypedMetadata> metadatas)
+      throws InvalidSAETypeException, MappingFromReferentialException {
+    final List<StorageMetadata> saeStorageMetadatas = new ArrayList<>();
+    for (final UntypedMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+      try {
+        final MetadataReference reference = referenceDAO
+                                                        .getByLongCode(metadata.getLongCode());
+        if (reference != null) {
+          if (metadata.getValue() != null && StringUtils.isNotBlank(metadata.getValue().toString())) {
+            saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), Utils.conversionToObject(metadata.getValue(), reference)));
+          } else {
+            // Correspond à une métadonnée à supprimer, on met donc volontairement une chaine vide.
+            saeStorageMetadatas.add(new StorageMetadata(reference.getShortCode(), StringUtils.EMPTY));
+          }
+        } else {
+          throw new ReferentialException("La métadonnées " + metadata.getLongCode() + " n'est pas référencé.");
+        }
+
+      }
+      catch (final ParseException | IllegalArgumentException parseExcept) {
+        throw new InvalidSAETypeException(MessageFormat.format("Le type de la  métadonnée \"{0}\" n'est pas valide.", metadata), parseExcept);
+      }
+      catch (final ReferentialException refExcpt) {
+        throw new MappingFromReferentialException(refExcpt);
+      }
+    }
+
+    return saeStorageMetadatas;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
   public List<UntypedMetadata> storageMetadataToUntypedMetadata(
                                                                 final List<StorageMetadata> storageMetas)
       throws InvalidSAETypeException,
@@ -344,8 +379,8 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
                                                  Utils.convertToString(metadata.getValue(), reference)));
 
       }
-      catch (final ParseException parseExcept) {
-        throw new InvalidSAETypeException(parseExcept);
+      catch (final ParseException | IllegalArgumentException parseExcept) {
+        throw new InvalidSAETypeException(MessageFormat.format("Le type de la  métadonnée \"{0}\" n'est pas valide.", metadata), parseExcept);
       }
       catch (final ReferentialException refExcpt) {
         throw new MappingFromReferentialException(refExcpt);
@@ -413,6 +448,29 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   }
 
   /**
+   * {@inheritDoc}
+   */
+  @Override
+  public List<SAEMetadata> storageMetadatasToSaeMetadatas(final List<StorageMetadata> metadatas) throws MappingFromReferentialException {
+    final List<SAEMetadata> saeMetadatas = new ArrayList<>();
+    for (final StorageMetadata metadata : Utils.nullSafeIterable(metadatas)) {
+      try {
+        final MetadataReference reference = referenceDAO
+                                                        .getByShortCode(metadata.getShortCode());
+        saeMetadatas.add(new SAEMetadata(reference.getLongCode(),
+                                         reference
+                                                  .getShortCode(),
+                                         metadata.getValue()));
+      }
+      catch (final ReferentialException refExcpt) {
+        throw new MappingFromReferentialException(refExcpt);
+      }
+    }
+
+    return saeMetadatas;
+  }
+
+  /**
    * Setter pour referenceDAO
    * 
    * @param referenceDAO
@@ -421,4 +479,5 @@ public final class MappingDocumentServiceImpl implements MappingDocumentService 
   public void setReferenceDAO(final MetadataReferenceDAO referenceDAO) {
     this.referenceDAO = referenceDAO;
   }
+
 }

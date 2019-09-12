@@ -4,35 +4,36 @@ package sae.client.demo.webservice.modele;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d�entr�e de l�op�ration 'stockage
+ * Paramètre d’entrée de l’opération 'stockage
  *             Unitaire'
  * 
- * <p>Java class for stockageUnitaireRequestType complex type.
+ * <p>Classe Java pour stockageUnitaireRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="stockageUnitaireRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *         &lt;choice>
- *           &lt;element name="urlEcdeDoc" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/>
- *           &lt;element name="dataFileDoc" type="{http://www.cirtil.fr/saeService}dataFileType"/>
- *         &lt;/choice>
- *         &lt;choice minOccurs="0">
- *           &lt;element name="urlEcdeDocOrigine" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/>
- *           &lt;element name="dataFileAttached" type="{http://www.cirtil.fr/saeService}dataFileType"/>
- *         &lt;/choice>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="stockageUnitaireRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *         &lt;choice&gt;
+ *           &lt;element name="urlEcdeDoc" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/&gt;
+ *           &lt;element name="dataFileDoc" type="{http://www.cirtil.fr/saeService}dataFileType"/&gt;
+ *         &lt;/choice&gt;
+ *         &lt;choice minOccurs="0"&gt;
+ *           &lt;element name="urlEcdeDocOrigine" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/&gt;
+ *           &lt;element name="dataFileAttached" type="{http://www.cirtil.fr/saeService}dataFileType"/&gt;
+ *         &lt;/choice&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -51,13 +52,15 @@ public class StockageUnitaireRequestType {
 
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
+    @XmlSchemaType(name = "anyURI")
     protected String urlEcdeDoc;
     protected DataFileType dataFileDoc;
+    @XmlSchemaType(name = "anyURI")
     protected String urlEcdeDocOrigine;
     protected DataFileType dataFileAttached;
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -69,7 +72,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is
@@ -81,7 +84,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Gets the value of the urlEcdeDoc property.
+     * Obtient la valeur de la propriété urlEcdeDoc.
      * 
      * @return
      *     possible object is
@@ -93,7 +96,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the urlEcdeDoc property.
+     * Définit la valeur de la propriété urlEcdeDoc.
      * 
      * @param value
      *     allowed object is
@@ -105,7 +108,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Gets the value of the dataFileDoc property.
+     * Obtient la valeur de la propriété dataFileDoc.
      * 
      * @return
      *     possible object is
@@ -117,7 +120,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the dataFileDoc property.
+     * Définit la valeur de la propriété dataFileDoc.
      * 
      * @param value
      *     allowed object is
@@ -129,7 +132,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Gets the value of the urlEcdeDocOrigine property.
+     * Obtient la valeur de la propriété urlEcdeDocOrigine.
      * 
      * @return
      *     possible object is
@@ -141,7 +144,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the urlEcdeDocOrigine property.
+     * Définit la valeur de la propriété urlEcdeDocOrigine.
      * 
      * @param value
      *     allowed object is
@@ -153,7 +156,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Gets the value of the dataFileAttached property.
+     * Obtient la valeur de la propriété dataFileAttached.
      * 
      * @return
      *     possible object is
@@ -165,7 +168,7 @@ public class StockageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the dataFileAttached property.
+     * Définit la valeur de la propriété dataFileAttached.
      * 
      * @param value
      *     allowed object is

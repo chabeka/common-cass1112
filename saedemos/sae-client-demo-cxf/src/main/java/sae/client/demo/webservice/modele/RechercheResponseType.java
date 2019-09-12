@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for rechercheResponseType complex type.
+ * <p>Classe Java pour rechercheResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="rechercheResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheType"/>
- *         &lt;element name="resultatTronque" type="{http://www.w3.org/2001/XMLSchema}boolean"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="rechercheResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="resultats" type="{http://www.cirtil.fr/saeService}listeResultatRechercheType"/&gt;
+ *         &lt;element name="resultatTronque" type="{http://www.w3.org/2001/XMLSchema}boolean"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class RechercheResponseType {
     protected boolean resultatTronque;
 
     /**
-     * Gets the value of the resultats property.
+     * Obtient la valeur de la propriété resultats.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class RechercheResponseType {
     }
 
     /**
-     * Sets the value of the resultats property.
+     * Définit la valeur de la propriété resultats.
      * 
      * @param value
      *     allowed object is
@@ -65,7 +65,7 @@ public class RechercheResponseType {
     }
 
     /**
-     * Gets the value of the resultatTronque property.
+     * Obtient la valeur de la propriété resultatTronque.
      * 
      */
     public boolean isResultatTronque() {
@@ -73,7 +73,7 @@ public class RechercheResponseType {
     }
 
     /**
-     * Sets the value of the resultatTronque property.
+     * Définit la valeur de la propriété resultatTronque.
      * 
      */
     public void setResultatTronque(boolean value) {

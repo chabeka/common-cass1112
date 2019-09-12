@@ -4,31 +4,32 @@ package sae.client.demo.webservice.modele;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d'entr�e de l'op�ration 'archivage
+ * Paramètre d'entrée de l'opération 'archivage
  *             Unitaire PJ'
  * 
- * <p>Java class for archivageUnitairePJRequestType complex type.
+ * <p>Classe Java pour archivageUnitairePJRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="archivageUnitairePJRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *         &lt;choice>
- *           &lt;element name="ecdeUrl" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/>
- *           &lt;element name="dataFile" type="{http://www.cirtil.fr/saeService}dataFileType"/>
- *         &lt;/choice>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="archivageUnitairePJRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *         &lt;choice&gt;
+ *           &lt;element name="ecdeUrl" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/&gt;
+ *           &lt;element name="dataFile" type="{http://www.cirtil.fr/saeService}dataFileType"/&gt;
+ *         &lt;/choice&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -45,11 +46,12 @@ public class ArchivageUnitairePJRequestType {
 
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
+    @XmlSchemaType(name = "anyURI")
     protected String ecdeUrl;
     protected DataFileType dataFile;
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -61,7 +63,7 @@ public class ArchivageUnitairePJRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is
@@ -73,7 +75,7 @@ public class ArchivageUnitairePJRequestType {
     }
 
     /**
-     * Gets the value of the ecdeUrl property.
+     * Obtient la valeur de la propriété ecdeUrl.
      * 
      * @return
      *     possible object is
@@ -85,7 +87,7 @@ public class ArchivageUnitairePJRequestType {
     }
 
     /**
-     * Sets the value of the ecdeUrl property.
+     * Définit la valeur de la propriété ecdeUrl.
      * 
      * @param value
      *     allowed object is
@@ -97,7 +99,7 @@ public class ArchivageUnitairePJRequestType {
     }
 
     /**
-     * Gets the value of the dataFile property.
+     * Obtient la valeur de la propriété dataFile.
      * 
      * @return
      *     possible object is
@@ -109,7 +111,7 @@ public class ArchivageUnitairePJRequestType {
     }
 
     /**
-     * Sets the value of the dataFile property.
+     * Définit la valeur de la propriété dataFile.
      * 
      * @param value
      *     allowed object is

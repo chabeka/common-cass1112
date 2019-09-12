@@ -9,6 +9,7 @@ import fr.urssaf.image.sae.metadata.rules.MetadataIsArchivableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataIsConsultableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataIsModifiableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataIsSearchableRule;
+import fr.urssaf.image.sae.metadata.rules.MetadataIsTransferableRule;
 import fr.urssaf.image.sae.metadata.rules.MetadataValueIsRequiredRule;
 import fr.urssaf.image.sae.metadata.rules.UntypedMetadataIsRequiredRule;
 import fr.urssaf.image.sae.metadata.rules.UntypedMetadataValueLengthRule;
@@ -36,6 +37,8 @@ public class MetadataRuleFactory {
    private MetadataExistingRule existingRule;
    @Autowired
    private MetadataIsModifiableRule modifiableRule;
+   @Autowired
+   private MetadataIsTransferableRule transferableRule;
 
    @Autowired
    private UntypedMetadataValueLengthRule valueLengthRule;
@@ -201,5 +204,19 @@ public class MetadataRuleFactory {
          UntypedMetadataIsRequiredRule requiredValueTypeRule) {
       this.requiredValueTypeRule = requiredValueTypeRule;
    }
+
+  /**
+   * @return the transferableRule
+   */
+  public MetadataIsTransferableRule getTransferableRule() {
+    return transferableRule;
+  }
+
+  /**
+   * @param transferableRule the transferableRule to set
+   */
+  public void setTransferableRule(MetadataIsTransferableRule transferableRule) {
+    this.transferableRule = transferableRule;
+  }
 
 }

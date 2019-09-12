@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -37,9 +36,6 @@ import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
-import fr.urssaf.image.sae.mapping.exception.InvalidSAETypeException;
-import fr.urssaf.image.sae.mapping.exception.MappingFromReferentialException;
-import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
@@ -63,14 +59,8 @@ import fr.urssaf.image.sae.services.exception.enrichment.UnknownCodeRndEx;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
 import fr.urssaf.image.sae.services.exception.transfert.ArchiveAlreadyTransferedException;
 import fr.urssaf.image.sae.services.exception.transfert.TransfertException;
-import fr.urssaf.image.sae.services.reprise.exception.TraitementRepriseAlreadyDoneException;
 import fr.urssaf.image.sae.storage.exception.ConnectionServiceEx;
 import fr.urssaf.image.sae.storage.exception.InsertionIdGedExistantEx;
-import fr.urssaf.image.sae.storage.exception.RetrievalServiceEx;
-import fr.urssaf.image.sae.storage.exception.SearchingServiceEx;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocument;
-import fr.urssaf.image.sae.storage.model.storagedocument.StorageMetadata;
-import fr.urssaf.image.sae.storage.services.storagedocument.StorageTransfertService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -106,6 +96,7 @@ public class SAETransfertServiceTest {
    private SAEServiceTestProvider testProviderGNS;
 
    private UUID uidDocGNT;
+
    private UUID uidDocGNS;
 
    private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
@@ -137,7 +128,7 @@ public class SAETransfertServiceTest {
       viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
       final SaeDroits saeDroits = new SaeDroits();
-      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
       final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       final Prmd prmd = new Prmd();
@@ -157,7 +148,9 @@ public class SAETransfertServiceTest {
       viExtrait.setSaeDroits(saeDroits);
 
       final AuthenticationToken token = AuthenticationFactory.createAuthentication(
-                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
+                                                                                 viExtrait.getIdUtilisateur(),
+                                                                                 viExtrait,
+                                                                                 roles);
       AuthenticationContext.setAuthenticationToken(token);
 
       // Paramétrage du RND
@@ -182,11 +175,14 @@ public class SAETransfertServiceTest {
          saeTransfertService.transfertDoc(null);
          Assert.fail("une IllegalArgumentException est attendue");
 
-      } catch (final IllegalArgumentException e) {
-         Assert.assertTrue("le message doit etre correct", e.getMessage()
+    }
+    catch (final IllegalArgumentException e) {
+      Assert.assertTrue("le message doit etre correct",
+                        e.getMessage()
                            .contains("identifiant de l'archive"));
 
-      } catch (final Exception e) {
+    }
+    catch (final Exception e) {
          Assert.fail("une IllegalArgumentException est attendue");
       }
    }
@@ -197,7 +193,7 @@ public class SAETransfertServiceTest {
       final byte[] content = FileUtils.readFileToByteArray(srcFile);
 
       final String parsePatterns = new String("yyyy-MM-dd");
-      final Map<String, Object> metadatas = new HashMap<String, Object>();
+    final Map<String, Object> metadatas = new HashMap<>();
 
       final DateTimeFormatter formatter = DateTimeFormat.forPattern(parsePatterns)
             .withZoneUTC();
@@ -222,8 +218,15 @@ public class SAETransfertServiceTest {
       final String codeRND = "2.3.1.1.12";
       final String title = "Attestation de transfert";
 
-      return testProvider.captureDocument(content, metadatas, documentTitle,
-                                          documentType, date, date, codeRND, title, null);
+    return testProvider.captureDocument(content,
+                                        metadatas,
+                                        documentTitle,
+                                        documentType,
+                                        date,
+                                        date,
+                                        codeRND,
+                                        title,
+                                        null);
    }
 
    @Test
@@ -238,7 +241,8 @@ public class SAETransfertServiceTest {
          saeTransfertService.transfertDoc(uuid);
          Assert.fail("une ArchiveInexistanteEx est attendue");
 
-      } catch (final ArchiveInexistanteEx e) {
+    }
+    catch (final ArchiveInexistanteEx e) {
          // On a la bonne exception
       }
    }
@@ -255,84 +259,21 @@ public class SAETransfertServiceTest {
       final Document doc = testProviderGNS.searchDocument(uidDocGNS);
 
       Assert.assertNotNull(
-                           "l'UUID '" + uidDocGNS + "' doit exister sur la GNS", doc);
+                         "l'UUID '" + uidDocGNS + "' doit exister sur la GNS",
+                         doc);
 
       // -- Appel méthode de transfert sur un doc déjà transféré
       try {
          saeTransfertService.transfertDoc(uidDocGNS);
          Assert.fail("une ArchiveAlreadyTransferedException est attendue");
 
-      } catch (final ArchiveAlreadyTransferedException e) {
+    }
+    catch (final ArchiveAlreadyTransferedException e) {
          // On a la bonne exception
-      } catch (final Exception e) {
+    }
+    catch (final Exception e) {
          Assert.fail("une ArchiveAlreadyTransferedException est attendue: "
                + e.getMessage());
-      }
-   }
-
-   @Test
-   public void testModifierMeta() throws ConnectionServiceEx, IOException,
-   ParseException, ArchiveAlreadyTransferedException,
-   ArchiveInexistanteEx, TransfertException {
-
-      final String erreur = "Une erreur interne à l'application est survenue lors du transfert. Transfert impossible";
-      // -- Insertion d'un document de test sur la GNT
-      final UUID idArchive = insertDoc(testProviderGNT);
-
-      final List<StorageMetadata> listeMeta = new ArrayList<StorageMetadata>();
-      listeMeta.add(new StorageMetadata("SM_TITLE",
-            "Attestation de transfert test"));
-      // Le codeRND peut ne pas être autorisé et bloquer le test
-      // listeMeta.add(new StorageMetadata("SM_DOCUMENT_TYPE", "7.4.1.2.4"));
-
-      try {
-         saeTransfertService.controleDroitTransfert(idArchive);
-
-         StorageDocument document = saeTransfertService
-               .recupererDocMetaTransferable(idArchive);
-
-         final StorageDocument documentGNS = saeTransfertService
-               .transfertControlePlateforme(document, idArchive, false, null);
-
-         if (documentGNS == null) {
-            document = saeTransfertService.updateMetaDocumentForTransfertMasse(
-                                                                               document, listeMeta, UUID.randomUUID());
-            saeTransfertService.transfertDocument(document);
-         } else {
-            // -- Le document existe sur la GNS et sur la GNT
-            final String uuid = idArchive.toString();
-            final String message = "Le document {0} est anormalement présent en GNT et en GNS. Une intervention est nécessaire.";
-            throw new ArchiveAlreadyTransferedException(StringUtils.replace(
-                                                                            message, "{0}", uuid));
-         }
-
-         saeTransfertService.deleteDocApresTransfert(idArchive);
-
-         // -- Vérification présence fichier transféré
-         final Document doc = testProviderGNS.searchDocument(idArchive);
-         Assert.assertNotNull("l'UUID '" + idArchive
-                              + "' doit exister dans la GNS", doc);
-
-         // TEST sur métadonnée : Titre
-         Assert.assertEquals("la métadonnée 'Titre(sm_title)' est incorrecte",
-                             "Attestation de transfert test", doc.getTitle());
-
-      } catch (final ConnectionServiceEx ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final SearchingServiceEx ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final ReferentialException ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final InvalidSAETypeException ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final MappingFromReferentialException ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final RetrievalServiceEx ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final TraitementRepriseAlreadyDoneException ex) {
-         throw new TransfertException(erreur, ex);
-      } catch (final UnknownCodeRndEx e) {
-         throw new TransfertException(erreur, e);
       }
    }
 
@@ -412,7 +353,8 @@ public class SAETransfertServiceTest {
 
       // TEST sur métadonnée : Titre
       Assert.assertEquals("la métadonnée 'Titre(sm_title)' est incorrecte",
-                          "Attestation de transfert", doc.getTitle());
+                        "Attestation de transfert",
+                        doc.getTitle());
 
       // TEST sur métadonnée : DateCreation
       Assert.assertEquals(
@@ -431,26 +373,32 @@ public class SAETransfertServiceTest {
       // TEST sur métadonnée : DateDebutConservation
       Assert.assertEquals(
                           "la métadonnée 'DateDebutConservation(sm_life_cycle_reference_date)' est incorrecte",
-                          "2014-10-28 00:00:00", DateFormatUtils.formatUTC(
-                                                                           doc.getLifeCycleReferenceDate(), DATE_FORMAT));
+                        "2014-10-28 00:00:00",
+                        DateFormatUtils.formatUTC(
+                                                  doc.getLifeCycleReferenceDate(),
+                                                  DATE_FORMAT));
 
       // TEST sur métadonnée : TypeHash
       Assert.assertEquals(
                           "la métadonnée 'TypeHash(sm_digest_algorithm)' est incorrecte",
-                          "SHA-1", doc.getDigestAlgorithm());
+                        "SHA-1",
+                        doc.getDigestAlgorithm());
 
       // TEST sur métadonnée : Hash
       final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
       Assert.assertEquals("la métadonnée 'Hash(sm_digest)' est incorrecte",
-                          hash, doc.getDigest());
+                        hash,
+                        doc.getDigest());
 
       // TEST sur métadonnée : NomFichier
       Assert.assertEquals(
                           "la métadonnée 'NomFichier(sm_filename)' est incorrecte",
-                          "attestation_transfert", doc.getFilename());
+                        "attestation_transfert",
+                        doc.getFilename());
 
       Assert.assertEquals(
-                          "la métadonnée 'NomFichier(sm_extension)' est incorrecte", "pdf",
+                        "la métadonnée 'NomFichier(sm_extension)' est incorrecte",
+                        "pdf",
                           doc.getExtension());
    }
 
@@ -494,7 +442,8 @@ public class SAETransfertServiceTest {
 
       if (listeNotes.size() > 0) {
          Assert.assertEquals("Le contenu de la note est incorrect",
-                             "Contenu de la note", listeNotes.get(0).getContent());
+                          "Contenu de la note",
+                          listeNotes.get(0).getContent());
       } else {
          Assert.fail("Une note doit être présente sur le document");
       }

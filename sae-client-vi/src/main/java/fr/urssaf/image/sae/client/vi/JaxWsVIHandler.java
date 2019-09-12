@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Set;
 
 import javax.xml.namespace.QName;
+import javax.xml.soap.SOAPEnvelope;
 import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
 import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
@@ -49,7 +52,7 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
     *           login de l'utilisateur demandeur du service
     */
    public JaxWsVIHandler(final KeyStoreInterface iKeyStore, final List<String> pagms,
-                    final String issuer, final String login) {
+                         final String issuer, final String login) {
       super();
       this.iKeyStore = iKeyStore;
       this.issuer = issuer;
@@ -64,9 +67,9 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
    }
 
    /*
-    * (non-Javadoc)
-    * @see javax.xml.ws.handler.Handler#handleMessage(javax.xml.ws.handler.MessageContext)
-    */
+   * (non-Javadoc)
+   * @see javax.xml.ws.handler.Handler#handleMessage(javax.xml.ws.handler.MessageContext)
+   */
    @Override
    public boolean handleMessage(final SOAPMessageContext msgCtx) {
 
@@ -74,11 +77,22 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
       // XML
       try {
 
+         final Boolean outboundProperty = (Boolean) msgCtx.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
+         if (!outboundProperty) {
+            return true;
+         }
+
          // Génération de l'en-tête wsse
          final Document doc = VIGenerator.getWsseHeader(issuer, login, pagms, iKeyStore.getKeystore(), iKeyStore.getAlias(), iKeyStore.getPassword());
 
          // Ajout du message dans le header
          final SOAPMessage soapMsg = msgCtx.getMessage();
+         final SOAPPart soapPart = soapMsg.getSOAPPart();
+         final SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+         SOAPHeader soapHeader = soapEnvelope.getHeader();
+         if (soapHeader == null) {
+            soapHeader = soapEnvelope.addHeader();
+         }
          addXMLDocumentToSoapHeader(doc, soapMsg);
 
       }
@@ -90,18 +104,18 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
    }
 
    /*
-    * (non-Javadoc)
-    * @see javax.xml.ws.handler.Handler#close(javax.xml.ws.handler.MessageContext)
-    */
+   * (non-Javadoc)
+   * @see javax.xml.ws.handler.Handler#close(javax.xml.ws.handler.MessageContext)
+   */
    @Override
    public void close(final MessageContext arg0) {
       // do nothing
    }
 
    /*
-    * (non-Javadoc)
-    * @see javax.xml.ws.handler.Handler#handleFault(javax.xml.ws.handler.MessageContext)
-    */
+   * (non-Javadoc)
+   * @see javax.xml.ws.handler.Handler#handleFault(javax.xml.ws.handler.MessageContext)
+   */
    @Override
    public boolean handleFault(final SOAPMessageContext arg0) {
       // Return true to continue processing
@@ -109,9 +123,9 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
    }
 
    /*
-    * (non-Javadoc)
-    * @see javax.xml.ws.handler.soap.SOAPHandler#getHeaders()
-    */
+   * (non-Javadoc)
+   * @see javax.xml.ws.handler.soap.SOAPHandler#getHeaders()
+   */
    @Override
    public Set<QName> getHeaders() {
       // Pas de traitement spécifique sur les headers
@@ -119,14 +133,15 @@ public class JaxWsVIHandler implements SOAPHandler<SOAPMessageContext> {
    }
 
    /*
-    * Permet d'ajouter un fragment XML dans les entêtes SOAP
-    */
+   * Permet d'ajouter un fragment XML dans les entêtes SOAP
+   */
    private static void addXMLDocumentToSoapHeader(final Document document, final SOAPMessage soapMessage) throws SOAPException {
       final DocumentFragment docFrag = document.createDocumentFragment();
       final Element rootElement = document.getDocumentElement();
       if (rootElement != null) {
          docFrag.appendChild(rootElement);
-         final Document ownerDoc = soapMessage.getSOAPHeader().getOwnerDocument();
+         final SOAPHeader soapHeader = soapMessage.getSOAPHeader();
+         final Document ownerDoc = soapHeader.getOwnerDocument();
          final org.w3c.dom.Node replacingNode = ownerDoc.importNode(docFrag, true);
          soapMessage.getSOAPHeader().appendChild(replacingNode);
       }

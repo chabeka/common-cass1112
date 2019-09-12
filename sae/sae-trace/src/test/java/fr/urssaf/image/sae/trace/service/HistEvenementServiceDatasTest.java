@@ -30,24 +30,34 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 public class HistEvenementServiceDatasTest {
 
    private static final Date DATE = new Date();
+
    private static final Date DATE_INF = DateUtils.addHours(DATE, -1);
+
    private static final Date DATE_SUP = DateUtils.addHours(DATE, 1);
+
    private static final Date DATE_JOUR_SUIVANT = DateUtils.addDays(DATE, 1);
+
    private static final Date DATE_JOUR_PRECEDENT = DateUtils.addDays(DATE, -1);
 
    private static final String VALUE = "valeur";
+
    private static final String KEY = "clé";
 
    private static final String KEY_UUID = "UUID";
 
    private static final String USERNAME = "_ADMIN";
+
    private static final String LOGIN = "LE LOGIN";
+
    private static final String CONTRAT = "contrat de service";
+
    private static final String CODE_EVT = "code événement";
+
    private static final String ACTION = "action";
+
    private static final Map<String, Object> INFOS;
    static {
-      INFOS = new HashMap<String, Object>();
+      INFOS = new HashMap<>();
       INFOS.put(KEY, VALUE);
    }
 

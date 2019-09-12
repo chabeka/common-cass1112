@@ -627,8 +627,7 @@
 									</goals>
 									<configuration>
 										<fileSets>
-											<fileSet
-												implementation="org.apache.maven.shared.model.fileset.FileSet">
+											<fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
 												<directory>${project.basedir}</directory>
 												<includes>
 													<include>**/*.exec</include>

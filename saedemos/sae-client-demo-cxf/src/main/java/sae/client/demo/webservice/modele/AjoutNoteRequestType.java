@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ajoutNoteRequestType complex type.
+ * <p>Classe Java pour ajoutNoteRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="ajoutNoteRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="note" type="{http://www.cirtil.fr/saeService}noteTxtType"/>
- *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="ajoutNoteRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="note" type="{http://www.cirtil.fr/saeService}noteTxtType"/&gt;
+ *         &lt;element name="uuid" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -42,7 +42,7 @@ public class AjoutNoteRequestType {
     protected String uuid;
 
     /**
-     * Gets the value of the note property.
+     * Obtient la valeur de la propriété note.
      * 
      * @return
      *     possible object is
@@ -54,7 +54,7 @@ public class AjoutNoteRequestType {
     }
 
     /**
-     * Sets the value of the note property.
+     * Définit la valeur de la propriété note.
      * 
      * @param value
      *     allowed object is
@@ -66,7 +66,7 @@ public class AjoutNoteRequestType {
     }
 
     /**
-     * Gets the value of the uuid property.
+     * Obtient la valeur de la propriété uuid.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class AjoutNoteRequestType {
     }
 
     /**
-     * Sets the value of the uuid property.
+     * Définit la valeur de la propriété uuid.
      * 
      * @param value
      *     allowed object is

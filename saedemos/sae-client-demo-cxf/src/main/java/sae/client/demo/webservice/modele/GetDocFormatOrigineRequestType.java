@@ -8,20 +8,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for getDocFormatOrigineRequestType complex type.
+ * <p>Classe Java pour getDocFormatOrigineRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="getDocFormatOrigineRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="idDoc" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="getDocFormatOrigineRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="idDoc" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -38,7 +38,7 @@ public class GetDocFormatOrigineRequestType {
     protected String idDoc;
 
     /**
-     * Gets the value of the idDoc property.
+     * Obtient la valeur de la propriété idDoc.
      * 
      * @return
      *     possible object is
@@ -50,7 +50,7 @@ public class GetDocFormatOrigineRequestType {
     }
 
     /**
-     * Sets the value of the idDoc property.
+     * Définit la valeur de la propriété idDoc.
      * 
      * @param value
      *     allowed object is

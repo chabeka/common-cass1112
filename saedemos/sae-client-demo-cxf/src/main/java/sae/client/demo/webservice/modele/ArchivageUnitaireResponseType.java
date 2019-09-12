@@ -8,23 +8,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Valeur de retour de l'op�ration 'archivage
+ * Valeur de retour de l'opération 'archivage
  *             unitaire'
  * 
- * <p>Java class for archivageUnitaireResponseType complex type.
+ * <p>Classe Java pour archivageUnitaireResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="archivageUnitaireResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="archivageUnitaireResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="idArchive" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class ArchivageUnitaireResponseType {
     protected String idArchive;
 
     /**
-     * Gets the value of the idArchive property.
+     * Obtient la valeur de la propriété idArchive.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class ArchivageUnitaireResponseType {
     }
 
     /**
-     * Sets the value of the idArchive property.
+     * Définit la valeur de la propriété idArchive.
      * 
      * @param value
      *     allowed object is

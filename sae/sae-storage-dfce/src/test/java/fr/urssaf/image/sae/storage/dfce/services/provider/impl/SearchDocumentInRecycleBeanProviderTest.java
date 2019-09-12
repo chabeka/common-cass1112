@@ -28,11 +28,12 @@ import junit.framework.Assert;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-storage-dfce-test.xml" })
+@ContextConfiguration(locations = {"/applicationContext-sae-storage-dfce-test.xml"})
 public class SearchDocumentInRecycleBeanProviderTest {
 
    @Autowired
    private CommonsServices commonsServices;
+
    @Autowired
    private StorageDocumentService storageDocumentService;
 
@@ -45,7 +46,7 @@ public class SearchDocumentInRecycleBeanProviderTest {
    @Test
    @Ignore
    public final void searchDocumentInRecycleBean() throws ConnectionServiceEx,
-   SearchingServiceEx, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
+         SearchingServiceEx, InsertionServiceEx, QueryParseServiceEx, InsertionIdGedExistantEx {
 
       // On insert le document.
       final StorageDocument document = storageDocumentService.insertStorageDocument(
@@ -54,7 +55,11 @@ public class SearchDocumentInRecycleBeanProviderTest {
       Assert.assertNotNull(document.getUuid());
       final String lucene = String.format("%s:%s", "apr", "GED");
       final PaginatedLuceneCriteria paginatedLuceneCriteria = new PaginatedLuceneCriteria(
-                                                                                          lucene, 10, null, null, null, null);
+                                                                                          lucene,
+                                                                                          10,
+                                                                                          null,
+                                                                                          null,
+                                                                                          null);
 
       final PaginatedStorageDocuments strDocuments = storageDocumentService.searchStorageDocumentsInRecycleBean(paginatedLuceneCriteria);
 

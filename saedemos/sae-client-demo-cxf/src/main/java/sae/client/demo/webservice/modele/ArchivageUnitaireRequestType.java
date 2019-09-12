@@ -4,28 +4,29 @@ package sae.client.demo.webservice.modele;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Param�tre d'entr�e de l'op�ration 'archivage
+ * Paramètre d'entrée de l'opération 'archivage
  *             unitaire'
  * 
- * <p>Java class for archivageUnitaireRequestType complex type.
+ * <p>Classe Java pour archivageUnitaireRequestType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="archivageUnitaireRequestType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="ecdeUrl" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="archivageUnitaireRequestType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="ecdeUrl" type="{http://www.cirtil.fr/saeService}ecdeUrlType"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -40,12 +41,13 @@ import javax.xml.bind.annotation.XmlType;
 public class ArchivageUnitaireRequestType {
 
     @XmlElement(required = true)
+    @XmlSchemaType(name = "anyURI")
     protected String ecdeUrl;
     @XmlElement(required = true)
     protected ListeMetadonneeType metadonnees;
 
     /**
-     * Gets the value of the ecdeUrl property.
+     * Obtient la valeur de la propriété ecdeUrl.
      * 
      * @return
      *     possible object is
@@ -57,7 +59,7 @@ public class ArchivageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the ecdeUrl property.
+     * Définit la valeur de la propriété ecdeUrl.
      * 
      * @param value
      *     allowed object is
@@ -69,7 +71,7 @@ public class ArchivageUnitaireRequestType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -81,7 +83,7 @@ public class ArchivageUnitaireRequestType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

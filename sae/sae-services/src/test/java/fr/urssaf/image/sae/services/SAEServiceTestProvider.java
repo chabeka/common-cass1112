@@ -196,4 +196,12 @@ public class SAEServiceTestProvider {
       return dfceServices.getNotes(uuid);
 
    }
+
+  /**
+   * Getter
+   * @return the dfceServices
+   */
+  public DFCEServices getDfceServices() {
+    return dfceServices;
+  }
 }

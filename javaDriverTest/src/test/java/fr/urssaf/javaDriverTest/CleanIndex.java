@@ -6,6 +6,7 @@ package fr.urssaf.javaDriverTest;
 import static com.datastax.oss.driver.api.querybuilder.QueryBuilder.literal;
 
 import java.io.PrintStream;
+import java.math.BigInteger;
 import java.util.UUID;
 
 import org.junit.After;
@@ -15,11 +16,13 @@ import org.junit.Test;
 import com.datastax.oss.driver.api.core.CqlSession;
 import com.datastax.oss.driver.api.core.cql.ResultSet;
 import com.datastax.oss.driver.api.core.cql.Row;
+import com.datastax.oss.driver.api.core.cql.SimpleStatement;
 import com.datastax.oss.driver.api.querybuilder.QueryBuilder;
 import com.datastax.oss.driver.api.querybuilder.select.Select;
 
 import fr.urssaf.javaDriverTest.dao.BaseDAO;
 import fr.urssaf.javaDriverTest.dao.CassandraSessionFactory;
+import fr.urssaf.javaDriverTest.dao.IndexReference;
 import fr.urssaf.javaDriverTest.helper.Dumper;
 
 /**
@@ -47,8 +50,8 @@ public class CleanIndex {
       // servers = "cnp69pprodsaecas6"; //Préprod
       // servers = "cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv,cnp69pregnscas1.cer69.recouv"; // Vrai préprod
       // servers = "10.213.82.56";
-      servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
-      // servers = "cnp3gntcvecas1.cve.recouv,cnp6gntcvecas1.cve.recouv,cnp7gntcvecas1.cve.recouv"; // Charge GNT
+      // servers = "cnp6gnscvecas01.cve.recouv,cnp3gnscvecas01.cve.recouv,cnp7gnscvecas01.cve.recouv"; // Charge
+      servers = "cnp6gntcvecas1.cve.recouv,cnp6gntcvecas2.cve.recouv"; // Charge GNT
       // servers = "cnp69intgntcas1.gidn.recouv,cnp69intgntcas2.gidn.recouv,cnp69intgntcas3.gidn.recouv";
       // servers = "cer69imageint9.cer69.recouv";
       // servers = "cer69imageint10.cer69.recouv";
@@ -69,6 +72,7 @@ public class CleanIndex {
       sysout = new PrintStream(System.out, true, "UTF-8");
       // Pour dumper sur un fichier plutôt que sur la sortie standard
       sysout = new PrintStream("d:/temp/out.txt");
+      sysout = System.out;
       dumper = new Dumper(sysout);
    }
 
@@ -129,4 +133,60 @@ public class CleanIndex {
       return Dumper.getColAsString(row, row.getColumnDefinitions().iterator().next());
    }
 
+   @Test
+   public void removeOneIndexEntryTest() throws Exception {
+      final String indexCode = "";
+      final String metaName = "SM_ARCHIVAGE_DATE";
+      final UUID baseId = BaseDAO.getBaseUUID(session);
+      final String metaValue = "20171103143909609";
+      final UUID docUUID = UUID.fromString("b3d7221e-df2f-425b-94a6-45b24f7de6cb");
+      final String docVersion = "0.0.0";
+      final IndexReference indexReference = new IndexReference();
+      indexReference.readIndexReference(session, baseId, metaName, "NOMINAL");
+      final int rangeId = indexReference.metaToRangeId(metaValue);
+      final String baseName = BaseDAO.getBaseName(session);
+      final String indexTable = BaseDAO.getIndexTable(session, baseName, metaName);
+
+      // Affichage avant suppression
+      System.out.println("RangeId=" + rangeId);
+      System.out.println("baseId=" + baseId);
+      System.out.println("indexTable=" + indexTable);
+      final Select selectQuery = QueryBuilder.selectFrom("dfce", indexTable)
+                                             // .columns("metadata_value", "document_uuid")
+                                             .all()
+                                             .whereColumn("index_code")
+                                             .isEqualTo(literal(indexCode))
+                                             .whereColumn("metadata_name")
+                                             .isEqualTo(literal(metaName))
+                                             .whereColumn("base_uuid")
+                                             .isEqualTo(literal(baseId))
+                                             .whereColumn("range_index_id")
+                                             .isEqualTo(literal(rangeId))
+                                             .whereColumn("metadata_value")
+                                             .isEqualTo(literal(metaValue))
+                                             .whereColumn("document_uuid")
+                                             .isEqualTo(literal(docUUID))
+                                             .whereColumn("document_version")
+                                             .isEqualTo(literal(docVersion))
+                                             .limit(100);
+      final ResultSet rs = session.execute(selectQuery.build());
+      dumper.dumpRows(rs);
+
+      final boolean doDelete = true;
+      if (doDelete) {
+         final SimpleStatement deleteQuery = SimpleStatement.newInstance("DELETE FROM dfce." + indexTable
+               + " WHERE index_code=? AND metadata_name=? AND base_uuid=? AND range_index_id=?"
+               + " AND metadata_value= ? AND document_uuid= ? AND document_version=?",
+                                                                         indexCode,
+                                                                         metaName,
+                                                                         baseId,
+                                                                         BigInteger.valueOf(rangeId),
+                                                                         metaValue,
+                                                                         docUUID,
+                                                                         docVersion);
+         final ResultSet result = session.execute(deleteQuery);
+         System.out.println("Errors=" + result.getExecutionInfo().getErrors().toString());
+         System.out.println("fini");
+      }
+   }
 }

@@ -79,7 +79,8 @@ public interface WebServiceVIValidateService {
     *            Le service visé ne correspond pas au service indiqué dans
     *            l'assertion
     */
-   void validate(SamlAssertionData data, URI serviceVise, Date systemDate) throws VIInvalideException, VIAppliClientException,
+   void validate(SamlAssertionData data, URI serviceVise,
+         Date systemDate) throws VIInvalideException, VIAppliClientException,
          VINivAuthException, VIPagmIncorrectException,
          VIServiceIncorrectException;
 

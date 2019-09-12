@@ -27,47 +27,47 @@ import fr.urssaf.image.sae.storage.services.StorageServiceProvider;
  */
 @Component
 public class StorageDocumentToRecycleWriter implements
-      ItemWriter<StorageDocument> {
+ItemWriter<StorageDocument> {
 
    private static final Logger LOGGER = LoggerFactory
          .getLogger(StorageDocumentToRecycleWriter.class);
-   
+
    /**
     * Pool de thread de suppression.
     */
    @Autowired
    private SuppressionPoolThreadExecutor poolExecutor;
-   
+
    /**
     * Provider pour le stockage.
     */
    @Autowired
    @Qualifier("storageServiceProvider")
    private StorageServiceProvider serviceProvider;
-   
+
    private static final String TRC_INSERT = "StorageDocumentToRecycleWriter()";
-   
+
    /**
     * {@inheritDoc}
     */
    @Override
-   public void write(List<? extends StorageDocument> items) throws Exception {
+   public void write(final List<? extends StorageDocument> items) throws Exception {
       Runnable command;
 
-      for (StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
+      for (final StorageDocument storageDocument : Utils.nullSafeIterable(items)) {
 
          command = new SuppressionRunnable(storageDocument, this);
 
          poolExecutor.execute(command);
 
          LOGGER.debug("{} - nombre de documents en attente dans le pool : {}",
-                   TRC_INSERT,
-                   "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : " + poolExecutor.getActiveCount());
+                      TRC_INSERT,
+                      "Queue : " + poolExecutor.getQueue().size() + " - Total : " + poolExecutor.getTaskCount() + " - Actifs : " + poolExecutor.getActiveCount());
       }
    }
 
    /**
-    * Deplacement du document dans la corbeille
+    * Déplacement du document dans la corbeille
     * 
     * @param storageDocument
     *           document à mettre dans la corbeille
@@ -75,29 +75,27 @@ public class StorageDocumentToRecycleWriter implements
     * @throws UpdateServiceEx
     *            Exception levée lors de la persistance
     */
-   public final void moveToRecycleBeanStorageDocument(UUID uuidJob,
-         final StorageDocument storageDocument) throws UpdateServiceEx {
+   public final void moveToRecycleBeanStorageDocument(final UUID uuidJob,
+                                                      final StorageDocument storageDocument) throws UpdateServiceEx {
 
       // constitue la liste des métadonnées à modifier
-      List<StorageMetadata> modifiedMetadatas = new ArrayList<StorageMetadata>();
-      for (StorageMetadata metadata : storageDocument.getMetadatas()) {
+      final List<StorageMetadata> modifiedMetadatas = new ArrayList<>();
+      for (final StorageMetadata metadata : storageDocument.getMetadatas()) {
          // on ne remplit que les dates de mise a la corbeille
          // et l'id de suppression ou de transfert
-         if (Constantes.CODE_COURT_META_ID_SUPPRESSION.equals(metadata.getShortCode())
-               || Constantes.CODE_COURT_META_DATE_CORBEILLE.equals(metadata.getShortCode())
+         if (Constantes.CODE_COURT_META_DATE_CORBEILLE.equals(metadata.getShortCode())
                || StorageTechnicalMetadatas.ID_TRANSFERT_MASSE_INTERNE.getShortCode().equals(metadata.getShortCode())) {
             modifiedMetadatas.add(metadata);
          }
       }
-      // ETAPE 1 : mise a jour de l'identifiant de suppression ou de transfert (lors de la supression) et de la date de mise a la corbeille
+      // ETAPE 1 : mise a jour de l'identifiant de suppression ou de transfert (lors de la suppression) et de la date de mise a la corbeille
       updateDocument(uuidJob, storageDocument, modifiedMetadatas, null);
-      
+
       // ETAPE 2 : mise a la corbeille du document
       try {
-         serviceProvider.getStorageDocumentService().moveStorageDocumentToRecycleBin(
-               storageDocument.getUuid());
-      } catch (Exception except) {
-         // quand il y a une erreur de mise a la corbeille, on tente de supprimer les metas ajoutees
+         serviceProvider.getStorageDocumentService().moveStorageDocumentToRecycleBin(storageDocument.getUuid());
+      } catch (final Exception except) {
+         // quand il y a une erreur de mise a la corbeille, on tente de supprimer les metas ajoutées
          updateDocument(uuidJob, storageDocument, null, modifiedMetadatas);
          throw new UpdateServiceEx(except);
 
@@ -105,22 +103,25 @@ public class StorageDocumentToRecycleWriter implements
    }
 
    /**
-    * Methode permettant de modifier le document.
+    * Méthode permettant de modifier le document.
     * 
-    * @param storageDocument document
-    * @param modifiedMetadatas liste des metas modifiées
-    * @param deletedMetadatas liste des metas supprimées
-    * @throws UpdateServiceEx 
+    * @param storageDocument
+    *           document
+    * @param modifiedMetadatas
+    *           liste des metas modifiées
+    * @param deletedMetadatas
+    *           liste des metas supprimées
+    * @throws UpdateServiceEx
     *            Exception levée lors de la persistance
     */
-   private void updateDocument(UUID uuidJob, final StorageDocument storageDocument,
-         List<StorageMetadata> modifiedMetadatas,
-         List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
+   private void updateDocument(final UUID uuidJob, final StorageDocument storageDocument,
+                               final List<StorageMetadata> modifiedMetadatas,
+                               final List<StorageMetadata> deletedMetadatas) throws UpdateServiceEx {
       try {
          serviceProvider.getStorageDocumentService().updateStorageDocument(uuidJob, 
-               storageDocument.getUuid(), modifiedMetadatas, deletedMetadatas);
+                                                                           storageDocument.getUuid(), modifiedMetadatas, deletedMetadatas);
 
-      } catch (Exception except) {
+      } catch (final Exception except) {
 
          throw new UpdateServiceEx(except);
 

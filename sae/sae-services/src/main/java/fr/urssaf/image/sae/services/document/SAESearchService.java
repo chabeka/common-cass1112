@@ -1,7 +1,6 @@
 package fr.urssaf.image.sae.services.document;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -107,9 +106,8 @@ public interface SAESearchService {
     *           requête principale
     * @param nbDocumentsParPage
     *           Nombre de document à récupérer
-    * @param lastIdDoc
-    *           Identifiant du dernier document renvoyé par la recherche par
-    *           iterateur précédente
+    * @param pageId
+    *           Identifie la page à retourner (ou null pour la 1ere page)
     * @param listeDesiredMetadata
     *           Liste des métadonnées souhaitées en retour de recherche
     *           du résultat final
@@ -140,7 +138,7 @@ public interface SAESearchService {
                                              UntypedRangeMetadata varyingMetadata,
                                              List<AbstractMetadata> listeFiltreEgal,
                                              List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
-                                             UUID lastIdDoc, List<String> listeDesiredMetadata,
+                                             String pageId, List<String> listeDesiredMetadata,
                                              List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,

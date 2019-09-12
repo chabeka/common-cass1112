@@ -140,12 +140,6 @@
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-storage-dfce</artifactId>
          <version>19.10.0-SNAPSHOT</version>
-         <exclusions>
-         	<exclusion>
-         		<groupId>org.codehaus.woodstox</groupId>
-         		<artifactId>woodstox-core-asl</artifactId>
-         	</exclusion>
-         </exclusions>
       </dependency>
 
       

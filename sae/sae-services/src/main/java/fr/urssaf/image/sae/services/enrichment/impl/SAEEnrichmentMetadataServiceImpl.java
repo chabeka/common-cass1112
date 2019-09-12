@@ -348,11 +348,8 @@ public class SAEEnrichmentMetadataServiceImpl implements
       String rndValue = SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
             SAEArchivalMetadatas.CODE_RND.getLongCode());
 
-      String fileName = SAEMetatadaFinderUtils.codeMetadataFinder(metadatas,
-            SAEArchivalMetadatas.NOM_FICHIER.getLongCode());
-
       try {
-         if (!StringUtils.isEmpty(rndValue)) {
+         if (StringUtils.isNotEmpty(rndValue)) {
             LOGGER.debug("{} - Début de la vérification : "
                   + "Le type de document est autorisé en archivage", metadatas);
             authorizedCodeRnd(rndValue);
@@ -361,14 +358,6 @@ public class SAEEnrichmentMetadataServiceImpl implements
             LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
                   metadatas, metadatas.toString());
             completedMetadatas(metadatas, rndValue, docFileName, docFilePath);
-            LOGGER.debug("{} - Métadonnées après enrichissement : {}",
-                  metadatas, metadatas.toString());
-         }
-         if (!StringUtils.isBlank(fileName)) {
-
-            LOGGER.debug("{} - Métadonnées avant enrichissement : {}",
-                  metadatas, metadatas.toString());
-            completedMetadatas(metadatas, fileName, docFileName, docFilePath);
             LOGGER.debug("{} - Métadonnées après enrichissement : {}",
                   metadatas, metadatas.toString());
          }

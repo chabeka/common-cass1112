@@ -5,51 +5,55 @@ package fr.urssaf.image.sae.services.enrichment.xml.model;
  */
 public enum SAEArchivalMetadatas {
    // Code RND
-   CODE_RND("CodeRND"),
+   CODE_RND("CodeRND","SM_DOCUMENT_TYPE"),
    // Code fonction
-   CODE_FONCTION("CodeFonction"),
+   CODE_FONCTION("CodeFonction","dom"),
    // CodeActivite
-   CODE_ACTIVITE("CodeActivite"),
+   CODE_ACTIVITE("CodeActivite","act"),
    // DateArchivage
-   DATE_ARCHIVAGE("DateArchivage"),
+   DATE_ARCHIVAGE("DateArchivage" ,"SM_ARCHIVAGE_DATE"),
    // DateDebutConservation
-   DATE_DEBUT_CONSERVATION("DateDebutConservation"),
+   DATE_DEBUT_CONSERVATION("DateDebutConservation", "SM_LIFE_CYCLE_REFERENCE_DATE"),
    // DateFinConservation
-   DATE_FIN_CONSERVATION("DateFinConservation"),
+   DATE_FIN_CONSERVATION("DateFinConservation", "dfc"),
    // ContratDeService
-   CONTRAT_DE_SERVICE("ContratDeService"),
+   CONTRAT_DE_SERVICE("ContratDeService","cse"),
    // pas de valeur
-   NOVALUE(""),
+   NOVALUE("",""),
    // Version RND
-   VERSION_RND("VersionRND"),
+   VERSION_RND("VersionRND","vrn"),
    // Hash
-   HASH_CODE("Hash"),
+   HASH_CODE("Hash", "SM_DIGEST"),
    //TypeHash
-   TYPE_HASH("TypeHash"),
+   TYPE_HASH("TypeHash", "SM_DIGEST_ALGORITHM"),
    //APPLICATIONPRODUCTRICE
-   APPLICATION_PRODUCTRICE("ApplicationProductrice"),
+   APPLICATION_PRODUCTRICE("ApplicationProductrice", "apr"),
    //NBPAGES
-   NB_PAGES("NbPages"),
+   NB_PAGES("NbPages", "nbp"),
    //NomFichier
-   NOM_FICHIER("NomFichier"),
+   NOM_FICHIER("NomFichier", "nfi"),
    //DocumentVirtuel
-   DOCUMENT_VIRTUEL("DocumentVirtuel"),
+   DOCUMENT_VIRTUEL("DocumentVirtuel","SM_VIRTUAL"),
    //NumeroIdArchivage
-   NUMERO_ID_ARCHIVAGE("NumeroIdArchivage"),
+   NUMERO_ID_ARCHIVAGE("NumeroIdArchivage","nid"),
    //DocumentArchivable
-   DOCUMENT_ARCHIVABLE("DocumentArchivable");
+   DOCUMENT_ARCHIVABLE("DocumentArchivable","dar");
    
 
    // Le code long de la métadonnée.
    private String longCode;
+   
+   // Le code court de la métadonnée.
+   private String shortCode;
 
    /**
-    * 
-    * @param shortCode
-    *           . Le code court
+    * Construtor
+    * @param longCode Le code long
+    * @param shortCode Le code court
     */
-   SAEArchivalMetadatas(final String longCode) {
+   SAEArchivalMetadatas(final String longCode, final String shortCode) {
       this.longCode = longCode;
+      this.shortCode = shortCode;
    }
 
    /**
@@ -66,5 +70,19 @@ public enum SAEArchivalMetadatas {
    public String getLongCode() {
       return longCode;
    }
+
+  /**
+   * @return the shortCode
+   */
+  public String getShortCode() {
+    return shortCode;
+  }
+
+  /**
+   * @param shortCode the shortCode to set
+   */
+  public void setShortCode(String shortCode) {
+    this.shortCode = shortCode;
+  }
 
 }

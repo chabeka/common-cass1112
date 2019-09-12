@@ -41,8 +41,8 @@ public final class MyKeyStore implements KeyStoreInterface {
 
       try {
          keystore = KeyStore.getInstance("PKCS12", "SunJSSE");
-         final InputStream inputStream = ResourceUtils.loadResource(this,
-                                                                    "ApplicationTestSAE.p12");
+         //final InputStream inputStream = ResourceUtils.loadResource(this,"ApplicationTestSAE.p12");
+         final InputStream inputStream = ResourceUtils.loadResource(this,"IHM_EXPLOIT.p12");
          try {
             keystore.load(inputStream, password.toCharArray());
 

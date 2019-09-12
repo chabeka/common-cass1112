@@ -8,21 +8,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for consultationResponseType complex type.
+ * <p>Classe Java pour consultationResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="consultationResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/saeService}objetNumeriqueConsultationType"/>
- *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="consultationResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="objetNumerique" type="{http://www.cirtil.fr/saeService}objetNumeriqueConsultationType"/&gt;
+ *         &lt;element name="metadonnees" type="{http://www.cirtil.fr/saeService}listeMetadonneeType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -42,7 +42,7 @@ public class ConsultationResponseType {
     protected ListeMetadonneeType metadonnees;
 
     /**
-     * Gets the value of the objetNumerique property.
+     * Obtient la valeur de la propriété objetNumerique.
      * 
      * @return
      *     possible object is
@@ -54,7 +54,7 @@ public class ConsultationResponseType {
     }
 
     /**
-     * Sets the value of the objetNumerique property.
+     * Définit la valeur de la propriété objetNumerique.
      * 
      * @param value
      *     allowed object is
@@ -66,7 +66,7 @@ public class ConsultationResponseType {
     }
 
     /**
-     * Gets the value of the metadonnees property.
+     * Obtient la valeur de la propriété metadonnees.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class ConsultationResponseType {
     }
 
     /**
-     * Sets the value of the metadonnees property.
+     * Définit la valeur de la propriété metadonnees.
      * 
      * @param value
      *     allowed object is

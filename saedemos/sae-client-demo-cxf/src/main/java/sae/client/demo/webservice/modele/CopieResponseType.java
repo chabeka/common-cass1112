@@ -8,23 +8,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * Retour de l'op�ration
+ * Retour de l'opération
  *             de copie.
  * 
- * <p>Java class for copieResponseType complex type.
+ * <p>Classe Java pour copieResponseType complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>Le fragment de schéma suivant indique le contenu attendu figurant dans cette classe.
  * 
  * <pre>
- * &lt;complexType name="copieResponseType">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="idGed" type="{http://www.cirtil.fr/saeService}uuidType"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="copieResponseType"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="idGed" type="{http://www.cirtil.fr/saeService}uuidType"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -41,7 +41,7 @@ public class CopieResponseType {
     protected String idGed;
 
     /**
-     * Gets the value of the idGed property.
+     * Obtient la valeur de la propriété idGed.
      * 
      * @return
      *     possible object is
@@ -53,7 +53,7 @@ public class CopieResponseType {
     }
 
     /**
-     * Sets the value of the idGed property.
+     * Définit la valeur de la propriété idGed.
      * 
      * @param value
      *     allowed object is

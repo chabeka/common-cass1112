@@ -27,17 +27,22 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 public class CycleVieServiceDatasTest {
 
    private static final String VALUE = "valeur";
+
    private static final String KEY = "clé";
 
    private static final String TYPE_EVT = "CUSTOM";
 
    private static final String USERNAME = "_ADMIN";
+
    private static final String CONTRAT = "contrat de service";
+
    private static final String CODE_EVT = "code événement";
+
    private static final String ACTION = "action";
+
    private static final Map<String, Object> INFOS;
    static {
-      INFOS = new HashMap<String, Object>();
+      INFOS = new HashMap<>();
       INFOS.put(KEY, VALUE);
    }
 
@@ -75,8 +80,6 @@ public class CycleVieServiceDatasTest {
 
       Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
    }
-
-
 
    private void createTrace(final UUID uuid) {
       final TraceToCreate trace = new TraceToCreate();

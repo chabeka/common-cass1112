@@ -105,8 +105,10 @@ public class SAESearchServiceImplDatasTest {
 
    @Autowired
    private RndSupport rndSupport;
+
    @Autowired
    private JobClockSupport jobClockSupport;
+
    @Autowired
    private SaeBddSupport saeBddSupport;
 
@@ -149,7 +151,7 @@ public class SAESearchServiceImplDatasTest {
       rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
 
       final SaeDroits saeDroits = new SaeDroits();
-      final List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
+      final List<SaePrmd> saePrmds = new ArrayList<>();
       final SaePrmd saePrmd = new SaePrmd();
       saePrmd.setValues(new HashMap<String, String>());
       final Prmd prmd = new Prmd();
@@ -167,7 +169,9 @@ public class SAESearchServiceImplDatasTest {
       saeDroits.put("suppression", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       final AuthenticationToken token = AuthenticationFactory.createAuthentication(
-                                                                                   viExtrait.getIdUtilisateur(), viExtrait, roles);
+                                                                                   viExtrait.getIdUtilisateur(),
+                                                                                   viExtrait,
+                                                                                   roles);
       AuthenticationContext.setAuthenticationToken(token);
    }
 
@@ -175,7 +179,8 @@ public class SAESearchServiceImplDatasTest {
    public void end() throws IOException {
       try {
          bean.resetData(true, MODE_API.HECTOR);
-      } catch (final Exception e) {
+      }
+      catch (final Exception e) {
          e.printStackTrace();
       }
 
@@ -198,7 +203,8 @@ public class SAESearchServiceImplDatasTest {
    CaptureEcdeUrlFileNotFoundEx, IOException {
 
       final List<UntypedDocument> documents = saeSearchService.search(
-                                                                      "CodeOrganismeGestionnaire:CER75", new ArrayList<String>());
+                                                                      "CodeOrganismeGestionnaire:CER75",
+                                                                      new ArrayList<String>());
 
       Assert.assertTrue("pas d'UntypedDocuments attendus", documents.isEmpty());
    }
@@ -238,7 +244,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -319,7 +325,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -348,7 +354,8 @@ public class SAESearchServiceImplDatasTest {
                            doc);
 
       final List<UntypedDocument> documents = saeSearchService.search(
-                                                                      "IdGed:" + uuid, new ArrayList<String>());
+                                                                      "IdGed:" + uuid,
+                                                                      new ArrayList<String>());
 
       Assert.assertEquals("1 document attendu", 1, documents.size());
 
@@ -395,7 +402,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -423,7 +430,7 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
                            doc);
 
-      final List<String> desiredMetadatas = new ArrayList<String>();
+      final List<String> desiredMetadatas = new ArrayList<>();
       desiredMetadatas.add("Titre");
       desiredMetadatas.add("Siret");
       desiredMetadatas.add("CodeRND");
@@ -442,7 +449,7 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertEquals("1 document attendu", 1, documents.size());
 
       // Test sur la recherche paginée
-      final List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> fixedMetadatas = new ArrayList<>();
       final UntypedMetadata uMeta = new UntypedMetadata("Titre", titreUnique);
       fixedMetadatas.add(uMeta);
 
@@ -456,17 +463,26 @@ public class SAESearchServiceImplDatasTest {
             + String.format("%02d", aujourdhui.get(Calendar.MONTH) + 1)
             + String.format("%02d", aujourdhui.get(Calendar.DATE)) + "000000000";
       final UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
-                                                                            "DateArchivage", dateMin, dateMax);
+                                                                            "DateArchivage",
+                                                                            dateMin,
+                                                                            dateMax);
 
       final int nbDocumentsParPage = 10;
-      final UUID lastIdDoc = null;
+      final String pageId = null;
 
       final PaginatedUntypedDocuments documents2 = saeSearchService.searchPaginated(
-                                                                                    fixedMetadatas, varyingMetadata, new ArrayList<AbstractMetadata>(),
-                                                                                    new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
-                                                                                    desiredMetadatas, null);
+                                                                                    fixedMetadatas,
+                                                                                    varyingMetadata,
+                                                                                    new ArrayList<AbstractMetadata>(),
+                                                                                    new ArrayList<AbstractMetadata>(),
+                                                                                    nbDocumentsParPage,
+                                                                                    pageId,
+                                                                                    desiredMetadatas,
+                                                                                    null);
 
-      Assert.assertEquals("1 document attendu", 1, documents2.getDocuments()
+      Assert.assertEquals("1 document attendu",
+                          1,
+                          documents2.getDocuments()
                           .size());
 
       serviceSuppression.suppression(uuid);
@@ -502,7 +518,6 @@ public class SAESearchServiceImplDatasTest {
     * Test de la recherche par itérateur
     *
     * @throws DoublonFiltresMetadataEx
-    *
     */
    @Test
    public final void rechercheParIterateurSucces() throws SAECaptureServiceEx,
@@ -539,7 +554,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -567,30 +582,42 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
                            doc);
 
-      final List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> fixedMetadatas = new ArrayList<>();
       final UntypedMetadata uMeta = new UntypedMetadata("Siret", "12345678901234");
       fixedMetadatas.add(uMeta);
       final UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
-                                                                            "DateCreation", "20120101", "20120101");
-      final List<AbstractMetadata> filters = new ArrayList<AbstractMetadata>();
+                                                                            "DateCreation",
+                                                                            "20120101",
+                                                                            "20120101");
+      final List<AbstractMetadata> filters = new ArrayList<>();
       final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
       filters.add(metaFiltre);
 
       final int nbDocumentsParPage = 10;
-      final UUID lastIdDoc = null;
-      final List<String> listeDesiredMetadata = new ArrayList<String>();
+      final String pageId = null;
+      final List<String> listeDesiredMetadata = new ArrayList<>();
 
       final PaginatedUntypedDocuments documents = saeSearchService.searchPaginated(
-                                                                                   fixedMetadatas, varyingMetadata, filters,
-                                                                                   new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
+                                                                                   fixedMetadatas,
+                                                                                   varyingMetadata,
+                                                                                   filters,
+                                                                                   new ArrayList<AbstractMetadata>(),
+                                                                                   nbDocumentsParPage,
+                                                                                   pageId,
                                                                                    listeDesiredMetadata, 
                                                                                    null);
 
-      Assert.assertEquals("1 document attendu", 1, documents.getDocuments()
+      Assert.assertEquals("1 document attendu",
+                          1,
+                          documents.getDocuments()
                           .size());
 
-      Assert.assertEquals("UUID attendu incorect", uuid, documents
-                          .getDocuments().get(0).getUuid());
+      Assert.assertEquals("UUID attendu incorrect",
+                          uuid,
+                          documents
+                                   .getDocuments()
+                                   .get(0)
+                                   .getUuid());
 
       serviceSuppression.suppression(uuid);
 
@@ -603,7 +630,6 @@ public class SAESearchServiceImplDatasTest {
     * Test de la recherche par itérateur
     *
     * @throws DoublonFiltresMetadataEx
-    *
     */
    @Test
    public final void rechercheParIterateurAvecNoteSucces()
@@ -641,7 +667,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -670,34 +696,48 @@ public class SAESearchServiceImplDatasTest {
       Assert.assertNotNull("l'UUID '" + uuid + "' doit exister dans le SAE",
                            doc);
 
-      final List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> fixedMetadatas = new ArrayList<>();
       final UntypedMetadata uMeta = new UntypedMetadata("Siret", "12345678901234");
       fixedMetadatas.add(uMeta);
       final UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
-                                                                            "DateCreation", "20120101", "20120101");
-      final List<AbstractMetadata> filters = new ArrayList<AbstractMetadata>();
+                                                                            "DateCreation",
+                                                                            "20120101",
+                                                                            "20120101");
+      final List<AbstractMetadata> filters = new ArrayList<>();
       final UntypedMetadata metaFiltre = new UntypedMetadata("Titre", titreUnique);
       filters.add(metaFiltre);
 
       final int nbDocumentsParPage = 10;
-      final UUID lastIdDoc = null;
-      final List<String> listeDesiredMetadata = new ArrayList<String>();
+      final String pageId = null;
+      final List<String> listeDesiredMetadata = new ArrayList<>();
       listeDesiredMetadata.add("Note");
 
       final PaginatedUntypedDocuments documents = saeSearchService.searchPaginated(
-                                                                                   fixedMetadatas, varyingMetadata, filters,
-                                                                                   new ArrayList<AbstractMetadata>(), nbDocumentsParPage, lastIdDoc,
+                                                                                   fixedMetadatas,
+                                                                                   varyingMetadata,
+                                                                                   filters,
+                                                                                   new ArrayList<AbstractMetadata>(),
+                                                                                   nbDocumentsParPage,
+                                                                                   pageId,
                                                                                    listeDesiredMetadata, 
                                                                                    null);
 
-      Assert.assertEquals("1 document attendu", 1, documents.getDocuments()
+      Assert.assertEquals("1 document attendu",
+                          1,
+                          documents.getDocuments()
                           .size());
 
-      Assert.assertEquals("UUID attendu incorect", uuid, documents
-                          .getDocuments().get(0).getUuid());
+      Assert.assertEquals("UUID attendu incorect",
+                          uuid,
+                          documents
+                                   .getDocuments()
+                                   .get(0)
+                                   .getUuid());
 
-
-      final String contenu = documents.getDocuments().get(0).getUMetadatas().get(0)
+      final String contenu = documents.getDocuments()
+                                      .get(0)
+                                      .getUMetadatas()
+                                      .get(0)
             .getValue();
       validateNoteContent(contenu);
 
@@ -712,7 +752,6 @@ public class SAESearchServiceImplDatasTest {
     * Test de la recherche par itérateur
     *
     * @throws DoublonFiltresMetadataEx
-    *
     */
    @Test
    public final void rechercheParIterateurErreurFiltreDoublon()
@@ -730,12 +769,14 @@ public class SAESearchServiceImplDatasTest {
          InvalidPagmsCombinaisonException, CaptureExistingUuuidException,
          DoublonFiltresMetadataEx {
 
-      final List<UntypedMetadata> fixedMetadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> fixedMetadatas = new ArrayList<>();
       final UntypedMetadata uMeta = new UntypedMetadata("Siret", "12345678901234");
       fixedMetadatas.add(uMeta);
       final UntypedRangeMetadata varyingMetadata = new UntypedRangeMetadata(
-                                                                            "DateCreation", "20120101", "20120101");
-      final List<AbstractMetadata> filters = new ArrayList<AbstractMetadata>();
+                                                                            "DateCreation",
+                                                                            "20120101",
+                                                                            "20120101");
+      final List<AbstractMetadata> filters = new ArrayList<>();
       final UntypedMetadata metaFiltre = new UntypedMetadata("Titre",
             "titre_a_chercher");
 
@@ -744,17 +785,23 @@ public class SAESearchServiceImplDatasTest {
       filters.add(metaFiltre);
 
       final int nbDocumentsParPage = 10;
-      final UUID lastIdDoc = null;
-      final List<String> listeDesiredMetadata = new ArrayList<String>();
+      final String pageId = null;
+      final List<String> listeDesiredMetadata = new ArrayList<>();
 
       try {
          final PaginatedUntypedDocuments documents = saeSearchService
-               .searchPaginated(fixedMetadatas, varyingMetadata, filters,
-                                new ArrayList<AbstractMetadata>(), nbDocumentsParPage,
-                                lastIdDoc, listeDesiredMetadata, null);
+                                                                     .searchPaginated(fixedMetadatas,
+                                                                                      varyingMetadata,
+                                                                                      filters,
+                                                                                      new ArrayList<AbstractMetadata>(),
+                                                                                      nbDocumentsParPage,
+                                                                                      pageId,
+                                                                                      listeDesiredMetadata,
+                                                                                      null);
          Assert
          .fail("L'exception de type DoublonFiltresMetadataEx est attendue");
-      } catch (final DoublonFiltresMetadataEx e) {
+      }
+      catch (final DoublonFiltresMetadataEx e) {
          Assert
          .assertEquals(
                        "Le message attendu est incorrect",
@@ -799,7 +846,7 @@ public class SAESearchServiceImplDatasTest {
       final File srcFile = new File(
             "src/test/resources/doc/attestation_consultation.pdf");
 
-      final List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+      final List<UntypedMetadata> metadatas = new ArrayList<>();
 
       final String titreUnique = "Titre " + UUID.randomUUID().toString();
 
@@ -825,15 +872,20 @@ public class SAESearchServiceImplDatasTest {
       uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
 
       final String requete = "Titre:\"" + titreUnique + "\"";
-      final List<String> listMetaDesired = new ArrayList<String>();
+      final List<String> listMetaDesired = new ArrayList<>();
       listMetaDesired.add("Note");
       final List<UntypedDocument> listeDocs = saeSearchService.search(requete,
                                                                       listMetaDesired);
 
-      Assert.assertEquals("La recherche doit remonter un seul résultat", 1,
+      Assert.assertEquals("La recherche doit remonter un seul résultat",
+                          1,
                           listeDocs.size());
-      Assert.assertEquals("Un seule métadonnée attendue : Note", listeDocs.get(
-                                                                               0).getUMetadatas().size(), 1);
+      Assert.assertEquals("Un seule métadonnée attendue : Note",
+                          listeDocs.get(
+                                        0)
+                                   .getUMetadatas()
+                                   .size(),
+                          1);
 
       final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
       final Date dateCourante = new Date();
@@ -851,7 +903,9 @@ public class SAESearchServiceImplDatasTest {
 
    /**
     * Vérifie le contenu de la note
-    * @param noteContent : contenu de la note
+    * 
+    * @param noteContent
+    *           : contenu de la note
     */
    private void validateNoteContent(final String contenu) {
       final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -864,7 +918,8 @@ public class SAESearchServiceImplDatasTest {
       final String tomorowString = dateFormat.format(tomorowDate);
 
       Assert.assertThat(contenu, JUnitMatchers.containsString("[{\"contenu\":\"contenu de la note\""));
-      Assert.assertThat(contenu, JUnitMatchers.either(JUnitMatchers.containsString(todayString))
+      Assert.assertThat(contenu,
+                        JUnitMatchers.either(JUnitMatchers.containsString(todayString))
                         .or(JUnitMatchers.containsString(tomorowString)));
       Assert.assertThat(contenu, JUnitMatchers.containsString("\"auteur\":\"UTILISATEUR TEST\"}]"));
    }

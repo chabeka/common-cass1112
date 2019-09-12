@@ -75,7 +75,7 @@ public class RechercheIterateurTest {
       }
    }
 
-   // insertion de metadonnée
+   // insertion de métadonnée
    private static void assertMetadata(final MetadonneeType metadata,
                                       final Map<String, Object> expectedMetadatas) {
       Assert.assertTrue("la metadonnée '"
@@ -129,7 +129,7 @@ public class RechercheIterateurTest {
       listeDoc.add(document2);
       documents.setDocuments(listeDoc);
       documents.setLastPage(true);
-      documents.setValeurMetaLastPage("20141231");
+      documents.setPageId("dummyPageId");
 
       final List<String> listMetaDesired = new ArrayList<>();
       listMetaDesired.add("CodeActivite");
@@ -161,7 +161,7 @@ public class RechercheIterateurTest {
                                                       EasyMock.anyObject(),
                                                       EasyMock.anyObject(),
                                                       EasyMock.anyInt(),
-                                                      (UUID) EasyMock.anyObject(),
+                                                      (String) EasyMock.anyObject(),
                                                       EasyMock.anyObject(),
                                                       EasyMock.anyObject()))
               .andReturn(documents);
@@ -175,7 +175,7 @@ public class RechercheIterateurTest {
 
       final RechercheParIterateur request = createSearchIterateurType("src/test/resources/recherche/rechercheIterateur_success_01.xml");
 
-      // recuper le type de reponse de la recherche
+      // récupère le type de réponse de la recherche
       final RechercheParIterateurResponseType response = skeleton
                                                                  .rechercheParIterateurSecure(request)
                                                                  .getRechercheParIterateurResponse();
@@ -194,7 +194,7 @@ public class RechercheIterateurTest {
                                 .toString());
       Assert.assertEquals(
                           "La valeur de l'identifiant de la page est incorrecte",
-                          "20141231",
+                          "dummyPageId",
                           idPage.getValeur().getMetadonneeValeurType());
 
       Assert.assertEquals(NB_MD_INATTENDU, 2, resultats.length);

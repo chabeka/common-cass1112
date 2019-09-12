@@ -46,7 +46,8 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
 
 /**
  * Fournit la façade des implementations des services :<br>
- * <lu> <li>
+ * <lu>
+ * <li>
  * {@link fr.urssaf.image.sae.services.capture.impl.SAECaptureServiceImpl}</li>
  * <li>{@link fr.urssaf.image.sae.services.document.impl.SAESearchServiceImpl}</li>
  * <li>
@@ -56,8 +57,9 @@ import fr.urssaf.image.sae.storage.model.storagedocument.StorageDocumentNote;
  */
 @Service
 @Qualifier("saeDocumentService")
-@FacadePattern(participants = { SAECaptureServiceImpl.class,
-      SAEConsultationServiceImpl.class, SAESearchServiceImpl.class }, comment = "Fournit les services des classes participantes")
+@FacadePattern(participants = {SAECaptureServiceImpl.class,
+                               SAEConsultationServiceImpl.class, SAESearchServiceImpl.class},
+               comment = "Fournit les services des classes participantes")
 public class SAEDocumentServiceImpl implements SAEDocumentService {
 
    // @Autowired
@@ -66,12 +68,15 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
    @Autowired
    @Qualifier("saeConsultationService")
    private SAEConsultationService saeConsultationService;
+
    @Autowired
    @Qualifier("saeSearchService")
    private SAESearchService saeSearchService;
+
    @Autowired
    @Qualifier("saeNoteService")
    private SAENoteService saeNoteService;
+
    @Autowired
    @Qualifier("saeDocumentAttachmentService")
    private SAEDocumentAttachmentService saeDocumentAttachmentService;
@@ -79,7 +84,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
    /**
     * {@inheritDoc}
     */
-   public List<UntypedDocument> search(final String requete,
+   public final List<UntypedDocument> search(final String requete,
          final List<String> listMetaDesired) throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
@@ -90,7 +95,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public UntypedDocument consultation(UUID idArchive)
+   public final UntypedDocument consultation(final UUID idArchive)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
       return saeConsultationService.consultation(idArchive);
@@ -100,7 +105,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public UntypedDocument consultation(ConsultParams consultParams)
+   public final UntypedDocument consultation(final ConsultParams consultParams)
          throws SAEConsultationServiceException, UnknownDesiredMetadataEx,
          MetaDataUnauthorizedToConsultEx {
       return saeConsultationService.consultation(consultParams);
@@ -110,8 +115,8 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<UntypedDocument> search(String requete,
-         List<String> listMetaDesired, int maxResult)
+   public final List<UntypedDocument> search(final String requete,
+         final List<String> listMetaDesired, final int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
          UnknownLuceneMetadataEx, SyntaxLuceneEx, SAESearchServiceEx {
@@ -122,8 +127,8 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public UntypedDocument consultationAffichable(
-         ConsultParams consultParams) throws SAEConsultationServiceException,
+   public final UntypedDocument consultationAffichable(
+         final ConsultParams consultParams) throws SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
       return saeConsultationService.consultationAffichable(consultParams);
@@ -136,20 +141,25 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws DoublonFiltresMetadataEx
     */
    @Override
-   public PaginatedUntypedDocuments searchPaginated(
-         List<UntypedMetadata> fixedMetadatas,
-         UntypedRangeMetadata varyingMetadata,
-         List<AbstractMetadata> listeFiltreEgalite,
-         List<AbstractMetadata> listeFiltreDifferent, int nbDocumentsParPage,
-         UUID lastIdDoc, List<String> listeDesiredMetadata, 
-         final List<String> indexOrderPreferenceList)
+   public final PaginatedUntypedDocuments searchPaginated(
+                                                          final List<UntypedMetadata> fixedMetadatas,
+                                                          final UntypedRangeMetadata varyingMetadata,
+                                                          final List<AbstractMetadata> listeFiltreEgalite,
+                                                          final List<AbstractMetadata> listeFiltreDifferent, final int nbDocumentsParPage,
+                                                          final String pageId, final List<String> listeDesiredMetadata,
+                                                          final List<String> indexOrderPreferenceList)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownLuceneMetadataEx,
          SAESearchServiceEx, SyntaxLuceneEx, UnknownDesiredMetadataEx,
          UnknownFiltresMetadataEx, DoublonFiltresMetadataEx {
-      return saeSearchService.searchPaginated(fixedMetadatas, varyingMetadata,
-            listeFiltreEgalite, listeFiltreDifferent, nbDocumentsParPage,
-            lastIdDoc, listeDesiredMetadata, indexOrderPreferenceList);
+      return saeSearchService.searchPaginated(fixedMetadatas,
+                                              varyingMetadata,
+                                              listeFiltreEgalite,
+                                              listeFiltreDifferent,
+                                              nbDocumentsParPage,
+                                              pageId,
+                                              listeDesiredMetadata,
+                                              indexOrderPreferenceList);
    }
 
    /**
@@ -158,7 +168,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws ArchiveInexistanteEx
     */
    @Override
-   public void addDocumentNote(UUID docUuid, String contenu, String login)
+   public final void addDocumentNote(final UUID docUuid, final String contenu, final String login)
          throws SAEDocumentNoteException, ArchiveInexistanteEx {
       saeNoteService.addDocumentNote(docUuid, contenu, login);
    }
@@ -167,7 +177,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public List<StorageDocumentNote> getDocumentNotes(UUID docUuid)
+   public final List<StorageDocumentNote> getDocumentNotes(final UUID docUuid)
          throws SAEDocumentNoteException {
       return saeNoteService.getDocumentNotes(docUuid);
    }
@@ -176,18 +186,21 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentAttachmentBinaire(UUID docUuid, String docName,
-         String extension, DataHandler contenu) throws SAEDocumentAttachmentEx,
+   public void addDocumentAttachmentBinaire(final UUID docUuid, final String docName,
+                                            final String extension, final DataHandler contenu)
+         throws SAEDocumentAttachmentEx,
          ArchiveInexistanteEx, EmptyDocumentEx, EmptyFileNameEx {
       saeDocumentAttachmentService.addDocumentAttachmentBinaire(docUuid,
-            docName, extension, contenu);
+                                                                docName,
+                                                                extension,
+                                                                contenu);
    }
 
    /**
     * {@inheritDoc}
     */
    @Override
-   public void addDocumentAttachmentUrl(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrl(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
       saeDocumentAttachmentService.addDocumentAttachmentUrl(docUuid, ecdeURL);
@@ -199,29 +212,33 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     * @throws ArchiveInexistanteEx
     */
    @Override
-   public UntypedDocumentAttachment getDocumentAttachment(UUID docUuid)
+   public UntypedDocumentAttachment getDocumentAttachment(final UUID docUuid)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx {
       return saeDocumentAttachmentService.getDocumentAttachment(docUuid);
 
    }
 
    @Override
-   public void addDocumentAttachmentBinaireRollbackParent(UUID docUuid,
-         String docName, String extension, DataHandler contenu)
+   public void addDocumentAttachmentBinaireRollbackParent(final UUID docUuid,
+                                                          final String docName, final String extension, final DataHandler contenu)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx, EmptyDocumentEx,
          EmptyFileNameEx {
 
       saeDocumentAttachmentService.addDocumentAttachmentBinaireRollbackParent(
-            docUuid, docName, extension, contenu);
+                                                                              docUuid,
+                                                                              docName,
+                                                                              extension,
+                                                                              contenu);
    }
 
    @Override
-   public void addDocumentAttachmentUrlRollbackParent(UUID docUuid, URI ecdeURL)
+   public void addDocumentAttachmentUrlRollbackParent(final UUID docUuid, final URI ecdeURL)
          throws SAEDocumentAttachmentEx, ArchiveInexistanteEx,
          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx, EmptyDocumentEx {
 
       saeDocumentAttachmentService.addDocumentAttachmentUrlRollbackParent(
-            docUuid, ecdeURL);
+                                                                          docUuid,
+                                                                          ecdeURL);
 
    }
 
