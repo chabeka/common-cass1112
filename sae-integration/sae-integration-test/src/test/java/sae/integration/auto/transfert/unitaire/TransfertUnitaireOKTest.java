@@ -1,9 +1,5 @@
 package sae.integration.auto.transfert.unitaire;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 import javax.xml.ws.soap.SOAPFaultException;
 
 import org.junit.After;
@@ -23,19 +19,19 @@ import sae.integration.webservice.modele.SaeServicePortType;
 import sae.integration.webservice.modele.TransfertRequestType;
 
 /**
- * Permet de tester le comportement lors de la tentative de transfert concurrent du même document.
+ * Permet de tester un simple transfet unitaire
  * Description du test :
  * - on archive un document en GNT
- * - on lance plusieurs threads tentant de transférer le document
+ * - on lance son transfert
  * - au final, on vérifie que le document bien transféré (présent en GNS et plus en GNT)
  */
-public class TransfertUnitaireMultithread {
+public class TransfertUnitaireOKTest {
 
    private static SaeServicePortType gntService;
 
    private static SaeServicePortType gnsService;
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(TransfertUnitaireMultithread.class);
+   private static final Logger LOGGER = LoggerFactory.getLogger(TransfertUnitaireOKTest.class);
 
    private volatile int threadId;
 
@@ -63,34 +59,22 @@ public class TransfertUnitaireMultithread {
    }
 
    @Test
-   public void transfertMutithreadTest() throws Exception {
+   public void transfertTest() throws Exception {
+
       docId = ArchivageUtils.archivagePDF(gntService);
-
       LOGGER.info("Archivage d'un document en GNT : {}", docId);
-
-      final ExecutorService executor = Executors.newFixedThreadPool(20);
-      threadId = 0;
-      for (int i = 0; i < 10; i++) {
-         final Runnable runnable = () -> {
-            final int currentThreadId = threadId++;
-            final TransfertRequestType transfertRequest = new TransfertRequestType();
-            transfertRequest.setUuid(docId);
-            try {
-               LOGGER.debug("Lancement du transfert sur le thread n°{}", currentThreadId);
-               gntService.transfert(transfertRequest);
-               LOGGER.debug("Fin du transfert sur le thread n°{}", currentThreadId);
-            }
-            catch (final SOAPFaultException e) {
-               if (!e.getMessage().contains("ArchiveNonTrouvee") && !e.getMessage().contains("a déjà été transféré")) {
-                  LOGGER.warn("Erreur inattendue lors de la tentative de transfert :", e);
-                  LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
-               }
-            }
-         };
-         executor.execute(runnable);
+      final TransfertRequestType transfertRequest = new TransfertRequestType();
+      transfertRequest.setUuid(docId);
+      try {
+         LOGGER.info("Lancement du transfert");
+         gntService.transfert(transfertRequest);
+         LOGGER.info("Fin du transfert");
       }
-      executor.shutdown();
-      executor.awaitTermination(2, TimeUnit.HOURS);
+      catch (final SOAPFaultException e) {
+         LOGGER.warn("Erreur inattendue lors de la tentative de transfert :", e);
+         LOGGER.warn("Détail : {}", SoapHelper.getSoapFaultDetail(e));
+         throw e;
+      }
 
       LOGGER.info("Temporisation de 2 secondes");
       Thread.sleep(2000);

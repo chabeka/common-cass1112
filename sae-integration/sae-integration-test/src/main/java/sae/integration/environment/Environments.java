@@ -9,6 +9,10 @@ public class Environments {
 
    public static final Environment GNS_INT_CLIENT;
 
+   public static final Environment GNT_INT_PAJE;
+
+   public static final Environment GNS_INT_PAJE;
+
    public static final Environment GNT_INT_INTERNE;
 
    public static final Environment GNS_INT_INTERNE;
@@ -20,6 +24,7 @@ public class Environments {
    public static final Environment GNT_INT_NAT_C1;
 
    public static final Environment GNT_DEV2;
+
 
    public static final Environment LOCALHOST;
 
@@ -42,6 +47,22 @@ public class Environments {
             .setEcdeMountPoint("/hawai/data/ecde_cnp69-evsgidn")
             .setEcdeName("cnp69-evsgidn.cer69.recouv")
             .setCassandraServers("cnp69intgnscas1.gidn.recouv")
+            .build();
+
+      GNT_INT_PAJE = new EnvironmentBuilder()
+            .setUrl("http://hwi31intgntpajeboappli1.gidn.recouv:8080/ged/services/SaeService/")
+            .setAppliServer("hwi31intgntpajeboappli1.gidn.recouv")
+            .setEcdeMountPoint("/hawai/data/ecde_cnp69-evsgidn")
+            .setEcdeName("cnp69-evsgidn.cer69.recouv")
+            .setCassandraServers("cnp69intgntp1cas1.gidn.recouv")
+            .build();
+
+      GNS_INT_PAJE = new EnvironmentBuilder()
+            .setUrl("http://hwi31intgnspajeboappli2.gidn.recouv:8080/ged/services/SaeService/")
+            .setAppliServer("hwi31intgnspajeboappli2.gidn.recouv")
+            .setEcdeMountPoint("/hawai/data/ecde_cnp69-evsgidn")
+            .setEcdeName("cnp69-evsgidn.cer69.recouv")
+            .setCassandraServers("cnp69intgnsp1cas1.gidn.recouv")
             .build();
 
       GNT_INT_INTERNE = new EnvironmentBuilder()
