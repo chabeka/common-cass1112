@@ -5,7 +5,7 @@
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
 
    <security:global-method-security
-      pre-post-annotations="enabled" jsr250-annotations="enabled" proxy-target-class="true">
+      pre-post-annotations="enabled" jsr250-annotations="enabled" proxy-target-class="false">
       <security:expression-handler ref="expressionHandler" />
    </security:global-method-security>
 
