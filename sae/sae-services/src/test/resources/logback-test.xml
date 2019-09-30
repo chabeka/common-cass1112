@@ -31,7 +31,7 @@
 	<logger name="fr.urssaf.image.sae.format" level="WARN" />
 
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="console" />
 	</root>
 
