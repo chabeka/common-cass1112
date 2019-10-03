@@ -15,17 +15,17 @@
 	<description>Traitement de masse: import, export, delete</description>
 
 	<properties>
-		<junit.version>4.8.2</junit.version>
-		<spring.framework.version>3.0.5.RELEASE</spring.framework.version>
+		<junit.version>4.12</junit.version>
+		<spring.framework.version>4.3.21.RELEASE</spring.framework.version>
 		<sae.version>19.10.0-SNAPSHOT</sae.version>
 		<commons.dfce.version>1.11.0-SNAPSHOT</commons.dfce.version>
-		<aspectj.version>1.8.13</aspectj.version>
-		<easymock.version>3.0</easymock.version>
+		<aspectj.version>1.9.2</aspectj.version>
+		<easymock.version>4.0.2</easymock.version>
 		<apache.commons-collections.version>3.2.1</apache.commons-collections.version>
 		<apache.commons-beanutils.version>1.8.3</apache.commons-beanutils.version>
 		<aspectj-maven-plugin.version>1.11</aspectj-maven-plugin.version>
-		<maven-shade-plugin.version>1.4</maven-shade-plugin.version>
-		<maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+		<maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
+		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<hawai-maven-plugin.version>5.0.2</hawai-maven-plugin.version>
 	</properties>
    
