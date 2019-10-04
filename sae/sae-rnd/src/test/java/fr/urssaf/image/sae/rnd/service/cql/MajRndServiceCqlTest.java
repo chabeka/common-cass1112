@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.rnd.service;
+package fr.urssaf.image.sae.rnd.service.cql;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,16 +24,16 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
-import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
-import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
+import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
+import fr.urssaf.image.sae.rnd.dao.support.cql.SaeBddCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
+import fr.urssaf.image.sae.rnd.service.MajRndService;
+import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
@@ -41,22 +41,21 @@ import net.docubase.toolkit.model.reference.LifeCycleStep;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
-public class MajRndServiceTest {
+
+public class MajRndServiceCqlTest {
 
   @Autowired
   private MajRndService majRndService;
 
   @Autowired
-  private RndSupport rndSupport;
+  private RndCqlSupport rndCqlSupport;
 
   @Autowired
   private CassandraServerBean server;
 
-  @Autowired
-  private JobClockSupport jobClockSupport;
 
   @Autowired
-  private SaeBddSupport saeBddSupport;
+  private SaeBddCqlSupport saeBddCqlSupport;
 
   // Mocks
   @Autowired
@@ -81,6 +80,32 @@ public class MajRndServiceTest {
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
 
+    /*
+     * logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+     * logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
+     * logger.addAppender(logAppender);
+     * final VersionRnd version = new VersionRnd();
+     * version.setDateMiseAJour(new Date());
+     * version.setVersionEnCours("11.4");
+     * saeBddCqlSupport.updateVersionRnd(version);
+     */
+
+  }
+
+  @After
+  public void after() throws Exception {
+
+    EasyMock.reset(rndRecuperationService, lifeCycleRule, lifeCycleStep);
+    server.resetData();
+    logger.detachAppender(logAppender);
+  }
+
+
+
+  @Test
+  public void testLancer() throws Exception {
+    server.clearAndLoad();
+
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
@@ -89,19 +114,9 @@ public class MajRndServiceTest {
     final VersionRnd version = new VersionRnd();
     version.setDateMiseAJour(new Date());
     version.setVersionEnCours("11.4");
-    saeBddSupport.updateVersionRnd(version);
-  }
+    saeBddCqlSupport.updateVersionRnd(version);
 
-  @After
-  public void after() throws Exception {
-    EasyMock.reset(rndRecuperationService, lifeCycleRule, lifeCycleStep);
-    server.resetData(true, MODE_API.HECTOR);
-    logger.detachAppender(logAppender);
-  }
-
-  @Test
-  public void testLancer() throws Exception {
-
+    ModeAPIRndUtils.setAllRndModeAPICql();
     initComposantsADRN();
     initComposantsDFCE();
 
@@ -111,13 +126,13 @@ public class MajRndServiceTest {
 
     // On vérifie que les codes "1.1.1.1.1", "2.1.1.1.1", "3.1.1.1.1" et
     // "0.0.0.0.0" existe bien dans la base
-    final TypeDocument typeDoc1 = rndSupport.getRnd("1.1.1.1.1");
+    final TypeDocument typeDoc1 = rndCqlSupport.getRnd("1.1.1.1.1");
     Assert.assertNotNull(typeDoc1);
 
-    final TypeDocument typeDoc2 = rndSupport.getRnd("2.1.1.1.1");
+    final TypeDocument typeDoc2 = rndCqlSupport.getRnd("2.1.1.1.1");
     Assert.assertNotNull(typeDoc2);
 
-    final TypeDocument typeDoc3 = rndSupport.getRnd("3.1.1.1.1");
+    final TypeDocument typeDoc3 = rndCqlSupport.getRnd("3.1.1.1.1");
     Assert.assertNotNull(typeDoc3);
 
     // On vérifie que la durée de conservation du 1er doc a été passée à 300
@@ -186,11 +201,12 @@ public class MajRndServiceTest {
     typeDoc1bis.setDureeConservation(3000);
     typeDoc1bis.setLibelle("Libellé 1.1.1.1.1");
     typeDoc1bis.setType(TypeCode.ARCHIVABLE_AED);
-    rndSupport.ajouterRnd(typeDoc1bis, jobClockSupport.currentCLock());
+    rndCqlSupport.ajouterRnd(typeDoc1bis);
     // Le 2ème document n'est pas dans le RND du SAE, il sera donc ajouté
+    rndCqlSupport.ajouterRnd(typeDoc2);// EC
     // Le 3ème document sera déjà dans le RND du SAE donc il ne sera pas
     // ajouté (toutes propriétés identiques)
-    rndSupport.ajouterRnd(typeDoc3, jobClockSupport.currentCLock());
+    rndCqlSupport.ajouterRnd(typeDoc3);
 
     // Liste des correspondances
     // -------------------------
@@ -211,7 +227,7 @@ public class MajRndServiceTest {
     typeDoc4.setDureeConservation(3000);
     typeDoc4.setLibelle("Libellé 0.0.0.0.0");
     typeDoc4.setType(TypeCode.TEMPORAIRE);
-    rndSupport.ajouterRnd(typeDoc4, jobClockSupport.currentCLock());
+    rndCqlSupport.ajouterRnd(typeDoc4);
     EasyMock.expect(rndRecuperationService.getListeCodesTemporaires())
     .andReturn(listeCodesTempo);
 

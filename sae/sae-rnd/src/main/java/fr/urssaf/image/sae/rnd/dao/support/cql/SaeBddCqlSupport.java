@@ -1,4 +1,4 @@
-package fr.urssaf.image.sae.rnd.dao.support;
+package fr.urssaf.image.sae.rnd.dao.support.cql;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -9,7 +9,6 @@ import java.util.Map.Entry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
@@ -24,19 +23,16 @@ import fr.urssaf.image.sae.rnd.modele.VersionRnd;
  *
  */
 @Component
-public class SaeBddSupport {
+public class SaeBddCqlSupport {
 
   @Autowired
   private ParametersService parametersService;
 
   @Autowired
-  private RndSupport rndSupport;
+  private RndCqlSupport rndSupport;
 
   @Autowired
-  private CorrespondancesRndSupport correspondancesRndSupport;
-
-  @Autowired
-  private JobClockSupport clockSupport;
+  private CorrespondancesRndCqlSupport correspondancesRndSupport;
 
 
   /**
@@ -101,7 +97,7 @@ public class SaeBddSupport {
         final TypeDocument typeDocumentRecup = rndSupport.getRnd(typeDocument
                                                                  .getCode());
         if (!typeDocument.equals(typeDocumentRecup)) {
-          rndSupport.ajouterRnd(typeDocument, clockSupport.currentCLock());
+          rndSupport.ajouterRnd(typeDocument);
         }
       }
     } catch (final Exception e) {
@@ -142,13 +138,13 @@ public class SaeBddSupport {
         correspondance.setCodeTemporaire((String) codeTemporaire);
         correspondance.setEtat(EtatCorrespondance.CREATED);
         correspondance.setVersionCourante(version);
-        correspondancesRndSupport.ajouterCorrespondance(correspondance, clockSupport.currentCLock());
+        correspondancesRndSupport.ajouterCorrespondance(correspondance);
 
         // On passe le code type temporaire à l'état cloturé
         final TypeDocument typeDoc = rndSupport.getRnd((String) codeTemporaire);
         if (typeDoc != null) {
           typeDoc.setCloture(true);
-          rndSupport.ajouterRnd(typeDoc, clockSupport.currentCLock());
+          rndSupport.ajouterRnd(typeDoc);
         }
 
       }
@@ -168,7 +164,7 @@ public class SaeBddSupport {
   public final List<Correspondance> getAllCorrespondances()
       throws SaeBddRuntimeException {
     try {
-      return correspondancesRndSupport.getAllCorrespondances();
+      return correspondancesRndSupport.findAll();
     } catch (final Exception e) {
       throw new SaeBddRuntimeException(e);
     }
@@ -187,7 +183,7 @@ public class SaeBddSupport {
     try {
       correspondance.setEtat(EtatCorrespondance.STARTING);
       correspondance.setDateDebutMaj(new Date());
-      correspondancesRndSupport.ajouterCorrespondance(correspondance, clockSupport.currentCLock());
+      correspondancesRndSupport.ajouterCorrespondance(correspondance);
     } catch (final Exception e) {
       throw new SaeBddRuntimeException(e);
     }

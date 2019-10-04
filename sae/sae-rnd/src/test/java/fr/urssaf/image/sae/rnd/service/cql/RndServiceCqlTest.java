@@ -1,46 +1,53 @@
-package fr.urssaf.image.sae.rnd.service;
+package fr.urssaf.image.sae.rnd.service.cql;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
+import fr.urssaf.image.sae.rnd.service.RndService;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
-public class RndServiceTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class RndServiceCqlTest {
 
   @Autowired
   private RndService rndService;
 
   @Autowired
-  private RndSupport rndSupport;
+  private RndCqlSupport rndCqlSupport;
 
   @Autowired
   private CassandraServerBean server;
 
-  @Autowired
-  private JobClockSupport jobClockSupport;
+  private final String cfName = Constantes.CF_RND;
+
+
 
   @After
   public void after() throws Exception {
-    server.resetData(true, MODE_API.HECTOR);
+    server.resetDataOnly();
+
   }
 
   @Before
   public void before() {
+    GestionModeApiUtils.setModeApiCql(cfName);
     final TypeDocument typeDocCree = new TypeDocument();
     typeDocCree.setCloture(false);
     typeDocCree.setCode("1.2.1.1.1");
@@ -50,9 +57,22 @@ public class RndServiceTest {
     typeDocCree.setLibelle("Libellé 1.2.1.1.1");
     typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+    rndCqlSupport.ajouterRnd(typeDocCree);
   }
 
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
   @Test
   public void testGetCodeActivite() throws CodeRndInexistantException {
 
@@ -79,8 +99,5 @@ public class RndServiceTest {
     Assert.assertEquals("Le type de doc est incorrect", typeDocARecup, type);
 
   }
-
-
-
 
 }

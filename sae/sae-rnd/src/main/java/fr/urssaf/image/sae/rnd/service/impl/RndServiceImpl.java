@@ -11,7 +11,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.LoadingCache;
 
-import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
+import fr.urssaf.image.sae.rnd.dao.support.facade.RndSupportFacade;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.service.RndService;
@@ -24,102 +24,102 @@ import fr.urssaf.image.sae.rnd.service.RndService;
 @Service
 public class RndServiceImpl implements RndService {
 
-   /**
-    * Cache Rnd
-    */
-   private final LoadingCache<String, TypeDocument> cacheRnd;
+  /**
+   * Cache Rnd
+   */
+  private final LoadingCache<String, TypeDocument> cacheRnd;
 
-   @Autowired
-   private RndSupport rndSupport;
+  @Autowired
+  private RndSupportFacade rndSupport;
 
-   /**
-    * @param dureeCache
-    *           la durée du cache définie dans le fichier sae-config Construit
-    *           un objet de type {@link RndServiceImpl}
-    */
-   @Autowired
-   public RndServiceImpl(@Value("${sae.rnd.cache}") int dureeCache) {
+  /**
+   * @param dureeCache
+   *           la durée du cache définie dans le fichier sae-config Construit
+   *           un objet de type {@link RndServiceImpl}
+   */
+  @Autowired
+  public RndServiceImpl(@Value("${sae.rnd.cache}") final int dureeCache) {
 
-      cacheRnd = CacheBuilder.newBuilder().refreshAfterWrite(dureeCache,
-            TimeUnit.MINUTES).build(new CacheLoader<String, TypeDocument>() {
+    cacheRnd = CacheBuilder.newBuilder().refreshAfterWrite(dureeCache,
+                                                           TimeUnit.MINUTES).build(new CacheLoader<String, TypeDocument>() {
 
-         @Override
-         public TypeDocument load(String codeRnd) {
-            return rndSupport.getRnd(codeRnd);
-         }
+                                                             @Override
+                                                             public TypeDocument load(final String codeRnd) {
+                                                               return rndSupport.getRnd(codeRnd);
+                                                             }
 
-      });
-   }
+                                                           });
+  }
 
-   @Override
-   @SuppressWarnings("PMD.PreserveStackTrace")
-   public final String getCodeActivite(String codeRnd)
-         throws CodeRndInexistantException {
-      try {
-         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-         return typeDoc.getCodeActivite();
-      } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'est pas autorisé à l'archivage (code inexistant).", e
-               .getCause());
-      }
+  @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  public final String getCodeActivite(final String codeRnd)
+      throws CodeRndInexistantException {
+    try {
+      final TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+      return typeDoc.getCodeActivite();
+    } catch (final InvalidCacheLoadException e) {
+      throw new CodeRndInexistantException("Le code RND " + codeRnd
+                                           + " n'est pas autorisé à l'archivage (code inexistant).", e
+                                           .getCause());
+    }
 
-   }
+  }
 
-   @Override
-   @SuppressWarnings("PMD.PreserveStackTrace")
-   public final String getCodeFonction(String codeRnd)
-         throws CodeRndInexistantException {
-      try {
-         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-         return typeDoc.getCodeFonction();
-      } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'est pas autorisé à l'archivage (code inexistant).", e
-               .getCause());
-      }
-   }
+  @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  public final String getCodeFonction(final String codeRnd)
+      throws CodeRndInexistantException {
+    try {
+      final TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+      return typeDoc.getCodeFonction();
+    } catch (final InvalidCacheLoadException e) {
+      throw new CodeRndInexistantException("Le code RND " + codeRnd
+                                           + " n'est pas autorisé à l'archivage (code inexistant).", e
+                                           .getCause());
+    }
+  }
 
-   @Override
-   @SuppressWarnings("PMD.PreserveStackTrace")
-   public final int getDureeConservation(String codeRnd)
-         throws CodeRndInexistantException {
-      try {
-         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-         return typeDoc.getDureeConservation();
-      } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'est pas autorisé à l'archivage (code inexistant).", e
-               .getCause());
-      }
+  @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  public final int getDureeConservation(final String codeRnd)
+      throws CodeRndInexistantException {
+    try {
+      final TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+      return typeDoc.getDureeConservation();
+    } catch (final InvalidCacheLoadException e) {
+      throw new CodeRndInexistantException("Le code RND " + codeRnd
+                                           + " n'est pas autorisé à l'archivage (code inexistant).", e
+                                           .getCause());
+    }
 
-   }
+  }
 
-   @Override
-   @SuppressWarnings("PMD.PreserveStackTrace")
-   public final TypeDocument getTypeDocument(String codeRnd)
-         throws CodeRndInexistantException {
-      try {
-         return cacheRnd.getUnchecked(codeRnd);
-      } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'est pas autorisé à l'archivage (code inexistant).", e
-               .getCause());
-      }
-   }
+  @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  public final TypeDocument getTypeDocument(final String codeRnd)
+      throws CodeRndInexistantException {
+    try {
+      return cacheRnd.getUnchecked(codeRnd);
+    } catch (final InvalidCacheLoadException e) {
+      throw new CodeRndInexistantException("Le code RND " + codeRnd
+                                           + " n'est pas autorisé à l'archivage (code inexistant).", e
+                                           .getCause());
+    }
+  }
 
-   @Override
-   @SuppressWarnings("PMD.PreserveStackTrace")
-   public final boolean isCloture(String codeRnd)
-         throws CodeRndInexistantException {
-      try {
-         TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
-         return typeDoc.isCloture();
-      } catch (InvalidCacheLoadException e) {
-         throw new CodeRndInexistantException("Le code RND " + codeRnd
-               + " n'est pas autorisé à l'archivage (code inexistant).", e
-               .getCause());
-      }
-   }
+  @Override
+  @SuppressWarnings("PMD.PreserveStackTrace")
+  public final boolean isCloture(final String codeRnd)
+      throws CodeRndInexistantException {
+    try {
+      final TypeDocument typeDoc = cacheRnd.getUnchecked(codeRnd);
+      return typeDoc.isCloture();
+    } catch (final InvalidCacheLoadException e) {
+      throw new CodeRndInexistantException("Le code RND " + codeRnd
+                                           + " n'est pas autorisé à l'archivage (code inexistant).", e
+                                           .getCause());
+    }
+  }
 
 }
