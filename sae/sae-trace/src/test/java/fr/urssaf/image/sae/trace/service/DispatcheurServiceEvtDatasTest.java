@@ -14,8 +14,10 @@ import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -32,6 +34,7 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class DispatcheurServiceEvtDatasTest {
 
   private static final String CONTEXTE = "contexte";
@@ -80,9 +83,22 @@ public class DispatcheurServiceEvtDatasTest {
 
   @After
   public void after() throws Exception {
-    server.resetData();
+    server.resetDataOnly();
   }
 
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
   @Test
   public void testCreationTraceSecuriteErreurContexteNonRenseigné() {
     createDestinataireEvt();
@@ -173,7 +189,8 @@ public class DispatcheurServiceEvtDatasTest {
       destCqlSupport.create(trace, new Date().getTime());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       destSupport.create(trace, new Date().getTime());
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       destSupport.create(trace, new Date().getTime());
       destCqlSupport.create(trace, new Date().getTime());
     }

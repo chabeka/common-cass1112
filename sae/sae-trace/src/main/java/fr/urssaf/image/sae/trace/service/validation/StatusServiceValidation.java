@@ -70,7 +70,7 @@ public class StatusServiceValidation {
     if (type == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "type de journalisation"));
+          "type de journalisation"));
     }
   }
 
@@ -95,7 +95,7 @@ public class StatusServiceValidation {
     if (value == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "valeur"));
+          "valeur"));
     }
   }
 
@@ -114,13 +114,13 @@ public class StatusServiceValidation {
     if (type == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "type de journalisation"));
+          "type de journalisation"));
     }
 
     if (value == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "valeur"));
+          "valeur"));
     }
   }
 }

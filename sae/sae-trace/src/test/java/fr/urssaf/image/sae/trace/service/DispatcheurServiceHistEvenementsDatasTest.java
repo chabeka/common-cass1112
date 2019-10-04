@@ -104,7 +104,8 @@ public class DispatcheurServiceHistEvenementsDatasTest {
       destCqlSupport.create(trace, new Date().getTime());
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       destSupport.create(trace, new Date().getTime());
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       destSupport.create(trace, new Date().getTime());
     }
   }

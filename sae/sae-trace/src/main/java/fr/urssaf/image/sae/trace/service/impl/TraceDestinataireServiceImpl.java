@@ -65,11 +65,11 @@ public class TraceDestinataireServiceImpl implements TraceDestinaireService {
     List<TraceDestinataire> listeTraceDestinataire = new ArrayList<>();
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
 
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       listeTraceDestinataire = traceDestinataireCqlSupport.findAll();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      listeTraceDestinataire = traceDestinataireSupport.findAll();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       listeTraceDestinataire = traceDestinataireSupport.findAll();
     }
 

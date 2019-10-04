@@ -9,10 +9,8 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import fr.urssaf.image.commons.cassandra.exception.CassandraConfigurationException;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
@@ -35,72 +33,72 @@ import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 @Component
 public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
 
-   private TraceRegSecuriteCqlSupport support;
+  private final TraceRegSecuriteCqlSupport support;
 
-   private final LoggerSupport loggerSupport;
+  private final LoggerSupport loggerSupport;
 
-   private static final Logger LOGGER = LoggerFactory
-                                                     .getLogger(RegSecuriteCqlServiceImpl.class);
+  private static final Logger LOGGER = LoggerFactory
+      .getLogger(RegSecuriteCqlServiceImpl.class);
 
-   /**
-    * @param support
-    *           Support de la classe DAO TraceRegSecuriteDao
-    * @param clockSupport
-    *           JobClockSupport Cassandra
-    * @param loggerSupport
-    *           Support pour l'écriture des traces applicatives
-    */
-   @Autowired
-   public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support, final LoggerSupport loggerSupport) {
-      super();
-      this.support = support;
-      this.loggerSupport = loggerSupport;
-   }
-   /**
-    * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
-    * @param context
-    */
-   public RegSecuriteCqlServiceImpl(CassandraCQLClientFactory ccf) {
+  /**
+   * @param support
+   *           Support de la classe DAO TraceRegSecuriteDao
+   * @param clockSupport
+   *           JobClockSupport Cassandra
+   * @param loggerSupport
+   *           Support pour l'écriture des traces applicatives
+   */
+  @Autowired
+  public RegSecuriteCqlServiceImpl(final TraceRegSecuriteCqlSupport support, final LoggerSupport loggerSupport) {
+    super();
+    this.support = support;
+    this.loggerSupport = loggerSupport;
+  }
+  /**
+   * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
+   * @param context
+   */
+  public RegSecuriteCqlServiceImpl(final CassandraCQLClientFactory ccf) {
 
-	  ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
-	  dao.setCcf(ccf);
-	  ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
-	  indexDao.setCcf(ccf);
-	  TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
-	  
-	  TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
-      this.support = support;
-      this.loggerSupport = new LoggerSupport();
-   }
-  
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public Logger getLogger() {
-      return LOGGER;
-   }
+    final ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
+    // dao.setCcf(ccf);
+    final ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
+    // indexDao.setCcf(ccf);
+    final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public LoggerSupport getLoggerSupport() {
-      return loggerSupport;
-   }
+    final TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
+    this.support = support;
+    loggerSupport = new LoggerSupport();
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public GenericAbstractTraceCqlSupport<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> getSupport() {
-      return support;
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Logger getLogger() {
+    return LOGGER;
+  }
 
-   @Override
-   public TraceRegSecuriteCql lecture(final UUID identifiant) {
-      final Optional<TraceRegSecuriteCql> traceOpt = this.support.find(identifiant);
-      return traceOpt.orElse(null);
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LoggerSupport getLoggerSupport() {
+    return loggerSupport;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public GenericAbstractTraceCqlSupport<TraceRegSecuriteCql, TraceRegSecuriteIndexCql> getSupport() {
+    return support;
+  }
+
+  @Override
+  public TraceRegSecuriteCql lecture(final UUID identifiant) {
+    final Optional<TraceRegSecuriteCql> traceOpt = support.find(identifiant);
+    return traceOpt.orElse(null);
+  }
 
 }

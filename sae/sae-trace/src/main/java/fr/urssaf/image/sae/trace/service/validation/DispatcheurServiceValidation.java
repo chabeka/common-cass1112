@@ -4,8 +4,8 @@
 package fr.urssaf.image.sae.trace.service.validation;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
@@ -32,19 +32,19 @@ public class DispatcheurServiceValidation {
    * @param trace
    *          trace à créer
    */
-  @Before(TRACER_METHOD)
+  @After(TRACER_METHOD)
   public final void testTracer(final TraceToCreate trace) {
 
     if (trace == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              "{0}",
-                                                             "trace"));
+          "trace"));
     }
 
     if (StringUtils.isBlank(trace.getCodeEvt())) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              "{0}",
-                                                             "code événement"));
+          "code événement"));
     }
   }
 }

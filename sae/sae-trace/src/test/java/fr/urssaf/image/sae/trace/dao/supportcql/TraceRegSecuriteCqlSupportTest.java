@@ -22,7 +22,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteIndexCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
@@ -53,7 +52,7 @@ public class TraceRegSecuriteCqlSupportTest {
   private static final Map<String, String> INFOS;
 
   static {
-    INFOS = new HashMap<String, String>();
+    INFOS = new HashMap<>();
     INFOS.put(KEY, VALUE);
   }
 
@@ -66,9 +65,16 @@ public class TraceRegSecuriteCqlSupportTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
+  /*
+   * @After
+   * public void before() throws Exception {
+   * server.resetDataOnly();
+   * }
+   */
+
   @After
   public void after() throws Exception {
-    server.resetData(true, MODE_API.DATASTAX);
+    server.resetDataOnly();
   }
 
   @Test
@@ -124,48 +130,48 @@ public class TraceRegSecuriteCqlSupportTest {
   private void checkBean(final TraceRegSecuriteCql securite, final UUID uuid) {
     Assert.assertNotNull("l'objet doit etre trouvé", securite);
     Assert.assertEquals("le contexte doit etre correcte", CONTEXT, securite
-                                                                           .getContexte());
+                        .getContexte());
     Assert.assertEquals("le code evenement doit etre correcte",
                         CODE_EVT,
                         securite.getCodeEvt());
     Assert.assertEquals("le contrat doit etre correcte", CONTRAT, securite
-                                                                          .getContratService());
+                        .getContratService());
     checkPagms(securite.getPagms());
     Assert.assertEquals("l'identifiant doit etre correcte", uuid, securite
-                                                                          .getIdentifiant());
+                        .getIdentifiant());
     Assert.assertEquals("le login doit etre correcte", LOGIN, securite
-                                                                      .getLogin());
+                        .getLogin());
     Assert.assertEquals("la date doit etre correcte", DATE, securite
-                                                                    .getTimestamp());
+                        .getTimestamp());
     Assert.assertEquals(
                         "les infos supplémentaire doivent contenir un élément", 1, securite
-                                                                                           .getInfos().size());
+                        .getInfos().size());
     Assert.assertTrue("les infos supplémentaire doivent une clé correcte",
                       securite.getInfos().keySet().contains(KEY));
     Assert
-          .assertEquals(
-                        "les infos supplémentaire doivent contenir une valeur correcte élément",
-                        VALUE,
-                        securite.getInfos().get(KEY));
+    .assertEquals(
+                  "les infos supplémentaire doivent contenir une valeur correcte élément",
+                  VALUE,
+                  securite.getInfos().get(KEY));
 
   }
 
   private void checkBeanIndex(final TraceRegSecuriteIndexCql index, final UUID uuid) {
     Assert.assertNotNull("l'objet doit etre trouvé", index);
     Assert.assertEquals("le contexte doit etre correcte", CONTEXT, index
-                                                                        .getContexte());
+                        .getContexte());
     Assert.assertEquals("le code evenement doit etre correcte",
                         CODE_EVT,
                         index.getCodeEvt());
     Assert.assertEquals("le contrat doit etre correcte", CONTRAT, index
-                                                                       .getContrat());
+                        .getContrat());
     checkPagms(index.getPagms());
     Assert.assertEquals("l'identifiant doit etre correcte", uuid, index
-                                                                       .getIdentifiant());
+                        .getIdentifiant());
     Assert.assertEquals("le login doit etre correcte", LOGIN, index
-                                                                   .getLogin());
+                        .getLogin());
     Assert.assertEquals("la date doit etre correcte", DATE, index
-                                                                 .getTimestamp());
+                        .getTimestamp());
 
   }
 

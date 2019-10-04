@@ -7,8 +7,8 @@ import java.io.File;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.trace.model.JournalisationType;
@@ -45,26 +45,26 @@ public class JournalisationServiceValidation {
    * @param date
    *          date pour laquelle réaliser l'export
    */
-  @Before(EXPORT_METHOD)
+  @After(EXPORT_METHOD)
   public final void testExport(final JournalisationType type, final String repertoire,
                                final Date date) {
 
     if (type == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "type de journalisation"));
+          "type de journalisation"));
     }
 
     if (StringUtils.isEmpty(repertoire)) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "repertoire"));
+          "repertoire"));
     }
 
     if (date == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "date"));
+          "date"));
     }
 
     final File file = new File(repertoire);
@@ -75,7 +75,7 @@ public class JournalisationServiceValidation {
 
     if (!file.isDirectory()) {
       throw new IllegalArgumentException(
-                                         "le chemin spécifié n'est pas un répertoire");
+          "le chemin spécifié n'est pas un répertoire");
     }
   }
 
@@ -86,13 +86,13 @@ public class JournalisationServiceValidation {
    * @param type
    *          type de la purge
    */
-  @Before(RECUPERER_METHOD)
+  @After(RECUPERER_METHOD)
   public final void testRecup(final JournalisationType type) {
 
     if (type == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "type de journalisation"));
+          "type de journalisation"));
     }
   }
 }

@@ -9,14 +9,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.trace.commons.TraceDestinataireEnum;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
@@ -29,45 +31,64 @@ import junit.framework.Assert;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-@DirtiesContext(classMode = ClassMode.AFTER_CLASS)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+// @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class TraceDestinataireServiceImplTest {
 
-   @Autowired
-   TraceDestinaireService tracedestinataireservice;
-   
-   @Autowired
-   TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+  @Autowired
+  TraceDestinaireService tracedestinataireservice;
 
-   @Autowired
-   TraceDestinataireCqlSupport tracesupportCql;
-   
-   @Autowired
-   TraceDestinataireSupport tracesupport;
+  @Autowired
+  TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
-   private final List<String> list = Arrays.asList("date", "contrat");
-   
-   @Test
-   public void testGetCodeEvenementByTypeTrace() {
+  @Autowired
+  TraceDestinataireCqlSupport tracesupportCql;
 
-      final String code = "TEST|CREATE";
-      final TraceDestinataire trace = new TraceDestinataire();
-      trace.setCodeEvt(code);
+  @Autowired
+  TraceDestinataireSupport tracesupport;
 
-      final Map<String, List<String>> dest = new HashMap<String, List<String>>();
-      dest.put(TraceDestinataireEnum.REG_TECHNIQUE.name(), list);
-      trace.setDestinataires(dest);
+  @Autowired
+  CassandraServerBean server;
 
-      tracesupportCql.create(trace, new Date().getTime());
-      tracesupport.create(trace, new Date().getTime());
+  private final List<String> list = Arrays.asList("date", "contrat");
 
-      final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
-      Assert.assertEquals(14, str.size());
-      
-      List<TraceDestinataire> dests = traceDestinataireCqlSupport.findAll();
-      Assert.assertEquals(1, dests.size());
-      
-      Assert.assertEquals("TEST|CREATE", dests.get(0).getCodeEvt());
-      Assert.assertNotNull(dests.get(0).getDestinataires().get("REG_TECHNIQUE"));
-      
-   }
+  private final String cfName = "tracedestinataire";
+
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.clearAndLoad();
+      }
+      Assert.assertTrue(true);
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Test
+  public void testGetCodeEvenementByTypeTrace() {
+    GestionModeApiUtils.setModeApiThrift(cfName);
+    final String code = "TEST|CREATE";
+    final TraceDestinataire trace = new TraceDestinataire();
+    trace.setCodeEvt(code);
+
+    final Map<String, List<String>> dest = new HashMap<>();
+    dest.put(TraceDestinataireEnum.REG_TECHNIQUE.name(), list);
+    trace.setDestinataires(dest);
+
+    tracesupportCql.create(trace, new Date().getTime());
+    tracesupport.create(trace, new Date().getTime());
+
+    final List<String> str = tracedestinataireservice.getCodeEvenementByTypeTrace("REG_TECHNIQUE");
+    Assert.assertEquals(14, str.size());
+
+    final List<TraceDestinataire> dests = traceDestinataireCqlSupport.findAll();
+    Assert.assertEquals(1, dests.size());
+
+    Assert.assertEquals("TEST|CREATE", dests.get(0).getCodeEvt());
+    Assert.assertNotNull(dests.get(0).getDestinataires().get("REG_TECHNIQUE"));
+
+  }
 }

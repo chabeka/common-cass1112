@@ -63,6 +63,7 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
    * {@inheritDoc}
    */
   @Override
+
   IGenericDAO<TraceRegSecuriteCql, UUID> getDao() {
     return dao;
   }
@@ -126,5 +127,11 @@ public class TraceRegSecuriteCqlSupport extends GenericAbstractTraceCqlSupport<T
   UUID getTraceId(final TraceRegSecuriteIndexCql trace) {
     return trace.getIdentifiant();
   }
+
+  /**
+   * {@inheritDoc}
+   */
+
+
 
 }

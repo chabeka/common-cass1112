@@ -46,10 +46,14 @@ public class UtilsTraceMapper {
     tr.setLogin(traceCql.getLogin());
     tr.setPagms(traceCql.getPagms());
     final Map<String, Object> infos = new HashMap<>();
-    for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
-      infos.put(entry.getKey(), entry.getValue());
+    if (traceCql != null && traceCql.getInfos() != null && !traceCql.getInfos().isEmpty()) {
+      for (final Map.Entry<String, String> entry : traceCql.getInfos().entrySet()) {
+        infos.put(entry.getKey(), entry.getValue());
+      }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -74,7 +78,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -92,7 +98,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -110,7 +118,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -128,7 +138,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     tr.setStacktrace(traceCql.getStacktrace());
     return tr;
   }
@@ -147,7 +159,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     tr.setStacktrace(traceThrift.getStacktrace());
     return tr;
   }
@@ -165,7 +179,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -182,7 +198,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
     return tr;
   }
 
@@ -355,7 +373,9 @@ public class UtilsTraceMapper {
         infos.put(entry.getKey(), entry.getValue().toString());
       }
     }
-    tr.setInfos(infos);
+    if (!infos.isEmpty()) { // EC 20190918
+      tr.setInfos(infos);
+    }
 
     return tr;
   }

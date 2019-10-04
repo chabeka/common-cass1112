@@ -20,7 +20,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -39,165 +38,167 @@ import fr.urssaf.image.sae.trace.model.TraceToCreate;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class DispatcheurServiceRegistresDatasAucuneInfosTest {
 
-   private static final String ACTION = "action";
-   private static final String CONTEXTE = "contexte";
-   private static final String CONTRAT_DE_SERVICE = "contrat de service";
-   private static final String IP = "ip";
-   private static final String IP_VALUE = "127.0.0.1";
-   private static final String MESSAGE = "message";
-   private static final String MESSAGE_VALUE = "le message est ici";
-   private static final String VI = "vi";
-   private static final String VI_VALUE = "<vi><valeur>La valeur du vi</valeur></vi>";
-   private static final Map<String, Object> INFOS = new HashMap<String, Object>();
-   static {
-      INFOS.put(IP, IP_VALUE);
-      INFOS.put(MESSAGE, MESSAGE_VALUE);
-      INFOS.put(VI, VI_VALUE);
-   }
+  private static final String ACTION = "action";
+  private static final String CONTEXTE = "contexte";
+  private static final String CONTRAT_DE_SERVICE = "contrat de service";
+  private static final String IP = "ip";
+  private static final String IP_VALUE = "127.0.0.1";
+  private static final String MESSAGE = "message";
+  private static final String MESSAGE_VALUE = "le message est ici";
+  private static final String VI = "vi";
+  private static final String VI_VALUE = "<vi><valeur>La valeur du vi</valeur></vi>";
+  private static final Map<String, Object> INFOS = new HashMap<>();
+  static {
+    INFOS.put(IP, IP_VALUE);
+    INFOS.put(MESSAGE, MESSAGE_VALUE);
+    INFOS.put(VI, VI_VALUE);
+  }
 
-   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_AUCUNE_INFO";
-   
-   private final String cfNameDestinataire = "tracedestinatairecql";
+  private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_AUCUNE_INFO";
 
-   @Autowired
-   private DispatcheurService service;
+  private final String cfNameDestinataire = "tracedestinatairecql";
 
-   @Autowired
-   private TraceDestinataireSupport destSupport;
-   
-   @Autowired
-   private TraceDestinataireCqlSupport destCqlSupport;
+  @Autowired
+  private DispatcheurService service;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private TraceDestinataireSupport destSupport;
 
-   @Autowired
-   private RegExploitationService exploitService;
+  @Autowired
+  private TraceDestinataireCqlSupport destCqlSupport;
 
-   @Autowired
-   private RegSecuriteService securiteService;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private RegTechniqueService techniqueService;
+  @Autowired
+  private RegExploitationService exploitService;
 
-   @Autowired
-   private JournalEvtService evtService;
+  @Autowired
+  private RegSecuriteService securiteService;
 
-   @After
-   public void after() throws Exception {
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  @Autowired
+  private RegTechniqueService techniqueService;
 
-   @Test
-   public void testCreationTracesSucces() {
-      createDestinataireExploitation();
+  @Autowired
+  private JournalEvtService evtService;
 
-      TraceToCreate traceToCreate = new TraceToCreate();
-      traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
-      traceToCreate.setAction(ACTION);
-      traceToCreate.setContrat(CONTRAT_DE_SERVICE);
-      traceToCreate.setInfos(INFOS);
-      traceToCreate.setContexte(CONTEXTE);
+  @After
+  public void after() throws Exception {
+    server.resetDataOnly();
+    //server.resetDataOnly();
+  }
 
-      service.ajouterTrace(traceToCreate);
+  @Test
+  public void testCreationTracesSucces() {
+    createDestinataireExploitation();
 
-      checkTechnique();
-      checkExploitation();
-      checkSecurite();
-      checkJournalEvt();
+    final TraceToCreate traceToCreate = new TraceToCreate();
+    traceToCreate.setCodeEvt(ARCHIVAGE_UNITAIRE);
+    traceToCreate.setAction(ACTION);
+    traceToCreate.setContrat(CONTRAT_DE_SERVICE);
+    traceToCreate.setInfos(INFOS);
+    traceToCreate.setContexte(CONTEXTE);
 
-   }
+    service.ajouterTrace(traceToCreate);
 
-   private void checkExploitation() {
-      // on vérifie qu'il y a un résultat
+    checkTechnique();
+    checkExploitation();
+    checkSecurite();
+    checkJournalEvt();
 
-      List<TraceRegExploitationIndex> result = exploitService.lecture(DateUtils
-            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
-            1, false);
-      Assert.assertNotNull(
-            "une trace dans le registre technique doit etre trouvé", result);
-      Assert.assertEquals(
-            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
-            1, result.size());
+  }
 
-      // on vérifie les infos présentes dans les infos
-      TraceRegExploitation trace = exploitService.lecture(result.get(0)
-            .getIdentifiant());
-      Assert.assertNull("les infos ne doivent pas etre renseignées", trace
-            .getInfos());
-   }
+  private void checkExploitation() {
+    // on vérifie qu'il y a un résultat
 
-   private void checkTechnique() {
-      // on vérifie qu'il y a un résultat
-      List<TraceRegTechniqueIndex> result = techniqueService.lecture(DateUtils
-            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
-            1, false);
-      Assert.assertNotNull(
-            "une trace dans le registre technique doit etre trouvé", result);
-      Assert.assertEquals(
-            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
-            1, result.size());
+    final List<TraceRegExploitationIndex> result = exploitService.lecture(DateUtils
+                                                                          .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+                                                                          1, false);
+    Assert.assertNotNull(
+                         "une trace dans le registre technique doit etre trouvé", result);
+    Assert.assertEquals(
+                        "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+                        1, result.size());
 
-      // on vérifie les infos présentes dans les infos
-      TraceRegTechnique trace = techniqueService.lecture(result.get(0)
-            .getIdentifiant());
-      Assert.assertNull("les infos ne doivent pas etre renseignées", trace
-            .getInfos());
-   }
+    // on vérifie les infos présentes dans les infos
+    final TraceRegExploitation trace = exploitService.lecture(result.get(0)
+                                                              .getIdentifiant());
+    Assert.assertNull("les infos ne doivent pas etre renseignées", trace
+                      .getInfos());
+  }
 
-   private void checkSecurite() {
-      // on vérifie qu'il y a un résultat
-      List<TraceRegSecuriteIndex> result = securiteService.lecture(DateUtils
-            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
-            1, false);
-      Assert.assertNotNull(
-            "une trace dans le registre technique doit etre trouvé", result);
-      Assert.assertEquals(
-            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
-            1, result.size());
+  private void checkTechnique() {
+    // on vérifie qu'il y a un résultat
+    final List<TraceRegTechniqueIndex> result = techniqueService.lecture(DateUtils
+                                                                         .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+                                                                         1, false);
+    Assert.assertNotNull(
+                         "une trace dans le registre technique doit etre trouvé", result);
+    Assert.assertEquals(
+                        "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+                        1, result.size());
 
-      // on vérifie les infos présentes dans les infos
-      TraceRegSecurite trace = securiteService.lecture(result.get(0)
-            .getIdentifiant());
-      Assert.assertNull("les infos ne doivent pas etre renseignées", trace
-            .getInfos());
-   }
+    // on vérifie les infos présentes dans les infos
+    final TraceRegTechnique trace = techniqueService.lecture(result.get(0)
+                                                             .getIdentifiant());
+    Assert.assertNull("les infos ne doivent pas etre renseignées", trace
+                      .getInfos());
+  }
 
-   private void checkJournalEvt() {
-      // on vérifie qu'il y a un résultat
-      List<TraceJournalEvtIndex> result = evtService.lecture(DateUtils
-            .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
-            1, false);
-      Assert.assertNotNull(
-            "une trace dans le registre technique doit etre trouvé", result);
-      Assert.assertEquals(
-            "on ne doit avoir qu'une seule trace dans le registre de sécurité",
-            1, result.size());
+  private void checkSecurite() {
+    // on vérifie qu'il y a un résultat
+    final List<TraceRegSecuriteIndex> result = securiteService.lecture(DateUtils
+                                                                       .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+                                                                       1, false);
+    Assert.assertNotNull(
+                         "une trace dans le registre technique doit etre trouvé", result);
+    Assert.assertEquals(
+                        "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+                        1, result.size());
 
-      // on vérifie les infos présentes dans les infos
-      TraceJournalEvt trace = evtService
-            .lecture(result.get(0).getIdentifiant());
-      Assert.assertNull("les infos ne doivent pas etre renseignées", trace
-            .getInfos());
-   }
+    // on vérifie les infos présentes dans les infos
+    final TraceRegSecurite trace = securiteService.lecture(result.get(0)
+                                                           .getIdentifiant());
+    Assert.assertNull("les infos ne doivent pas etre renseignées", trace
+                      .getInfos());
+  }
 
-   private void createDestinataireExploitation() {
-      TraceDestinataire trace = new TraceDestinataire();
-      trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put(TraceDestinataireDao.COL_REG_EXPLOIT, new ArrayList<String>());
-      map.put(TraceDestinataireDao.COL_REG_SECURITE, new ArrayList<String>());
-      map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, new ArrayList<String>());
-      map.put(TraceDestinataireDao.COL_JOURN_EVT, new ArrayList<String>());
-      trace.setDestinataires(map);
+  private void checkJournalEvt() {
+    // on vérifie qu'il y a un résultat
+    final List<TraceJournalEvtIndex> result = evtService.lecture(DateUtils
+                                                                 .addMinutes(new Date(), -5), DateUtils.addMinutes(new Date(), 5),
+                                                                 1, false);
+    Assert.assertNotNull(
+                         "une trace dans le registre technique doit etre trouvé", result);
+    Assert.assertEquals(
+                        "on ne doit avoir qu'une seule trace dans le registre de sécurité",
+                        1, result.size());
 
-      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
-      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
-        destCqlSupport.create(trace, new Date().getTime());
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-        destSupport.create(trace, new Date().getTime());
-      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
-        destSupport.create(trace, new Date().getTime());
-      }
-   }
+    // on vérifie les infos présentes dans les infos
+    final TraceJournalEvt trace = evtService
+        .lecture(result.get(0).getIdentifiant());
+    Assert.assertNull("les infos ne doivent pas etre renseignées", trace
+                      .getInfos());
+  }
+
+  private void createDestinataireExploitation() {
+    final TraceDestinataire trace = new TraceDestinataire();
+    trace.setCodeEvt(ARCHIVAGE_UNITAIRE);
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put(TraceDestinataireDao.COL_REG_EXPLOIT, new ArrayList<String>());
+    map.put(TraceDestinataireDao.COL_REG_SECURITE, new ArrayList<String>());
+    map.put(TraceDestinataireDao.COL_REG_TECHNIQUE, new ArrayList<String>());
+    map.put(TraceDestinataireDao.COL_JOURN_EVT, new ArrayList<String>());
+    trace.setDestinataires(map);
+
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      destCqlSupport.create(trace, new Date().getTime());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      destSupport.create(trace, new Date().getTime());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
+      destSupport.create(trace, new Date().getTime());
+    }
+  }
 }

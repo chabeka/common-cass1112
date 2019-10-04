@@ -17,14 +17,15 @@ import java.util.UUID;
 import org.apache.commons.collections.MapUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.utils.DateRegUtils;
@@ -34,6 +35,7 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class TraceJournalEvtCqlSupportTest {
 
   private static final String VALUE = "valeur";
@@ -72,9 +74,22 @@ public class TraceJournalEvtCqlSupportTest {
 
   @After
   public void after() throws Exception {
-    server.resetData(true, MODE_API.DATASTAX);
+    server.resetDataOnly();
   }
 
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
   @Test
   public void testCreateFindSuccess() {
 

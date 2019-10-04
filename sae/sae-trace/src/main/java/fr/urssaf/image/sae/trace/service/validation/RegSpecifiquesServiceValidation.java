@@ -56,24 +56,24 @@ public class RegSpecifiquesServiceValidation {
     if (dateDebut == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "date de début"));
+          "date de début"));
     }
 
     if (dateFin == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "date de fin"));
+          "date de fin"));
     }
 
     if (dateDebut.compareTo(dateFin) >= 0) {
       throw new IllegalArgumentException(
-                                         "la date de début doit être inférieure à la date de fin");
+          "la date de début doit être inférieure à la date de fin");
     }
 
     if (limite < 1) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "limite"));
+          "limite"));
     }
 
   }
@@ -97,25 +97,25 @@ public class RegSpecifiquesServiceValidation {
     if (date == null) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "date d'export"));
+          "date d'export"));
     }
 
     if (StringUtils.isEmpty(repertoire)) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "répertoire"));
+          "répertoire"));
     }
 
     if (StringUtils.isEmpty(identifiant)) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "identifiant du journal précédent"));
+          "identifiant du journal précédent"));
     }
 
     if (StringUtils.isEmpty(hash)) {
       throw new IllegalArgumentException(StringUtils.replace(MESSAGE_ERREUR,
                                                              ARG_0,
-                                                             "hash du journal précédent"));
+          "hash du journal précédent"));
     }
 
     final File file = new File(repertoire);
@@ -125,7 +125,7 @@ public class RegSpecifiquesServiceValidation {
 
     if (!file.isDirectory()) {
       throw new IllegalArgumentException(
-                                         "le paramètre n'est pas un répertoire");
+          "le paramètre n'est pas un répertoire");
     }
 
   }
