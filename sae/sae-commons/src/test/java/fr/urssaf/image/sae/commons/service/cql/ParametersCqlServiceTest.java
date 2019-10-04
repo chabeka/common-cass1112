@@ -1,10 +1,11 @@
-package fr.urssaf.image.sae.commons.service;
+package fr.urssaf.image.sae.commons.service.cql;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,12 +16,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
+import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.Constantes;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-commons-test.xml"})
-public class ParametersServiceTest {
+public class ParametersCqlServiceTest {
 
   @Autowired
   private ParametersService parametersService;
@@ -29,15 +33,19 @@ public class ParametersServiceTest {
   private CassandraServerBean server;
 
   private final Date date = new Date();
-
   @Before
   public void begin() throws Exception {
-    server.resetData(true, MODE_API.HECTOR);
+    GestionModeApiUtils.setModeApiCql(Constantes.CF_PARAMETERS);
+  }
 
+  @After
+  public void end() throws Exception {
+    server.resetData(true, MODE_API.DATASTAX);
   }
 
   @Test
   public void testJournalisationEvtDate() throws ParameterNotFoundException {
+
     final Date storedDate = DateUtils.addDays(date, -2);
     parametersService.setJournalisationEvtDate(storedDate);
 
