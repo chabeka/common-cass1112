@@ -12,6 +12,7 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -27,81 +28,83 @@ import junit.framework.Assert;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaePrmdServiceDatasTest {
 
-   @Autowired
-   private SaePrmdService service;
+  @Autowired
+  @Qualifier("saePrmdServiceFacadeImpl")
+  private SaePrmdService service;
 
-   @Autowired
-   private PrmdSupport prmdSupport;
+  @Autowired
+  private PrmdSupport prmdSupport;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+  @Autowired
+  private JobClockSupport clockSupport;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public void end() throws Exception {
-	   cassandraServer.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void end() throws Exception {
+    cassandraServer.resetData(true, MODE_API.HECTOR);
+  }
 
-   @Test
-   public void testServicePrmdNotExists() {
-      boolean value = service.prmdExists("code");
-      
-      Assert.assertFalse("le prmd n'existe pas", value);
-   }
+  @Test
+  public void testServicePrmdNotExists() {
+    final boolean value = service.prmdExists("code");
 
-   @Test
-   public void testServicePrmdExists() {
-      
-      Prmd prmd = new Prmd();
+    Assert.assertFalse("le prmd n'existe pas", value);
+  }
 
-      prmd.setCode("codePrmd");
-      prmd.setDescription("description Prmd");
-      prmd.setLucene("lucene Prmd");
-      prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, List<String>>());
+  @Test
+  public void testServicePrmdExists() {
 
-      prmdSupport.create(prmd, clockSupport.currentCLock());
-      
-      boolean value = service.prmdExists("codePrmd");
-      
-      Assert.assertTrue("le prmd existe", value);
-   }
-   
-   @Test(expected = DroitRuntimeException.class)
-   public void testPrmdExiste() {
+    final Prmd prmd = new Prmd();
 
-      Prmd prmd = new Prmd();
+    prmd.setCode("codePrmd");
+    prmd.setDescription("description Prmd");
+    prmd.setLucene("lucene Prmd");
+    prmd.setBean("bean1");
+    prmd.setMetadata(new HashMap<String, List<String>>());
 
-      prmd.setCode("codePrmd");
-      prmd.setDescription("description Prmd");
-      prmd.setLucene("lucene Prmd");
-      prmd.setBean("bean1");
-      prmd.setMetadata(new HashMap<String, List<String>>());
 
-      prmdSupport.create(prmd, clockSupport.currentCLock());
+    prmdSupport.create(prmd, clockSupport.currentCLock());
 
-      service.createPrmd(prmd);
-   }
+    final boolean value = service.prmdExists("codePrmd");
 
-   @Test
-   public void testSucces() {
+    Assert.assertTrue("le prmd existe", value);
+  }
 
-      Prmd prmd = new Prmd();
+  @Test(expected = DroitRuntimeException.class)
+  public void testPrmdExiste() {
 
-      prmd.setCode("codePrmd");
-      prmd.setDescription("description Prmd");
-      prmd.setLucene("lucene Prmd");
-      prmd.setBean("bean1");
-      Map<String, List<String>> map = new HashMap<String, List<String>>();
-      map.put("cle1", Arrays.asList(new String[]{"valeur1"}));
-      prmd.setMetadata(map);
+    final Prmd prmd = new Prmd();
 
-      service.createPrmd(prmd);
+    prmd.setCode("codePrmd");
+    prmd.setDescription("description Prmd");
+    prmd.setLucene("lucene Prmd");
+    prmd.setBean("bean1");
+    prmd.setMetadata(new HashMap<String, List<String>>());
 
-      Prmd storedPrmd = prmdSupport.find("codePrmd");
-      Assert.assertEquals("les deux prmds doivent être identiques", storedPrmd,
-            prmd);
-   }
+    prmdSupport.create(prmd, clockSupport.currentCLock());
+
+    service.createPrmd(prmd);
+  }
+
+  @Test
+  public void testSucces() {
+
+    final Prmd prmd = new Prmd();
+
+    prmd.setCode("codePrmd");
+    prmd.setDescription("description Prmd");
+    prmd.setLucene("lucene Prmd");
+    prmd.setBean("bean1");
+    final Map<String, List<String>> map = new HashMap<>();
+    map.put("cle1", Arrays.asList(new String[]{"valeur1"}));
+    prmd.setMetadata(map);
+
+    service.createPrmd(prmd);
+
+    final Prmd storedPrmd = prmdSupport.find("codePrmd");
+    Assert.assertEquals("les deux prmds doivent être identiques", storedPrmd,
+                        prmd);
+  }
 }

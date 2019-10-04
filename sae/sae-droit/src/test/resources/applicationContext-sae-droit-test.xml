@@ -6,7 +6,8 @@
 		http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context.xsd">
-
+   <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="classpath*:/applicationContext-sae-commons.xml" />
    <bean
       class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
       <property name="locations">
@@ -17,7 +18,7 @@
       </property>
    </bean>
 
-   <import resource="applicationContext-sae-droit.xml" />
+   
 
    <bean id="prmdControleTest"
       class="fr.urssaf.image.sae.droit.controle.PrmdControleTestImpl" />
@@ -27,5 +28,6 @@
       zookeeper (zkClient)
    -->
    <import resource="classpath*:/applicationContext-commons-cassandra.xml" />
+   <import resource="applicationContext-sae-droit.xml" />
    
 </beans>

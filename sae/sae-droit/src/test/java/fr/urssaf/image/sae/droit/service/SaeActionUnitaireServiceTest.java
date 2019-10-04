@@ -7,6 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -16,59 +17,60 @@ import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaeActionUnitaireServiceTest {
 
-   @Autowired
-   private SaeActionUnitaireService service;
+  @Autowired
+  @Qualifier("saeActionUnitaireServiceFacadeImpl")
+  private SaeActionUnitaireService service;
 
-   @Test
-   public void testActionUnitaireObligatoire() {
+  @Test
+  public void testActionUnitaireObligatoire() {
 
-      try {
-         service.createActionUnitaire(null);
-         Assert.fail("exception attendue");
-      } catch (Exception e) {
+    try {
+      service.createActionUnitaire(null);
+      Assert.fail("exception attendue");
+    } catch (final Exception e) {
 
-         Assert.assertEquals("type de l'exception correcte",
-               IllegalArgumentException.class, e.getClass());
-      }
+      Assert.assertEquals("type de l'exception correcte",
+                          IllegalArgumentException.class, e.getClass());
+    }
 
-   }
+  }
 
-   @Test
-   public void testCodeObligatoire() {
+  @Test
+  public void testCodeObligatoire() {
 
-      try {
-         ActionUnitaire actionUnitaire = new ActionUnitaire();
-         actionUnitaire.setDescription("test création");
+    try {
+      final ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setDescription("test création");
 
-         service.createActionUnitaire(actionUnitaire);
-         Assert.fail("exception attendue");
-      } catch (Exception e) {
+      service.createActionUnitaire(actionUnitaire);
+      Assert.fail("exception attendue");
+    } catch (final Exception e) {
 
-         Assert.assertEquals("type de l'exception correcte",
-               IllegalArgumentException.class, e.getClass());
-         Assert.assertTrue("message de l'exception contient code", e
-               .getMessage().contains("code"));
-      }
+      Assert.assertEquals("type de l'exception correcte",
+                          IllegalArgumentException.class, e.getClass());
+      Assert.assertTrue("message de l'exception contient code", e
+                        .getMessage().contains("code"));
+    }
 
-   }
+  }
 
-   @Test
-   public void testDescriptionObligatoire() {
+  @Test
+  public void testDescriptionObligatoire() {
 
-      try {
-         ActionUnitaire actionUnitaire = new ActionUnitaire();
-         actionUnitaire.setCode("test1");
+    try {
+      final ActionUnitaire actionUnitaire = new ActionUnitaire();
+      actionUnitaire.setCode("test1");
 
-         service.createActionUnitaire(actionUnitaire);
-         Assert.fail("exception attendue");
-      } catch (Exception e) {
+      service.createActionUnitaire(actionUnitaire);
+      Assert.fail("exception attendue");
+    } catch (final Exception e) {
 
-         Assert.assertEquals("type de l'exception correcte",
-               IllegalArgumentException.class, e.getClass());
-         Assert.assertTrue("message de l'exception contient description", e
-               .getMessage().contains("description"));
-      }
+      Assert.assertEquals("type de l'exception correcte",
+                          IllegalArgumentException.class, e.getClass());
+      Assert.assertTrue("message de l'exception contient description", e
+                        .getMessage().contains("description"));
+    }
 
-   }
+  }
 
 }

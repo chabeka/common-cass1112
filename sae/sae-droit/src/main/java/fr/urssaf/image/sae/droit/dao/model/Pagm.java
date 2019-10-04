@@ -7,214 +7,224 @@ import java.util.Map;
 
 /**
  * Classe de modèle d'un PAGM
- * 
+ * On n'effectue pas de mapping pour le cql une classe spécifique a été créé
  */
+
 public class Pagm {
 
-   /** code intelligible du PAGM */
-   private String code;
+  /** code intelligible du PAGM */
 
-   /** droit d'action (PAGMa) du PAGM */
-   private String pagma;
+  private String code;
 
-   /** domaine d'action (PAGMp) du PAGM */
-   private String pagmp;
+  /** droit d'action (PAGMa) du PAGM */
 
-   /** droit pour les formats de fichiers (PAGMf) du PAGM */
-   private String pagmf;
+  private String pagma;
 
-   /** description du PAGM */
-   private String description;
+  /** domaine d'action (PAGMp) du PAGM */
 
-   /** valeurs des paramètres dynamiques du PRMD associé */
-   private Map<String, String> parametres;
-   
-   /**
-    * Flag indiquant que la compression est active.
-    */
-   private Boolean compressionPdfActive;
-   
-   /**
-    * Nombre d'octet à partir duqel la compression de pdf est effectuée si la
-    * compression est activée.
-    */
-   private Integer seuilCompressionPdf;
+  private String pagmp;
 
-   /**
-    * @return le code intelligible du PAGM
-    */
-   public final String getCode() {
-      return code;
-   }
+  /** droit pour les formats de fichiers (PAGMf) du PAGM */
 
-   /**
-    * @param code
-    *           code intelligible du PAGM
-    */
-   public final void setCode(String code) {
-      this.code = code;
-   }
+  private String pagmf;
 
-   /**
-    * @return le droit d'action (PAGMa) du PAGM
-    */
-   public final String getPagma() {
-      return pagma;
-   }
+  /** description du PAGM */
 
-   /**
-    * @param pagma
-    *           droit d'action (PAGMa) du PAGM
-    */
-   public final void setPagma(String pagma) {
-      this.pagma = pagma;
-   }
+  private String description;
 
-   /**
-    * @return le droit des formats de fichiers (PAGMf) du PAGM
-    */
-   public final String getPagmf() {
-      return pagmf;
-   }
+  /** valeurs des paramètres dynamiques du PRMD associé */
 
-   /**
-    * @param pagmf
-    *           le droit des formats de fichiers (PAGMf) du PAGM
-    */
-   public final void setPagmf(String pagmf) {
-      this.pagmf = pagmf;
-   }
+  private Map<String, String> parametres;
 
-   /**
-    * @return le domaine d'action (PAGMp) du PAGM
-    */
-   public final String getPagmp() {
-      return pagmp;
-   }
+  /**
+   * Flag indiquant que la compression est active.
+   */
 
-   /**
-    * @param pagmp
-    *           domaine d'action (PAGMp) du PAGM
-    */
-   public final void setPagmp(String pagmp) {
-      this.pagmp = pagmp;
-   }
+  private Boolean compressionPdfActive;
 
-   /**
-    * @return la description du PAGM
-    */
-   public final String getDescription() {
-      return description;
-   }
+  /**
+   * Nombre d'octet à partir duqel la compression de pdf est effectuée si la
+   * compression est activée.
+   */
 
-   /**
-    * @param description
-    *           description du PAGM
-    */
-   public final void setDescription(String description) {
-      this.description = description;
-   }
+  private Integer seuilCompressionPdf;
 
-   /**
-    * @return les valeurs des paramètres dynamiques du PRMD associé
-    */
-   public final Map<String, String> getParametres() {
-      return parametres;
-   }
 
-   /**
-    * @param parametres
-    *           valeurs des paramètres dynamiques du PRMD associé
-    */
-   public final void setParametres(Map<String, String> parametres) {
-      this.parametres = parametres;
-   }
+  /**
+   * @return le code intelligible du PAGM
+   */
+  public final String getCode() {
+    return code;
+  }
 
-   /**
-    * @return le flag indiquant si la compression est active.
-    */
-   public final Boolean getCompressionPdfActive() {
-      return compressionPdfActive;
-   }
+  /**
+   * @param code
+   *          code spécifique du PAGM
+   */
+  public final void setCode(final String code) {
+    this.code = code;
+  }
 
-   /**
-    * @param compressionPdfActive
-    *           flag indiquant si la compression de pdf doit etre activee
-    */
-   public final void setCompressionPdfActive(Boolean compressionPdfActive) {
-      this.compressionPdfActive = compressionPdfActive;
-   }
+  /**
+   * @return le droit d'action (PAGMa) du PAGM
+   */
+  public final String getPagma() {
+    return pagma;
+  }
 
-   /**
-    * @return le seuil a partir duquel il faut compressé les pdf si la
-    *         compression est active
-    */
-   public final Integer getSeuilCompressionPdf() {
-      return seuilCompressionPdf;
-   }
+  /**
+   * @param pagma
+   *           droit d'action (PAGMa) du PAGM
+   */
+  public final void setPagma(final String pagma) {
+    this.pagma = pagma;
+  }
 
-   /**
-    * @param seuilCompressionPdf
-    *           le seuil a partir duquel il faut compressé les pdf si la
-    *           compression est active
-    */
-   public final void setSeuilCompressionPdf(Integer seuilCompressionPdf) {
-      this.seuilCompressionPdf = seuilCompressionPdf;
-   }
+  /**
+   * @return le droit des formats de fichiers (PAGMf) du PAGM
+   */
+  public final String getPagmf() {
+    return pagmf;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean equals(Object obj) {
-      boolean areEquals = false;
+  /**
+   * @param pagmf
+   *           le droit des formats de fichiers (PAGMf) du PAGM
+   */
+  public final void setPagmf(final String pagmf) {
+    this.pagmf = pagmf;
+  }
 
-      if (obj instanceof Pagm) {
-         Pagm pagm = (Pagm) obj;
-         areEquals = code.equals(pagm.getCode())
-               && description.equals(pagm.getDescription())
-               && pagma.equals(pagm.getPagma())
-               && pagmf.equals(pagm.getPagmf())
-               && pagmp.equals(pagm.getPagmp())
-               && parametres.keySet().size() == pagm.getParametres().keySet()
-                     .size()
-               && parametres.keySet()
-                     .containsAll(pagm.getParametres().keySet())
-               && ((compressionPdfActive == null && pagm.getCompressionPdfActive() == null) 
-                     || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
-               && ((seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null) 
-                     || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
-      }
+  /**
+   * @return le domaine d'action (PAGMp) du PAGM
+   */
+  public final String getPagmp() {
+    return pagmp;
+  }
 
-      return areEquals;
-   }
+  /**
+   * @param pagmp
+   *           domaine d'action (PAGMp) du PAGM
+   */
+  public final void setPagmp(final String pagmp) {
+    this.pagmp = pagmp;
+  }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see java.lang.Object#toString()
-    */
-   @Override
-   public final String toString() {
-      StringBuffer buffer = new StringBuffer();
-      for (String key : parametres.keySet()) {
-         buffer.append(key + " = " + parametres.get(key) + "\n");
-      }
+  /**
+   * @return la description du PAGM
+   */
+  public final String getDescription() {
+    return description;
+  }
 
-      return "code : " + code + "\n" + "description : " + description + "\n"
-            + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
-            + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"
-            + buffer.toString() + "\n"
-            + "compressionPdfActive : " + compressionPdfActive + "\n"
-            + "seuilCompressionPdf : " + seuilCompressionPdf + "\n";
-   }
+  /**
+   * @param description
+   *           description du PAGM
+   */
+  public final void setDescription(final String description) {
+    this.description = description;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final int hashCode() {
-      return super.hashCode();
-   }
+  /**
+   * @return les valeurs des paramètres dynamiques du PRMD associé
+   */
+  public final Map<String, String> getParametres() {
+    return parametres;
+  }
+
+  /**
+   * @param parametres
+   *           valeurs des paramètres dynamiques du PRMD associé
+   */
+  public final void setParametres(final Map<String, String> parametres) {
+    this.parametres = parametres;
+  }
+
+  /**
+   * @return le flag indiquant si la compression est active.
+   */
+  public final Boolean getCompressionPdfActive() {
+    return compressionPdfActive;
+  }
+
+  /**
+   * @param compressionPdfActive
+   *           flag indiquant si la compression de pdf doit etre activee
+   */
+  public final void setCompressionPdfActive(final Boolean compressionPdfActive) {
+    this.compressionPdfActive = compressionPdfActive;
+  }
+
+  /**
+   * @return le seuil a partir duquel il faut compressé les pdf si la
+   *         compression est active
+   */
+  public final Integer getSeuilCompressionPdf() {
+    return seuilCompressionPdf;
+  }
+
+  /**
+   * @param seuilCompressionPdf
+   *           le seuil a partir duquel il faut compressé les pdf si la
+   *           compression est active
+   */
+  public final void setSeuilCompressionPdf(final Integer seuilCompressionPdf) {
+    this.seuilCompressionPdf = seuilCompressionPdf;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean equals(final Object obj) {
+    boolean areEquals = false;
+
+    if (obj instanceof Pagm) {
+      final Pagm pagm = (Pagm) obj;
+      areEquals = code.equals(pagm.getCode())
+          && description.equals(pagm.getDescription())
+          && pagma.equals(pagm.getPagma())
+          && pagmf.equals(pagm.getPagmf())
+          && pagmp.equals(pagm.getPagmp())
+          && parametres.keySet().size() == pagm.getParametres().keySet()
+          .size()
+          && parametres.keySet()
+          .containsAll(pagm.getParametres().keySet())
+          && (compressionPdfActive == null && pagm.getCompressionPdfActive() == null 
+          || compressionPdfActive.equals(pagm.getCompressionPdfActive()))
+          && (seuilCompressionPdf == null && pagm.getSeuilCompressionPdf() == null 
+          || seuilCompressionPdf.equals(pagm.getSeuilCompressionPdf()));
+    }
+
+    return areEquals;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public final String toString() {
+    final StringBuffer buffer = new StringBuffer();
+    for (final String key : parametres.keySet()) {
+      buffer.append(key + " = " + parametres.get(key) + "\n");
+    }
+
+    return "code : " + code + "\n" + "description : " + description + "\n"
+    + "pagma : " + pagma + "\n" + "pagmf : " + pagmf + "\n"
+    + "pagmp : " + pagmp + "\n" + "liste des parametres :\n"
+    + buffer.toString() + "\n"
+    + "compressionPdfActive : " + compressionPdfActive + "\n"
+    + "seuilCompressionPdf : " + seuilCompressionPdf + "\n";
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final int hashCode() {
+    return super.hashCode();
+  }
 
 }

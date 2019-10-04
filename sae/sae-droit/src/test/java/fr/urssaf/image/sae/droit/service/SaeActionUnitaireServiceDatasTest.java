@@ -4,68 +4,96 @@
 package fr.urssaf.image.sae.droit.service;
 
 import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
-import junit.framework.Assert;
+import fr.urssaf.image.sae.droit.utils.Constantes;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 public class SaeActionUnitaireServiceDatasTest {
 
-   @Autowired
-   private SaeActionUnitaireService service;
+  @Autowired
+  @Qualifier("saeActionUnitaireServiceFacadeImpl")
+  private SaeActionUnitaireService service;
 
-   @Autowired
-   private ActionUnitaireSupport actionSupport;
+  @Autowired
+  private ActionUnitaireSupport actionSupport;
 
-   @Autowired
-   private JobClockSupport clockSupport;
+  @Autowired
+  private JobClockSupport clockSupport;
 
-   @Autowired
-   private CassandraServerBean cassandraServer;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @After
-   public void end() throws Exception {
-	   cassandraServer.resetData(true, MODE_API.HECTOR);
-   }
+  private final String cfName = Constantes.CF_DROIT_ACTION_UNITAIRE;
 
-   @Test(expected = DroitRuntimeException.class)
-   public void testActionUnitaireExistante() {
+  @Before
+  public void start() throws Exception {
+    GestionModeApiUtils.setModeApiThrift(cfName);
+  }
+  @After
+  public void end() throws Exception {
+    cassandraServer.resetDataOnly();
+  }
 
-      ActionUnitaire actionUnitaire = new ActionUnitaire();
-      actionUnitaire.setCode("codeAction");
-      actionUnitaire.setDescription("description action");
+  @Test
+  public void init() {
+    try {
+      if (cassandraServer.isCassandraStarted()) {
+        cassandraServer.resetData();
+      }
+      Assert.assertTrue(true);
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-      actionSupport.create(actionUnitaire, clockSupport.currentCLock());
+  @Test(expected = DroitRuntimeException.class)
+  public void testActionUnitaireExistante() {
 
-      service.createActionUnitaire(actionUnitaire);
+    final ActionUnitaire actionUnitaire = new ActionUnitaire();
+    actionUnitaire.setCode("codeAction");
+    actionUnitaire.setDescription("description action");
 
-   }
+    actionSupport.create(actionUnitaire, clockSupport.currentCLock());
 
-   @Test
-   public void testActionUnitaireSucces() {
+    service.createActionUnitaire(actionUnitaire);
 
-      ActionUnitaire actionUnitaire = new ActionUnitaire();
-      actionUnitaire.setCode("codeAction");
-      actionUnitaire.setDescription("description action");
+  }
 
-      service.createActionUnitaire(actionUnitaire);
+  @Test
+  public void testActionUnitaireSucces() {
 
-      ActionUnitaire storedAction = actionSupport.find("codeAction");
+    final ActionUnitaire actionUnitaire = new ActionUnitaire();
+    actionUnitaire.setCode("codeAction");
+    actionUnitaire.setDescription("description action");
 
-      Assert.assertEquals("les deux actions doivent etre identiques",
-            actionUnitaire, storedAction);
+    service.createActionUnitaire(actionUnitaire);
 
-   }
+    final ActionUnitaire storedAction = actionSupport.find("codeAction");
+
+    Assert.assertEquals("les deux actions doivent etre identiques",
+                        actionUnitaire, storedAction);
+
+  }
 
 }

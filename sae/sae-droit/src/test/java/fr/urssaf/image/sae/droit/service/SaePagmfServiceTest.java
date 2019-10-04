@@ -2,17 +2,21 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.droit.dao.model.Pagmf;
 import fr.urssaf.image.sae.droit.dao.support.PagmfSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
-import fr.urssaf.image.sae.droit.exception.FormatControlProfilNotFoundException;
 import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
 
 /**
@@ -22,131 +26,162 @@ import fr.urssaf.image.sae.droit.exception.PagmfNotFoundException;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaePagmfServiceTest {
 
-   private static final String MESSAGE_EXCEPT_INCORRECT = "Le message de l'exception est incorrect";
-   private static final String RESULTAT_INCORRECT = "Le resultat est incorrect";
+  private static final String MESSAGE_EXCEPT_INCORRECT = "Le message de l'exception est incorrect";
+  private static final String RESULTAT_INCORRECT = "Le resultat est incorrect";
 
-   private static final String CODE_DROIT_PAGMF = "INT_PAGM_ATT_VIGI_ALL_PAGMF";
-   private static final String CODE_DROIT_PAGMF_ERREUR = "INT_PAGM_ATT_VIGI_ALL_PAG";
+  private static final String CODE_DROIT_PAGMF = "INT_PAGM_ATT_VIGI_ALL_PAGMF";
+  private static final String CODE_DROIT_PAGMF_ERREUR = "INT_PAGM_ATT_VIGI_ALL_PAG";
 
-   private static final String CODE_FORMAT_CONTROL_PROFIL = "INT_FORMAT_PROFIL_ATT_VIGI";
+  private static final String CODE_FORMAT_CONTROL_PROFIL = "INT_FORMAT_PROFIL_ATT_VIGI";
 
-   private static final String DESCRIPTION = "description";
+  private static final String DESCRIPTION = "description";
 
-   @Autowired
-   private SaePagmfService saePagmfService;
+  @Autowired
+  @Qualifier("saePagmfServiceFacadeImpl")
+  private SaePagmfService saePagmfService;
 
-   @Autowired
-   private PagmfSupport support;
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-   @Test
-   public void getPagmfSuccess() throws PagmfNotFoundException {
+  @Autowired
+  private PagmfSupport support;
 
-      Pagmf pagmf = saePagmfService.getPagmf(CODE_DROIT_PAGMF);
+  @After
+  public void end() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    // cassandraServer.resetData();
+    cassandraServer.clearAndLoad();
+  }
 
-      Assert.assertNotNull(pagmf);
-      Assert.assertEquals(RESULTAT_INCORRECT, "INT_PAGM_ATT_VIGI_ALL_PAGMF",
-            pagmf.getCodePagmf());
-      Assert.assertEquals(RESULTAT_INCORRECT, CODE_FORMAT_CONTROL_PROFIL, pagmf
-            .getCodeFormatControlProfil());
-      Assert.assertEquals(RESULTAT_INCORRECT,
-            "Contrôle sur les fichiers fournis par l'attestation vigilance.",
-            pagmf.getDescription());
-   }
-
-   @Test
-   public void getPagmfNotFound() {
-      try {
-         saePagmfService.getPagmf(CODE_DROIT_PAGMF_ERREUR);
-      } catch (PagmfNotFoundException except) {
-         Assert
-               .assertEquals(
-                     MESSAGE_EXCEPT_INCORRECT,
-                     "Aucun Pagmf n'a été trouvé avec l'identifiant : INT_PAGM_ATT_VIGI_ALL_PAG.",
-                     except.getMessage());
+  @Test
+  public void init() {
+    try {
+      if (cassandraServer.isCassandraStarted()) {
+        cassandraServer.resetData();
       }
-   }
+      Assert.assertTrue(true);
 
-   @Test(expected = DroitRuntimeException.class)
-   public void addPagmfFailureFormatControlProfilInexistant() {
-      Pagmf pagmf = new Pagmf();
-      pagmf.setDescription(DESCRIPTION);
-      pagmf.setCodePagmf("codePagmf");
-      pagmf.setCodeFormatControlProfil("formatProfile");
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
 
-      saePagmfService.addPagmf(pagmf);
+  @Test
+  public void getPagmfSuccess() throws Exception {
 
-   }
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
 
-   @Test
-   public void addPagmfSuccess() throws FormatControlProfilNotFoundException,
-         PagmfNotFoundException {
-      Pagmf pagmf = new Pagmf();
-      pagmf.setDescription(DESCRIPTION);
-      pagmf.setCodePagmf("codePagmf");
-      pagmf.setCodeFormatControlProfil(CODE_FORMAT_CONTROL_PROFIL);
+    final Pagmf pagmf = saePagmfService.getPagmf(CODE_DROIT_PAGMF);
 
-      saePagmfService.addPagmf(pagmf);
+    Assert.assertNotNull(pagmf);
+    Assert.assertEquals(RESULTAT_INCORRECT, "INT_PAGM_ATT_VIGI_ALL_PAGMF",
+                        pagmf.getCodePagmf());
+    Assert.assertEquals(RESULTAT_INCORRECT, CODE_FORMAT_CONTROL_PROFIL, pagmf
+                        .getCodeFormatControlProfil());
+    Assert.assertEquals(RESULTAT_INCORRECT,
+                        "Contrôle sur les fichiers fournis par l'attestation vigilance.",
+                        pagmf.getDescription());
+  }
 
-      Pagmf pagmfTrouve = saePagmfService.getPagmf(pagmf.getCodePagmf());
+  @Test
+  public void getPagmfNotFound() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    try {
+      saePagmfService.getPagmf(CODE_DROIT_PAGMF_ERREUR);
+    } catch (final PagmfNotFoundException except) {
+      Assert
+      .assertEquals(
+                    MESSAGE_EXCEPT_INCORRECT,
+                    "Aucun Pagmf n'a été trouvé avec l'identifiant : INT_PAGM_ATT_VIGI_ALL_PAG.",
+                    except.getMessage());
+    }
+  }
 
-      Assert.assertNotNull(pagmfTrouve);
-      Assert.assertEquals(RESULTAT_INCORRECT, "codePagmf", pagmfTrouve
-            .getCodePagmf());
-      Assert.assertEquals(RESULTAT_INCORRECT, CODE_FORMAT_CONTROL_PROFIL,
-            pagmfTrouve.getCodeFormatControlProfil());
-      Assert.assertEquals(RESULTAT_INCORRECT, "description", pagmfTrouve
-            .getDescription());
-      saePagmfService.deletePagmf(pagmfTrouve.getCodePagmf());
-   }
+  @Test(expected = DroitRuntimeException.class)
+  public void addPagmfFailureFormatControlProfilInexistant() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    final Pagmf pagmf = new Pagmf();
+    pagmf.setDescription(DESCRIPTION);
+    pagmf.setCodePagmf("codePagmf");
+    pagmf.setCodeFormatControlProfil("formatProfile");
 
-   @Test
-   public void deletePagmfSuccess()
-         throws FormatControlProfilNotFoundException, PagmfNotFoundException {
+    saePagmfService.addPagmf(pagmf);
 
-      Pagmf pagmf = new Pagmf();
-      pagmf.setDescription(DESCRIPTION);
-      pagmf.setCodePagmf("codePagmf2");
-      pagmf.setCodeFormatControlProfil(CODE_FORMAT_CONTROL_PROFIL);
+  }
 
-      saePagmfService.addPagmf(pagmf);
+  @Test
+  public void addPagmfSuccess() throws Exception {
 
-      Pagmf pagmfTrouve = saePagmfService.getPagmf(pagmf.getCodePagmf());
+    // cassandraServer.resetData(true, MODE_API.DATASTAX);
+    // cassandraServer.resetData(false, MODE_API.HECTOR);
+    final Pagmf pagmf = new Pagmf();
+    pagmf.setDescription(DESCRIPTION);
+    pagmf.setCodePagmf("codePagmf");
+    pagmf.setCodeFormatControlProfil(CODE_FORMAT_CONTROL_PROFIL);
 
-      Assert.assertNotNull(pagmfTrouve);
+    saePagmfService.addPagmf(pagmf);
 
-      saePagmfService.deletePagmf(pagmfTrouve.getCodePagmf());
+    final Pagmf pagmfTrouve = saePagmfService.getPagmf(pagmf.getCodePagmf());
 
-      Pagmf pagmfNonTrouve = support.find(pagmf.getCodePagmf());
+    Assert.assertNotNull(pagmfTrouve);
+    Assert.assertEquals(RESULTAT_INCORRECT, "codePagmf", pagmfTrouve
+                        .getCodePagmf());
+    Assert.assertEquals(RESULTAT_INCORRECT, CODE_FORMAT_CONTROL_PROFIL,
+                        pagmfTrouve.getCodeFormatControlProfil());
+    Assert.assertEquals(RESULTAT_INCORRECT, "description", pagmfTrouve
+                        .getDescription());
+    saePagmfService.deletePagmf(pagmfTrouve.getCodePagmf());
+  }
 
-      Assert.assertNull(pagmfNonTrouve);
+  @Test
+  public void deletePagmfSuccess()
+      throws Exception {
+    // cassandraServer.resetData();
+    final Pagmf pagmf = new Pagmf();
+    pagmf.setDescription(DESCRIPTION);
+    pagmf.setCodePagmf("codePagmf2");
+    pagmf.setCodeFormatControlProfil(CODE_FORMAT_CONTROL_PROFIL);
 
-   }
+    saePagmfService.addPagmf(pagmf);
 
-   @Test
-   public void deletePagmfFailure() {
+    final Pagmf pagmfTrouve = saePagmfService.getPagmf(pagmf.getCodePagmf());
 
-      try {
-         saePagmfService.deletePagmf("codePagmf2");
-      } catch (PagmfNotFoundException except) {
-         Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
-               "Le Pagmf à supprimer : [codePagmf2] n'existe pas en base.",
-               except.getMessage());
-      }
+    Assert.assertNotNull(pagmfTrouve);
 
-   }
+    saePagmfService.deletePagmf(pagmfTrouve.getCodePagmf());
 
-   @Test
-   public void getAllPagmfs() throws FormatControlProfilNotFoundException,
-         PagmfNotFoundException {
+    final Pagmf pagmfNonTrouve = support.find(pagmf.getCodePagmf());
 
-      List<Pagmf> listPagmf = saePagmfService.getAllPagmf();
+    Assert.assertNull(pagmfNonTrouve);
 
-      Assert.assertNotNull(listPagmf);
-      Assert.assertEquals("Le nombre d'éléments est incorrect.", 1, listPagmf
-            .size());
+  }
 
-   }
+  @Test
+  public void deletePagmfFailure() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    try {
+      saePagmfService.deletePagmf("codePagmf2");
+    } catch (final PagmfNotFoundException except) {
+      Assert.assertEquals(MESSAGE_EXCEPT_INCORRECT,
+                          "Le Pagmf à supprimer : [codePagmf2] n'existe pas en base.",
+                          except.getMessage());
+    }
+
+  }
+
+  @Test
+  public void getAllPagmfs() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    final List<Pagmf> listPagmf = saePagmfService.getAllPagmf();
+
+    Assert.assertNotNull(listPagmf);
+    Assert.assertEquals("Le nombre d'éléments est incorrect.", 1, listPagmf
+                        .size());
+
+  }
 
 }

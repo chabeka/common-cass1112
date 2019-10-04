@@ -5,82 +5,120 @@ package fr.urssaf.image.sae.droit.service;
 
 import java.util.Arrays;
 
+import org.junit.After;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 import fr.urssaf.image.sae.droit.dao.model.Pagma;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.support.ActionUnitaireSupport;
 import fr.urssaf.image.sae.droit.dao.support.PagmaSupport;
+import fr.urssaf.image.sae.droit.utils.Constantes;
 import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+// @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SaePagmaServiceDatasTest {
 
-   @Autowired
-   private SaePagmaService service;
+  @Autowired
+  @Qualifier("saePagmaServiceFacadeImpl")
+  private SaePagmaService service;
 
-   @Autowired
-   private PagmaSupport pagmaSupport;
+  @Autowired
+  private PagmaSupport pagmaSupport;
 
-   @Autowired
-   private ActionUnitaireSupport actionSupport;
+  @Autowired
+  private ActionUnitaireSupport actionSupport;
 
-   @Autowired
-   private JobClockSupport clockSupport;
-   
-   @Test(expected = PagmaReferenceException.class)
-   public void testPagmaDejaExistant() {
+  @Autowired
+  private JobClockSupport clockSupport;
 
-      Pagma pagma = new Pagma();
-      pagma.setCode("codePagma");
-      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+  @Autowired
+  private CassandraServerBean cassandraServer;
 
-      pagmaSupport.create(pagma, clockSupport.currentCLock());
+  private final String cfName = Constantes.CF_DROIT_PAGMA;
 
-      service.createPagma(pagma);
+  @Before
+  public void start() throws Exception {
+    GestionModeApiUtils.setModeApiThrift(cfName);
+  }
 
-   }
+  @After
+  public void end() throws Exception {
+    // cassandraServer.resetData(true, MODE_API.HECTOR);
+    cassandraServer.resetDataOnly();
+  }
 
-   @Test(expected = ActionUnitaireReferenceException.class)
-   public void testActionInexistante() {
+  @Test
+  public void init() {
+    try {
+      if (cassandraServer.isCassandraStarted()) {
+        cassandraServer.resetData();
+      }
+      Assert.assertTrue(true);
 
-      Pagma pagma = new Pagma();
-      pagma.setCode("codePagma");
-      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+  @Test(expected = PagmaReferenceException.class)
+  public void testPagmaDejaExistant() throws Exception {
 
-      service.createPagma(pagma);
+    final Pagma pagma = new Pagma();
+    pagma.setCode("codePagma");
+    pagma.setActionUnitaires(Arrays.asList(new String[] {"action1"}));
 
-   }
+    pagmaSupport.create(pagma, clockSupport.currentCLock());
 
-   @Test
-   public void testCreationSucces() {
+    service.createPagma(pagma);
 
-      ActionUnitaire actionUnitaire = new ActionUnitaire();
-      actionUnitaire.setCode("action1");
-      actionUnitaire.setDescription("description");
-      actionSupport.create(actionUnitaire, clockSupport.currentCLock());
 
-      Pagma pagma = new Pagma();
-      pagma.setCode("codePagma");
-      pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+  }
 
-      service.createPagma(pagma);
+  @Test(expected = ActionUnitaireReferenceException.class)
+  public void testActionInexistante() throws Exception {
 
-      Pagma storePagma = pagmaSupport.find("codePagma");
-      Assert.assertEquals("le pagma doit être créé correctement", pagma,
-            storePagma);
+    final Pagma pagma = new Pagma();
+    pagma.setCode("codePagma");
+    pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
 
-   }
+    service.createPagma(pagma);
+
+  }
+
+  @Test
+  public void testCreationSucces() throws Exception {
+
+    final ActionUnitaire actionUnitaire = new ActionUnitaire();
+    actionUnitaire.setCode("action1");
+    actionUnitaire.setDescription("description");
+    actionSupport.create(actionUnitaire, clockSupport.currentCLock());
+
+    final Pagma pagma = new Pagma();
+    pagma.setCode("codePagma");
+    pagma.setActionUnitaires(Arrays.asList(new String[] { "action1" }));
+
+    service.createPagma(pagma);
+
+    final Pagma storePagma = pagmaSupport.find("codePagma");
+    Assert.assertEquals("le pagma doit être créé correctement", pagma,
+                        storePagma);
+
+  }
 
 }

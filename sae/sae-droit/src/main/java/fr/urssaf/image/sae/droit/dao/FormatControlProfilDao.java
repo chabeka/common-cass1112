@@ -31,202 +31,202 @@ import me.prettyprint.hector.api.mutation.Mutator;
 public class FormatControlProfilDao extends AbstractDao<String, String> {
 
    /**
-    * Constructeur
-    * 
-    * @param keyspace
-    *           Keyspace utilisé
-    */
-   @Autowired
-   public FormatControlProfilDao(Keyspace keyspace) {
-      super(keyspace);
-   }
+   * Constructeur
+   * 
+   * @param keyspace
+   *          Keyspace utilisé par DroitFormatControlProfil
+   */
+  @Autowired
+  public FormatControlProfilDao(final Keyspace keyspace) {
+    super(keyspace);
+  }
 
-   /**
-    * Ajoute un nouveau {@link FormatControlProfil}.
-    * 
-    * @param formatControlProfil
-    *           Objet contenant les informations sur le profil de controle -
-    *           obligatoire
-    * @param updater
-    *           : necessaire pour Cassandra
-    * @param clock
-    *           : heure d'enregistrement
-    */
-   public final void addFormatControlProfil(
-         ColumnFamilyUpdater<String, String> updater,
-         FormatControlProfil formatControlProfil, Long clock) {
+  /**
+   * Ajoute un nouveau {@link FormatControlProfil}.
+   * 
+   * @param formatControlProfil
+   *           Objet contenant les informations sur le profil de controle -
+   *           obligatoire
+   * @param updater
+   *           : necessaire pour Cassandra
+   * @param clock
+   *           : heure d'enregistrement
+   */
+  public final void addFormatControlProfil(
+                                           final ColumnFamilyUpdater<String, String> updater,
+                                           final FormatControlProfil formatControlProfil, final Long clock) {
 
-      if (formatControlProfil == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils
-               .loadMessage("erreur.param.obligatoire.null"));
+    if (formatControlProfil == null) {
+      throw new IllegalArgumentException(ResourceMessagesUtils
+                                         .loadMessage("erreur.param.obligatoire.null"));
+    }
+
+    final List<String> variable = new ArrayList<>();
+
+    final String formatCode = formatControlProfil.getFormatCode();
+
+    final String description = formatControlProfil.getDescription();
+
+    if (StringUtils.isBlank(formatCode)) {
+      variable.add("formatCode");
+    }
+    if (StringUtils.isBlank(description)) {
+      variable.add("description");
+    }
+    if (!variable.isEmpty()) {
+      throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+                                                                           "erreur.param.obligatoire.null", variable.toString()));
+    }
+
+    final FormatProfil formatProfil = formatControlProfil.getControlProfil();
+    if (formatProfil == null) {
+      throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
+                                                                           "erreur.control.profil.obligatoire", variable.toString()));
+    }
+
+    if (formatProfil != null) {
+      final boolean validation = formatProfil.isFormatValidation();
+      final String validationMode = formatProfil.getFormatValidationMode();
+      if (validation) {
+        if (!StringUtils.isBlank(validationMode)
+            && !EnumValidationMode.contains(validationMode)) {
+
+          throw new IllegalArgumentException(ResourceMessagesUtils
+                                             .loadMessage("erreur.param.format.valid.mode.obligatoire"));
+        }
+      } else {
+        if (!StringUtils.isBlank(validationMode)
+            && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
+                .equalsIgnoreCase(validationMode))) {
+          variable.add(Constantes.FORMAT_VALIDATION_MODE);
+        }
       }
+    }
 
-      List<String> variable = new ArrayList<String>();
+    // écrire des colonnes
 
-      String formatCode = formatControlProfil.getFormatCode();
+    // TODO Valider la mise en commentaire. Normalement, il s'agit de la clé
+    // de la ligne
+    // writeColumnFormatCode(updater, formatCode, clock);
+    writeColumnFormatDescription(updater, description, clock);
 
-      String description = formatControlProfil.getDescription();
+    writeColumnControlProfil(updater, formatProfil, clock);
 
-      if (StringUtils.isBlank(formatCode)) {
-         variable.add("formatCode");
-      }
-      if (StringUtils.isBlank(description)) {
-         variable.add("description");
+  }
+
+  /**
+   * ajoute une colonne {@value FormatControlProfilDao#COL_CONTROLPROFIL}
+   * 
+   * @param updater
+   *           updater de {@link SaePagmf}
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  private void writeColumnControlProfil(
+                                        final ColumnFamilyUpdater<String, String> updater, final FormatProfil value,
+                                        final Long clock) {
+    addColumn(updater, Constantes.COL_CONTROLPROFIL, value,
+              FormatProfilSerializer.get(), clock);
+  }
+
+  // /**
+  // * ajoute une colonne {@value FormatControlProfilDao#COL_CODEPROFIL}
+  // *
+  // * @param updater
+  // * updater de {@link FormatControlProfil}
+  // * @param value
+  // * valeur de la colonne
+  // * @param clock
+  // * horloge de la colonne
+  // */
+  // private void writeColumnFormatCode(
+  // ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
+  // addColumn(updater, Constantes.COL_CODEPROFIL, value, StringSerializer
+  // .get(), clock);
+  // }
+
+  /**
+   * ajoute une colonne {@value FormatControlProfilDao#COL_DESCRIPTION}
+   * 
+   * @param updater
+   *           updater de {@link FormatControlProfil}
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  private void writeColumnFormatDescription(
+                                            final ColumnFamilyUpdater<String, String> updater, final String value, final Long clock) {
+    addColumn(updater, Constantes.COL_DESCRIPTION, value, StringSerializer
+              .get(), clock);
+  }
+
+  /**
+   * Méthode de suppression d'une ligne {@link FormatControlProfil}
+   * 
+   * @param mutator
+   *           Mutator de {@link FormatControlProfil}
+   * @param codeFormatProfil
+   *           code du FormatControlProfil à supprimer - param obligatoire
+   * @param clock
+   *           horloge de la suppression
+   */
+  public final void deleteFormatControlProfil(final Mutator<String> mutator,
+                                              final String codeFormatProfil, final long clock) {
+
+    try {
+      final List<String> variable = new ArrayList<>();
+      if (StringUtils.isBlank(codeFormatProfil)) {
+        variable.add("codeFormatProfil");
       }
       if (!variable.isEmpty()) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "erreur.param.obligatoire.null", variable.toString()));
+        /**
+         * @exception IllegalArgumentException
+         *               <ul>
+         *               <li>Il existe une erreur dans les paramètres qui
+         *               ont été fournis à la méthode</li>
+         *               <li>La valeur d’un ou plusieurs paramètres
+         *               obligatoires est nulle ou vide.</li>
+         *               </ul>
+         */
+        throw new IllegalArgumentException(ResourceMessagesUtils
+                                           .loadMessage("erreur.param.obligatoire.null", variable
+                                                        .toString()));
       }
 
-      FormatProfil formatProfil = formatControlProfil.getControlProfil();
-      if (formatProfil == null) {
-         throw new IllegalArgumentException(ResourceMessagesUtils.loadMessage(
-               "erreur.control.profil.obligatoire", variable.toString()));
-      }
+      mutator.addDeletion(codeFormatProfil, Constantes.DROIT_FORMAT_CONTROL,
+                          clock);
+    } catch (final Exception except) {
+      throw new DroitRuntimeException(ResourceMessagesUtils
+                                      .loadMessage("erreur.delete.format.control"), except);
+    }
 
-      if (formatProfil != null) {
-         boolean validation = formatProfil.isFormatValidation();
-         String validationMode = formatProfil.getFormatValidationMode();
-         if (validation) {
-            if (!StringUtils.isBlank(validationMode)
-                  && !EnumValidationMode.contains(validationMode)) {
+  }
 
-               throw new IllegalArgumentException(ResourceMessagesUtils
-                     .loadMessage("erreur.param.format.valid.mode.obligatoire"));
-            }
-         } else {
-            if (!StringUtils.isBlank(validationMode)
-                  && !(Constantes.AUCUN.equalsIgnoreCase(validationMode) || Constantes.NONE
-                        .equalsIgnoreCase(validationMode))) {
-               variable.add(Constantes.FORMAT_VALIDATION_MODE);
-            }
-         }
-      }
+  /**
+   * @return le nom de la CF
+   */
+  @Override
+  public final String getColumnFamilyName() {
+    return Constantes.DROIT_FORMAT_CONTROL;
+  }
 
-      // écrire des colonnes
+  /**
+   * @return le sérializer d'une colonne
+   */
+  @Override
+  public final Serializer<String> getColumnKeySerializer() {
+    return StringSerializer.get();
+  }
 
-      // TODO Valider la mise en commentaire. Normalement, il s'agit de la clé
-      // de la ligne
-      // writeColumnFormatCode(updater, formatCode, clock);
-      writeColumnFormatDescription(updater, description, clock);
-
-      writeColumnControlProfil(updater, formatProfil, clock);
-
-   }
-
-   /**
-    * ajoute une colonne {@value FormatControlProfilDao#COL_CONTROLPROFIL}
-    * 
-    * @param updater
-    *           updater de {@link SaePagmf}
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   private void writeColumnControlProfil(
-         ColumnFamilyUpdater<String, String> updater, FormatProfil value,
-         Long clock) {
-      addColumn(updater, Constantes.COL_CONTROLPROFIL, value,
-            FormatProfilSerializer.get(), clock);
-   }
-
-   // /**
-   // * ajoute une colonne {@value FormatControlProfilDao#COL_CODEPROFIL}
-   // *
-   // * @param updater
-   // * updater de {@link FormatControlProfil}
-   // * @param value
-   // * valeur de la colonne
-   // * @param clock
-   // * horloge de la colonne
-   // */
-   // private void writeColumnFormatCode(
-   // ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
-   // addColumn(updater, Constantes.COL_CODEPROFIL, value, StringSerializer
-   // .get(), clock);
-   // }
-
-   /**
-    * ajoute une colonne {@value FormatControlProfilDao#COL_DESCRIPTION}
-    * 
-    * @param updater
-    *           updater de {@link FormatControlProfil}
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   private void writeColumnFormatDescription(
-         ColumnFamilyUpdater<String, String> updater, String value, Long clock) {
-      addColumn(updater, Constantes.COL_DESCRIPTION, value, StringSerializer
-            .get(), clock);
-   }
-
-   /**
-    * Méthode de suppression d'une ligne {@link FormatControlProfil}
-    * 
-    * @param mutator
-    *           Mutator de {@link FormatControlProfil}
-    * @param codeFormatProfil
-    *           code du FormatControlProfil à supprimer - param obligatoire
-    * @param clock
-    *           horloge de la suppression
-    */
-   public final void deleteFormatControlProfil(Mutator<String> mutator,
-         String codeFormatProfil, long clock) {
-
-      try {
-         List<String> variable = new ArrayList<String>();
-         if (StringUtils.isBlank(codeFormatProfil)) {
-            variable.add("codeFormatProfil");
-         }
-         if (!variable.isEmpty()) {
-            /**
-             * @exception IllegalArgumentException
-             *               <ul>
-             *               <li>Il existe une erreur dans les paramètres qui
-             *               ont été fournis à la méthode</li>
-             *               <li>La valeur d’un ou plusieurs paramètres
-             *               obligatoires est nulle ou vide.</li>
-             *               </ul>
-             */
-            throw new IllegalArgumentException(ResourceMessagesUtils
-                  .loadMessage("erreur.param.obligatoire.null", variable
-                        .toString()));
-         }
-
-         mutator.addDeletion(codeFormatProfil, Constantes.DROIT_FORMAT_CONTROL,
-               clock);
-      } catch (Exception except) {
-         throw new DroitRuntimeException(ResourceMessagesUtils
-               .loadMessage("erreur.delete.format.control"), except);
-      }
-
-   }
-
-   /**
-    * @return le nom de la CF
-    */
-   @Override
-   public final String getColumnFamilyName() {
-      return Constantes.DROIT_FORMAT_CONTROL;
-   }
-
-   /**
-    * @return le sérializer d'une colonne
-    */
-   @Override
-   public final Serializer<String> getColumnKeySerializer() {
-      return StringSerializer.get();
-   }
-
-   /**
-    * @return le sérializer de la clé d'une ligne
-    */
-   @Override
-   public final Serializer<String> getRowKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * @return le sérializer de la clé d'une ligne
+   */
+  @Override
+  public final Serializer<String> getRowKeySerializer() {
+    return StringSerializer.get();
+  }
 
 }

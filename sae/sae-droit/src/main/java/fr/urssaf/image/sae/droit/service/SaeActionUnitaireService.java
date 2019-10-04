@@ -11,12 +11,13 @@ import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
  */
 public interface SaeActionUnitaireService {
 
-   /**
-    * création d'une action unitaire
-    * 
-    * @param actionUnitaire
-    *           action unitaire à créer
-    */
-   void createActionUnitaire(ActionUnitaire actionUnitaire);
+  /**
+   * création d'une action unitaire
+   * 
+   * @param actionUnitaire
+   *           action unitaire à créer
+   */
+  void createActionUnitaire(ActionUnitaire actionUnitaire);
+
 
 }

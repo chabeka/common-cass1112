@@ -19,58 +19,57 @@ import me.prettyprint.hector.api.Serializer;
 @Repository
 public class ActionUnitaireDao extends AbstractDao<String, String> {
 
-   public static final String AU_CFNAME = "DroitActionUnitaire";
+  public static final String AU_CFNAME = "DroitActionUnitaire";
 
-   public static final String AU_DESCRIPTION = "description";
-
-   /**
-    * 
-    * @param keyspace
-    *           Keyspace utilisé par la pile des travaux
-    */
-   @Autowired
-   public ActionUnitaireDao(Keyspace keyspace) {
-      super(keyspace);
-   }
+  public static final String AU_DESCRIPTION = "description";
 
    /**
-    * ajoute une colonne {@value #AU_DESCRIPTION}
-    * 
-    * @param updater
-    *           updater de <code>DroitActionUnitaire</code>
-    * @param value
-    *           valeur de la colonne
-    * @param clock
-    *           horloge de la colonne
-    */
-   public final void ecritDescription(
-         ColumnFamilyUpdater<String, String> updater, String value, long clock) {
+   * @param keyspace
+   *          Keyspace utilisé par DroitActionUnitaire
+   */
+  @Autowired
+  public ActionUnitaireDao(final Keyspace keyspace) {
+    super(keyspace);
+  }
 
-      addColumn(updater, AU_DESCRIPTION, value, StringSerializer.get(), clock);
-   }
+  /**
+   * ajoute une colonne {@value #AU_DESCRIPTION}
+   * 
+   * @param updater
+   *           updater de <code>DroitActionUnitaire</code>
+   * @param value
+   *           valeur de la colonne
+   * @param clock
+   *           horloge de la colonne
+   */
+  public final void ecritDescription(
+                                     final ColumnFamilyUpdater<String, String> updater, final String value, final long clock) {
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final String getColumnFamilyName() {
-      return AU_CFNAME;
-   }
+    addColumn(updater, AU_DESCRIPTION, value, StringSerializer.get(), clock);
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getColumnKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final String getColumnFamilyName() {
+    return AU_CFNAME;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Serializer<String> getRowKeySerializer() {
-      return StringSerializer.get();
-   }
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getColumnKeySerializer() {
+    return StringSerializer.get();
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final Serializer<String> getRowKeySerializer() {
+    return StringSerializer.get();
+  }
 
 }
