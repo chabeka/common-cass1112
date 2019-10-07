@@ -1,8 +1,9 @@
-package fr.urssaf.image.sae.metadata.referential.services.impl;
+package fr.urssaf.image.sae.metadata.referential.services.impl.cql;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,9 +13,12 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
-import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
+import fr.urssaf.image.sae.metadata.referential.services.impl.SaeMetaDataServiceImpl;
+import fr.urssaf.image.sae.metadata.referential.support.cql.SaeMetadataCqlSupport;
+import fr.urssaf.image.sae.metadata.utils.Constantes;
 
 
 /**
@@ -23,10 +27,10 @@ import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
 @Ignore("Ces tests accèdent directement à DFCE. Il s'agit de tests d'intégration.")
-public class SaeMetadataServiceTest {
+public class SaeMetadataCqlServiceTest {
 
   @Autowired
-  private SaeMetadataSupport metaSupport;
+  private SaeMetadataCqlSupport metaCqlSupport;
 
   @Autowired
   private SaeMetaDataService service;
@@ -34,10 +38,17 @@ public class SaeMetadataServiceTest {
   @Autowired
   private CassandraServerBean server;
 
+  private final String cfName = Constantes.CF_METADATA;
+
+  @Before
+  public void setup() throws Exception {
+
+    GestionModeApiUtils.setModeApiCql(cfName);
+  }
 
   @After
-  public void after() throws Exception {
-    server.resetData(true, MODE_API.HECTOR);
+  public void end() throws Exception {
+    server.resetData(true, MODE_API.DATASTAX);
   }
 
   /**
@@ -49,26 +60,31 @@ public class SaeMetadataServiceTest {
   public void testServiceCreate() {
 
     final MetadataReference metaDest = new MetadataReference();
-    metaDest.setArchivable(Boolean.TRUE);
-    metaDest.setConsultable(Boolean.TRUE);
-    metaDest.setDefaultConsultable(Boolean.FALSE);
-    metaDest.setDescription("meta test");
-    metaDest.setInternal(Boolean.TRUE);
-    metaDest.setLabel("creation Meta");
-    metaDest.setLength(10);
-    metaDest.setLongCode("metadonne2");
-    metaDest.setPattern(StringUtils.EMPTY);
-    metaDest.setRequiredForArchival(Boolean.FALSE);
-    metaDest.setRequiredForStorage(Boolean.FALSE);
-    metaDest.setSearchable(Boolean.TRUE);
-    metaDest.setShortCode("meta2");
-    metaDest.setType("String");
-    metaDest.setHasDictionary(Boolean.FALSE);
-    metaDest.setDictionaryName(StringUtils.EMPTY);
-    metaDest.setIsIndexed(Boolean.TRUE);
+    metaDest.setArchivable(Boolean.TRUE);//
+    metaDest.setConsultable(Boolean.TRUE);//
+    metaDest.setDefaultConsultable(Boolean.FALSE);//
+    metaDest.setDescription("meta test");//
+    metaDest.setInternal(Boolean.TRUE);//
+    metaDest.setLabel("creation Meta");//
+    metaDest.setLength(10);//
+    metaDest.setLongCode("metadonne2");//
+    metaDest.setPattern(StringUtils.EMPTY);//
+    metaDest.setRequiredForArchival(Boolean.FALSE);//
+    metaDest.setRequiredForStorage(Boolean.FALSE);//
+    metaDest.setSearchable(Boolean.TRUE);//
+    metaDest.setShortCode("meta2");//
+    metaDest.setType("String");//
+    metaDest.setHasDictionary(Boolean.FALSE);//
+    metaDest.setDictionaryName(StringUtils.EMPTY);//
+    metaDest.setIsIndexed(Boolean.TRUE);//
+    metaDest.setLeftTrimable(true);//
+    metaDest.setRightTrimable(true);//
+    metaDest.setTransferable(true);//
+    metaDest.setModifiable(false);//
+    metaDest.setClientAvailable(true);//
     service.create(metaDest);
 
-    final MetadataReference metafind = metaSupport.find(metaDest.getLongCode());
+    final MetadataReference metafind = metaCqlSupport.find(metaDest.getLongCode());
     Assert.assertNotNull(metafind);
     Assert.assertEquals("description fausse", metaDest.getDescription(),
                         metafind.getDescription());

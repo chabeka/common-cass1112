@@ -1,68 +1,48 @@
-package fr.urssaf.image.sae.metadata.referential.services.impl;
+package fr.urssaf.image.sae.metadata.referential.support.cql;
 
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.exceptions.MetadataRuntimeException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
-import fr.urssaf.image.sae.metadata.referential.services.SaeMetaDataService;
-import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
+import fr.urssaf.image.sae.metadata.referential.services.impl.DictionaryServiceImpl;
+
 
 /**
- * classe de test du service {@link SaeMetadataSupport}
+ * classe de test du support cql {@link DictionaryServiceImpl}
  */
+//FIXME : réactiver les testes après la mise en place des fichiers application contexte
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class SaeMetadataSupportTest {
+public class SaeMetadataSupportCqlTest {
 
   @Autowired
-  SaeMetadataSupport metaSupport;
+  SaeMetadataCqlSupport metaCqlSupport;
 
-  @Autowired
-  SaeMetaDataService service;
+
 
   @Autowired
   private CassandraServerBean server;
 
-  @Autowired
-  private JobClockSupport clock;
 
   @After
   public void after() throws Exception {
-    server.clearAndLoad();
-  }
-
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
-
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+    server.resetData(true, MODE_API.DATASTAX);
   }
 
   /**
    * test permettant de verifier qu'une métadonnée est bien enregistré en base et qu'il est possible de la récupérer
-   * 
    * @throws DictionaryNotFoundException
    */
   @Test
@@ -89,8 +69,9 @@ public class SaeMetadataSupportTest {
     metaDest.setIsIndexed(Boolean.TRUE);
     metaDest.setTransferable(Boolean.TRUE);
 
-    metaSupport.create(metaDest, clock.currentCLock());
-    final MetadataReference metafind = metaSupport.find(metaDest.getLongCode());
+
+    metaCqlSupport.create(metaDest);
+    final MetadataReference metafind = metaCqlSupport.find(metaDest.getLongCode());
     Assert.assertNotNull(metafind);
     Assert.assertEquals("description fausse",metaDest.getDescription(), metafind.getDescription());
     Assert.assertEquals("code court faux",metaDest.getShortCode(), metafind.getShortCode());
@@ -106,13 +87,13 @@ public class SaeMetadataSupportTest {
   }
 
   /**
-   * Test permettant de vérifier que tous les éléments de la CF sont renvoyés
+   * Teste permettant de vérifier que tous les éléments de la CF sont renvoyés
    */
 
   @Test
   public void findAllMetaTest(){
-    final List<MetadataReference> listeMeta = metaSupport.findAll();
-    Assert.assertEquals(74, listeMeta.size());
+    final List<MetadataReference> listeMeta = metaCqlSupport.findAll();
+    Assert.assertEquals(0, listeMeta.size());
   }
 
   @Test
@@ -143,10 +124,10 @@ public class SaeMetadataSupportTest {
     metaDest.setDictionaryName(StringUtils.EMPTY);
     metaDest.setIsIndexed(Boolean.TRUE);
 
+
     try {
-      metaSupport.create(metaDest, clock.currentCLock());
-    }
-    catch (final Exception e) {
+      metaCqlSupport.create(metaDest);
+    } catch (final Exception e) {
       Assert.fail("erreur non attendue");
     }
 
@@ -170,7 +151,8 @@ public class SaeMetadataSupportTest {
     metaDest.setDictionaryName(StringUtils.EMPTY);
     metaDest.setIsIndexed(Boolean.TRUE);
 
-    metaSupport.create(metaDest, clock.currentCLock());
+
+    metaCqlSupport.create(metaDest);
   }
 
 }

@@ -1,22 +1,26 @@
-package fr.urssaf.image.sae.metadata.referential.services.impl;
+package fr.urssaf.image.sae.metadata.referential.services.impl.cql;
 
 import java.util.Arrays;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
 import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import fr.urssaf.image.sae.metadata.referential.services.DictionaryService;
-import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
+import fr.urssaf.image.sae.metadata.referential.support.cql.DictionaryCqlSupport;
+import fr.urssaf.image.sae.metadata.utils.Constantes;
 
 /**
  * classe de test du service {@link DictionarySupportImpl}
@@ -26,10 +30,12 @@ import fr.urssaf.image.sae.metadata.referential.support.DictionarySupport;
 // contexte
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
-public class DictionaryServiceTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
+public class DictionaryCqlServiceTest {
 
   @Autowired
-  private DictionarySupport dictSupport;
+  private DictionaryCqlSupport dictCqlSupport;
 
   @Autowired
   private CassandraServerBean server;
@@ -37,12 +43,32 @@ public class DictionaryServiceTest {
   @Autowired
   private DictionaryService service;
 
+  private final String cfName = Constantes.CF_DICTIONARY;
+
   @After
   public void after() throws Exception {
-    server.resetData(true, MODE_API.HECTOR);
+    server.resetDataOnly();
   }
 
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
 
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Before
+  public void setup() throws Exception {
+
+    GestionModeApiUtils.setModeApiCql(cfName);
+  }
 
   /**
    * Test de création d'un dictionnaire
@@ -52,7 +78,7 @@ public class DictionaryServiceTest {
     final String id = "dictionnaireTest";
     final List<String> values = Arrays.asList("ValeurTest", "ValeurTest2");
     service.addElements(id, values);
-    final Dictionary dict = dictSupport.find(id);
+    final Dictionary dict = dictCqlSupport.find(id);
     Assert.assertNotNull(dict);
     Assert.assertTrue(id.equals(dict.getIdentifiant()));
   }
