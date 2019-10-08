@@ -24,7 +24,9 @@ public class SaeMetadataCqlSupport {
   @Autowired
   IMetadataDaoCql metadataDaoCql;
 
-
+  public SaeMetadataCqlSupport(final IMetadataDaoCql metadataDaoCql) {
+    this.metadataDaoCql = metadataDaoCql;
+  }
 
   /**
    * Ajout d'une entrée au metadata, le créé s'il n'existe pas

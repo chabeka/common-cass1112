@@ -24,6 +24,6 @@ public class MetadataUtilsTest {
     final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "Metadata");
 
     final List<MetadataReference> listMetaData = MetadataUtils.convertRowsToMetadata(list);
-    Assert.assertTrue(listMetaData.size() == 73);// Attention une valeur est répétée
+    Assert.assertTrue(listMetaData.size() == 74);// Attention une valeur est répétée
   }
 }

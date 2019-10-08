@@ -54,6 +54,8 @@ public class SearchableControlServicesImplTest {
       e.printStackTrace();
     }
   }
+
+
   /**
    * Fournit des données pour valider la méthode
    * {@link MetadataControlServicesImpl#checkConsultableMetadata(List)}

@@ -6,14 +6,19 @@ package fr.urssaf.image.sae.metadata.referential.services.impl.cql;
 import java.net.URL;
 import java.util.List;
 
-import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.FixMethodOrder;
+import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
@@ -29,6 +34,7 @@ import fr.urssaf.image.sae.metadata.utils.Constantes;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-metadata-test.xml"})
 @SuppressWarnings("PMD")
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public abstract class AbstractMetadataCqlTest {
   @Autowired
   private CassandraServerBean server;
@@ -36,23 +42,32 @@ public abstract class AbstractMetadataCqlTest {
   @Autowired
   SaeMetadataSupportFacade saeMetadataSupportFacade;
 
-
+  static boolean init = false;
 
   private final String cfName = Constantes.CF_METADATA;
 
-  @Before
-  public void setup() throws Exception {
-    if (server.getStartLocal()) {
-      server.resetData();
-      createAllMetadata();
-    }
-    GestionModeApiUtils.setModeApiCql(cfName);
+  @BeforeClass
+  public static void init() {
+    init = false;
   }
 
-  @After
-  public void after() throws Exception {
-    server.resetDataOnly();
+  @Before
+  public void setup() throws Exception {
+
+    if (server.getStartLocal()) {
+      // Si l'initialisation a eu lieu on supprime les données
+      if (init) {
+        server.clearTables();
+      } else {
+        // On effectue l'initialisation en recréant le Keyspace cql
+        server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
+        init = true;
+      }
+      GestionModeApiUtils.setModeApiCql(cfName);
+      createAllMetadata();
+    }
   }
+
 
   /**
    * Création des données Metadata pour effectuer les tests des services en Cql
@@ -69,5 +84,17 @@ public abstract class AbstractMetadataCqlTest {
     }
   }
 
+  @Test
+  public void z_end() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
 
 }
