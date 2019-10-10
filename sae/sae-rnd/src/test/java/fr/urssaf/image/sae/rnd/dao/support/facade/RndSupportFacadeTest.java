@@ -42,19 +42,20 @@ public class RndSupportFacadeTest {
     server.resetDataOnly();
   }
 
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
-
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
-  }
+  /*
+   * @Test
+   * public void init() {
+   * try {
+   * if (server.isCassandraStarted()) {
+   * server.resetData();
+   * }
+   * Assert.assertTrue(true);
+   * }
+   * catch (final Exception e) {
+   * e.printStackTrace();
+   * }
+   * }
+   */
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws CodeRndInexistantException {
     // On se met sur mode API inconnu

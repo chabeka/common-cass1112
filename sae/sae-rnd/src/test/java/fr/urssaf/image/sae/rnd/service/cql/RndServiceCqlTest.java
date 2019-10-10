@@ -60,19 +60,20 @@ public class RndServiceCqlTest {
     rndCqlSupport.ajouterRnd(typeDocCree);
   }
 
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
-
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
-  }
+  /*
+   * @Test
+   * public void init() {
+   * try {
+   * if (server.isCassandraStarted()) {
+   * server.resetData();
+   * }
+   * Assert.assertTrue(true);
+   * }
+   * catch (final Exception e) {
+   * e.printStackTrace();
+   * }
+   * }
+   */
   @Test
   public void testGetCodeActivite() throws CodeRndInexistantException {
 

@@ -10,8 +10,10 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,8 +29,6 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.SaeBddCqlSupport;
-import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
-import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
@@ -41,6 +41,7 @@ import net.docubase.toolkit.model.reference.LifeCycleStep;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 
 public class MajRndServiceCqlTest {
 
@@ -77,18 +78,20 @@ public class MajRndServiceCqlTest {
 
   private SaeLogAppender logAppender;
 
-  @Before
-  public void before() throws SaeBddRuntimeException, RndRecuperationException {
 
-    /*
-     * logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-     * logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
-     * logger.addAppender(logAppender);
-     * final VersionRnd version = new VersionRnd();
-     * version.setDateMiseAJour(new Date());
-     * version.setVersionEnCours("11.4");
-     * saeBddCqlSupport.updateVersionRnd(version);
-     */
+  @Before
+  public void before() throws Exception {
+    ModeAPIRndUtils.setAllRndModeAPICql();
+
+    // server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
+    logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+    logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
+    logger.addAppender(logAppender);
+
+    final VersionRnd version = new VersionRnd();
+    version.setDateMiseAJour(new Date());
+    version.setVersionEnCours("11.4");
+    saeBddCqlSupport.updateVersionRnd(version);
 
   }
 
@@ -104,19 +107,27 @@ public class MajRndServiceCqlTest {
 
   @Test
   public void testLancer() throws Exception {
-    server.clearAndLoad();
 
+    /*
+     * server.resetData();
+     * logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
+     * logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
+     * logger.addAppender(logAppender);
+     * final VersionRnd version = new VersionRnd();
+     * version.setDateMiseAJour(new Date());
+     * version.setVersionEnCours("11.4");
+     * saeBddCqlSupport.updateVersionRnd(version);
+     */
+    // server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
     logger.addAppender(logAppender);
-
+    ModeAPIRndUtils.setAllRndModeAPICql();
     final VersionRnd version = new VersionRnd();
     version.setDateMiseAJour(new Date());
     version.setVersionEnCours("11.4");
     saeBddCqlSupport.updateVersionRnd(version);
 
-    ModeAPIRndUtils.setAllRndModeAPICql();
     initComposantsADRN();
     initComposantsDFCE();
 
@@ -203,7 +214,7 @@ public class MajRndServiceCqlTest {
     typeDoc1bis.setType(TypeCode.ARCHIVABLE_AED);
     rndCqlSupport.ajouterRnd(typeDoc1bis);
     // Le 2ème document n'est pas dans le RND du SAE, il sera donc ajouté
-    rndCqlSupport.ajouterRnd(typeDoc2);// EC
+    // rndCqlSupport.ajouterRnd(typeDoc2);// EC
     // Le 3ème document sera déjà dans le RND du SAE donc il ne sera pas
     // ajouté (toutes propriétés identiques)
     rndCqlSupport.ajouterRnd(typeDoc3);

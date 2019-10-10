@@ -41,22 +41,24 @@ public class CorrespondanceRndSupportFacadeTest {
 
   @After
   public void after() throws Exception {
-    server.resetDataOnly();
+    // server.resetDataOnly();
+    server.clearTables();
   }
 
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
-
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
-  }
+  /*
+   * @Test
+   * public void init() {
+   * try {
+   * if (server.isCassandraStarted()) {
+   * server.resetData();
+   * }
+   * Assert.assertTrue(true);
+   * }
+   * catch (final Exception e) {
+   * e.printStackTrace();
+   * }
+   * }
+   */
 
   @Test(expected = ModeGestionAPIUnkownException.class)
   public void testModeAPIInconnu() throws MajCorrespondancesException {

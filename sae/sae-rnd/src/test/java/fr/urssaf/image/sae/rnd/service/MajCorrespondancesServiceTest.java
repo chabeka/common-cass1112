@@ -14,7 +14,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
@@ -24,38 +23,39 @@ import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
 public class MajCorrespondancesServiceTest {
 
-   @Autowired
-   private MajRndService majCorrespondancesService;
+  @Autowired
+  private MajRndService majCorrespondancesService;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private SaeBddSupport saeBddSupport;
+  @Autowired
+  private SaeBddSupport saeBddSupport;
 
-   @Autowired
-   private RndRecuperationService rndRecuperationService;
+  @Autowired
+  private RndRecuperationService rndRecuperationService;
 
-   @Before
-   public void before() throws SaeBddRuntimeException, RndRecuperationException {
+  @Before
+  public void before() throws SaeBddRuntimeException, RndRecuperationException {
 
-      Map<String, String> listeCorrespondances = new TreeMap<String, String>();
-      listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
-      saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
-      
-   }
+    final Map<String, String> listeCorrespondances = new TreeMap<>();
+    listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
+    saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
 
-   @After
-   public void after() throws Exception {
-      EasyMock.reset(rndRecuperationService);
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  }
 
-   @Ignore
-   @Test
-   public void testLancer() throws Exception {
-      majCorrespondancesService.lancer();
+  @After
+  public void after() throws Exception {
+    EasyMock.reset(rndRecuperationService);
+    // server.resetData(true, MODE_API.HECTOR);
+    server.resetData();
+  }
 
-   }
+  @Ignore
+  @Test
+  public void testLancer() throws Exception {
+    majCorrespondancesService.lancer();
+
+  }
 
 }
