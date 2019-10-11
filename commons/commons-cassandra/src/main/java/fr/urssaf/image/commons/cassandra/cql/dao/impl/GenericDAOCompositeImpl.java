@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -22,7 +23,7 @@ import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 import com.datastax.driver.mapping.Mapper;
 
-import fr.urssaf.image.commons.cassandra.cql.dao.IGenericDAO;
+import fr.urssaf.image.commons.cassandra.cql.dao.IGenericCompositeDAO;
 import fr.urssaf.image.commons.cassandra.helper.CassandraCQLClientFactory;
 import fr.urssaf.image.commons.cassandra.utils.ColumnUtil;
 import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
@@ -31,9 +32,9 @@ import fr.urssaf.image.commons.cassandra.utils.QueryUtils;
  * TODO (AC75095028) Description du type
  */
 
-public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
+public class GenericDAOCompositeImpl<T, ID, CK> implements IGenericCompositeDAO<T, ID, CK> {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOImpl.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(GenericDAOCompositeImpl.class);
 
   @Autowired
   protected CassandraCQLClientFactory ccf;
@@ -44,7 +45,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
 
   protected Mapper<T> mapper;
 
-  public GenericDAOImpl() {
+  public GenericDAOCompositeImpl() {
     final Type t = getClass().getGenericSuperclass();
     final ParameterizedType pt = (ParameterizedType) t;
     daoType = (Class) pt.getActualTypeArguments()[0];
@@ -75,9 +76,7 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   @SuppressWarnings("unchecked")
   public Mapper<T> getMapper() {
     if (mapper == null) {
-
       // manager = new MappingManager(ccf.getSession());
-      // On récupère le mapper du mapping manager au niveau cassandraClientFactory
       mapper = (Mapper<T>) ccf.getManager().mapper(daoType);
     }
     return mapper;
@@ -181,16 +180,6 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
     }
   }
 
-  /**
-   * {@inheritDoc}
-   * 
-   * @Override
-   *           public ResultSet findAllById(final Iterable<ID> ids) {
-   *           Assert.notNull(ids, " les ids des entités a supprimer sont requis");
-   *           final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
-   *           return getSession().execute(select);
-   *           }
-   */
 
   /**
    * @return the logger
@@ -198,6 +187,28 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   @Override
   public Logger getLogger() {
     return LOGGER;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public Optional<T> findWithMapperByIdComposite(final ID id, final CK ck) {
+    Assert.notNull(id, "L'identifiant ne peut être null");
+    Assert.notNull(ck, "L'autre partie de la clé ne peut être null");
+    final Select select = QueryBuilder.select().from(ccf.getKeyspace(), getTypeArgumentsName());
+
+    final List<Field> list = ColumnUtil.getCompositePartionKeyField(daoType);
+    Assert.notNull(list, "La liste de  clés de l'entité à chercher ne peut être null");
+    Assert.state(list.size() == 2, "On doit avoir deux clés  ");
+
+    final String keyName1 = list.get(0).getName();
+    Assert.notNull(keyName1, "Le nom d'une partie de la clé ne peut être null");
+    final String keyName2 = list.get(1).getName();
+    Assert.notNull(keyName2, "Le nom d'une partie de la clé ne peut être null");
+    select.where(eq(keyName1.toLowerCase(), id)).and(eq(keyName2.toLowerCase(), ck));
+    final ResultSet result = getSession().execute(select);
+    return Optional.ofNullable(getMapper().map(result).one());
   }
 
   /**

@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -9,7 +11,7 @@
 
 	<name>commons-cassandra</name>
 
-   <!-- Utilisation du fichier POM parent ALTAIR -->
+	<!-- Utilisation du fichier POM parent ALTAIR -->
 	<parent>
 		<groupId>fr.pnr.altair</groupId>
 		<artifactId>parent</artifactId>
@@ -17,20 +19,19 @@
 	</parent>
 
 	<properties>
-      
-      <!-- DEFINI DANS LE POM PERE Encodage de caractères
-      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding-->
-      
-      <!-- Version des plug-ins Maven -->
+
+		<!-- DEFINI DANS LE POM PERE Encodage de caractères <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding -->
+
+		<!-- Version des plug-ins Maven -->
 		<maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
 		<maven-source-plugin.version>3.1.0</maven-source-plugin.version>
 		<maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
-      	<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
+		<maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
 		<sonar-maven-plugin.version>1.0-beta-2</sonar-maven-plugin.version>
 		<maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
 		<maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
-      
-      <!-- Version des framework -->
+
+		<!-- Version des framework -->
 
 		<junit.version>4.12</junit.version>
 		<slf4j-api.version>1.7.7</slf4j-api.version>
@@ -54,7 +55,7 @@
 	</properties>
 
 
-   <!-- Configuration SVN pour le plug-in maven-release -->
+	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
         scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.10.0.1/commons/commons-cassandra
@@ -70,13 +71,13 @@
 
 	<dependencies>
 
-      <!--  Spring -->
+		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 			<version>${spring.framework.version}</version>
 		</dependency>
-		
+
 		<!-- JAVA DRIVER DATASTAX -->
 		<dependency>
 			<groupId>com.datastax.cassandra</groupId>
@@ -100,8 +101,14 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<!-- DEPENDANCE POUR ENUM -->
+		<dependency>
+			<groupId>com.datastax.cassandra</groupId>
+			<artifactId>cassandra-driver-extras</artifactId>
+			<version>${cassandra-driver.version}</version>
+		</dependency>
 
-      <!--  Cassandra et Hector -->
+		<!-- Cassandra et Hector -->
 		<dependency>
 			<groupId>org.hectorclient</groupId>
 			<artifactId>hector-core</artifactId>
@@ -157,7 +164,7 @@
 			</exclusions>
 		</dependency>
 
-      <!-- Sérialisation json  -->
+		<!-- Sérialisation json -->
 
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
@@ -175,7 +182,7 @@
 			<version>${jackson-mapper-asl.version}</version>
 		</dependency>
 
-      <!-- JUNIT  -->
+		<!-- JUNIT -->
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -184,7 +191,7 @@
 			<scope>test</scope>
 		</dependency>
 
-      <!--  Zookeepeer et curator-->
+		<!-- Zookeepeer et curator -->
 		<dependency>
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
@@ -270,7 +277,7 @@
 			</exclusions>
 		</dependency>
 
-      <!-- Loggers -->
+		<!-- Loggers -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -297,18 +304,15 @@
 			<artifactId>log4j-over-slf4j</artifactId>
 			<version>${slf4j-api.version}</version>
 		</dependency>
-      
-      <!--
-         commons-lang : version 2.6 au minimum nécessaire pour
-         cassandraUnit
-      -->
+
+		<!-- commons-lang : version 2.6 au minimum nécessaire pour cassandraUnit -->
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
 			<version>${apache.commons-lang.version}</version>
 		</dependency>
-      
-      <!-- Guava : version 19 minimum pour cassandra-all -->
+
+		<!-- Guava : version 19 minimum pour cassandra-all -->
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
@@ -367,7 +371,7 @@
 				</configuration>
 			</plugin>
 
-		 <!-- Construction d'un JAR avec les sources -->
+			<!-- Construction d'un JAR avec les sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
@@ -391,11 +395,11 @@
 				</configuration>
 			</plugin>
 
-		 <!-- Construction d'un JAR avec la javadoc -->
+			<!-- Construction d'un JAR avec la javadoc -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>${maven-javadoc-plugin.version}</version><!--$NO-MVN-MAN-VER$-->
+				<version>${maven-javadoc-plugin.version}</version><!--$NO-MVN-MAN-VER$ -->
 				<configuration>
 					<additionalparam>${javadoc.opts}</additionalparam>
 					<doclint>none</doclint>
@@ -408,9 +412,7 @@
 				<version>${sonar-maven-plugin.version}</version>
 			</plugin>
 
-         <!--
-         Pour la gestion des release
-         -->
+			<!-- Pour la gestion des release -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
@@ -421,19 +423,19 @@
 				</configuration>
 			</plugin>
 			<plugin>
-               <groupId>org.apache.maven.plugins</groupId>
-               <artifactId>maven-site-plugin</artifactId>
-               <dependencies>
-                  <dependency>
-                     <groupId>org.apache.maven.wagon</groupId>
-                     <artifactId>wagon-ssh</artifactId>
-                     <version>1.0</version>
-                  </dependency>
-               </dependencies>
-               <configuration>
-               		<skipDeploy>true</skipDeploy>
-               </configuration>
-            </plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>org.apache.maven.wagon</groupId>
+						<artifactId>wagon-ssh</artifactId>
+						<version>1.0</version>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<skipDeploy>true</skipDeploy>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
