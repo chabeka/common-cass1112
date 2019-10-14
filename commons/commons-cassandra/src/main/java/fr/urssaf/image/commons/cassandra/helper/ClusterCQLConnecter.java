@@ -40,6 +40,8 @@ public class ClusterCQLConnecter {
 
   private Cluster testCluster = null;
   private Session testSession = null;
+
+  private Builder testBuilder = null;
   protected String[] dataSets;
 
   private final String hosts;
@@ -51,12 +53,12 @@ public class ClusterCQLConnecter {
   }
 
   /**
-   * Il arrive que le serveur cassandra local mette du temps avant d'être
-   * opérationnel. Cette méthode fait en sorte d'attendre jusqu'à ce qu'il soit
-   * opérationnel
+   * Il arrive que le serveur cassandra local mette du temps avant d'ï¿½tre
+   * opï¿½rationnel. Cette mï¿½thode fait en sorte d'attendre jusqu'ï¿½ ce qu'il soit
+   * opï¿½rationnel
    *
    * @throws InterruptedException
-   *           : on a été interrompu
+   *           : on a ï¿½tï¿½ interrompu
    */
   @SuppressWarnings("resource")
   private void waitForServer() throws InterruptedException {
@@ -84,17 +86,19 @@ public class ClusterCQLConnecter {
       try {
         final CassandraHostConfigurator hostConfigurator = new CassandraHostConfigurator(hosts);
         hostConfigurator.setMaxActive(1);
-
-        final Builder testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142);
+        if (testBuilder == null) {
+          testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142).withoutJMXReporting();
+        }
         testCluster = Cluster.buildFrom(testBuilder);
         final Session session = testCluster.connect();
         testSession = session;
       } catch (final Throwable e) {
         LOG.error("Erreur technique : " + e.getMessage());
       }
+      testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
+      testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
     }
-    testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
-    testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
+
     return testCluster;
   }
 
@@ -110,10 +114,10 @@ public class ClusterCQLConnecter {
   private FileCQLDataSet mergeCqlDataSets(final boolean dropAndCreateKeyspace, final String... dataSets) {
     LOG.debug("Merge des datasets en cours");
     final String logFinMerge = "Fin du merge des datasets";
-    // On vérifie que le keyspace existe pour le créer si besoin
+    // On vï¿½rifie que le keyspace existe pour le crï¿½er si besoin
     final boolean createKeyspace = !(isExistKeyspace(testSession) && !dropAndCreateKeyspace);
 
-    // Vérification des paramètres d'entrée
+    // Vï¿½rification des paramï¿½tres d'entrï¿½e
     Assert.notEmpty(dataSets, "La liste des Dataset est vide");
     final String fileDataSet = "cassandra-local-datasets/migration-cqltable-common.cql";
     final String fileDataSetTmp = "target/tmp/migration-cqltable-common.cql";
@@ -142,7 +146,7 @@ public class ClusterCQLConnecter {
           }
         } catch (final IOException exp) {
           LOG.error("Erreur de merge des datasets : " + exp);
-          LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+          LOG.warn("Ajout de la dataSet par dï¿½faut : " + fileDataSet);
           tmpFileDataSet = Paths.get(fileDataSet);
         }
       } else {
@@ -161,18 +165,18 @@ public class ClusterCQLConnecter {
 
     } catch (final IOException | URISyntaxException e) {
       LOG.error("Erreur de merge des datasets : " + e);
-      LOG.warn("Ajout de la dataSet par défaut : " + fileDataSet);
+      LOG.warn("Ajout de la dataSet par dï¿½faut : " + fileDataSet);
       tmpFileDataSet = Paths.get(fileDataSet);
     } finally {
       LOG.debug(logFinMerge);
     }
 
-    // Renvoie l'objet Dataset fusionné
+    // Renvoie l'objet Dataset fusionnï¿½
     return new FileCQLDataSet(tmpFileDataSet.toFile().getAbsolutePath(), createKeyspace, dropAndCreateKeyspace, CassandraServerBean.KEYSPACE_TU);
   }
 
   /**
-   * Vérifie si le keyspace existe ou pas.
+   * Vï¿½rifie si le keyspace existe ou pas.
    * 
    * @param session
    *          Session de test
@@ -181,13 +185,13 @@ public class ClusterCQLConnecter {
   private boolean isExistKeyspace(final Session session) {
     boolean existKeyspace = false;
 
-    // Vérification de l'existence du keyspace
+    // Vï¿½rification de l'existence du keyspace
     final String selectQuery = "SELECT keyspace_name FROM system.schema_keyspaces where keyspace_name='" + CassandraServerBean.KEYSPACE_TU + "'";
     final ResultSet keyspaceQueryResult = session.execute(selectQuery);
 
     existKeyspace = keyspaceQueryResult != null && keyspaceQueryResult.iterator() != null && keyspaceQueryResult.iterator().hasNext();
 
-    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par défaut dans le librairie cassandra-unit.
+    // Si le keyspace existe, on l'utilise dans la session car cela n'est pas fait par dï¿½faut dans le librairie cassandra-unit.
     if (existKeyspace) {
       final String useQuery = "USE " + CassandraServerBean.KEYSPACE_TU;
       LOG.debug("executing : " + useQuery);
@@ -198,14 +202,14 @@ public class ClusterCQLConnecter {
   }
 
   public void loadDataSetToServer(final boolean dropAndCreateKeyspace, final String... newDataSets) {
-    // On inject les jeux de données
+    // On inject les jeux de donnï¿½es
     if (newDataSets != null && newDataSets.length > 0) {
       final CQLDataLoader cqlDataLoader = new CQLDataLoader(testSession);
       cqlDataLoader.load(mergeCqlDataSets(dropAndCreateKeyspace, newDataSets));
     }
   }
   /**
-   * Arrête le cluster (partie cliente) de test
+   * Arrï¿½te le cluster (partie cliente) de test
    */
   public final void shutdownTestCluster() {
     if (testCluster != null) {
@@ -221,7 +225,7 @@ public class ClusterCQLConnecter {
   }
 
   /**
-   * Méthode qui efface le contenu de toutes les tables grâce à l'exécution d'un truncate
+   * Mï¿½thode qui efface le contenu de toutes les tables grï¿½ce ï¿½ l'exï¿½cution d'un truncate
    */
   public final void clearTables() {
     final KeyspaceMetadata keyspace = testCluster.getMetadata().getKeyspace(CassandraServerBean.KEYSPACE_TU);

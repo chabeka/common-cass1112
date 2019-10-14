@@ -159,17 +159,16 @@ public final class CassandraCQLClientFactory implements DisposableBean {
    * @throws InterruptedException
    *           Ou nous a demandé de nous arrêter alors on s'arrête
    */
-  /*
-   * public CassandraCQLClientFactory(final CassandraServerBean cassandraServer, final String keyspaceName, final String userName, final String password)
-   * throws InterruptedException {
-   * // Construire la liste des hosts qui sera sans le port ou on
-   * // l'ajoute 9160
-   * final String tmpHosts = cassandraServer.getCqlHosts();
-   * final String hosts = HostsUtils.buildHost(tmpHosts, true);
-   * cassandraServer.setHosts(hosts);
-   * initCassandra(cassandraServer, keyspaceName, userName, password);
-   * }
-   */
+
+  public CassandraCQLClientFactory(final CassandraServerBean cassandraServer, final String keyspaceName, final String userName, final String password)
+      throws InterruptedException {
+    // Construire la liste des hosts qui sera sans le port ou on
+    // l'ajoute 9160
+    final String tmpHosts = cassandraServer.getCqlHosts();
+    final String hosts = HostsUtils.buildHost(tmpHosts, true);
+    cassandraServer.setHosts(hosts);
+    initCassandra(cassandraServer, keyspaceName, userName, password);
+  }
 
   /**
    * Méthode factorisation : initilisation connection cassandra
