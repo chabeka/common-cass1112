@@ -266,7 +266,7 @@ public final class Utils {
 	    try {
 	        UUID fromStringUUID = UUID.fromString(uuid);
 	        String toStringUUID = fromStringUUID.toString();
-	        return toStringUUID.equals(uuid);
+	        return toStringUUID.toLowerCase().equals(uuid.toLowerCase());
 	    } catch(IllegalArgumentException e) {
 	        return false;
 	    }
