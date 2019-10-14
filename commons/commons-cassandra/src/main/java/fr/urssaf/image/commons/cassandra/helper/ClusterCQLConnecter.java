@@ -90,13 +90,14 @@ public class ClusterCQLConnecter {
           testBuilder = Cluster.builder().addContactPoints("localhost").withClusterName(TEST_CLUSTER_NAME).withPort(9142).withoutJMXReporting();
         }
         testCluster = Cluster.buildFrom(testBuilder);
+        testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
+        testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
         final Session session = testCluster.connect();
         testSession = session;
       } catch (final Throwable e) {
         LOG.error("Erreur technique : " + e.getMessage());
       }
-      testCluster.getConfiguration().getSocketOptions().setConnectTimeoutMillis(20000000);
-      testCluster.getConfiguration().getSocketOptions().setReadTimeoutMillis(20000000);
+
     }
 
     return testCluster;
