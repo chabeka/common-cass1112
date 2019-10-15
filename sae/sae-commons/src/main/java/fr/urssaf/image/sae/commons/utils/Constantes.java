@@ -96,4 +96,20 @@ public final class Constantes {
 
   public static final String CF_TRACE_REG_EXPLOITATION = "traceregexploitation";
 
+  public static final String CF_DROIT_ACTION_UNITAIRE = "droitactionunitaire";
+
+  public static final String CF_DROIT_CONTRAT_SERVICE = "droitcontratservice";
+
+  public static final String CF_DROIT_FORMAT_CONTROL_PROFIL = "droitformatcontrolprofil";
+
+  public static final String CF_DROIT_PAGMA = "droitpagma";
+
+  public static final String CF_DROIT_PAGMF = "droitpagmf";
+
+  public static final String CF_DROIT_PAGMP = "droitpagmp";
+
+  public static final String CF_DROIT_PAGM = "droitpagm";
+
+  public static final String CF_DROIT_PRMD = "droitprmd";
+
 }

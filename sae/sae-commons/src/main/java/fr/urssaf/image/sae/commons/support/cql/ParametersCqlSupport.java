@@ -31,7 +31,10 @@ public class ParametersCqlSupport {
   @Autowired
   IParametersDaoCql parametersDaoCql;
 
+  public ParametersCqlSupport(final IParametersDaoCql parametersDaoCql) {
+    this.parametersDaoCql = parametersDaoCql;
 
+  }
   /**
    * Ajout d'une colonne de paramètre
    * 
