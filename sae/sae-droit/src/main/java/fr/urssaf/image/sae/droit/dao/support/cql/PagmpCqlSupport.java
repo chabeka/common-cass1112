@@ -26,7 +26,9 @@ public class PagmpCqlSupport {
   @Autowired
   IPagmpDaoCql pagmpdaocql;
 
-
+  public PagmpCqlSupport(final IPagmpDaoCql pagmpdaocql) {
+    this.pagmpdaocql = pagmpdaocql;
+  }
   /**
    * Création d'une pagmp
    *

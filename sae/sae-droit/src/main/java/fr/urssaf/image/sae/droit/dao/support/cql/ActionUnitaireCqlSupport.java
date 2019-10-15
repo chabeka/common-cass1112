@@ -25,6 +25,9 @@ public class ActionUnitaireCqlSupport {
   @Autowired
   IActionUnitaireDaoCql actionunitairedaocql;
 
+  public ActionUnitaireCqlSupport(final IActionUnitaireDaoCql actionunitairedaocql) {
+    this.actionunitairedaocql = actionunitairedaocql;
+  }
   /**
    * Création d'une action unitaire
    *

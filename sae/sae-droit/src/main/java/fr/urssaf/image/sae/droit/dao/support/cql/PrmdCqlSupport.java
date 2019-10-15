@@ -25,7 +25,9 @@ public class PrmdCqlSupport {
   @Autowired
   IPrmdDaoCql prmddaocql;
 
-
+  public PrmdCqlSupport(final IPrmdDaoCql prmddaocql) {
+    this.prmddaocql = prmddaocql;
+  }
   /**
    * Création d'une prmd
    *

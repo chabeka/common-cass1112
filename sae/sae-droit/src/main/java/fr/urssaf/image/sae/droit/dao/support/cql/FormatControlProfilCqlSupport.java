@@ -25,7 +25,9 @@ public class FormatControlProfilCqlSupport {
   @Autowired
   IFormatControlProfilDaoCql formatcontrolprofildaocql;
 
-
+  public FormatControlProfilCqlSupport(final IFormatControlProfilDaoCql formatcontrolprofildaocql) {
+    this.formatcontrolprofildaocql = formatcontrolprofildaocql;
+  }
 
   /**
    * Création d'un formatControlProfil

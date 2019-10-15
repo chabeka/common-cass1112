@@ -25,7 +25,7 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
  * (Thrift et Cql)
  */
 @Component
-public class SaePrmdServiceFacadeImpl implements SaePrmdService {
+public class SaePrmdServiceImpl implements SaePrmdService {
 
 
   private static final String CHECK = "checkPrmdInexistant";
@@ -33,7 +33,7 @@ public class SaePrmdServiceFacadeImpl implements SaePrmdService {
   private static final String PRMD = "Le PRMD ";
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(SaePrmdServiceFacadeImpl.class);
+      .getLogger(SaePrmdServiceImpl.class);
 
   private static final String TRC_CREATE = "createPrmd()";
   private static final String TRC_EXISTS = "prmdExists()";
@@ -56,7 +56,7 @@ public class SaePrmdServiceFacadeImpl implements SaePrmdService {
    *           {@link CuratorFramework}
    */
   @Autowired
-  public SaePrmdServiceFacadeImpl(final PrmdSupportFacade prmdSupportFacade,
+  public SaePrmdServiceImpl(final PrmdSupportFacade prmdSupportFacade,
                                   final CuratorFramework curator) {
     this.prmdSupportFacade = prmdSupportFacade;
     curatorClient = curator;

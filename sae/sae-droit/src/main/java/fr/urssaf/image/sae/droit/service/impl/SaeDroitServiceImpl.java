@@ -34,7 +34,6 @@ import fr.urssaf.image.sae.droit.dao.serializer.exception.ActionUnitaireReferenc
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmaReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PagmpReferenceException;
 import fr.urssaf.image.sae.droit.dao.serializer.exception.PrmdReferenceException;
-import fr.urssaf.image.sae.droit.dao.support.cql.ContratServiceCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.facade.ActionUnitaireSupportFacade;
 import fr.urssaf.image.sae.droit.dao.support.facade.ContratServiceSupportFacade;
 import fr.urssaf.image.sae.droit.dao.support.facade.FormatControlProfilSupportFacade;
@@ -75,7 +74,7 @@ import me.prettyprint.hector.api.mutation.Mutator;
  * (Thrift et Cql)
  */
 @Component
-public class SaeDroitServiceFacadeImpl implements SaeDroitService {
+public class SaeDroitServiceImpl implements SaeDroitService {
 
   private static final String CHECK_CONTRAT = "checkContratServiceInexistant";
   private static final String TRC_LOAD = "loadSaeDroits()";
@@ -85,7 +84,7 @@ public class SaeDroitServiceFacadeImpl implements SaeDroitService {
   private static final String MESSAGE_PAGM = "Le pagm ";
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(SaeDroitServiceFacadeImpl.class);
+      .getLogger(SaeDroitServiceImpl.class);
 
   /**
    * préfixe utilisé pour les locks zookeeper
@@ -111,8 +110,6 @@ public class SaeDroitServiceFacadeImpl implements SaeDroitService {
   private final PagmpSupportFacade pagmpSupport;
 
   private final PagmfSupportFacade pagmfSupport;
-
-  private final ContratServiceCqlSupport contratCqlSupport;
 
   private final CuratorFramework curatorClient;
 
@@ -151,15 +148,15 @@ public class SaeDroitServiceFacadeImpl implements SaeDroitService {
    *           keyspace utilisé
    */
   @Autowired
-  public SaeDroitServiceFacadeImpl(final ContratServiceSupportFacade contratSupport,
-                                    final PagmSupportFacade pagmSupport, final PagmaSupportFacade pagmaSupport,
-                                    final PagmpSupportFacade pagmpSupport, final PagmfSupportFacade pagmfSupport,
-                                    final FormatControlProfilSupportFacade formControlProfilSupport,
-                                    final ActionUnitaireSupportFacade actionSupport,
-                                    final PrmdSupportFacade prmdSupport, final ContratServiceCqlSupport contratCqlSupport,
-                                    final CuratorFramework curatorClient,
-                                    final CacheConfig cacheConfig,
-                                    final Keyspace keyspace) {
+  public SaeDroitServiceImpl(final ContratServiceSupportFacade contratSupport,
+                             final PagmSupportFacade pagmSupport, final PagmaSupportFacade pagmaSupport,
+                             final PagmpSupportFacade pagmpSupport, final PagmfSupportFacade pagmfSupport,
+                             final FormatControlProfilSupportFacade formControlProfilSupport,
+                             final ActionUnitaireSupportFacade actionSupport,
+                             final PrmdSupportFacade prmdSupport,
+                             final CuratorFramework curatorClient,
+                             final CacheConfig cacheConfig,
+                             final Keyspace keyspace) {
 
     contratsCache = CacheBuilder.newBuilder().expireAfterWrite(
                                                                cacheConfig.getDroitsCacheDuration(), TimeUnit.MINUTES).build(
@@ -254,7 +251,7 @@ public class SaeDroitServiceFacadeImpl implements SaeDroitService {
     this.pagmaSupport = pagmaSupport;
     this.pagmpSupport = pagmpSupport;
     this.pagmfSupport = pagmfSupport;
-    this.contratCqlSupport = contratCqlSupport;
+
     this.curatorClient = curatorClient;
     this.keyspace = keyspace;
 
@@ -268,7 +265,7 @@ public class SaeDroitServiceFacadeImpl implements SaeDroitService {
                                 final PrmdSupportFacade prmdSupport,
                                 final FormatControlProfilSupportFacade formControlProfilSupport) {
     // initialisation du cache des contrats de services
-    final List<ServiceContract> allCs = contratCqlSupport.findAll(MAX_CONTRATS_SERVICES);
+    final List<ServiceContract> allCs = contratSupport.findAll(MAX_CONTRATS_SERVICES);
 
     for (final ServiceContract cs : allCs) {
       contratsCache.put(cs.getCodeClient(), cs);

@@ -26,7 +26,7 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
  */
 @Component
 
-public class SaeActionUnitaireServiceFacadeImpl implements SaeActionUnitaireService {
+public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
 
   private static final String CHECK = "checkActionUnitaireExiste";
@@ -36,7 +36,7 @@ public class SaeActionUnitaireServiceFacadeImpl implements SaeActionUnitaireServ
   private static final String ACTION_UNITAIRE = "L'action unitaire ";
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(SaeActionUnitaireServiceFacadeImpl.class);
+                                                    .getLogger(SaeActionUnitaireServiceImpl.class);
 
   private static final String PREFIXE_AU = "/DroitActionUnitaire/";
 
@@ -56,7 +56,7 @@ public class SaeActionUnitaireServiceFacadeImpl implements SaeActionUnitaireServ
    */
 
   @Autowired
-  public SaeActionUnitaireServiceFacadeImpl(final ActionUnitaireSupportFacade actionUnitaireFacade,
+  public SaeActionUnitaireServiceImpl(final ActionUnitaireSupportFacade actionUnitaireFacade,
                                             final CuratorFramework curatorClient) {
     super();
     this.actionUnitaireFacade = actionUnitaireFacade;

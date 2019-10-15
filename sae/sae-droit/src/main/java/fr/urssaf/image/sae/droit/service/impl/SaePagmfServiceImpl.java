@@ -21,7 +21,7 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
  * (Thrift et Cql)
  */
 @Service
-public class SaePagmfServiceFacadeImpl implements SaePagmfService {
+public class SaePagmfServiceImpl implements SaePagmfService {
 
 
   private final PagmfSupportFacade pagmfSupportFacade;
@@ -37,7 +37,7 @@ public class SaePagmfServiceFacadeImpl implements SaePagmfService {
    *           l'horloge {@link JobClockSupport}
    */
   @Autowired
-  public SaePagmfServiceFacadeImpl(final PagmfSupportFacade pagmfSupportFacade) {
+  public SaePagmfServiceImpl(final PagmfSupportFacade pagmfSupportFacade) {
 
     this.pagmfSupportFacade = pagmfSupportFacade;
   }

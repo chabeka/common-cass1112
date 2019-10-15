@@ -17,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -124,7 +123,7 @@ public class SaeDroitServiceDataTest {
   private static final String ID_PKI = "pki";
 
   @Autowired
-  @Qualifier("saeDroitServiceFacadeImpl")
+  // @Qualifier("saeDroitServiceFacadeImpl")
   private SaeDroitService service;
 
   @Autowired

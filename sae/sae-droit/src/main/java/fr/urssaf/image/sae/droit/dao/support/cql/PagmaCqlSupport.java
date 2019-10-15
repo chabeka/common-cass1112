@@ -26,7 +26,9 @@ public class PagmaCqlSupport {
   @Autowired
   IPagmaDaoCql pagmadaocql;
 
-
+  public PagmaCqlSupport(final IPagmaDaoCql pagmadaocql) {
+    this.pagmadaocql = pagmadaocql;
+  }
   /**
    * Création d'une pagma
    *

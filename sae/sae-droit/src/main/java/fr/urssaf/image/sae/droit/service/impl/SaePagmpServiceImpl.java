@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
  * (Thrift et Cql)
  */
 @Component
-public class SaePagmpServiceFacadeImpl implements SaePagmpService {
+public class SaePagmpServiceImpl implements SaePagmpService {
 
 
 
@@ -40,7 +40,7 @@ public class SaePagmpServiceFacadeImpl implements SaePagmpService {
   private static final String PAGMP = "Le PAGMp ";
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(SaePagmpServiceFacadeImpl.class);
+      .getLogger(SaePagmpServiceImpl.class);
 
   private static final String PREFIXE_PAGMP = "/DroitPagmp/";
 
@@ -63,7 +63,7 @@ public class SaePagmpServiceFacadeImpl implements SaePagmpService {
    *          {@link CuratorFramework}
    */   
   @Autowired
-  public SaePagmpServiceFacadeImpl(final PagmpSupportFacade pagmpSupportFacade, final PrmdSupportFacade prmdSupportFacade,
+  public SaePagmpServiceImpl(final PagmpSupportFacade pagmpSupportFacade, final PrmdSupportFacade prmdSupportFacade,
                                    final CuratorFramework curator) {
     this.pagmpSupportFacade = pagmpSupportFacade;
     this.prmdSupportFacade = prmdSupportFacade;

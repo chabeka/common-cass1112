@@ -28,7 +28,7 @@ import fr.urssaf.image.sae.droit.utils.ZookeeperUtils;
  * (Thrift et Cql)
  */
 @Component
-public class SaePagmaServiceFacadeImpl implements SaePagmaService {
+public class SaePagmaServiceImpl implements SaePagmaService {
 
   private static final String CHECK_NOT_EXISTS = "checkPagmaNotExists";
   private static final String CHECK_EXISTS = "checkPagmaNotExists";
@@ -36,7 +36,7 @@ public class SaePagmaServiceFacadeImpl implements SaePagmaService {
   private static final String TRC_MODIFIER = "modifierPagma";
 
   private static final Logger LOGGER = LoggerFactory
-      .getLogger(SaePagmaServiceFacadeImpl.class);
+      .getLogger(SaePagmaServiceImpl.class);
 
   private static final String PREFIXE_PAGMA = "/DroitPagma/";
 
@@ -59,7 +59,7 @@ public class SaePagmaServiceFacadeImpl implements SaePagmaService {
    *          {@link CuratorFramework}
    */   
   @Autowired
-  public SaePagmaServiceFacadeImpl(final ActionUnitaireSupportFacade actionUnitaireSupportFacade, final PagmaSupportFacade pagmaSupportFacade,
+  public SaePagmaServiceImpl(final ActionUnitaireSupportFacade actionUnitaireSupportFacade, final PagmaSupportFacade pagmaSupportFacade,
                                    final CuratorFramework curator) {
 
     this.pagmaSupportFacade = pagmaSupportFacade;

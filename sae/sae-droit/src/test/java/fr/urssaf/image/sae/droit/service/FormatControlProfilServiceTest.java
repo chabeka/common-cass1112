@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -35,7 +34,7 @@ public class FormatControlProfilServiceTest {
   private static final String CODE_FORMAT_CONTROL_PROFIL = "INT_FORMAT_PROFIL_ATT_VIGI";
 
   @Autowired
-  @Qualifier("formatControlProfilServiceFacadeImpl")
+  // @Qualifier("formatControlProfilServiceFacadeImpl")
   private FormatControlProfilService formControlProfilService;
 
   @Autowired

@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -31,7 +30,7 @@ import fr.urssaf.image.sae.droit.utils.Constantes;
 public class SaeActionUnitaireServiceDatasTest {
 
   @Autowired
-  @Qualifier("saeActionUnitaireServiceFacadeImpl")
+  // @Qualifier("saeActionUnitaireServiceFacadeImpl")
   private SaeActionUnitaireService service;
 
   @Autowired

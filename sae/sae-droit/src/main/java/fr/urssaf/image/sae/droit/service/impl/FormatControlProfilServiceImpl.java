@@ -30,7 +30,7 @@ import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
  * FormatControlProfilService Facade (Thrift et Cql)
  */
 @Service
-public class FormatControlProfilServiceFacadeImpl implements
+public class FormatControlProfilServiceImpl implements
 FormatControlProfilService {
 
   private final FormatControlProfilSupportFacade formatControlSupportFacade;
@@ -59,7 +59,7 @@ FormatControlProfilService {
    *          sae-config.properties dans src/test/resources/config
    */
   @Autowired
-  public FormatControlProfilServiceFacadeImpl(final FormatControlProfilSupportFacade formatControlSupportFacade,
+  public FormatControlProfilServiceImpl(final FormatControlProfilSupportFacade formatControlSupportFacade,
 
                                               @Value("${sae.format.control.profil.cache}") final int value,
                                               @Value("${sae.format.control.profil.initCacheOnStartup}") final boolean initCacheOnStartup) {

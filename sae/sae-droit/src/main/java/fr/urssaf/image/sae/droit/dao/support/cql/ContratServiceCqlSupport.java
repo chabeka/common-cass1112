@@ -27,7 +27,9 @@ public class ContratServiceCqlSupport {
   @Autowired
   IContratServiceDaoCql contratservicedaocql;
 
-
+  public ContratServiceCqlSupport(final IContratServiceDaoCql contratservicedaocql) {
+    this.contratservicedaocql = contratservicedaocql;
+  }
   /**
    * Création d'un contrat de service
    *
