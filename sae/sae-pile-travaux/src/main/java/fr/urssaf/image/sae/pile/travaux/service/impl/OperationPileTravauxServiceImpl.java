@@ -40,7 +40,8 @@ public class OperationPileTravauxServiceImpl implements OperationPileTravauxServ
       operationPileTravauxCqlService.purger(dateMax);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       operationPileTravauxThriftService.purger(dateMax);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       operationPileTravauxCqlService.purger(dateMax);
       operationPileTravauxThriftService.purger(dateMax);
     }

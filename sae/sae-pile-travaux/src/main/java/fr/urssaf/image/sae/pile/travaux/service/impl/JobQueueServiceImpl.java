@@ -46,7 +46,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.addJob(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.addJob(jobToCreate);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.addJob(jobToCreate);
       jobQueueThriftService.addJob(jobToCreate);
     }
@@ -60,7 +61,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.reserveJob(idJob, hostname, dateReservation);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.reserveJob(idJob, hostname, dateReservation);
       jobQueueThriftService.reserveJob(idJob, hostname, dateReservation);
     }
@@ -73,7 +75,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.startingJob(idJob, dateDebutTraitement);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.startingJob(idJob, dateDebutTraitement);
       jobQueueThriftService.startingJob(idJob, dateDebutTraitement);
     }
@@ -86,7 +89,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement);
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement);
     }
@@ -100,7 +104,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement);
     }
@@ -115,7 +120,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
       jobQueueThriftService.endingJob(idJob, succes, dateFinTraitement, message, codeTraitement, nbDocumentTraite);
     }
@@ -128,7 +134,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.addHistory(jobUuid, timeUuid, description);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.addHistory(jobUuid, timeUuid, description);
       jobQueueThriftService.addHistory(jobUuid, timeUuid, description);
     }
@@ -141,7 +148,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.renseignerPidJob(idJob, pid);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.renseignerPidJob(idJob, pid);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.renseignerPidJob(idJob, pid);
       jobQueueThriftService.renseignerPidJob(idJob, pid);
     }
@@ -154,7 +162,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.renseignerDocCountJob(idJob, nbDocs);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.renseignerDocCountJob(idJob, nbDocs);
       jobQueueThriftService.renseignerDocCountJob(idJob, nbDocs);
     }
@@ -167,7 +176,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.updateToCheckFlag(idJob, toCheckFlag, raison);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.updateToCheckFlag(idJob, toCheckFlag, raison);
       jobQueueThriftService.updateToCheckFlag(idJob, toCheckFlag, raison);
     }
@@ -180,7 +190,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.deleteJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.deleteJob(idJob);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.deleteJob(idJob);
       jobQueueThriftService.deleteJob(idJob);
     }
@@ -193,7 +204,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.resetJob(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.resetJob(idJob);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.resetJob(idJob);
       jobQueueThriftService.resetJob(idJob);
     }
@@ -202,11 +214,11 @@ public class JobQueueServiceImpl implements JobQueueService {
   @Override
   public List<String> getHosts() {
     final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
-    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       return jobQueueCqlService.getHosts();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
-      return jobQueueThriftService.getHosts();
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {
       return jobQueueThriftService.getHosts();
     }
     return null;
@@ -219,7 +231,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.addJobsQueue(jobToCreate);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.addJobsQueue(jobToCreate);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.addJobsQueue(jobToCreate);
       jobQueueThriftService.addJobsQueue(jobToCreate);
     }
@@ -232,7 +245,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
       jobQueueThriftService.reserverJobDansJobsQueues(idJob, hostname, type, jobParameters);
     }
@@ -245,7 +259,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.deleteJobFromJobsQueues(idJob);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.deleteJobFromJobsQueues(idJob);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.deleteJobFromJobsQueues(idJob);
       jobQueueThriftService.deleteJobFromJobsQueues(idJob);
     }
@@ -258,7 +273,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
       jobQueueThriftService.changerEtatJobRequest(idJob, stateJob, endingDate, message);
     }
@@ -271,7 +287,8 @@ public class JobQueueServiceImpl implements JobQueueService {
       jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
       jobQueueThriftService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
-    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)
+        || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
       jobQueueCqlService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
       jobQueueThriftService.deleteJobAndSemaphoreFromJobsQueues(idJob, codeTraitement);
     }

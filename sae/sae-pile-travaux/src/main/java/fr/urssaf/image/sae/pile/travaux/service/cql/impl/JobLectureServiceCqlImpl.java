@@ -36,182 +36,209 @@ import fr.urssaf.image.sae.pile.travaux.support.JobsQueueSupportCql;
 @Service
 public class JobLectureServiceCqlImpl implements JobLectureCqlService {
 
-   private  JobRequestSupportCql jobRequestSupportCql;
+  private  JobRequestSupportCql jobRequestSupportCql;
 
-   private  JobsQueueSupportCql jobsQueueSupportCql;
+  private  JobsQueueSupportCql jobsQueueSupportCql;
 
-   private JobHistorySupportCql jobHistorySupportCql;
+  private JobHistorySupportCql jobHistorySupportCql;
 
-   private static final int MAX_ALL_JOBS = 200;
+  private static final int MAX_ALL_JOBS = 200;
 
-   public JobLectureServiceCqlImpl() {
-	super();
-   }
+  public JobLectureServiceCqlImpl() {
+    super();
+  }
 
-   @Autowired
-   public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
-                                   final JobsQueueSupportCql jobsQueueSupportCql) {
+  @Autowired
+  public JobLectureServiceCqlImpl(final JobHistorySupportCql jobHistorySupportCql, final JobRequestSupportCql jobRequestSupportCql,
+                                  final JobsQueueSupportCql jobsQueueSupportCql) {
 
-      this.jobHistorySupportCql = jobHistorySupportCql;
-      this.jobRequestSupportCql = jobRequestSupportCql;
-      this.jobsQueueSupportCql = jobsQueueSupportCql;
-   }
-   
-   /**
-    * 
-    */
-   public JobLectureServiceCqlImpl(CassandraCQLClientFactory ccf) {
-	   
-	   IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
-	   jobHistoryDaoCql.setCcf(ccf);
-	   JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
-	   jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
-	   
-	   IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
-	   jobRequestDaoCql.setCcf(ccf);
-	   JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
-	   jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
-	   
-	   IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
-	   jobsQueueDaoCql.setCcf(ccf);
-	   JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
-	   jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
-	   
-	   this.jobHistorySupportCql = jobHistorySupportCql;
-	   this.jobRequestSupportCql = jobRequestSupportCql;
-	   this.jobsQueueSupportCql = jobsQueueSupportCql;
-   }
-   
-   @Override
-   public JobRequestCql getJobRequest(final UUID jobRequestUUID) {
+    this.jobHistorySupportCql = jobHistorySupportCql;
+    this.jobRequestSupportCql = jobRequestSupportCql;
+    this.jobsQueueSupportCql = jobsQueueSupportCql;
+  }
 
-      return jobRequestSupportCql.getJobRequest(jobRequestUUID);
-   }
 
-   @Override
-   public Iterator<JobQueueCql> getUnreservedJobRequestIterator() {
-      return jobsQueueSupportCql.getUnreservedJobRequest();
-   }
+  /**
+   * 
+   */
+  public JobLectureServiceCqlImpl(final CassandraCQLClientFactory ccf) {
 
-   @Override
-   public List<JobQueueCql> getNonTerminatedSimpleJobs(final String hostname) {
-      return jobsQueueSupportCql.getNonTerminatedSimpleJobs(hostname);
-   }
+    final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+    jobHistoryDaoCql.setCcf(ccf);
+    final JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+    jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
 
-   @Override
-   public List<JobRequestCql> getNonTerminatedJobs(final String key) {
+    final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+    jobRequestDaoCql.setCcf(ccf);
+    final JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+    jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
 
-      final List<JobQueueCql> listJQ = getNonTerminatedSimpleJobs(key);
+    final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+    jobsQueueDaoCql.setCcf(ccf);
+    final JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+    jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
 
-      final List<JobRequestCql> jobRequests = new ArrayList<JobRequestCql>();
+    this.jobHistorySupportCql = jobHistorySupportCql;
+    this.jobRequestSupportCql = jobRequestSupportCql;
+    this.jobsQueueSupportCql = jobsQueueSupportCql;
+  }
 
-      for (final JobQueueCql jobQueue : listJQ) {
-         final JobRequestCql jobRequest = this.getJobRequest(jobQueue.getIdJob());
-         if (jobRequest == null) {
-            try {
-               throw new JobInexistantException(jobQueue.getIdJob());
-            }
-            catch (final JobInexistantException e) {
-               e.printStackTrace();
-            }
-         }
-         jobRequests.add(jobRequest);
-      }
+  /**
+   * 
+   */
+  /*
+   * public JobLectureServiceCqlImpl(final ApplicationContext context) {
+   * final CassandraCQLClientFactory ccf = (CassandraCQLClientFactory) context.getBean("cassandraCQLClientFactory");
+   * if (ccf == null) {
+   * throw new CassandraConfigurationException("CassandraCQLClientFactory est null !");
+   * }
+   * final IJobHistoryDaoCql jobHistoryDaoCql = new JobHistoryDaoCqlImpl();
+   * // jobHistoryDaoCql.setCcf(ccf);
+   * final JobHistorySupportCql jobHistorySupportCql = new JobHistorySupportCql();
+   * jobHistorySupportCql.setJobHistoryDaoCql(jobHistoryDaoCql);
+   * final IJobRequestDaoCql jobRequestDaoCql = new JobRequestDaoCqlImpl();
+   * // jobRequestDaoCql.setCcf(ccf);
+   * final JobRequestSupportCql jobRequestSupportCql = new JobRequestSupportCql();
+   * jobRequestSupportCql.setJobRequestDaoCql(jobRequestDaoCql);
+   * final IJobsQueueDaoCql jobsQueueDaoCql = new JobsQueueDaoCqlImpl();
+   * // jobsQueueDaoCql.setCcf(ccf);
+   * final JobsQueueSupportCql jobsQueueSupportCql = new JobsQueueSupportCql();
+   * jobsQueueSupportCql.setJobsQueueDaoCql(jobsQueueDaoCql);
+   * this.jobHistorySupportCql = jobHistorySupportCql;
+   * this.jobRequestSupportCql = jobRequestSupportCql;
+   * this.jobsQueueSupportCql = jobsQueueSupportCql;
+   * }
+   */
+  @Override
+  public JobRequestCql getJobRequest(final UUID jobRequestUUID) {
 
-      return jobRequests;
+    return jobRequestSupportCql.getJobRequest(jobRequestUUID);
+  }
 
-   }
+  @Override
+  public Iterator<JobQueueCql> getUnreservedJobRequestIterator() {
+    return jobsQueueSupportCql.getUnreservedJobRequest();
+  }
 
-   @Override
-   public List<JobHistoryCql> getJobHistory(final UUID idJob) {
+  @Override
+  public List<JobQueueCql> getNonTerminatedSimpleJobs(final String hostname) {
+    return jobsQueueSupportCql.getNonTerminatedSimpleJobs(hostname);
+  }
 
-      final List<JobHistoryCql> listJH = new ArrayList<>();
-      final Iterator<JobHistoryCql> it = jobHistorySupportCql.getJobHistory(idJob);
+  @Override
+  public List<JobRequestCql> getNonTerminatedJobs(final String key) {
 
-      while (it.hasNext()) {
-         listJH.add(it.next());
-      }
-      return listJH;
-   }
+    final List<JobQueueCql> listJQ = getNonTerminatedSimpleJobs(key);
 
-   @Override
-   public List<JobRequestCql> getAllJobs() {
+    final List<JobRequestCql> jobRequests = new ArrayList<>();
 
-      final List<JobRequestCql> listJR = new ArrayList<>();
-      final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
-
-      while (it.hasNext() && listJR.size() < MAX_ALL_JOBS) {
-         listJR.add(it.next());
-      }
-      return listJR;
-   }
-
-   @Override
-   public List<JobRequestCql> getAllJobs(int maxKeysToRead) {
-
-      final List<JobRequestCql> listJR = new ArrayList<>();
-      final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
-
-      while (it.hasNext() && maxKeysToRead > 0) {
-         listJR.add(it.next());
-         maxKeysToRead--;
-      }
-      return listJR;
-   }
-
-   @Override
-   public List<JobRequestCql> getJobsToDelete(final Date dateMax) {
-
-      final List<JobRequestCql> listJR = new ArrayList<>();
-      final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
-
-      while (it.hasNext()) {
-         final JobRequestCql jobRequest = it.next();
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
-
-         if (jobRequest != null && (jobRequest.getCreationDate().before(dateMax)
-               || DateUtils.isSameDay(jobRequest.getCreationDate(), dateMax))) {
-            listJR.add(jobRequest);
-         }
-      }
-      return listJR;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean isJobResettable(final JobRequestCql job) {
-      if (JobState.RESERVED.name().equals(job.getState()) || JobState.STARTING.name().equals(job.getState())) {
-         return true;
-      }
-      return false;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean isJobRemovable(final JobRequestCql job) {
-      if (JobState.CREATED.name().equals(job.getState()) || JobState.STARTING.name().equals(job.getState())
-            || JobState.RESERVED.name().equals(job.getState())) {
-         return true;
-      }
-      return false;
-   }
-
-   @Override
-   public JobRequestCql getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
-      final JobRequestCql jobRequest = this.getJobRequest(uuidJob);
+    for (final JobQueueCql jobQueue : listJQ) {
+      final JobRequestCql jobRequest = getJobRequest(jobQueue.getIdJob());
       if (jobRequest == null) {
-         throw new JobInexistantException(uuidJob);
+        try {
+          throw new JobInexistantException(jobQueue.getIdJob());
+        }
+        catch (final JobInexistantException e) {
+          e.printStackTrace();
+        }
       }
-      return jobRequest;
-   }
+      jobRequests.add(jobRequest);
+    }
 
-   @Override
-   public UUID getJobRequestIdByJobKey(final byte[] jobKey) {
-      return jobRequestSupportCql.getJobRequestIdByJobKey(jobKey);
-   }
+    return jobRequests;
+
+  }
+
+  @Override
+  public List<JobHistoryCql> getJobHistory(final UUID idJob) {
+
+    final List<JobHistoryCql> listJH = new ArrayList<>();
+    final Iterator<JobHistoryCql> it = jobHistorySupportCql.getJobHistory(idJob);
+
+    while (it.hasNext()) {
+      listJH.add(it.next());
+    }
+    return listJH;
+  }
+
+  @Override
+  public List<JobRequestCql> getAllJobs() {
+
+    final List<JobRequestCql> listJR = new ArrayList<>();
+    final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
+
+    while (it.hasNext() && listJR.size() < MAX_ALL_JOBS) {
+      listJR.add(it.next());
+    }
+    return listJR;
+  }
+
+  @Override
+  public List<JobRequestCql> getAllJobs(int maxKeysToRead) {
+
+    final List<JobRequestCql> listJR = new ArrayList<>();
+    final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
+
+    while (it.hasNext() && maxKeysToRead > 0) {
+      listJR.add(it.next());
+      maxKeysToRead--;
+    }
+    return listJR;
+  }
+
+  @Override
+  public List<JobRequestCql> getJobsToDelete(final Date dateMax) {
+
+    final List<JobRequestCql> listJR = new ArrayList<>();
+    final Iterator<JobRequestCql> it = jobRequestSupportCql.findAll();
+
+    while (it.hasNext()) {
+      final JobRequestCql jobRequest = it.next();
+      // On peut obtenir un jobRequest null dans le cas d'un jobRequest effacé
+
+      if (jobRequest != null && (jobRequest.getCreationDate().before(dateMax)
+          || DateUtils.isSameDay(jobRequest.getCreationDate(), dateMax))) {
+        listJR.add(jobRequest);
+      }
+    }
+    return listJR;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean isJobResettable(final JobRequestCql job) {
+    if (JobState.RESERVED.name().equals(job.getState()) || JobState.STARTING.name().equals(job.getState())) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public final boolean isJobRemovable(final JobRequestCql job) {
+    if (JobState.CREATED.name().equals(job.getState()) || JobState.STARTING.name().equals(job.getState())
+        || JobState.RESERVED.name().equals(job.getState())) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public JobRequestCql getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
+    final JobRequestCql jobRequest = getJobRequest(uuidJob);
+    if (jobRequest == null) {
+      throw new JobInexistantException(uuidJob);
+    }
+    return jobRequest;
+  }
+
+  @Override
+  public UUID getJobRequestIdByJobKey(final byte[] jobKey) {
+    return jobRequestSupportCql.getJobRequestIdByJobKey(jobKey);
+  }
 
 }
