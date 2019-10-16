@@ -1,19 +1,30 @@
-package fr.urssaf.image.sae.format.referentiel.dao.support;
+package fr.urssaf.image.sae.format.referentiel.dao.support.cql;
 
+import java.net.URL;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
+import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.commons.utils.Row;
+import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
+import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
+import fr.urssaf.image.sae.format.utils.FormatFichierUtils;
 import fr.urssaf.image.sae.format.utils.Utils;
 
 /**
@@ -23,16 +34,64 @@ import fr.urssaf.image.sae.format.utils.Utils;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/applicationContext-sae-format-test.xml"})
-public class ReferentielFormatSupportTest {
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+public class ReferentielFormatCqlSupportTest {
+
+  @Qualifier("referentielFormatCqlSupport")
+  @Autowired
+  private ReferentielFormatCqlSupport refFormatSupport;
 
   @Autowired
-  @Qualifier("referentielFormatSupport")
-  private ReferentielFormatSupport refFormatSupport;
-
-  @Autowired
-  private JobClockSupport jobClock;
+  private CassandraServerBean server;
 
   private static final String FIND_MESSAGE_INCORRECT = "FIND - Erreur : Le message de l'exception est incorrect";
+
+  @Before
+  public void before() throws Exception {
+    if (server.getStartLocal()) {
+      // server.resetData(true, MODE_API.DATASTAX);
+      // Création à partir du xml
+      final URL url = this.getClass().getResource("/cassandra-local-datasets/cassandra-local-dataset-sae-format.xml");
+      final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "ReferentielFormat");
+      final List<FormatFichier> listFormatFichier = FormatFichierUtils.convertRowsToFormatFichier(list);
+      for (final FormatFichier formatFichier : listFormatFichier) {
+        refFormatSupport.create(formatFichier);
+      }
+      // Recherche
+      final List<FormatFichier> listFormatFichierBase = refFormatSupport.findAll();
+      // On supprime lambda si besoin
+      try {
+        refFormatSupport.delete("lambda");
+      }
+      catch (final UnknownFormatException e) {
+        e.printStackTrace();
+      }
+      final int taille = listFormatFichierBase.size();
+      GestionModeApiUtils.setModeApiCql(Constantes.CF_REFERENTIEL_FORMAT);
+    }
+    // Assert.assertEquals(listFormatFichier.size(), listFormatFichierBase.size());
+  }
+
+  @After
+  public void end() throws Exception {
+
+    server.resetDataOnly();
+
+  }
+
+  @Test
+  public void init() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
 
   @Test
   public void findSuccess() throws UnknownFormatException {
@@ -81,13 +140,7 @@ public class ReferentielFormatSupportTest {
 
   @Test
   public void findAllSuccess() {
-    // On supprime lambda
-    try {
-      refFormatSupport.delete("lambda", jobClock.currentCLock());
-    }
-    catch (final UnknownFormatException e) {
-      e.printStackTrace();
-    }
+
     final List<FormatFichier> listRefFormatTrouve = refFormatSupport.findAll();          
     Assert.assertNotNull(listRefFormatTrouve);  
 
@@ -101,14 +154,16 @@ public class ReferentielFormatSupportTest {
   public void createFailureParamObligManquant() {
     try {   
       final FormatFichier refFormat = Utils.getRefFormParamObligManquant();   // idFormat et description
-      refFormatSupport.create(refFormat, jobClock.currentCLock());
+      refFormatSupport.create(refFormat);
 
       Assert.fail("Une exception IllegalArgumentException aurait dû être levée");
     } catch (final IllegalArgumentException ex) {
+      // Assert.assertEquals(FIND_MESSAGE_INCORRECT,
+      // "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, description].",
+      // ex.getMessage());
       Assert.assertEquals(FIND_MESSAGE_INCORRECT,
-                          "La valeur d'un ou plusieurs paramètres obligatoires est nulle ou vide : [idFormat, description].",
+                          "L'identifiant ne peut être null",
                           ex.getMessage());
-
     }
   }
 
@@ -120,12 +175,11 @@ public class ReferentielFormatSupportTest {
     final String idFormat = refFormat.getIdFormat();
     Assert.assertEquals("lambda", idFormat);
 
-    refFormatSupport.create(refFormat, jobClock.currentCLock());
+    refFormatSupport.create(refFormat);
 
     // le referentielFormat lambda a bien été créé.
     // pour le vérifier -> recherche dessus 
     final FormatFichier refFormatTrouve = refFormatSupport.find(idFormat);   
-
     Assert.assertNotNull(refFormatTrouve);
 
     Assert.assertEquals("FIND - Erreur dans l'idFormat.", "lambda", refFormatTrouve.getIdFormat());
@@ -145,14 +199,14 @@ public class ReferentielFormatSupportTest {
       final String idFormat = refFormat.getIdFormat();
       Assert.assertEquals("lambda", idFormat);
 
-      refFormatSupport.create(refFormat, jobClock.currentCLock());
+      refFormatSupport.create(refFormat);
       // le referentielFormat lambda a bien été créé.
       // pour le vérifier -> recherche dessus 
       final FormatFichier refFormatTrouve = refFormatSupport.find(idFormat);   
       Assert.assertNotNull(refFormatTrouve);
 
       // suppression de ce format
-      refFormatSupport.delete(idFormat, jobClock.currentCLock());
+      refFormatSupport.delete(idFormat);
 
       // exception levée car le format n'existe plus.
       refFormatSupport.find(idFormat);
@@ -174,7 +228,7 @@ public class ReferentielFormatSupportTest {
       Assert.assertNull(refFormatNonTrouve);
 
       // suppression de ce format
-      refFormatSupport.delete(idFormat, jobClock.currentCLock());
+      refFormatSupport.delete(idFormat);
       // exception levée car le format n'existe pas.
 
     } catch (final UnknownFormatException ex) {

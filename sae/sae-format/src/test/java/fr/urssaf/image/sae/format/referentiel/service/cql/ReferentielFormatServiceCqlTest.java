@@ -1,20 +1,17 @@
-package fr.urssaf.image.sae.format.referentiel.service;
+package fr.urssaf.image.sae.format.referentiel.service.cql;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
-import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
+import fr.urssaf.image.sae.format.referentiel.service.ReferentielFormatService;
+import fr.urssaf.image.sae.format.utils.AbstractReferentielFormatCqlTest;
 import fr.urssaf.image.sae.format.utils.Utils;
 import junit.framework.Assert;
 
@@ -24,21 +21,13 @@ import junit.framework.Assert;
  * 
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })
-public class ReferentielFormatServiceTest {
+// @ContextConfiguration(locations = { "/applicationContext-sae-format-test.xml" })
+public class ReferentielFormatServiceCqlTest extends AbstractReferentielFormatCqlTest {
 
   @Autowired
   private ReferentielFormatService refFormatService;
 
   private static final String ERREUR_FIND_MESSAGE = "FIND - Erreur : Le message de l'exception est incorrect";
-
-  @Before
-  public void setup() throws Exception {
-
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_REFERENTIEL_FORMAT, ModeGestionAPI.MODE_API.HECTOR);
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
-  }
 
   @Test
   public void getFormatSuccess() throws ReferentielRuntimeException,
