@@ -372,8 +372,8 @@ public final class MajLotServiceImpl implements MajLotService {
 
     } else if (CASSANDRA_DFCE_190700.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
-      updateCassandra190700(CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation));
-	} else if () {
+      updateCassandra190700();
+	} else if (CASSANDRA_DFCE_200200.equalsIgnoreCase(nomOperation)) {
       // Update keyspace SAE
       updateCassandra200200();
     }else {
