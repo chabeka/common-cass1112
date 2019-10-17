@@ -110,7 +110,7 @@ public final class MajLotServiceImpl implements MajLotService {
   
   public static final String CASSANDRA_DFCE_190700 = "CASSANDRA_DFCE_190700";
   
-  public static final String CASSANDRA_DFCE_190700 = "CASSANDRA_DFCE_200200";
+  public static final String CASSANDRA_DFCE_200200 = "CASSANDRA_DFCE_200200";
 
   public static final String META_SEPA = "META_SEPA";
 
