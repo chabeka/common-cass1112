@@ -530,7 +530,19 @@ sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logbac
 19-1) Lot 190700SAE
 Met la base Cassandra du SAE en version 31 :
 
-- Ajout de la m�tadonn�e DateLimite
+- Ajout de la métadonnée DateLimite
 
 sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_190700
+
+
+// ------------------------------------------
+// 19) Lot 200200SAE
+// ------------------------------------------
+
+19-1) Lot 200200SAE
+Met la base Cassandra du SAE en version 32 :
+
+- Ajout des métadonnées CodeCaisseTI et CodeServiceContentieuxTI
+
+sudo java -Dlogback.configurationFile=c:/hawai/data/sae/sae-lotinstallmaj/logback-sae-lotinstallmaj.xml -jar c:/hawai/data/sae/sae-lotinstallmaj/sae-lotinstallmaj.jar c:/hawai/data/sae/sae-config.properties CASSANDRA_DFCE_200200
 

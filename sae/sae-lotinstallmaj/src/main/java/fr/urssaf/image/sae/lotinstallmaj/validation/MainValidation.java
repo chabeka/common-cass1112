@@ -295,7 +295,9 @@ public class MainValidation {
       if (MajLotServiceImpl.CASSANDRA_DFCE_190700
               .equalsIgnoreCase(nomOperation))
            return;
-                 
+      if (MajLotServiceImpl.CASSANDRA_DFCE_200200
+              .equalsIgnoreCase(nomOperation))
+           return;                 
     // CAS Nouvelle version de la DFCE 2.3.1 avec les scripts cql
     
     if (OperationCQL.DFCE_192_TO_200_SCHEMA.getNomOp()
