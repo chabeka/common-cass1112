@@ -24,8 +24,8 @@ import fr.urssaf.image.sae.commons.utils.Row;
 import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.facade.SaeMetadataSupportFacade;
-import fr.urssaf.image.sae.metadata.test.utils.MetadataUtils;
 import fr.urssaf.image.sae.metadata.utils.Constantes;
+import fr.urssaf.image.sae.metadata.utils.MetadataUtils;
 
 /**
  * Classe abstraite (ne peut être instanciée) pour gérer l'implentation commune des tests

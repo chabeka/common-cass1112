@@ -5,11 +5,15 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
-import fr.urssaf.image.sae.metadata.control.services.impl.cql.AbstractMetadataControlCqlTest;
 import fr.urssaf.image.sae.metadata.test.constants.Constants;
 import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
 
@@ -17,28 +21,14 @@ import fr.urssaf.image.sae.metadata.test.dataprovider.MetadataDataProviderUtils;
  * Cette classe permet de tester le service
  * {@link MetadataControlServices#checkMetadataValueTypeAndFormat(UntypedDocument)}
  */
-/*
- * @RunWith(SpringJUnit4ClassRunner.class)
- * @ContextConfiguration(locations = { "/applicationContext-sae-metadata-test.xml" })
- */
-public class TypeAndFormatControlServicesImplTest extends AbstractMetadataControlCqlTest {
 
-  /*
-   * @Test
-   * public void init() {
-   * try {
-   * if (server.isCassandraStarted()) {
-   * server.resetData();
-   * }
-   * Assert.assertTrue(true);
-   * }
-   * catch (final Exception e) {
-   * e.printStackTrace();
-   * }
-   * }
-   */
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"/applicationContext-sae-metadata-test.xml"})
 
-
+public class TypeAndFormatControlServicesImplTest {
+  @Autowired
+  @Qualifier("metadataControlServices")
+  protected MetadataControlServices controlService;
 
   /**
    * Fournit des données pour valider la méthode

@@ -27,8 +27,8 @@ import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.metadata.control.services.MetadataControlServices;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.facade.SaeMetadataSupportFacade;
-import fr.urssaf.image.sae.metadata.test.utils.MetadataUtils;
 import fr.urssaf.image.sae.metadata.utils.Constantes;
+import fr.urssaf.image.sae.metadata.utils.MetadataUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.utils.TraceDestinataireCqlUtils;
@@ -65,6 +65,7 @@ public abstract class AbstractMetadataControlCqlTest {
   public static void init() {
     init = false;
   }
+
 
   @Before
   public void setup() throws Exception {

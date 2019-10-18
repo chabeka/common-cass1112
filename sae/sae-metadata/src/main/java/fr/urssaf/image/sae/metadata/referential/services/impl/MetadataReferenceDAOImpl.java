@@ -340,7 +340,7 @@ public class MetadataReferenceDAOImpl implements MetadataReferenceDAO {
    public final Map<String, MetadataReference> getTransferableMetadataReferenceByShortCode()
          throws ReferentialException {
       final Map<String, MetadataReference> transMetas = new HashMap<>();
-      final Map<String, MetadataReference> referentiel = this.metadataReference.getUnchecked(MetaType.ALL_METADATAS);
+      final Map<String, MetadataReference> referentiel = metadataReference.getUnchecked(MetaType.ALL_METADATAS);
       for (final Map.Entry<String, MetadataReference> metaData : Utils.nullSafeMap(referentiel).entrySet()) {
          if (metaData.getValue().getTransferable()) {
             transMetas.put(metaData.getValue().getShortCode(), metaData.getValue());

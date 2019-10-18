@@ -1,8 +1,9 @@
 /**
  *   (AC75095351) 
  */
-package fr.urssaf.image.sae.metadata.test.utils;
+package fr.urssaf.image.sae.metadata.utils;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -93,7 +94,7 @@ public class MetadataUtils {
     if (map.get("length") != null) {
       metadataReference.setLength(Integer.parseInt(map.get("length")));
     } else {
-      metadataReference.setLength(0);
+      metadataReference.setLength(-1);
     }
     if (map.get("pattern") != null) {
       metadataReference.setPattern(map.get("pattern"));
@@ -167,5 +168,12 @@ public class MetadataUtils {
     }
 
     return metadataReference;
+  }
+
+  static public <T> List<MetadataReference> getMetadataFromFile(final Class<T> className) {
+    final URL url = className.getResource("/cassandra-local-dataset-sae-metadonnees.xml");
+    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "Metadata");
+
+    return convertRowsToMetadata(list);
   }
 }

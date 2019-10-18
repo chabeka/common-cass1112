@@ -12,21 +12,21 @@ import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
  */
 @Component
 public class UntypedMetadataValueLengthRule extends
-		AbstractLeafRule<UntypedMetadata, MetadataReference> {
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("PMD.DataflowAnomalyAnalysis")
-	@Override
-	public final boolean isSatisfiedBy(final UntypedMetadata uMetadata,
-			final MetadataReference metadataReference) {
-		boolean result = true;
-		final int length = metadataReference.getLength();
-		final String value = String.valueOf(uMetadata.getValue());
-		if ((length != -1)
-				&& (StringUtils.isNotEmpty(value) && value.trim().length() > length)) {
-			result = false;
-		}
-		return result;
-	}
+AbstractLeafRule<UntypedMetadata, MetadataReference> {
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings("PMD.DataflowAnomalyAnalysis")
+  @Override
+  public final boolean isSatisfiedBy(final UntypedMetadata uMetadata,
+                                     final MetadataReference metadataReference) {
+    boolean result = true;
+    final int length = metadataReference.getLength();
+    final String value = String.valueOf(uMetadata.getValue());
+    if (length != -1
+        && StringUtils.isNotEmpty(value) && value.trim().length() > length) {
+      result = false;
+    }
+    return result;
+  }
 }
