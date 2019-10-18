@@ -99,6 +99,7 @@ public class MajRndServiceTest {
     logger.detachAppender(logAppender);
   }
 
+
   @Test
   public void testLancer() throws Exception {
 
@@ -175,7 +176,7 @@ public class MajRndServiceTest {
             rndRecuperationService.getListeRnd(EasyMock
                                                .anyObject(String.class))).andReturn(listeTypeDoc)
     .anyTimes();
-
+    // final List<TypeDocument> listeTypeDocTest = rndRecuperationService.getListeRnd("11.5");
     // Le 1er document sera déjà dans le RND du SAE mais avec la propriété
     // sur la durée de conservation différente, il sera donc ajouté (écrase)
     final TypeDocument typeDoc1bis = new TypeDocument();

@@ -6,10 +6,14 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -21,11 +25,14 @@ import fr.urssaf.image.sae.rnd.exception.MajRndException;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
+import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-rnd-test.xml" })
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class MajRndExceptionServiceTest {
 
   @Autowired
@@ -47,24 +54,38 @@ public class MajRndExceptionServiceTest {
 
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
+    /*
+     * try {
+     * server.resetData();
+     * }
+     * catch (final Exception e) {
+     * // TODO Auto-generated catch block
+     * e.printStackTrace();
+     * }
+     * logger.detachAppender(logAppender);
+     */
+    EasyMock.resetToNice(rndRecuperationService);
 
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
-
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
     logger.addAppender(logAppender);
+    ModeAPIRndUtils.setAllRndModeAPIThrift();
+
+    // EasyMock.reset(rndRecuperationService);
 
   }
 
   @After
   public void after() throws Exception {
-    EasyMock.reset(rndRecuperationService);
+
     // server.resetData(true, MODE_API.HECTOR);
     server.resetData();
     logger.detachAppender(logAppender);
+    EasyMock.reset(rndRecuperationService);
   }
 
   @Test
-  public void testLancerSaeBddRuntimeException() throws Exception {
+  public void c_testLancerSaeBddRuntimeException() throws Exception {
     try {
       // On lance la mise à jour alors que le paramètre de version n'existe
       // pas.
@@ -80,7 +101,7 @@ public class MajRndExceptionServiceTest {
   }
 
   @Test
-  public void testLancerRndRecuperationException() throws Exception {
+  public void a_testLancerRndRecuperationException() throws Exception {
 
     final VersionRnd version = new VersionRnd();
     version.setDateMiseAJour(new Date());
@@ -91,7 +112,7 @@ public class MajRndExceptionServiceTest {
     EasyMock.expect(rndRecuperationService.getVersionCourante())
     .andThrow(
               new RndRecuperationException(
-                                           "Exception récupération version ADRN")).anyTimes();
+                  "Exception récupération version ADRN")).anyTimes();
 
     EasyMock.replay(rndRecuperationService);
     try {
@@ -107,15 +128,16 @@ public class MajRndExceptionServiceTest {
   }
 
   @Test
-  public void testLancerRndRecuperationException2() throws Exception {
-
+  public void b_testLancerRndRecuperationException2() throws Exception {
+    // server.resetData();
     final VersionRnd version = new VersionRnd();
     version.setDateMiseAJour(new Date());
     version.setVersionEnCours("11.4");
     saeBddSupport.updateVersionRnd(version);
 
-    EasyMock.expect(rndRecuperationService.getVersionCourante()).andReturn(
-                                                                           "11.5").anyTimes();
+    EasyMock.expect(rndRecuperationService.getVersionCourante())
+    .andReturn("11.5")
+    .anyTimes();
 
     // Exception lors de la récupération du RND dans l'ADRN
     EasyMock.expect(

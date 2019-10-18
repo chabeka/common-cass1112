@@ -6,7 +6,6 @@ import java.util.TreeMap;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
 import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
+import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -37,7 +37,7 @@ public class MajCorrespondancesServiceTest {
 
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
-
+    ModeAPIRndUtils.setAllRndModeAPIThrift();
     final Map<String, String> listeCorrespondances = new TreeMap<>();
     listeCorrespondances.put("1.1.1.1.1", "2.2.2.2.2");
     saeBddSupport.updateCorrespondances(listeCorrespondances, "11.4");
@@ -51,7 +51,7 @@ public class MajCorrespondancesServiceTest {
     server.resetData();
   }
 
-  @Ignore
+  // @Ignore
   @Test
   public void testLancer() throws Exception {
     majCorrespondancesService.lancer();

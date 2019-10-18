@@ -113,4 +113,17 @@ public class RndSupportFacadeTest {
     Assert.assertEquals(typeDocumentFacade, typeDocumentCql);
   }
 
+  @Test
+  public void zzz() {
+    try {
+      if (server.isCassandraStarted()) {
+        server.resetData();
+      }
+      Assert.assertTrue(true);
+    }
+    catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+
 }
