@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,7 @@ import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.model.SaeDroits;
 import fr.urssaf.image.sae.droit.model.SaePrmd;
@@ -46,140 +48,145 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAEDocumentExistantServiceTest {
 
-   @Autowired
-   private SAEDocumentExistantService documentExistant;
+  @Autowired
+  private SAEDocumentExistantService documentExistant;
 
-   @Autowired
-   @Qualifier("SAEServiceTestProvider")
-   private SAEServiceTestProvider testProvider;
+  @Autowired
+  @Qualifier("SAEServiceTestProvider")
+  private SAEServiceTestProvider testProvider;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private ParametersService parametersService;
+  @Autowired
+  private ParametersService parametersService;
 
-   @Autowired
-   private RndSupport rndSupport;
+  @Autowired
+  private RndSupport rndSupport;
 
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   private UUID uuid;
+  private UUID uuid;
 
-   @Before
-   public void before() throws Exception {
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-      // initialisation de l'uuid de l'archive
-      uuid = null;
+  @Before
+  public void before() throws Exception {
 
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+    // initialisation de l'uuid de l'archive
+    uuid = null;
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_documentExistant" };
-      saePrmds.add(saePrmd);
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      saeDroits.put("documentExistant", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_documentExistant" };
+    saePrmds.add(saePrmd);
 
-      // Paramétrage du RND
+    saeDroits.put("documentExistant", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
 
-      server.resetData(true, MODE_API.HECTOR);
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.2");
+    // Paramétrage du RND
 
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("2.3.1.1.12");
-      typeDocCree.setCodeActivite("3");
-      typeDocCree.setCodeFonction("2");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+    server.resetData(true, MODE_API.HECTOR);
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.2");
 
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
-   }
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("2.3.1.1.12");
+    typeDocCree.setCodeActivite("3");
+    typeDocCree.setCodeFonction("2");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("ATTESTATION DE VIGILANCE");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-   @After
-   public void after() throws Exception {
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+  }
 
-      // suppression de l'insertion
-      if (uuid != null) {
+  @After
+  public void after() throws Exception {
 
-         testProvider.deleteDocument(uuid);
-      }
+    // suppression de l'insertion
+    if (uuid != null) {
 
-      // on vide le contexte de sécurité
-      AuthenticationContext.setAuthenticationToken(null);
+      testProvider.deleteDocument(uuid);
+    }
 
-      server.resetData(true, MODE_API.HECTOR);
-   }
+    // on vide le contexte de sécurité
+    AuthenticationContext.setAuthenticationToken(null);
 
-   private UUID capture() throws IOException, ConnectionServiceEx,
-         ParseException {
-      File srcFile = new File(
-            "src/test/resources/doc/attestation_consultation.pdf");
+    server.resetData(true, MODE_API.HECTOR);
+  }
 
-      byte[] content = FileUtils.readFileToByteArray(srcFile);
+  private UUID capture() throws IOException, ConnectionServiceEx,
+  ParseException {
+    final File srcFile = new File(
+        "src/test/resources/doc/attestation_consultation.pdf");
 
-      String[] parsePatterns = new String[] { "yyyy-MM-dd" };
-      Map<String, Object> metadatas = new HashMap<String, Object>();
+    final byte[] content = FileUtils.readFileToByteArray(srcFile);
 
-      metadatas.put("apr", "ADELAIDE");
-      metadatas.put("cop", "CER69");
-      metadatas.put("cog", "UR750");
-      metadatas.put("vrn", "11.1");
-      metadatas.put("dom", "2");
-      metadatas.put("act", "3");
-      metadatas.put("nbp", "2");
-      metadatas.put("ffi", "fmt/354");
-      metadatas.put("cse", "ATT_PROD_001");
-      metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
-      metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
-      metadatas.put("cot", Boolean.TRUE);
+    final String[] parsePatterns = new String[] { "yyyy-MM-dd" };
+    final Map<String, Object> metadatas = new HashMap<>();
 
-      Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
-      Date dateDebutConservation = DateUtils.parseDate("2013-01-01",
-            parsePatterns);
-      String documentTitle = "attestation_consultation";
-      String documentType = "pdf";
-      String codeRND = "7.7.8.8.1";
-      String title = "Attestation de vigilance";
-      String note = "note du document";
-      return testProvider.captureDocument(content, metadatas, documentTitle,
-            documentType, creationDate, dateDebutConservation, codeRND, title,
-            note);
-   }
+    metadatas.put("apr", "ADELAIDE");
+    metadatas.put("cop", "CER69");
+    metadatas.put("cog", "UR750");
+    metadatas.put("vrn", "11.1");
+    metadatas.put("dom", "2");
+    metadatas.put("act", "3");
+    metadatas.put("nbp", "2");
+    metadatas.put("ffi", "fmt/354");
+    metadatas.put("cse", "ATT_PROD_001");
+    metadatas.put("dre", DateUtils.parseDate("1999-12-30", parsePatterns));
+    metadatas.put("dfc", DateUtils.parseDate("2012-01-01", parsePatterns));
+    metadatas.put("cot", Boolean.TRUE);
 
-   @Test
-   public void documentExistant__true_success() throws ConnectionServiceEx,
-         SearchingServiceEx, IOException, ParseException {
-      uuid = capture();
-      boolean res = documentExistant.documentExistant(uuid);
-      assertEquals("Le document existe donc renvoie true", true, res);
+    final Date creationDate = DateUtils.parseDate("2012-01-01", parsePatterns);
+    final Date dateDebutConservation = DateUtils.parseDate("2013-01-01",
+                                                           parsePatterns);
+    final String documentTitle = "attestation_consultation";
+    final String documentType = "pdf";
+    final String codeRND = "7.7.8.8.1";
+    final String title = "Attestation de vigilance";
+    final String note = "note du document";
+    return testProvider.captureDocument(content, metadatas, documentTitle,
+                                        documentType, creationDate, dateDebutConservation, codeRND, title,
+                                        note);
+  }
 
-   }
+  @Test
+  public void documentExistant__true_success() throws ConnectionServiceEx,
+  SearchingServiceEx, IOException, ParseException {
+    uuid = capture();
+    final boolean res = documentExistant.documentExistant(uuid);
+    assertEquals("Le document existe donc renvoie true", true, res);
 
-   @Test
-   public void documentExistant_false_success() throws ConnectionServiceEx,
-         SearchingServiceEx {
-      uuid = UUID.fromString("C675CED1-6ACE-463E-BA58-725A103A320B");
-      boolean res = documentExistant.documentExistant(uuid);
-      assertEquals("Le document n'existe pas donc renvoie false", false, res);
-      uuid = null;
+  }
 
-   }
+  @Test
+  public void documentExistant_false_success() throws ConnectionServiceEx,
+  SearchingServiceEx {
+    uuid = UUID.fromString("C675CED1-6ACE-463E-BA58-725A103A320B");
+    final boolean res = documentExistant.documentExistant(uuid);
+    assertEquals("Le document n'existe pas donc renvoie false", false, res);
+    uuid = null;
+
+  }
 }

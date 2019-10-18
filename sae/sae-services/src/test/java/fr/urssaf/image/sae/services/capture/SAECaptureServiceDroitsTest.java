@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -67,132 +69,137 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAECaptureServiceDroitsTest {
 
-   @Autowired
-   private EcdeTestTools ecdeTestTools;
+  @Autowired
+  private EcdeTestTools ecdeTestTools;
 
-   private static final Logger LOG = LoggerFactory
-         .getLogger(SAECaptureServiceDroitsTest.class);
+  private static final Logger LOG = LoggerFactory
+      .getLogger(SAECaptureServiceDroitsTest.class);
 
-   @Autowired
-   private SAECaptureService service;
+  @Autowired
+  private SAECaptureService service;
 
-   @Autowired
-   @Qualifier("SAEServiceTestProvider")
-   private SAEServiceTestProvider testProvider;
+  @Autowired
+  @Qualifier("SAEServiceTestProvider")
+  private SAEServiceTestProvider testProvider;
 
-   private UUID uuid;
+  private UUID uuid;
 
-   private EcdeTestDocument ecde;
-   
-   private File fileDoc;
+  private EcdeTestDocument ecde;
 
-   @Before
-   public void before() {
+  private File fileDoc;
 
-      // initialisation de l'uuid de l'archive
-      uuid = null;
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+  @Before
+  public void before() {
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      Map<String, List<String>> metadata = new HashMap<String, List<String>>();
-      metadata.put("CodeOrganismeGestionnaire", Arrays
-            .asList(new String[] { "UR690" }));
-      prmd.setMetadata(metadata);
-      prmd.setCode("CER75");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_archivage_unitaire" };
-      saePrmds.add(saePrmd);
+    // initialisation de l'uuid de l'archive
+    uuid = null;
 
-      saeDroits.put("archivage_unitaire", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
-   }
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-   @After
-   public void after() throws ConnectionServiceEx, DeletionServiceEx, IOException {
-      // suppression de l'insertion
-      if (uuid != null) {
-         testProvider.deleteDocument(uuid);
-      }
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    final Map<String, List<String>> metadata = new HashMap<>();
+    metadata.put("CodeOrganismeGestionnaire", Arrays
+                 .asList(new String[] { "UR690" }));
+    prmd.setMetadata(metadata);
+    prmd.setCode("CER75");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_archivage_unitaire" };
+    saePrmds.add(saePrmd);
 
-      AuthenticationContext.setAuthenticationToken(null);
-      
-      if (fileDoc != null) {
-         // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
-         fileDoc.delete();
-      }
-      
-      if (ecde != null) {
-         // supprime le repertoire ecde
-         ecdeTestTools.cleanEcdeTestDocument(ecde);
-      }
-   }
+    saeDroits.put("archivage_unitaire", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
+  }
 
-   @Test(expected = AccessDeniedException.class)
-   public void captureAccessDenied() throws SAECaptureServiceEx,
-         ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
-         CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
-         ValidationExceptionInvalidFile, UnknownFormatException, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
-         CaptureExistingUuuidException {
+  @After
+  public void after() throws ConnectionServiceEx, DeletionServiceEx, IOException {
+    // suppression de l'insertion
+    if (uuid != null) {
+      testProvider.deleteDocument(uuid);
+    }
 
-      ecde = ecdeTestTools
-            .buildEcdeTestDocument("attestation_consultation.pdf");
+    AuthenticationContext.setAuthenticationToken(null);
 
-      File repertoireEcde = ecde.getRepEcdeDocuments();
-      URI urlEcdeDocument = ecde.getUrlEcdeDocument();
+    if (fileDoc != null) {
+      // supprime le fichier attestation_consultation.pdf sur le repertoire de l'ecde
+      fileDoc.delete();
+    }
 
-      // copie le fichier attestation_consultation.pdf
-      // dans le repertoire de l'ecde
-      LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
-            + repertoireEcde.getAbsoluteFile());
-      fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
-      ClassPathResource resDoc = new ClassPathResource(
-            "doc/attestation_consultation.pdf");
-      FileOutputStream fos = new FileOutputStream(fileDoc);
-      IOUtils.copy(resDoc.getInputStream(), fos);
-      resDoc.getInputStream().close();
-      fos.close();
+    if (ecde != null) {
+      // supprime le repertoire ecde
+      ecdeTestTools.cleanEcdeTestDocument(ecde);
+    }
+  }
 
-      File srcFile = new File(
-            "src/test/resources/doc/attestation_consultation.pdf");
+  @Test(expected = AccessDeniedException.class)
+  public void captureAccessDenied() throws SAECaptureServiceEx,
+  ReferentialRndException, UnknownCodeRndEx, RequiredStorageMetadataEx,
+  InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+  DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+  RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+  UnknownHashCodeEx, IOException, CaptureBadEcdeUrlEx,
+  CaptureEcdeUrlFileNotFoundEx, MetadataValueNotInDictionaryEx,
+  ValidationExceptionInvalidFile, UnknownFormatException, 
+  UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+  CaptureExistingUuuidException {
 
-      List<UntypedMetadata> metadatas = new ArrayList<UntypedMetadata>();
+    ecde = ecdeTestTools
+        .buildEcdeTestDocument("attestation_consultation.pdf");
 
-      // liste des métadonnées obligatoires
-      metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
-      metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
-      metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
-      metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
-      metadatas.add(new UntypedMetadata("NbPages", "2"));
-      metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
-      metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
-      String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
-      metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
-      metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
-      metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+    final File repertoireEcde = ecde.getRepEcdeDocuments();
+    final URI urlEcdeDocument = ecde.getUrlEcdeDocument();
 
-      // liste des métadonnées non obligatoires
-      metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
-      metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+    // copie le fichier attestation_consultation.pdf
+    // dans le repertoire de l'ecde
+    LOG.debug("CAPTURE UNITAIRE ECDE TEMP: "
+        + repertoireEcde.getAbsoluteFile());
+    fileDoc = new File(repertoireEcde, "attestation_consultation.pdf");
+    final ClassPathResource resDoc = new ClassPathResource(
+        "doc/attestation_consultation.pdf");
+    final FileOutputStream fos = new FileOutputStream(fileDoc);
+    IOUtils.copy(resDoc.getInputStream(), fos);
+    resDoc.getInputStream().close();
+    fos.close();
 
-      uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+    final File srcFile = new File(
+                                  "src/test/resources/doc/attestation_consultation.pdf");
 
-      Assert.fail("exception attendue");
-   }
+    final List<UntypedMetadata> metadatas = new ArrayList<>();
+
+    // liste des métadonnées obligatoires
+    metadatas.add(new UntypedMetadata("ApplicationProductrice", "ADELAIDE"));
+    metadatas.add(new UntypedMetadata("CodeOrganismeProprietaire", "CER69"));
+    metadatas.add(new UntypedMetadata("CodeOrganismeGestionnaire", "UR750"));
+    metadatas.add(new UntypedMetadata("FormatFichier", "fmt/1354"));
+    metadatas.add(new UntypedMetadata("NbPages", "2"));
+    metadatas.add(new UntypedMetadata("DateCreation", "2012-01-01"));
+    metadatas.add(new UntypedMetadata("TypeHash", "SHA-1"));
+    final String hash = DigestUtils.shaHex(new FileInputStream(srcFile));
+    metadatas.add(new UntypedMetadata("Hash", StringUtils.upperCase(hash)));
+    metadatas.add(new UntypedMetadata("CodeRND", "2.3.1.1.12"));
+    metadatas.add(new UntypedMetadata("Titre", "Attestation de vigilance"));
+
+    // liste des métadonnées non obligatoires
+    metadatas.add(new UntypedMetadata("DateReception", "1999-11-25"));
+    metadatas.add(new UntypedMetadata("DateDebutConservation", "2011-09-02"));
+
+    uuid = service.capture(metadatas, urlEcdeDocument).getIdDoc();
+
+    Assert.fail("exception attendue");
+  }
 
 }

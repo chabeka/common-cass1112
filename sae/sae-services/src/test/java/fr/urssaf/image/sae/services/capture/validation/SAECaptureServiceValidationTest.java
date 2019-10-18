@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
@@ -44,133 +45,133 @@ import fr.urssaf.image.sae.services.exception.format.validation.ValidationExcept
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAECaptureServiceValidationTest {
 
-   private SAECaptureService service;
+  private SAECaptureService service;
 
-   private static List<UntypedMetadata> metadatas;
+  private static List<UntypedMetadata> metadatas;
 
-   private static URI ecdeURL;
+  private static URI ecdeURL;
 
-   @BeforeClass
-   public static void beforeClass() {
+  @BeforeClass
+  public static void beforeClass() {
 
-      ecdeURL = URI
-            .create("ecde://cer69-ecde.cer69.recouv/DCL001/19991231/3/documents/attestation.pdf");
+    ecdeURL = URI
+        .create("ecde://cer69-ecde.cer69.recouv/DCL001/19991231/3/documents/attestation.pdf");
 
-      metadatas = new ArrayList<UntypedMetadata>();
-      metadatas.add(new UntypedMetadata("test", "test"));
+    metadatas = new ArrayList<>();
+    metadatas.add(new UntypedMetadata("test", "test"));
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
-   }
+  @Before
+  public void before() {
 
-   @Before
-   public void before() {
+    service = new SAECaptureService() {
 
-      service = new SAECaptureService() {
+      @Override
+      public CaptureResult capture(final List<UntypedMetadata> metadatas,
+                                   final URI ecdeURL) {
 
-         @Override
-         public CaptureResult capture(List<UntypedMetadata> metadatas,
-               URI ecdeURL) {
-
-            return null;
-         }
-
-         @Override
-         public CaptureResult captureBinaire(List<UntypedMetadata> metadatas,
-               DataHandler content, String fileName) {
-
-            return null;
-         }
-
-         @Override
-         public CaptureResult captureFichier(List<UntypedMetadata> metadatas,
-               String path) {
-            return null;
-         }
-      };
-   }
-
-   @Test
-   public void capture_success() throws SAECaptureServiceEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, 
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
-
-      try {
-         service.capture(metadatas, ecdeURL);
-
-      } catch (IllegalArgumentException e) {
-         fail("les arguments en entrée doivent être valides");
+        return null;
       }
 
-   }
+      @Override
+      public CaptureResult captureBinaire(final List<UntypedMetadata> metadatas,
+                                          final DataHandler content, final String fileName) {
 
-   @Test
-   public void capture_failure_metadatas_null() throws SAECaptureServiceEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, 
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
-
-      assertCapture_failure_metadatas(service, null);
-      assertCapture_failure_metadatas(service, new ArrayList<UntypedMetadata>());
-
-   }
-
-   private static void assertCapture_failure_metadatas(
-         SAECaptureService service, List<UntypedMetadata> metadatas)
-         throws SAECaptureServiceEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, NotArchivableMetadataEx,
-         ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
-         CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, 
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
-
-      try {
-
-         service.capture(metadatas, ecdeURL);
-
-         fail("l'argument metadatas ne doit pas être renseigné");
-      } catch (IllegalArgumentException e) {
-         assertEquals("message d'exception non attendu",
-               "L'argument 'metadatas' doit être renseigné ou être non null.",
-               e.getMessage());
+        return null;
       }
 
-   }
-
-   @Test
-   public void capture_failure_ecdeUrl_null() throws SAECaptureServiceEx,
-         RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
-         UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
-         EmptyDocumentEx, RequiredArchivableMetadataEx,
-         NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
-         UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
-         MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
-         UnknownFormatException, UnexpectedDomainException, 
-         InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
-
-      try {
-
-         service.capture(metadatas, null);
-
-         fail("l'argument ecdeURL ne doit pas être renseigné");
-      } catch (IllegalArgumentException e) {
-         assertEquals("message d'exception non attendu",
-               "L'argument 'ecdeURL' doit être renseigné ou être non null.", e
-                     .getMessage());
+      @Override
+      public CaptureResult captureFichier(final List<UntypedMetadata> metadatas,
+                                          final String path) {
+        return null;
       }
+    };
+  }
 
-   }
+  @Test
+  public void capture_success() throws SAECaptureServiceEx,
+  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  EmptyDocumentEx, RequiredArchivableMetadataEx,
+  NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+  UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+  MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+  UnknownFormatException, UnexpectedDomainException, 
+  InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+
+    try {
+      service.capture(metadatas, ecdeURL);
+
+    } catch (final IllegalArgumentException e) {
+      fail("les arguments en entrée doivent être valides");
+    }
+
+  }
+
+  @Test
+  public void capture_failure_metadatas_null() throws SAECaptureServiceEx,
+  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  EmptyDocumentEx, RequiredArchivableMetadataEx,
+  NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+  UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+  MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+  UnknownFormatException, UnexpectedDomainException, 
+  InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+
+    assertCapture_failure_metadatas(service, null);
+    assertCapture_failure_metadatas(service, new ArrayList<UntypedMetadata>());
+
+  }
+
+  private static void assertCapture_failure_metadatas(
+                                                      final SAECaptureService service, final List<UntypedMetadata> metadatas)
+                                                          throws SAECaptureServiceEx, RequiredStorageMetadataEx,
+                                                          InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+                                                          DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
+                                                          RequiredArchivableMetadataEx, NotArchivableMetadataEx,
+                                                          ReferentialRndException, UnknownCodeRndEx, UnknownHashCodeEx,
+                                                          CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+                                                          MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+                                                          UnknownFormatException, UnexpectedDomainException, 
+                                                          InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+
+    try {
+
+      service.capture(metadatas, ecdeURL);
+
+      fail("l'argument metadatas ne doit pas être renseigné");
+    } catch (final IllegalArgumentException e) {
+      assertEquals("message d'exception non attendu",
+                   "L'argument 'metadatas' doit être renseigné ou être non null.",
+                   e.getMessage());
+    }
+
+  }
+
+  @Test
+  public void capture_failure_ecdeUrl_null() throws SAECaptureServiceEx,
+  RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
+  UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,
+  EmptyDocumentEx, RequiredArchivableMetadataEx,
+  NotArchivableMetadataEx, ReferentialRndException, UnknownCodeRndEx,
+  UnknownHashCodeEx, CaptureBadEcdeUrlEx, CaptureEcdeUrlFileNotFoundEx,
+  MetadataValueNotInDictionaryEx, ValidationExceptionInvalidFile,
+  UnknownFormatException, UnexpectedDomainException, 
+  InvalidPagmsCombinaisonException, CaptureExistingUuuidException {
+
+    try {
+
+      service.capture(metadatas, null);
+
+      fail("l'argument ecdeURL ne doit pas être renseigné");
+    } catch (final IllegalArgumentException e) {
+      assertEquals("message d'exception non attendu",
+                   "L'argument 'ecdeURL' doit être renseigné ou être non null.", e
+                   .getMessage());
+    }
+
+  }
 
 }

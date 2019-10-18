@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.exception.InvalidPagmsCombinaisonException;
 import fr.urssaf.image.sae.droit.exception.UnexpectedDomainException;
@@ -63,109 +65,113 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })
 public class SAECommonCaptureServiceImplTest {
-   @Autowired
-   @Qualifier("saeCommonCaptureService")
-   SAECommonCaptureService saeCommonCaptureService;
+  @Autowired
+  @Qualifier("saeCommonCaptureService")
+  SAECommonCaptureService saeCommonCaptureService;
 
-   @Autowired
-   private CassandraServerBean server;
-   @Autowired
-   private ParametersService parametersService;
-   @Autowired
-   private RndSupport rndSupport;
-   @Autowired
-   private JobClockSupport jobClockSupport;
+  @Autowired
+  private CassandraServerBean server;
+  @Autowired
+  private ParametersService parametersService;
+  @Autowired
+  private RndSupport rndSupport;
+  @Autowired
+  private JobClockSupport jobClockSupport;
 
-   /**
-    * @return Le service saeCommonCaptureService
-    */
-   public final SAECommonCaptureService getSaeCommonCaptureService() {
-      return saeCommonCaptureService;
-   }
+  @BeforeClass
+  public static void beforeClass() throws IOException {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
+  /**
+   * @return Le service saeCommonCaptureService
+   */
+  public final SAECommonCaptureService getSaeCommonCaptureService() {
+    return saeCommonCaptureService;
+  }
 
-   /**
-    * @param saeCommonCaptureService
-    *           : Le service saeCommonCaptureService.
-    */
-   public final void setSaeCommonCaptureService(
-         SAECommonCaptureService saeCommonCaptureService) {
-      this.saeCommonCaptureService = saeCommonCaptureService;
-   }
+  /**
+   * @param saeCommonCaptureService
+   *           : Le service saeCommonCaptureService.
+   */
+  public final void setSaeCommonCaptureService(
+                                               final SAECommonCaptureService saeCommonCaptureService) {
+    this.saeCommonCaptureService = saeCommonCaptureService;
+  }
 
-   @Before
-   public void init() {
-      // initialisation du contexte de sécurité
-      VIContenuExtrait viExtrait = new VIContenuExtrait();
-      viExtrait.setCodeAppli("TESTS_UNITAIRES");
-      viExtrait.setIdUtilisateur("UTILISATEUR TEST");
+  @Before
+  public void init() {
+    // initialisation du contexte de sécurité
+    final VIContenuExtrait viExtrait = new VIContenuExtrait();
+    viExtrait.setCodeAppli("TESTS_UNITAIRES");
+    viExtrait.setIdUtilisateur("UTILISATEUR TEST");
 
-      SaeDroits saeDroits = new SaeDroits();
-      List<SaePrmd> saePrmds = new ArrayList<SaePrmd>();
-      SaePrmd saePrmd = new SaePrmd();
-      saePrmd.setValues(new HashMap<String, String>());
-      Prmd prmd = new Prmd();
-      prmd.setBean("permitAll");
-      prmd.setCode("default");
-      saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "ROLE_archivage_unitaire" };
-      saePrmds.add(saePrmd);
+    final SaeDroits saeDroits = new SaeDroits();
+    final List<SaePrmd> saePrmds = new ArrayList<>();
+    final SaePrmd saePrmd = new SaePrmd();
+    saePrmd.setValues(new HashMap<String, String>());
+    final Prmd prmd = new Prmd();
+    prmd.setBean("permitAll");
+    prmd.setCode("default");
+    saePrmd.setPrmd(prmd);
+    final String[] roles = new String[] { "ROLE_archivage_unitaire" };
+    saePrmds.add(saePrmd);
 
-      saeDroits.put("archivage_unitaire", saePrmds);
-      viExtrait.setSaeDroits(saeDroits);
-      AuthenticationToken token = AuthenticationFactory.createAuthentication(
-            viExtrait.getIdUtilisateur(), viExtrait, roles);
-      AuthenticationContext.setAuthenticationToken(token);
+    saeDroits.put("archivage_unitaire", saePrmds);
+    viExtrait.setSaeDroits(saeDroits);
+    final AuthenticationToken token = AuthenticationFactory.createAuthentication(
+                                                                                 viExtrait.getIdUtilisateur(), viExtrait, roles);
+    AuthenticationContext.setAuthenticationToken(token);
 
-      // Paramétrage du RND
-      parametersService.setVersionRndDateMaj(new Date());
-      parametersService.setVersionRndNumero("11.4");
+    // Paramétrage du RND
+    parametersService.setVersionRndDateMaj(new Date());
+    parametersService.setVersionRndNumero("11.4");
 
-      TypeDocument typeDocCree = new TypeDocument();
-      typeDocCree.setCloture(false);
-      typeDocCree.setCode("2.3.1.1.12");
-      typeDocCree.setCodeActivite("3");
-      typeDocCree.setCodeFonction("2");
-      typeDocCree.setDureeConservation(1825);
-      typeDocCree.setLibelle("Libellé 2.3.1.1.12");
-      typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
+    final TypeDocument typeDocCree = new TypeDocument();
+    typeDocCree.setCloture(false);
+    typeDocCree.setCode("2.3.1.1.12");
+    typeDocCree.setCodeActivite("3");
+    typeDocCree.setCodeFonction("2");
+    typeDocCree.setDureeConservation(1825);
+    typeDocCree.setLibelle("Libellé 2.3.1.1.12");
+    typeDocCree.setType(TypeCode.ARCHIVABLE_AED);
 
-      rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
+    rndSupport.ajouterRnd(typeDocCree, jobClockSupport.currentCLock());
 
-   }
+  }
 
-   @After
-   public void end() throws Exception {
-      AuthenticationContext.setAuthenticationToken(null);
-      server.resetData(true, MODE_API.HECTOR);
-   }
+  @After
+  public void end() throws Exception {
+    AuthenticationContext.setAuthenticationToken(null);
+    server.resetData(true, MODE_API.HECTOR);
+  }
 
-   /**
-    * Test de la méthode
-    * {@link fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService#buildStorageDocumentForCapture(UntypedDocument)}
-    * .
-    * @throws InvalidPagmsCombinaisonException 
-    * @throws UnexpectedDomainException 
-    * @throws CaptureExistingUuuidException 
-    */
-   @Test
-   public final void buildStorageDocumentForCapture()
-         throws SAECaptureServiceEx, IOException, ParseException,
-         SAEEnrichmentEx, RequiredStorageMetadataEx,
-         InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
-         DuplicatedMetadataEx, NotArchivableMetadataEx,
-         NotSpecifiableMetadataEx, EmptyDocumentEx,
-         RequiredArchivableMetadataEx, MappingFromReferentialException,
-         InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
-         UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
-         UnknownFormatException, ValidationExceptionInvalidFile, 
-         UnexpectedDomainException, InvalidPagmsCombinaisonException, 
-         CaptureExistingUuuidException {
+  /**
+   * Test de la méthode
+   * {@link fr.urssaf.image.sae.services.document.commons.SAECommonCaptureService#buildStorageDocumentForCapture(UntypedDocument)}
+   * .
+   * @throws InvalidPagmsCombinaisonException 
+   * @throws UnexpectedDomainException 
+   * @throws CaptureExistingUuuidException 
+   */
+  @Test
+  public final void buildStorageDocumentForCapture()
+      throws SAECaptureServiceEx, IOException, ParseException,
+      SAEEnrichmentEx, RequiredStorageMetadataEx,
+      InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
+      DuplicatedMetadataEx, NotArchivableMetadataEx,
+      NotSpecifiableMetadataEx, EmptyDocumentEx,
+      RequiredArchivableMetadataEx, MappingFromReferentialException,
+      InvalidSAETypeException, UnknownHashCodeEx, ReferentialRndException,
+      UnknownCodeRndEx, MetadataValueNotInDictionaryEx,
+      UnknownFormatException, ValidationExceptionInvalidFile, 
+      UnexpectedDomainException, InvalidPagmsCombinaisonException, 
+      CaptureExistingUuuidException {
 
-      UntypedDocument untypedDocument = MockFactoryBean
-            .getUntypedDocumentMockData();
-      CaptureResult captureResult = new CaptureResult();
-      saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument,
-            captureResult);
-   }
+    final UntypedDocument untypedDocument = MockFactoryBean
+        .getUntypedDocumentMockData();
+    final CaptureResult captureResult = new CaptureResult();
+    saeCommonCaptureService.buildStorageDocumentForCapture(untypedDocument,
+                                                           captureResult);
+  }
 
 }
