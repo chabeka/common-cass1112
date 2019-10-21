@@ -107,6 +107,22 @@ CREATE TABLE traceregsecuriteindexcql (
     PRIMARY KEY (identifiantindex, timestamp, identifiant)
 );
 
+CREATE TABLE tracejournalevtindexdoccql (
+	identifiantindex text,
+    traceid timeuuid,
+    codeevt text,
+    contexte text,
+    contratservice text,
+    login text,
+    pagms list<text>,
+	timestamp timestamp,
+	infos map<text,text>,
+    PRIMARY KEY (identifiantindex,traceid)
+);
+
+
+
+
 /*
  #################JOB SPRING ######################
 */
