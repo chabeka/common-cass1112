@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.storage.dfce.utils;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -11,7 +12,9 @@ import javax.activation.FileDataSource;
  * Il s'agit d'un FileDataSource, mais dont l'inputStream supporte les méthodes mark/reset
  *
  */
-public class MarkableFileDataSource extends FileDataSource {
+public class MarkableFileDataSource extends FileDataSource implements Closeable, AutoCloseable {
+
+   private MarkableFileInputStream fis;
 
    /**
     * Constructeur
@@ -26,6 +29,19 @@ public class MarkableFileDataSource extends FileDataSource {
     */
    @Override
    public InputStream getInputStream() throws IOException {
-      return new MarkableFileInputStream(new FileInputStream(this.getFile()));
+      if (fis == null) {
+         fis = new MarkableFileInputStream(new FileInputStream(getFile()));
+      }
+      return fis;
+   }
+
+   /**
+    * {@inheritDoc}
+    */
+   @Override
+   public void close() throws IOException {
+      if (fis != null) {
+         fis.realClose();
+      }
    }
 }

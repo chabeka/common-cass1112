@@ -15,13 +15,16 @@
    <logger name="org.apache.zookeeper" level="WARN" />
    <logger name="org.apache.curator" level="WARN" />
    <logger name="net.docubase.toolkit" level="WARN" />
-   
+   <logger name="com.datastax.driver" level="WARN" />
+   <logger name="com.codahale.metrics" level="WARN" />
+   <logger name="io.netty" level="WARN" />
+   <logger name="org.apache.cxf" level="WARN" />
    
    <logger name="fr.urssaf.image.commons.cassandra" level="WARN" />
    <logger name="fr.urssaf.image.commons.zookeeper" level="WARN" />
-   <logger name="fr.urssaf.image.commons.dfce" level="WARN" />
+   <logger name="fr.urssaf.image.commons.dfce" level="DEBUG" />
 
-   <logger name="fr.urssaf.image.sae.storage.dfce" level="WARN" />
+   <logger name="fr.urssaf.image.sae.storage.dfce" level="DEBUG" />
    <logger name="fr.urssaf.image.sae.trace" level="WARN" />
    
 
