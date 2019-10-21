@@ -4,6 +4,7 @@
 package fr.urssaf.image.sae.services;
 
 import java.net.URL;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -25,6 +26,9 @@ import fr.urssaf.image.sae.format.utils.FormatFichierUtils;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.facade.SaeMetadataSupportFacade;
 import fr.urssaf.image.sae.metadata.utils.MetadataUtils;
+import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.utils.TraceDestinataireCqlUtils;
 
 /**
  * Classe abstraite (ne peut être instanciée) pour gérer l'implentation commune des tests
@@ -43,6 +47,9 @@ public abstract class AbstractServiceCqlTest {
 
   @Autowired
   private ReferentielFormatSupportFacade referentielFormatSupportFacade;
+
+  @Autowired
+  TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
   protected static boolean init = false;
 
@@ -78,6 +85,7 @@ public abstract class AbstractServiceCqlTest {
       }
       createAllMetadata();
       createReferentielFormat();
+      createAllTraceDestinataire();
     }
   }
 
@@ -102,6 +110,22 @@ public abstract class AbstractServiceCqlTest {
     final List<FormatFichier> listFormatFichier = FormatFichierUtils.convertRowsToFormatFichier(list);
     for (final FormatFichier formatFichier : listFormatFichier) {
       referentielFormatSupportFacade.create(formatFichier);
+    }
+  }
+
+  /**
+   * Création des données TraceDestinataire pour effectuer les tests des services en Cql
+   */
+  private void createAllTraceDestinataire() {
+    final URL url = this.getClass().getResource("/cassandra-local-dataset-sae-traces.xml");
+    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "TraceDestinataire");
+    // final List<Row> list = DataCqlUtils.deserialize(url.getPath());
+
+    int i = 0;
+    final List<TraceDestinataire> listTraceDestinataire = TraceDestinataireCqlUtils.convertRowsToTraceDestinataires(list);
+    for (final TraceDestinataire traceDestinataire : listTraceDestinataire) {
+      traceDestinataireCqlSupport.create(traceDestinataire, new Date().getTime());
+      i++;
     }
   }
 

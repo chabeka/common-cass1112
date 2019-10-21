@@ -766,6 +766,7 @@ public class SAETransfertServiceImpl extends AbstractSAEServices implements SAET
       if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)
           || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_CQL)) {
         evtSaeCql = journalEvtCqlService.getTraceJournalEvtByIdDoc(idArchive);
+
         return mapper.writeValueAsString(evtSaeCql);
       } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)
           || modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT)) {

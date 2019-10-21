@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.services.AbstractServiceCqlTest;
 import fr.urssaf.image.sae.services.controles.traces.TracesControlesSupport;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
@@ -36,6 +37,9 @@ public class TracesControlesSupportCqlTest extends AbstractServiceCqlTest {
 
   @Autowired
   private RegTechniqueService regTechniqueService;
+
+  @Autowired
+  private TraceDestinataireCqlSupport traceDestinataireCqlSupport;
 
   @BeforeClass
   public static void beforeClass() throws IOException {
@@ -566,4 +570,6 @@ public class TracesControlesSupportCqlTest extends AbstractServiceCqlTest {
                         .getCodeEvt(),
                         TracesControlesSupport.TRACE_CODE_EVT_ERREUR_VALID_FICHIER);
   }
+
+
 }
