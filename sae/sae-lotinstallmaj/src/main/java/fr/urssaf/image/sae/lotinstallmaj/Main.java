@@ -43,7 +43,7 @@ public final class Main {
       String[] argsSpecifiques = (String[]) ArrayUtils.remove(args, 0);
 
       try {
-	      // Démarre l'opération
+	      // Démarre l'opération sur les anciennes commandes
 	      if(OperationCQL.get(nomOperation) == null) {
 	    	  majLotService.demarre(nomOperation, argsSpecifiques);
 	      }
@@ -52,9 +52,10 @@ public final class Main {
 	      // l'opération
 	      MajLotService majLotServicecql = context.getBean("majLotServiceCQLImpl",
 	            MajLotService.class);
-	      // Démarre l'opération
-      
-    	  majLotServicecql.demarre(nomOperation, argsSpecifiques);
+	      // Démarre l'opération sur les nouvelles tables cql
+	      if(OperationCQL.get(nomOperation) != null) {
+	    	  majLotServicecql.demarre(nomOperation, argsSpecifiques);
+	      }
       } catch (Exception e){
     	 
       } finally {
