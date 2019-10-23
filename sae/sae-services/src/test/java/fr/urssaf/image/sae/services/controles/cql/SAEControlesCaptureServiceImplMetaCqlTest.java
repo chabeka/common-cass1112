@@ -9,6 +9,7 @@ import java.util.List;
 import javax.activation.DataHandler;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -31,7 +32,7 @@ import fr.urssaf.image.sae.services.exception.capture.InvalidValueTypeAndFormatM
 import fr.urssaf.image.sae.services.exception.capture.RequiredArchivableMetadataEx;
 import fr.urssaf.image.sae.services.exception.capture.SAECaptureServiceEx;
 import fr.urssaf.image.sae.services.exception.capture.UnknownMetadataEx;
-import junit.framework.Assert;
+
 
 /*@RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-services-test.xml" })*/

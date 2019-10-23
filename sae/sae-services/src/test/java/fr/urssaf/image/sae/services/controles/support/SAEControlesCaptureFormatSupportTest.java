@@ -8,6 +8,7 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apache.commons.io.IOUtils;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +26,7 @@ import fr.urssaf.image.sae.format.exception.UnknownFormatException;
 import fr.urssaf.image.sae.services.controles.model.ControleFormatSucces;
 import fr.urssaf.image.sae.services.exception.format.FormatRuntimeException;
 import fr.urssaf.image.sae.services.exception.format.validation.ValidationExceptionInvalidFile;
-import junit.framework.Assert;
+
 
 /**
  * Tests unitaires de la classe {@link SAEControlesCaptureFormatSupport}

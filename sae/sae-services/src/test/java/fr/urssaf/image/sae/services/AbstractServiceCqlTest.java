@@ -53,21 +53,6 @@ public abstract class AbstractServiceCqlTest {
 
   protected static boolean init = false;
 
-  // private final String cfName = Constantes.CF_METADATA;
-
-  /*
-   * @BeforeClass
-   * public static void init() {
-   * init = false;
-   * }
-   */
-
-  /*
-   * @Before
-   * public void setup() throws Exception {
-   * initMetadata();
-   * }
-   */
 
   /**
    * @throws InterruptedException
@@ -97,10 +82,9 @@ public abstract class AbstractServiceCqlTest {
     final URL url = this.getClass().getResource("/cassandra-local-dataset-sae-metadonnees-services.xml");
     final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "Metadata");
     final List<MetadataReference> listMetaData = MetadataUtils.convertRowsToMetadata(list);
-    int i = 0;
+
     for (final MetadataReference metadataReference : listMetaData) {
       saeMetadataSupportFacade.create(metadataReference);
-      i++;
     }
   }
 
@@ -117,15 +101,13 @@ public abstract class AbstractServiceCqlTest {
    * Création des données TraceDestinataire pour effectuer les tests des services en Cql
    */
   private void createAllTraceDestinataire() {
-    final URL url = this.getClass().getResource("/cassandra-local-dataset-sae-traces.xml");
+    final URL url = this.getClass().getResource("/cassandra-local-dataset-sae-traces-services.xml");
     final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "TraceDestinataire");
     // final List<Row> list = DataCqlUtils.deserialize(url.getPath());
 
-    int i = 0;
     final List<TraceDestinataire> listTraceDestinataire = TraceDestinataireCqlUtils.convertRowsToTraceDestinataires(list);
     for (final TraceDestinataire traceDestinataire : listTraceDestinataire) {
       traceDestinataireCqlSupport.create(traceDestinataire, new Date().getTime());
-      i++;
     }
   }
 
