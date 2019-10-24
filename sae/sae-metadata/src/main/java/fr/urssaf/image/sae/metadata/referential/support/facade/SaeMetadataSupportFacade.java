@@ -9,7 +9,6 @@ import fr.urssaf.image.commons.cassandra.exception.ModeGestionAPIUnkownException
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
-import fr.urssaf.image.sae.metadata.referential.dao.cql.IMetadataDaoCql;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.support.SaeMetadataSupport;
 import fr.urssaf.image.sae.metadata.referential.support.cql.SaeMetadataCqlSupport;
@@ -23,8 +22,6 @@ import fr.urssaf.image.sae.metadata.utils.Constantes;
 @Component
 public class SaeMetadataSupportFacade {
 
-  @Autowired
-  IMetadataDaoCql metadataDaoCql;
 
   private final String cfName = Constantes.CF_METADATA;
 
