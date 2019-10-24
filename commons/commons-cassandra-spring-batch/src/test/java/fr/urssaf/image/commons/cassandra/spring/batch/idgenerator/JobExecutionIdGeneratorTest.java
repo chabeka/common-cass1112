@@ -39,7 +39,7 @@ public class JobExecutionIdGeneratorTest {
 
   @Before
   public void before() throws Exception {
-	server.resetData(true, MODE_API.HECTOR);
+    server.resetData(true, MODE_API.HECTOR);
     init();
   }
 
@@ -56,6 +56,13 @@ public class JobExecutionIdGeneratorTest {
     } catch (final IOException e) {
       e.printStackTrace();
     }
+    try {
+      server.resetData(true, MODE_API.HECTOR);
+    }
+    catch (final Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    } // EC
   }
 
   private void initZookeeperServer() throws Exception {

@@ -55,7 +55,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.createJobInstance(jobName, jobParameters);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.createJobInstance(jobName, jobParameters);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -70,7 +70,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getJobInstance(jobName, jobParameters);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getJobInstance(jobName, jobParameters);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -85,7 +85,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getJobInstance(instanceId);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getJobInstance(instanceId);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -100,7 +100,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getJobInstance(jobExecution);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getJobInstance(jobExecution);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -115,7 +115,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getJobInstances(jobName, start, count);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getJobInstances(jobName, start, count);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -130,7 +130,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getJobNames();
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getJobNames();
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -145,7 +145,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.countJobInstances(name);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.countJobInstances(name);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -169,7 +169,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       jobInstanceDaoCql.reserveJob(instanceId, serverName);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       jobInstanceDaoThrift.reserveJob(instanceId, serverName);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -191,7 +191,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getReservingServer(instanceId);
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getReservingServer(instanceId);
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
@@ -210,7 +210,7 @@ public class CassandraJobInstanceDao implements SearchableJobInstanceDao {
       return jobInstanceDaoCql.getUnreservedJobInstances();
     } else if (ModeGestionAPI.MODE_API.HECTOR.equals(modeApi)) {
       return jobInstanceDaoThrift.getUnreservedJobInstances();
-    } else if (ModeGestionAPI.MODE_API.DUAL_MODE.equals(modeApi)) {
+    } else if (ModeGestionAPI.MODE_API.DUAL_MODE_READ_THRIFT.equals(modeApi)) {
       // Pour exemple
       // Dans le cas d'une lecture aucun intérêt de lire dans les 2 modes et donc dans 2 CF différentes
     }
