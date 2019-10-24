@@ -19,16 +19,19 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
   /**
    * Contexte de l'évenement
    */
+  @Column(name = "contexte")
   private String contexte;
 
   /**
    * Code du contrat de service
    */
+  @Column(name = "contratService")
   private String contratService;
 
   /**
    * Informations supplémentaires de la trace
    */
+  @Column(name = "infos")
   private Map<String, String> infos;
 
   /**
@@ -46,8 +49,8 @@ public class TraceJournalEvtIndexDocCql extends TraceIndex {
    */
   public TraceJournalEvtIndexDocCql(final TraceJournalEvtCql traceJournal) {
     super(traceJournal);
-    this.contexte = traceJournal.getContexte();
-    this.contratService = traceJournal.getContratService();
+    contexte = traceJournal.getContexte();
+    contratService = traceJournal.getContratService();
   }
 
   /**

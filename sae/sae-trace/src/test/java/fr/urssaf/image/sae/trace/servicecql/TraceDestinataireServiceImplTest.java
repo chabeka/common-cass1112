@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.FixMethodOrder;
+import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,14 +24,15 @@ import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.service.TraceDestinaireService;
-import junit.framework.Assert;
 
 /**
  * TODO (AC75095028) Description du type
  */
+
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@ContextConfiguration(locations = {"/applicationContext-sae-trace-test.xml"})
+// @FixMethodOrder(MethodSorters.NAME_ASCENDING)
+
 // @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class TraceDestinataireServiceImplTest {
 
@@ -54,17 +55,9 @@ public class TraceDestinataireServiceImplTest {
 
   private final String cfName = "tracedestinataire";
 
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.clearAndLoad();
-      }
-      Assert.assertTrue(true);
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
+  @Before
+  public void init() throws Exception {
+    server.resetData();
   }
 
   @Test

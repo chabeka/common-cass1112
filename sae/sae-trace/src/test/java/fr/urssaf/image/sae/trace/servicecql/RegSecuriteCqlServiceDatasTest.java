@@ -10,15 +10,10 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegSecuriteCql;
@@ -27,9 +22,9 @@ import fr.urssaf.image.sae.trace.service.RegSecuriteService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
 import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-public class RegSecuriteCqlServiceDatasTest {
+/*@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })*/
+public class RegSecuriteCqlServiceDatasTest extends AbstractServiceCqlTest {
 
   private static final Date DATE = new Date();
 
@@ -65,22 +60,15 @@ public class RegSecuriteCqlServiceDatasTest {
   private RegSecuriteService service;
 
   @Autowired
-  private CassandraServerBean server;
-
-  @Autowired
   private TraceRegSecuriteCqlSupport support;
 
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  @After
-  public void after() throws Exception {
-    server.resetDataOnly();
-  }
 
   @Test
   public void testAucunRetourBorneInferieure() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
@@ -96,7 +84,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testRetourUnSeulElementLimite() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
@@ -116,7 +104,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DATE;
@@ -177,7 +165,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
@@ -214,7 +202,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT, 1);
@@ -241,7 +229,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsTheDayBefore() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
@@ -252,7 +240,7 @@ public class RegSecuriteCqlServiceDatasTest {
 
   @Test
   public void testHasRecords() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE);

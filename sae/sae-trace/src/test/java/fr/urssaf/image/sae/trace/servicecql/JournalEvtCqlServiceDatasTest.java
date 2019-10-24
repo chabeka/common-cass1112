@@ -18,29 +18,23 @@ import java.util.UUID;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceJournalEvtCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceJournalEvtCqlSupport;
 import fr.urssaf.image.sae.trace.service.JournalEvtService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class JournalEvtCqlServiceDatasTest {
+/**
+ * JournalEvtCqlServiceDatasTest hérite du test AbstractServiceCqlTest
+ * les annotations pour le test ne sont pas nécessaires (AC75095351)
+ * *
+ */
+public class JournalEvtCqlServiceDatasTest extends AbstractServiceCqlTest {
 
   private static final Date DATE = new Date();
 
@@ -64,8 +58,6 @@ public class JournalEvtCqlServiceDatasTest {
 
   private static final String CONTEXTE = "contexte";
 
-  private static final String cfName = "tracejournalevt";
-
   private static final Map<String, String> INFOS;
   static {
     INFOS = new HashMap<>();
@@ -75,8 +67,6 @@ public class JournalEvtCqlServiceDatasTest {
   @Autowired
   private JournalEvtService service;
 
-  @Autowired
-  private CassandraServerBean server;
 
   @Autowired
   private TraceJournalEvtCqlSupport support;
@@ -84,27 +74,10 @@ public class JournalEvtCqlServiceDatasTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  @After
-  public void after() throws Exception {
-    server.resetDataOnly();
-  }
 
-  @Test
-  public void init() {
-    try {
-      if (server.isCassandraStarted()) {
-        server.resetData();
-      }
-      Assert.assertTrue(true);
-
-    }
-    catch (final Exception e) {
-      e.printStackTrace();
-    }
-  }
   @Test
   public void testAucunRetourBorneInferieure() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
@@ -120,7 +93,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testRetourUnSeulElementLimite() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
@@ -140,7 +113,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DATE;
@@ -166,7 +139,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
@@ -195,7 +168,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
     final String suffixe = " [DATE]";
@@ -232,7 +205,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT, 1);
@@ -260,7 +233,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsTheDayBefore() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE_JOUR_PRECEDENT);
@@ -271,7 +244,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecords() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTrace(DATE, " [DATE]");
 
     final boolean hasRecords = service.hasRecords(DATE);
@@ -282,7 +255,7 @@ public class JournalEvtCqlServiceDatasTest {
 
   @Test
   public void testHasRecordsAucun() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     final boolean hasRecords = service.hasRecords(DATE);
 
     Assert.assertFalse("il ne pas doit y avoir une trace", hasRecords);
@@ -292,7 +265,7 @@ public class JournalEvtCqlServiceDatasTest {
   @Test
   public void testExport() throws IOException {
 
-    GestionModeApiTest.setModeApiCql(cfName);
+
 
     final Calendar calendar = new GregorianCalendar();
     calendar.set(Calendar.YEAR, 2013);
@@ -378,4 +351,5 @@ public class JournalEvtCqlServiceDatasTest {
 
     support.create(trace);
   }
+
 }

@@ -12,6 +12,7 @@ import java.util.Map;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -58,6 +60,11 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
   private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_TOUTES_INFOS";
 
   private final String cfNameDestinataire = "tracedestinatairecql";
+
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
   @Autowired
   private DispatcheurService service;

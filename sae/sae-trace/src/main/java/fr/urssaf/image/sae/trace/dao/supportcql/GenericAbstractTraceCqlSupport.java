@@ -3,12 +3,10 @@
  */
 package fr.urssaf.image.sae.trace.dao.supportcql;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -27,8 +25,8 @@ import fr.urssaf.image.sae.trace.utils.DateRegUtils;
  */
 public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends TraceIndex> {
 
-  private final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                                                                   "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
+  // private final SimpleDateFormat dateFormat = new SimpleDateFormat(
+  // "yyyy-MM-dd HH'h'mm ss's' SSS'ms'", Locale.FRENCH);
 
   private static final String DATE_FORMAT = "yyyyMMdd";
 
@@ -55,7 +53,6 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    */
   @SuppressWarnings("unchecked")
   public void create(final T trace) {
-
 
     getDao().saveWithMapper(trace);
 
@@ -98,6 +95,7 @@ public abstract class GenericAbstractTraceCqlSupport<T extends Trace, I extends 
    *          date à laquelle supprimer les traces
    * @param clock
    *          horloge de la suppression
+   *           
    * @return le nombre de traces purgées
    */
   @SuppressWarnings("unchecked")

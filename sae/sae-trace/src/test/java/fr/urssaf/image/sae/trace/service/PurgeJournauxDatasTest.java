@@ -19,10 +19,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -78,9 +77,9 @@ public class PurgeJournauxDatasTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  @After
-  public void begin() throws Exception {
-    GestionModeApiUtils.setModeApiThrift(Constantes.CF_PARAMETERS);
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
   }
 
   @After

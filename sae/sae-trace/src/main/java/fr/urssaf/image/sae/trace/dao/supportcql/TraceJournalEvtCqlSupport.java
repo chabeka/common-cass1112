@@ -60,9 +60,9 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
                                    final ITraceJournalEvtIndexDocCqlDao indexDocDao,
                                    final TimeUUIDEtTimestampSupport timeUUIDSupport) {
     super();
-    this.tracejdao = dao;
-    this.indexjDao = indexDao;
-    this.indexjDocDao = indexDocDao;
+    tracejdao = dao;
+    indexjDao = indexDao;
+    indexjDocDao = indexDocDao;
     this.timeUUIDSupport = timeUUIDSupport;
   }
 
@@ -166,16 +166,17 @@ public class TraceJournalEvtCqlSupport extends GenericAbstractTraceCqlSupport<Tr
 
     List<TraceJournalEvtIndexDocCql> traces = null;
     final Iterator<TraceJournalEvtIndexDocCql> iterator = indexjDocDao.IterableFindById(idDoc);
+
     if (iterator.hasNext()) {
-      traces = new ArrayList<TraceJournalEvtIndexDocCql>();
+      traces = new ArrayList<>();
       while (iterator.hasNext()) {
         final TraceJournalEvtIndexDocCql trace = iterator.next();
         traces.add(trace);
       }
     }
     return traces;
-
   }
+
 
   /**
    * Suppression d'index du document

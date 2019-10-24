@@ -20,6 +20,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -30,8 +31,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceJournalEvtSupport;
@@ -73,10 +73,11 @@ public class JournalEvtServiceDatasTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  @After
-  public void begin() throws Exception {
-    GestionModeApiUtils.setModeApiThrift(Constantes.CF_PARAMETERS);
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
   }
+
 
   @After
   public void after() throws Exception {

@@ -2,15 +2,11 @@ package fr.urssaf.image.sae.trace.dao.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 
-import fr.urssaf.image.sae.trace.commons.Constantes;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 
@@ -40,7 +36,7 @@ public class Trace {
    private String contratService;
 
    /** Le ou les PAGM */
-   private List<String> pagms = new ArrayList<String>();
+   private List<String> pagms = new ArrayList<>();
 
    
   /**
@@ -59,7 +55,7 @@ public class Trace {
     *           le timestamp à affecter à la trace
     */
   public Trace(final UUID idTrace, final Date timestamp) {
-      this.identifiant = idTrace;
+      identifiant = idTrace;
       this.timestamp = getDateCopy(timestamp);
    }
 
@@ -77,14 +73,14 @@ public class Trace {
     */
   public Trace(final TraceToCreate trace, final List<String> listInfos,
                final UUID idTrace, final Date timestamp) {
-      this.codeEvt = trace.getCodeEvt();
-      this.contratService = trace.getContrat();
+      codeEvt = trace.getCodeEvt();
+      contratService = trace.getContrat();
       if (CollectionUtils.isNotEmpty(trace.getPagms())) {
-         this.pagms.addAll(trace.getPagms());
+         pagms.addAll(trace.getPagms());
       }
-      this.login = trace.getLogin();
+      login = trace.getLogin();
       this.timestamp =getDateCopy(timestamp);
-      this.identifiant = idTrace;
+      identifiant = idTrace;
 
    }
 
@@ -144,7 +140,7 @@ public class Trace {
     *           code du contrat de service
     */
   public final void setContratService(final String contrat) {
-      this.contratService = contrat;
+      contratService = contrat;
    }
 
    /**

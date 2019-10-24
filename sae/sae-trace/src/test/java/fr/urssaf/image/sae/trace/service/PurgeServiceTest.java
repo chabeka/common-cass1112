@@ -10,6 +10,7 @@ import java.util.UUID;
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,12 +20,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
-import fr.urssaf.image.commons.cassandra.utils.GestionModeApiUtils;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.service.ParametersService;
-import fr.urssaf.image.sae.commons.utils.Constantes;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegExploitation;
@@ -84,17 +83,9 @@ public class PurgeServiceTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-  @After
-  public void begin() throws Exception {
-    final HashMap<String, String> modesApiTest = new HashMap<>();
-    modesApiTest.put(Constantes.CF_TRACE_DESTINATAIRE, "HECTOR");
-    modesApiTest.put(Constantes.CF_TRACE_REG_EXPLOITATION, "HECTOR");
-    modesApiTest.put(Constantes.CF_TRACE_REG_SECURITE, "HECTOR");
-    modesApiTest.put(Constantes.CF_TRACE_REG_TECHNIQUE, "HECTOR");
-    modesApiTest.put(Constantes.CF_PARAMETERS, "HECTOR");
-    ModeGestionAPI.setListeCfsModes(modesApiTest);
-    // A VOIR
-    GestionModeApiUtils.setModeApiThrift(Constantes.CF_PARAMETERS);
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
   }
 
   @After

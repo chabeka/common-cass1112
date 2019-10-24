@@ -57,17 +57,17 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
     this.loggerSupport = loggerSupport;
   }
 
-  public RegTechniqueCqlServiceImpl(final CassandraCQLClientFactory ccf) {
+   public RegTechniqueCqlServiceImpl(CassandraCQLClientFactory ccf) {
 
-    final ITraceRegTechniqueCqlDao dao = new TraceRegTechniqueDaoImpl();
-    // dao.setCcf(ccf);
-    final ITraceRegTechniqueIndexCqlDao indexDao = new TraceRegTechniqueIndexCqlDaoImpl();
-    // indexDao.setCcf(ccf);
-    final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
+	   ITraceRegTechniqueCqlDao dao = new TraceRegTechniqueDaoImpl();
+	   dao.setCcf(ccf);
+	   ITraceRegTechniqueIndexCqlDao indexDao = new TraceRegTechniqueIndexCqlDaoImpl();
+	   indexDao.setCcf(ccf);
+	   TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
 
-    final TraceRegTechniqueCqlSupport support = new TraceRegTechniqueCqlSupport(dao, indexDao, timeUUIDSupport);
+	   TraceRegTechniqueCqlSupport support = new TraceRegTechniqueCqlSupport(dao, indexDao, timeUUIDSupport);
     this.support = support;
-    loggerSupport = new LoggerSupport(); 
+	   this.loggerSupport = new LoggerSupport(); 
   }
 
   /**
@@ -100,7 +100,7 @@ public class RegTechniqueCqlServiceImpl implements RegTechniqueServiceCql {
    */
   @Override
   public TraceRegTechniqueCql lecture(final UUID identifiant) {
-    final Optional<TraceRegTechniqueCql> traceOpt = support.find(identifiant);
+      final Optional<TraceRegTechniqueCql> traceOpt = this.support.find(identifiant);
     return traceOpt.orElse(null);
   }
 }

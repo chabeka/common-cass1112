@@ -10,26 +10,23 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.apache.commons.lang.time.DateUtils;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.modelcql.TraceRegTechniqueCql;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceRegTechniqueCqlSupport;
 import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import fr.urssaf.image.sae.trace.tools.GestionModeApiTest;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
-public class RegTechniqueCqlServiceDatasTest {
+/**
+ * RegTechniqueCqlServiceDatasTest hérite du test AbstractServiceCqlTest
+ * les annotations pour le test ne sont pas nécessaires (AC75095351)
+ * *
+ */
+public class RegTechniqueCqlServiceDatasTest extends AbstractServiceCqlTest {
 
   private static final Date DATE = new Date();
 
@@ -66,8 +63,6 @@ public class RegTechniqueCqlServiceDatasTest {
   @Autowired
   private RegTechniqueService service;
 
-  @Autowired
-  private CassandraServerBean server;
 
   @Autowired
   private TraceRegTechniqueCqlSupport support;
@@ -75,15 +70,9 @@ public class RegTechniqueCqlServiceDatasTest {
   @Autowired
   private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-
-  @After
-  public void after() throws Exception {
-    server.resetDataOnly();
-  }
-
   @Test
   public void testAucunRetourBorneInferieure() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     // on fixe les bornes inférieure à la première trace de la journée
@@ -99,7 +88,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testRetourUnSeulElementLimite() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DateUtils.addDays(DATE, -2);
@@ -119,7 +108,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testRetour3ElementsMemeJour() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DATE;
@@ -144,7 +133,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testRetourTousElements() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final Date dateStart = DateUtils.addSeconds(DATE_JOUR_PRECEDENT, -1);
@@ -173,7 +162,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testGetBean() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DATE);
@@ -215,7 +204,7 @@ public class RegTechniqueCqlServiceDatasTest {
 
   @Test
   public void testSuppression() {
-    GestionModeApiTest.setModeApiCql(cfName);
+
     createTraces();
 
     service.purge(DATE_JOUR_PRECEDENT, 1);

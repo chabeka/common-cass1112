@@ -9,9 +9,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,8 +26,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
 import fr.urssaf.image.sae.trace.support.TimeUUIDEtTimestampSupport;
-import fr.urssaf.image.sae.trace.utils.DateRegUtils;
-import junit.framework.Assert;
+
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -72,7 +71,7 @@ public class TraceDestinataireDaoCqlTest {
 
   @Test(expected = TraceRuntimeException.class)
   public void create_new_trace_with_bad_code() {
-    final List<TraceDestinataire> allTraces = tracesupport.findAll();
+    // final List<TraceDestinataire> allTraces = tracesupport.findAll();
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt("WS_REPRISE_MASSE|KO");
 
@@ -87,7 +86,6 @@ public class TraceDestinataireDaoCqlTest {
   @Test
   public void create_new_trace_and_find_it_with_succes() {
 
-    final List<TraceDestinataire> traces = tracesupport.findAll();
     final String code = "TEST|CREATE";
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt(code);
@@ -125,11 +123,7 @@ public class TraceDestinataireDaoCqlTest {
 
   @Test
   public void create_delete_with_success() {
-    final Date date = DateRegUtils.getDateWithoutTime();
-    final UUID id = timeuuid.buildUUIDFromDate(date);
     final String code = "TEST|DELETE";
-    final String colName = TraceDestinataireEnum.HIST_ARCHIVE.name();
-
     final TraceDestinataire trace = new TraceDestinataire();
     trace.setCodeEvt(code);
 

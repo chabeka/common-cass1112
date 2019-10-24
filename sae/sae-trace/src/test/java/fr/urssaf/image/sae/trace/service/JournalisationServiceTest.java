@@ -22,123 +22,124 @@ import fr.urssaf.image.sae.trace.model.JournalisationType;
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
 public class JournalisationServiceTest {
 
-   private static final String ARG_0 = "{0}";
-   private static final String MESSAGE_OK = "le message d'erreur doit etre correct";
-   private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
-   private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
+  private static final String ARG_0 = "{0}";
+  private static final String MESSAGE_OK = "le message d'erreur doit etre correct";
+  private static final String ILLEGAL_EXPECTED = "Une exception IllegalArgumentException est attendue";
+  private static final String MESSAGE_ERREUR = "l'argument {0} est obligatoire";
 
-   @Autowired
-   private JournalisationService service;
+  @Autowired
+  private JournalisationService service;
 
-   @Test
-   public void testExportTypeObligatoire() {
 
-      try {
-         service.exporterTraces(null, null, null);
-         Assert.fail("IllegalArgumentException attendue");
+  @Test
+  public void testExportTypeObligatoire() {
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "type de journalisation"), exception.getMessage());
+    try {
+      service.exporterTraces(null, null, null);
+      Assert.fail("IllegalArgumentException attendue");
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+                                                          ARG_0, "type de journalisation"), exception.getMessage());
 
-   }
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
 
-   @Test
-   public void testExportRepertoireObligatoire() {
+  }
 
-      try {
-         service.exporterTraces(JournalisationType.JOURNALISATION_EVT, null,
-               null);
-         Assert.fail("IllegalArgumentException attendue");
+  @Test
+  public void testExportRepertoireObligatoire() {
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "repertoire"), exception.getMessage());
+    try {
+      service.exporterTraces(JournalisationType.JOURNALISATION_EVT, null,
+                             null);
+      Assert.fail("IllegalArgumentException attendue");
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+                                                          ARG_0, "repertoire"), exception.getMessage());
 
-   }
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
 
-   @Test
-   public void testExportDateObligatoire() {
+  }
 
-      try {
-         service.exporterTraces(JournalisationType.JOURNALISATION_EVT, "dd",
-               null);
-         Assert.fail("IllegalArgumentException attendue");
+  @Test
+  public void testExportDateObligatoire() {
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "date"), exception.getMessage());
+    try {
+      service.exporterTraces(JournalisationType.JOURNALISATION_EVT, "dd",
+                             null);
+      Assert.fail("IllegalArgumentException attendue");
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+                                                          ARG_0, "date"), exception.getMessage());
 
-   }
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
 
-   @Test
-   public void testExportRepertoireExisteObligatoire() {
+  }
 
-      try {
-         service.exporterTraces(JournalisationType.JOURNALISATION_EVT, "dd",
-               new Date());
-         Assert.fail("IllegalArgumentException attendue");
+  @Test
+  public void testExportRepertoireExisteObligatoire() {
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, "le répertoire n'existe pas",
-               exception.getMessage());
+    try {
+      service.exporterTraces(JournalisationType.JOURNALISATION_EVT, "dd",
+                             new Date());
+      Assert.fail("IllegalArgumentException attendue");
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK, "le répertoire n'existe pas",
+                          exception.getMessage());
 
-   }
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
 
-   @Test
-   public void testExportCheminPasRepertoireObligatoire() throws IOException {
+  }
 
-      File file = File.createTempFile("ecrit", ".tmp");
+  @Test
+  public void testExportCheminPasRepertoireObligatoire() throws IOException {
 
-      try {
-         service.exporterTraces(JournalisationType.JOURNALISATION_EVT, file.getAbsolutePath(),
-               new Date());
-         Assert.fail("IllegalArgumentException attendue");
+    final File file = File.createTempFile("ecrit", ".tmp");
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK,
-               "le chemin spécifié n'est pas un répertoire", exception
-                     .getMessage());
+    try {
+      service.exporterTraces(JournalisationType.JOURNALISATION_EVT, file.getAbsolutePath(),
+                             new Date());
+      Assert.fail("IllegalArgumentException attendue");
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      
-      } finally {
-         FileUtils.deleteQuietly(file);
-      }
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK,
+                          "le chemin spécifié n'est pas un répertoire", exception
+                          .getMessage());
 
-   }
-   
-   @Test
-   public void testRecupererTypeObligatoire() {
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
 
-      try {
-         service.recupererDates(null);
-         Assert.fail("IllegalArgumentException attendue");
+    } finally {
+      FileUtils.deleteQuietly(file);
+    }
 
-      } catch (IllegalArgumentException exception) {
-         Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
-               ARG_0, "type de journalisation"), exception.getMessage());
+  }
 
-      } catch (Exception exception) {
-         Assert.fail(ILLEGAL_EXPECTED);
-      }
+  @Test
+  public void testRecupererTypeObligatoire() {
 
-   }
+    try {
+      service.recupererDates(null);
+      Assert.fail("IllegalArgumentException attendue");
+
+    } catch (final IllegalArgumentException exception) {
+      Assert.assertEquals(MESSAGE_OK, StringUtils.replace(MESSAGE_ERREUR,
+                                                          ARG_0, "type de journalisation"), exception.getMessage());
+
+    } catch (final Exception exception) {
+      Assert.fail(ILLEGAL_EXPECTED);
+    }
+
+  }
 }

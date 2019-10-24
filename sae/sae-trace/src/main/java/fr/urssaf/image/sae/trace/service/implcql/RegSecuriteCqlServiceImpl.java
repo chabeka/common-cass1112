@@ -58,17 +58,17 @@ public class RegSecuriteCqlServiceImpl implements RegSecuriteServiceCql {
    * update du bean dean le context courant de spring avec la nouvelle instance de {@link CassandraCQLClientFactory}
    * @param context
    */
-  public RegSecuriteCqlServiceImpl(final CassandraCQLClientFactory ccf) {
+   public RegSecuriteCqlServiceImpl(final CassandraCQLClientFactory ccf) {
 
-    final ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
-    // dao.setCcf(ccf);
-    final ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
-    // indexDao.setCcf(ccf);
-    final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
+	  final ITraceRegSecuriteCqlDao dao = new TraceRegSecuriteCqlDaoImpl();
+	  dao.setCcf(ccf);
+	  final ITraceRegSecuriteIndexCqlDao indexDao = new TraceRegSecuriteIndexCqlDaoImpl();
+	  indexDao.setCcf(ccf);
+	  final TimeUUIDEtTimestampSupport timeUUIDSupport = new TimeUUIDEtTimestampSupport();
 
-    final TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
+	  final TraceRegSecuriteCqlSupport support = new TraceRegSecuriteCqlSupport(dao, indexDao, timeUUIDSupport);
     this.support = support;
-    loggerSupport = new LoggerSupport();
+      loggerSupport = new LoggerSupport();
   }
 
   /**

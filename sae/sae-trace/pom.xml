@@ -3,14 +3,14 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-trace</artifactId>
-   <version>19.10.0-SNAPSHOT</version>
+   <version>20.04.0-SNAPSHOT</version>
    <packaging>jar</packaging>
    <description>Module de la traçabilité dans le SAE</description>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.10.0-SNAPSHOT</version>
+      <version>20.04.0-SNAPSHOT</version>
    </parent>
 
 	<name>sae-trace</name>
@@ -106,7 +106,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>19.10.0-SNAPSHOT</version>
+         <version>20.04.0-SNAPSHOT</version>
       </dependency>
 
       <!-- Joda Time -->
@@ -204,7 +204,7 @@
 			<version>3.1.1.0</version>
 			<scope>test</scope>
 		</dependency>
-		
+	
 		<!-- dependency>
 			<groupId>org.cassandraunit</groupId>
 			<artifactId>cassandra-unit</artifactId>

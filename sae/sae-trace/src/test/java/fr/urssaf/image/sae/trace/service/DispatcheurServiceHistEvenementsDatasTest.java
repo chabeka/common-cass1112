@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
@@ -68,6 +70,11 @@ public class DispatcheurServiceHistEvenementsDatasTest {
 
   @Autowired
   private TraceDestinataireCqlSupport destCqlSupport;
+
+  @Before
+  public void start() throws Exception {
+    ModeApiAllUtils.setAllModeAPIThrift();
+  }
 
   @Test
   public void testCreationHistoriqueEvtSucces() {
