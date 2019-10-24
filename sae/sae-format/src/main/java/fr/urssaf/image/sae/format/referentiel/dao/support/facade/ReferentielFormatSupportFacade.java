@@ -11,7 +11,6 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
 import fr.urssaf.image.sae.format.exception.UnknownFormatException;
-import fr.urssaf.image.sae.format.referentiel.dao.cql.IReferentielFormatDaoCql;
 import fr.urssaf.image.sae.format.referentiel.dao.support.ReferentielFormatSupport;
 import fr.urssaf.image.sae.format.referentiel.dao.support.cql.ReferentielFormatCqlSupport;
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
@@ -24,8 +23,10 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 @Component
 public class ReferentielFormatSupportFacade {
 
-  @Autowired
-  IReferentielFormatDaoCql formatReferentielDaoCql;
+  /*
+   * @Autowired
+   * IReferentielFormatDaoCql formatReferentielDaoCql;
+   */
 
   private final String cfName = Constantes.CF_REFERENTIEL_FORMAT;
 
