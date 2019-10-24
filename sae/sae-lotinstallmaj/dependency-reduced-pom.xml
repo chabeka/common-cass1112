@@ -3,13 +3,13 @@
   <parent>
     <artifactId>sae</artifactId>
     <groupId>fr.urssaf.image.sae</groupId>
-    <version>19.10.0-SNAPSHOT</version>
+    <version>20.04.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>sae-lotinstallmaj</artifactId>
   <name>sae-lotinstallmaj</name>
-  <version>19.10.0-SNAPSHOT</version>
+  <version>20.04.0-SNAPSHOT</version>
   <build>
     <finalName>${project.name}</finalName>
     <plugins>
@@ -30,15 +30,6 @@
                     <exclude>org/aspectj/**</exclude>
                   </excludes>
                 </filter>
-                <filter>
-                  <artifact>commons-beanutils:commons-beanutils</artifact>
-                  <excludes>
-                    <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-                    <exclude>org/apache/commons/collections/Buffer.class</exclude>
-                    <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-                    <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
-                  </excludes>
-                </filter>
               </filters>
               <transformers>
                 <transformer>
@@ -49,6 +40,9 @@
                 </transformer>
                 <transformer>
                   <resource>META-INF/spring.schemas</resource>
+                </transformer>
+                <transformer>
+                  <resource>META-INF/cxf/bus-extensions.txt</resource>
                 </transformer>
               </transformers>
             </configuration>
