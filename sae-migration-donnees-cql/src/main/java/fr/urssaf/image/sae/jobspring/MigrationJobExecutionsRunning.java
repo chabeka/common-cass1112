@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import com.datastax.driver.core.Row;
 
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionsRunningCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionsRunningDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionsRunningDaoCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.utils.Constante;
 import fr.urssaf.image.sae.IMigration;
 import fr.urssaf.image.sae.jobspring.model.GenericJobSpring;
@@ -31,73 +31,73 @@ import me.prettyprint.hector.api.mutation.Mutator;
 @Component
 public class MigrationJobExecutionsRunning extends MigrationJob implements IMigration {
 
-   private static final Logger LOG = LoggerFactory.getLogger(MigrationJobinstanceToJobExecution.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MigrationJobinstanceToJobExecution.class);
 
-   @Autowired
-   IJobExecutionsRunningDaoCql jobExeToJobR;
+  @Autowired
+  IJobExecutionsRunningDaoCql jobExeToJobR;
 
-   @Override
-   public void migrationFromThriftToCql() {
-      if (LOG.isDebugEnabled()) {
-         LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - DEBUT ");
+  @Override
+  public void migrationFromThriftToCql() {
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - DEBUT ");
+    }
+
+    final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTIONS_RUNNING_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+
+    while (it.hasNext()) {
+      final Row row = (Row) it.next();
+      final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
+      if (!Constante.ALL_JOBS_KEY.equals(key)) {
+        final Long idJobEx = row.getLong("column1");
+        final String value = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+        final JobExecutionsRunningCql jobExes = new JobExecutionsRunningCql();
+        jobExes.setJobExecutionId(idJobEx);
+        jobExes.setJobName(key);
+        jobExes.setValue(value);
+
+        jobExeToJobR.save(jobExes);
       }
 
-      final Iterator<GenericJobSpring> it = genericdao.findAllByCFName(Constante.JOBEXECUTIONS_RUNNING_CFNAME, ccfthrift.getKeyspace().getKeyspaceName());
+    }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - FIN   ");
+    }
+  }
 
-      while (it.hasNext()) {
-         final Row row = (Row) it.next();
-         final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
-         if (!Constante.ALL_JOBS_KEY.equals(key)) {
-            final Long idJobEx = row.getLong("column1");
-            final String value = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
-            final JobExecutionsRunningCql jobExes = new JobExecutionsRunningCql();
-            jobExes.setJobExecutionId(idJobEx);
-            jobExes.setJobName(key);
-            jobExes.setValue(value);
+  @Override
+  public void migrationFromCqlTothrift() {
 
-            jobExeToJobR.save(jobExes);
-         }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - DEBUT ");
+    }
 
-      }
-      if (LOG.isDebugEnabled()) {
-         LOG.debug(" MigrationJobExecutionsRunning - migrationFromThriftToCql - FIN   ");
-      }
-   }
+    final Serializer<String> sSlz = StringSerializer.get();
+    final Serializer<byte[]> bSlz = BytesArraySerializer.get();
+    final Serializer<Long> lSlz = LongSerializer.get();
+    final byte[] empty = new byte[0];
 
-   @Override
-   public void migrationFromCqlTothrift() {
+    final Mutator<byte[]> mutator = HFactory.createMutator(ccfthrift.getKeyspace(), bSlz);
 
-      if (LOG.isDebugEnabled()) {
-         LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - DEBUT ");
-      }
+    final Iterator<JobExecutionsRunningCql> it = jobExeToJobR.findAllWithMapper();
 
-      final Serializer<String> sSlz = StringSerializer.get();
-      final Serializer<byte[]> bSlz = BytesArraySerializer.get();
-      final Serializer<Long> lSlz = LongSerializer.get();
-      final byte[] empty = new byte[0];
+    while (it.hasNext()) {
+      final JobExecutionsRunningCql jobExToJR = it.next();
+      final String jobName = jobExToJR.getJobName();
+      final Long jobExecutionId = jobExToJR.getJobExecutionId();
 
-      final Mutator<byte[]> mutator = HFactory.createMutator(ccfthrift.getKeyspace(), bSlz);
+      mutator.addInsertion(sSlz.toBytes(jobName),
+                           Constante.JOBEXECUTIONS_RUNNING_CFNAME,
+                           HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
+      mutator.addInsertion(sSlz.toBytes(Constante.ALL_JOBS_KEY),
+                           Constante.JOBEXECUTIONS_RUNNING_CFNAME,
+                           HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
+      mutator.execute();
+    }
 
-      final Iterator<JobExecutionsRunningCql> it = jobExeToJobR.findAllWithMapper();
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - FIN   ");
+    }
 
-      while (it.hasNext()) {
-         final JobExecutionsRunningCql jobExToJR = it.next();
-         final String jobName = jobExToJR.getJobName();
-         final Long jobExecutionId = jobExToJR.getJobExecutionId();
-
-         mutator.addInsertion(sSlz.toBytes(jobName),
-                              Constante.JOBEXECUTIONS_RUNNING_CFNAME,
-                              HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
-         mutator.addInsertion(sSlz.toBytes(Constante.ALL_JOBS_KEY),
-                              Constante.JOBEXECUTIONS_RUNNING_CFNAME,
-                              HFactory.createColumn(jobExecutionId, empty, lSlz, bSlz));
-         mutator.execute();
-      }
-
-      if (LOG.isDebugEnabled()) {
-         LOG.debug(" MigrationJobExecutionsRunning - migrationFromCqlTothrift - FIN   ");
-      }
-
-   }
+  }
 
 }

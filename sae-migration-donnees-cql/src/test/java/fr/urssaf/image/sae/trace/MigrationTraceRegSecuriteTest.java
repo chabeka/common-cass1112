@@ -22,7 +22,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegSecuriteIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegSecuriteIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegSecurite;
@@ -44,128 +45,127 @@ import me.prettyprint.hector.api.query.SliceQuery;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class MigrationTraceRegSecuriteTest {
 
-   private static final Date DATE = new Date();
+  private static final Date DATE = new Date();
 
-   int NB_ROWS = 100;
+  int NB_ROWS = 100;
 
-   @Autowired
-   TraceRegSecuriteIndexDao indexDao;
+  @Autowired
+  TraceRegSecuriteIndexDao indexDao;
 
-   @Autowired
-   ITraceRegSecuriteIndexCqlDao indexDaocql;
+  @Autowired
+  ITraceRegSecuriteIndexCqlDao indexDaocql;
 
-   @Autowired
-   private TraceRegSecuriteCqlSupport supportCql;
+  @Autowired
+  private TraceRegSecuriteCqlSupport supportCql;
 
-   @Autowired
-   private TraceRegSecuriteSupport supportThrift;
+  @Autowired
+  private TraceRegSecuriteSupport supportThrift;
 
-   @Autowired
-   MigrationTraceRegSecurite mtracej;
+  @Autowired
+  MigrationTraceRegSecurite mtracej;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+  @Autowired
+  private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   @Autowired
-   private CassandraServerBeanCql server;
+  @Autowired
+  private CassandraServerBean server;
 
-   private static final Map<String, String> INFOSCQL;
-   static {
-      INFOSCQL = new HashMap<String, String>();
-      INFOSCQL.put("KEY", "VALUE");
-   }
+  private static final Map<String, String> INFOSCQL;
+  static {
+    INFOSCQL = new HashMap<>();
+    INFOSCQL.put("KEY", "VALUE");
+  }
 
-   private static final Map<String, Object> INFOSTHRIFT;
-   static {
-      INFOSTHRIFT = new HashMap<String, Object>();
-      INFOSTHRIFT.put("KEY", "VALUE");
-   }
+  private static final Map<String, Object> INFOSTHRIFT;
+  static {
+    INFOSTHRIFT = new HashMap<>();
+    INFOSTHRIFT.put("KEY", "VALUE");
+  }
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
-   }
+  @After
+  public void after() throws Exception {
+    server.resetData(false, MODE_API.DATASTAX);
+  }
+  @Test
+  public void migrationFromThriftToCql() {
+    populateTableThrift();
 
-   @Test
-   public void migrationFromThriftToCql() {
-      populateTableThrift();
+    final int nb = mtracej.migrationFromThriftToCql();
+    Assert.assertEquals(nb, NB_ROWS);
 
-      final int nb = mtracej.migrationFromThriftToCql();
-      Assert.assertEquals(nb, NB_ROWS);
+    // index
+    final int nb_index = mtracej.migrationIndexFromThriftToCql();
+    Assert.assertEquals(100, nb_index);
+  }
 
-      // index
-      final int nb_index = mtracej.migrationIndexFromThriftToCql();
-      Assert.assertEquals(100, nb_index);
-   }
+  @Test
+  public void migrationFromCqlTothrift() {
+    populateTableCql();
 
-   @Test
-   public void migrationFromCqlTothrift() {
-      populateTableCql();
+    final List<TraceRegSecuriteCql> listCql = Lists.newArrayList(supportCql.findAll());
+    Assert.assertEquals(NB_ROWS, listCql.size());
 
-      final List<TraceRegSecuriteCql> listCql = Lists.newArrayList(supportCql.findAll());
-      Assert.assertEquals(NB_ROWS, listCql.size());
+    final int nb = mtracej.migrationFromCqlToThrift();
+    Assert.assertEquals(nb, NB_ROWS);
 
-      final int nb = mtracej.migrationFromCqlToThrift();
-      Assert.assertEquals(nb, NB_ROWS);
+    // index
+    mtracej.migrationIndexFromCqlToThrift();
+    final long nb_key = countRow();
+    Assert.assertEquals(100, nb_key);
+  }
 
-      // index
-      mtracej.migrationIndexFromCqlToThrift();
-      final long nb_key = countRow();
-      Assert.assertEquals(100, nb_key);
-   }
+  // CLASSE UTILITAIRE
 
-   // CLASSE UTILITAIRE
+  public void populateTableCql() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceCql(uuid);
+    }
 
-   public void populateTableCql() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceCql(uuid);
-      }
+  }
 
-   }
+  private void populateTableThrift() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceThrift(uuid);
+    }
+  }
 
-   private void populateTableThrift() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceThrift(uuid);
-      }
-   }
+  private void createTraceCql(final UUID uuid) {
+    final TraceRegSecuriteCql trace = new TraceRegSecuriteCql(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSCQL);
+    trace.setPagms(Arrays.asList("PAGM  + suffixe"));
 
-   private void createTraceCql(final UUID uuid) {
-      final TraceRegSecuriteCql trace = new TraceRegSecuriteCql(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSCQL);
-      trace.setPagms(Arrays.asList("PAGM  + suffixe"));
+    supportCql.create(trace);
+  }
 
-      supportCql.create(trace, new Date().getTime());
-   }
+  private void createTraceThrift(final UUID uuid) {
+    final TraceRegSecurite trace = new TraceRegSecurite(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSTHRIFT);
+    trace.setPagms(Arrays.asList("PAGM  suffixe"));
 
-   private void createTraceThrift(final UUID uuid) {
-      final TraceRegSecurite trace = new TraceRegSecurite(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSTHRIFT);
-      trace.setPagms(Arrays.asList("PAGM  suffixe"));
+    supportThrift.create(trace, new Date().getTime());
+  }
 
-      supportThrift.create(trace, new Date().getTime());
-   }
+  public final int countRow() {
 
-   public final int countRow() {
+    SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery;
+    sliceQuery = indexDao.createSliceQuery();
+    final String journee = DateRegUtils.getJournee(DATE);
+    sliceQuery.setKey(journee);
 
-      SliceQuery<String, UUID, TraceRegSecuriteIndex> sliceQuery;
-      sliceQuery = indexDao.createSliceQuery();
-      final String journee = DateRegUtils.getJournee(DATE);
-      sliceQuery.setKey(journee);
+    final Iterator<TraceRegSecuriteIndex> iterator = new TraceRegSecuriteIndexIterator(sliceQuery);
+    final List<TraceRegSecuriteIndex> list = Lists.newArrayList(iterator);
 
-      final Iterator<TraceRegSecuriteIndex> iterator = new TraceRegSecuriteIndexIterator(sliceQuery);
-      final List<TraceRegSecuriteIndex> list = Lists.newArrayList(iterator);
+    return list.size();
 
-      return list.size();
-
-   }
+  }
 }

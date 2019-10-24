@@ -22,7 +22,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceJournalEvtIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceJournalEvtIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvt;
@@ -45,139 +46,140 @@ import me.prettyprint.hector.api.query.SliceQuery;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class MigrationTraceJournalEvtTest {
 
-   private static final Date DATE = new Date();
+  private static final Date DATE = new Date();
 
-   int NB_ROWS = 100;
+  int NB_ROWS = 100;
 
-   @Autowired
-   TraceJournalEvtIndexDao indexDao;
+  @Autowired
+  TraceJournalEvtIndexDao indexDao;
 
-   @Autowired
-   private TraceJournalEvtCqlSupport supportCql;
+  @Autowired
+  private TraceJournalEvtCqlSupport supportCql;
 
-   @Autowired
-   private ITraceJournalEvtIndexCqlDao indexjDao;
+  @Autowired
+  private ITraceJournalEvtIndexCqlDao indexjDao;
 
-   @Autowired
-   private TraceJournalEvtSupport supportThrift;
+  @Autowired
+  private TraceJournalEvtSupport supportThrift;
 
-   @Autowired
-   MigrationTraceJournalEvt mtracej;
+  @Autowired
+  MigrationTraceJournalEvt mtracej;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+  @Autowired
+  private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   @Autowired
-   private CassandraServerBeanCql server;
 
-   private static final Map<String, String> INFOSCQL;
-   static {
-      INFOSCQL = new HashMap<String, String>();
-      INFOSCQL.put("KEY", "VALUE");
-   }
+  @Autowired
+  private CassandraServerBean server;
 
-   private static final Map<String, Object> INFOSTHRIFT;
-   static {
-      INFOSTHRIFT = new HashMap<String, Object>();
-      INFOSTHRIFT.put("KEY", "VALUE");
-   }
+  private static final Map<String, String> INFOSCQL;
+  static {
+    INFOSCQL = new HashMap<>();
+    INFOSCQL.put("KEY", "VALUE");
+  }
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
-   }
+  private static final Map<String, Object> INFOSTHRIFT;
+  static {
+    INFOSTHRIFT = new HashMap<>();
+    INFOSTHRIFT.put("KEY", "VALUE");
+  }
 
-   @Test
-   public void migrationFromThriftToCql() throws Exception {
-      populateTableThrift();
+  @After
+  public void after() throws Exception {
+    server.resetData(false, MODE_API.DATASTAX);
+  }
 
-      final int nb = mtracej.migrationFromThriftToCql();
-      final List<TraceJournalEvtCql> listCql = Lists.newArrayList(supportCql.findAll());
+  @Test
+  public void migrationFromThriftToCql() throws Exception {
+    populateTableThrift();
 
-      Assert.assertEquals(nb, NB_ROWS);
-      Assert.assertEquals(NB_ROWS, listCql.size());
+    final int nb = mtracej.migrationFromThriftToCql();
+    final List<TraceJournalEvtCql> listCql = Lists.newArrayList(supportCql.findAll());
 
-      // index journal
-      mtracej.migrationIndexFromThriftToCql();
-      final List<TraceJournalEvtIndexCql> listCqlIndex = Lists.newArrayList(indexjDao.findAll());
+    Assert.assertEquals(nb, NB_ROWS);
+    Assert.assertEquals(NB_ROWS, listCql.size());
 
-      Assert.assertEquals(NB_ROWS, listCqlIndex.size());
+    // index journal
+    mtracej.migrationIndexFromThriftToCql();
+    final List<TraceJournalEvtIndexCql> listCqlIndex = Lists.newArrayList(indexjDao.findAll());
 
-      // index doc
-   }
+    Assert.assertEquals(NB_ROWS, listCqlIndex.size());
 
-   @Test
-   public void migrationFromCqlTothrift() {
-      populateTableCql();
+    // index doc
+  }
 
-      final List<TraceJournalEvtCql> listCql = Lists.newArrayList(supportCql.findAll());
-      Assert.assertEquals(NB_ROWS, listCql.size());
+  @Test
+  public void migrationFromCqlTothrift() {
+    populateTableCql();
 
-      final int nb = mtracej.migrationFromCqlToThrift();
-      Assert.assertEquals(nb, NB_ROWS);
+    final List<TraceJournalEvtCql> listCql = Lists.newArrayList(supportCql.findAll());
+    Assert.assertEquals(NB_ROWS, listCql.size());
 
-      // index journal
-      final int nbIndex = mtracej.migrationIndexFromCqlToThrift();
-      Assert.assertEquals(nbIndex, NB_ROWS);
+    final int nb = mtracej.migrationFromCqlToThrift();
+    Assert.assertEquals(nb, NB_ROWS);
 
-      // index doc
-      mtracej.migrationIndexFromCqlToThrift();
-      final long nb_key = countRow();
-      Assert.assertEquals(100, nb_key);
-   }
+    // index journal
+    final int nbIndex = mtracej.migrationIndexFromCqlToThrift();
+    Assert.assertEquals(nbIndex, NB_ROWS);
 
-   // CLASSE UTILITAIRE
+    // index doc
+    mtracej.migrationIndexFromCqlToThrift();
+    final long nb_key = countRow();
+    Assert.assertEquals(100, nb_key);
+  }
 
-   public void populateTableCql() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceCql(uuid);
-      }
+  // CLASSE UTILITAIRE
 
-   }
+  public void populateTableCql() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceCql(uuid);
+    }
 
-   private void populateTableThrift() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceThrift(uuid);
-      }
-   }
+  }
 
-   private void createTraceCql(final UUID uuid) {
-      final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSCQL);
-      trace.setPagms(Arrays.asList("PAGM  + suffixe"));
+  private void populateTableThrift() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceThrift(uuid);
+    }
+  }
 
-      supportCql.create(trace, new Date().getTime());
-   }
+  private void createTraceCql(final UUID uuid) {
+    final TraceJournalEvtCql trace = new TraceJournalEvtCql(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSCQL);
+    trace.setPagms(Arrays.asList("PAGM  + suffixe"));
 
-   private void createTraceThrift(final UUID uuid) {
-      final TraceJournalEvt trace = new TraceJournalEvt(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSTHRIFT);
-      trace.setPagms(Arrays.asList("PAGM  suffixe"));
+    supportCql.create(trace);
+  }
 
-      supportThrift.create(trace, new Date().getTime());
-   }
+  private void createTraceThrift(final UUID uuid) {
+    final TraceJournalEvt trace = new TraceJournalEvt(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSTHRIFT);
+    trace.setPagms(Arrays.asList("PAGM  suffixe"));
 
-   public final int countRow() {
+    supportThrift.create(trace, new Date().getTime());
+  }
 
-      SliceQuery<String, UUID, TraceJournalEvtIndex> sliceQuery;
-      sliceQuery = indexDao.createSliceQuery();
-      final String journee = DateRegUtils.getJournee(DATE);
-      sliceQuery.setKey(journee);
+  public final int countRow() {
 
-      final Iterator<TraceJournalEvtIndex> iterator = new TraceJournalEvtIndexIterator(sliceQuery);
-      final List<TraceJournalEvtIndex> list = Lists.newArrayList(iterator);
+    SliceQuery<String, UUID, TraceJournalEvtIndex> sliceQuery;
+    sliceQuery = indexDao.createSliceQuery();
+    final String journee = DateRegUtils.getJournee(DATE);
+    sliceQuery.setKey(journee);
 
-      return list.size();
+    final Iterator<TraceJournalEvtIndex> iterator = new TraceJournalEvtIndexIterator(sliceQuery);
+    final List<TraceJournalEvtIndex> list = Lists.newArrayList(iterator);
 
-   }
+    return list.size();
+
+  }
 }

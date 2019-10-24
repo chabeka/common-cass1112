@@ -22,7 +22,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceRegTechniqueIndexDao;
 import fr.urssaf.image.sae.trace.dao.iterator.TraceRegTechniqueIndexIterator;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
@@ -45,133 +46,133 @@ import me.prettyprint.hector.api.query.SliceQuery;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class MigrationTraceRegTechniqueTest {
 
-   private static final Date DATE = new Date();
+  private static final Date DATE = new Date();
 
-   int NB_ROWS = 100;
+  int NB_ROWS = 100;
 
-   @Autowired
-   TraceRegTechniqueIndexDao indexDao;
+  @Autowired
+  TraceRegTechniqueIndexDao indexDao;
 
-   @Autowired
-   ITraceRegTechniqueIndexCqlDao indexDaocql;
+  @Autowired
+  ITraceRegTechniqueIndexCqlDao indexDaocql;
 
-   @Autowired
-   private TraceRegTechniqueCqlSupport supportCql;
+  @Autowired
+  private TraceRegTechniqueCqlSupport supportCql;
 
-   @Autowired
-   private TraceRegTechniqueSupport supportThrift;
+  @Autowired
+  private TraceRegTechniqueSupport supportThrift;
 
-   @Autowired
-   MigrationTraceRegTechnique mtracej;
+  @Autowired
+  MigrationTraceRegTechnique mtracej;
 
-   @Autowired
-   private TimeUUIDEtTimestampSupport timeUUIDSupport;
+  @Autowired
+  private TimeUUIDEtTimestampSupport timeUUIDSupport;
 
-   @Autowired
-   private CassandraServerBeanCql server;
+  @Autowired
+  private CassandraServerBean server;
 
-   private static final Map<String, String> INFOSCQL;
-   static {
-      INFOSCQL = new HashMap<String, String>();
-      INFOSCQL.put("KEY", "VALUE");
-   }
+  private static final Map<String, String> INFOSCQL;
+  static {
+    INFOSCQL = new HashMap<>();
+    INFOSCQL.put("KEY", "VALUE");
+  }
 
-   private static final Map<String, Object> INFOSTHRIFT;
-   static {
-      INFOSTHRIFT = new HashMap<String, Object>();
-      INFOSTHRIFT.put("KEY", "VALUE");
-   }
+  private static final Map<String, Object> INFOSTHRIFT;
+  static {
+    INFOSTHRIFT = new HashMap<>();
+    INFOSTHRIFT.put("KEY", "VALUE");
+  }
 
-   @After
-   public void after() throws Exception {
-      server.resetData();
-   }
+  @After
+  public void after() throws Exception {
+    server.resetData(false, MODE_API.DATASTAX);
+  }
 
-   @Test
-   public void migrationFromThriftToCql() {
-      populateTableThrift();
+  @Test
+  public void migrationFromThriftToCql() {
+    populateTableThrift();
 
-      final int nb = mtracej.migrationFromThriftToCql();
-      final List<TraceRegTechniqueCql> listCql = Lists.newArrayList(supportCql.findAll());
+    final int nb = mtracej.migrationFromThriftToCql();
+    final List<TraceRegTechniqueCql> listCql = Lists.newArrayList(supportCql.findAll());
 
-      Assert.assertEquals(nb, NB_ROWS);
-      Assert.assertEquals(NB_ROWS, listCql.size());
-      Assert.assertEquals(nb, listCql.size());
+    Assert.assertEquals(nb, NB_ROWS);
+    Assert.assertEquals(NB_ROWS, listCql.size());
+    Assert.assertEquals(nb, listCql.size());
 
-      // index
-      mtracej.migrationIndexFromThriftToCql();
-      final List<TraceRegTechniqueIndexCql> listIndexCql = Lists.newArrayList(indexDaocql.findAll());
-      Assert.assertEquals(100, listIndexCql.size());
-   }
+    // index
+    mtracej.migrationIndexFromThriftToCql();
+    final List<TraceRegTechniqueIndexCql> listIndexCql = Lists.newArrayList(indexDaocql.findAll());
+    Assert.assertEquals(100, listIndexCql.size());
+  }
 
-   @Test
-   public void migrationFromCqlTothrift() {
-      populateTableCql();
+  @Test
+  public void migrationFromCqlTothrift() {
+    populateTableCql();
 
-      final List<TraceRegTechniqueCql> listCql = Lists.newArrayList(supportCql.findAll());
-      Assert.assertEquals(NB_ROWS, listCql.size());
+    final List<TraceRegTechniqueCql> listCql = Lists.newArrayList(supportCql.findAll());
+    Assert.assertEquals(NB_ROWS, listCql.size());
 
-      final int nb = mtracej.migrationFromCqlToThrift();
-      Assert.assertEquals(nb, NB_ROWS);
+    final int nb = mtracej.migrationFromCqlToThrift();
+    Assert.assertEquals(nb, NB_ROWS);
 
-      // index
-      mtracej.migrationIndexFromCqlToThrift();
-      final long nb_key = countRow();
-      Assert.assertEquals(100, nb_key);
-   }
+    // index
+    mtracej.migrationIndexFromCqlToThrift();
+    final long nb_key = countRow();
+    Assert.assertEquals(100, nb_key);
+  }
 
-   // CLASSE UTILITAIRE
+  // CLASSE UTILITAIRE
 
-   public void populateTableCql() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceCql(uuid);
-      }
+  public void populateTableCql() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceCql(uuid);
+    }
 
-   }
+  }
 
-   private void populateTableThrift() {
-      for (int i = 0; i < NB_ROWS; i++) {
-         final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
-         createTraceThrift(uuid);
-      }
-   }
+  private void populateTableThrift() {
+    for (int i = 0; i < NB_ROWS; i++) {
+      final UUID uuid = timeUUIDSupport.buildUUIDFromDate(DateUtils.addMinutes(DATE, i));
+      createTraceThrift(uuid);
+    }
+  }
 
-   private void createTraceCql(final UUID uuid) {
-      final TraceRegTechniqueCql trace = new TraceRegTechniqueCql(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSCQL);
-      trace.setPagms(Arrays.asList("PAGM  + suffixe"));
+  private void createTraceCql(final UUID uuid) {
+    final TraceRegTechniqueCql trace = new TraceRegTechniqueCql(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSCQL);
+    trace.setPagms(Arrays.asList("PAGM  + suffixe"));
 
-      supportCql.create(trace, new Date().getTime());
-   }
+    supportCql.create(trace);
+  }
 
-   private void createTraceThrift(final UUID uuid) {
-      final TraceRegTechnique trace = new TraceRegTechnique(uuid, DATE);
-      trace.setContexte("CONTEXTE + suffixe");
-      trace.setCodeEvt("CODE_EVT + suffixe");
-      trace.setContratService("CONTRAT + suffixe");
-      trace.setLogin("LOGIN + suffixe");
-      trace.setInfos(INFOSTHRIFT);
-      trace.setPagms(Arrays.asList("PAGM  suffixe"));
+  private void createTraceThrift(final UUID uuid) {
+    final TraceRegTechnique trace = new TraceRegTechnique(uuid, DATE);
+    trace.setContexte("CONTEXTE + suffixe");
+    trace.setCodeEvt("CODE_EVT + suffixe");
+    trace.setContratService("CONTRAT + suffixe");
+    trace.setLogin("LOGIN + suffixe");
+    trace.setInfos(INFOSTHRIFT);
+    trace.setPagms(Arrays.asList("PAGM  suffixe"));
 
-      supportThrift.create(trace, new Date().getTime());
-   }
+    supportThrift.create(trace, new Date().getTime());
+  }
 
-   public final int countRow() {
+  public final int countRow() {
 
-      SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery;
-      sliceQuery = indexDao.createSliceQuery();
-      final String journee = DateRegUtils.getJournee(DATE);
-      sliceQuery.setKey(journee);
+    SliceQuery<String, UUID, TraceRegTechniqueIndex> sliceQuery;
+    sliceQuery = indexDao.createSliceQuery();
+    final String journee = DateRegUtils.getJournee(DATE);
+    sliceQuery.setKey(journee);
 
-      final Iterator<TraceRegTechniqueIndex> iterator = new TraceRegTechniqueIndexIterator(sliceQuery);
-      final List<TraceRegTechniqueIndex> list = Lists.newArrayList(iterator);
+    final Iterator<TraceRegTechniqueIndex> iterator = new TraceRegTechniqueIndexIterator(sliceQuery);
+    final List<TraceRegTechniqueIndex> list = Lists.newArrayList(iterator);
 
-      return list.size();
+    return list.size();
 
-   }
+  }
 }

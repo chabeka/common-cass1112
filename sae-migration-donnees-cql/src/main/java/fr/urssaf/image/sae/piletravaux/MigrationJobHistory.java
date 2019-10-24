@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
@@ -32,123 +33,124 @@ import me.prettyprint.cassandra.serializers.UUIDSerializer;
 @Component
 public class MigrationJobHistory {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationJobHistory.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationJobHistory.class);
 
-   @Autowired
-   IGenericJobTypeDao genericdao;
+  @Autowired
+  IGenericJobTypeDao genericdao;
 
-   @Autowired
-   JobHistoryDao daoThrift;
+  @Autowired
+  JobHistoryDao daoThrift;
 
-   @Autowired
-   JobQueueServiceImpl serviceThrift;
+  @Autowired
+  JobQueueServiceImpl serviceThrift;
 
-   @Autowired
-   IJobHistoryDaoCql cqldao;
+  @Autowired
+  IJobHistoryDaoCql cqldao;
 
-   @Autowired
-   private CassandraClientFactory ccf;
 
-   // String keyspace = "SAE";
+  @Qualifier("CassandraClientFactory")
+  private CassandraClientFactory ccf;
 
-   /**
-    * Migration de la CF Thrift vers la CF cql
-    */
-   public int migrationFromThriftToCql() {
+  // String keyspace = "SAE";
 
-      LOGGER.info(" MigrationJobHistory - migrationFromThriftToCql - start ");
+  /**
+   * Migration de la CF Thrift vers la CF cql
+   */
+  public int migrationFromThriftToCql() {
 
-      final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobHistory", ccf.getKeyspace().getKeyspaceName());
+    LOGGER.info(" MigrationJobHistory - migrationFromThriftToCql - start ");
 
-      UUID lastKey = null;
-      if (it.hasNext()) {
-         final Row row = (Row) it.next();
-         lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
+    final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobHistory", ccf.getKeyspace().getKeyspaceName());
+
+    UUID lastKey = null;
+    if (it.hasNext()) {
+      final Row row = (Row) it.next();
+      lastKey = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
+    }
+
+    Map<UUID, String> trace = new HashMap<>();
+    JobHistoryCql jobH;
+    int nb = 0;
+    UUID key = null;
+
+    while (it.hasNext()) {
+
+      // Extraction de la clé
+
+      final Row row = (Row) it.next();
+      key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
+
+      // compare avec la derniere clé qui a été extraite
+      // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
+      // alors on enrgistre celui qui vient d'être traité
+      if (key != null && !key.equals(lastKey)) {
+
+        jobH = new JobHistoryCql();
+        jobH.setIdjob(lastKey);
+        jobH.setTrace(trace);
+
+        // enregistrement
+        cqldao.save(jobH);
+
+        // réinitialisation
+        lastKey = key;
+        trace = new HashMap<>();
+        nb++;
       }
 
-      Map<UUID, String> trace = new HashMap<>();
-      JobHistoryCql jobH;
-      int nb = 0;
-      UUID key = null;
+      // extraction de la colonne
+      final UUID columnName = row.getUUID("column1");
 
-      while (it.hasNext()) {
+      // extraction de la value
+      final String message = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
 
-         // Extraction de la clé
+      trace.put(columnName, message);
 
-         final Row row = (Row) it.next();
-         key = UUIDSerializer.get().fromByteBuffer(row.getBytes("key"));
+    }
+    if (key != null) {
 
-         // compare avec la derniere clé qui a été extraite
-         // Si different, cela veut dire qu'on passe sur des colonnes avec une nouvelle clé
-         // alors on enrgistre celui qui vient d'être traité
-         if (key != null && !key.equals(lastKey)) {
+      jobH = new JobHistoryCql();
+      jobH.setIdjob(key);
+      jobH.setTrace(trace);
 
-            jobH = new JobHistoryCql();
-            jobH.setIdjob(lastKey);
-            jobH.setTrace(trace);
+      // enregistrement
+      cqldao.save(jobH);
 
-            // enregistrement
-            cqldao.save(jobH);
+      nb++;
+    }
 
-            // réinitialisation
-            lastKey = key;
-            trace = new HashMap<>();
-            nb++;
-         }
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" MigrationJobHistory - migrationFromThriftToCql - end");
 
-         // extraction de la colonne
-         final UUID columnName = row.getUUID("column1");
+    return nb;
+  }
 
-         // extraction de la value
-         final String message = StringSerializer.get().fromByteBuffer(row.getBytes("value"));
+  /**
+   * Migration de la CF cql vers la CF Thrift
+   */
+  public void migrationFromCqlTothrift() {
 
-         trace.put(columnName, message);
+    LOGGER.info(" MigrationJobHistory - migrationFromCqlToThrift start ");
 
+    final Iterator<JobHistoryCql> it = cqldao.findAllWithMapper();
+    int nb = 0;
+    while (it.hasNext()) {
+      // final Row row = (Row) it.next();
+      final JobHistoryCql jobcql = it.next();
+      final UUID idIob = jobcql.getIdjob();
+
+      for (final Entry<UUID, String> entry : jobcql.getTrace().entrySet()) {
+        final GenericJobType job = new GenericJobType();
+        job.setKey(UUIDSerializer.get().toByteBuffer(idIob));
+        job.setColumn1(entry.getKey());
+        job.setValue(StringSerializer.get().toByteBuffer(entry.getValue()));
+        serviceThrift.addHistory(idIob, entry.getKey(), entry.getValue());
       }
-      if (key != null) {
+      nb++;
+    }
 
-         jobH = new JobHistoryCql();
-         jobH.setIdjob(key);
-         jobH.setTrace(trace);
-
-         // enregistrement
-         cqldao.save(jobH);
-
-         nb++;
-      }
-
-      LOGGER.debug(" Totale : " + nb);
-      LOGGER.debug(" MigrationJobHistory - migrationFromThriftToCql - end");
-
-      return nb;
-   }
-
-   /**
-    * Migration de la CF cql vers la CF Thrift
-    */
-   public void migrationFromCqlTothrift() {
-
-      LOGGER.info(" MigrationJobHistory - migrationFromCqlToThrift start ");
-
-      final Iterator<JobHistoryCql> it = cqldao.findAllWithMapper();
-      int nb = 0;
-      while (it.hasNext()) {
-         // final Row row = (Row) it.next();
-         final JobHistoryCql jobcql = it.next();
-         final UUID idIob = jobcql.getIdjob();
-
-         for (final Entry<UUID, String> entry : jobcql.getTrace().entrySet()) {
-            final GenericJobType job = new GenericJobType();
-            job.setKey(UUIDSerializer.get().toByteBuffer(idIob));
-            job.setColumn1(entry.getKey());
-            job.setValue(StringSerializer.get().toByteBuffer(entry.getValue()));
-            serviceThrift.addHistory(idIob, entry.getKey(), entry.getValue());
-         }
-         nb++;
-      }
-
-      LOGGER.debug(" Totale : " + nb);
-      LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
-   }
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
+  }
 
 }

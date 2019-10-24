@@ -67,7 +67,7 @@
       -->
       <columnFamily>
          <name>Parameters</name>
-         <comparatorType>UTF8Type</comparatorType>
+         <comparatorType>BytesType</comparatorType>
       </columnFamily>
       
       <!-- LES JOBS -->
@@ -159,6 +159,61 @@
          <comparatorType>UTF8Type</comparatorType>
          <defaultColumnValueType>UTF8Type</defaultColumnValueType>
       </columnFamily>
+      
+      
+     
+        <!--
+      Les droits
+      -->
+       <columnFamily>
+         <name>DroitActionUnitaire</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitFormatControlProfil</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagma</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagmp</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily> <columnFamily>
+         <name>DroitPrmd</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagmf</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>DroitPagm</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+        <columnFamily>
+         <name>DroitContratService</name>
+         <comparatorType>BytesType</comparatorType>
+      </columnFamily>
+     <columnFamily>
+         <name>Dictionary</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      <columnFamily>
+         <name>ReferentielFormat</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+       <columnFamily>
+         <name>Rnd</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+       <columnFamily>
+         <name>CorrespondancesRnd</name>
+         <comparatorType>UTF8Type</comparatorType>
+      </columnFamily>
+      
    </columnFamilies>
    
+      
 </keyspace>

@@ -22,7 +22,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobHistoryDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobRequestDaoCql;
 import fr.urssaf.image.sae.pile.travaux.dao.cql.IJobsQueueDaoCql;
@@ -48,208 +48,208 @@ import me.prettyprint.hector.api.Keyspace;
 @ContextConfiguration(locations = { "/applicationContext-sae-migration-test.xml" })
 public class MigrationPileTravauxTest {
 
-   private Dumper dumper;
+  private Dumper dumper;
 
-   private PrintStream sysout;
+  private PrintStream sysout;
 
-   // table name
-   private static final String JOBSQUEUE_CFNAME = "JobsQueue";
+  // table name
+  private static final String JOBSQUEUE_CFNAME = "JobsQueue";
 
-   private static final String JOBHISTORY_CFNAME = "JobHistory";
+  private static final String JOBHISTORY_CFNAME = "JobHistory";
 
-   public static final String JOBREQUEST_CFNAME = "JobRequest";
-   // SERVICE
+  public static final String JOBREQUEST_CFNAME = "JobRequest";
+  // SERVICE
 
-   @Autowired
-   private JobQueueService jobQueueService;
+  @Autowired
+  private JobQueueService jobQueueService;
 
-   @Autowired
-   private JobLectureService jobLectureService;
+  @Autowired
+  private JobLectureService jobLectureService;
 
-   @Autowired
-   private JobQueueCqlService jobQueueServicecql;
+  @Autowired
+  private JobQueueCqlService jobQueueServicecql;
 
-   @Autowired
-   private JobLectureCqlService jobLectureServicecql;
+  @Autowired
+  private JobLectureCqlService jobLectureServicecql;
 
-   // DAO CQL
-   @Autowired
-   IJobRequestDaoCql reqdaocql;
+  // DAO CQL
+  @Autowired
+  IJobRequestDaoCql reqdaocql;
 
-   @Autowired
-   IJobHistoryDaoCql histdaocql;
+  @Autowired
+  IJobHistoryDaoCql histdaocql;
 
-   @Autowired
-   IJobsQueueDaoCql queuedaocql;
+  @Autowired
+  IJobsQueueDaoCql queuedaocql;
 
-   // SERVER
-   @Autowired
-   private CassandraServerBean server;
+  // SERVER
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private CassandraServerBeanCql servercql;
 
-   @Autowired
-   private CassandraClientFactory ccf;
 
-   //
 
-   @Autowired
-   MigrationJobHistory migJobH;
+  @Autowired
+  private CassandraClientFactory ccf;
 
-   @Autowired
-   MigrationJobQueue migJobQ;
+  //
 
-   @Autowired
-   MigrationJobRequest migJobR;
+  @Autowired
+  MigrationJobHistory migJobH;
 
-   @Before
-   public void init() throws Exception {
+  @Autowired
+  MigrationJobQueue migJobQ;
 
-      final Keyspace keyspace = ccf.getKeyspace();
+  @Autowired
+  MigrationJobRequest migJobR;
 
-      sysout = new PrintStream(System.out, true, "UTF-8");
+  @Before
+  public void init() throws Exception {
 
-      // Pour dumper sur un fichier plutôt que sur la sortie standard
-      // sysout = new PrintStream("c:/temp/out.txt");
-      dumper = new Dumper(keyspace, sysout);
-   }
+    final Keyspace keyspace = ccf.getKeyspace();
 
-   @After
-   public final void after() throws Exception {
-      // Après chaque test, on reset les données de cassandra
-      server.resetData(true);
-      servercql.resetData();
-   }
+    sysout = new PrintStream(System.out, true, "UTF-8");
 
-   @Test
-   public void migrationFromThriftToCql() throws Exception {
-      populateTableThrift();
+    // Pour dumper sur un fichier plutôt que sur la sortie standard
+    // sysout = new PrintStream("c:/temp/out.txt");
+    dumper = new Dumper(keyspace, sysout);
+  }
 
-      // migration de la table jobRequest
-      migJobR.migrationFromThriftToCql();
-      // verification de la table cql
-      final Iterator<JobRequestCql> it = reqdaocql.findAllWithMapper();
-      final List<JobRequestCql> nb_Rows = Lists.newArrayList(it);
-      Assert.assertEquals(101, nb_Rows.size());
+  @After
+  public final void after() throws Exception {
+    // Après chaque test, on reset les données de cassandra
+    server.resetData(true, MODE_API.HECTOR);
+    server.resetData(false, MODE_API.DATASTAX);
+  }
 
-      // verification de la table thrift
-      final List<JobRequest> itReq = jobLectureService.getAllJobs(ccf.getKeyspace());
-      Assert.assertEquals(101, itReq.size());
+  @Test
+  public void migrationFromThriftToCql() throws Exception {
+    populateTableThrift();
 
-      // migration de la table JobQueue
-      migJobQ.migrationFromThriftToCql();
-      // verification de la table cql
-      final Iterator<JobQueueCql> itQ = queuedaocql.findAllWithMapper();
-      final List<JobQueueCql> nb_RowsQ = Lists.newArrayList(itQ);
-      Assert.assertEquals(101, nb_RowsQ.size());
+    // migration de la table jobRequest
+    migJobR.migrationFromThriftToCql();
+    // verification de la table cql
+    final Iterator<JobRequestCql> it = reqdaocql.findAllWithMapper();
+    final List<JobRequestCql> nb_Rows = Lists.newArrayList(it);
+    Assert.assertEquals(101, nb_Rows.size());
 
-      // verification de la table thrift
-      final Iterator<JobQueue> itReqQueue = jobLectureService.getUnreservedJobRequestIterator();
-      final List<JobQueue> nb_RowsQueue = Lists.newArrayList(itReqQueue);
-      Assert.assertEquals(101, nb_RowsQueue.size());
+    // verification de la table thrift
+    final List<JobRequest> itReq = jobLectureService.getAllJobs(ccf.getKeyspace());
+    Assert.assertEquals(101, itReq.size());
 
-      // migration de la table JobHistory
-      migJobH.migrationFromThriftToCql();
-      // verification de la table cql
-      final Iterator<JobHistoryCql> itH = histdaocql.findAllWithMapper();
-      final List<JobHistoryCql> nb_RowsH = Lists.newArrayList(itH);
-      Assert.assertEquals(101, nb_RowsH.size());
+    // migration de la table JobQueue
+    migJobQ.migrationFromThriftToCql();
+    // verification de la table cql
+    final Iterator<JobQueueCql> itQ = queuedaocql.findAllWithMapper();
+    final List<JobQueueCql> nb_RowsQ = Lists.newArrayList(itQ);
+    Assert.assertEquals(101, nb_RowsQ.size());
 
-      // verification de la table thrift
-      final int nb_keyHistCql = dumper.getKeysCount(JOBHISTORY_CFNAME);
-      // Assert.assertEquals(101, nb_keyHistCql);
+    // verification de la table thrift
+    final Iterator<JobQueue> itReqQueue = jobLectureService.getUnreservedJobRequestIterator();
+    final List<JobQueue> nb_RowsQueue = Lists.newArrayList(itReqQueue);
+    Assert.assertEquals(101, nb_RowsQueue.size());
 
-   }
+    // migration de la table JobHistory
+    migJobH.migrationFromThriftToCql();
+    // verification de la table cql
+    final Iterator<JobHistoryCql> itH = histdaocql.findAllWithMapper();
+    final List<JobHistoryCql> nb_RowsH = Lists.newArrayList(itH);
+    Assert.assertEquals(101, nb_RowsH.size());
 
-   @Test
-   public void migrationFromCqlTothrift() throws Exception {
-      populateTableCql();
+    // verification de la table thrift
+    final int nb_keyHistCql = dumper.getKeysCount(JOBHISTORY_CFNAME);
+    // Assert.assertEquals(101, nb_keyHistCql);
 
-      // JOBQueue
-      // migration de la table
-      migJobQ.migrationFromCqlTothrift();
+  }
 
-      final Iterator<JobRequestCql> itQ = reqdaocql.findAllWithMapper();
-      final List<JobRequestCql> nb_RowsQ = Lists.newArrayList(itQ);
-      Assert.assertEquals(101, nb_RowsQ.size());
+  @Test
+  public void migrationFromCqlTothrift() throws Exception {
+    populateTableCql();
 
-      // verification de la table thrift
-      final Iterator<JobQueue> itReqQueue = jobLectureService.getUnreservedJobRequestIterator();
-      final List<JobQueue> nb_RowsQueue = Lists.newArrayList(itReqQueue);
-      Assert.assertEquals(101, nb_RowsQueue.size());
+    // JOBQueue
+    // migration de la table
+    migJobQ.migrationFromCqlTothrift();
 
-      // JOBREQUEST
-      // migration de la table
-      migJobR.migrationFromCqlTothrift();
+    final Iterator<JobRequestCql> itQ = reqdaocql.findAllWithMapper();
+    final List<JobRequestCql> nb_RowsQ = Lists.newArrayList(itQ);
+    Assert.assertEquals(101, nb_RowsQ.size());
 
-      final Iterator<JobRequestCql> it = reqdaocql.findAllWithMapper();
-      final List<JobRequestCql> nb_Rows = Lists.newArrayList(it);
-      Assert.assertEquals(101, nb_Rows.size());
+    // verification de la table thrift
+    final Iterator<JobQueue> itReqQueue = jobLectureService.getUnreservedJobRequestIterator();
+    final List<JobQueue> nb_RowsQueue = Lists.newArrayList(itReqQueue);
+    Assert.assertEquals(101, nb_RowsQueue.size());
 
-      // verification de la table thrift
-      final List<JobRequest> itReq = jobLectureService.getAllJobs(ccf.getKeyspace());
-      Assert.assertEquals(101, itReq.size());
+    // JOBREQUEST
+    // migration de la table
+    migJobR.migrationFromCqlTothrift();
 
-      // JOBHistory
-      // migration de la table
-      migJobH.migrationFromCqlTothrift();
+    final Iterator<JobRequestCql> it = reqdaocql.findAllWithMapper();
+    final List<JobRequestCql> nb_Rows = Lists.newArrayList(it);
+    Assert.assertEquals(101, nb_Rows.size());
 
-      final Iterator<JobRequestCql> itH = reqdaocql.findAllWithMapper();
-      final List<JobRequestCql> nb_RowsH = Lists.newArrayList(itH);
-      Assert.assertEquals(101, nb_RowsH.size());
+    // verification de la table thrift
+    final List<JobRequest> itReq = jobLectureService.getAllJobs(ccf.getKeyspace());
+    Assert.assertEquals(101, itReq.size());
 
-      final int nb_keyHistCql = dumper.getKeysCount(JOBHISTORY_CFNAME);
-      // Assert.assertEquals(101, nb_keyHistCql);
-   }
+    // JOBHistory
+    // migration de la table
+    migJobH.migrationFromCqlTothrift();
 
-   //
-   public void populateTableCql() {
+    final Iterator<JobRequestCql> itH = reqdaocql.findAllWithMapper();
+    final List<JobRequestCql> nb_RowsH = Lists.newArrayList(itH);
+    Assert.assertEquals(101, nb_RowsH.size());
 
-      for (int i = 0; i < 101; i++) {
-         final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+    final int nb_keyHistCql = dumper.getKeysCount(JOBHISTORY_CFNAME);
+    // Assert.assertEquals(101, nb_keyHistCql);
+  }
 
-         final Date dateCreation = new Date();
-         final Map<String, String> jobParam = new HashMap<String, String>();
-         jobParam.put("parameters", "param" + i);
+  //
+  public void populateTableCql() {
 
-         final JobToCreate job = new JobToCreate();
-         job.setIdJob(idJob);
-         job.setType("ArchivageMasse" + i);
-         job.setJobParameters(jobParam);
-         job.setClientHost("clientHost" + i);
-         job.setDocCount(100);
-         job.setSaeHost("saeHost" + i);
-         job.setCreationDate(dateCreation);
-         final String jobKey = new String("jobKey" + i);
-         job.setJobKey(jobKey.getBytes());
-         jobQueueServicecql.addJob(job);
-      }
+    for (int i = 0; i < 101; i++) {
+      final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
 
-   }
+      final Date dateCreation = new Date();
+      final Map<String, String> jobParam = new HashMap<>();
+      jobParam.put("parameters", "param" + i);
 
-   private void populateTableThrift() throws Exception {
+      final JobToCreate job = new JobToCreate();
+      job.setIdJob(idJob);
+      job.setType("ArchivageMasse" + i);
+      job.setJobParameters(jobParam);
+      job.setClientHost("clientHost" + i);
+      job.setDocCount(100);
+      job.setSaeHost("saeHost" + i);
+      job.setCreationDate(dateCreation);
+      final String jobKey = new String("jobKey" + i);
+      job.setJobKey(jobKey.getBytes());
+      jobQueueServicecql.addJob(job);
+    }
 
-      for (int i = 0; i < 101; i++) {
-         final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
-         System.out.println(idJob);
+  }
 
-         final Date dateCreation = new Date();
-         final Map<String, String> jobParam = new HashMap<String, String>();
-         jobParam.put("parameters", "param" + i);
+  private void populateTableThrift() throws Exception {
 
-         final JobToCreate job = new JobToCreate();
-         job.setIdJob(idJob);
-         job.setType("ArchivageMasse" + i);
-         job.setJobParameters(jobParam);
-         job.setClientHost("clientHost" + i);
-         job.setDocCount(100);
-         job.setSaeHost("saeHost" + i);
-         job.setCreationDate(dateCreation);
-         final String jobKey = new String("jobKey" + 1);
-         job.setJobKey(jobKey.getBytes());
-         jobQueueService.addJob(job);
-      }
+    for (int i = 0; i < 101; i++) {
+      final UUID idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
+      System.out.println(idJob);
 
-   }
+      final Date dateCreation = new Date();
+      final Map<String, String> jobParam = new HashMap<>();
+      jobParam.put("parameters", "param" + i);
+
+      final JobToCreate job = new JobToCreate();
+      job.setIdJob(idJob);
+      job.setType("ArchivageMasse" + i);
+      job.setJobParameters(jobParam);
+      job.setClientHost("clientHost" + i);
+      job.setDocCount(100);
+      job.setSaeHost("saeHost" + i);
+      job.setCreationDate(dateCreation);
+      final String jobKey = new String("jobKey" + 1);
+      job.setJobKey(jobKey.getBytes());
+      jobQueueService.addJob(job);
+    }
+
+  }
 }

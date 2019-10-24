@@ -9,6 +9,7 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import com.datastax.driver.core.Row;
@@ -31,85 +32,86 @@ import me.prettyprint.cassandra.serializers.StringSerializer;
 @Component
 public class MigrationJobQueue implements IMigration {
 
-   private static final Logger LOGGER = LoggerFactory.getLogger(MigrationJobQueue.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(MigrationJobQueue.class);
 
-   @Autowired
-   IGenericJobTypeDao genericdao;
+  @Autowired
+  IGenericJobTypeDao genericdao;
 
-   @Autowired
-   JobQueueServiceThriftImpl serviceThrift;
+  @Autowired
+  JobQueueServiceThriftImpl serviceThrift;
 
-   @Autowired
-   IJobsQueueDaoCql cqldao;
+  @Autowired
+  IJobsQueueDaoCql cqldao;
 
-   @Autowired
-   private CassandraClientFactory ccf;
 
-   // String keyspace = "SAE";
+  @Qualifier("CassandraClientFactory")
+  private CassandraClientFactory ccf;
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void migrationFromThriftToCql() {
+  // String keyspace = "SAE";
 
-      LOGGER.info(" MigrationJobHistory - migrationFromThriftToCql - start ");
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void migrationFromThriftToCql() {
 
-      final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobsQueue", ccf.getKeyspace().getKeyspaceName());
+    LOGGER.info(" MigrationJobHistory - migrationFromThriftToCql - start ");
 
-      JobQueueCql jobCql;
-      int nb = 0;
+    final Iterator<GenericJobType> it = genericdao.findAllByCFName("JobsQueue", ccf.getKeyspace().getKeyspaceName());
 
-      while (it.hasNext()) {
+    JobQueueCql jobCql;
+    int nb = 0;
 
-         // Extraction de la clé
+    while (it.hasNext()) {
 
-         final Row row = (Row) it.next();
-         final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
-         final UUID colName = row.getUUID("column1");
-         final JobQueue jobq = JobQueueSerializer.get().fromByteBuffer(row.getBytes("value"));
+      // Extraction de la clé
 
-         jobCql = new JobQueueCql();
-         jobCql.setIdJob(colName);
-         jobCql.setJobParameters(jobq.getJobParameters());
-         jobCql.setKey(key);
-         jobCql.setType(jobq.getType());
+      final Row row = (Row) it.next();
+      final String key = StringSerializer.get().fromByteBuffer(row.getBytes("key"));
+      final UUID colName = row.getUUID("column1");
+      final JobQueue jobq = JobQueueSerializer.get().fromByteBuffer(row.getBytes("value"));
 
-         // enregistrement
-         cqldao.save(jobCql);
+      jobCql = new JobQueueCql();
+      jobCql.setIdJob(colName);
+      jobCql.setJobParameters(jobq.getJobParameters());
+      jobCql.setKey(key);
+      jobCql.setType(jobq.getType());
 
-         nb++;
-      }
+      // enregistrement
+      cqldao.save(jobCql);
 
-      LOGGER.debug(" Totale : " + nb);
-      LOGGER.debug(" MigrationJobHistory - migrationFromThriftToCql - end");
+      nb++;
+    }
 
-   }
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" MigrationJobHistory - migrationFromThriftToCql - end");
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public void migrationFromCqlTothrift() {
-      LOGGER.info(" MigrationJobHistory - migrationFromCqlToThrift start ");
+  }
 
-      final Iterator<JobQueueCql> it = cqldao.findAllWithMapper();
-      int nb = 0;
-      while (it.hasNext()) {
-         // final Row row = (Row) it.next();
-         final JobQueueCql jobcql = it.next();
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void migrationFromCqlTothrift() {
+    LOGGER.info(" MigrationJobHistory - migrationFromCqlToThrift start ");
 
-         final JobToCreate jobToCreate = new JobToCreate();
-         jobToCreate.setIdJob(jobcql.getIdJob());
-         jobToCreate.setType(jobcql.getType());
-         jobToCreate.setJobParameters(jobcql.getJobParameters());
-         serviceThrift.addJobsQueue(jobToCreate);
+    final Iterator<JobQueueCql> it = cqldao.findAllWithMapper();
+    int nb = 0;
+    while (it.hasNext()) {
+      // final Row row = (Row) it.next();
+      final JobQueueCql jobcql = it.next();
 
-         nb++;
-      }
+      final JobToCreate jobToCreate = new JobToCreate();
+      jobToCreate.setIdJob(jobcql.getIdJob());
+      jobToCreate.setType(jobcql.getType());
+      jobToCreate.setJobParameters(jobcql.getJobParameters());
+      serviceThrift.addJobsQueue(jobToCreate);
 
-      LOGGER.debug(" Totale : " + nb);
-      LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
+      nb++;
+    }
 
-   }
+    LOGGER.debug(" Totale : " + nb);
+    LOGGER.debug(" MigrationJobHistory - migrationFromCqlToThrift end");
+
+  }
 }

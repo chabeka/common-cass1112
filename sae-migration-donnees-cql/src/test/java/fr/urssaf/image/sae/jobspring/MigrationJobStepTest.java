@@ -25,18 +25,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraClientFactory;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobExecutionToJobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepCql;
 import fr.urssaf.image.commons.cassandra.spring.batch.cqlmodel.JobStepsCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobExecutionToJobStepDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobInstanceDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepExecutionDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daocql.IJobStepsDaoCql;
-import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobExecutionDaoThrift;
-import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraJobInstanceDaoThrift;
-import fr.urssaf.image.commons.cassandra.spring.batch.daothrift.CassandraStepExecutionDaoThrift;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobExecutionToJobStepDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobInstanceDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepExecutionDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.cql.IJobStepsDaoCql;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobExecutionDaoThrift;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraJobInstanceDaoThrift;
+import fr.urssaf.image.commons.cassandra.spring.batch.dao.thrift.CassandraStepExecutionDaoThrift;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobExecutionIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.JobInstanceIdGenerator;
 import fr.urssaf.image.commons.cassandra.spring.batch.idgenerator.StepExecutionIdGenerator;
@@ -59,264 +59,263 @@ import me.prettyprint.hector.api.Keyspace;
 @ContextConfiguration(locations = { "/applicationContext-sae-migration-test.xml" })
 public class MigrationJobStepTest {
 
-   /**
-    * le +1 vient de la clé qui regroupe toutes les colonnes de la CF<br>
-    * _all : pour JobExecutions qui permet de parcourir les exécutions tout job confondu<br>
-    * _unreserved : pour jobInstanceByRunning qui permet de parcourir les job non reservés
-    */
+  /**
+   * le +1 vient de la clé qui regroupe toutes les colonnes de la CF<br>
+   * _all : pour JobExecutions qui permet de parcourir les exécutions tout job confondu<br>
+   * _unreserved : pour jobInstanceByRunning qui permet de parcourir les job non reservés
+   */
 
-   private static final String MY_JOB_NAME = "job_test_execution";
+  private static final String MY_JOB_NAME = "job_test_execution";
 
-   private Dumper dumper;
+  private Dumper dumper;
 
-   private PrintStream sysout;
+  private PrintStream sysout;
 
-   private static int NB_STEPS = 10;
+  private static int NB_STEPS = 10;
 
-   private TestingServer zkServer;
+  private TestingServer zkServer;
 
-   private CuratorFramework zkClient;
+  private CuratorFramework zkClient;
 
-   private CassandraJobInstanceDaoThrift jobInstanceDao;
+  private CassandraJobInstanceDaoThrift jobInstanceDao;
 
-   private CassandraJobExecutionDaoThrift jobExecutionDao;
+  private CassandraJobExecutionDaoThrift jobExecutionDao;
 
-   private CassandraStepExecutionDaoThrift stepExecutionDao;
+  private CassandraStepExecutionDaoThrift stepExecutionDao;
 
-   @Autowired
-   IJobStepsDaoCql stepDao;
+  @Autowired
+  IJobStepsDaoCql stepDao;
 
-   @Autowired
-   IJobExecutionDaoCql daocql;
+  @Autowired
+  IJobExecutionDaoCql daocql;
 
-   @Autowired
-   private CassandraServerBean server;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private CassandraServerBeanCql servercql;
 
-   @Autowired
-   private CassandraClientFactory ccf;
 
-   @Autowired
-   protected IGenericJobSpringDAO genericdao;
+  @Autowired
+  private CassandraClientFactory ccf;
 
-   @Autowired
-   private IJobInstanceDaoCql jobInstanceDaocql;
+  @Autowired
+  protected IGenericJobSpringDAO genericdao;
 
-   @Autowired
-   private IJobStepExecutionDaoCql stepExecutionDaocql;
+  @Autowired
+  private IJobInstanceDaoCql jobInstanceDaocql;
 
-   @Autowired
-   private IJobExecutionToJobStepDaoCql stepExecutionToStepDaocql;
+  @Autowired
+  private IJobStepExecutionDaoCql stepExecutionDaocql;
 
-   @Autowired
-   MigrationJobStep migJobStep;
+  @Autowired
+  private IJobExecutionToJobStepDaoCql stepExecutionToStepDaocql;
 
-   @Autowired
-   MigrationJobSteps migJobSteps;
+  @Autowired
+  MigrationJobStep migJobStep;
 
-   @Autowired
-   MigrationJobExecutionToJobStep migJobExeToSteps;
+  @Autowired
+  MigrationJobSteps migJobSteps;
 
-   @After
-   public void after() throws Exception {
-      server.resetData(true);
-      servercql.resetData();
-   }
+  @Autowired
+  MigrationJobExecutionToJobStep migJobExeToSteps;
 
-   @Before
-   public void init() throws Exception {
-      // Connexion à un serveur zookeeper local
-      initZookeeperServer();
-      zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
+  @After
+  public void after() throws Exception {
+    server.resetData(true, MODE_API.HECTOR);
+    server.resetData(false, MODE_API.DATASTAX);
+  }
 
-      // Récupération du keyspace de cassandra-unit, et création des dao
-      final Keyspace keyspace = ccf.getKeyspace();
-      final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(keyspace);
-      jobExecutionDao = new CassandraJobExecutionDaoThrift(keyspace, new JobExecutionIdGenerator(keyspace, zkClient, clockSupport));
-      jobInstanceDao = new CassandraJobInstanceDaoThrift(keyspace, new JobInstanceIdGenerator(keyspace, zkClient, clockSupport));
-      stepExecutionDao = new CassandraStepExecutionDaoThrift(keyspace, new StepExecutionIdGenerator(keyspace, zkClient, clockSupport));
+  @Before
+  public void init() throws Exception {
+    // Connexion à un serveur zookeeper local
+    initZookeeperServer();
+    zkClient = ZookeeperClientFactory.getClient(zkServer.getConnectString(), "Batch");
 
-      sysout = new PrintStream(System.out, true, "UTF-8");
+    // Récupération du keyspace de cassandra-unit, et création des dao
+    final Keyspace keyspace = ccf.getKeyspace();
+    final JobClockSupport clockSupport = JobClockSupportFactory.createJobClockSupport(keyspace);
+    jobExecutionDao = new CassandraJobExecutionDaoThrift(keyspace, new JobExecutionIdGenerator(keyspace, zkClient, clockSupport));
+    jobInstanceDao = new CassandraJobInstanceDaoThrift(keyspace, new JobInstanceIdGenerator(keyspace, zkClient, clockSupport));
+    stepExecutionDao = new CassandraStepExecutionDaoThrift(keyspace, new StepExecutionIdGenerator(keyspace, zkClient, clockSupport));
 
-      // Pour dumper sur un fichier plutôt que sur la sortie standard
-      // sysout = new PrintStream("c:/temp/out.txt");
-      dumper = new Dumper(keyspace, sysout);
-   }
+    sysout = new PrintStream(System.out, true, "UTF-8");
 
-   @After
-   public void clean() {
-      zkClient.close();
-      try {
-         zkServer.close();
-      }
-      catch (final IOException e) {
-         e.printStackTrace();
-      }
-   }
+    // Pour dumper sur un fichier plutôt que sur la sortie standard
+    // sysout = new PrintStream("c:/temp/out.txt");
+    dumper = new Dumper(keyspace, sysout);
+  }
 
-   private void initZookeeperServer() throws Exception {
-      if (zkServer == null) {
-         zkServer = new TestingServer();
-      }
-   }
+  @After
+  public void clean() {
+    zkClient.close();
+    try {
+      zkServer.close();
+    }
+    catch (final IOException e) {
+      e.printStackTrace();
+    }
+  }
 
-   @Test
-   public void migrationFromThriftToCql() throws Exception {
-      populateTableThrift();
-      // JOBSTEP
+  private void initZookeeperServer() throws Exception {
+    if (zkServer == null) {
+      zkServer = new TestingServer();
+    }
+  }
 
-      // migration de la table JOBSTEP
-      migJobStep.migrationFromThriftToCql();
-      // verification de la table cql
-      final Iterator<JobStepCql> it = stepExecutionDaocql.findAllWithMapper();
-      final List<JobStepCql> nb_Rows = Lists.newArrayList(it);
-      Assert.assertEquals(100, nb_Rows.size());
+  @Test
+  public void migrationFromThriftToCql() throws Exception {
+    populateTableThrift();
+    // JOBSTEP
 
-      // verification de la table thrift
-      final int nb_keyStepCql = dumper.getKeysCount(Constante.JOBSTEP_CFNAME);
-      Assert.assertEquals(100, nb_keyStepCql);
+    // migration de la table JOBSTEP
+    migJobStep.migrationFromThriftToCql();
+    // verification de la table cql
+    final Iterator<JobStepCql> it = stepExecutionDaocql.findAllWithMapper();
+    final List<JobStepCql> nb_Rows = Lists.newArrayList(it);
+    Assert.assertEquals(100, nb_Rows.size());
 
-      // JOBSTEPS
+    // verification de la table thrift
+    final int nb_keyStepCql = dumper.getKeysCount(Constante.JOBSTEP_CFNAME);
+    Assert.assertEquals(100, nb_keyStepCql);
 
-      // migration de la table JOBSTEPS
-      migJobSteps.migrationFromThriftToCql();
+    // JOBSTEPS
 
-      // verification de La table thrift
-      final int nb_keySteps = dumper.getKeysCount(Constante.JOBSTEPS_CFNAME);
-      Assert.assertEquals(1, nb_keySteps);
+    // migration de la table JOBSTEPS
+    migJobSteps.migrationFromThriftToCql();
 
-      final Iterator<GenericJobSpring> itNbTotal = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccf.getKeyspace().getKeyspaceName());
-      final List<GenericJobSpring> list = Lists.newArrayList(itNbTotal);
-      Assert.assertEquals(100, list.size());
+    // verification de La table thrift
+    final int nb_keySteps = dumper.getKeysCount(Constante.JOBSTEPS_CFNAME);
+    Assert.assertEquals(1, nb_keySteps);
 
-      // verification de La table cql
-      final Iterator<JobStepsCql> itSteps = stepDao.findAllWithMapper();
-      final List<JobStepsCql> nb_Steps = Lists.newArrayList(itSteps);
-      Assert.assertEquals(100, nb_Steps.size());
+    final Iterator<GenericJobSpring> itNbTotal = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccf.getKeyspace().getKeyspaceName());
+    final List<GenericJobSpring> list = Lists.newArrayList(itNbTotal);
+    Assert.assertEquals(100, list.size());
 
-      // JOBJOBEXECUTIONTOSTEP
+    // verification de La table cql
+    final Iterator<JobStepsCql> itSteps = stepDao.findAllWithMapper();
+    final List<JobStepsCql> nb_Steps = Lists.newArrayList(itSteps);
+    Assert.assertEquals(100, nb_Steps.size());
 
-      // migration de la table JOBJOBEXECUTIONTOSTEP
-      migJobExeToSteps.migrationFromThriftToCql();
+    // JOBJOBEXECUTIONTOSTEP
 
-      // La table cql
-      final Iterator<JobExecutionToJobStepCql> itExeToSptep = stepExecutionToStepDaocql.findAllWithMapper();
-      final List<JobExecutionToJobStepCql> nb_ExeToSptep = Lists.newArrayList(itExeToSptep);
-      Assert.assertEquals(100, nb_ExeToSptep.size());
+    // migration de la table JOBJOBEXECUTIONTOSTEP
+    migJobExeToSteps.migrationFromThriftToCql();
 
-      // La table thrift
-      final int nb_keyJobExToSteps = dumper.getKeysCount(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME);
+    // La table cql
+    final Iterator<JobExecutionToJobStepCql> itExeToSptep = stepExecutionToStepDaocql.findAllWithMapper();
+    final List<JobExecutionToJobStepCql> nb_ExeToSptep = Lists.newArrayList(itExeToSptep);
+    Assert.assertEquals(100, nb_ExeToSptep.size());
 
-      // on a 10 jobExecutions, la partion key de la table JOBEXECUTION_TO_JOBSTEP_CFNAME est jobexecutionid
-      Assert.assertEquals(10, nb_keyJobExToSteps);
+    // La table thrift
+    final int nb_keyJobExToSteps = dumper.getKeysCount(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME);
 
-   }
+    // on a 10 jobExecutions, la partion key de la table JOBEXECUTION_TO_JOBSTEP_CFNAME est jobexecutionid
+    Assert.assertEquals(10, nb_keyJobExToSteps);
 
-   @Test
-   public void migrationFromCqlTothrift() throws Exception {
-      populateTableCql();
+  }
 
-      // JOBSTEP
+  @Test
+  public void migrationFromCqlTothrift() throws Exception {
+    populateTableCql();
 
-      // migration de la table JOBSTEP
-      migJobStep.migrationFromCqlTothrift();
+    // JOBSTEP
 
-      final Iterator<JobStepCql> it = stepExecutionDaocql.findAllWithMapper();
-      final List<JobStepCql> nb_Rows = Lists.newArrayList(it);
-      Assert.assertEquals(100, nb_Rows.size());
+    // migration de la table JOBSTEP
+    migJobStep.migrationFromCqlTothrift();
 
-      final int nb_keyStepCql = dumper.getKeysCount(Constante.JOBSTEP_CFNAME);
-      Assert.assertEquals(100, nb_keyStepCql);
+    final Iterator<JobStepCql> it = stepExecutionDaocql.findAllWithMapper();
+    final List<JobStepCql> nb_Rows = Lists.newArrayList(it);
+    Assert.assertEquals(100, nb_Rows.size());
 
-      // JOBSTEPS
+    final int nb_keyStepCql = dumper.getKeysCount(Constante.JOBSTEP_CFNAME);
+    Assert.assertEquals(100, nb_keyStepCql);
 
-      // migration de la table JOBSTEPS
-      migJobSteps.migrationFromCqlTothrift();
+    // JOBSTEPS
 
-      // verification de La table thrift
-      final int nb_keySteps = dumper.getKeysCount(Constante.JOBSTEPS_CFNAME);
-      Assert.assertEquals(1, nb_keySteps);
+    // migration de la table JOBSTEPS
+    migJobSteps.migrationFromCqlTothrift();
 
-      final Iterator<GenericJobSpring> itNbTotal = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccf.getKeyspace().getKeyspaceName());
-      final List<GenericJobSpring> list = Lists.newArrayList(itNbTotal);
-      Assert.assertEquals(100, list.size());
+    // verification de La table thrift
+    final int nb_keySteps = dumper.getKeysCount(Constante.JOBSTEPS_CFNAME);
+    Assert.assertEquals(1, nb_keySteps);
 
-      // JOBJOBEXECUTIONTOSTEP
+    final Iterator<GenericJobSpring> itNbTotal = genericdao.findAllByCFName(Constante.JOBSTEPS_CFNAME, ccf.getKeyspace().getKeyspaceName());
+    final List<GenericJobSpring> list = Lists.newArrayList(itNbTotal);
+    Assert.assertEquals(100, list.size());
 
-      // migration de la table JOBSTEPS
-      migJobExeToSteps.migrationFromCqlTothrift();
+    // JOBJOBEXECUTIONTOSTEP
 
-      // verification de La table cql
-      final Iterator<JobExecutionToJobStepCql> itExeToSptep = stepExecutionToStepDaocql.findAllWithMapper();
-      final List<JobExecutionToJobStepCql> nb_ExeToSptep = Lists.newArrayList(itExeToSptep);
-      Assert.assertEquals(100, nb_ExeToSptep.size());
+    // migration de la table JOBSTEPS
+    migJobExeToSteps.migrationFromCqlTothrift();
 
-      // verification de La table thrift
-      final int nb_keyJobExToSteps = dumper.getKeysCount(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME);
-      Assert.assertEquals(100, nb_keyJobExToSteps);
+    // verification de La table cql
+    final Iterator<JobExecutionToJobStepCql> itExeToSptep = stepExecutionToStepDaocql.findAllWithMapper();
+    final List<JobExecutionToJobStepCql> nb_ExeToSptep = Lists.newArrayList(itExeToSptep);
+    Assert.assertEquals(100, nb_ExeToSptep.size());
 
-   }
+    // verification de La table thrift
+    final int nb_keyJobExToSteps = dumper.getKeysCount(Constante.JOBEXECUTION_TO_JOBSTEP_CFNAME);
+    Assert.assertEquals(100, nb_keyJobExToSteps);
 
-   public void populateTableCql() {
-      // creation d'une instance de job cql
-      final JobInstance inst = TestUtils.getOrCreateTestJobInstanceCql(MY_JOB_NAME, jobInstanceDaocql);
-      // creation de 10 executions cql
-      for (int i = 0; i < 10; i++) {
-         final JobExecution exe = TestUtils.saveJobExecutionCql(inst, i, daocql);
-         // ceation de 10 steps par execution
-         createTestStepsCql(exe, i);
-      }
+  }
 
-   }
+  public void populateTableCql() {
+    // creation d'une instance de job cql
+    final JobInstance inst = TestUtils.getOrCreateTestJobInstanceCql(MY_JOB_NAME, jobInstanceDaocql);
+    // creation de 10 executions cql
+    for (int i = 0; i < 10; i++) {
+      final JobExecution exe = TestUtils.saveJobExecutionCql(inst, i, daocql);
+      // ceation de 10 steps par execution
+      createTestStepsCql(exe, i);
+    }
 
-   private void populateTableThrift() {
+  }
 
-      // creation d'une instance de job thrift
-      final JobInstance inst = TestUtils.getOrCreateTestJobInstance(MY_JOB_NAME, jobInstanceDao);
-      // creation de 10 executions thrift
-      for (int i = 0; i < 10; i++) {
-         final JobExecution exe = TestUtils.saveJobExecutionThrift(inst, i, jobExecutionDao);
-         // ceation de 10 steps par execution
-         createTestStepsThrift(exe, i);
-      }
-   }
+  private void populateTableThrift() {
 
-   /**
-    * Création des steps pour le jobExecution passé en paramètre
-    *
-    * @param jobExecution
-    * @param count
-    *           nombre de steps à créer
-    */
-   private void createTestStepsThrift(final JobExecution jobExecution, final int index) {
-      // Création des steps
-      for (int i = 1; i <= NB_STEPS; i++) {
-         final StepExecution step = new StepExecution("step" + index + i, jobExecution);
-         step.setCommitCount(i);
-         step.setLastUpdated(new Date(System.currentTimeMillis()));
-         // Enregistrement du step
-         stepExecutionDao.saveStepExecution(step);
-         // sysout.println("step" + index + i);
-      }
-   }
+    // creation d'une instance de job thrift
+    final JobInstance inst = TestUtils.getOrCreateTestJobInstance(MY_JOB_NAME, jobInstanceDao);
+    // creation de 10 executions thrift
+    for (int i = 0; i < 10; i++) {
+      final JobExecution exe = TestUtils.saveJobExecutionThrift(inst, i, jobExecutionDao);
+      // ceation de 10 steps par execution
+      createTestStepsThrift(exe, i);
+    }
+  }
 
-   /**
-    * Création des steps pour le jobExecution passé en paramètre
-    *
-    * @param jobExecution
-    * @param count
-    *           nombre de steps à créer
-    */
-   private void createTestStepsCql(final JobExecution jobExecution, final int index) {
-      // Création des steps
-      for (int i = 1; i <= NB_STEPS; i++) {
-         final StepExecution step = new StepExecution("step" + index + i, jobExecution);
-         step.setCommitCount(i);
-         step.setLastUpdated(new Date(System.currentTimeMillis()));
-         // Enregistrement du step
-         stepExecutionDaocql.saveStepExecution(step);
-      }
-   }
+  /**
+   * Création des steps pour le jobExecution passé en paramètre
+   *
+   * @param jobExecution
+   * @param count
+   *           nombre de steps à créer
+   */
+  private void createTestStepsThrift(final JobExecution jobExecution, final int index) {
+    // Création des steps
+    for (int i = 1; i <= NB_STEPS; i++) {
+      final StepExecution step = new StepExecution("step" + index + i, jobExecution);
+      step.setCommitCount(i);
+      step.setLastUpdated(new Date(System.currentTimeMillis()));
+      // Enregistrement du step
+      stepExecutionDao.saveStepExecution(step);
+      // sysout.println("step" + index + i);
+    }
+  }
+
+  /**
+   * Création des steps pour le jobExecution passé en paramètre
+   *
+   * @param jobExecution
+   * @param count
+   *           nombre de steps à créer
+   */
+  private void createTestStepsCql(final JobExecution jobExecution, final int index) {
+    // Création des steps
+    for (int i = 1; i <= NB_STEPS; i++) {
+      final StepExecution step = new StepExecution("step" + index + i, jobExecution);
+      step.setCommitCount(i);
+      step.setLastUpdated(new Date(System.currentTimeMillis()));
+      // Enregistrement du step
+      stepExecutionDaocql.saveStepExecution(step);
+    }
+  }
 }

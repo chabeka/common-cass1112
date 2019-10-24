@@ -275,4 +275,18 @@ CREATE TABLE modeapi (
 INSERT INTO modeapi(cfname, mode) VALUES ('jobexecutionscql' , 'DATASTAX');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobstep' , 'HECTOR');
 
+CREATE TABLE droitactionunitairecql (
+	code text,
+	description text,
+	PRIMARY KEY (code)
+);
+
+
+CREATE  TABLE  droitformatcontrolprofilcql (
+	formatCode text,
+	description  text,
+    controlProfil text,
+	PRIMARY KEY (formatCode)
+); 
+
 

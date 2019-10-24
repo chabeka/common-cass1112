@@ -19,7 +19,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
-import fr.urssaf.image.commons.cassandra.helper.CassandraServerBeanCql;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
 import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
@@ -33,89 +33,90 @@ import junit.framework.Assert;
 @DirtiesContext(classMode = ClassMode.AFTER_CLASS)
 public class MigrationTraceDestinataireTest {
 
-   private static final Date DATE = new Date();
+  private static final Date DATE = new Date();
 
-   @Autowired
-   private TraceDestinataireCqlSupport supportCql;
+  @Autowired
+  private TraceDestinataireCqlSupport supportCql;
 
-   @Autowired
-   private TraceDestinataireSupport supportThrift;
+  @Autowired
+  private TraceDestinataireSupport supportThrift;
 
-   @Autowired
-   MigrationTraceDestinataire mtracedesti;
+  @Autowired
+  MigrationTraceDestinataire mtracedesti;
 
-   @Autowired
-   private CassandraServerBeanCql servercql;
+  @Autowired
+  private CassandraServerBean server;
 
-   @Autowired
-   private CassandraServerBean server;
 
-   private static final String cfName = "tracedestinataire";
 
-   private final List<String> list = Arrays.asList("date", "contrat");
 
-   String[] listcodeevt = { "DFCE_CORBEILLE_DOC|OK", "DFCE_SUPPRESSION_DOC|OK", "DFCE_DEPOT_DOC|OK", "TEST|CREATE", "HIST_EVENEMENT|OK", "HIST_ARCHIVE|OK" };
 
-   String[] listColName = { "HIST_EVENEMENT", "HIST_ARCHIVE", "REG_SECURITE", "REG_EXPLOITATION", "REG_TECHNIQUE", "JOURN_EVT" };
+  private static final String cfName = "tracedestinataire";
 
-   @After
-   public void after() throws Exception {
-      server.resetData(true);
-      servercql.resetData();
-   }
+  private final List<String> list = Arrays.asList("date", "contrat");
 
-   @Test
-   public void migrationFromThriftToCql() {
-      populateTableThrift();
+  String[] listcodeevt = { "DFCE_CORBEILLE_DOC|OK", "DFCE_SUPPRESSION_DOC|OK", "DFCE_DEPOT_DOC|OK", "TEST|CREATE", "HIST_EVENEMENT|OK", "HIST_ARCHIVE|OK" };
 
-      mtracedesti.migrationFromThriftToCql();
-      final List<TraceDestinataire> listThrift = supportThrift.findAll();
-      final List<TraceDestinataire> listCql = supportCql.findAll();
+  String[] listColName = { "HIST_EVENEMENT", "HIST_ARCHIVE", "REG_SECURITE", "REG_EXPLOITATION", "REG_TECHNIQUE", "JOURN_EVT" };
 
-      Assert.assertEquals(listThrift.size(), listcodeevt.length);
-      Assert.assertEquals(listThrift.size(), listCql.size());
+  @After
+  public void after() throws Exception {
+    server.resetData(true, MODE_API.HECTOR);
+    server.resetData(false, MODE_API.DATASTAX);
+  }
 
-   }
+  @Test
+  public void migrationFromThriftToCql() {
+    populateTableThrift();
 
-   @Test
-   public void migrationFromCqlTothrift() {
+    mtracedesti.migrationFromThriftToCql();
+    final List<TraceDestinataire> listThrift = supportThrift.findAll();
+    final List<TraceDestinataire> listCql = supportCql.findAll();
 
-      populateTableCql();
-      mtracedesti.migrationFromCqlTothrift();
+    Assert.assertEquals(listThrift.size(), listcodeevt.length);
+    Assert.assertEquals(listThrift.size(), listCql.size());
 
-      final List<TraceDestinataire> listThrift = supportThrift.findAll();
-      final List<TraceDestinataire> listCql = supportCql.findAll();
+  }
 
-      Assert.assertEquals(listCql.size(), listcodeevt.length);
-      Assert.assertEquals(listThrift.size(), listCql.size());
-   }
-   // CLASSE UTILITAIRE
+  @Test
+  public void migrationFromCqlTothrift() {
 
-   public void populateTableCql() {
-      int i = 0;
-      for (final String code : listcodeevt) {
-         final TraceDestinataire trace = new TraceDestinataire();
-         trace.setCodeEvt(code);
+    populateTableCql();
+    mtracedesti.migrationFromCqlTothrift();
 
-         final Map<String, List<String>> dest = new HashMap<String, List<String>>();
-         dest.put(listColName[i], list);
-         trace.setDestinataires(dest);
-         supportCql.create(trace, DATE.getTime());
-         i++;
-      }
-   }
+    final List<TraceDestinataire> listThrift = supportThrift.findAll();
+    final List<TraceDestinataire> listCql = supportCql.findAll();
 
-   private void populateTableThrift() {
-      int i = 0;
-      for (final String code : listcodeevt) {
-         final TraceDestinataire trace = new TraceDestinataire();
-         trace.setCodeEvt(code);
+    Assert.assertEquals(listCql.size(), listcodeevt.length);
+    Assert.assertEquals(listThrift.size(), listCql.size());
+  }
+  // CLASSE UTILITAIRE
 
-         final Map<String, List<String>> dest = new HashMap<String, List<String>>();
-         dest.put(listColName[i], list);
-         trace.setDestinataires(dest);
-         supportThrift.create(trace, new Date().getTime());
-         i++;
-      }
-   }
+  public void populateTableCql() {
+    int i = 0;
+    for (final String code : listcodeevt) {
+      final TraceDestinataire trace = new TraceDestinataire();
+      trace.setCodeEvt(code);
+
+      final Map<String, List<String>> dest = new HashMap<>();
+      dest.put(listColName[i], list);
+      trace.setDestinataires(dest);
+      supportCql.create(trace, DATE.getTime());
+      i++;
+    }
+  }
+
+  private void populateTableThrift() {
+    int i = 0;
+    for (final String code : listcodeevt) {
+      final TraceDestinataire trace = new TraceDestinataire();
+      trace.setCodeEvt(code);
+
+      final Map<String, List<String>> dest = new HashMap<>();
+      dest.put(listColName[i], list);
+      trace.setDestinataires(dest);
+      supportThrift.create(trace, new Date().getTime());
+      i++;
+    }
+  }
 }
