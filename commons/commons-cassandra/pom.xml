@@ -58,13 +58,13 @@
 	<!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.10.0.1/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.04/commons/commons-cassandra
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.10.0.1/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.04/commons/commons-cassandra
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-19.10.0.1/commons/commons-cassandra
+        scm:svn:http://svn.altair.recouv/svn/gns/java/branches/sae-20.04/commons/commons-cassandra
       </connection>
 	</scm>
 
