@@ -33,6 +33,7 @@ import fr.urssaf.image.sae.rnd.exception.SaeBddRuntimeException;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
+import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
@@ -79,7 +80,7 @@ public class MajRndServiceTest {
 
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
-
+    ModeAPIRndUtils.setAllRndModeAPIThrift();
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
 
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");

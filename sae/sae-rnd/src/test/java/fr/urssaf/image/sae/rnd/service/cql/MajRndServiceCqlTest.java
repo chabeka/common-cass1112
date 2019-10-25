@@ -1,5 +1,6 @@
 package fr.urssaf.image.sae.rnd.service.cql;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +12,6 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.MethodSorters;
@@ -28,15 +28,20 @@ import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
 import fr.urssaf.image.commons.dfce.service.DFCEServices;
+import fr.urssaf.image.sae.commons.utils.ModeApiAllUtils;
+import fr.urssaf.image.sae.commons.utils.Row;
+import fr.urssaf.image.sae.commons.utils.cql.DataCqlUtils;
 import fr.urssaf.image.sae.rnd.dao.support.cql.RndCqlSupport;
 import fr.urssaf.image.sae.rnd.dao.support.cql.SaeBddCqlSupport;
 import fr.urssaf.image.sae.rnd.modele.TypeCode;
 import fr.urssaf.image.sae.rnd.modele.TypeDocument;
 import fr.urssaf.image.sae.rnd.modele.VersionRnd;
 import fr.urssaf.image.sae.rnd.service.MajRndService;
-import fr.urssaf.image.sae.rnd.util.ModeAPIRndUtils;
 import fr.urssaf.image.sae.rnd.utils.SaeLogAppender;
 import fr.urssaf.image.sae.rnd.ws.adrn.service.RndRecuperationService;
+import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
+import fr.urssaf.image.sae.trace.utils.TraceDestinataireCqlUtils;
 import net.docubase.toolkit.model.reference.LifeCycleRule;
 import net.docubase.toolkit.model.reference.LifeCycleStep;
 
@@ -79,10 +84,14 @@ public class MajRndServiceCqlTest {
 
   private SaeLogAppender logAppender;
 
+  @Autowired
+  private TraceDestinataireCqlSupport traceDestinataireCqlSupport;
+
+
 
   @Before
   public void before() throws Exception {
-    ModeAPIRndUtils.setAllRndModeAPICql();
+    ModeApiAllUtils.setAllModeAPICql();
 
     // server.resetData(true, ModeGestionAPI.MODE_API.DATASTAX);
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
@@ -93,6 +102,8 @@ public class MajRndServiceCqlTest {
     version.setDateMiseAJour(new Date());
     version.setVersionEnCours("11.4");
     saeBddCqlSupport.updateVersionRnd(version);
+
+    createAllTraceDestinataire();
 
   }
 
@@ -109,10 +120,10 @@ public class MajRndServiceCqlTest {
    * 
    * @throws Exception
    */
-  @Ignore
+  // @Ignore
   @Test
   public void testLancer() throws Exception {
-    server.resetData();
+    // server.resetData();
     /*
      * server.resetData();
      * logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
@@ -127,7 +138,6 @@ public class MajRndServiceCqlTest {
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
     logAppender = new SaeLogAppender(Level.INFO, "fr.urssaf.image.sae");
     logger.addAppender(logAppender);
-    ModeAPIRndUtils.setAllRndModeAPICql();
     final VersionRnd version = new VersionRnd();
     version.setDateMiseAJour(new Date());
     version.setVersionEnCours("11.4");
@@ -277,8 +287,6 @@ public class MajRndServiceCqlTest {
             dfceServices.getLifeCycleRule(EasyMock
                                           .anyObject(String.class))).andReturn(lifeCycleRule)
     .times(1);
-
-    // EC PB TEST
     EasyMock
     .expect(
             dfceServices.getLifeCycleRule(EasyMock
@@ -345,6 +353,19 @@ public class MajRndServiceCqlTest {
 
     return result;
 
+  }
+
+  /**
+   * Création des données TraceDestinataire pour effectuer les tests des services en Cql
+   */
+  private void createAllTraceDestinataire() {
+    final URL url = this.getClass().getResource("/cassandra-local-dataset-sae-traces-rnd.xml");
+    final List<Row> list = DataCqlUtils.deserializeColumnFamilyToRows(url.getPath(), "TraceDestinataire");
+    // final List<Row> list = DataCqlUtils.deserialize(url.getPath());
+    final List<TraceDestinataire> listTraceDestinataire = TraceDestinataireCqlUtils.convertRowsToTraceDestinataires(list);
+    for (final TraceDestinataire traceDestinataire : listTraceDestinataire) {
+      traceDestinataireCqlSupport.create(traceDestinataire, new Date().getTime());
+    }
   }
 
 }

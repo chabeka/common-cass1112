@@ -6,6 +6,7 @@ import java.util.TreeMap;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +52,7 @@ public class MajCorrespondancesServiceTest {
     server.resetData();
   }
 
-  // @Ignore
+  @Ignore
   @Test
   public void testLancer() throws Exception {
     majCorrespondancesService.lancer();

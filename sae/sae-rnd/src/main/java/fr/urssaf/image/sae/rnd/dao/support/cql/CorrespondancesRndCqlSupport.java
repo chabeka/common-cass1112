@@ -41,7 +41,7 @@ public class CorrespondancesRndCqlSupport {
    */
   public final void ajouterCorrespondance(final Correspondance correspondance) {
 
-    final String trcPrefix = "ajouterRnd";
+    final String trcPrefix = "ajouterCorrespondance";
     LOGGER.debug(DEBUT_LOG, trcPrefix);
     LOGGER.debug("{} - Correspondance code tempo : {}",
                  new String[] {
