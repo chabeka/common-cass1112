@@ -108,16 +108,18 @@ CREATE TABLE traceregsecuriteindexcql (
 );
 
 CREATE TABLE tracejournalevtindexdoccql (
-	identifiantindex text,
-    traceid timeuuid,
+	identifiant timeuuid,
+    timestamp timestamp,
+    login text,
     codeevt text,
+    pagms list<text>,
+
+	identifiantindex uuid,
     contexte text,
     contratservice text,
-    login text,
-    pagms list<text>,
-	timestamp timestamp,
 	infos map<text,text>,
-    PRIMARY KEY (identifiantindex,traceid)
+
+    PRIMARY KEY (identifiantindex,timestamp, identifiant)
 );
 
 

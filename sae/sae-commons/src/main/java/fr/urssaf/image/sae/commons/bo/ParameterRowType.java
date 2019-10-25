@@ -30,20 +30,17 @@ public enum ParameterRowType {
     @Override
     public String toString() {
       return "parametresRnd";
-    }
-                              },
-
+                                }
+  },
                               /**
                                * Nom correspondant à la ligne contenant les paramètres du RND
                                */
-                              PARAMETERS {
-                                @Override
-                                public String toString() {
-                                  return "parameters";
-                                }
+  PARAMETERS {
+    @Override
+    public String toString() {
+      return "parameters";
+    }
   };
-
-  // parametresRnd;
 
   /**
    * @return le nom
