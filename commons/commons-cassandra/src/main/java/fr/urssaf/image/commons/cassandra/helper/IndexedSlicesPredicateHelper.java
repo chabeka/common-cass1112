@@ -5,10 +5,10 @@ import java.nio.ByteBuffer;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import org.apache.cassandra.thrift.IndexClause;
+
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.service.template.IndexedSlicesPredicate;
-
-import org.apache.cassandra.thrift.IndexClause;
 
 /**
  * Classe qui facilite la manipulation des objets IndexedSlicesPredicate

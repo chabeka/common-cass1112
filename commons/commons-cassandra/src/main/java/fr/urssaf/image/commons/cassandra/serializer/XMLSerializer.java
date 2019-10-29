@@ -2,13 +2,12 @@ package fr.urssaf.image.commons.cassandra.serializer;
 
 import java.nio.ByteBuffer;
 
-import me.prettyprint.cassandra.serializers.AbstractSerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
-
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamDriver;
-import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
+
+import me.prettyprint.cassandra.serializers.AbstractSerializer;
+import me.prettyprint.cassandra.serializers.StringSerializer;
 
 /**
  * Classe de sérialisation d'un objet en XML, qui utilise
