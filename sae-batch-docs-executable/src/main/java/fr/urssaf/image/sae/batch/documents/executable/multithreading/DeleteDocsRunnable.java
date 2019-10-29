@@ -67,7 +67,7 @@ public class DeleteDocsRunnable implements Runnable {
          final String tpl = "Impossible de supprimer le document gelé : {}";
          LOGGER.warn(tpl, document.getUuid());
       } catch (final Exception e) {
-         final String mssg = "Une erreur c'est produite lors de la suppression du document {}: {}";
+         final String mssg = "Une erreur s'est produite lors de la suppression du document {}: {}";
          LOGGER.error(mssg, document.getUuid(), e.getMessage());
       }
    }

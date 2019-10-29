@@ -7,8 +7,7 @@ import org.springframework.context.MessageSource;
 import fr.urssaf.image.sae.batch.documents.executable.context.ExecutableApplicationContext;
 
 /**
- * Permet de lire le fichier properites : sae_format_messages.properties.
- * 
+ * Permet de lire le fichier properties : sae_format_messages.properties.
  * Pour la gestion de messages simples et messages d'exception.
  */
 public final class ExecutableMessageHandler {
@@ -24,19 +23,18 @@ public final class ExecutableMessageHandler {
    }
 
    /**
-    * Récupére un message à partir de sa clé.
+    * Récupère un message à partir de sa clé.
     * 
     * @param messageKey
     *           : La clé du message
     * @return Le message avec les valeurs substituées.
     */
-   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public static String getMessage(final String messageKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, null, Locale.getDefault());
    }
 
    /**
-    * Récupére un message.
+    * Récupère un message.
     * 
     * @param messageKey
     *           : La clé du message
@@ -44,7 +42,6 @@ public final class ExecutableMessageHandler {
     *           : La valeur de substitution
     * @return Le message avec les valeurs substituées.
     */
-   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public static String getMessage(final String messageKey,
          final String valueKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, new Object[] { valueKey },
@@ -52,7 +49,7 @@ public final class ExecutableMessageHandler {
    }
 
    /**
-    * Récupére un message.
+    * Récupère un message.
     * 
     * @param messageKey
     *           : La clé du message
@@ -62,7 +59,6 @@ public final class ExecutableMessageHandler {
     *           : La valeur de substitution
     * @return Le message avec les valeurs substituées.
     */
-   @SuppressWarnings("PMD.AvoidDuplicateLiterals")
    public static String getMessage(final String messageKey,
          final String firstValueKey, final Object secondValueKey) {
       return MESSAGE_SOURCES.getMessage(messageKey, new Object[] {

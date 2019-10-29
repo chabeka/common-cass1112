@@ -253,7 +253,7 @@ public class TraitementServiceImpl implements TraitementService {
       }
     }
     try {
-      bWriter.write(sb.toString());
+      bWriter.write(sb.toString().replaceAll("\\r|\\n", ""));
       bWriter.newLine();
 
     }
