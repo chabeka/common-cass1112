@@ -631,7 +631,7 @@ public class DFCEServicesImpl implements DFCEServices {
    @AutoReconnectDfceServiceAnnotation
    public boolean isServerUp() {
       // Ce service ne renvoie pas d'exception si DFCE est déconnecté.
-      boolean result = dfceService.isServerUp();
+    boolean result = dfceService != null && dfceService.isServerUp();
       if (result == false) {
          // On se reconnecte et on retente
          reconnect();

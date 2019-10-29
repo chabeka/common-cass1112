@@ -11,7 +11,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.docubase.dfce.exception.ExceededSearchLimitException;
 import com.docubase.dfce.exception.SearchQueryParseException;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Ignore;
+
 import net.docubase.toolkit.model.document.Document;
 import net.docubase.toolkit.model.search.SearchQuery;
 import net.docubase.toolkit.model.search.SearchResult;
@@ -51,8 +53,9 @@ public class DFCEServicesTest {
    }
 
    @Test
-   public void isDfceUp_reconnect() {
-
+   public void isDfceUp_reconnect() throws InterruptedException {
+      dfceServices.connectTheFistTime();
+     
       Assert.assertTrue("DFCE doit être Up!", dfceServices.isServerUp());
       dfceServices.closeConnexion();
       // Les services DFCE doivent se reconnecter tout seuls

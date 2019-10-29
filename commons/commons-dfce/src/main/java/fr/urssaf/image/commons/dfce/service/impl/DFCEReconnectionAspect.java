@@ -8,8 +8,10 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.caucho.hessian.client.HessianConnectionException;
+import com.docubase.dfce.exception.AuthenticationCredentialsNotFoundException;
 import com.docubase.dfce.exception.runtime.DFCERuntimeException;
 
 /**
@@ -17,6 +19,7 @@ import com.docubase.dfce.exception.runtime.DFCERuntimeException;
  * {@link AutoReconnectDfceServiceAnnotation}
  */
 @Aspect
+@Component
 public class DFCEReconnectionAspect {
 
    /**
@@ -52,7 +55,7 @@ public class DFCEReconnectionAspect {
             // Si ok, on quitte
             return proceed;
          }
-         catch (final HessianConnectionException | NullPointerException | IOException ex) {
+         catch (final HessianConnectionException | AuthenticationCredentialsNotFoundException | NullPointerException | IOException ex) {
             LOG.warn("{} - Tentative d'établisssement d'une nouvelle connexion à DFCE suite à l'exception suivante reçue",
                      new Object[] {LOG_PREFIX},
                      ex);

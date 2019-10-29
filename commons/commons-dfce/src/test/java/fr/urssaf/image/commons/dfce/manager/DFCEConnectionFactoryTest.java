@@ -19,37 +19,37 @@ public class DFCEConnectionFactoryTest {
 
    private static final String PASSWORD_VALUE = "DOCUBASE";
 
-   private static final String URL_VALUE = "http://hwi31picgntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+   private static final String URL_VALUE = "http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
-   private static final String URL_VALUE_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+   private static final String URL_VALUE_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/";
 
-   private static final String URL_SECURE_VALUE = "https://hwi31picgntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+   private static final String URL_SECURE_VALUE = "https://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
    private static final String EXPECTED_MESSAGE = "le message de l'exception est inattendu";
 
-   private static final String HOST_NAME = "hwi31picgntboappli1.gidn.recouv";
+   private static final String HOST_NAME = "hwi31intgntpajeboappli1.gidn.recouv";
 
    private static final String HOST_NAME_TRANSFERT = "hwi31picgnsboappli1.gidn.recouv";
 
    private static final int HOST_PORT = 8080;
 
-   private static final String CONTEXT_ROOT = "/dfce-webapp/toolkit/";
+   private static final String CONTEXT_ROOT = "/dfce-webapp/";
 
    private static final boolean SECURE = false;
 
    private static final int TIMEOUT = 30000;
 
-   private static final String URL_TOOLKIT = "http://hwi31picgntboappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+   private static final String URL_TOOLKIT = "http://hwi31intgntpajeboappli1.gidn.recouv:8080/dfce-webapp/";
 
-   private static final String URL_TOOLKIT_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/toolkit/";
+   private static final String URL_TOOLKIT_TRANSFERT = "http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/";
 
    private static final boolean CHECK_HASH = true;
 
    private static final String DIGEST_ALGO = "SHA-1";
 
-   private static final String BASE_NAME = "GNT-PIC";
+   private static final String BASE_NAME = "PAJE-GNT-INT";
 
-   private static final String BASE_NAME_TRANSFERT = "GNS-PIC";
+   private static final String BASE_NAME_TRANSFERT = "PAJE-GNT-INT";
 
    private final static String CHEMIN_SAE_CONFIG = "src/test/resources/config/sae-config-test.properties";
    private final static String CHEMIN_DFCE_CONFIG = "src/test/resources/config/dfce-config-test.properties";
