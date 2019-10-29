@@ -1,9 +1,9 @@
 package fr.urssaf.image.commons.cassandra.spring.batch.support;
 
-import me.prettyprint.hector.api.Keyspace;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockConfiguration;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.commons.cassandra.support.clock.impl.JobClockSupportImpl;
+import me.prettyprint.hector.api.Keyspace;
 
 public final class JobClockSupportFactory {
 

@@ -4,11 +4,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.batch.item.ExecutionContext;
+
+import me.prettyprint.cassandra.serializers.StringSerializer;
 
 public class ExecutionContextSerializerTest {
 
