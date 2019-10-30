@@ -1,6 +1,9 @@
 package fr.urssaf.image.sae.services.copie;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +27,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -110,10 +114,12 @@ public class SAECopieServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "copie" };
+			final String[] roles = new String[] {"ROLE_copie", "ROLE_consultation", "ROLE_archivage_unitaire"};
       saePrmds.add(saePrmd);
 
       saeDroits.put("copie", saePrmds);
+    	saeDroits.put("consultation", saePrmds);
+    	saeDroits.put("archivage_unitaire", saePrmds);
       viExtrait.setSaeDroits(saeDroits);
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             viExtrait.getIdUtilisateur(), viExtrait, roles);
@@ -121,7 +127,7 @@ public class SAECopieServiceTest {
 
       // Paramétrage du RND
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -149,7 +155,7 @@ public class SAECopieServiceTest {
       // on vide le contexte de sécurité
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,

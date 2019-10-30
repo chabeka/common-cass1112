@@ -6,15 +6,13 @@ import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
 
-import junit.framework.Assert;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.exception.NestableRuntimeException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-import fr.urssaf.image.sae.services.batch.capturemasse.utils.XmlValidationUtils;
+import junit.framework.Assert;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class XmlValidationUtilsTest {

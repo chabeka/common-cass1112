@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
+import fr.urssaf.image.sae.mapping.utils.Utils;
 import fr.urssaf.image.sae.services.batch.capturemasse.listener.AbstractListener;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.CaptureMasseControleSupport;
 import fr.urssaf.image.sae.services.batch.capturemasse.support.controle.model.CaptureMasseControlResult;
@@ -57,13 +58,28 @@ public class ControleSommaireDocumentProcessor extends AbstractListener
     final String cheminDocOnEcde = ecdeDirectory.getAbsolutePath() + File.separator
         + "documents" + File.separator + item.getFilePath();
 
+    String idGedValueString = StringUtils.EMPTY;
     try {
       CaptureMasseControlResult resultat = null;
       try {
-        resultat = support.controleSAEDocument(item, ecdeDirectory);
+    	  
+    	  
+    	  if(item.getUMetadatas() != null) {
+	          for (final UntypedMetadata metadata : item.getUMetadatas()) {
+	            if ("IdGed".equals(metadata.getLongCode())) {
+	              idGedValueString = metadata.getValue();
+	              boolean isvalid = Utils.isValidUUID(idGedValueString);
+	              if (!isvalid) {
+	        	    throw new Exception("Erreur de parsing de l'UUID du document car la syntax ne respecte pas la nomenclature standard : '"
+	        	    		+ idGedValueString 
+	        	    		+ "'");  
+	               }
+	             }
+	          }
+    	  }
+    	  resultat = support.controleSAEDocument(item, ecdeDirectory);
       }
       catch (final NumberFormatException e) {
-        String idGedValueString = StringUtils.EMPTY;
         for (final UntypedMetadata metadata : item.getUMetadatas()) {
           if ("IdGed".equals(metadata.getLongCode())) {
             idGedValueString = metadata.getValue();

@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.apache.commons.lang.StringUtils;
 import org.junit.After;
 import org.junit.Assert;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
 import fr.urssaf.image.sae.webservices.exception.DeblocageAxisFault;
 import fr.urssaf.image.sae.webservices.exception.RepriseAxisFault;
 import fr.urssaf.image.sae.webservices.service.WSRepriseService;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 /**
  * Classe de test du ws de reprise de traitement de masse en erreur.
@@ -157,7 +156,7 @@ public class WSRepriseServiceImplTest {
       jobQueueService.changerEtatJobRequest(job.getIdJob(),
             JobState.FAILURE.name(), failureDate, null);
       
-      String[] roles = new String[] { "reprise_masse" };
+      String[] roles = new String[] { "ROLE_reprise_masse" };
       // Similation du service de reprise
       String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
       VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);

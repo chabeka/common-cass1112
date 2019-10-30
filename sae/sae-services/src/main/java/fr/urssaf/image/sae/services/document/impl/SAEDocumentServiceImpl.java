@@ -84,10 +84,8 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
    /**
     * {@inheritDoc}
     */
-   @Override
    public final List<UntypedDocument> search(final String requete,
-                                             final List<String> listMetaDesired)
-         throws SAESearchServiceEx,
+         final List<String> listMetaDesired) throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
          UnknownDesiredMetadataEx, UnknownLuceneMetadataEx, SyntaxLuceneEx {
       return saeSearchService.search(requete, listMetaDesired);
@@ -130,8 +128,7 @@ public class SAEDocumentServiceImpl implements SAEDocumentService {
     */
    @Override
    public final UntypedDocument consultationAffichable(
-                                                       final ConsultParams consultParams)
-         throws SAEConsultationServiceException,
+         final ConsultParams consultParams) throws SAEConsultationServiceException,
          UnknownDesiredMetadataEx, MetaDataUnauthorizedToConsultEx,
          SAEConsultationAffichableParametrageException {
       return saeConsultationService.consultationAffichable(consultParams);

@@ -34,6 +34,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -104,7 +105,7 @@ public class MetaDataCompletIntegrationTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse" };
+      String[] roles = new String[] { "ROLE_archivage_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
@@ -138,7 +139,7 @@ public class MetaDataCompletIntegrationTest {
       }
 
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test

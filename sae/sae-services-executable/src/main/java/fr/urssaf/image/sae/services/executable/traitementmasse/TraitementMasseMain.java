@@ -105,10 +105,15 @@ public class TraitementMasseMain {
       try {
          instance.execute(args);
       } catch (Exception e) {
-         LOG
+    	  
+    	  if(e instanceof IllegalArgumentException) {
+    		  throw new IllegalArgumentException(e.getMessage());
+    	  } else {
+    		  LOG
                .error(
                      "Une erreur a eu lieu dans le processus du traitement de masse.",
                      e);
+    	  }
       }
    }
 }

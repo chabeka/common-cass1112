@@ -17,6 +17,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -106,7 +107,7 @@ public class SAECommonCaptureServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire" };
+      String[] roles = new String[] { "ROLE_archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);
@@ -135,7 +136,7 @@ public class SAECommonCaptureServiceImplTest {
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    /**

@@ -5,12 +5,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.9-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-services-executable</artifactId>
-   <version>19.7.9-SNAPSHOT</version>
+   <version>19.10.0-SNAPSHOT</version>
    
    <name>sae-services-executable</name>
    
@@ -58,20 +58,6 @@
                               <exclude>org/aspectj/**</exclude>
                            </excludes>
                         </filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
-                        <filter>
-                           <artifact>commons-beanutils:commons-beanutils</artifact>
-                           <excludes>
-                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
-                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
-                           </excludes>
-                        </filter>
                      </filters>
                      <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -82,6 +68,9 @@
                         </transformer>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                           <resource>META-INF/cxf/bus-extensions.txt</resource>
                         </transformer>
                      </transformers>
                   </configuration>
@@ -99,12 +88,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services-batch</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->
@@ -113,19 +102,35 @@
          <artifactId>spring-context</artifactId>
          <version>${spring.framework.version}</version>
       </dependency>
-      
+      <dependency>
+		 <groupId>org.springframework</groupId>
+		 <artifactId>spring-aop</artifactId>
+		 <version>${spring.framework.version}</version>
+	 </dependency>
       <!-- Ponts vers SLF4J -->
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>jcl-over-slf4j</artifactId>
          <version>${jcl-over-slf4j.version}</version>
          <scope>runtime</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
       <dependency>
          <groupId>org.slf4j</groupId>
          <artifactId>log4j-over-slf4j</artifactId>
          <version>${log4j-over-slf4j.version}</version>
          <scope>runtime</scope>   
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
       </dependency>
 
       <!-- Apache Commons -->
@@ -165,6 +170,17 @@
          <scope>test</scope>
       </dependency>
 
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
    </dependencies>
 	<profiles>
 		<profile>

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.commons.lang.text.StrBuilder;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -14,6 +12,7 @@ import org.springframework.core.io.Resource;
 
 import fr.urssaf.image.sae.ordonnanceur.exception.OrdonnanceurRuntimeException;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
+import junit.framework.Assert;
 
 @SuppressWarnings("PMD.MethodNamingConventions")
 public class TraitementMasseLauncherSupportImplTest {

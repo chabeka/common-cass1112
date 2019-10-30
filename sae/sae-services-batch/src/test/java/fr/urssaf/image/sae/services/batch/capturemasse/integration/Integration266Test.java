@@ -4,7 +4,6 @@
 package fr.urssaf.image.sae.services.batch.capturemasse.integration;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.easymock.EasyMock;
 import org.junit.After;
@@ -33,6 +31,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -125,7 +124,7 @@ public class Integration266Test {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse" };
+      String[] roles = new String[] { "ROLE_archivage_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
@@ -164,7 +163,7 @@ public class Integration266Test {
 
       logger.detachAppender(logAppender);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test

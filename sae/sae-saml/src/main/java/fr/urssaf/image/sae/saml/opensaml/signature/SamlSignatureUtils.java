@@ -12,9 +12,9 @@ import org.opensaml.xml.signature.X509Data;
 
 import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlKeyInfoException;
 import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlKeyInfoMissingException;
+import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlX509CertificateMissingException;
 import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlX509ConvertException;
 import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlX509DataMissingException;
-import fr.urssaf.image.sae.saml.exception.signature.keyinfo.SamlX509CertificateMissingException;
 
 
 /**

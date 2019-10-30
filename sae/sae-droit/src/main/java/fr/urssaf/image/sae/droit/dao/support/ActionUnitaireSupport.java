@@ -3,9 +3,6 @@
  */
 package fr.urssaf.image.sae.droit.dao.support;
 
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,6 +10,8 @@ import org.springframework.stereotype.Component;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.droit.dao.ActionUnitaireDao;
 import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
+import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 
 /**
  * Classe de support de la classe {@link ActionUnitaireDao}

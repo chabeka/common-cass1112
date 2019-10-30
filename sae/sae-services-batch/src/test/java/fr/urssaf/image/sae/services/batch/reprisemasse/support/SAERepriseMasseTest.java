@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,6 +39,7 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationContext;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -71,7 +70,7 @@ public class SAERepriseMasseTest {
    @Before
    public void init() throws Exception {
 
-      String[] roles = new String[] { "reprise_masse" };
+      String[] roles = new String[] { "ROLE_reprise_masse" };
       // Similation du service de reprise
       String codeVi = "TEST_REPRISE_JOB_MODIFICATION_MASSE";
       VIContenuExtrait viExtrait = createTestVi("reprise_masse", codeVi);

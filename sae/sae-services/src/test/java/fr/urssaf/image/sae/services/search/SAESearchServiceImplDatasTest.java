@@ -32,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.AbstractMetadata;
 import fr.urssaf.image.sae.bo.model.untyped.PaginatedUntypedDocuments;
@@ -158,8 +159,8 @@ public class SAESearchServiceImplDatasTest {
       prmd.setCode("default");
       prmd.setLucene("Siret:12345678901234");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] {"recherche_iterateur",
-                                           "archivage_unitaire", "recherche", "suppression"};
+      final String[] roles = new String[] { "ROLE_recherche_iterateur",
+                                            "ROLE_archivage_unitaire", "ROLE_recherche", "ROLE_suppression" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("recherche_iterateur", saePrmds);
@@ -177,7 +178,7 @@ public class SAESearchServiceImplDatasTest {
    @After
    public void end() throws IOException {
       try {
-         bean.resetData();
+         bean.resetData(true, MODE_API.HECTOR);
       }
       catch (final Exception e) {
          e.printStackTrace();

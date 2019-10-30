@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package fr.urssaf.image.sae.trace.service;
 
@@ -10,13 +10,12 @@ import fr.urssaf.image.sae.trace.dao.model.TraceJournalEvtIndex;
 
 /**
  * Services du journal des événements du SAE
- * 
  */
 public interface JournalEvtService extends RegService<TraceJournalEvt, TraceJournalEvtIndex> {
 
    /**
     * Exporte l'ensemble des traces du jour donné sous format XML
-    * 
+    *
     * @param date
     *           date pour laquelle réaliser l'export
     * @param repertoire
@@ -28,6 +27,6 @@ public interface JournalEvtService extends RegService<TraceJournalEvt, TraceJour
     * @return le chemin vers le fichier contenant les traces
     */
    String export(Date date, String repertoire, String idJournalPrecedent,
-         String hashJournalPrecedent);
+                 String hashJournalPrecedent);
 
 }

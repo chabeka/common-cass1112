@@ -16,6 +16,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -113,29 +115,6 @@ public class HistEvenementServiceDatasTest {
       Assert.assertEquals("La trace insérée doit être trouvée", true, traceOK);
    }
 
-   /*
-   @Test
-   public void testRetour3ElementsMemeJour() {
-      createTraces();
-   
-      Date dateStart = DATE_INF;
-      Date dateEnd = DATE_SUP;
-   
-      List<DfceTraceSyst> result = service.lecture(dateStart, dateEnd, 3, true);
-      Assert.assertNotNull("il doit y avoir un résultat", result);
-      Assert.assertEquals("le nombre d'éléments de la liste doit etre correct",
-            3, result.size());
-   
-   }
-   
-   private void createTraces() {
-      createTrace(DATE, " [DATE]");
-      createTrace(DATE_INF, " [DATE_INF]");
-      createTrace(DATE_SUP, " [DATE_SUP]");
-      createTrace(DATE_JOUR_SUIVANT, " [DATE_JOUR_SUIVANT]");
-      createTrace(DATE_JOUR_PRECEDENT, " [DATE_JOUR_PRECEDENT]");
-   }
-    */
    private void createTrace(final UUID uuid, final String suffixe) {
       INFOS.put(KEY_UUID, uuid);
       final TraceToCreate trace = new TraceToCreate();

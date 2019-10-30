@@ -4,6 +4,10 @@ import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.Column;
+import com.datastax.driver.mapping.annotations.PartitionKey;
+import com.datastax.driver.mapping.annotations.Table;
+
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 
 /**
@@ -36,8 +40,10 @@ import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
  * 
  * 
  */
+@Table(name = "jobrequest")
 public class JobRequest {
 
+  @PartitionKey
    private UUID idJob;
 
    private String type;
@@ -72,7 +78,8 @@ public class JobRequest {
 
    private String toCheckFlagRaison;
 
-   private VIContenuExtrait viExtrait;
+  @Column(name = "viextrait")
+  private VIContenuExtrait vi;
 
    private Map<String, String> jobParameters;
 
@@ -89,7 +96,7 @@ public class JobRequest {
     * @param idJob
     *           the idJob to set
     */
-   public final void setIdJob(UUID idJob) {
+  public final void setIdJob(final UUID idJob) {
       this.idJob = idJob;
    }
 
@@ -104,7 +111,7 @@ public class JobRequest {
     * @param type
     *           the type to set
     */
-   public final void setType(String type) {
+  public final void setType(final String type) {
       this.type = type;
    }
 
@@ -119,7 +126,7 @@ public class JobRequest {
     * @param parameters
     *           the parameters to set
     */
-   public final void setParameters(String parameters) {
+  public final void setParameters(final String parameters) {
       this.parameters = parameters;
    }
 
@@ -134,7 +141,7 @@ public class JobRequest {
     * @param state
     *           the state to set
     */
-   public final void setState(JobState state) {
+  public final void setState(final JobState state) {
       this.state = state;
    }
 
@@ -149,7 +156,7 @@ public class JobRequest {
     * @param reservedBy
     *           the reservedBy to set
     */
-   public final void setReservedBy(String reservedBy) {
+  public final void setReservedBy(final String reservedBy) {
       this.reservedBy = reservedBy;
    }
 
@@ -165,7 +172,7 @@ public class JobRequest {
     * @param creationDate
     *           the creationDate to set
     */
-   public final void setCreationDate(Date creationDate) {
+  public final void setCreationDate(final Date creationDate) {
       this.creationDate = creationDate == null ? null : new Date(creationDate
             .getTime());
    }
@@ -183,7 +190,7 @@ public class JobRequest {
     * @param reservationDate
     *           the reservationDate to set
     */
-   public final void setReservationDate(Date reservationDate) {
+  public final void setReservationDate(final Date reservationDate) {
       this.reservationDate = reservationDate == null ? null : new Date(
             reservationDate.getTime());
    }
@@ -200,7 +207,7 @@ public class JobRequest {
     * @param startingDate
     *           the startingDate to set
     */
-   public final void setStartingDate(Date startingDate) {
+  public final void setStartingDate(final Date startingDate) {
       this.startingDate = startingDate == null ? null : new Date(startingDate
             .getTime());
    }
@@ -217,7 +224,7 @@ public class JobRequest {
     * @param endingDate
     *           the endingDate to set
     */
-   public final void setEndingDate(Date endingDate) {
+  public final void setEndingDate(final Date endingDate) {
       this.endingDate = endingDate == null ? null : new Date(endingDate
             .getTime());
    }
@@ -226,7 +233,7 @@ public class JobRequest {
     * @param message
     *           : message de compte-rendu du traitement
     */
-   public final void setMessage(String message) {
+  public final void setMessage(final String message) {
       this.message = message;
    }
 
@@ -252,7 +259,7 @@ public class JobRequest {
     *           demande
     * 
     */
-   public final void setSaeHost(String saeHost) {
+  public final void setSaeHost(final String saeHost) {
       this.saeHost = saeHost;
    }
 
@@ -269,7 +276,7 @@ public class JobRequest {
     *           le nom de machine ou l'IP de la machine cliente ayant traité la
     *           demande
     */
-   public final void setClientHost(String clientHost) {
+  public final void setClientHost(final String clientHost) {
       this.clientHost = clientHost;
    }
 
@@ -284,7 +291,7 @@ public class JobRequest {
     * @param docCount
     *           le nombre de documents présents dans le fichier sommaire
     */
-   public final void setDocCount(Integer docCount) {
+  public final void setDocCount(final Integer docCount) {
       this.docCount = docCount;
    }
 
@@ -299,7 +306,7 @@ public class JobRequest {
     * @param pid
     *           le process ID du traitement
     */
-   public final void setPid(Integer pid) {
+  public final void setPid(final Integer pid) {
       this.pid = pid;
    }
 
@@ -314,7 +321,7 @@ public class JobRequest {
     * @param toCheckFlag
     *           the toCheckFlag to set
     */
-   public final void setToCheckFlag(Boolean toCheckFlag) {
+  public final void setToCheckFlag(final Boolean toCheckFlag) {
       this.toCheckFlag = toCheckFlag;
    }
 
@@ -329,7 +336,7 @@ public class JobRequest {
     * @param toCheckFlagRaison
     *           the toCheckFlagRaison to set
     */
-   public final void setToCheckFlagRaison(String toCheckFlagRaison) {
+  public final void setToCheckFlagRaison(final String toCheckFlagRaison) {
       this.toCheckFlagRaison = toCheckFlagRaison;
    }
 
@@ -337,15 +344,15 @@ public class JobRequest {
     * @return le contenu du VI
     */
    public final VIContenuExtrait getVi() {
-      return viExtrait;
+    return vi;
    }
 
    /**
     * @param viExtrait
     *           le contenu du VI
     */
-   public final void setVi(VIContenuExtrait viExtrait) {
-      this.viExtrait = viExtrait;
+  public final void setVi(final VIContenuExtrait viExtrait) {
+    this.vi = viExtrait;
    }
 
    /**
@@ -362,7 +369,7 @@ public class JobRequest {
     * @param jobParameters
     *              Objet contenant tous les paramètres du job
     */
-   public final void setJobParameters(Map<String, String> jobParameters) {
+  public final void setJobParameters(final Map<String, String> jobParameters) {
       this.jobParameters = jobParameters;
    }
 
@@ -381,7 +388,7 @@ public class JobRequest {
     * @param jobKey
     *           the jobKey to set
     */
-   public void setJobKey(byte[] jobKey) {
+  public void setJobKey(final byte[] jobKey) {
       this.jobKey = jobKey;
    }
 
@@ -400,7 +407,7 @@ public class JobRequest {
     * @param docCountTraite
     *           the docCountTraite to set
     */
-   public void setDocCountTraite(Integer docCountTraite) {
+  public void setDocCountTraite(final Integer docCountTraite) {
       this.docCountTraite = docCountTraite;
    }
 

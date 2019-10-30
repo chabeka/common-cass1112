@@ -5,7 +5,6 @@ package fr.urssaf.image.sae.trace.commons;
 
 /**
  * Classe contenant les constantes communes aux différentes couches
- * 
  */
 public final class Constantes {
 

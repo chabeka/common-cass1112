@@ -1,8 +1,8 @@
 package fr.urssaf.image.sae.rnd.service;
 
-import org.junit.Before;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.rnd.dao.support.RndSupport;
 import fr.urssaf.image.sae.rnd.exception.CodeRndInexistantException;
@@ -35,7 +36,7 @@ public class RndServiceTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+	   server.resetData(true, MODE_API.HECTOR);
    }
    
    @Before

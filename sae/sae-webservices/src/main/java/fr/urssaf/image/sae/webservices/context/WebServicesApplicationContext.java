@@ -1,10 +1,10 @@
 package fr.urssaf.image.sae.webservices.context;
 
-import me.prettyprint.cassandra.utils.Assert;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import me.prettyprint.cassandra.utils.Assert;
 
 /**
  * Cette classe permet d'accéder à l'instance {@link ApplicationContext} de

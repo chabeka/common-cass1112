@@ -7,8 +7,8 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
 
-import me.prettyprint.cassandra.serializers.AbstractSerializer;
 import fr.urssaf.image.commons.cassandra.serializer.XMLSerializer;
+import me.prettyprint.cassandra.serializers.AbstractSerializer;
 
 /**
  * 

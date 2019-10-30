@@ -3,7 +3,7 @@
 
   <groupId>fr.urssaf.image.sae</groupId>
   <artifactId>sae-format</artifactId>
-  <version>19.7.9-SNAPSHOT</version>
+  <version>19.10.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <description>Gestion du référentiel des formats et service d'identification et de validation.</description>
 
@@ -12,7 +12,7 @@
   <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.9-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>  
 
    <properties>
@@ -137,6 +137,38 @@
             	<groupId>org.apache.cxf</groupId>
             	<artifactId>cxf-rt-bindings-soap</artifactId>
             </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-rt-transports-http</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-rt-frontend-simple</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-api</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.geronimo.specs</groupId>
+            	<artifactId>geronimo-jaxws_2.1_spec</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.geronimo.specs</groupId>
+            	<artifactId>geronimo-activation_1.1_spec</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.geronimo.specs</groupId>
+            	<artifactId>geronimo-ws-metadata_2.0_spec</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-common-utilities</artifactId>
+            </exclusion>
+            <exclusion>
+            	<groupId>org.apache.cxf</groupId>
+            	<artifactId>cxf-common-schemas</artifactId>
+            </exclusion>
          </exclusions>
       </dependency>
       
@@ -144,7 +176,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- Joda Time  -->
@@ -190,7 +222,11 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
-   
+   	  <dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-aop</artifactId>
+		<version>${spring.framework.version}</version>
+	  </dependency>
       <!-- Apache Commons -->
       <dependency>
          <groupId>commons-lang</groupId>
@@ -255,17 +291,6 @@
          <groupId>org.javassist</groupId>
          <artifactId>javassist</artifactId>
          <version>${javassist.version}</version>
-      </dependency>
-      
-      <!--
-      Bouncy Castle Cryptography APIs
-      Dépendance par transitivité, on fixe la version pour gérer
-      les conflits de versions.
-      -->
-      <dependency>
-         <groupId>bouncycastle</groupId>
-         <artifactId>bcprov-jdk16</artifactId>
-         <version>${bcprov-jdk16.version}</version>
       </dependency>
       
       <!-- commons-itext -->

@@ -24,7 +24,7 @@
    </listener>
    
    <listener>
-      <listener-class>fr.urssaf.image.sae.webservices.lintener.SaeServletContextListener</listener-class>
+      <listener-class>fr.urssaf.image.sae.webservices.listener.SaeServletContextListener</listener-class>
    </listener>
    
    <!-- Ou utilisation de la servlet ContextLoaderServlet-->

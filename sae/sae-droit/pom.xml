@@ -4,12 +4,12 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.9-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-droit</artifactId>
-   <version>19.7.9-SNAPSHOT</version>
+   <version>19.10.0-SNAPSHOT</version>
    <packaging>jar</packaging>
 
 	<name>sae-droit</name>
@@ -49,12 +49,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-commons</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-bo</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- SPRING -->
@@ -76,6 +76,12 @@
 			<version>${spring.framework.version}</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
 
       <!-- GUAVA -->
 		<dependency>
@@ -89,6 +95,11 @@
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjrt</artifactId>
+			<version>${aspectj.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.aspectj</groupId>
+			<artifactId>aspectjweaver</artifactId>
 			<version>${aspectj.version}</version>
 		</dependency>
 

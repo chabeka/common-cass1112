@@ -1,16 +1,11 @@
 package fr.urssaf.image.sae.webservices.service.factory;
 
-import java.util.List;
-
-import javax.activation.DataHandler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.cirtil.www.saeservice.AjoutNoteResponse;
 import fr.cirtil.www.saeservice.AjoutNoteResponseType;
 import fr.cirtil.www.saeservice.ConsultationResponse;
-import fr.cirtil.www.saeservice.MetadonneeType;
 
 /**
  * Classe d'instanciation de :

@@ -29,7 +29,6 @@ import fr.urssaf.image.sae.trace.utils.XmlValidationUtils;
  * Classe d'implémentation de l'interface {@link JournalisationService}. Cette
  * classe est un singleton et peut être accessible via le mécanisme d'injection
  * IOC avec l'annotation @Autowired
- * 
  */
 @Service
 public class JournalisationServiceImpl implements JournalisationService {
@@ -49,8 +48,8 @@ public class JournalisationServiceImpl implements JournalisationService {
     * {@inheritDoc}
     */
    @Override
-   public final String exporterTraces(JournalisationType typeJournalisation,
-         String repertoire, Date date) {
+   public final String exporterTraces(final JournalisationType typeJournalisation,
+                                      final String repertoire, final Date date) {
 
       String chemin, ident, hash;
 
@@ -67,10 +66,11 @@ public class JournalisationServiceImpl implements JournalisationService {
 
          } else {
             throw new TraceRuntimeException(
-                  "type de journalisation non supporté");
+                                            "type de journalisation non supporté");
          }
 
-      } catch (ParameterNotFoundException exception) {
+      }
+      catch (final ParameterNotFoundException exception) {
          throw new TraceRuntimeException(exception);
       }
 
@@ -80,27 +80,30 @@ public class JournalisationServiceImpl implements JournalisationService {
    /**
     * @param chemin
     */
-   private void checkFormat(String chemin) {
+   private void checkFormat(final String chemin) {
       try {
 
-         Resource sommaireXSD = applicationContext.getResource(RESULTATS_XSD);
+         final Resource sommaireXSD = applicationContext.getResource(RESULTATS_XSD);
 
-         URL xsdSchema = sommaireXSD.getURL();
+         final URL xsdSchema = sommaireXSD.getURL();
 
          XmlValidationUtils.parse(new File(chemin), xsdSchema);
 
-      } catch (IOException exception) {
+      }
+      catch (final IOException exception) {
          throw new TraceRuntimeException(
-               "Erreur lors de la validation XSD du fichier généré : " + chemin,
-               exception);
-      } catch (ParserConfigurationException exception) {
+                                         "Erreur lors de la validation XSD du fichier généré : " + chemin,
+                                         exception);
+      }
+      catch (final ParserConfigurationException exception) {
          throw new TraceRuntimeException(
-               "Erreur lors de la validation XSD du fichier généré : " + chemin,
-               exception);
-      } catch (SAXException exception) {
+                                         "Erreur lors de la validation XSD du fichier généré : " + chemin,
+                                         exception);
+      }
+      catch (final SAXException exception) {
          throw new TraceRuntimeException(
-               "Erreur lors de la validation XSD du fichier généré : " + chemin,
-               exception);
+                                         "Erreur lors de la validation XSD du fichier généré : " + chemin,
+                                         exception);
       }
 
    }
@@ -109,10 +112,10 @@ public class JournalisationServiceImpl implements JournalisationService {
     * {@inheritDoc}
     */
    @Override
-   public final List<Date> recupererDates(JournalisationType typeJournalisation) {
+   public final List<Date> recupererDates(final JournalisationType typeJournalisation) {
 
       // pour l'instant, il n'y a qu'un seul journal
-      Date lastDate = DateUtils.truncate(new Date(), Calendar.DATE);
+      final Date lastDate = DateUtils.truncate(new Date(), Calendar.DATE);
       Date firstDate;
 
       try {
@@ -122,11 +125,12 @@ public class JournalisationServiceImpl implements JournalisationService {
          // traiter est donc à J+1
          firstDate = DateUtils.addDays(firstDate, 1);
 
-      } catch (ParameterNotFoundException exception) {
+      }
+      catch (final ParameterNotFoundException exception) {
          throw new TraceRuntimeException(exception);
       }
 
-      List<Date> dates = new ArrayList<Date>();
+      final List<Date> dates = new ArrayList<Date>();
 
       while (firstDate.before(lastDate)) {
 

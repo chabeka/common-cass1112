@@ -1,327 +1,236 @@
+/**
+ *
+ */
 package fr.urssaf.image.sae.pile.travaux.service.impl;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.serializers.BytesArraySerializer;
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.serializers.UUIDSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
-import me.prettyprint.cassandra.service.template.ColumnFamilyResultWrapper;
-import me.prettyprint.cassandra.service.template.IndexedSlicesPredicate;
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.beans.OrderedRows;
-import me.prettyprint.hector.api.factory.HFactory;
-import me.prettyprint.hector.api.query.QueryResult;
-import me.prettyprint.hector.api.query.RangeSlicesQuery;
-import me.prettyprint.hector.api.query.SliceQuery;
-
-import org.apache.cassandra.thrift.IndexOperator;
-import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
 
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.IndexedSlicesPredicateHelper;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
-import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
-import fr.urssaf.image.sae.pile.travaux.dao.JobsQueueDao;
-import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobQueueIterator;
-import fr.urssaf.image.sae.pile.travaux.dao.iterator.JobRequestRowsIterator;
-import fr.urssaf.image.sae.pile.travaux.dao.serializer.JobQueueSerializer;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
 import fr.urssaf.image.sae.pile.travaux.exception.JobInexistantException;
 import fr.urssaf.image.sae.pile.travaux.model.JobHistory;
 import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.modelcql.JobRequestCql;
 import fr.urssaf.image.sae.pile.travaux.service.JobLectureService;
+import fr.urssaf.image.sae.pile.travaux.service.cql.JobLectureCqlService;
+import fr.urssaf.image.sae.pile.travaux.service.thrift.JobLectureThriftService;
+import fr.urssaf.image.sae.pile.travaux.utils.JobHistoryMapper;
+import fr.urssaf.image.sae.pile.travaux.utils.JobRequestMapper;
+import fr.urssaf.image.sae.pile.travaux.utils.JobsQueueMapper;
+import me.prettyprint.hector.api.Keyspace;
 
 /**
- * Implémentation du service {@link JobLectureService}
- * 
- * 
+ * @author AC75007648
  */
 @Service
 public class JobLectureServiceImpl implements JobLectureService {
 
-   private static final int MAX_ALL_JOBS = 200;
+  private final String cfName = "jobsqueue";
 
-   private final JobRequestDao jobRequestDao;
+  private final JobLectureCqlService jobLectureCqlService;
 
-   private final JobsQueueDao jobsQueueDao;
+  private final JobLectureThriftService jobLectureThriftService;
 
-   private final JobHistoryDao jobHistoryDao;
+  @Autowired
+  public JobLectureServiceImpl(final JobLectureCqlService jobLectureCqlService, final JobLectureThriftService jobLectureThriftService) {
+    super();
+    this.jobLectureCqlService = jobLectureCqlService;
+    this.jobLectureThriftService = jobLectureThriftService;
+  }
 
-   private static final int MAX_JOB_ATTIBUTS = 100;
-
-   /**
-    * Valeur de la clé pour les jobs en attente de réservation
-    */
-   private static final String JOBS_WAITING_KEY = "jobsWaiting";
-
-   /**
-    * 
-    * @param jobRequestDao
-    *           DAO de {@link JobRequest}
-    * @param jobsQueueDao
-    *           DAO de {@link JobQueue}
-    * @param jobHistoryDao
-    *           DAO de {@link JobHistory}
-    */
-   @Autowired
-   public JobLectureServiceImpl(JobRequestDao jobRequestDao,
-         JobsQueueDao jobsQueueDao, JobHistoryDao jobHistoryDao) {
-
-      this.jobRequestDao = jobRequestDao;
-      this.jobsQueueDao = jobsQueueDao;
-      this.jobHistoryDao = jobHistoryDao;
-
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final JobRequest getJobRequest(UUID jobRequestUUID) {
-
-      // Requête dans Cassandra
-      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-            .getJobRequestTmpl().queryColumns(jobRequestUUID);
-
-      // Conversion en objet JobRequest
-      JobRequest jobRequest = jobRequestDao.createJobRequestFromResult(result);
-
-      return jobRequest;
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final JobRequest getJobRequestNotNull(UUID uuidJob) throws JobInexistantException {
-      JobRequest jobRequest = this.getJobRequest(uuidJob);
-      if(jobRequest == null){
-         throw new JobInexistantException(uuidJob);
-      }      
-      return jobRequest;      
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final Iterator<JobQueue> getUnreservedJobRequestIterator() {
-
-      SliceQuery<String, UUID, String> sliceQuery = jobsQueueDao
-            .createSliceQuery();
-      sliceQuery.setKey(JOBS_WAITING_KEY);
-
-      return new JobQueueIterator(sliceQuery);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<JobQueue> getNonTerminatedSimpleJobs(String hostname) {
-
-      ColumnFamilyResult<String, UUID> result = jobsQueueDao.getJobsQueueTmpl()
-            .queryColumns(hostname);
-      Collection<UUID> colNames = result.getColumnNames();
-      List<JobQueue> list = new ArrayList<JobQueue>(colNames.size());
-      JobQueueSerializer serializer = JobQueueSerializer.get();
-      for (UUID uuid : colNames) {
-         JobQueue jobQueue = serializer.fromBytes(result.getByteArray(uuid));
-         list.add(jobQueue);
+  @Override
+  public JobRequest getJobRequest(final UUID jobRequestUUID) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final JobRequestCql jobRequestCql = jobLectureCqlService.getJobRequest(jobRequestUUID);
+      // Vérifier que le job existe
+      if (jobRequestCql == null) {
+        try {
+          throw new JobInexistantException(jobRequestUUID);
+        }
+        catch (final JobInexistantException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
       }
-      return list;
-   }
+      return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(jobRequestCql);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getJobRequest(jobRequestUUID);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getJobRequest(jobRequestUUID);
+    }
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<JobRequest> getNonTerminatedJobs(String key) {
+  @Override
+  public Iterator<JobQueue> getUnreservedJobRequestIterator() {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return JobsQueueMapper.mapIteratorJobQueueToIteratorJobQueueCql(jobLectureCqlService.getUnreservedJobRequestIterator());
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getUnreservedJobRequestIterator();
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getUnreservedJobRequestIterator();
+    }
+    return null;
+  }
 
-      List<JobQueue> jobQueues = this.getNonTerminatedSimpleJobs(key);
+  @Override
+  public List<JobQueue> getNonTerminatedSimpleJobs(final String hostname) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return JobsQueueMapper.mapListJobQueueToListJobQueueCql(jobLectureCqlService.getNonTerminatedSimpleJobs(hostname));
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getNonTerminatedSimpleJobs(hostname);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getNonTerminatedSimpleJobs(hostname);
+    }
+    return null;
+  }
 
-      List<JobRequest> jobRequests = new ArrayList<JobRequest>();
-
-      for (JobQueue jobQueue : jobQueues) {
-         JobRequest jobRequest = this.getJobRequest(jobQueue.getIdJob());
-         jobRequests.add(jobRequest);
+  @Override
+  public List<JobRequest> getNonTerminatedJobs(final String key) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final List<JobRequest> listJobT = new ArrayList<>();
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getNonTerminatedJobs(key);
+      for (final JobRequestCql job : listRequestCql) {
+        listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
+      return listJobT;
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getNonTerminatedJobs(key);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getNonTerminatedJobs(key);
+    }
+    return null;
+  }
 
-      return jobRequests;
-   }
+  @Override
+  public List<JobHistory> getJobHistory(final UUID idJob) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return JobHistoryMapper.mapListJobHistoryCqlToListJobHistory(jobLectureCqlService.getJobHistory(idJob).get(0));
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getJobHistory(idJob);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getJobHistory(idJob);
+    }
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<JobHistory> getJobHistory(UUID idJob) {
-
-      ColumnFamilyResult<UUID, UUID> result = jobHistoryDao.getJobHistoryTmpl()
-            .queryColumns(idJob);
-
-      Collection<UUID> colNames = result.getColumnNames();
-      List<JobHistory> histories = new ArrayList<JobHistory>(colNames.size());
-      StringSerializer serializer = StringSerializer.get();
-      for (UUID timeUUID : colNames) {
-
-         JobHistory jobHistory = new JobHistory();
-
-         jobHistory.setTrace(serializer
-               .fromBytes(result.getByteArray(timeUUID)));
-         jobHistory.setDate(new Date(TimeUUIDUtils.getTimeFromUUID(timeUUID)));
-
-         histories.add(jobHistory);
-
+  @Override
+  public List<JobRequest> getAllJobs(final Keyspace keyspace) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final List<JobRequest> listJobT = new ArrayList<>();
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs();
+      for (final JobRequestCql job : listRequestCql) {
+        listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
-      return histories;
+      return listJobT;
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getAllJobs(keyspace);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getAllJobs(keyspace);
+    }
+    return null;
+  }
 
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<JobRequest> getAllJobs(Keyspace keyspace) {
-      return getAllJobs(keyspace, MAX_ALL_JOBS);
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final List<JobRequest> getAllJobs(Keyspace keyspace, int maxKeysToRead) {
-
-      // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
-      // en requêtant directement dans la CF JobRequest
-      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(keyspace, UUIDSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
-      rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
-      rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
-      rangeSlicesQuery.setRowCount(maxKeysToRead);
-      QueryResult<OrderedRows<UUID, String, byte[]>> queryResult = rangeSlicesQuery
-            .execute();
-
-      // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-      // son utilisation
-      QueryResultConverter<UUID, String, byte[]> converter = new QueryResultConverter<UUID, String, byte[]>();
-      ColumnFamilyResultWrapper<UUID, String> result = converter
-            .getColumnFamilyResultWrapper(queryResult, UUIDSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
-
-      // On itère sur le résultat
-      HectorIterator<UUID, String> resultIterator = new HectorIterator<UUID, String>(
-            result);
-      List<JobRequest> list = new ArrayList<JobRequest>();
-      for (ColumnFamilyResult<UUID, String> row : resultIterator) {
-         JobRequest jobRequest = jobRequestDao.createJobRequestFromResult(row);
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
-         // effacé
-         if (jobRequest != null)
-            list.add(jobRequest);
+  @Override
+  public List<JobRequest> getAllJobs(final Keyspace keyspace, final int maxKeysToRead) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final List<JobRequest> listJobT = new ArrayList<>();
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getAllJobs(maxKeysToRead);
+      for (final JobRequestCql job : listRequestCql) {
+        listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
-      return list;
+      return listJobT;
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getAllJobs(keyspace, maxKeysToRead);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getAllJobs(keyspace, maxKeysToRead);
+    }
+    return null;
+  }
 
-   }
-
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public List<JobRequest> getJobsToDelete(Keyspace keyspace, Date dateMax) {
-
-      List<JobRequest> list = new ArrayList<JobRequest>();
-      // On n'utilise pas d'index. On récupère tous les jobs sans distinction,
-      // en requêtant directement dans la CF JobRequest
-      BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-      RangeSlicesQuery<UUID, String, byte[]> rangeSlicesQuery = HFactory
-            .createRangeSlicesQuery(keyspace, UUIDSerializer.get(),
-                  StringSerializer.get(), bytesSerializer);
-      rangeSlicesQuery.setColumnFamily(JobRequestDao.JOBREQUEST_CFNAME);
-      rangeSlicesQuery.setRange("", "", false, MAX_JOB_ATTIBUTS);
-
-      JobRequestRowsIterator iterator = new JobRequestRowsIterator(rangeSlicesQuery, 1000, jobRequestDao);
-      while (iterator.hasNext()) {
-         JobRequest jobRequest = iterator.next();
-         // On peut obtenir un jobRequest null dans le cas d'un jobRequest
-         // effacé
-         if (jobRequest != null && (jobRequest.getCreationDate().before(dateMax)
-               || DateUtils.isSameDay(jobRequest.getCreationDate(), dateMax))) {
-            list.add(jobRequest);
-         }
+  @Override
+  public List<JobRequest> getJobsToDelete(final Keyspace keyspace, final Date dateMax) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final List<JobRequest> listJobT = new ArrayList<>();
+      final List<JobRequestCql> listRequestCql = jobLectureCqlService.getJobsToDelete(dateMax);
+      for (final JobRequestCql job : listRequestCql) {
+        listJobT.add(JobRequestMapper.mapJobRequestCqlToJobRequestThrift(job));
       }
+      return listJobT;
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getJobsToDelete(keyspace, dateMax);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getJobsToDelete(keyspace, dateMax);
+    }
+    return null;
+  }
 
-      return list;
-   }
+  @Override
+  public boolean isJobResettable(final JobRequest job) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return jobLectureCqlService.isJobResettable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.isJobResettable(job);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.isJobResettable(job);
+    }
+    return false;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean isJobResettable(JobRequest job) {
-      String state = job.getState().toString();
-      if (state.equals("RESERVED") || state.equals("STARTING")) {
-         return true;
-      }
-      return false;
-   }
+  @Override
+  public boolean isJobRemovable(final JobRequest job) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return jobLectureCqlService.isJobRemovable(JobRequestMapper.mapJobRequestThriftToJobRequestCql(job));
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.isJobRemovable(job);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.isJobRemovable(job);
+    }
+    return false;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public final boolean isJobRemovable(JobRequest job) {
-      String state = job.getState().toString();
-      if ("CREATED".equals(state) || "STARTING".equals(state)
-            || "RESERVED".equals(state)) {
-         return true;
-      }
-      return false;
-   }
+  @Override
+  public JobRequest getJobRequestNotNull(final UUID uuidJob) throws JobInexistantException {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      final JobRequestCql cql = jobLectureCqlService.getJobRequestNotNull(uuidJob);
+      return JobRequestMapper.mapJobRequestCqlToJobRequestThrift(cql);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getJobRequestNotNull(uuidJob);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getJobRequestNotNull(uuidJob);
+    }
+    return null;
+  }
 
-   /**
-    * {@inheritDoc}
-    */
-   @Override
-   public UUID getJobRequestIdByJobKey(byte[] jobKey) {
-      Assert.notNull(jobKey, "Job key must not be null.");
-      IndexedSlicesPredicate<UUID, String, byte[]> predicate = new IndexedSlicesPredicate<UUID, String, byte[]>(
-            UUIDSerializer.get(), StringSerializer.get(),
-            BytesArraySerializer.get());
-      predicate.addExpression(JobRequestDao.JR_JOB_KEY_COLUMN,
-            IndexOperator.EQ, jobKey);
-
-      // Il est obligatoire de préciser une "start_key". (à ne pas confondre
-      // avec Starsky !)
-      // Ce "start_key" ne correspond pas à la clé de JobInstance, mais à la clé
-      // de JobInstance.jobKey_idx
-      // Il faut donc l'exprimer en bytes, mais l'API d'hector veut l'exprimer
-      // en long, ce qui n'est pas bon.
-      // Pour contourner le problème on passe par
-      // IndexedSlicesPredicateHelper.setEmptyStartKey
-      IndexedSlicesPredicateHelper.setEmptyStartKey(predicate);
-      // predicate.startKey(new byte[0]);
-      predicate.count(1);
-      ColumnFamilyResult<UUID, String> result = this.jobRequestDao
-            .getJobRequestTmpl().queryColumns(predicate);
-
-      if (!result.hasResults()) {
-         return null;
-      }
-
-      return result.getKey();
-   }
+  @Override
+  public UUID getJobRequestIdByJobKey(final byte[] jobKey) {
+    final String modeApi = ModeGestionAPI.getModeApiCf(cfName);
+    if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+      return jobLectureCqlService.getJobRequestIdByJobKey(jobKey);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+      return jobLectureThriftService.getJobRequestIdByJobKey(jobKey);
+    } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+      return jobLectureThriftService.getJobRequestIdByJobKey(jobKey);
+    }
+    return null;
+  }
 
 }

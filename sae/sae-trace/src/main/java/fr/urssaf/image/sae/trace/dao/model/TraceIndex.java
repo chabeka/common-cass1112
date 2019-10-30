@@ -5,10 +5,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import com.datastax.driver.mapping.annotations.Column;
+
 /**
  * Classe de modèle générique pour les CF des traces
- * 
- * 
  */
 public class TraceIndex {
 
@@ -30,6 +30,7 @@ public class TraceIndex {
    /**
     * Code événement
     */
+  @Column(name = "codeevt")
    private String codeEvt;
 
    /** Le ou les PAGM */
@@ -48,7 +49,7 @@ public class TraceIndex {
     * @param exploitation
     *           trace d'exploitation
     */
-   public TraceIndex(Trace exploitation) {
+  public TraceIndex(final Trace exploitation) {
       this.codeEvt = exploitation.getCodeEvt();
       this.pagms.addAll(exploitation.getPagms());
       this.identifiant = exploitation.getIdentifiant();
@@ -67,7 +68,7 @@ public class TraceIndex {
     * @param identifiant
     *           l'identifiant de la trace
     */
-   public final void setIdentifiant(UUID identifiant) {
+  public final void setIdentifiant(final UUID identifiant) {
       this.identifiant = identifiant;
    }
 
@@ -82,7 +83,7 @@ public class TraceIndex {
     * @param timestamp
     *           la date de création de la trace
     */
-   public final void setTimestamp(Date timestamp) {
+  public final void setTimestamp(final Date timestamp) {
       this.timestamp = getDateCopy(timestamp);
    }
 
@@ -97,7 +98,7 @@ public class TraceIndex {
     * @param login
     *           le login de l'utilisateur
     */
-   public final void setLogin(String login) {
+  public final void setLogin(final String login) {
       this.login = login;
    }
 
@@ -112,7 +113,7 @@ public class TraceIndex {
     * @param pagms
     *           les pagms
     */
-   public final void setPagms(List<String> pagms) {
+  public final void setPagms(final List<String> pagms) {
       this.pagms = pagms;
    }
 
@@ -127,11 +128,11 @@ public class TraceIndex {
     * @param codeEvt
     *           le code événement
     */
-   public final void setCodeEvt(String codeEvt) {
+  public final void setCodeEvt(final String codeEvt) {
       this.codeEvt = codeEvt;
    }
 
-   private Date getDateCopy(Date date) {
+  private Date getDateCopy(final Date date) {
       Date tDate = null;
       if (date != null) {
          tDate = new Date(date.getTime());

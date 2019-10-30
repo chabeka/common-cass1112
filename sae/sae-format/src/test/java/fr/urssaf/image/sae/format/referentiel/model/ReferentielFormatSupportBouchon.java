@@ -1,7 +1,5 @@
 package fr.urssaf.image.sae.format.referentiel.model;
 
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -10,6 +8,7 @@ import fr.urssaf.image.sae.format.referentiel.dao.ReferentielFormatDao;
 import fr.urssaf.image.sae.format.referentiel.exceptions.ReferentielRuntimeException;
 import fr.urssaf.image.sae.format.referentiel.exceptions.UnknownParameterException;
 import fr.urssaf.image.sae.format.utils.message.SaeFormatMessageHandler;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * 

@@ -1,6 +1,6 @@
 package fr.urssaf.image.sae.services.documentExistent;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -85,7 +86,7 @@ public class SAEDocumentExistantServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "documentExistant" };
+      String[] roles = new String[] { "ROLE_documentExistant" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("documentExistant", saePrmds);
@@ -96,7 +97,7 @@ public class SAEDocumentExistantServiceTest {
 
       // Paramétrage du RND
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
       parametersService.setVersionRndDateMaj(new Date());
       parametersService.setVersionRndNumero("11.2");
 
@@ -124,7 +125,7 @@ public class SAEDocumentExistantServiceTest {
       // on vide le contexte de sécurité
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    private UUID capture() throws IOException, ConnectionServiceEx,

@@ -3,13 +3,13 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-trace-executable</artifactId>
-   <version>19.7.9-SNAPSHOT</version>
+   <version>19.10.0-SNAPSHOT</version>
    <packaging>jar</packaging>
 
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.9-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>
 
    <name>sae-trace-executable</name>
@@ -25,12 +25,12 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-trace</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-services</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- Spring -->
@@ -40,7 +40,11 @@
          <version>${spring.framework.version}</version>
          <scope>test</scope>
       </dependency>
-      
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
       <!-- AspectJ -->
       <dependency>
          <groupId>org.aspectj</groupId>
@@ -128,20 +132,6 @@
                               <exclude>org/aspectj/**</exclude>
                            </excludes>
                         </filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
-                        <filter>
-                           <artifact>commons-beanutils:commons-beanutils</artifact>
-                           <excludes>
-                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
-                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
-                           </excludes>
-                        </filter>
                      </filters>
                      <transformers>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -152,6 +142,9 @@
                         </transformer>
                         <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
                            <resource>META-INF/spring.schemas</resource>
+                        </transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                          <resource>META-INF/cxf/bus-extensions.txt</resource>
                         </transformer>
                      </transformers>
                   </configuration>

@@ -5,6 +5,7 @@ package fr.urssaf.image.sae.trace.dao;
 
 import java.util.UUID;
 
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.serializers.UUIDSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
@@ -12,7 +13,6 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.query.SliceQuery;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
 
 /**
  * Classe mère de traitement des données d'index

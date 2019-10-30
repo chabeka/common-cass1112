@@ -42,6 +42,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.commons.service.ParametersService;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
@@ -136,7 +137,7 @@ public class IntegrationDeleteOutOfMemoryTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "archivage_masse", "recherche" };
+      final String[] roles = new String[] { "ROLE_archivage_masse", "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
@@ -174,7 +175,7 @@ public class IntegrationDeleteOutOfMemoryTest {
 
       EasyMock.reset(provider, storageDocumentService);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test

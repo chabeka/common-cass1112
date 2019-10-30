@@ -9,8 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +19,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
 import fr.urssaf.image.sae.trace.exception.TraceRuntimeException;
+import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-trace-test.xml" })
@@ -39,7 +39,7 @@ public class TraceRegDestinataireDaoTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test(expected = TraceRuntimeException.class)

@@ -41,6 +41,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.xml.sax.SAXException;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -138,7 +139,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_masse", "recherche" };
+      String[] roles = new String[] { "ROLE_archivage_masse", "ROLE_recherche" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_masse", saePrmds);
@@ -180,7 +181,7 @@ public class IntegrationRollBack11DocRechercheSuccesTest {
 
       EasyMock.reset(provider, storageDocumentService, impl);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test

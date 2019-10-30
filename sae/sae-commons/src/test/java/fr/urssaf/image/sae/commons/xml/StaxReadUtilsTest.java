@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import javax.xml.stream.XMLStreamException;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
+
+import junit.framework.Assert;
 
 public class StaxReadUtilsTest {
 

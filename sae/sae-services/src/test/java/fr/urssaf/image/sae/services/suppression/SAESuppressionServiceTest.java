@@ -26,6 +26,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.StringUtils;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.commons.service.ParametersService;
@@ -100,7 +101,7 @@ public class SAESuppressionServiceTest {
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
 
       if (ecde != null) {
          // supprime le repertoire ecde
@@ -112,7 +113,7 @@ public class SAESuppressionServiceTest {
    @Before
    public void init() throws Exception {
 
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
 
       final VIContenuExtrait viExtrait = new VIContenuExtrait();
       viExtrait.setCodeAppli("TESTS_UNITAIRES");
@@ -126,7 +127,7 @@ public class SAESuppressionServiceTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      final String[] roles = new String[] { "suppression", "archivage_unitaire" };
+      final String[] roles = new String[] { "ROLE_suppression", "ROLE_archivage_unitaire" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("suppression", saePrmds);

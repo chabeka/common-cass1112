@@ -4,13 +4,13 @@
 	<parent>
 		<groupId>fr.urssaf.image.sae</groupId>
 		<artifactId>sae</artifactId>
-		<version>19.7.9-SNAPSHOT</version>
+		<version>19.10.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>fr.urssaf.image.sae</groupId>
 	<artifactId>sae-lotinstallmaj</artifactId>
 	<packaging>jar</packaging>
-	<version>19.7.9-SNAPSHOT</version>
+	<version>19.10.0-SNAPSHOT</version>
 
 	<name>sae-lotinstallmaj</name>
 
@@ -41,20 +41,6 @@
 										<exclude>org/aspectj/**</exclude>
 									</excludes>
 								</filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
-								<filter>
-									<artifact>commons-beanutils:commons-beanutils</artifact>
-									<excludes>
-										<exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-										<exclude>org/apache/commons/collections/Buffer.class</exclude>
-										<exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-										<exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
-									</excludes>
-								</filter>
 							</filters>
 							<transformers>
 								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
@@ -66,6 +52,9 @@
 								<transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
 									<resource>META-INF/spring.schemas</resource>
 								</transformer>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                          <resource>META-INF/cxf/bus-extensions.txt</resource>
+                        </transformer>
 							</transformers>
 						</configuration>
 					</execution>
@@ -216,17 +205,17 @@
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-commons</artifactId>
-			<version>19.7.9-SNAPSHOT</version>
+			<version>19.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-metadata</artifactId>
-			<version>19.7.9-SNAPSHOT</version>
+			<version>19.10.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>fr.urssaf.image.sae</groupId>
 			<artifactId>sae-droit</artifactId>
-			<version>19.7.9-SNAPSHOT</version>
+			<version>19.10.0-SNAPSHOT</version>
 		</dependency>
 
       <!-- Spring -->
@@ -250,6 +239,11 @@
 			<artifactId>spring-test</artifactId>
 			<version>${spring.framework.version}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aop</artifactId>
+			<version>${spring.framework.version}</version>
 		</dependency>
 
       <!-- AspectJ -->
@@ -296,6 +290,11 @@
 			<version>${opencsv.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>	
 	</dependencies>
 
 </project>

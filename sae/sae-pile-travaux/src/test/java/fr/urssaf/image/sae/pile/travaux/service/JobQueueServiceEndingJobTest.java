@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import me.prettyprint.cassandra.utils.TimeUUIDUtils;
-
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -27,6 +25,7 @@ import fr.urssaf.image.sae.pile.travaux.model.JobQueue;
 import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 import fr.urssaf.image.sae.pile.travaux.model.JobState;
 import fr.urssaf.image.sae.pile.travaux.model.JobToCreate;
+import me.prettyprint.cassandra.utils.TimeUUIDUtils;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-pile-travaux-test.xml" })
@@ -42,7 +41,7 @@ public class JobQueueServiceEndingJobTest {
 
    private UUID idJob;
 
-   private void setJob(UUID idJob) {
+   private void setJob(final UUID idJob) {
       this.idJob = idJob;
    }
 
@@ -71,49 +70,56 @@ public class JobQueueServiceEndingJobTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
-      String reservedBy = "hostname";
+      final String reservedBy = "hostname";
       jobQueueService.reserveJob(idJob, reservedBy, new Date());
       jobQueueService.startingJob(idJob, new Date());
 
-      Date dateFinTraitement = new Date();
-      jobQueueService.endingJob(idJob, true, dateFinTraitement,
-            "traitement a réussi", null);
+      final Date dateFinTraitement = new Date();
+      jobQueueService.endingJob(idJob,
+                                true,
+                                dateFinTraitement,
+                                "traitement a réussi",
+                                null);
 
       // vérification de JobRequest
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
+      final JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
       Assert.assertEquals("l'état est inattendu", JobState.SUCCESS, jobRequest
-            .getState());
-      Assert.assertEquals("le message est inattendu", "traitement a réussi",
-            jobRequest.getMessage());
-      Assert.assertEquals("la date de fin est inattendue", dateFinTraitement,
-            jobRequest.getEndingDate());
+                                                                              .getState());
+      Assert.assertEquals("le message est inattendu",
+                          "traitement a réussi",
+                          jobRequest.getMessage());
+      Assert.assertEquals("la date de fin est inattendue",
+                          dateFinTraitement,
+                          jobRequest.getEndingDate());
 
       // vérification de JobsQueues
 
-      Iterator<JobQueue> jobQueues = jobLectureService
-            .getNonTerminatedSimpleJobs(reservedBy).iterator();
+      final Iterator<JobQueue> jobQueues = jobLectureService
+                                                            .getNonTerminatedSimpleJobs(reservedBy).iterator();
 
       JobQueue jobQueue = null;
       while (jobQueues.hasNext() && jobQueue == null) {
-         JobQueue jobQueueElement = jobQueues.next();
+         final JobQueue jobQueueElement = jobQueues.next();
          if (jobQueueElement.getIdJob().equals(idJob)) {
             jobQueue = jobQueueElement;
          }
       }
 
       Assert.assertNull(
-            "le job ne doit plus exister dans la file d'execution de "
-                  + reservedBy, jobQueue);
+                        "le job ne doit plus exister dans la file d'execution de "
+                              + reservedBy,
+                        jobQueue);
 
       // vérification de JobHistory
-      List<JobHistory> histories = jobLectureService.getJobHistory(idJob);
+      final List<JobHistory> histories = jobLectureService.getJobHistory(idJob);
 
       Assert.assertEquals("le nombre de message est inattendu", 4, histories
-            .size());
+                                                                            .size());
 
       Assert.assertEquals(
-            "le message de l'ajout d'un traitement est inattendu",
-            "FIN DU JOB", histories.get(3).getTrace());
+                          "le message de l'ajout d'un traitement est inattendu",
+                          "FIN DU JOB",
+                          histories.get(3).getTrace());
    }
 
    @Test
@@ -124,22 +130,27 @@ public class JobQueueServiceEndingJobTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
-      String reservedBy = "hostname";
+      final String reservedBy = "hostname";
       jobQueueService.reserveJob(idJob, reservedBy, new Date());
       jobQueueService.startingJob(idJob, new Date());
 
-      Date dateFinTraitement = new Date();
-      jobQueueService.endingJob(idJob, false, dateFinTraitement,
-            "traitement en échec", null);
+      final Date dateFinTraitement = new Date();
+      jobQueueService.endingJob(idJob,
+                                false,
+                                dateFinTraitement,
+                                "traitement en échec",
+                                null);
 
       // vérification de JobRequest
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
+      final JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
       Assert.assertEquals("l'état est inattendu", JobState.FAILURE, jobRequest
-            .getState());
-      Assert.assertEquals("le message est inattendu", "traitement en échec",
-            jobRequest.getMessage());
-      Assert.assertEquals("la date de fin est inattendue", dateFinTraitement,
-            jobRequest.getEndingDate());
+                                                                              .getState());
+      Assert.assertEquals("le message est inattendu",
+                          "traitement en échec",
+                          jobRequest.getMessage());
+      Assert.assertEquals("la date de fin est inattendue",
+                          dateFinTraitement,
+                          jobRequest.getEndingDate());
 
    }
 
@@ -151,31 +162,32 @@ public class JobQueueServiceEndingJobTest {
       idJob = TimeUUIDUtils.getUniqueTimeUUIDinMillis();
       createJob(idJob);
 
-      String reservedBy = "hostname";
+      final String reservedBy = "hostname";
       jobQueueService.reserveJob(idJob, reservedBy, new Date());
       jobQueueService.startingJob(idJob, new Date());
 
-      Date dateFinTraitement = new Date();
+      final Date dateFinTraitement = new Date();
       jobQueueService.endingJob(idJob, false, dateFinTraitement);
 
       // vérification de JobRequest
-      JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
+      final JobRequest jobRequest = jobLectureService.getJobRequest(idJob);
       Assert.assertEquals("l'état est inattendu", JobState.FAILURE, jobRequest
-            .getState());
+                                                                              .getState());
       Assert.assertNull("aucun message n'est attendu", jobRequest.getMessage());
-      Assert.assertEquals("la date de fin est inattendue", dateFinTraitement,
-            jobRequest.getEndingDate());
+      Assert.assertEquals("la date de fin est inattendue",
+                          dateFinTraitement,
+                          jobRequest.getEndingDate());
 
    }
 
-   private void createJob(UUID idJob) {
+   private void createJob(final UUID idJob) {
 
-      Date dateCreation = new Date();
+      final Date dateCreation = new Date();
 
-      Map<String,String> jobParam= new HashMap<String, String>();
+      final Map<String, String> jobParam = new HashMap<String, String>();
       jobParam.put("parameters", "param");
-      
-      JobToCreate job = new JobToCreate();
+
+      final JobToCreate job = new JobToCreate();
       job.setIdJob(idJob);
       job.setType("ArchivageMasse");
       job.setJobParameters(jobParam);
@@ -183,7 +195,7 @@ public class JobQueueServiceEndingJobTest {
       job.setDocCount(100);
       job.setSaeHost("saeHost");
       job.setCreationDate(dateCreation);
-      String jobKey = new String("jobKey");
+      final String jobKey = new String("jobKey");
       job.setJobKey(jobKey.getBytes());
 
       jobQueueService.addJob(job);
@@ -200,13 +212,15 @@ public class JobQueueServiceEndingJobTest {
       try {
          jobQueueService.endingJob(idJob, true, new Date());
          Assert.fail("Une exception JobInexistantException devrait être lever");
-      } catch (JobInexistantException e) {
+      }
+      catch (final JobInexistantException e) {
 
          Assert.assertEquals("l'identifiant du job est inattendu", idJob, e
-               .getInstanceId());
+                                                                           .getInstanceId());
          Assert.assertEquals("le message de l'exception est inattendu",
-               "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
-                     + " car il n'existe pas.", e.getMessage());
+                             "Impossible de lancer, de modifier ou de réserver le traitement n°" + idJob
+                                   + " car il n'existe pas.",
+                             e.getMessage());
       }
    }
 }

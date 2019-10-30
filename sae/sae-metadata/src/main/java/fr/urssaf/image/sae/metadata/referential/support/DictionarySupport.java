@@ -3,6 +3,15 @@ package fr.urssaf.image.sae.metadata.referential.support;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.commons.dao.AbstractDao;
+import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
+import fr.urssaf.image.sae.metadata.referential.dao.DictionaryDao;
+import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyResult;
@@ -13,16 +22,6 @@ import me.prettyprint.hector.api.factory.HFactory;
 import me.prettyprint.hector.api.mutation.Mutator;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.commons.dao.AbstractDao;
-import fr.urssaf.image.sae.metadata.exceptions.DictionaryNotFoundException;
-import fr.urssaf.image.sae.metadata.referential.dao.DictionaryDao;
-import fr.urssaf.image.sae.metadata.referential.model.Dictionary;
 
 /**
  * classe permettant de réaliser les actions de manipulation des DAO pour la

@@ -46,6 +46,7 @@ public class MappingDocumentServiceTest {
   @Autowired
   private MappingDocumentService mappingService;
 
+<<<<<<< .working
   /**
    * Fournit les données de test
    * 
@@ -64,7 +65,28 @@ public class MappingDocumentServiceTest {
     metadatas = MappingDataProviderUtils.getUntypedMetadata(xmlfile);
     return new UntypedDocument(dataHandler, metadatas);
   }
+=======
+   /**
+    * Fournit les données de test
+    * 
+    * @param xmlfile
+    *           : Le fichier xml.
+    * @return Une document non typé
+    * @throws FileNotFoundException
+    *            Exception levé lorsque le fichier n'existe pas.
+    */
+   private final UntypedDocument getUntypedDocument(final File xmlfile)
+         throws FileNotFoundException {
+      List<UntypedMetadata> metadatas = null;
+      final byte[] content = "fichier Test".getBytes();
+    final DataHandler dataHandler = new DataHandler(new InputStreamSource(
+            new ByteArrayInputStream(content)));
+      metadatas = MappingDataProviderUtils.getUntypedMetadata(xmlfile);
+      return new UntypedDocument(dataHandler, metadatas);
+   }
+>>>>>>> .merge-right.r7459
 
+<<<<<<< .working
   /**
    * Test de la méthode untypedDocumentToSaeDocument
    * 
@@ -84,19 +106,89 @@ public class MappingDocumentServiceTest {
     Assert.assertNotNull(saeDoc);
     Assert.assertNotNull(saeDoc.getMetadatas());
     for (final SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
+=======
+   /**
+    * Test de la méthode untypedDocumentToSaeDocument
+    * 
+    * @throws FileNotFoundException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws InvalidSAETypeException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws MappingFromReferentialException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void untypedDocumentToSaeDocument() throws FileNotFoundException,
+         InvalidSAETypeException, MappingFromReferentialException {
+      final UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+      final SAEDocument saeDoc = mappingService
+            .untypedDocumentToSaeDocument(untyped);
+      Assert.assertNotNull(saeDoc);
+      Assert.assertNotNull(saeDoc.getMetadatas());
+    for (final SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
+>>>>>>> .merge-right.r7459
 
+<<<<<<< .working
       if (metadata.getLongCode().equals("DateArchivage")) {
         Assert.assertEquals("Date",
                             metadata.getValue()
                                     .getClass()
                                     .getSimpleName());
       }
+=======
+         if (metadata.getLongCode().equals("DateArchivage")) {
+        Assert.assertEquals("Date",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+>>>>>>> .merge-right.r7459
 
+<<<<<<< .working
       if (metadata.getLongCode().equals("DateCreation")) {
         Assert.assertEquals("Date",
                             metadata.getValue()
                                     .getClass()
                                     .getSimpleName());
+=======
+         if (metadata.getLongCode().equals("DateCreation")) {
+        Assert.assertEquals("Date",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("VersionNumber")) {
+        Assert.assertEquals("Integer",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("CodeRND")) {
+        Assert.assertEquals("String",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("TailleFichier")) {
+        Assert.assertEquals("Long",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("MontantRegle")) {
+            // TODO : voir s'il faut les convertir en double ou s'il faut les laisser en String
+        Assert.assertEquals("String",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("DateEtHeureEnvoi")) {
+        Assert.assertEquals("Date",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+>>>>>>> .merge-right.r7459
       }
       if (metadata.getLongCode().equals("VersionNumber")) {
         Assert.assertEquals("Integer",
@@ -133,6 +225,7 @@ public class MappingDocumentServiceTest {
 
   }
 
+<<<<<<< .working
   /**
    * Test de la méthode saeDocumentToUntypedDocument
    * 
@@ -157,6 +250,32 @@ public class MappingDocumentServiceTest {
       if (metadata.getLongCode().equals("DateArchivage")) {
         Assert.assertTrue(metadata.getValue().equals("2011-06-03"));
       }
+=======
+   /**
+    * Test de la méthode saeDocumentToUntypedDocument
+    * 
+    * @throws FileNotFoundException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws InvalidSAETypeException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws MappingFromReferentialException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void saeDocumentToUntypedDocument() throws FileNotFoundException,
+         InvalidSAETypeException, MappingFromReferentialException {
+      UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+      final SAEDocument saeDoc = mappingService
+            .untypedDocumentToSaeDocument(untyped);
+      untyped = mappingService.saeDocumentToUntypedDocument(saeDoc);
+      Assert.assertNotNull(untyped);
+      Assert.assertNotNull(untyped.getUMetadatas());
+    for (final UntypedMetadata metadata : Utils.nullSafeIterable(untyped
+            .getUMetadatas())) {
+         if (metadata.getLongCode().equals("DateArchivage")) {
+            Assert.assertTrue(metadata.getValue().equals("2011-06-03"));
+         }
+>>>>>>> .merge-right.r7459
 
       if (metadata.getLongCode().equals("DateCreation")) {
         Assert.assertTrue(metadata.getValue().equals("2011-06-03"));
@@ -207,6 +326,7 @@ public class MappingDocumentServiceTest {
 
   }
 
+<<<<<<< .working
   /**
    * Test de la méthode saeDocumentToStorageDocument
    * 
@@ -234,6 +354,35 @@ public class MappingDocumentServiceTest {
     reference.setHash("hash");
     reference.setTypeHash("typeHash");
     document.setReference(reference);
+=======
+   /**
+    * Test de la méthode saeDocumentToStorageDocument
+    * 
+    * @throws FileNotFoundException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws InvalidSAETypeException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws MappingFromReferentialException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws ParseException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void untytpedVirtualDocumentToSaeVirtualDocument()
+         throws FileNotFoundException, InvalidSAETypeException,
+         MappingFromReferentialException, ParseException {
+      final UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+    final UntypedVirtualDocument document = new UntypedVirtualDocument();
+      document.setuMetadatas(untyped.getUMetadatas());
+      document.setIndex(0);
+      document.setStartPage(1);
+      document.setEndPage(2);
+    final VirtualReferenceFile reference = new VirtualReferenceFile();
+      reference.setFilePath("/toto");
+      reference.setHash("hash");
+      reference.setTypeHash("typeHash");
+      document.setReference(reference);
+>>>>>>> .merge-right.r7459
 
     final SAEVirtualDocument saeDoc = mappingService
                                                     .untypedVirtualDocumentToSaeVirtualDocument(document);
@@ -245,6 +394,7 @@ public class MappingDocumentServiceTest {
 
   }
 
+<<<<<<< .working
   /**
    * Test de la méthode
    * {@link MappingDocumentService#saeMetadatasToStorageMetadatas(List)}
@@ -258,6 +408,21 @@ public class MappingDocumentServiceTest {
                                                      .untypedMetadatasToSaeMetadatas(untyped.getUMetadatas());
     final List<StorageMetadata> storageMetadatas = mappingService
                                                                  .saeMetadatasToStorageMetadatas(saeMetas);
+=======
+   /**
+    * Test de la méthode
+    * {@link MappingDocumentService#saeMetadatasToStorageMetadatas(List)}
+    */
+   @Test
+   public void saeMetadatasToStorageMetadatas() throws FileNotFoundException,
+         InvalidSAETypeException, MappingFromReferentialException,
+         ParseException {
+      final UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+    final List<SAEMetadata> saeMetas = mappingService
+            .untypedMetadatasToSaeMetadatas(untyped.getUMetadatas());
+    final List<StorageMetadata> storageMetadatas = mappingService
+            .saeMetadatasToStorageMetadatas(saeMetas);
+>>>>>>> .merge-right.r7459
 
     Assert.assertNotNull(storageMetadatas);
     Assert.assertTrue(storageMetadatas.size() == 8);
@@ -296,6 +461,7 @@ public class MappingDocumentServiceTest {
 
     for (final SAEMetadata metadata : Utils.nullSafeIterable(saeDoc.getMetadatas())) {
 
+<<<<<<< .working
       if (metadata.getLongCode().equals("DateArchivage")) {
         Assert.assertEquals("Date",
                             metadata.getValue()
@@ -307,6 +473,26 @@ public class MappingDocumentServiceTest {
                             metadata.getValue()
                                     .getClass()
                                     .getSimpleName());
+=======
+         if (metadata.getLongCode().equals("DateArchivage")) {
+        Assert.assertEquals("Date",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("VersionNumber")) {
+        Assert.assertEquals("Integer",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+         if (metadata.getLongCode().equals("CodeRND")) {
+        Assert.assertEquals("String",
+                            metadata.getValue()
+                                    .getClass()
+                  .getSimpleName());
+         }
+>>>>>>> .merge-right.r7459
       }
       if (metadata.getLongCode().equals("CodeRND")) {
         Assert.assertEquals("String",
@@ -317,6 +503,7 @@ public class MappingDocumentServiceTest {
     }
   }
 
+<<<<<<< .working
   /**
    * Test de la méthode storageDocumentToSaeDocument
    * 
@@ -346,6 +533,44 @@ public class MappingDocumentServiceTest {
                                                                         .getUMetadatas())) {
       if (metadata.getLongCode().equals("DateArchivage")) {
         Assert.assertTrue(metadata.getValue().equals("2011-06-03"));
+=======
+   /**
+    * Test de la méthode storageDocumentToSaeDocument
+    * 
+    * @throws FileNotFoundException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws InvalidSAETypeException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws MappingFromReferentialException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    * @throws ParseException
+    *            Exception lever lorqu'il y'a un dysfonctionnement.
+    */
+   @Test
+   public void storageDocumentToUntypedDocument() throws FileNotFoundException,
+         InvalidSAETypeException, MappingFromReferentialException,
+         ParseException {
+      UntypedDocument untyped = getUntypedDocument(Constants.MAPPING_FILE_1);
+      final SAEDocument saeDoc = mappingService
+            .untypedDocumentToSaeDocument(untyped);
+      final StorageDocument storageDoc = mappingService
+            .saeDocumentToStorageDocument(saeDoc);
+      untyped = mappingService.storageDocumentToUntypedDocument(storageDoc);
+      Assert.assertNotNull(untyped);
+      Assert.assertNotNull(untyped.getUMetadatas());
+      Assert.assertTrue(untyped.getUMetadatas().size() == 8);
+    for (final UntypedMetadata metadata : Utils.nullSafeIterable(untyped
+            .getUMetadatas())) {
+         if (metadata.getLongCode().equals("DateArchivage")) {
+            Assert.assertTrue(metadata.getValue().equals("2011-06-03"));
+         }
+         if (metadata.getLongCode().equals("VersionNumber")) {
+            Assert.assertTrue(metadata.getValue().equals("120"));
+         }
+         if (metadata.getLongCode().equals("CodeRND")) {
+            Assert.assertTrue(metadata.getValue().equals("3.1.3.1.1"));
+         }
+>>>>>>> .merge-right.r7459
       }
       if (metadata.getLongCode().equals("VersionNumber")) {
         Assert.assertTrue(metadata.getValue().equals("120"));
@@ -365,6 +590,56 @@ public class MappingDocumentServiceTest {
       mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
       Assert.fail("Une exception de type InvalidSAETypeException est attendue : ");
     }
+    catch (final Exception e) {
+      Assert.assertTrue("Une exception de type InvalidSAETypeException est attendue : " + e, e instanceof InvalidSAETypeException);
+    }
+
+    untypedmeta = new UntypedMetadata("VersionNumber", "z");
+    try {
+      mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
+      Assert.fail("Une exception de type InvalidSAETypeException est attendue : ");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("Une exception de type InvalidSAETypeException est attendue : " + e, e instanceof InvalidSAETypeException);
+    }
+
+    untypedmeta = new UntypedMetadata("TailleFichier", "i");
+    try {
+      mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
+      Assert.fail("Une exception de type InvalidSAETypeException est attendue : ");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("Une exception de type InvalidSAETypeException est attendue : " + e, e instanceof InvalidSAETypeException);
+    }
+
+    untypedmeta = new UntypedMetadata("DateEtHeureEnvoi", "y");
+    try {
+      mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
+      Assert.fail("Une exception de type InvalidSAETypeException est attendue : ");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("Une exception de type InvalidSAETypeException est attendue : " + e, e instanceof InvalidSAETypeException);
+    }
+
+    untypedmeta = new UntypedMetadata("TOTO", "y");
+    try {
+      mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
+      Assert.fail("Une exception de type MappingFromReferentialException est attendue : ");
+    }
+    catch (final Exception e) {
+      Assert.assertTrue("Une exception de type MappingFromReferentialException est attendue : " + e, e instanceof MappingFromReferentialException);
+    }
+
+  }
+
+  @Test
+  public void untypedMetadatasToStorageMetadatas() throws InvalidSAETypeException, MappingFromReferentialException, FileNotFoundException {
+
+    UntypedMetadata untypedmeta = new UntypedMetadata("DateArchivage", "x");
+    try {
+      mappingService.untypedMetadatasToStorageMetadatas(Arrays.asList(untypedmeta));
+      Assert.fail("Une exception de type InvalidSAETypeException est attendue : ");
+}
     catch (final Exception e) {
       Assert.assertTrue("Une exception de type InvalidSAETypeException est attendue : " + e, e instanceof InvalidSAETypeException);
     }

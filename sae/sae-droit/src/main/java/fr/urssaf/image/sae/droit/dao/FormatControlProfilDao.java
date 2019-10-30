@@ -3,12 +3,6 @@ package fr.urssaf.image.sae.droit.dao;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.prettyprint.cassandra.serializers.StringSerializer;
-import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
-import me.prettyprint.hector.api.Keyspace;
-import me.prettyprint.hector.api.Serializer;
-import me.prettyprint.hector.api.mutation.Mutator;
-
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,6 +16,11 @@ import fr.urssaf.image.sae.droit.model.SaePagmf;
 import fr.urssaf.image.sae.droit.utils.Constantes;
 import fr.urssaf.image.sae.droit.utils.EnumValidationMode;
 import fr.urssaf.image.sae.droit.utils.ResourceMessagesUtils;
+import me.prettyprint.cassandra.serializers.StringSerializer;
+import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
+import me.prettyprint.hector.api.Keyspace;
+import me.prettyprint.hector.api.Serializer;
+import me.prettyprint.hector.api.mutation.Mutator;
 
 /**
  * DAO permettant de réaliser les opérations de base d'écriture, de lecture<br>

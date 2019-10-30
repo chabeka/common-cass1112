@@ -1,8 +1,5 @@
 package fr.urssaf.image.sae.documents.executable.utils;
 
-import java.nio.charset.Charset;
-import java.util.Locale;
-
 /**
  * Cette classe contient la liste des constantes utilisées dans l'application.
  */

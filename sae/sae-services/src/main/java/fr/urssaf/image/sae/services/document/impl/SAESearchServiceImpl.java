@@ -111,7 +111,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public final List<UntypedDocument> search(final String requete,
+  public List<UntypedDocument> search(final String requete,
                                              final List<String> listMetaDesired)
          throws SAESearchServiceEx,
          MetaDataUnauthorizedToSearchEx, MetaDataUnauthorizedToConsultEx,
@@ -479,7 +479,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * {@inheritDoc}
     */
    @Override
-   public final List<UntypedDocument> search(final String requete,
+  public List<UntypedDocument> search(final String requete,
                                              final List<String> listMetaDesired, final int maxResult)
          throws MetaDataUnauthorizedToSearchEx,
          MetaDataUnauthorizedToConsultEx, UnknownDesiredMetadataEx,
@@ -620,7 +620,7 @@ public class SAESearchServiceImpl extends AbstractSAEServices implements
     * @throws UnknownFiltresMetadataEx
     */
    @Override
-   public final PaginatedUntypedDocuments searchPaginated(
+   public PaginatedUntypedDocuments searchPaginated(
                                                           final List<UntypedMetadata> fixedMetadatas,
                                                           final UntypedRangeMetadata varyingMetadata,
                                                           final List<AbstractMetadata> listeFiltreEgal,

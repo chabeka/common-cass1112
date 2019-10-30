@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedDocument;
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
@@ -69,7 +70,7 @@ public class CaptureSupportTest {
 
    @After
    public void after() throws Exception {
-      serverBean.resetData();
+      serverBean.resetData(true, MODE_API.HECTOR);
    }
 
    @Test
@@ -290,7 +291,7 @@ public class CaptureSupportTest {
       prmd.setBean("permitDomaineTechnique");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "archivage_unitaire", "consultation" };
+      String[] roles = new String[] { "ROLE_archivage_unitaire", "ROLE_consultation" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("archivage_unitaire", saePrmds);

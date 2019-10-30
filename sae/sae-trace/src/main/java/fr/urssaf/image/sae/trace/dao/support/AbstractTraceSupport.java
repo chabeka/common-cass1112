@@ -91,10 +91,6 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
       getDao().writeColumnLogin(updater, trace.getLogin(), clock);
     }
 
-    if (trace.getInfos() != null) {
-      getDao().writeColumnInfos(updater, trace.getInfos(), clock);
-    }
-
     // ajout des informations spécifiques à cette trace
     completeCreateTrace(updater, trace, clock);
 
@@ -319,12 +315,7 @@ public abstract class AbstractTraceSupport<T extends Trace, I extends TraceIndex
                                     .getString(AbstractTraceDao.COL_CONTRAT_SERVICE));
       trace.setLogin(result.getString(AbstractTraceDao.COL_LOGIN));
 
-      byte[] bValue = result.getByteArray(AbstractTraceDao.COL_INFOS);
-      if (bValue != null) {
-        trace.setInfos(MapSerializer.get().fromBytes(bValue));
-      }
-
-      bValue = result.getByteArray(AbstractTraceDao.COL_PAGMS);
+      byte[] bValue = result.getByteArray(AbstractTraceDao.COL_PAGMS);
       if (bValue != null) {
         trace.setPagms(ListSerializer.get().fromBytes(bValue));
       }

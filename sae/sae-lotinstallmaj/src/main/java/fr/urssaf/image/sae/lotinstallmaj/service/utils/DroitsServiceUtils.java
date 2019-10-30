@@ -1,5 +1,9 @@
 package fr.urssaf.image.sae.lotinstallmaj.service.utils;
 
+import org.apache.commons.lang.StringUtils;
+
+import fr.urssaf.image.sae.lotinstallmaj.modele.Pagm;
+import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
 import me.prettyprint.cassandra.serializers.LongSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
 import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
@@ -8,11 +12,6 @@ import me.prettyprint.cassandra.service.template.ThriftColumnFamilyTemplate;
 import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
-
-import org.apache.commons.lang.StringUtils;
-
-import fr.urssaf.image.sae.lotinstallmaj.modele.Pagm;
-import fr.urssaf.image.sae.lotinstallmaj.serializer.PagmSerializer;
 
 /**
  * Classe utilitaire de service de modification des droits.

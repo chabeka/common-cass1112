@@ -22,6 +22,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.bo.model.bo.SAEDocument;
 import fr.urssaf.image.sae.bo.model.bo.SAEMetadata;
@@ -427,7 +428,7 @@ public class SAEControlesCaptureServiceImplTest {
    @After
    public void end() throws Exception {
       AuthenticationContext.setAuthenticationToken(null);
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    private void initDroits() {
@@ -443,7 +444,7 @@ public class SAEControlesCaptureServiceImplTest {
       prmd.setBean("permitAll");
       prmd.setCode("default");
       saePrmd.setPrmd(prmd);
-      String[] roles = new String[] { "capture_masse" };
+      String[] roles = new String[] { "ROLE_capture_masse" };
       saePrmds.add(saePrmd);
 
       saeDroits.put("capture_masse", saePrmds);

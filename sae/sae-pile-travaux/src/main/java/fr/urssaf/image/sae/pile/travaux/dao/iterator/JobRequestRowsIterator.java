@@ -8,6 +8,10 @@ import java.util.UUID;
 
 import org.apache.cassandra.thrift.Column;
 
+import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
+import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
+import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
+import fr.urssaf.image.sae.pile.travaux.support.JobRequestSupport;
 import me.prettyprint.cassandra.model.HColumnImpl;
 import me.prettyprint.cassandra.model.OrderedRowsImpl;
 import me.prettyprint.cassandra.model.QueryResultImpl;
@@ -21,10 +25,6 @@ import me.prettyprint.hector.api.beans.Row;
 import me.prettyprint.hector.api.exceptions.HectorException;
 import me.prettyprint.hector.api.query.QueryResult;
 import me.prettyprint.hector.api.query.RangeSlicesQuery;
-import fr.urssaf.image.commons.cassandra.helper.HectorIterator;
-import fr.urssaf.image.commons.cassandra.helper.QueryResultConverter;
-import fr.urssaf.image.sae.pile.travaux.dao.JobRequestDao;
-import fr.urssaf.image.sae.pile.travaux.model.JobRequest;
 
 /**
  * Itérateur permettant d'itérer sur rows de la CF JobRequest.
@@ -44,7 +44,7 @@ public class JobRequestRowsIterator implements Iterator<JobRequest> {
    
    HectorIterator<UUID, String> resultIterator;
 
-   private JobRequestDao jobRequestDao;
+   private JobRequestSupport jobRequestSupport;
 
    /**
     * Constructeur de l'iterateur.
@@ -57,12 +57,12 @@ public class JobRequestRowsIterator implements Iterator<JobRequest> {
     *           objet dao de la JobRequest
     */
    public JobRequestRowsIterator(RangeSlicesQuery<UUID, String, byte[]> query,
-         int count, JobRequestDao jobRequestDao) {
+         int count, JobRequestSupport jobRequestSupport) {
       this.start = null;
       this.count = 10000;
       this.query = query;
       this.isLastIteration = false;
-      this.jobRequestDao = jobRequestDao;
+      this.jobRequestSupport = jobRequestSupport;
    }
 
    /**
@@ -98,7 +98,7 @@ public class JobRequestRowsIterator implements Iterator<JobRequest> {
     */
    @Override
    public JobRequest next() {
-      return jobRequestDao.createJobRequestFromResult(resultIterator.next());
+      return jobRequestSupport.createJobRequestFromResult(resultIterator.next());
    }
 
    /**

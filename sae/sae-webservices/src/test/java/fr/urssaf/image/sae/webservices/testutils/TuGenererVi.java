@@ -20,10 +20,10 @@ import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 
 import org.apache.commons.codec.CharEncoding;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import fr.urssaf.image.sae.saml.params.SamlAssertionParams;

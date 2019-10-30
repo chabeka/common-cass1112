@@ -2,28 +2,35 @@ package fr.urssaf.image.sae.pile.travaux.support;
 
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
+import me.prettyprint.cassandra.service.template.ColumnFamilyTemplate;
 import me.prettyprint.cassandra.service.template.ColumnFamilyUpdater;
 import me.prettyprint.hector.api.mutation.Mutator;
-import fr.urssaf.image.sae.pile.travaux.dao.JobHistoryDao;
 
 /**
  * Support pour l'utilisation de {@link JobHistoryDao}
  * 
  * 
  */
+@Component
 public class JobHistorySupport {
 
-   private final JobHistoryDao jobHistoryDao;
+  @Autowired
+  private JobHistoryDao jobHistoryDao;
 
+  public JobHistorySupport() { 
+  }
+  
    /**
     * 
     * @param jobHistoryDao
     *           DAO de la colonne famille JobHistory
     */
-   public JobHistorySupport(JobHistoryDao jobHistoryDao) {
-
-      this.jobHistoryDao = jobHistoryDao;
-
+  public JobHistorySupport(JobHistoryDao jobHistoryDao) {
+	  this.jobHistoryDao = jobHistoryDao;
    }
 
    /**
@@ -38,17 +45,19 @@ public class JobHistorySupport {
     * @param clock
     *           horloge en microsecondes de l'insertion de la trace
     */
-   public final void ajouterTrace(UUID idJob, UUID timestampTrace,
-         String messageTrace, long clock) {
+  public final void ajouterTrace(final UUID idJob, final UUID timestampTrace,
+                                 final String messageTrace, final long clock) {
 
       // On utilise un ColumnFamilyUpdater, et on renseigne
       // la valeur de la clé dans la construction de l'updater
-      ColumnFamilyUpdater<UUID, UUID> updaterJobHistory = this.jobHistoryDao
+    final ColumnFamilyUpdater<UUID, UUID> updaterJobHistory = this.jobHistoryDao
             .getJobHistoryTmpl().createUpdater(idJob);
 
       // Ecriture des colonnes
-      jobHistoryDao.ecritColonneTrace(updaterJobHistory, timestampTrace,
-            messageTrace, clock);
+    jobHistoryDao.ecritColonneTrace(updaterJobHistory,
+                                    timestampTrace,
+                                    messageTrace,
+                                    clock);
 
       // Ecrit en base
       this.jobHistoryDao.getJobHistoryTmpl().update(updaterJobHistory);
@@ -63,10 +72,10 @@ public class JobHistorySupport {
     * @param clock
     *           horloge de suppression du job
     */
-   public final void supprimerHistorique(UUID idJob, long clock) {
+  public final void supprimerHistorique(final UUID idJob, final long clock) {
       
       // Création du Mutator
-      Mutator<UUID> mutator = this.jobHistoryDao.createMutator();
+    final Mutator<UUID> mutator = this.jobHistoryDao.createMutator();
 
       // suppression du JobHistory
       this.jobHistoryDao.mutatorSuppressionJobHistory(mutator, idJob, clock);
@@ -75,4 +84,12 @@ public class JobHistorySupport {
       mutator.execute();
 
    }
+
+  /**
+   * @return
+   */
+  public ColumnFamilyTemplate<UUID, UUID> getJobHistoryTmpl() {
+    // TODO Auto-generated method stub
+    return jobHistoryDao.getJobHistoryTmpl();
+  }
 }

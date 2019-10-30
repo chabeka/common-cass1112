@@ -108,7 +108,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * {@inheritDoc}
     */
    @Override
-   public final CaptureResult capture(final List<UntypedMetadata> metadatas,
+   public CaptureResult capture(final List<UntypedMetadata> metadatas,
                                       final URI ecdeURL) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
    InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
    DuplicatedMetadataEx, NotSpecifiableMetadataEx, EmptyDocumentEx,
@@ -157,7 +157,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws UnexpectedDomainException
     */
    @Override
-   public final CaptureResult captureFichier(final List<UntypedMetadata> metadatas,
+   public CaptureResult captureFichier(final List<UntypedMetadata> metadatas,
                                              final String path) throws SAECaptureServiceEx, RequiredStorageMetadataEx,
    InvalidValueTypeAndFormatMetadataEx, UnknownMetadataEx,
    DuplicatedMetadataEx, NotSpecifiableMetadataEx,
@@ -199,7 +199,7 @@ public class SAECaptureServiceImpl implements SAECaptureService {
     * @throws CaptureExistingUuuidException
     */
    @Override
-   public final CaptureResult captureBinaire(final List<UntypedMetadata> metadatas,
+   public CaptureResult captureBinaire(final List<UntypedMetadata> metadatas,
                                              final DataHandler content, final String fileName) throws SAECaptureServiceEx,
    RequiredStorageMetadataEx, InvalidValueTypeAndFormatMetadataEx,
    UnknownMetadataEx, DuplicatedMetadataEx, NotSpecifiableMetadataEx,

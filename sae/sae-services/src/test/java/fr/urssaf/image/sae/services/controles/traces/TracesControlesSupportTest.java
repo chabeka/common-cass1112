@@ -4,8 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,7 @@ import fr.urssaf.image.sae.trace.service.RegTechniqueService;
 import fr.urssaf.image.sae.vi.modele.VIContenuExtrait;
 import fr.urssaf.image.sae.vi.spring.AuthenticationFactory;
 import fr.urssaf.image.sae.vi.spring.AuthenticationToken;
+import junit.framework.Assert;
 
 /**
  * Classe permettant de tester le service de contrôle.
@@ -137,7 +136,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -266,7 +265,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -396,7 +395,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace
@@ -528,7 +527,7 @@ public class TracesControlesSupportTest {
       extrait.setIdUtilisateur("NON_RENSEIGNE");
       AuthenticationToken token = AuthenticationFactory.createAuthentication(
             extrait.getIdUtilisateur(), extrait,
-            new String[] { "PRMD_PERMIT_ALL" });
+            new String[] { "ROLE_PRMD_PERMIT_ALL" });
       SecurityContextHolder.getContext().setAuthentication(token);
 
       // ajout de la trace

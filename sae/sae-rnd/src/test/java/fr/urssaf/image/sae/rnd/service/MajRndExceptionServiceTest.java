@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.rnd.dao.support.SaeBddSupport;
 import fr.urssaf.image.sae.rnd.exception.MajRndException;
 import fr.urssaf.image.sae.rnd.exception.RndRecuperationException;
@@ -58,7 +59,7 @@ public class MajRndExceptionServiceTest {
    @After
    public void after() throws Exception {
       EasyMock.reset(rndRecuperationService);
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
       logger.detachAppender(logAppender);
    }
 

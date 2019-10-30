@@ -58,6 +58,7 @@ public class SAECassandraUpdater {
    private static final int VERSION_29 = 29;
    private static final int VERSION_30 = 30;
    private static final int VERSION_31 = 31;
+   private static final int VERSION_32 = 32;
 
    private static final String DROIT_PAGMF = "DroitPagmf";
    private static final String REFERENTIEL_FORMAT = "ReferentielFormat";
@@ -1231,6 +1232,26 @@ public class SAECassandraUpdater {
 	      
 	      // On positionne la version à 31
 	      saeDao.setDatabaseVersion(VERSION_31);
+	   }	
+
+   // Création des métadonnées CodeCaisseTI et CodeServiceContentieuxTI
+   public void updateToVersion32() {
+
+	      long version = saeDao.getDatabaseVersion();
+	      if (version >= VERSION_32) {
+	         LOG.info("La base de données est déja en version " + version);
+	         return;
+	      }
+
+	      LOG.info("Mise à jour du keyspace SAE en version " + VERSION_32);
+
+	      // -- On se connecte au keyspace
+	      saeDao.connectToKeySpace();
+
+	      refMetaInitService.initialiseRefMeta(saeDao.getKeyspace());
+	      
+	      // On positionne la version à 31
+	      saeDao.setDatabaseVersion(VERSION_32);
 	   }	   
    
    /**

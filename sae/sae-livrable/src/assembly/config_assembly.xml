@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<assembly
-	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0"
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.0 http://maven.apache.org/xsd/assembly-1.1.0.xsd">
+	xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
    
    <id>zip</id>
    
@@ -177,46 +176,65 @@
       
    </fileSets>
       
-   <files>
-   
-      <file>
-         <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable.jar</source>
-         <outputDirectory>sae-documents-executable</outputDirectory>
-         <destName>sae-documents-executable.jar</destName>
-       </file>
-      
-       <file>
-         <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur.jar</source>
-         <outputDirectory>sae-ordonnanceur</outputDirectory>
-         <destName>sae-ordonnanceur.jar</destName>
-       </file>
-       
-       <file>
-         <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj.jar</source>
-         <outputDirectory>sae-lotinstallmaj</outputDirectory>
-         <destName>sae-lotinstallmaj.jar</destName>
-       </file>
-   
-       <file>
-         <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall.jar</source>
-         <outputDirectory>sae-integrationinstall</outputDirectory>
-         <destName>sae-integrationinstall.jar</destName>
-       </file>
-   
-       <file>
-         <source>${project.parent.basedir}/sae-webservices/target/sae-webservices.war</source>
-         <outputDirectory/>
-         <destName>sae.war</destName>
-       </file>
-       
-       
-       <!-- Le Tar GZ précédemment crée -->
-       <file>
-         <source>target/data_sae.tar.gz</source>
-         <outputDirectory/>
-         <destName>data_sae.tar.gz</destName>
-       </file>
-    
-   </files>
-  
+	<files>
+		<!-- <file> <source>${project.parent.basedir}/sae-documents-executable/target/sae-documents-executable.jar 
+			</source> <outputDirectory>sae-documents-executable</outputDirectory> <destName>sae-documents-executable.jar</destName> 
+			</file> <file> <source>${project.parent.basedir}/sae-ordonnanceur/target/sae-ordonnanceur.jar 
+			</source> <outputDirectory>sae-ordonnanceur</outputDirectory> <destName>sae-ordonnanceur.jar</destName> 
+			</file> <file> <source>${project.parent.basedir}/sae-lotinstallmaj/target/sae-lotinstallmaj.jar 
+			</source> <outputDirectory>sae-lotinstallmaj</outputDirectory> <destName>sae-lotinstallmaj.jar</destName> 
+			</file> <file> <source>${project.parent.basedir}/sae-integrationinstall/target/sae-integrationinstall.jar 
+			</source> <outputDirectory>sae-integrationinstall</outputDirectory> <destName>sae-integrationinstall.jar</destName> 
+			</file> <file> <source>${project.parent.basedir}/sae-webservices/target/sae-webservices.war 
+			</source> <outputDirectory /> <destName>sae.war</destName> </file> -->
+		<!-- Le Tar GZ précédemment crée -->
+		<file>
+			<source>target/data_sae.tar.gz</source>
+			<outputDirectory />
+			<destName>data_sae.tar.gz</destName>
+		</file>
+
+	</files>
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<includes>
+				<include>${project.groupId}:sae-documents-executable</include>
+			</includes>
+			<outputFileNameMapping>
+				sae-documents-executable.jar
+			</outputFileNameMapping>
+			<outputDirectory>sae-documents-executable</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<includes>
+				<include>${project.groupId}:sae-ordonnanceur</include>
+			</includes>
+			<outputFileNameMapping>
+				sae-ordonnanceur.jar
+			</outputFileNameMapping>
+			<outputDirectory>sae-ordonnanceur</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<includes>
+				<include>${project.groupId}:sae-lotinstallmaj</include>
+			</includes>
+			<outputFileNameMapping>
+				sae-lotinstallmaj.jar
+			</outputFileNameMapping>
+			<outputDirectory>sae-lotinstallmaj</outputDirectory>
+		</dependencySet>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<includes>
+				<include>${project.groupId}:sae-webservices</include>
+			</includes>
+			<outputFileNameMapping>
+				sae.war
+			</outputFileNameMapping>
+			<outputDirectory />
+		</dependencySet>
+	</dependencySets>
 </assembly>

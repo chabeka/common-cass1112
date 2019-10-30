@@ -8,6 +8,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.DroitsServiceUtils;
+import fr.urssaf.image.sae.lotinstallmaj.service.utils.ReferentielServiceUtils;
 import me.prettyprint.cassandra.serializers.BooleanSerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -18,12 +23,6 @@ import me.prettyprint.hector.api.Keyspace;
 import me.prettyprint.hector.api.Serializer;
 import me.prettyprint.hector.api.beans.HColumn;
 import me.prettyprint.hector.api.factory.HFactory;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import fr.urssaf.image.sae.lotinstallmaj.service.utils.DroitsServiceUtils;
-import fr.urssaf.image.sae.lotinstallmaj.service.utils.ReferentielServiceUtils;
 
 /**
  * 

@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.metadata.rules;
 
 import org.springframework.stereotype.Component;
+
 import fr.urssaf.image.sae.bo.model.untyped.UntypedMetadata;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 

@@ -48,7 +48,7 @@ public class RestoreParamValidationSupportTest {
     final SaePrmd saePrmd = new SaePrmd();
     saePrmd.setValues(new HashMap<String, String>());
     saePrmd.setPrmd(prmd);
-    final String[] roles = new String[] {"restore_masse"};
+    final String[] roles = new String[] {"ROLE_restore_masse"};
     saePrmds.add(saePrmd);
 
     saeDroits.put("restore_masse", saePrmds);

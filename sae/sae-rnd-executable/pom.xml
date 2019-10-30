@@ -3,7 +3,7 @@
 
    <groupId>fr.urssaf.image.sae</groupId>
    <artifactId>sae-rnd-executable</artifactId>
-   <version>19.7.9-SNAPSHOT</version>
+   <version>19.10.0-SNAPSHOT</version>
 
    <name>sae-rnd-executable</name>
    <description>Lancement des services de mise à jour du RND</description>
@@ -11,7 +11,7 @@
    <parent>
       <groupId>fr.urssaf.image.sae</groupId>
       <artifactId>sae</artifactId>
-      <version>19.7.9-SNAPSHOT</version>
+      <version>19.10.0-SNAPSHOT</version>
    </parent>
 
    <dependencies>
@@ -20,7 +20,7 @@
       <dependency>
          <groupId>fr.urssaf.image.sae</groupId>
          <artifactId>sae-rnd</artifactId>
-         <version>19.7.9-SNAPSHOT</version>
+         <version>19.10.0-SNAPSHOT</version>
       </dependency>
 
       <!-- AspectJ -->
@@ -113,20 +113,6 @@
                            <artifact>org.aspectj:aspectjrt</artifact>
                            <excludes>
                               <exclude>org/aspectj/**</exclude>
-                           </excludes>
-                        </filter>
-                        <!--
-                        Exclusion de 4 classes qui ont été copiées/collées de
-                        commons-collection vers commons-beanutils
-                        https://issues.apache.org/jira/browse/BEANUTILS-278
-                        -->
-                        <filter>
-                           <artifact>commons-beanutils:commons-beanutils</artifact>
-                           <excludes>
-                              <exclude>org/apache/commons/collections/ArrayStack.class</exclude>
-                              <exclude>org/apache/commons/collections/Buffer.class</exclude>
-                              <exclude>org/apache/commons/collections/BufferUnderflowException.class</exclude>
-                              <exclude>org/apache/commons/collections/FastHashMap*.class</exclude>
                            </excludes>
                         </filter>
                      </filters>

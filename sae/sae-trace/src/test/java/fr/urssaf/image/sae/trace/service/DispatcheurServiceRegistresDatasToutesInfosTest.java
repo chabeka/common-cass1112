@@ -19,6 +19,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.trace.commons.Constantes;
 import fr.urssaf.image.sae.trace.dao.TraceDestinataireDao;
 import fr.urssaf.image.sae.trace.dao.model.TraceDestinataire;
@@ -31,6 +33,7 @@ import fr.urssaf.image.sae.trace.dao.model.TraceRegSecuriteIndex;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechnique;
 import fr.urssaf.image.sae.trace.dao.model.TraceRegTechniqueIndex;
 import fr.urssaf.image.sae.trace.dao.support.TraceDestinataireSupport;
+import fr.urssaf.image.sae.trace.dao.supportcql.TraceDestinataireCqlSupport;
 import fr.urssaf.image.sae.trace.model.TraceToCreate;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -54,12 +57,17 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
    }
 
    private static final String ARCHIVAGE_UNITAIRE = "ARCHIVAGE_UNITAIRE_TOUTES_INFOS";
+   
+   private final String cfNameDestinataire = "tracedestinatairecql";
 
    @Autowired
    private DispatcheurService service;
 
    @Autowired
    private TraceDestinataireSupport destSupport;
+   
+   @Autowired
+   private TraceDestinataireCqlSupport destCqlSupport;
 
    @Autowired
    private CassandraServerBean server;
@@ -78,7 +86,7 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
 
    @After
    public void after() throws Exception {
-      server.resetData();
+      server.resetData(true, MODE_API.HECTOR);
    }
 
    @Test
@@ -243,6 +251,13 @@ public class DispatcheurServiceRegistresDatasToutesInfosTest {
             .asList(Constantes.REG_ALL_INFOS));
       trace.setDestinataires(map);
 
-      destSupport.create(trace, new Date().getTime());
+      final String modeApi = ModeGestionAPI.getModeApiCf(cfNameDestinataire);
+      if (modeApi.equals(ModeGestionAPI.MODE_API.DATASTAX)) {
+        destCqlSupport.create(trace, new Date().getTime());
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.HECTOR)) {
+        destSupport.create(trace, new Date().getTime());
+      } else if (modeApi.equals(ModeGestionAPI.MODE_API.DUAL_MODE)) {
+        destSupport.create(trace, new Date().getTime());
+      }
    }
 }

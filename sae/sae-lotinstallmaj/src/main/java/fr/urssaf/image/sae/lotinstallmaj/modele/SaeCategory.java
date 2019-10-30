@@ -3,12 +3,12 @@
  */
 package fr.urssaf.image.sae.lotinstallmaj.modele;
 
-import net.docubase.toolkit.model.base.CategoryDataType;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import net.docubase.toolkit.model.base.CategoryDataType;
 
 /**
  * Cette classe contient une catégorie suite à la désérialisation du fichier xml

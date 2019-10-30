@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.lotinstallmaj.dao.SAECassandraDao;
 import me.prettyprint.hector.api.ddl.ColumnFamilyDefinition;
 
@@ -46,7 +47,7 @@ public class SAECassandraDAOTest {
 
    @After
    public void end()throws Exception  {
-      cassandraServer.resetData();
+	   cassandraServer.resetData(true, MODE_API.HECTOR);
    }
 
 
@@ -59,7 +60,7 @@ public class SAECassandraDAOTest {
       saeDao.connectToKeySpace();
       assertNotNull(saeDao.getKeyspace());
 
-      assertEquals("Le nom du Keyspace Cassandra est incorrect","KEYSPACE_TU", saeDao.getKeyspace().getKeyspaceName());
+      assertEquals("Le nom du Keyspace Cassandra est incorrect","keyspace_tu", saeDao.getKeyspace().getKeyspaceName());
    }
 
    @Test

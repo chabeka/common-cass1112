@@ -2,10 +2,9 @@ package fr.urssaf.image.sae.lotinstallmaj.iterator;
 
 import java.util.Iterator;
 import java.util.List;
- 
+
 import me.prettyprint.hector.api.beans.ColumnSlice;
 import me.prettyprint.hector.api.beans.HColumn;
- 
 import me.prettyprint.hector.api.exceptions.HectorException;
 import me.prettyprint.hector.api.query.SliceQuery;
 

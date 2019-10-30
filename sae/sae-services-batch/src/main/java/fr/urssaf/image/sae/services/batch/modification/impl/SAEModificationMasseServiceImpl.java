@@ -83,7 +83,7 @@ public class SAEModificationMasseServiceImpl implements SAEModificationMasseServ
     */
    @SuppressWarnings(CATCH)
    @Override
-   public final ExitTraitement modificationMasse(URI sommaireURI,
+   public ExitTraitement modificationMasse(URI sommaireURI,
          UUID idTraitement, String hash, String typeHash) {
       Map<String, JobParameter> mapParam = new HashMap<String, JobParameter>();
       if (sommaireURI != null) {

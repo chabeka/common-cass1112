@@ -13,6 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import fr.urssaf.image.commons.cassandra.helper.CassandraServerBean;
+import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
 import fr.urssaf.image.sae.metadata.exceptions.ReferentialException;
 import fr.urssaf.image.sae.metadata.referential.model.MetadataReference;
 import fr.urssaf.image.sae.metadata.referential.services.MetadataReferenceDAO;
@@ -33,12 +34,12 @@ public class MetadataReferenceDAOImplTest {
 
    @Before
    public void before() throws Exception {
-      server.resetData();
+      //server.resetData(true);
    }
 
    @After
    public void after() throws Exception {
-      server.resetData();
+	   server.resetData(true, MODE_API.HECTOR);
    }
 
    /**
