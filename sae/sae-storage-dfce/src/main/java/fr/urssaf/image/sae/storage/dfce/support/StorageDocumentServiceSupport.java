@@ -259,7 +259,7 @@ public class StorageDocumentServiceSupport {
                                       StorageMessageHandler.getMessage(Constants.INS_CODE_ERROR),
                                       except.getMessage(), except);
       } finally {
-         close(inputStream, file[0]);
+         // rien à faire
       }
 
    }
@@ -516,25 +516,17 @@ public class StorageDocumentServiceSupport {
       final String trcInsert = "insertStorageDocument()";
       try {
          stream = documentContent.getInputStream();
+         stream.mark(Integer.MAX_VALUE);
          digest = HashUtils.hashHex(stream, digestAlgo);
+         stream.reset();
          LOGGER.debug("{} - Hash recalculé : {}", trcInsert, digest);
       } finally {
-         //close(stream, fileName);
+         // rien à faire
       }
       return digest;
    }
 
-   private void close(final Closeable closeable, final String name) {
-      final String trcPrefix = "close()";
-      if (closeable != null) {
-         try {
-            closeable.close();
-         } catch (final IOException e) {
-            LOGGER.info("{} - Erreur de fermeture du flux {}", new Object[] {
-                                                                             trcPrefix, name });
-         }
-      }
-   }
+   
 
 
    /**
