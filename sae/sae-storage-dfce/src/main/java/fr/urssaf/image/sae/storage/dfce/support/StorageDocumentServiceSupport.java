@@ -519,7 +519,7 @@ public class StorageDocumentServiceSupport {
          digest = HashUtils.hashHex(stream, digestAlgo);
          LOGGER.debug("{} - Hash recalculé : {}", trcInsert, digest);
       } finally {
-         close(stream, fileName);
+         //close(stream, fileName);
       }
       return digest;
    }
