@@ -127,6 +127,10 @@
                <name>SM_DIGEST_ALGORITHM</name>
                <value>SHA-1</value>
             </category>
+            <category>
+               <name>SM_DIGEST</name>
+               <value>5071b0a0581e23fd912980e8b341aa962821608c</value>
+            </category>
 		</categories>
 	</base>
 </docuBase>
