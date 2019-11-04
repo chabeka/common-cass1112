@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.storage.dfce.support;
 
 import java.io.BufferedInputStream;
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
@@ -213,7 +214,9 @@ public class StorageDocumentServiceSupport {
 
             } else {
                // -- on recalcule le hash
+               documentContent.getInputStream().mark(Integer.MAX_VALUE);
                digest = checkHash(documentContent, digestAlgo, file[0]);
+               documentContent.getInputStream().reset();
             }
          }
 
@@ -511,13 +514,13 @@ public class StorageDocumentServiceSupport {
    private String checkHash(final DataHandler documentContent, final String digestAlgo,
                             final String fileName) throws IOException, NoSuchAlgorithmException {
 
-      String digest;      
+      String digest;
+      InputStream stream = null;
+      
       final String trcInsert = "insertStorageDocument()";
       try {
-         BufferedInputStream bis = new BufferedInputStream(documentContent.getInputStream());
-         bis.mark(Integer.MAX_VALUE);
-         digest = HashUtils.hashHex(bis, digestAlgo);
-         bis.reset();
+         stream = documentContent.getInputStream();
+         digest = HashUtils.hashHex(stream, digestAlgo);
          LOGGER.debug("{} - Hash recalculé : {}", trcInsert, digest);
       } finally {
          // rien à faire
