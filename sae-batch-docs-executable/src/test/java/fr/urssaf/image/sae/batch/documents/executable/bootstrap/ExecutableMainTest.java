@@ -59,7 +59,7 @@ public class ExecutableMainTest {
       Assert.assertEquals("Valeur inattendue", "_ADMIN", dfce_login);
       Assert.assertEquals("Valeur inattendue", "DOCUBASE", dfce_psswd);
       Assert.assertEquals("Valeur inattendue", "30000", dfce_tmout);
-      Assert.assertEquals("Valeur inattendue", "/dfce-webapp/toolkit/", dfce_ctxRoot);
+      Assert.assertEquals("Valeur inattendue", "/dfce-webapp/", dfce_ctxRoot);
       Assert.assertEquals("Valeur inattendue", "false", dfce_secure);
    }
 
