@@ -214,9 +214,7 @@ public class StorageDocumentServiceSupport {
 
             } else {
                // -- on recalcule le hash
-               documentContent.getInputStream().mark(Integer.MAX_VALUE);
                digest = checkHash(documentContent, digestAlgo, file[0]);
-               documentContent.getInputStream().reset();
             }
          }
 
@@ -520,7 +518,13 @@ public class StorageDocumentServiceSupport {
       final String trcInsert = "insertStorageDocument()";
       try {
          stream = documentContent.getInputStream();
+         if(stream.markSupported())
+        	 stream.mark(Integer.MAX_VALUE);
+         
          digest = HashUtils.hashHex(stream, digestAlgo);
+         
+         if(stream.markSupported())
+        	 stream.reset();
          LOGGER.debug("{} - Hash recalculé : {}", trcInsert, digest);
       } finally {
          // rien à faire
