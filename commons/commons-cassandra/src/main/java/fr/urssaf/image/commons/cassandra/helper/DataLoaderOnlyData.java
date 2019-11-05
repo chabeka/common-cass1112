@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095351) Description du fichier
+ *  Modification de la classe datastax (AC75095351) Description du fichier
  */
 package fr.urssaf.image.commons.cassandra.helper;
 
@@ -170,13 +170,6 @@ public class DataLoaderOnlyData {
     }
   }
 
-  /*
-   * public void loadData(final DataSet dataSet, final String keyspaceName) {
-   * for (final ColumnFamilyModel columnFamily : dataSet.getColumnFamilies()) {
-   * loadColumnFamilyData(columnFamily, keyspace);
-   * }
-   * }
-   */
 
   private void loadColumnFamilyData(final ColumnFamilyModel columnFamily, final Keyspace keyspace) {
 

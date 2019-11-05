@@ -50,8 +50,10 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
   @SuppressWarnings("unchecked")
   public Mapper<T> getMapper() {
     if (mapper == null) {
-      manager = new MappingManager(ccf.getSession());
-      mapper = (Mapper<T>) manager.mapper(daoType);
+      // manager = new MappingManager(ccf.getSession());
+      // On récupère le mapper du mapping manager au niveau cassandraClientFactory AC75095351
+      mapper = (Mapper<T>) ccf.getManager().mapper(daoType);
+      // mapper = (Mapper<T>) manager.mapper(daoType);
     }
     return mapper;
   }
@@ -95,9 +97,9 @@ public class GenericIndexDAOImpl<T, ID> implements IGenericIndexDAO<T, ID> {
     return getMapper().map(getSession().execute(select)).iterator();
   }
 
-	@Override
-	public void setCcf(CassandraCQLClientFactory ccf) {
-		this.ccf = ccf;
-	}
+  @Override
+  public void setCcf(final CassandraCQLClientFactory ccf) {
+    this.ccf = ccf;
+  }
 
 }

@@ -75,9 +75,8 @@ public class GenericDAOImpl<T, ID> implements IGenericDAO<T, ID> {
   @SuppressWarnings("unchecked")
   public Mapper<T> getMapper() {
     if (mapper == null) {
-
       // manager = new MappingManager(ccf.getSession());
-      // On récupère le mapper du mapping manager au niveau cassandraClientFactory
+      // On récupère le mapper du mapping manager au niveau cassandraClientFactory AC75095351
       mapper = (Mapper<T>) ccf.getManager().mapper(daoType);
     }
     return mapper;

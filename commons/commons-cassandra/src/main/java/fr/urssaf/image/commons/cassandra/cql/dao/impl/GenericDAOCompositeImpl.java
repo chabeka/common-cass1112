@@ -41,7 +41,7 @@ public class GenericDAOCompositeImpl<T, ID, CK> implements IGenericCompositeDAO<
 
   protected Class<? extends T> daoType;
 
-  // private MappingManager manager;
+  // private MappingManager manager; On supprime l'instanciation du mappin manager à ce niveau AC75095351
 
   protected Mapper<T> mapper;
 
