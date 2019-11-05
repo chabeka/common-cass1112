@@ -94,6 +94,10 @@ public class ExecutableMain {
   public static final String DEVELOPPPEMENT_GNT = "DEVELOPPPEMENT_GNT";
 
   public static final String DEVELOPPPEMENT_GNS = "DEVELOPPPEMENT_GNS";
+  
+  public static final String PIC_GNT = "PIC_GNT";
+
+  public static final String PIC_GNS = "PIC_GNS";
 
   private static final String[] AVAIBLE_SERVICES = new String[] {
                                                                  IMPORT_DOCUMENTS,
@@ -104,7 +108,8 @@ public class ExecutableMain {
                                                                  DELETE_DOCUMENTS_CORBEILLE
   };
 
-  private final String[] DELETE_IMPORT_ALLOWED_ENVS = {
+  private final String[] DELETE_IMPORT_ALLOWED_ENVS = { PIC_GNT,
+		  												PIC_GNS,
                                                        "ENV_DEVELOPPEMENT",
                                                        DEVELOPPPEMENT_GNT, DEVELOPPPEMENT_GNS, INTEGRATION_CLIENTE_GNT, INTEGRATION_CLIENTE_GNS,
                                                        INTEGRATION_NATIONALE_C1_GNS, INTEGRATION_NATIONALE_C1_GNT, INTEGRATION_NATIONALE_C2_GNS,
