@@ -54,7 +54,7 @@ public class TraitementServiceImpl implements TraitementService {
    * Logger de la classe.
    */
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(TraitementServiceImpl.class);
+      .getLogger(TraitementServiceImpl.class);
 
   /**
    * Formater
@@ -81,7 +81,7 @@ public class TraitementServiceImpl implements TraitementService {
 
   private final String[] DATE_CRITERIONS = {"dre", "dfc", "dsi", "dcr",
                                             "dag", "dcd", "dfa", "dpa", "dsf", "ddf", "dli", "dad", "dbp", "dcc",
-                                            "def", "djc", "dns", "dmc"};
+                                            "def", "djc", "dns", "dmc", "dim"};
 
   private final String[] BOOL_CRITERIONS = {"gel", "sfa", "bap", "cco",
                                             "cot", "cpt", "drh", "dar", "dte", "frd", "dfo", "ats", "drs"};
@@ -93,7 +93,7 @@ public class TraitementServiceImpl implements TraitementService {
   private final String[] DOUB_CRITERIONS = {"mre", "mde", "mt1", "mt2"};
 
   private final SimpleDateFormat dtFormatter = new SimpleDateFormat(
-                                                                    "yyyy-MM-dd HH:mm:ss");
+      "yyyy-MM-dd HH:mm:ss");
 
   /**
    * Permet de récupérer le service permettant de réaliser des opérations sur
@@ -478,7 +478,7 @@ public class TraitementServiceImpl implements TraitementService {
             LOGGER.error(
                          "Erreur lecture fichier sommaire ligne {} :"
                              + e.getMessage(),
-                         index);
+                             index);
             continue;
           }
 
@@ -488,7 +488,7 @@ public class TraitementServiceImpl implements TraitementService {
           if (!docFile.exists()) {
             LOGGER.error("Erreur: fichier introuvable {}",
                          basePath
-                             + document.getUuid());
+                         + document.getUuid());
             // bug DFCe : certains docs de production GNT sont encore
             // indexés alors qu'il n'existe plus.
             skipDoc = true;
@@ -591,28 +591,28 @@ public class TraitementServiceImpl implements TraitementService {
 
     requeteLucene = requeteLucene + " AND (dmc:[" +
         dateJourneeFormat.format(minDate)
-        + " TO " + dateJourneeFormat.format(maxDate) + "])";
+    + " TO " + dateJourneeFormat.format(maxDate) + "])";
 
     try {
       final Iterator<Document> it = getDfceService()
-                                                    .executerRequeteCorbeille(requeteLucene);
+          .executerRequeteCorbeille(requeteLucene);
 
       poolThread = new DocumentsThreadExecutor(parametres);
 
       poolThread
-                .setRejectedExecutionHandler(new RejectedExecutionHandler() {
-                  @Override
-                  public void rejectedExecution(final Runnable r,
-                                                final ThreadPoolExecutor executor) {
-                    try {
-                      Thread.sleep(2000);
-                    }
-                    catch (final InterruptedException e) {
-                      LOGGER.error("Erreur : {}", e.getMessage());
-                    }
-                    executor.execute(r);
-                  }
-                });
+      .setRejectedExecutionHandler(new RejectedExecutionHandler() {
+        @Override
+        public void rejectedExecution(final Runnable r,
+                                      final ThreadPoolExecutor executor) {
+          try {
+            Thread.sleep(2000);
+          }
+          catch (final InterruptedException e) {
+            LOGGER.error("Erreur : {}", e.getMessage());
+          }
+          executor.execute(r);
+        }
+      });
 
       while (it.hasNext()) {
 
