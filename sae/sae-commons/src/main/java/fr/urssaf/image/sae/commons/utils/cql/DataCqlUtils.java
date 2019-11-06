@@ -85,13 +85,14 @@ public class DataCqlUtils {
     try {
       final File file = new File(pathfile);
       LOGGER.warn("lengthFile=" + file.length());
-      // System.out.println("lengthFile=" + file.length());
       JAXBContext jaxbContext;
       jaxbContext = JAXBContext.newInstance(Keyspace.class);
+      LOGGER.warn("jaxbContext=" + jaxbContext);
       Unmarshaller jaxbUnmarshaller;
       jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
-
+      LOGGER.warn("keyspace=" + keyspace);
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
         LOGGER.warn("keyspace exits");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
