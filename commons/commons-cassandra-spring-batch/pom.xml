@@ -4,7 +4,7 @@
 
 	<groupId>fr.urssaf.image.commons</groupId>
 	<artifactId>commons-cassandra-spring-batch</artifactId>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.0.2</version>
 
 	<name>commons-cassandra-spring-batch</name>
 
@@ -40,13 +40,13 @@
    <!-- Configuration SVN pour le plug-in maven-release -->
 	<scm>
 		<url>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-spring-batch-2.0.2
       </url>
 		<developerConnection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-spring-batch-2.0.2
       </developerConnection>
 		<connection>
-        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra-spring-batch
+        scm:svn:http://svn.altair.recouv/svn/gns/java/tags/commons-cassandra-spring-batch-2.0.2
       </connection>
 	</scm>
 
