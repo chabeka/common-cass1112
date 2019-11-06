@@ -20,7 +20,6 @@ import fr.urssaf.image.sae.commons.bo.ParameterType;
 import fr.urssaf.image.sae.commons.dao.AbstractDao;
 import fr.urssaf.image.sae.commons.dao.ParametersDao;
 import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
-import fr.urssaf.image.sae.commons.utils.ParameterSerializer;
 import me.prettyprint.cassandra.serializers.BytesArraySerializer;
 import me.prettyprint.cassandra.serializers.ObjectSerializer;
 import me.prettyprint.cassandra.serializers.StringSerializer;
@@ -40,8 +39,6 @@ import me.prettyprint.hector.api.query.RangeSlicesQuery;
 public class ParametersSupport {
 
   private final ParametersDao parametersDao;
-
-  private final ParameterSerializer parameterSerializer = ParameterSerializer.get();
 
   /**
    * Constructeur
@@ -155,43 +152,43 @@ public class ParametersSupport {
           final Parameter parameter = new Parameter(parameterType, value2);
           parameters.add(parameter);
         }
+      }
     }
+
+    return parameters;
+
   }
 
-  return parameters;
+  public final HectorIterator<String, String> findAll() {
 
-}
+    final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
+    final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
+        .createRangeSlicesQuery(parametersDao.getKeyspace(),
+                                StringSerializer.get(),
+                                StringSerializer.get(),
+                                bytesSerializer);
+    rangeSlicesQuery.setColumnFamily(parametersDao.getColumnFamilyName());
+    rangeSlicesQuery.setRange(
+                              StringUtils.EMPTY,
+                              StringUtils.EMPTY,
+                              false,
+                              AbstractDao.DEFAULT_MAX_COLS);
+    rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
+    QueryResult<OrderedRows<String, String, byte[]>> queryResult;
+    queryResult = rangeSlicesQuery.execute();
+    // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
+    // son utilisation
+    final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
+    final ColumnFamilyResultWrapper<String, String> result = converter
+        .getColumnFamilyResultWrapper(queryResult,
+                                      StringSerializer.get(),
+                                      StringSerializer.get(),
+                                      bytesSerializer);
+    // On itère sur le résultat
+    final HectorIterator<String, String> resultIterator = new HectorIterator<>(
+        result);
 
-public final HectorIterator<String, String> findAll() {
-
-  final BytesArraySerializer bytesSerializer = BytesArraySerializer.get();
-  final RangeSlicesQuery<String, String, byte[]> rangeSlicesQuery = HFactory
-      .createRangeSlicesQuery(parametersDao.getKeyspace(),
-                              StringSerializer.get(),
-                              StringSerializer.get(),
-                              bytesSerializer);
-  rangeSlicesQuery.setColumnFamily(parametersDao.getColumnFamilyName());
-  rangeSlicesQuery.setRange(
-                            StringUtils.EMPTY,
-                            StringUtils.EMPTY,
-                            false,
-                            AbstractDao.DEFAULT_MAX_COLS);
-  rangeSlicesQuery.setRowCount(AbstractDao.DEFAULT_MAX_ROWS);
-  QueryResult<OrderedRows<String, String, byte[]>> queryResult;
-  queryResult = rangeSlicesQuery.execute();
-  // On convertit le résultat en ColumnFamilyResultWrapper pour faciliter
-  // son utilisation
-  final QueryResultConverter<String, String, byte[]> converter = new QueryResultConverter<>();
-  final ColumnFamilyResultWrapper<String, String> result = converter
-      .getColumnFamilyResultWrapper(queryResult,
-                                    StringSerializer.get(),
-                                    StringSerializer.get(),
-                                    bytesSerializer);
-  // On itère sur le résultat
-  final HectorIterator<String, String> resultIterator = new HectorIterator<>(
-      result);
-
-  return resultIterator;
-}
+    return resultIterator;
+  }
 
 }

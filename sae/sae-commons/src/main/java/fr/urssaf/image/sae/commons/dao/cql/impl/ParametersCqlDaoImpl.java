@@ -24,6 +24,9 @@ public class ParametersCqlDaoImpl extends GenericDAOImpl<ParameterCql, String> i
   @PostConstruct
   public void setRegister() {
     if (ccf != null) {
+      /**
+       * On initialise les codec pour la gestion des Object et des enums
+       */
       ccf.getCluster().getConfiguration().getCodecRegistry().register(ObjectCodec.instance);
       ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<>(ParameterType.class));
       ccf.getCluster().getConfiguration().getCodecRegistry().register(new EnumNameCodec<>(ParameterRowType.class));

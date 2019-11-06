@@ -13,8 +13,7 @@ import fr.urssaf.image.sae.commons.bo.ParameterRowType;
 import fr.urssaf.image.sae.commons.bo.ParameterType;
 
 /**
- * Objet contenant un paramètre
- * 
+ * Objet contenant un paramètre enversion Cql
  */
 @Table(name = "parameterscql")
 public class ParameterCql implements Comparable<ParameterCql> {

@@ -1,5 +1,5 @@
 /**
- *  TODO (AC75095351) Description du fichier
+ *   (AC75095351) Classe pour gérer le modeAPI en test
  */
 package fr.urssaf.image.sae.commons.utils;
 
@@ -14,6 +14,9 @@ import fr.urssaf.image.commons.cassandra.helper.ModeGestionAPI.MODE_API;
  */
 public class ModeApiAllUtils {
 
+  /**
+   * On affecte toutes les tables en modeAPI Hector
+   */
   public static void setAllModeAPIThrift() {
     final HashMap<String, String> modesApiTest = new HashMap<>();
     modesApiTest.put(Constantes.CF_DROIT_ACTION_UNITAIRE, MODE_API.HECTOR);
@@ -40,6 +43,9 @@ public class ModeApiAllUtils {
     ModeGestionAPI.setListeCfsModes(modesApiTest);
   }
 
+  /**
+   * On affecte toutes les tables en modeAPI Cql
+   */
   public static void setAllModeAPICql() {
     final HashMap<String, String> modesApiTest = new HashMap<>();
     modesApiTest.put(Constantes.CF_DROIT_ACTION_UNITAIRE, MODE_API.DATASTAX);

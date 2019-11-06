@@ -65,19 +65,6 @@ public class ParametersCqlSupport {
 
   /**
    * {@inheritDoc}
-   *//*
-   * public List<ParameterThrift> findByTypeRowParameterThrift(final ParameterRowType typeParameter) {
-   * Assert.notNull(typeParameter, "le typeParameter ne peut etre null");
-   * final Iterator<ParameterCql> iterator = parametersDaoCql.IterableFindById(typeParameter.getValue());
-   * final List<ParameterCql> pagmsCql = new ArrayList<>();
-   * iterator.forEachRemaining(pagmsCql::add);
-   * final List<ParameterThrift> parameters = ParametersUtils.convertListParametersCqlToListParametersThrift(pagmsCql);
-   * return parameters;
-   * }
-   */
-
-  /**
-   * {@inheritDoc}
    */
   public List<Parameter> findByTypeRowParameter(final ParameterRowType typeParameter) {
     Assert.notNull(typeParameter, "le typeParameter ne peut etre null");

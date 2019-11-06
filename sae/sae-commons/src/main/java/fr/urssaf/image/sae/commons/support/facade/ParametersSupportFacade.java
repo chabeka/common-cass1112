@@ -18,7 +18,6 @@ import fr.urssaf.image.sae.commons.exception.ParameterNotFoundException;
 import fr.urssaf.image.sae.commons.support.ParametersSupport;
 import fr.urssaf.image.sae.commons.support.cql.ParametersCqlSupport;
 import fr.urssaf.image.sae.commons.utils.Constantes;
-import fr.urssaf.image.sae.commons.utils.ParameterSerializer;
 import fr.urssaf.image.sae.commons.utils.ParametersUtils;
 
 /**
@@ -29,8 +28,6 @@ import fr.urssaf.image.sae.commons.utils.ParametersUtils;
 public class ParametersSupportFacade {
 
   private final String cfName = Constantes.CF_PARAMETERS;
-
-  private final ParameterSerializer parameterSerializer = ParameterSerializer.get();
 
   private final ParametersSupport parametersSupport;
 

@@ -21,7 +21,6 @@ import fr.urssaf.image.sae.commons.utils.Row;
  * JAXB est utilisé pour obtenir les objets à partir des fichiers xml
  */
 public class DataCqlUtils {
-
   private static final Logger LOGGER = LoggerFactory.getLogger(DataCqlUtils.class);
 
   @Deprecated
@@ -85,12 +84,16 @@ public class DataCqlUtils {
     Keyspace keyspace = null;
     try {
       final File file = new File(pathfile);
+      LOGGER.warn("lengthFile=" + file.length());
+      // System.out.println("lengthFile=" + file.length());
       JAXBContext jaxbContext;
       jaxbContext = JAXBContext.newInstance(Keyspace.class);
       Unmarshaller jaxbUnmarshaller;
       jaxbUnmarshaller = jaxbContext.createUnmarshaller();
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
+
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
+        LOGGER.warn("keyspace exits");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
           if (columnFamily.getName().equals(columnFamilyName)) {
             list = columnFamily.getRows();
