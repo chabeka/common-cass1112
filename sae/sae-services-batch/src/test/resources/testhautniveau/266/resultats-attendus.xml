@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<resultats xmlns="http://www.cirtil.fr/sae/resultatsXml" xmlns:ns2="http://www.cirtil.fr/sae/commun_sommaire_et_resultat">
-    <erreurBloquanteTraitement>
-        <ns2:code>SAE-EC-SOM001</ns2:code>
-        <ns2:libelle>Le fichier sommaire n'est pas valide. Détails : Aucun document du sommaire ne sera intégré dans le SAE (mode PARTIEL non accepté).</ns2:libelle>
-    </erreurBloquanteTraitement>
-</resultats>
