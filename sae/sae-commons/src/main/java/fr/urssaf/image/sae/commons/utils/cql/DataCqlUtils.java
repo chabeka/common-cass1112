@@ -93,8 +93,9 @@ public class DataCqlUtils {
       LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
       LOGGER.warn("keyspace=" + keyspace);
+      LOGGER.warn("ColumnFamilies=" + keyspace.getColumnFamilies().getColumnFamily().size());
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
-        LOGGER.warn("keyspace exits");
+        LOGGER.warn("keyspace exist");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
           if (columnFamily.getName().equals(columnFamilyName)) {
             list = columnFamily.getRows();
