@@ -9,6 +9,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,16 +94,16 @@ public class DataCqlUtils {
       LOGGER.warn("jaxbContext=" + jaxbContext);
       Unmarshaller jaxbUnmarshaller;
       jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      /*
-       * jaxbUnmarshaller.setEventHandler(
-       * new ValidationEventHandler() {
-       * @Override
-       * public boolean handleEvent(final ValidationEvent event) {
-       * throw new RuntimeException(event.getMessage(),
-       * event.getLinkedException());
-       * }
-       * });
-       */
+
+      jaxbUnmarshaller.setEventHandler(
+                                       new ValidationEventHandler() {
+                                         @Override
+                                         public boolean handleEvent(final ValidationEvent event) {
+                                           throw new RuntimeException(event.getMessage(),
+                                                                      event.getLinkedException());
+                                         }
+                                       });
+
       LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
       LOGGER.warn("keyspace=" + keyspace);

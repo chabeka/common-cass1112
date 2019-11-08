@@ -47,8 +47,51 @@ public class ColumnFamily {
     this.rows = rows;
   }
 
+  public String getType() {
+    return type;
+  }
+
+  @XmlElement(name = "type")
+  public void setType(final String type) {
+    this.type = type;
+  }
+
+  public String getKeyType() {
+    return keyType;
+  }
+
+  @XmlElement(name = "keyType")
+  public void setKeyType(final String keyType) {
+    this.keyType = keyType;
+  }
+
+  public String getComparatorType() {
+    return comparatorType;
+  }
+
+  @XmlElement(name = "comparatorType")
+  public void setComparatorType(final String comparatorType) {
+    this.comparatorType = comparatorType;
+  }
+
+  public String getDefaultColumnValueType() {
+    return defaultColumnValueType;
+  }
+
+  @XmlElement(name = "defaultColumnValueType")
+  public void setDefaultColumnValueType(final String defaultColumnValueType) {
+    this.defaultColumnValueType = defaultColumnValueType;
+  }
   private List<Row> rows;
 
   private String name;
+
+  private String type;
+
+  private String keyType;
+
+  private String comparatorType;
+
+  private String defaultColumnValueType;
 
 }
