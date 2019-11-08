@@ -245,7 +245,7 @@
    <configuration>
       <nom>PIC_GNS</nom>
       <dfceAddress>http://hwi31picgnsboappli1.gidn.recouv:8080/dfce-webapp/</dfceAddress>
-      <dfceBaseName>GNS-PIC</dfceBaseName>
+      <dfceBaseName>PIC-GNS</dfceBaseName>
       <dfceLogin>_ADMIN</dfceLogin>
       <dfcePwd>DOCUBASE</dfcePwd>
       <dfceTimeout>30000</dfceTimeout>
