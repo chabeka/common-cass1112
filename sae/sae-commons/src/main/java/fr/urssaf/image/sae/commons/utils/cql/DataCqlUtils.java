@@ -9,8 +9,6 @@ import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,23 +85,27 @@ public class DataCqlUtils {
     try {
       final File file = new File(pathfile);
       LOGGER.warn("lengthFile=" + file.length());
+      // final String xmlText = new String(Files.readAllBytes(Paths.get(pathfile)));
+      // LOGGER.warn("xmlText:" + xmlText);
       JAXBContext jaxbContext;
       jaxbContext = JAXBContext.newInstance(Keyspace.class);
       LOGGER.warn("jaxbContext=" + jaxbContext);
       Unmarshaller jaxbUnmarshaller;
       jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      jaxbUnmarshaller.setEventHandler(
-                                       new ValidationEventHandler() {
-                                         @Override
-                                         public boolean handleEvent(final ValidationEvent event) {
-                                           throw new RuntimeException(event.getMessage(),
-                                                                      event.getLinkedException());
-                                         }
-                                       });
+      /*
+       * jaxbUnmarshaller.setEventHandler(
+       * new ValidationEventHandler() {
+       * @Override
+       * public boolean handleEvent(final ValidationEvent event) {
+       * throw new RuntimeException(event.getMessage(),
+       * event.getLinkedException());
+       * }
+       * });
+       */
       LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
       LOGGER.warn("keyspace=" + keyspace);
-      LOGGER.warn("ColumnFamilies=" + keyspace.getColumnFamilies().getColumnFamily().size());
+      // LOGGER.warn("ColumnFamilies=" + keyspace.getColumnFamilies().getColumnFamily().size());
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
         LOGGER.warn("keyspace exist");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
@@ -112,11 +114,19 @@ public class DataCqlUtils {
             break;
           }
         }
+      } else {
+        if (keyspace == null) {
+          LOGGER.warn("keyspace null");
+        } else {
+          LOGGER.warn("keyspace.getColumnFamilies()  null");
+        }
+
       }
     }
     catch (final Exception e) {
+      LOGGER.error("Erreur: " + e.getMessage());
       System.out.println(e.getMessage());
-      return null;
+      return list;// Correction
     }
 
     return list;
