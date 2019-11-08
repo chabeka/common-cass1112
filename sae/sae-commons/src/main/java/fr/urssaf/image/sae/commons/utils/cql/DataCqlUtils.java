@@ -99,8 +99,12 @@ public class DataCqlUtils {
                                        new ValidationEventHandler() {
                                          @Override
                                          public boolean handleEvent(final ValidationEvent event) {
-                                           throw new RuntimeException(event.getMessage(),
-                                                                      event.getLinkedException());
+                                           if (event.getMessage().contains("élément inattendu")) {
+                                             return true;
+                                           } else {
+                                             throw new RuntimeException(event.getMessage(),
+                                                                        event.getLinkedException());
+                                           }
                                          }
                                        });
 
