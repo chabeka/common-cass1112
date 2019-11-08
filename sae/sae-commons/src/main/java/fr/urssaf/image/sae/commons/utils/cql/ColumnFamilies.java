@@ -32,4 +32,12 @@ public class ColumnFamilies {
 
   private List<ColumnFamily> columnFamilies;
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "ColumnFamilies [columnFamilies=" + columnFamilies + "]";
+  }
+
 }

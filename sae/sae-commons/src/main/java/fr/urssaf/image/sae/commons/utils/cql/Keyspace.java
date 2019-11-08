@@ -12,7 +12,6 @@ import javax.xml.bind.annotation.XmlRootElement;
  * ATTENTION bien préciser le namespace sinon erreur
  */
 @XmlRootElement(name = "keyspace", namespace = "http://xml.dataset.cassandraunit.org")
-
 public class Keyspace {
   /**
    * @return the columnFamilies
@@ -29,6 +28,7 @@ public class Keyspace {
   public void setColumnFamilies(final ColumnFamilies columnFamilies) {
     this.columnFamilies = columnFamilies;
   }
+
 
   ColumnFamilies columnFamilies;
 
@@ -53,6 +53,13 @@ public class Keyspace {
 
   int replicationFactor;
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "Keyspace [columnFamilies=" + columnFamilies + ", name=" + name + ", strategy=" + strategy + ", replicationFactor=" + replicationFactor + "]";
+  }
 
 
 }

@@ -94,4 +94,13 @@ public class ColumnFamily {
 
   private String defaultColumnValueType;
 
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    return "ColumnFamily [rows=" + rows + ", name=" + name + ", type=" + type + ", keyType=" + keyType + ", comparatorType=" + comparatorType
+        + ", defaultColumnValueType=" + defaultColumnValueType + "]";
+  }
+
 }
