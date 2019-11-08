@@ -43,10 +43,10 @@ public class TransfertUnitaireOKTest {
       // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_INTERNE.getUrl());
       // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.LOCALHOST.getUrl());
       // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_CLIENT.getUrl());
-      // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_PIC.getUrl());
-      // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_PIC.getUrl());
-      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_PAJE.getUrl());
-      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_PAJE.getUrl());
+      gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_PIC.getUrl());
+      gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_PIC.getUrl());
+      // gntService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNT_INT_PAJE.getUrl());
+      // gnsService = SaeServiceStubFactory.getServiceForDevToutesActions(Environments.GNS_INT_PAJE.getUrl());
    }
 
    @After

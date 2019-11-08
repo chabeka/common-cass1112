@@ -11,10 +11,10 @@ import sae.integration.data.TestData;
 import sae.integration.environment.Environment;
 import sae.integration.environment.Environments;
 import sae.integration.job.JobManager;
+import sae.integration.util.ArchivageSommaireBuilder;
 import sae.integration.util.ArchivageValidationUtils;
 import sae.integration.util.CleanHelper;
 import sae.integration.util.SoapHelper;
-import sae.integration.util.ArchivageSommaireBuilder;
 import sae.integration.webservice.factory.SaeServiceStubFactory;
 import sae.integration.webservice.modele.ListeMetadonneeType;
 import sae.integration.webservice.modele.SaeServicePortType;
@@ -35,8 +35,10 @@ public class ArchivageMasseTest {
     * @throws Exception
     */
    public void archivageOK() throws Exception {
-      final Environment environnement = Environments.GNT_PIC;
-      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(environnement.getUrl());
+      // final Environment environnement = Environments.GNT_PIC;
+      // final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNT(environnement.getUrl());
+      final Environment environnement = Environments.GNS_INT_CESU;
+      final SaeServicePortType service = SaeServiceStubFactory.getServiceForRechercheDocumentaireGNS(environnement.getUrl());
 
       // Création du sommaire, avec deux documents
       final ArchivageSommaireBuilder builder = new ArchivageSommaireBuilder();
@@ -74,6 +76,5 @@ public class ArchivageMasseTest {
          CleanHelper.deleteOneDocument(service, docId2);
       }
    }
-
 
 }

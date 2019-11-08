@@ -6,6 +6,7 @@ package sae.integration.util;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import sae.integration.webservice.modele.ListeMetadonneeCodeType;
 import sae.integration.webservice.modele.ListeMetadonneeType;
@@ -59,6 +60,17 @@ public class SoapBuilder {
 
    public static void addMeta(final ListeMetadonneeType metaList, final String metaCode, final String metaValue) {
       metaList.getMetadonnee().add(buildMetadata(metaCode, metaValue));
+   }
+
+   public static void deleteMeta(final ListeMetadonneeType metaList, final String metaCode) {
+      final List<MetadonneeType> metas = metaList.getMetadonnee();
+      for (int i = 0; i < metas.size(); i++) {
+         final MetadonneeType element = metas.get(i);
+         if (element.getCode().equals(metaCode)) {
+            metas.remove(i);
+            return;
+         }
+      }
    }
 
    /**
