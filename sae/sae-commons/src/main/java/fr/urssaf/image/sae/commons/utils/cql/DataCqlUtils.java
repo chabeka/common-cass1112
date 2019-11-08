@@ -3,12 +3,18 @@
  */
 package fr.urssaf.image.sae.commons.utils.cql;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,6 +91,25 @@ public class DataCqlUtils {
     try {
       final File file = new File(pathfile);
       LOGGER.warn("lengthFile=" + file.length());
+
+      final InputStream is = new FileInputStream(file);
+      final BufferedReader buf = new BufferedReader(new InputStreamReader(is));
+
+      String line = buf.readLine();
+      final StringBuilder sb = new StringBuilder();
+
+      while(line != null){
+        sb.append(line).append("\n");
+        line = buf.readLine();
+      }
+
+      final String fileAsString = sb.toString();
+      buf.close();
+
+      LOGGER.warn("xmlText:" + fileAsString);
+
+      // final Read more: https://javarevisited.blogspot.com/2015/09/how-to-read-file-into-string-in-java-7.html#ixzz64ggodQeX
+
       // final String xmlText = new String(Files.readAllBytes(Paths.get(pathfile)));
       // LOGGER.warn("xmlText:" + xmlText);
       JAXBContext jaxbContext;
@@ -93,20 +118,18 @@ public class DataCqlUtils {
       Unmarshaller jaxbUnmarshaller;
       jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-      /*
-       * jaxbUnmarshaller.setEventHandler(
-       * new ValidationEventHandler() {
-       * @Override
-       * public boolean handleEvent(final ValidationEvent event) {
-       * if (event.getMessage().contains("élément inattendu")) {
-       * return true;
-       * } else {
-       * throw new RuntimeException(event.getMessage(),
-       * event.getLinkedException());
-       * }
-       * }
-       * });
-       */
+      jaxbUnmarshaller.setEventHandler(
+                                       new ValidationEventHandler() {
+                                         @Override
+                                         public boolean handleEvent(final ValidationEvent event) {
+                                           if (event.getMessage().contains("élément inattendu")) {
+                                             return true;
+                                           } else {
+                                             throw new RuntimeException(event.getMessage(),
+                                                                        event.getLinkedException());
+                                           }
+                                         }
+                                       });
 
       LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
       keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
