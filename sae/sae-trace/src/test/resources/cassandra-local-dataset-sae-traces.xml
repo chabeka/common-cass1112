@@ -20,6 +20,7 @@
       </columnFamily>
       -->
       <columnFamily>
+      <test>TEST</test>
          <name>TraceDestinataire</name>
          <type>STANDARD</type>
          <keyType>UTF8Type</keyType>
