@@ -5,13 +5,10 @@ package fr.urssaf.image.sae.commons.utils.cql;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
  * (AC75095351) Classe columnFamilies pour la conversion xml du dataset
  */
-@XmlRootElement(name = "columnFamilies")
+// @XmlRootElement(name = "columnFamilies")
 public class ColumnFamilies {
 
   /**
@@ -25,7 +22,7 @@ public class ColumnFamilies {
    * @param columnFamilies
    *          the columnFamilies to set
    */
-  @XmlElement(name = "columnFamily")
+  // @XmlElement(name = "columnFamily")
   public void setColumnFamily(final List<ColumnFamily> columnFamilies) {
     this.columnFamilies = columnFamilies;
   }

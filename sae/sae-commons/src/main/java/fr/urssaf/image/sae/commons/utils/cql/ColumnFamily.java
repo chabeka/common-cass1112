@@ -5,15 +5,12 @@ package fr.urssaf.image.sae.commons.utils.cql;
 
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import fr.urssaf.image.sae.commons.utils.Row;
 
 /**
  * (AC75095351) Classe columnFamily pour la conversion xml du dataset
  */
-@XmlRootElement(name = "columnFamily")
+// @XmlRootElement(name = "columnFamily")
 public class ColumnFamily {
   /**
    * @return the name
@@ -26,7 +23,7 @@ public class ColumnFamily {
    * @param name
    *          the name to set
    */
-  @XmlElement(name = "name")
+  // @XmlElement(name = "name")
   public void setName(final String name) {
     this.name = name;
   }
@@ -42,7 +39,7 @@ public class ColumnFamily {
    * @param rows
    *          the rows to set
    */
-  @XmlElement(name = "row")
+  // @XmlElement(name = "row")
   public void setRows(final List<Row> rows) {
     this.rows = rows;
   }
@@ -51,7 +48,7 @@ public class ColumnFamily {
     return type;
   }
 
-  @XmlElement(name = "type")
+  // @XmlElement(name = "type")
   public void setType(final String type) {
     this.type = type;
   }
@@ -60,7 +57,7 @@ public class ColumnFamily {
     return keyType;
   }
 
-  @XmlElement(name = "keyType")
+  // @XmlElement(name = "keyType")
   public void setKeyType(final String keyType) {
     this.keyType = keyType;
   }
@@ -69,7 +66,7 @@ public class ColumnFamily {
     return comparatorType;
   }
 
-  @XmlElement(name = "comparatorType")
+  // @XmlElement(name = "comparatorType")
   public void setComparatorType(final String comparatorType) {
     this.comparatorType = comparatorType;
   }
@@ -78,7 +75,7 @@ public class ColumnFamily {
     return defaultColumnValueType;
   }
 
-  @XmlElement(name = "defaultColumnValueType")
+  // @XmlElement(name = "defaultColumnValueType")
   public void setDefaultColumnValueType(final String defaultColumnValueType) {
     this.defaultColumnValueType = defaultColumnValueType;
   }

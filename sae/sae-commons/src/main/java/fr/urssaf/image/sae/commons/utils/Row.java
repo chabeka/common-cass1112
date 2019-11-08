@@ -6,15 +6,12 @@ package fr.urssaf.image.sae.commons.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-
 import fr.urssaf.image.sae.commons.utils.cql.Column;
 
 /**
  * (AC75095351) Ligne thrift pour extraction de données à partir de dataset
  */
-@XmlRootElement(name = "row")
+// @XmlRootElement(name = "row")
 public class Row {
   /**
    * @return the key
@@ -43,14 +40,13 @@ public class Row {
   /**
    * @param columns the columns to set
    */
-  @XmlElement(name = "column")
+  // @XmlElement(name = "column")
   public void setColumns(final List<Column> columns) {
     this.columns = columns;
   }
 
 
   private String key;
-
 
   private List<Column> columns = new ArrayList<>();
 }

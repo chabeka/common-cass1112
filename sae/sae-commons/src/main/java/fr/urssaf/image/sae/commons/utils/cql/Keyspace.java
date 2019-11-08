@@ -5,13 +5,12 @@
 package fr.urssaf.image.sae.commons.utils.cql;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * (AC75095351) Classe keyspace pour la conversion xml du dataset
  * ATTENTION bien préciser le namespace sinon erreur
  */
-@XmlRootElement(name = "keyspace", namespace = "http://xml.dataset.cassandraunit.org")
+// @XmlRootElement(name = "keyspace", namespace = "http://xml.dataset.cassandraunit.org")
 public class Keyspace {
   /**
    * @return the columnFamilies
@@ -24,7 +23,7 @@ public class Keyspace {
    * @param columnFamilies
    *          the columnFamilies to set
    */
-  @XmlElement(name = "columnFamilies")
+  // @XmlElement(name = "columnFamilies")
   public void setColumnFamilies(final ColumnFamilies columnFamilies) {
     this.columnFamilies = columnFamilies;
   }
@@ -39,14 +38,14 @@ public class Keyspace {
 
   String name;
 
-  @XmlElement(name = "strategy")
+  // @XmlElement(name = "strategy")
   public void setStrategy(final String strategy) {
     this.strategy = strategy;
   }
 
   String strategy;
 
-  @XmlElement(name = "replicationFactor")
+  // @XmlElement(name = "replicationFactor")
   public void setReplicationFactor(final int replicationFactor) {
     this.replicationFactor = replicationFactor;
   }

@@ -3,21 +3,16 @@
  */
 package fr.urssaf.image.sae.commons.utils.cql;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.thoughtworks.xstream.XStream;
 
 import fr.urssaf.image.sae.commons.utils.Row;
 
@@ -29,30 +24,35 @@ import fr.urssaf.image.sae.commons.utils.Row;
 public class DataCqlUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataCqlUtils.class);
 
-  @Deprecated
+
   /**
    * Méthode de désérialisation en list<Row> à partir d'un chemin de fichier
    * 
    * @param pathfile
    * @return liste des lignes Thrift
    */
-  public static List<Row> deserialize(final String pathfile) {
-    ColumnFamily cf = null;
-    try {
-      final File file = new File(pathfile);
-      JAXBContext jaxbContext;
-      jaxbContext = JAXBContext.newInstance(ColumnFamily.class);
-      Unmarshaller jaxbUnmarshaller;
-      jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      cf = (ColumnFamily) jaxbUnmarshaller.unmarshal(file);
-    }
-    catch (final Exception e) {
-      System.out.println(e.getMessage());
-      return null;
-    }
-    System.out.println(cf);
-    return cf.getRows();
-  }
+  /*
+   * public static List<Row> deserialize(final String pathfile) {
+   * ColumnFamily cf = null;
+   * try {
+   * final File file = new File(pathfile);
+   * // JAXBContext jaxbContext;
+   * // jaxbContext = JAXBContext.newInstance(ColumnFamily.class);
+   * final Unmarshaller jaxbUnmarshaller;
+   * // jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+   * // cf = (ColumnFamily) jaxbUnmarshaller.unmarshal(file);
+   * final XStream xstream = new XStream();
+   * final InputStream is = new FileInputStream(file);
+   * cf = (ColumnFamily) xstream.fromXML(is);
+   * }
+   * catch (final Exception e) {
+   * System.out.println(e.getMessage());
+   * return null;
+   * }
+   * System.out.println(cf);
+   * return cf.getRows();
+   * }
+   */
 
   /**
    * Méthode de désérialisation du keyspace à partir d'un chemin de fichier
@@ -64,17 +64,24 @@ public class DataCqlUtils {
     Keyspace keyspace = null;
     try {
       final File file = new File(pathfile);
-      JAXBContext jaxbContext;
-      jaxbContext = JAXBContext.newInstance(Keyspace.class);
-      Unmarshaller jaxbUnmarshaller;
-      jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-      keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
+      LOGGER.warn("lengthFile=" + file.length());
+      final XStream xstream = new XStream();
+      xstream.alias("keyspace", Keyspace.class);
+      xstream.alias("columnFamily", ColumnFamily.class);
+      xstream.alias("columnFamilies", ColumnFamilies.class);
+      xstream.addImplicitCollection(ColumnFamilies.class, "columnFamilies");
+      xstream.alias("row", Row.class);
+      xstream.addImplicitCollection(ColumnFamily.class, "rows");
+      xstream.alias("column", Column.class);
+      xstream.addImplicitCollection(Row.class, "columns");
+      final InputStream is = new FileInputStream(file);
+      keyspace = (Keyspace) xstream.fromXML(is);
     }
     catch (final Exception e) {
-      System.out.println(e.getMessage());
+      LOGGER.error("Erreur: " + e.getMessage());
       return null;
     }
-    System.out.println(keyspace);
+    LOGGER.error("keyspace= " + keyspace);
     return keyspace;
   }
 
@@ -87,55 +94,9 @@ public class DataCqlUtils {
    */
   public static List<Row> deserializeColumnFamilyToRows(final String pathfile, final String columnFamilyName) {
     List<Row> list = new ArrayList<>();
-    Keyspace keyspace = null;
     try {
-      final File file = new File(pathfile);
-      LOGGER.warn("lengthFile=" + file.length());
-
-      final InputStream is = new FileInputStream(file);
-      final BufferedReader buf = new BufferedReader(new InputStreamReader(is));
-
-      String line = buf.readLine();
-      final StringBuilder sb = new StringBuilder();
-
-      while(line != null){
-        sb.append(line).append("\n");
-        line = buf.readLine();
-      }
-
-      final String fileAsString = sb.toString();
-      buf.close();
-
-      LOGGER.warn("xmlText:" + fileAsString);
-
-      // final Read more: https://javarevisited.blogspot.com/2015/09/how-to-read-file-into-string-in-java-7.html#ixzz64ggodQeX
-
-      // final String xmlText = new String(Files.readAllBytes(Paths.get(pathfile)));
-      // LOGGER.warn("xmlText:" + xmlText);
-      JAXBContext jaxbContext;
-      jaxbContext = JAXBContext.newInstance(Keyspace.class);
-      LOGGER.warn("jaxbContext=" + jaxbContext);
-      Unmarshaller jaxbUnmarshaller;
-      jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-
-      jaxbUnmarshaller.setEventHandler(
-                                       new ValidationEventHandler() {
-                                         @Override
-                                         public boolean handleEvent(final ValidationEvent event) {
-                                           if (event.getMessage().contains("élément inattendu")) {
-                                             return true;
-                                           } else {
-                                             throw new RuntimeException(event.getMessage(),
-                                                                        event.getLinkedException());
-                                           }
-                                         }
-                                       });
-
-      LOGGER.warn("jaxbUnmarshaller=" + jaxbUnmarshaller);
-      keyspace = (Keyspace) jaxbUnmarshaller.unmarshal(file);
+      final Keyspace keyspace = deserializeKeyspace(pathfile);
       LOGGER.warn("keyspace=" + keyspace);
-
-      // LOGGER.warn("ColumnFamilies=" + keyspace.getColumnFamilies().getColumnFamily().size());
       if (keyspace != null && keyspace.getColumnFamilies() != null) {
         LOGGER.warn("keyspace exist");
         for (final ColumnFamily columnFamily : keyspace.getColumnFamilies().getColumnFamily()) {
@@ -155,8 +116,7 @@ public class DataCqlUtils {
     }
     catch (final Exception e) {
       LOGGER.error("Erreur: " + e.getMessage());
-      System.out.println(e.getMessage());
-      return list;// Correction
+      return list;
     }
 
     return list;
@@ -178,5 +138,4 @@ public class DataCqlUtils {
     }
     return value;
   }
-
 }
