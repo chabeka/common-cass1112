@@ -45,6 +45,21 @@
 
 	</properties>
 
+
+   <!-- Configuration SVN pour le plug-in maven-release -->
+	<scm>
+		<url>
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
+      </url>
+		<developerConnection>
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
+      </developerConnection>
+		<connection>
+        scm:svn:http://svn.altair.recouv/svn/gns/java/trunk/commons/commons-cassandra
+      </connection>
+	</scm>
+
+
 	<dependencies>
 
       <!--  Spring -->
