@@ -9,10 +9,13 @@
 
    <logger name="fr.urssaf.image.commons.cassandra.spring.batch" level="TRACE" />
    <logger name="org.cassandraunit" level="INFO" />
-   <logger name="org.apache.cassandra" level="INFO" />
+   <logger name="org.apache.cassandra" level="WARN" />
+   <logger name="org.apache.zookeeper" level="WARN" />
+   <logger name="org.apache.curator" level="WARN" />
+   <logger name="com.datastax.driver" level="WARN" />
    <logger name="me.prettyprint.cassandra" level="OFF" />
    
-   <root level="TRACE">
+   <root level="INFO">
       <appender-ref ref="console" />
    </root>
   
