@@ -60,7 +60,6 @@ public class JobExecutionIdGeneratorTest {
       server.resetData(true, MODE_API.HECTOR);
     }
     catch (final Exception e) {
-      // TODO Auto-generated catch block
       e.printStackTrace();
     } // EC
   }

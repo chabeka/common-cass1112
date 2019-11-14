@@ -7,6 +7,7 @@ import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
 
+
 /**
  * TODO (AC75095028) Description du type
  */
@@ -57,14 +58,7 @@ public class SequencesCql implements Comparable<SequencesCql> {
     this.value = value;
   }
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public int compareTo(final SequencesCql o) {
 
-    return getJobIdName().compareTo(o.getJobIdName());
-  }
 
   /**
    * {@inheritDoc}
@@ -108,6 +102,15 @@ public class SequencesCql implements Comparable<SequencesCql> {
       return false;
     }
     return true;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public int compareTo(final SequencesCql o) {
+
+    return getJobIdName().compareTo(o.getJobIdName());
   }
 
 }
