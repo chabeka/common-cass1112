@@ -109,8 +109,7 @@ public class ClusterThriftConnecter {
     // Charge les données
     final DataLoader dataLoader = new DataLoader(TEST_CLUSTER_NAME, "localhost:9171");
     dataLoader.load(dataSet, !(testCluster.describeKeyspace(KEYSPACE_TU) != null && !dropAndCreateKeyspace));
-    // TEST EC
-    // dataLoader.load(dataSet, false);
+
 
   }
 
@@ -120,8 +119,6 @@ public class ClusterThriftConnecter {
     final DataLoaderOnlyData dataLoader = new DataLoaderOnlyData(TEST_CLUSTER_NAME, "localhost:9171");
     dataLoader.loadOnlyData(dataSet, !(testCluster.describeKeyspace(KEYSPACE_TU) != null && !dropAndCreateKeyspace), true);
 
-    // TEST EC
-    // dataLoader.load(dataSet, false);
 
   }
 }
