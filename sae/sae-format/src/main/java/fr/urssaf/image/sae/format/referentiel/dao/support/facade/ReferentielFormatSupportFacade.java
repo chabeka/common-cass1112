@@ -16,6 +16,7 @@ import fr.urssaf.image.sae.format.referentiel.dao.support.cql.ReferentielFormatC
 import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 
 /**
+ * AC75095351
  * classe permettant de réaliser les actions de manipulation des DAO pour la
  * famille de colonne "ReferentielFormat"
  */
@@ -23,10 +24,6 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 @Component
 public class ReferentielFormatSupportFacade {
 
-  /*
-   * @Autowired
-   * IReferentielFormatDaoCql formatReferentielDaoCql;
-   */
 
   private final String cfName = Constantes.CF_REFERENTIEL_FORMAT;
 

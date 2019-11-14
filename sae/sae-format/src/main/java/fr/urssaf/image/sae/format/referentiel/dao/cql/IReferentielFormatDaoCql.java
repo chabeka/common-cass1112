@@ -5,7 +5,7 @@ import fr.urssaf.image.sae.format.referentiel.model.FormatFichier;
 
 
 /**
- * Interface DAO de la colonne famille <code>RefrentielFormat</code>
+ * Interface DAO de la colonne famille <code>RefrentielFormat</code> AC75095351
  */
 
 public interface IReferentielFormatDaoCql extends IGenericDAO<FormatFichier, String> {
