@@ -31,11 +31,9 @@ public class SaeDroitServiceTest {
   private static final String MESSAGE_CORRECT = "le message de l'exception doit etre correct";
 
   @Autowired
-  // @Qualifier("saeDroitServiceFacadeImpl")
   private SaeDroitService service;
 
   @Autowired
-  // @Qualifier("saeActionUnitaireServiceFacadeImpl")
   private SaeActionUnitaireService serviceAction;
 
   @Test

@@ -142,8 +142,6 @@ public class FormatControlProfilServiceTest {
 
     formatControlProfil.setControlProfil(control);
     formControlProfilService.addFormatControlProfil(formatControlProfil);
-    // EC
-    final FormatControlProfil formatControlProfilTemp = formControlProfilService.getFormatControlProfil(FORMAT_CODE);
 
     formControlProfilService.deleteFormatControlProfil(FORMAT_CODE);
 

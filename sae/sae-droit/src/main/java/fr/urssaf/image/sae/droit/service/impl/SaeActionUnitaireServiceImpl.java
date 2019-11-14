@@ -1,5 +1,5 @@
 /**
- * 
+ * AC75095351
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
@@ -36,7 +36,7 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
   private static final String ACTION_UNITAIRE = "L'action unitaire ";
 
   private static final Logger LOGGER = LoggerFactory
-                                                    .getLogger(SaeActionUnitaireServiceImpl.class);
+      .getLogger(SaeActionUnitaireServiceImpl.class);
 
   private static final String PREFIXE_AU = "/DroitActionUnitaire/";
 
@@ -57,7 +57,7 @@ public class SaeActionUnitaireServiceImpl implements SaeActionUnitaireService {
 
   @Autowired
   public SaeActionUnitaireServiceImpl(final ActionUnitaireSupportFacade actionUnitaireFacade,
-                                            final CuratorFramework curatorClient) {
+                                      final CuratorFramework curatorClient) {
     super();
     this.actionUnitaireFacade = actionUnitaireFacade;
     this.curatorClient = curatorClient;

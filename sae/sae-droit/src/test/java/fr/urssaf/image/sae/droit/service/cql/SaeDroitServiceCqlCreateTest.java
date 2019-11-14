@@ -35,7 +35,6 @@ import fr.urssaf.image.sae.droit.dao.support.cql.ContratServiceCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.FormatControlProfilCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmaCqlSupport;
-import fr.urssaf.image.sae.droit.dao.support.cql.PagmfCqlSupport;
 import fr.urssaf.image.sae.droit.dao.support.cql.PagmpCqlSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
 import fr.urssaf.image.sae.droit.exception.PagmReferenceException;
@@ -55,7 +54,6 @@ import fr.urssaf.image.sae.droit.utils.Constantes;
 public class SaeDroitServiceCqlCreateTest {
 
   @Autowired
-  // @Qualifier("saeDroitServiceFacadeImpl")
   private SaeDroitService service;
 
   @Autowired
@@ -70,8 +68,8 @@ public class SaeDroitServiceCqlCreateTest {
   @Autowired
   private PagmpCqlSupport pagmpCqlSupport;
 
-  @Autowired
-  private PagmfCqlSupport pagmfCqlSupport;
+  // @Autowired
+  // private PagmfCqlSupport pagmfCqlSupport;
 
   @Autowired
   private FormatControlProfilCqlSupport formatControlProfilCqlSupport;

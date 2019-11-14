@@ -5,6 +5,7 @@ import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
 
 
 /**
+ * AC75095351
  * Interface DAO de la colonne famille <code>Pagm</code>
  */
 

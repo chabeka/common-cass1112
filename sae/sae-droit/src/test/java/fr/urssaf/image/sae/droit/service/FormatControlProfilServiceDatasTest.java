@@ -1,6 +1,7 @@
 package fr.urssaf.image.sae.droit.service;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -15,7 +16,7 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.FormatControlProfil;
 import fr.urssaf.image.sae.droit.dao.model.FormatProfil;
 import fr.urssaf.image.sae.droit.dao.support.FormatControlProfilSupport;
-import junit.framework.Assert;
+
 
 /**
  * Classe Test de la classe {@link FormatControlProfilService}
@@ -24,13 +25,12 @@ import junit.framework.Assert;
 @ContextConfiguration(locations = {"/applicationContext-sae-droit-test.xml"})
 public class FormatControlProfilServiceDatasTest {
 
-  private static final String MESSAGE_EXCEPT_INCORRECT = "Le message de l'exception est incorrect";
-
-  private static final String RESULTAT_INCORRECT = "Le resultat est incorrect";
-
-  private static final String FORMAT_CODE = "formatCode";
-
-  private static final String CODE_FORMAT_CONTROL_PROFIL = "INT_FORMAT_PROFIL_ATT_VIGI";
+  /*
+   * private static final String MESSAGE_EXCEPT_INCORRECT = "Le message de l'exception est incorrect";
+   * private static final String RESULTAT_INCORRECT = "Le resultat est incorrect";
+   * private static final String FORMAT_CODE = "formatCode";
+   * private static final String CODE_FORMAT_CONTROL_PROFIL = "INT_FORMAT_PROFIL_ATT_VIGI";
+   */
 
   private static final Logger LOGGER = LoggerFactory
       .getLogger(FormatControlProfilServiceDatasTest.class);

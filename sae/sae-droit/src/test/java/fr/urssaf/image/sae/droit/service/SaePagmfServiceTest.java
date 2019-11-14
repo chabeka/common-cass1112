@@ -39,7 +39,6 @@ public class SaePagmfServiceTest {
   private static final String DESCRIPTION = "description";
 
   @Autowired
-  // @Qualifier("saePagmfServiceFacadeImpl")
   private SaePagmfService saePagmfService;
 
   @Autowired
@@ -50,8 +49,6 @@ public class SaePagmfServiceTest {
 
   @After
   public void end() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
-    // cassandraServer.resetData();
     cassandraServer.clearAndLoad();
   }
 

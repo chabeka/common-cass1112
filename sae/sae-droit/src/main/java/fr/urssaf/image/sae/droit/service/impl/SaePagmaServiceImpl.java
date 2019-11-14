@@ -1,5 +1,5 @@
 /**
- * 
+ * AC75095351
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
@@ -60,7 +60,7 @@ public class SaePagmaServiceImpl implements SaePagmaService {
    */   
   @Autowired
   public SaePagmaServiceImpl(final ActionUnitaireSupportFacade actionUnitaireSupportFacade, final PagmaSupportFacade pagmaSupportFacade,
-                                   final CuratorFramework curator) {
+                             final CuratorFramework curator) {
 
     this.pagmaSupportFacade = pagmaSupportFacade;
     this.actionUnitaireSupportFacade = actionUnitaireSupportFacade;

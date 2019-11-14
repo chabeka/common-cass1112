@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,12 @@ import fr.urssaf.image.commons.cassandra.support.clock.JobClockSupport;
 import fr.urssaf.image.sae.droit.dao.model.Prmd;
 import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 import fr.urssaf.image.sae.droit.exception.DroitRuntimeException;
-import junit.framework.Assert;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "/applicationContext-sae-droit-test.xml" })
 public class SaePrmdServiceDatasTest {
 
   @Autowired
-  // @Qualifier("saePrmdServiceFacadeImpl")
   private SaePrmdService service;
 
   @Autowired

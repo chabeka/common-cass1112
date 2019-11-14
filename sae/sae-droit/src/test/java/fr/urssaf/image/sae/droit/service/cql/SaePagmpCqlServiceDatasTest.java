@@ -81,7 +81,6 @@ public class SaePagmpCqlServiceDatasTest {
 
   @Test(expected = PagmpReferenceException.class)
   public void testPagmpDejaExistant() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.DATASTAX);
 
     final Pagmp pagmp = new Pagmp();
     pagmp.setCode("codePagmp");
@@ -96,7 +95,6 @@ public class SaePagmpCqlServiceDatasTest {
 
   @Test(expected = PrmdReferenceException.class)
   public void testPrmdInexistante() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.DATASTAX);
 
     final Pagmp pagmp = new Pagmp();
     pagmp.setCode("codePagmp");

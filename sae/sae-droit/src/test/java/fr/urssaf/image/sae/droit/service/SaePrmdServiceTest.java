@@ -31,7 +31,6 @@ public class SaePrmdServiceTest {
    */
   private static final String ERREUR_ATTENDUE = "erreur attendue";
   @Autowired
-  // @Qualifier("saePrmdServiceFacadeImpl")
   private SaePrmdService service;
 
   @Autowired

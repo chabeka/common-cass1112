@@ -9,6 +9,7 @@ import java.util.Map;
 import com.datastax.driver.mapping.annotations.Column;
 import com.datastax.driver.mapping.annotations.PartitionKey;
 import com.datastax.driver.mapping.annotations.Table;
+import com.google.common.base.Objects;
 
 /**
  * Classe de modèle d'un PRMD
@@ -98,8 +99,8 @@ public class Prmd implements Comparable<Prmd> {
 
       areEquals = code.equals(prmd.getCode())
           && description.equals(prmd.getDescription())
-          && lucene.equals(prmd.getLucene())
-          && bean.equals(prmd.getBean())
+          && Objects.equal(lucene, prmd.getLucene())
+          && Objects.equal(bean, prmd.getBean())
           && metadata.keySet().size() == prmd.getMetadata().keySet()
           .size()
           && metadata.keySet().containsAll(prmd.getMetadata().keySet());

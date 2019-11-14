@@ -22,7 +22,6 @@ public class SaePagmaServiceTest {
   @Autowired
   private CassandraServerBean cassandraServer;
   @Autowired
-  // @Qualifier("saePagmaServiceFacadeImpl")
   private SaePagmaService service;
 
   @Test

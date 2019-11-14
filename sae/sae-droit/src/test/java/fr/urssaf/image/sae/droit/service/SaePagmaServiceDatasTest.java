@@ -34,7 +34,6 @@ import junit.framework.Assert;
 public class SaePagmaServiceDatasTest {
 
   @Autowired
-  // @Qualifier("saePagmaServiceFacadeImpl")
   private SaePagmaService service;
 
   @Autowired

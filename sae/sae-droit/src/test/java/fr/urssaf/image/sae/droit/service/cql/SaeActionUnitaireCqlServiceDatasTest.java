@@ -31,7 +31,6 @@ import fr.urssaf.image.sae.droit.utils.Constantes;
 public class SaeActionUnitaireCqlServiceDatasTest {
 
   @Autowired
-  // @Qualifier("saeActionUnitaireServiceFacadeImpl")
   private SaeActionUnitaireService service;
 
   @Autowired

@@ -5,6 +5,7 @@ import fr.urssaf.image.sae.droit.dao.model.Pagmp;
 
 
 /**
+ * AC75095351
  * Interface DAO de la colonne famille <code>Pagmp</code>
  */
 

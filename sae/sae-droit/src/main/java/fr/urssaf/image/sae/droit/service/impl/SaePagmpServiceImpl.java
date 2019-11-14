@@ -1,5 +1,5 @@
 /**
- * 
+ * AC75095351
  */
 package fr.urssaf.image.sae.droit.service.impl;
 
@@ -64,7 +64,7 @@ public class SaePagmpServiceImpl implements SaePagmpService {
    */   
   @Autowired
   public SaePagmpServiceImpl(final PagmpSupportFacade pagmpSupportFacade, final PrmdSupportFacade prmdSupportFacade,
-                                   final CuratorFramework curator) {
+                             final CuratorFramework curator) {
     this.pagmpSupportFacade = pagmpSupportFacade;
     this.prmdSupportFacade = prmdSupportFacade;
     curatorClient = curator;

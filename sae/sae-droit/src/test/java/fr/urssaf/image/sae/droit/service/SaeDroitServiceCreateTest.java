@@ -55,7 +55,6 @@ import fr.urssaf.image.sae.droit.model.SaePagmp;
 public class SaeDroitServiceCreateTest {
 
   @Autowired
-  // @Qualifier("saeDroitServiceFacadeImpl")
   private SaeDroitService service;
 
   @Autowired

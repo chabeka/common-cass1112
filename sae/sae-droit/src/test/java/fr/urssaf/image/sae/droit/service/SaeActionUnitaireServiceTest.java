@@ -17,7 +17,6 @@ import fr.urssaf.image.sae.droit.dao.model.ActionUnitaire;
 public class SaeActionUnitaireServiceTest {
 
   @Autowired
-  // @Qualifier("saeActionUnitaireServiceFacadeImpl")
   private SaeActionUnitaireService service;
 
   @Test

@@ -16,13 +16,4 @@ import fr.urssaf.image.sae.droit.dao.modelcql.PagmCql;
 @Repository
 public class PagmCqlDaoImpl extends GenericDAOImpl<PagmCql, String> implements IPagmDaoCql {
 
-  /*
-   * @PostConstruct
-   * public void setRegister() {
-   * if (ccf != null) {
-   * ccf.getCluster().getConfiguration().getCodecRegistry().register(AbstractMapCodec);
-   * }
-   * }
-   */
-
 }

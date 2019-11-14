@@ -32,7 +32,6 @@ import fr.urssaf.image.sae.droit.dao.support.PrmdSupport;
 public class SaePagmpServiceDatasTest {
 
   @Autowired
-  // @Qualifier("saePagmpServiceFacadeImpl")
   private SaePagmpService service;
 
   @Autowired
@@ -49,7 +48,6 @@ public class SaePagmpServiceDatasTest {
 
   @After
   public void end() throws Exception {
-    // cassandraServer.resetData(true, MODE_API.HECTOR);
     cassandraServer.resetDataOnly();
     ;
   }
