@@ -25,7 +25,7 @@ INSERT INTO modeapi(cfname, mode) VALUES ('jobhistorycql' , 'DUAL_MODE_READ_THRI
 INSERT INTO modeapi(cfname, mode) VALUES ('jobqueuecql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('jobrequestcql' , 'DUAL_MODE_READ_THRIFT');
 
-/*#DROITS  (EC)*/
+/*#DROITS  */
 INSERT INTO modeapi(cfname, mode) VALUES ('droitactionunitairecql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitformatcontrolprofilcql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitpagmcql' , 'DUAL_MODE_READ_THRIFT');
@@ -35,13 +35,13 @@ INSERT INTO modeapi(cfname, mode) VALUES ('droitprmdcql' , 'DUAL_MODE_READ_THRIF
 INSERT INTO modeapi(cfname, mode) VALUES ('droitprmdcql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitprmdcql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('droitpagmfcql' , 'DUAL_MODE_READ_THRIFT');
-/*#PARAMETERS  (EC)*/
+/*#PARAMETERS */
 INSERT INTO modeapi(cfname, mode) VALUES ('parameterscql' , 'DUAL_MODE_READ_THRIFT');
-/*#METADATA  (EC)*/
+/*#METADATA  */
 INSERT INTO modeapi(cfname, mode) VALUES ('metadatacql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('dictionarycql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('referentielformatcql' , 'DUAL_MODE_READ_THRIFT');
-/*#RND  (EC)*/
+/*#RND  */
 INSERT INTO modeapi(cfname, mode) VALUES ('rndcql' , 'DUAL_MODE_READ_THRIFT');
 INSERT INTO modeapi(cfname, mode) VALUES ('correspondancesrndcql' , 'DUAL_MODE_READ_THRIFT');
 

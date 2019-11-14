@@ -25,34 +25,6 @@ public class DataCqlUtils {
   private static final Logger LOGGER = LoggerFactory.getLogger(DataCqlUtils.class);
 
 
-  /**
-   * Méthode de désérialisation en list<Row> à partir d'un chemin de fichier
-   * 
-   * @param pathfile
-   * @return liste des lignes Thrift
-   */
-  /*
-   * public static List<Row> deserialize(final String pathfile) {
-   * ColumnFamily cf = null;
-   * try {
-   * final File file = new File(pathfile);
-   * // JAXBContext jaxbContext;
-   * // jaxbContext = JAXBContext.newInstance(ColumnFamily.class);
-   * final Unmarshaller jaxbUnmarshaller;
-   * // jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-   * // cf = (ColumnFamily) jaxbUnmarshaller.unmarshal(file);
-   * final XStream xstream = new XStream();
-   * final InputStream is = new FileInputStream(file);
-   * cf = (ColumnFamily) xstream.fromXML(is);
-   * }
-   * catch (final Exception e) {
-   * System.out.println(e.getMessage());
-   * return null;
-   * }
-   * System.out.println(cf);
-   * return cf.getRows();
-   * }
-   */
 
   /**
    * Méthode de désérialisation du keyspace à partir d'un chemin de fichier
