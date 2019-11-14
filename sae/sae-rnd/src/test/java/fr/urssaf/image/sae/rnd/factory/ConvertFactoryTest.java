@@ -28,11 +28,9 @@ public class ConvertFactoryTest {
 
   @After
   public void after() throws Exception {
-    // server.resetData(true, MODE_API.HECTOR);
     server.resetData();
   }
 
-  // @Ignore
   @Test
   public void testWsToDocumentsType() throws RndRecuperationException {
 

@@ -48,7 +48,6 @@ public class MajCorrespondancesServiceTest {
   @After
   public void after() throws Exception {
     EasyMock.reset(rndRecuperationService);
-    // server.resetData(true, MODE_API.HECTOR);
     server.resetData();
   }
 

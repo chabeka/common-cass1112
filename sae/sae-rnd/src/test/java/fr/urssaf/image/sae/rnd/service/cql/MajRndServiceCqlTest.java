@@ -120,7 +120,7 @@ public class MajRndServiceCqlTest {
    * 
    * @throws Exception
    */
-  // @Ignore
+
   @Test
   public void testLancer() throws Exception {
     // server.resetData();
@@ -229,7 +229,6 @@ public class MajRndServiceCqlTest {
     typeDoc1bis.setType(TypeCode.ARCHIVABLE_AED);
     rndCqlSupport.ajouterRnd(typeDoc1bis);
     // Le 2ème document n'est pas dans le RND du SAE, il sera donc ajouté
-    // rndCqlSupport.ajouterRnd(typeDoc2);// EC
     // Le 3ème document sera déjà dans le RND du SAE donc il ne sera pas
     // ajouté (toutes propriétés identiques)
     rndCqlSupport.ajouterRnd(typeDoc3);

@@ -54,16 +54,6 @@ public class MajRndExceptionServiceTest {
 
   @Before
   public void before() throws SaeBddRuntimeException, RndRecuperationException {
-    /*
-     * try {
-     * server.resetData();
-     * }
-     * catch (final Exception e) {
-     * // TODO Auto-generated catch block
-     * e.printStackTrace();
-     * }
-     * logger.detachAppender(logAppender);
-     */
     EasyMock.resetToNice(rndRecuperationService);
 
     logger = (Logger) LoggerFactory.getLogger(org.slf4j.Logger.ROOT_LOGGER_NAME);
@@ -77,8 +67,6 @@ public class MajRndExceptionServiceTest {
 
   @After
   public void after() throws Exception {
-
-    // server.resetData(true, MODE_API.HECTOR);
     server.resetData();
     logger.detachAppender(logAppender);
     EasyMock.reset(rndRecuperationService);

@@ -31,20 +31,6 @@ public class RndCqlSupportTest {
     server.resetDataOnly();
   }
 
-  /*
-   * @Test
-   * public void init() {
-   * try {
-   * if (server.isCassandraStarted()) {
-   * server.resetData();
-   * }
-   * Assert.assertTrue(true);
-   * }
-   * catch (final Exception e) {
-   * e.printStackTrace();
-   * }
-   * }
-   */
 
   @Test
   public void testAjouterRndSuccess() {

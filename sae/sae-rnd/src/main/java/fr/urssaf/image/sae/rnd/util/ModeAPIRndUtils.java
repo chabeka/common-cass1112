@@ -23,9 +23,6 @@ public class ModeAPIRndUtils {
     modesApiTest.put(Constantes.CF_PARAMETERS, MODE_API.HECTOR);
     modesApiTest.put(Constantes.CF_TRACE_DESTINATAIRE, MODE_API.HECTOR);
 
-    // private final String cfNameDestinataire = "tracedestinatairecql";
-
-
   }
 
   public static void setAllRndModeAPICql() {

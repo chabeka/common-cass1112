@@ -35,7 +35,6 @@ public class RndServiceTest {
 
   @After
   public void after() throws Exception {
-    // server.resetData(true, MODE_API.HECTOR);
     server.resetData();
   }
 
