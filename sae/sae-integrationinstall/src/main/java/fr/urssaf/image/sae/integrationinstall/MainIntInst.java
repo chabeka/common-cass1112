@@ -61,7 +61,9 @@ public final class MainIntInst {
       // l'opération
       MajLotService majLotService = context.getBean("majLotServiceImpl",
             MajLotService.class);
-
+      
+      MajLotService majCqlLotService = context.getBean("majLotServiceCQLImpl",
+              MajLotService.class);
       // Retire des arguments de la ligne de commande ceux que l'on a pas besoin
       // pour le moment.
       // On ne laisse que les arguments spécifiques à l'application concernée
@@ -116,6 +118,8 @@ public final class MainIntInst {
          LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
          // Création de la base SAE
          majLotService.demarreCreateSAE();
+         // tables cql
+         majCqlLotService.demarreCreateSAE();
          LOG.info("Lancement de la creation de la base de donnees " + applicationConcernee);
 
          // Mise à jour RND
