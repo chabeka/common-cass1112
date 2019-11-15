@@ -154,6 +154,13 @@ public class MajLotServiceCQLImpl implements MajLotService {
 		saeUpdater.createTablesPileTravaux();
 		saeUpdater.createTablesJobSpring();
 		
+		saeUpdater.createTablesCommons();
+		saeUpdater.createTablesDroits();
+		saeUpdater.createTablesFormats();
+		saeUpdater.createTablesMetadata();
+		saeUpdater.createTablesRND();
+		
+		
 		LOG.info("Fin de l'opération : creation des tables cql SAE");
 	}
 }
